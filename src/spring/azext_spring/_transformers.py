@@ -205,3 +205,29 @@ def transform_api_portal_output(result):
         item['Memory'] = item['properties']['resourceRequests']['memory']
 
     return result if is_list else result[0]
+
+def transform_application_accelerator_output(result):
+    from collections import OrderedDict
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    new_result = []
+    for item in result:
+        for component in item['properties']['components']:
+            new_entry = OrderedDict()
+            new_entry['Name'] = item['name']
+            new_entry['ResourceGroup'] = item['resourceGroup']
+            new_entry['Provisioning State'] = item['properties']['provisioningState']
+            new_entry['Component'] = component['name']
+            instance_count = component['resourceRequests']['instanceCount']
+            instances = component['instances'] or []
+            running_number = len(
+                [x for x in instances if x['status'].upper() == "RUNNING"])
+            new_entry['Running Instance'] = "{}/{}".format(running_number, instance_count)
+            new_entry['CPU'] = component['resourceRequests']['cpu']
+            new_entry['Memory'] = component['resourceRequests']['memory']
+            new_result.append(new_entry)
+
+    return result if is_list else new_result

@@ -102,7 +102,8 @@ def _check_tanzu_components_not_enable(cmd, namespace):
         raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
     if namespace.enable_api_portal:
         raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
-
+    if namespace.enable_application_accelerator:
+        raise ArgumentUsageError('--enable-application-accelerator {}'.format(suffix))
 
 def validate_instance_count(namespace):
     if namespace.instance_count is not None:

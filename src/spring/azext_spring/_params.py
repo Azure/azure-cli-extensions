@@ -159,6 +159,10 @@ def load_arguments(self, _):
                    is_preview=True,
                    help='(Enterprise Tier Only) Specify a different Marketplace plan to purchase with Spring instance. '
                         'List all plans by running `az spring list-marketplace-plan -o table`.')
+        c.argument('enable_application_accelerator',
+                   arg_group="Application Accelerator",
+                   action='store_true',
+                   help='(Enterprise Tier Only) Enable Application Accelerator.')                        
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
@@ -645,7 +649,7 @@ def load_arguments(self, _):
             c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
-                  'gateway', 'api-portal']:
+                  'gateway', 'api-portal', 'application-accelerator']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 

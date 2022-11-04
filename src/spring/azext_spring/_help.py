@@ -36,7 +36,7 @@ helps['spring create'] = """
         az spring create -n MyService -g MyResourceGroup --sku Enterprise
     - name: Create a Azure Spring Apps Enterprise instance with Tanzu components enabled.
       text: |
-        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
+        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-accelerator
 """
 
 helps['spring list-marketplace-plan'] = """
@@ -1007,4 +1007,33 @@ helps['spring build-service builder buildpack-binding delete'] = """
     examples:
         - name: Delete a buildpack binding.
           text: az spring build-service builder buildpack-binding delete --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Application Accelerator in Azure Spring Apps.
+"""
+
+helps['spring application-accelerator create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create Application Accelerator in Azure Spring Apps instance.
+    examples:
+        - name: Create Application Accelerator in Azure Spring Apps instance.
+          text: az spring application-accelerator create --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show the settings, provisioning status and runtime status of Application Accelerator.
+    examples:
+        - name: Show details of a Application Accelerator.
+          text: az spring application-accelerator show --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete Application Accelerator from Azure Spring Apps instance.
+    examples:
+        - name: Delete Application Accelerator from Azure Spring Apps instance.
+          text: az spring application-accelerator delete --service MyCluster --resource-group MyResourceGroup
 """
