@@ -121,6 +121,31 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
+- job: MinVersionTests
+  displayName: "Min Version Tests"
+  pool:
+    name: 'pool-ubuntu-2004'
+  strategy:
+    matrix:
+      Python38:
+        python.version: '3.8'
+      Python39:
+        python.version: '3.9'
+      Python310:
+        python.version: '3.10'
+  steps:
+    - template: .azure-pipelines/templates/automation_test.yml
+      parameters:
+        pythonVersion: '$(python.version)'
+    - bash: pip install wheel==0.30.0
+      displayName: 'Install wheel==0.30.0'
+    - bash: python ./azure-cli-extensions/scripts/ci/test_min_version.py
+
+      displayName: 'Run min version test'
+      env:
+        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
 - job: LintModifiedExtensions
   displayName: "CLI Linter on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
