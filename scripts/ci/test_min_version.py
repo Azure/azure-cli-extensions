@@ -69,9 +69,6 @@ def get_all_tests():
             logger.error(f'can not any test in {test_dir}')
             sys.exit(0)
 
-    # ALL_TESTS = [('azext_healthcareapis', 'C:\Code\Azure\azure-cli-extensions\src\healthcareapis')]
-    # EXTENSION_NAME = ALL_TESTS[0][0]
-    # _, ORIGINAL_EXTENSION_NAME = EXTENSION_NAME.split('_', 1)
     logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                    f'ado_target_branch: {ado_target_branch}, '
                    f'ALL_TESTS: {ALL_TESTS}.')
@@ -92,15 +89,17 @@ def prepare_for_min_version(min_version):
     az_min_version = 'azure-cli-' + min_version
     azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(SRC_PATH))), 'azure-cli')
     logger.info(f'azure_cli_path: {azure_cli_path}')
+    # checkout to min cli version
     cmd = ['git', 'checkout', az_min_version]
     run_command(cmd, check_return_code=True, cwd=azure_cli_path)
+    # display cli version
     cmd = ['az', '--version']
     run_command(cmd, check_return_code=True)
     # install old testsdk
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk')
     cmd = ['python', 'setup.py', 'install']
     run_command(cmd, check_return_code=True, cwd=testsdk_path)
-    # azdev add extensions
+    # install extension
     cmd = ['azdev', 'extension', 'add', ORIGINAL_EXTENSION_NAME]
     run_command(cmd, check_return_code=True)
 
