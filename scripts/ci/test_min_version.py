@@ -104,7 +104,7 @@ def run_command(cmd, check_return_code=False, cwd=None):
     error_flag = False
     logger.info(cmd)
     try:
-        out = subprocess.run(cmd, check=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        out = subprocess.run(cmd, check=True, cwd=cwd)
         if check_return_code and out.returncode:
             raise RuntimeError(f"{cmd} failed")
     except subprocess.CalledProcessError:
