@@ -252,8 +252,8 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'show',
                               table_transformer=transform_live_view_output)
-        g.custom_command('enable', 'create', table_transformer=transform_live_view_output)
-        g.custom_command('disable', 'delete')
+        g.custom_command('create', 'create', table_transformer=transform_live_view_output)
+        g.custom_command('delete', 'delete')
 
     with self.command_group('spring application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,

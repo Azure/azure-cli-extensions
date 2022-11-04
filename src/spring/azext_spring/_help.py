@@ -719,14 +719,14 @@ helps['spring application-live-view show'] = """
     short-summary: Show the provisioning state, running status and settings of Application Live View.
 """
 
-helps['spring application-live-view enable'] = """
+helps['spring application-live-view create'] = """
     type: command
-    short-summary: Enable Application Live View.
+    short-summary: Create Application Live View.
 """
 
-helps['spring application-live-view disable'] = """
+helps['spring application-live-view delete'] = """
     type: command
-    short-summary: Disable Application Live View.
+    short-summary: Delete Application Live View.
 """
 
 helps['spring application-configuration-service'] = """
