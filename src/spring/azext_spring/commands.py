@@ -23,7 +23,8 @@ from ._transformers import (transform_spring_table_output,
                             transform_service_registry_output,
                             transform_spring_cloud_gateway_output,
                             transform_api_portal_output,
-                            transform_application_accelerator_output)
+                            transform_application_accelerator_output,
+                            transform_predefined_accelerator_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
@@ -97,6 +98,11 @@ def load_command_table(self, _):
         operations_tmpl='azext_spring.application_accelerator#{}',
         client_factory=cf_spring_20221101preview
     )
+
+    predefined_accelerator_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.predefined_accelerator#{}',
+        client_factory=cf_spring_20221101preview
+    )    
 
     with self.command_group('spring', custom_command_type=spring_routing_util,
                             exception_handler=handle_asc_exception) as g:
@@ -315,6 +321,14 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'application_accelerator_show', table_transformer=transform_application_accelerator_output)
         g.custom_command('create', 'application_accelerator_create', table_transformer=transform_application_accelerator_output)
         g.custom_command('delete', 'application_accelerator_delete')
+
+    with self.command_group('spring application-accelerator predefined-accelerator',
+                            custom_command_type=predefined_accelerator_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('list', 'predefined_accelerator_list', table_transformer=transform_predefined_accelerator_output)                        
+        g.custom_show_command('show', 'predefined_accelerator_show', table_transformer=transform_predefined_accelerator_output)
+        g.custom_command('disable', 'predefined_accelerator_disable')
+        g.custom_command('enable', 'predefined_accelerator_enable')
 
     with self.command_group('spring build-service builder',
                             custom_command_type=builder_cmd_group,

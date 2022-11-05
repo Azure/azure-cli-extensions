@@ -1037,3 +1037,40 @@ helps['spring application-accelerator delete'] = """
         - name: Delete Application Accelerator from Azure Spring Apps instance.
           text: az spring application-accelerator delete --service MyCluster --resource-group MyResourceGroup
 """
+
+helps['spring application-accelerator predefined-accelerator'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage predefined accelerator in Azure Spring Apps.
+"""
+
+helps['spring application-accelerator predefined-accelerator list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all existing predefined accelerators.
+    examples:
+        - name: List all existing predefined accelerators.
+          text: az spring application-accelerator predefined-accelerator list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show the settings, provisioning status and runtime status of predefined accelerator.
+    examples:
+        - name: Show details of a predefined accelerator.
+          text: az spring application-accelerator predefined-accelerator show --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator disable'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Disable a predefined accelerator.
+    examples:
+        - name: Disable a predefined accelerator.
+          text: az spring application-accelerator predefined-accelerator disable --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator enable'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Enable a predefined accelerator.
+    examples:
+        - name: Enable a predefined accelerator.
+          text: az spring application-accelerator predefined-accelerator enable --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""

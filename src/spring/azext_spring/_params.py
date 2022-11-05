@@ -765,3 +765,10 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring application-accelerator predefined-accelerator list',
+                  'spring application-accelerator predefined-accelerator show',
+                  'spring application-accelerator predefined-accelerator disable',
+                  'spring application-accelerator predefined-accelerator enable']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for predefined accelerator.')

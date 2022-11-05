@@ -231,3 +231,16 @@ def transform_application_accelerator_output(result):
             new_result.append(new_entry)
 
     return result if is_list else new_result
+
+def transform_predefined_accelerator_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Display Name'] = item['properties']['displayName']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['State'] = item['properties']['state']
+
+    return result if is_list else result[0]
