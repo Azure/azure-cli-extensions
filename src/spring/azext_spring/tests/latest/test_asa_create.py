@@ -6,7 +6,7 @@ import unittest
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_01_01_preview import models
+from ...vendored_sdks.appplatform.v2022_11_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 try:
