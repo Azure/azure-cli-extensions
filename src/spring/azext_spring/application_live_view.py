@@ -44,9 +44,9 @@ def _get_enable_dev_tool_portal_poller(cmd, client, service, resource_group):
     dev_tool_portal = get_dev_tool_portal(cmd, client, service, resource_group)
     if not dev_tool_portal:
         logger.warning('- View Application Live View through Dev Tool portal. '
-                        'Create Dev Tool Portal by running '
-                        '"az spring dev-tool create --service {} --resource-group {} --assign-endpoint"'
-                        .format(service, resource_group))
+                       'Create Dev Tool Portal by running '
+                       '"az spring dev-tool create --service {} --resource-group {} --assign-endpoint"'
+                       .format(service, resource_group))
         return None
     return _get_update_dev_tool_portal_poller(cmd, client, service, resource_group,
                                               dev_tool_portal, True)

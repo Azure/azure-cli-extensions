@@ -23,12 +23,12 @@ def create(cmd, client, service, resource_group,
            client_secret=None,
            metadata_url=None,
            scopes=None):
-    return create_or_update(cmd, client, service, resource_group, 
-                   assign_endpoint=assign_endpoint,
-                   client_id=client_id,
-                   client_secret=client_secret,
-                   metadata_url=metadata_url,
-                   scopes=scopes)
+    return create_or_update(cmd, client, service, resource_group,
+                            assign_endpoint=assign_endpoint,
+                            client_id=client_id,
+                            client_secret=client_secret,
+                            metadata_url=metadata_url,
+                            scopes=scopes)
 
 
 def update(cmd, client, service, resource_group,
@@ -39,22 +39,22 @@ def update(cmd, client, service, resource_group,
            scopes=None):
     dev_tool_portal = show(cmd, client, service, resource_group)
     return create_or_update(cmd, client, service, resource_group, dev_tool_portal,
-                   assign_endpoint=assign_endpoint,
-                   client_id=client_id,
-                   client_secret=client_secret,
-                   metadata_url=metadata_url,
-                   scopes=scopes)
+                            assign_endpoint=assign_endpoint,
+                            client_id=client_id,
+                            client_secret=client_secret,
+                            metadata_url=metadata_url,
+                            scopes=scopes)
 
 
 def create_or_update(cmd, client, service, resource_group,
-           dev_tool_portal=models.DevToolPortalResource(properties=models.DevToolPortalProperties()),
-           assign_endpoint=None,
-           client_id=None,
-           client_secret=None,
-           metadata_url=None,
-           scopes=None,
-           enable_application_live_view=None,
-           enable_application_accelerator=None):
+                     dev_tool_portal=models.DevToolPortalResource(properties=models.DevToolPortalProperties()),
+                     assign_endpoint=None,
+                     client_id=None,
+                     client_secret=None,
+                     metadata_url=None,
+                     scopes=None,
+                     enable_application_live_view=None,
+                     enable_application_accelerator=None):
     if assign_endpoint is not None:
         dev_tool_portal.properties.public = assign_endpoint
     if client_id and client_secret and metadata_url and scopes:
@@ -69,9 +69,11 @@ def create_or_update(cmd, client, service, resource_group,
         application_accelerator=models.DevToolPortalFeatureDetail()
     )
     if enable_application_live_view is not None:
-        dev_tool_portal.properties.features.application_live_view.state = _get_desired_state(enable_application_live_view)
+        dev_tool_portal.properties.features.application_live_view.state = \
+            _get_desired_state(enable_application_live_view)
     if enable_application_accelerator is not None:
-        dev_tool_portal.properties.features.application_accelerator.state =_get_desired_state(enable_application_accelerator)
+        dev_tool_portal.properties.features.application_accelerator.state = \
+            _get_desired_state(enable_application_accelerator)
     return client.dev_tool_portals.begin_create_or_update(resource_group, service, DEFAULT_NAME, dev_tool_portal)
 
 
