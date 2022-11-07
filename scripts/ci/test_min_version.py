@@ -69,44 +69,44 @@ def get_all_tests():
             logger.error(f'can not any test in {test_dir}')
             sys.exit(0)
 
-    logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+    logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                    f'ado_target_branch: {ado_target_branch}, '
-                   f'ALL_TESTS: {ALL_TESTS}.')
+                   f'detect which extension need to test: {ALL_TESTS}.')
 
 
 def get_min_version():
     try:
         with open(os.path.join(SRC_PATH, ORIGINAL_EXTENSION_NAME, EXTENSION_NAME, 'azext_metadata.json'), 'r') as f:
             min_version = json.load(f)['azext.minCliCoreVersion']
-            logger.info(f'find min_version: {min_version}')
+            logger.info(f'find minCliCoreVersion: {min_version}')
             return min_version
     except Exception as e:
-        logger.error(f'can not get min_version: {e}')
+        logger.error(f'can not get minCliCoreVersion: {e}')
         sys.exit(0)
 
 
 def prepare_for_min_version(min_version):
+    logger.info(f'checkout to minCliCoreVersion: {min_version}')
     az_min_version = 'azure-cli-' + min_version
     azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(SRC_PATH))), 'azure-cli')
-    logger.info(f'azure_cli_path: {azure_cli_path}')
     # checkout to min cli version
     cmd = ['git', 'checkout', az_min_version]
     run_command(cmd, check_return_code=True, cwd=azure_cli_path)
     # display cli version
     cmd = ['az', '--version']
     run_command(cmd, check_return_code=True)
-    # install old testsdk
+    logger.info('installing old testsdk')
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk')
     cmd = ['python', 'setup.py', 'install']
     run_command(cmd, check_return_code=True, cwd=testsdk_path)
-    # install extension
+    logger.info(f'installing extension: {ORIGINAL_EXTENSION_NAME}')
     cmd = ['azdev', 'extension', 'add', ORIGINAL_EXTENSION_NAME]
     run_command(cmd, check_return_code=True)
 
 
 def run_command(cmd, check_return_code=False, cwd=None):
     error_flag = False
-    logger.info(cmd)
+    logger.info(f'testing extension with minCliCoreVersion: {cmd}')
     try:
         out = subprocess.run(cmd, check=True, cwd=cwd)
         if check_return_code and out.returncode:
