@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.114
++++++++
+
+* Fix `az aks create` and `az aks nodepool add` commands failing on adding nodepool with managed ApplicationSecurityGroups.
+
 0.5.113
 +++++++
 

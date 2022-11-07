@@ -3410,6 +3410,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             message_of_the_day="W10=",  # base64 encode of "[]"
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
@@ -4234,6 +4235,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
