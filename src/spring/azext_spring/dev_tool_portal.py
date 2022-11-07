@@ -72,7 +72,6 @@ def create_or_update(cmd, client, service, resource_group,
         dev_tool_portal.properties.features.application_live_view.state = _get_desired_state(enable_application_live_view)
     if enable_application_accelerator is not None:
         dev_tool_portal.properties.features.application_accelerator.state =_get_desired_state(enable_application_accelerator)
-    print(dev_tool_portal.serialize())
     return client.dev_tool_portals.begin_create_or_update(resource_group, service, DEFAULT_NAME, dev_tool_portal)
 
 
@@ -80,11 +79,18 @@ def delete(cmd, client, service, resource_group):
     return client.dev_tool_portals.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
-def try_get(cmd, client, service, resource_group):
+def try_get_updatable(cmd, client, service, resource_group):
     try:
-        return show(cmd, client, service, resource_group)
+        resource = show(cmd, client, service, resource_group)
+        if resource.properties.provisioningState in [
+            models.DevToolPortalProvisioningState.SUCCEEDED,
+            models.DevToolPortalProvisioningState.FAILED,
+            models.DevToolPortalProvisioningState.CANCELED
+        ]:
+            return resource
     except:
         return None
+    return None
 
 
 def _get_desired_state(enable):
