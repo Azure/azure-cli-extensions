@@ -2475,8 +2475,9 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     sub = get_subscription_id(cmd.cli_ctx)
     token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
-    logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
-    base_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")]
+
+    base_url = ContainerAppClient.show(cmd, resource_group_name, name)["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
 
     if kind == LOG_TYPE_CONSOLE:
         url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
