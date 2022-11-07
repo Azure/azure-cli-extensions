@@ -13,7 +13,6 @@ import sys
 import shlex
 from subprocess import check_output
 
-
 from util import SRC_PATH
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,6 @@ logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
-
 
 ALL_TESTS = []
 EXTENSION_NAME, ORIGINAL_EXTENSION_NAME = '', ''
@@ -37,7 +35,8 @@ def get_all_tests():
 
         # If running in Travis CI, only run tests for edited extensions
         commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
-        if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+        if commit_range and not check_output(
+                ['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
             continue
 
         # Running in Azure DevOps
@@ -52,7 +51,8 @@ def get_all_tests():
                 # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
                 continue
             else:
-                cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit, code_dir=src_d_full)
+                cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit,
+                                     code_dir=src_d_full)
                 if not check_output(shlex.split(cmd)):
                     continue
 
@@ -70,8 +70,8 @@ def get_all_tests():
             sys.exit(0)
 
     logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
-                   f'ado_target_branch: {ado_target_branch}, '
-                   f'detect which extension need to test: {ALL_TESTS}.')
+                f'ado_target_branch: {ado_target_branch}, '
+                f'detect which extension need to test: {ALL_TESTS}.')
 
 
 def get_min_version():
