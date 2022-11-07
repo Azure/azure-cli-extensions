@@ -729,6 +729,31 @@ helps['spring application-live-view delete'] = """
     short-summary: Delete Application Live View.
 """
 
+helps['spring dev-tool'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Dev Tools in Azure Spring Apps. The Dev Tools Portal is an underlying application that hosts the developer tools.
+"""
+
+helps['spring dev-tool show'] = """
+    type: command
+    short-summary: Show the provisioning state, running status and settings of Dev Tool Portal.
+"""
+
+helps['spring dev-tool create'] = """
+    type: command
+    short-summary: Create Dev Tool Portal.
+"""
+
+helps['spring dev-tool update'] = """
+    type: command
+    short-summary: Update Dev Tool Portal.
+"""
+
+helps['spring dev-tool delete'] = """
+    type: command
+    short-summary: Delete Dev Tool Portal.
+"""
+
 helps['spring application-configuration-service'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Apps.
