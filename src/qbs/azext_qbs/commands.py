@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def load_command_table(self, _):
     with self.command_group('qbs member') as m:
         m.custom_show_command('show', 'get_show_members')

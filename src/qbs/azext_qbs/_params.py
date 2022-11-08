@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+
 def load_arguments(self, _):
     with self.argument_context('qbs') as c:
         c.argument('member_name', help='Blockchain member name.')
