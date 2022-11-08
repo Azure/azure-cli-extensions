@@ -10,9 +10,8 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.1.2'
 try:
-    from azext_communication.manual.version import VERSION
+    from azext_communication.version import VERSION
 except ImportError:
     pass
 
@@ -24,14 +23,14 @@ CLASSIFIERS = [
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['azure-core', 'azure-communication-identity',
-                'azure-communication-phonenumbers', 'azure-communication-sms']
+DEPENDENCIES = ['azure-core', 'azure-communication-identity>=1.1.0',
+                'azure-communication-phonenumbers', 'azure-communication-sms',
+                'azure-communication-chat']
 
 try:
     from azext_communication.manual.dependency import DEPENDENCIES
@@ -54,6 +53,7 @@ setup(
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
+    python_requires='>=3.7',
     install_requires=DEPENDENCIES,
     package_data={'azext_communication': ['azext_metadata.json']},
 )

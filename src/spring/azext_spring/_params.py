@@ -13,7 +13,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_ingress_timeout, validate_jar)
+                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
+                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -21,7 +22,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
-                                     validate_build_env, validate_target_module, validate_runtime_version)
+                                     validate_build_env, validate_target_module, validate_runtime_version,
+                                     validate_acs_ssh_or_warn)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -37,6 +39,7 @@ from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKe
 from .vendored_sdks.appplatform.v2022_01_01_preview.models \
     import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
 from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
+from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -76,6 +79,9 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', arg_group='VNet Injection', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Apps service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', arg_group='VNet Injection', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Apps service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
+        c.argument('outbound_type', arg_group='VNet Injection',
+                   help='The outbound type of Azure Spring Apps VNet instance.',
+                   validator=validate_vnet, default="loadBalancer")
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
@@ -149,6 +155,10 @@ def load_arguments(self, _):
                    validator=validate_api_portal_instance_count,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
+        c.argument('marketplace_plan_id',
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Specify a different Marketplace plan to purchase with Spring instance. '
+                        'List all plans by running `az spring list-marketplace-plan -o table`.')
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
@@ -283,6 +293,18 @@ def load_arguments(self, _):
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
 
+    for scope in ['spring app disable-remote-debugging', 'spring app get-remote-debugging-config']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+
+    with self.argument_context('spring app enable-remote-debugging') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
+                   help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
+                   validator=validate_remote_debugging_port)
+
     with self.argument_context('spring app unset-deployment') as c:
         c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
 
@@ -298,7 +320,6 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Enable system-assigned managed identity on an app.")
         c.argument('user_assigned',
-                   is_preview=True,
                    nargs='+',
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
 
@@ -307,7 +328,6 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Remove system-assigned managed identity.")
         c.argument('user_assigned',
-                   is_preview=True,
                    nargs='*',
                    help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
 
@@ -338,6 +358,12 @@ def load_arguments(self, _):
     with self.argument_context('spring app log tail') as c:
         prepare_logs_argument(c)
 
+    with self.argument_context('spring app connect') as c:
+        c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('shell_cmd', help='The shell command to run when connect to the app instance.')
+
     with self.argument_context('spring app set-deployment') as c:
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=ensure_not_active_deployment)
@@ -347,6 +373,25 @@ def load_arguments(self, _):
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
                        options_list=['--enable-persistent-storage', '--enable-ps'],
                        help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
+            c.argument('ingress_read_timeout',
+                       type=int,
+                       help='Ingress read timeout value in seconds. Default 300, minimum is 1, maximum is 1800.',
+                       validator=validate_ingress_timeout)
+            c.argument('ingress_send_timeout',
+                       type=int,
+                       help='Ingress send timeout value in seconds. Default 60, minimum is 1, maximum is 1800.',
+                       validator=validate_ingress_send_timeout)
+            c.argument('session_affinity',
+                       arg_type=get_enum_type(SessionAffinity),
+                       help='Ingress session afiinity of app.',
+                       validator=validate_ingress_timeout)
+            c.argument('session_max_age',
+                       type=int,
+                       help='Time until the cookie expires. Minimum is 1 second, maximum is 7 days. If set to 0, the expiration period is equal to the browser session period.',
+                       validator=validate_ingress_session_max_age)
+            c.argument('backend_protocol',
+                       arg_type=get_enum_type(BackendProtocol),
+                       help='Ingress backend protocol of app.')
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
@@ -402,6 +447,8 @@ def load_arguments(self, _):
                 'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
                 'container_args', help='The arguments of the container image.', arg_group='Custom Container')
+            c.argument(
+                'language_framework', help='Language framework of the container image uploaded. Supported values: "springboot", "".', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
             c.argument(
@@ -494,7 +541,7 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm',
                        help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_config_server_ssh_or_warn)
             c.argument('strict_host_key_checking',
                        options_list=['--strict-host-key-checking', '--host-key-check'],
                        help='Strict_host_key_checking of the added config.')
@@ -624,7 +671,7 @@ def load_arguments(self, _):
             c.argument('password', help='Password of the added config.')
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
 
     for scope in ['add', 'update', 'remove']:

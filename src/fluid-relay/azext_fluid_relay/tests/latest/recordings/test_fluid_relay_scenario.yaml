@@ -1,0 +1,1356 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --query
+      User-Agent:
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001","name":"cli_test_fluid_relay000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-07-27T06:41:53Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '331'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --query
+      User-Agent:
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-msi/6.0.1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1?api-version=2021-09-30-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1","name":"id1","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus2","tags":{},"properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"72dc1201-200f-44e6-a633-4ede68ac20e9","clientId":"a48701c2-d4b1-4eb5-bd8b-144f60fb5a11"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '435'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:10 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --query
+      User-Agent:
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001","name":"cli_test_fluid_relay000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-07-27T06:41:53Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '331'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --query
+      User-Agent:
+      - AZURECLI/2.38.0 azsdk-python-azure-mgmt-msi/6.0.1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2?api-version=2021-09-30-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2","name":"id2","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus2","tags":{},"properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"0c5df8a7-4b88-4ed3-b6fd-30bf178eaba9","clientId":"5fd3f6f2-4914-4534-9e60-00f4308e36e7"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '435'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:18 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "westus2", "properties":
+      {"storagesku": "standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '105'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --sku --identity
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1?api-version=2022-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1","name":"testfr1","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:23.0042091Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:23.0042091Z"},"identity":{"principalId":"d629f377-8bd5-4c7b-8d78-9a0b70dbbfe9","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"frsTenantId":"c3c6a81d-8cac-4012-9f33-0bdbafeea4da","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '943'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:28 GMT
+      etag:
+      - '"ae01f581-0000-0500-0000-62e0de530000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '31'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --tags
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1?api-version=2022-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1","name":"testfr1","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:23.0042091Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:30.6775284Z"},"identity":{"principalId":"d629f377-8bd5-4c7b-8d78-9a0b70dbbfe9","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"frsTenantId":"c3c6a81d-8cac-4012-9f33-0bdbafeea4da","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '971'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:33 GMT
+      etag:
+      - '"ae01ff81-0000-0500-0000-62e0de580000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned, UserAssigned", "userAssignedIdentities":
+      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":
+      {}, "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2":
+      {}}}, "location": "westus2", "properties": {"storagesku": "standard"}, "tags":
+      {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '506'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --sku --tags --identity
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2?api-version=2022-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2","name":"testfr2","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:39.3947795Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:39.3947795Z"},"identity":{"principalId":"c40188fb-0305-4960-be8f-06809b9a8794","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":{"clientId":"a48701c2-d4b1-4eb5-bd8b-144f60fb5a11","principalId":"72dc1201-200f-44e6-a633-4ede68ac20e9"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2":{"clientId":"5fd3f6f2-4914-4534-9e60-00f4308e36e7","principalId":"0c5df8a7-4b88-4ed3-b6fd-30bf178eaba9"}}},"properties":{"frsTenantId":"b7728456-3743-488f-931f-7660d393b20c","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:44 GMT
+      etag:
+      - '"ae011182-0000-0500-0000-62e0de640000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '31'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --tags
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2?api-version=2022-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2","name":"testfr2","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:39.3947795Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:47.7152823Z"},"identity":{"principalId":"c40188fb-0305-4960-be8f-06809b9a8794","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":{"clientId":"a48701c2-d4b1-4eb5-bd8b-144f60fb5a11","principalId":"72dc1201-200f-44e6-a633-4ede68ac20e9"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2":{"clientId":"5fd3f6f2-4914-4534-9e60-00f4308e36e7","principalId":"0c5df8a7-4b88-4ed3-b6fd-30bf178eaba9"}}},"properties":{"frsTenantId":"b7728456-3743-488f-931f-7660d393b20c","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:42:51 GMT
+      etag:
+      - '"ae011c82-0000-0500-0000-62e0de6a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":
+      {}}}, "location": "westus2", "properties": {"encryption": {"customerManagedKeyEncryption":
+      {"keyEncryptionKeyIdentity": {"identityType": "UserAssigned", "userAssignedIdentityResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1"},
+      "keyEncryptionKeyUrl": "https://contosovault.vault.azure.net/keys/contosokek"}},
+      "storagesku": "basic"}, "tags": {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '708'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --sku --key-identity --key-url --tags --identity
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr3?api-version=2022-06-01
+  response:
+    body:
+      string: '{"error":{"code":"503","message":"CMK is temporarily not available
+        and it is not allowed to enable CMK on new Fluid Relay resource for now."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '142'
+      content-type:
+      - application/json
+      date:
+      - Wed, 27 Jul 2022 06:42:56 GMT
+      etag:
+      - W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - Express
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":
+      {}}}, "location": "westus2", "properties": {"encryption": {"customerManagedKeyEncryption":
+      {"keyEncryptionKeyIdentity": {"identityType": "UserAssigned", "userAssignedIdentityResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1"},
+      "keyEncryptionKeyUrl": "https://contosovault.vault.azure.net/keys/contosokek"}},
+      "storagesku": "basic"}, "tags": {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '708'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --sku --key-identity --key-url --tags --identity
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr3?api-version=2022-06-01
+  response:
+    body:
+      string: '{"error":{"code":"503","message":"CMK is temporarily not available
+        and it is not allowed to enable CMK on new Fluid Relay resource for now."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '142'
+      content-type:
+      - application/json
+      date:
+      - Wed, 27 Jul 2022 06:43:01 GMT
+      etag:
+      - W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":
+      {}}}, "location": "westus2", "properties": {"encryption": {"customerManagedKeyEncryption":
+      {"keyEncryptionKeyIdentity": {"identityType": "UserAssigned", "userAssignedIdentityResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1"},
+      "keyEncryptionKeyUrl": "https://contosovault.vault.azure.net/keys/contosokek"}},
+      "storagesku": "basic"}, "tags": {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '708'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --sku --key-identity --key-url --tags --identity
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr3?api-version=2022-06-01
+  response:
+    body:
+      string: '{"error":{"code":"503","message":"CMK is temporarily not available
+        and it is not allowed to enable CMK on new Fluid Relay resource for now."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '142'
+      content-type:
+      - application/json
+      date:
+      - Wed, 27 Jul 2022 06:43:07 GMT
+      etag:
+      - W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":
+      {}}}, "location": "westus2", "properties": {"encryption": {"customerManagedKeyEncryption":
+      {"keyEncryptionKeyIdentity": {"identityType": "UserAssigned", "userAssignedIdentityResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1"},
+      "keyEncryptionKeyUrl": "https://contosovault.vault.azure.net/keys/contosokek"}},
+      "storagesku": "basic"}, "tags": {"category": "sales"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '708'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --sku --key-identity --key-url --tags --identity
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr3?api-version=2022-06-01
+  response:
+    body:
+      string: '{"error":{"code":"503","message":"CMK is temporarily not available
+        and it is not allowed to enable CMK on new Fluid Relay resource for now."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '142'
+      content-type:
+      - application/json
+      date:
+      - Wed, 27 Jul 2022 06:43:14 GMT
+      etag:
+      - W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - Express
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers?api-version=2022-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1","name":"testfr1","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:23.0042091Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:30.6775284Z"},"identity":{"principalId":"d629f377-8bd5-4c7b-8d78-9a0b70dbbfe9","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"frsTenantId":"c3c6a81d-8cac-4012-9f33-0bdbafeea4da","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2","name":"testfr2","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:39.3947795Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:47.7152823Z"},"identity":{"principalId":"c40188fb-0305-4960-be8f-06809b9a8794","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":{"clientId":"a48701c2-d4b1-4eb5-bd8b-144f60fb5a11","principalId":"72dc1201-200f-44e6-a633-4ede68ac20e9"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2":{"clientId":"5fd3f6f2-4914-4534-9e60-00f4308e36e7","principalId":"0c5df8a7-4b88-4ed3-b6fd-30bf178eaba9"}}},"properties":{"frsTenantId":"b7728456-3743-488f-931f-7660d393b20c","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2524'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 3c742d57-d7d3-4761-8283-056f4acdbe2c
+      - 7f033a67-fe7b-46d8-ab42-526cd4f4a994
+      - a5a88535-4b00-4f4d-9a0e-15702c890ad4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FluidRelay/fluidRelayServers?api-version=2022-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1","name":"testfr1","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:23.0042091Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:30.6775284Z"},"identity":{"principalId":"d629f377-8bd5-4c7b-8d78-9a0b70dbbfe9","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"frsTenantId":"c3c6a81d-8cac-4012-9f33-0bdbafeea4da","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2","name":"testfr2","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:39.3947795Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:47.7152823Z"},"identity":{"principalId":"c40188fb-0305-4960-be8f-06809b9a8794","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":{"clientId":"a48701c2-d4b1-4eb5-bd8b-144f60fb5a11","principalId":"72dc1201-200f-44e6-a633-4ede68ac20e9"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2":{"clientId":"5fd3f6f2-4914-4534-9e60-00f4308e36e7","principalId":"0c5df8a7-4b88-4ed3-b6fd-30bf178eaba9"}}},"properties":{"frsTenantId":"b7728456-3743-488f-931f-7660d393b20c","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2524'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 85371fea-fa57-41b8-ad84-9f95f76d3598
+      - 469f6b43-26bc-474c-8900-9330f3baf2fc
+      - 1a2fd77d-067c-4e6b-a557-911bd2b6ad0f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server list-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --server-name
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1/listKeys?api-version=2022-06-01
+  response:
+    body:
+      string: '{"key1":"ee4045db087ea247f2f51e51b3b79388","key2":"717c7d0faee7f4ca75175d08e02f5d37"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '85'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:19 GMT
+      etag:
+      - W/"55-xBAzgzOStlj7JVgAloV7SI1Fl1w"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server list-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --server-name
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2/listKeys?api-version=2022-06-01
+  response:
+    body:
+      string: '{"key1":"c5067a40fb0226aff480fa27b9e2ac0e","key2":"d51e7a6099c5d1c7270664940c424ba8"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '85'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:20 GMT
+      etag:
+      - W/"55-WLo/d0M3wYNXy37ABB/Z0nWfmQE"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"keyName": "key1"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server regenerate-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '19'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --server-name --key-name
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1/regenerateKey?api-version=2022-06-01
+  response:
+    body:
+      string: '{"key1":"bc897dab05e739f1008d09d6d713fd28","key2":"717c7d0faee7f4ca75175d08e02f5d37"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '85'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:23 GMT
+      etag:
+      - W/"55-JaYO1UjIH13U/HLuapvtT6a7+oY"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"keyName": "key1"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server regenerate-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '19'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --server-name --key-name
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2/regenerateKey?api-version=2022-06-01
+  response:
+    body:
+      string: '{"key1":"09621cdc129808a2136a86130939784c","key2":"d51e7a6099c5d1c7270664940c424ba8"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '85'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:26 GMT
+      etag:
+      - W/"55-OemhXID6kbdEg+zs+EkpFLdoUQI"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1?api-version=2022-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1","name":"testfr1","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:23.0042091Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:30.6775284Z"},"identity":{"principalId":"d629f377-8bd5-4c7b-8d78-9a0b70dbbfe9","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"frsTenantId":"c3c6a81d-8cac-4012-9f33-0bdbafeea4da","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '971'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:29 GMT
+      etag:
+      - '"ae01ff81-0000-0500-0000-62e0de580000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2?api-version=2022-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2","name":"testfr2","type":"microsoft.fluidrelay/fluidrelayservers","location":"westus2","tags":{"category":"sales"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-07-27T06:42:39.3947795Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-07-27T06:42:47.7152823Z"},"identity":{"principalId":"c40188fb-0305-4960-be8f-06809b9a8794","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id1":{"clientId":"a48701c2-d4b1-4eb5-bd8b-144f60fb5a11","principalId":"72dc1201-200f-44e6-a633-4ede68ac20e9"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_fluid_relay000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id2":{"clientId":"5fd3f6f2-4914-4534-9e60-00f4308e36e7","principalId":"0c5df8a7-4b88-4ed3-b6fd-30bf178eaba9"}}},"properties":{"frsTenantId":"b7728456-3743-488f-931f-7660d393b20c","fluidRelayEndpoints":{"ordererEndpoints":["https://alfred.westus2.fluidrelay.azure.com"],"storageEndpoints":["https://historian.westus2.fluidrelay.azure.com"],"serviceEndpoints":["https://us.fluidrelay.azure.com"]},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:31 GMT
+      etag:
+      - '"ae011c82-0000-0500-0000-62e0de6a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay container list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --server-name
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1/fluidRelayContainers?api-version=2022-06-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:33 GMT
+      etag:
+      - W/"c-ct3goOI+b+kRZv2R9j2fTtMXwkk"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay container list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --server-name
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2/fluidRelayContainers?api-version=2022-06-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:34 GMT
+      etag:
+      - W/"c-ct3goOI+b+kRZv2R9j2fTtMXwkk"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr1?api-version=2022-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jul 2022 06:43:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers/testfr2?api-version=2022-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jul 2022 06:43:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - Express
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fluid_relay000001/providers/Microsoft.FluidRelay/fluidRelayServers?api-version=2022-06-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 349a2383-6728-444e-b3ad-203af56e21e1
+      - 8f9dd0a3-08b0-48a3-9326-fdb23272d990
+      - aadb7e52-2f07-4999-a66d-4cdb34d26193
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fluid-relay server list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription
+      User-Agent:
+      - AZURECLI/2.38.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FluidRelay/fluidRelayServers?api-version=2022-06-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 Jul 2022 06:43:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 5ff9b2a2-3f64-44d8-addb-041fae8be394
+      - 56d3edd7-f082-43e5-b22b-263f190ec033
+      - 03644279-a7b1-4d16-b37d-a592fcb9f39b
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -7,7 +7,9 @@ import copy
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.azclierror import UserFault, ServiceError
+from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError
+from azure.cli.core.commands.client_factory import get_subscription_id
+from msrestazure.tools import is_valid_resource_id, resource_id
 from ._client_factory import network_client_factory
 
 logger = get_logger(__name__)
@@ -68,23 +70,33 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
-                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None):
+                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None,
+                          enable_fat_flow_logging=None, enable_udp_log_optimization=None,
+                          virtual_network_name=None, conf_name=None, public_ip=None,
+                          management_conf_name=None, management_public_ip=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
         raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     if sku and sku.lower() == 'azfw_hub' and allow_active_ftp:
         raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
+    # validate basic sku firewall
+    if tier and tier.lower() == 'basic' and not all([management_conf_name, management_public_ip]):
+        err_msg = "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."
+        raise ValidationError(err_msg)
+
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
      AzureFirewallSku,
      HubIPAddresses,
-     HubPublicIPAddresses) = cmd.get_models('AzureFirewall',
-                                            'SubResource',
-                                            'AzureFirewallSku',
-                                            'HubIPAddresses',
-                                            'HubPublicIPAddresses')
+     HubPublicIPAddresses,
+     AzureFirewallIPConfiguration) = cmd.get_models('AzureFirewall',
+                                                    'SubResource',
+                                                    'AzureFirewallSku',
+                                                    'HubIPAddresses',
+                                                    'HubPublicIPAddresses',
+                                                    'AzureFirewallIPConfiguration')
     sku_instance = AzureFirewallSku(name=sku, tier=tier)
     firewall = AzureFirewall(location=location,
                              tags=tags,
@@ -116,7 +128,67 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     if allow_active_ftp:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
-        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
+
+    if enable_fat_flow_logging:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+
+    if enable_udp_log_optimization:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+
+    if conf_name is not None:
+        subnet_id = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Network',
+            type='virtualNetworks',
+            name=virtual_network_name,
+            child_type_1='subnets',
+            child_name_1='AzureFirewallSubnet'
+        )
+        if public_ip and not is_valid_resource_id(public_ip):
+            public_ip = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Network',
+                type='publicIPAddresses',
+                name=public_ip
+            )
+        config = AzureFirewallIPConfiguration(
+            name=conf_name,
+            subnet=SubResource(id=subnet_id) if virtual_network_name else None,
+            public_ip_address=SubResource(id=public_ip) if public_ip else None
+        )
+        _upsert(firewall, 'ip_configurations', config, 'name', warn=False)
+
+    if tier and tier.lower() == 'basic':
+        management_subnet_id = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Network',
+            type='virtualNetworks',
+            name=virtual_network_name,
+            child_type_1='subnets',
+            child_name_1='AzureFirewallManagementSubnet'
+        )
+        if not is_valid_resource_id(management_public_ip):
+            management_public_ip = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Network',
+                type='publicIPAddresses',
+                name=management_public_ip
+            )
+        management_config = AzureFirewallIPConfiguration(
+            name=management_conf_name,
+            subnet=SubResource(id=management_subnet_id),
+            public_ip_address=SubResource(id=management_public_ip)
+        )
+        firewall.management_ip_configuration = management_config
 
     return client.begin_create_or_update(resource_group_name, azure_firewall_name, firewall)
 
@@ -126,7 +198,8 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
-                          hub_public_ip_count=None, allow_active_ftp=None):
+                          hub_public_ip_count=None, allow_active_ftp=None,
+                          enable_fat_flow_logging=None, enable_udp_log_optimization=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if all([hub_public_ip_addresses, hub_public_ip_count]):
@@ -190,9 +263,25 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
         if instance.additional_properties is None:
             instance.additional_properties = {}
         if allow_active_ftp:
-            instance.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+            instance.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
         elif 'Network.FTP.AllowActiveFTP' in instance.additional_properties:
             del instance.additional_properties['Network.FTP.AllowActiveFTP']
+
+    if enable_fat_flow_logging is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if enable_fat_flow_logging:
+            instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+        elif 'Network.AdditionalLogs.EnableFatFlowLogging' in instance.additional_properties:
+            del instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging']
+
+    if enable_udp_log_optimization is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if enable_udp_log_optimization:
+            instance.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+        elif 'Network.AdditionalLogs.EnableUdpLogOptimization' in instance.additional_properties:
+            del instance.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization']
 
     return instance
 

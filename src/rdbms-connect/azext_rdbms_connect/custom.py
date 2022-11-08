@@ -183,6 +183,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
         else:
             # set ssl param to allow for connection
             connection_kwargs['ssl'] = {"fake_flag_to_enable_tls": True}
+            connection_kwargs['autocommit'] = True
             connection = pymysql.connect(**connection_kwargs)
         logger.warning('Successfully connected to %s.', server_name)
     except Exception as e:
@@ -251,7 +252,7 @@ def _connect_execute_file(server_type, host, server_name, database_name, login_u
         logger.warning("Running sql file '%s'...", file_path)
         cursor = connection.cursor()
 
-        with open(file_path, "r", encoding="utf-8") as sql_file:
+        with open(file_path, "r", encoding="utf-8-sig") as sql_file:
             cursor.execute(sql_file.read())
 
         if server_type == 'postgres':

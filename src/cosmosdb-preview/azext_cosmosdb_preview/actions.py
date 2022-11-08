@@ -13,7 +13,10 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DatabaseRestoreResource,
     GremlinDatabaseRestoreResource,
     CosmosCassandraDataTransferDataSourceSink,
-    CosmosSqlDataTransferDataSourceSink
+    CosmosMongoDataTransferDataSourceSink,
+    CosmosSqlDataTransferDataSourceSink,
+    PhysicalPartitionThroughputInfoResource,
+    PhysicalPartitionId
 )
 
 logger = get_logger(__name__)
@@ -136,6 +139,45 @@ class AddCassandraTableAction(argparse._AppendAction):
             namespace.cassandra_table = cassandra_table
 
 
+class AddMongoCollectionAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
+
+        database_name = None
+        collection_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
+            if kl == 'database':
+                database_name = v
+
+            elif kl == 'collection':
+                collection_name = v
+
+            else:
+                raise CLIError(
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: database, collection'
+                )
+
+        if database_name is None:
+            raise CLIError(f'usage error: missing key database in {option_string} component')
+
+        if collection_name is None:
+            raise CLIError(f'usage error: missing key table in {option_string} component')
+
+        mongo_collection = CosmosMongoDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name)
+
+        if option_string == "--source-mongo":
+            namespace.source_mongo = mongo_collection
+        elif option_string == "--dest-mongo":
+            namespace.dest_mongo = mongo_collection
+        else:
+            namespace.mongo_collection = mongo_collection
+
+
 class AddSqlContainerAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not values:
@@ -173,3 +215,45 @@ class AddSqlContainerAction(argparse._AppendAction):
             namespace.dest_sql_container = sql_container
         else:
             namespace.sql_container = sql_container
+
+
+# pylint: disable=protected-access, too-few-public-methods
+class CreateTargetPhysicalPartitionThroughputInfoAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.target_partition_info is None:
+            namespace.target_partition_info = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --target-partition-info [PhysicalPartitionId1=Throughput1 PhysicalPartitionId2=Throughput2 ...]')
+        for item in values:
+            kvp = item.split('=', 1)
+            if len(kvp) != 2:
+                raise CLIError('usage error: --target-partition-info [PhysicalPartitionId1=Throughput1 PhysicalPartitionId2=Throughput2 ...]')
+            namespace.target_partition_info.append(
+                PhysicalPartitionThroughputInfoResource(id=kvp[0], throughput=kvp[1]))
+
+
+# pylint: disable=protected-access, too-few-public-methods
+class CreateSourcePhysicalPartitionThroughputInfoAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.source_partition_info is None:
+            namespace.source_partition_info = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --source-partition-info [PhysicalPartitionId1 PhysicalPartitionId2 ...]')
+        for item in values:
+            namespace.source_partition_info.append(
+                PhysicalPartitionThroughputInfoResource(id=item, throughput=0))
+
+
+# pylint: disable=protected-access, too-few-public-methods
+class CreatePhysicalPartitionIdListAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if namespace.physical_partition_ids is None:
+            namespace.physical_partition_ids = []
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError('usage error: --physical-partition-ids [PhysicalPartitionId1 PhysicalPartitionId2 ...]')
+        for item in values:
+            namespace.physical_partition_ids.append(
+                PhysicalPartitionId(id=item))

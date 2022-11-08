@@ -30,6 +30,7 @@ CONST_DEFAULT_NODE_OS_TYPE = "Linux"
 # os sku
 CONST_OS_SKU_UBUNTU = "Ubuntu"
 CONST_OS_SKU_CBLMARINER = "CBLMariner"
+CONST_OS_SKU_MARINER = "Mariner"
 CONST_OS_SKU_WINDOWS2019 = "Windows2019"
 CONST_OS_SKU_WINDOWS2022 = "Windows2022"
 
@@ -62,6 +63,10 @@ CONST_OUTBOUND_TYPE_LOAD_BALANCER = "loadBalancer"
 CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING = "userDefinedRouting"
 CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY = "managedNATGateway"
 CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY = "userAssignedNATGateway"
+CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG = "Warning: this AKS cluster has multi-zonal nodepools, but NAT Gateway is not currently zone redundant. Migrating outbound connectivity to NAT Gateway could lead to a reduction in zone redundancy for this cluster. Continue?"
+# load balancer backend pool type
+CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP = "nodeIP"
+CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION = "nodeIPConfiguration"
 
 # private dns zone mode
 CONST_PRIVATE_DNS_ZONE_SYSTEM = "system"
@@ -85,6 +90,9 @@ CONST_NETWORK_PLUGIN_NONE = "none"
 
 # network plugin mode
 CONST_NETWORK_PLUGIN_MODE_OVERLAY = "overlay"
+
+# networkprofile eBPF dataplane
+CONST_EBPF_DATAPLANE_CILIUM = "cilium"
 
 # disk driver versions
 CONST_DISK_DRIVER_V1 = "v1"
@@ -177,9 +185,14 @@ CONST_CONTAINER_NAME_MAX_LENGTH = 63
 
 CONST_PERISCOPE_REPO_ORG = "azure"
 CONST_PERISCOPE_CONTAINER_REGISTRY = "mcr.microsoft.com"
-CONST_PERISCOPE_RELEASE_TAG = "v0.9"
-CONST_PERISCOPE_IMAGE_VERSION = "0.0.9"
+CONST_PERISCOPE_RELEASE_TAG = "0.0.10"
+CONST_PERISCOPE_IMAGE_VERSION = "0.0.10"
 CONST_PERISCOPE_NAMESPACE = "aks-periscope"
 
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC = "Public"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
+
+# refer https://api.github.com/repos/Azure/draft/releases/latest
+# tag_name gives latest version released.
+# Moving away from 1:n release to avoid unwanted breaking changes with auto upgrades.
+CONST_DRAFT_CLI_VERSION = "v0.0.22"
