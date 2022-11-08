@@ -190,7 +190,10 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
             return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                                job_name, shots, storage, job_params, target_capability,
                                job_input_file, job_input_format, job_output_format, entry_point)
-        
+
+        # elif job_input_format.lower() == "microsoft.qio.v2":
+        #     return _submit_qio(cmd, program_args, resource_group_name, workspace_name, location, target_id,...
+
         #
         # Add elifs here to handle new job_input_format values
         #
