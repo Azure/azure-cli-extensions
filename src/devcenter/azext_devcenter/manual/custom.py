@@ -301,37 +301,37 @@ def devcenter_schedule_delete(client,
 
 # dataplane commands
 def devcenter_project_list_dp(cmd, dev_center):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.project.list_by_dev_center()
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.project.list_by_dev_center()
 
 
 def devcenter_project_show_dp(cmd, dev_center, project_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.project.get(project_name=project_name)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.project.get(project_name=project_name)
 
 
 def devcenter_pool_list_dp(cmd, dev_center, project_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.pool.list(project_name=project_name)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.pool.list(project_name=project_name)
 
 
 def devcenter_pool_show_dp(cmd, dev_center, project_name, pool_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.pool.get(project_name=project_name, pool_name=pool_name)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.pool.get(project_name=project_name, pool_name=pool_name)
 
 
 def devcenter_schedule_list_dp(
     cmd, dev_center, project_name, pool_name
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.schedule.list(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.schedule.list(
         project_name=project_name, pool_name=pool_name
     )
 
 
 def devcenter_schedule_show_dp(cmd, dev_center, project_name, pool_name, schedule_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.schedule.get(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.schedule.get(
         project_name=project_name, pool_name=pool_name, schedule_name=schedule_name
     )
 
@@ -339,19 +339,19 @@ def devcenter_schedule_show_dp(cmd, dev_center, project_name, pool_name, schedul
 def devcenter_dev_box_list(
     cmd, dev_center, filter_=None, project_name=None, user_id=None
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     if project_name is not None and user_id is not None:
-        return cf_fidalgo.dev_box.list_by_project(
+        return cf_devcenter.dev_box.list_by_project(
             filter=filter_, project_name=project_name, user_id=user_id
         )
     if user_id is not None:
-        return cf_fidalgo.dev_box.list_by_user(filter=filter_, user_id=user_id)
-    return cf_fidalgo.dev_box.list(filter=filter_)
+        return cf_devcenter.dev_box.list_by_user(filter=filter_, user_id=user_id)
+    return cf_devcenter.dev_box.list(filter=filter_)
 
 
 def devcenter_dev_box_show(cmd, dev_center, project_name, user_id, dev_box_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.dev_box.get(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.dev_box.get(
         project_name=project_name, user_id=user_id, dev_box_name=dev_box_name
     )
 
@@ -359,12 +359,12 @@ def devcenter_dev_box_show(cmd, dev_center, project_name, user_id, dev_box_name)
 def devcenter_dev_box_create(
     cmd, dev_center, project_name, dev_box_name, pool_name, user_id="me", no_wait=False
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
     body["pool_name"] = pool_name
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.dev_box.begin_create,
+        cf_devcenter.dev_box.begin_create,
         project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
@@ -375,10 +375,10 @@ def devcenter_dev_box_create(
 def devcenter_dev_box_delete(
     cmd, dev_center, project_name, user_id, dev_box_name, no_wait=False
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.dev_box.begin_delete,
+        cf_devcenter.dev_box.begin_delete,
         project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
@@ -388,8 +388,8 @@ def devcenter_dev_box_delete(
 def devcenter_dev_box_get_remote_connection(
     cmd, dev_center, project_name, user_id, dev_box_name
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.dev_box.get_remote_connection(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.dev_box.get_remote_connection(
         project_name=project_name, user_id=user_id, dev_box_name=dev_box_name
     )
 
@@ -397,10 +397,10 @@ def devcenter_dev_box_get_remote_connection(
 def devcenter_dev_box_start(
     cmd, dev_center, project_name, user_id, dev_box_name, no_wait=False
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.dev_box.begin_start,
+        cf_devcenter.dev_box.begin_start,
         project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
@@ -410,10 +410,10 @@ def devcenter_dev_box_start(
 def devcenter_dev_box_stop(
     cmd, dev_center, project_name, user_id, dev_box_name, no_wait=False
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.dev_box.begin_stop,
+        cf_devcenter.dev_box.begin_stop,
         project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
@@ -421,15 +421,15 @@ def devcenter_dev_box_stop(
 
 
 def devcenter_environment_list(cmd, dev_center, project_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.environments.list_by_project(project_name=project_name)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.environments.list_by_project(project_name=project_name)
 
 
 def devcenter_environment_show(
     cmd, dev_center, project_name, user_id, environment_name
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.environments.get(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.environments.get(
         project_name=project_name, user_id=user_id, environment_name=environment_name
     )
 
@@ -450,7 +450,7 @@ def devcenter_environment_create(
     owner=None,
     no_wait=False,
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
     body["catalog_name"] = catalog_name
     body["catalog_item_name"] = catalog_item_name
@@ -467,7 +467,7 @@ def devcenter_environment_create(
         body["owner"] = owner
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.environments.begin_create_or_update,
+        cf_devcenter.environments.begin_create_or_update,
         project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
@@ -489,7 +489,7 @@ def devcenter_environment_update(
     tags=None,
     no_wait=False,
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
     if description is not None:
         body["description"] = description
@@ -505,7 +505,7 @@ def devcenter_environment_update(
         body["tags"] = tags
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.environments.begin_update,
+        cf_devcenter.environments.begin_update,
         project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
@@ -516,10 +516,10 @@ def devcenter_environment_update(
 def devcenter_environment_delete(
     cmd, dev_center, project_name, user_id, environment_name, no_wait=False
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.environments.begin_delete,
+        cf_devcenter.environments.begin_delete,
         project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
@@ -536,14 +536,14 @@ def devcenter_environment_custom_action(
     parameters=None,
     no_wait=False,
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
     body["action_id"] = action_id
     if parameters is not None:
         body["parameters"] = parameters
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.environments.begin_custom_action,
+        cf_devcenter.environments.begin_custom_action,
         project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
@@ -561,14 +561,14 @@ def devcenter_environment_delete_action(
     parameters=None,
     no_wait=False,
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
     body["action_id"] = action_id
     if parameters is not None:
         body["parameters"] = parameters
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.environments.begin_delete_action,
+        cf_devcenter.environments.begin_delete_action,
         project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
@@ -586,14 +586,14 @@ def devcenter_environment_deploy_action(
     parameters=None,
     no_wait=False,
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     body = {}
     body["action_id"] = action_id
     if parameters is not None:
         body["parameters"] = parameters
     return sdk_no_wait(
         no_wait,
-        cf_fidalgo.environments.begin_deploy_action,
+        cf_devcenter.environments.begin_deploy_action,
         project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
@@ -604,8 +604,8 @@ def devcenter_environment_deploy_action(
 def devcenter_environment_list_by_project(
     cmd, dev_center, project_name, user_id
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.environments.list_by_project_by_user(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.environments.list_by_project_by_user(
         project_name=project_name, user_id=user_id
     )
 
@@ -613,34 +613,34 @@ def devcenter_environment_list_by_project(
 def devcenter_artifact_list(
     cmd, dev_center, project_name, user_id, environment_name, artifact_path=None
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     if (
         project_name is not None
         and user_id is not None
         and environment_name is not None
         and artifact_path is not None
     ):
-        return cf_fidalgo.artifacts.list_by_path(
+        return cf_devcenter.artifacts.list_by_path(
             project_name=project_name,
             user_id=user_id,
             environment_name=environment_name,
             artifact_path=artifact_path,
         )
-    return cf_fidalgo.artifacts.list_by_environment(
+    return cf_devcenter.artifacts.list_by_environment(
         project_name=project_name, user_id=user_id, environment_name=environment_name
     )
 
 
 def devcenter_catalog_item_list(cmd, dev_center, project_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.catalog_item.list_by_project(project_name=project_name)
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.catalog_item.list_by_project(project_name=project_name)
 
 
 def devcenter_catalog_item_show(
     cmd, dev_center, project_name, catalog_item_id
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.catalog_item.get(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.catalog_item.get(
         project_name=project_name, catalog_item_id=catalog_item_id
     )
 
@@ -648,8 +648,8 @@ def devcenter_catalog_item_show(
 def devcenter_catalog_item_version_list(
     cmd, dev_center, project_name, catalog_item_id
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.catalog_item_versions.list_by_project(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.catalog_item_versions.list_by_project(
         project_name=project_name, catalog_item_id=catalog_item_id
     )
 
@@ -657,8 +657,8 @@ def devcenter_catalog_item_version_list(
 def devcenter_catalog_item_version_show(
     cmd, dev_center, project_name, catalog_item_id, version,
 ):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.catalog_item_versions.get(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.catalog_item_versions.get(
         project_name=project_name,
         catalog_item_id=catalog_item_id,
         version=version,
@@ -666,7 +666,7 @@ def devcenter_catalog_item_version_show(
 
 
 def devcenter_environment_type_list_dp(cmd, dev_center, project_name):
-    cf_fidalgo = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
-    return cf_fidalgo.environment_type.list_by_project(
+    cf_devcenter = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
+    return cf_devcenter.environment_type.list_by_project(
         project_name=project_name
     )

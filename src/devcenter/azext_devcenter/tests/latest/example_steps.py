@@ -17,13 +17,13 @@ from .. import try_manual
 def step_dev_center_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin devcenter create '
+             '--location "westus3" '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter dev-center wait --created '
+    test.cmd('az devcenter admin devcenter wait --created '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -34,16 +34,16 @@ def step_dev_center_create(test, checks=None):
 def step_dev_center_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center create '
+    test.cmd('az devcenter admin devcenter create '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
-             '--location "centralus" '
+             '--location "westus3" '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter dev-center wait --created '
+    test.cmd('az devcenter admin devcenter wait --created '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -54,7 +54,7 @@ def step_dev_center_create2(test, checks=None):
 def step_dev_center_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center show '
+    test.cmd('az devcenter admin devcenter show '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -65,7 +65,7 @@ def step_dev_center_show(test, checks=None):
 def step_dev_center_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center list '
+    test.cmd('az devcenter admin devcenter list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -75,7 +75,7 @@ def step_dev_center_list(test, checks=None):
 def step_dev_center_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center list '
+    test.cmd('az devcenter admin devcenter list '
              '-g ""',
              checks=checks)
 
@@ -85,7 +85,7 @@ def step_dev_center_list2(test, checks=None):
 def step_dev_center_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center update '
+    test.cmd('az devcenter admin devcenter update '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -97,7 +97,7 @@ def step_dev_center_update(test, checks=None):
 def step_attached_network_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network create '
+    test.cmd('az devcenter admin attached-network create '
              '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
              '--network-connection-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCent'
              'er/NetworkConnections/{myNetworkConnection}" '
@@ -111,7 +111,7 @@ def step_attached_network_create(test, checks=None):
 def step_attached_network_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network show '
+    test.cmd('az devcenter admin attached-network show '
              '--attached-network-connection-name "{myNetworkConnection}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -123,7 +123,7 @@ def step_attached_network_show(test, checks=None):
 def step_attached_network_show2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network show '
+    test.cmd('az devcenter admin attached-network show '
              '--attached-network-connection-name "{myNetworkConnection}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -135,7 +135,7 @@ def step_attached_network_show2(test, checks=None):
 def step_attached_network_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network list '
+    test.cmd('az devcenter admin attached-network list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -146,7 +146,7 @@ def step_attached_network_list(test, checks=None):
 def step_attached_network_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network list '
+    test.cmd('az devcenter admin attached-network list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -157,7 +157,7 @@ def step_attached_network_list2(test, checks=None):
 def step_attached_network_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network delete -y '
+    test.cmd('az devcenter admin attached-network delete -y '
              '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -169,14 +169,14 @@ def step_attached_network_delete(test, checks=None):
 def step_catalog_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog create '
+    test.cmd('az devcenter admin catalog create '
              '--ado-git path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/Ce'
              'ntralRepoPat" uri="https://contoso@dev.azure.com/contoso/contosoOrg/_git/centralrepo-fakecontoso" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter catalog wait --created '
+    test.cmd('az devcenter admin catalog wait --created '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -188,14 +188,14 @@ def step_catalog_create(test, checks=None):
 def step_catalog_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog create '
+    test.cmd('az devcenter admin catalog create '
              '--git-hub path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/Ce'
              'ntralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter catalog wait --created '
+    test.cmd('az devcenter admin catalog wait --created '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -207,7 +207,7 @@ def step_catalog_create2(test, checks=None):
 def step_catalog_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog show '
+    test.cmd('az devcenter admin catalog show '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -219,7 +219,7 @@ def step_catalog_show(test, checks=None):
 def step_catalog_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog list '
+    test.cmd('az devcenter admin catalog list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -230,7 +230,7 @@ def step_catalog_list(test, checks=None):
 def step_catalog_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog update '
+    test.cmd('az devcenter admin catalog update '
              '--git-hub path="/environments" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
@@ -243,7 +243,7 @@ def step_catalog_update(test, checks=None):
 def step_catalog_sync(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog sync '
+    test.cmd('az devcenter admin catalog sync '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -255,7 +255,7 @@ def step_catalog_sync(test, checks=None):
 def step_catalog_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog delete -y '
+    test.cmd('az devcenter admin catalog delete -y '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -267,14 +267,14 @@ def step_catalog_delete(test, checks=None):
 def step_gallery_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery create '
+    test.cmd('az devcenter admin gallery create '
              '--gallery-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/g'
              'alleries/{myGallery}" '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter gallery wait --created '
+    test.cmd('az devcenter admin gallery wait --created '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
@@ -323,7 +323,7 @@ def step_dev_box_definition_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az devcenter dev-box-definition create '
-             '--location "centralus" '
+             '--location "westus3" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.DevCente'
              'r/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0" '
              '--os-storage-type "SSD_1024" '
@@ -476,7 +476,7 @@ def step_environment_type_delete(test, checks=None):
 def step_gallery_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery show '
+    test.cmd('az devcenter admin gallery show '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
@@ -488,7 +488,7 @@ def step_gallery_show(test, checks=None):
 def step_gallery_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery list '
+    test.cmd('az devcenter admin gallery list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -526,7 +526,7 @@ def step_image_version_show(test, checks=None):
 def step_gallery_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery delete -y '
+    test.cmd('az devcenter admin gallery delete -y '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
@@ -538,7 +538,7 @@ def step_gallery_delete(test, checks=None):
 def step_dev_center_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center delete -y '
+    test.cmd('az devcenter admin devcenter delete -y '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -549,8 +549,8 @@ def step_dev_center_delete(test, checks=None):
 def step_network_connection_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin network-connection create '
+             '--location "westus3" '
              '--domain-join-type "HybridAzureADJoin" '
              '--domain-name "mydomaincontroller.local" '
              '--domain-password "Password value for user" '
@@ -561,7 +561,7 @@ def step_network_connection_create(test, checks=None):
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter network-connection wait --created '
+    test.cmd('az devcenter admin network-connection wait --created '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -572,7 +572,7 @@ def step_network_connection_create(test, checks=None):
 def step_network_connection_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection show '
+    test.cmd('az devcenter admin network-connection show '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -583,7 +583,7 @@ def step_network_connection_show(test, checks=None):
 def step_network_connection_show_health_detail(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection show-health-detail '
+    test.cmd('az devcenter admin network-connection show-health-detail '
              '--name "{myNetworkConnection4}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -594,7 +594,7 @@ def step_network_connection_show_health_detail(test, checks=None):
 def step_network_connection_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection list '
+    test.cmd('az devcenter admin network-connection list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -604,7 +604,7 @@ def step_network_connection_list(test, checks=None):
 def step_network_connection_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection list '
+    test.cmd('az devcenter admin network-connection list '
              '-g ""',
              checks=checks)
 
@@ -614,7 +614,7 @@ def step_network_connection_list2(test, checks=None):
 def step_network_connection_list_health_detail(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection list-health-detail '
+    test.cmd('az devcenter admin network-connection list-health-detail '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -625,7 +625,7 @@ def step_network_connection_list_health_detail(test, checks=None):
 def step_network_connection_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection update '
+    test.cmd('az devcenter admin network-connection update '
              '--domain-password "New Password value for user" '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
@@ -637,7 +637,7 @@ def step_network_connection_update(test, checks=None):
 def step_network_connection_run_health_check(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection run-health-check '
+    test.cmd('az devcenter admin network-connection run-health-check '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -648,7 +648,7 @@ def step_network_connection_run_health_check(test, checks=None):
 def step_network_connection_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection delete -y '
+    test.cmd('az devcenter admin network-connection delete -y '
              '--name "{myNetworkConnection4}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -670,8 +670,8 @@ def step_operation_statuses_show(test, checks=None):
 def step_project_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin project create '
+             '--location "westus3" '
              '--description "This is my first project." '
              '--dev-center-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devce'
              'nters/{myDevCenter2}" '
@@ -679,7 +679,7 @@ def step_project_create(test, checks=None):
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter project wait --created '
+    test.cmd('az devcenter admin project wait --created '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -690,7 +690,7 @@ def step_project_create(test, checks=None):
 def step_project_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project show '
+    test.cmd('az devcenter admin project show '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -701,7 +701,7 @@ def step_project_show(test, checks=None):
 def step_project_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project list '
+    test.cmd('az devcenter admin project list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -711,7 +711,7 @@ def step_project_list(test, checks=None):
 def step_project_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project list '
+    test.cmd('az devcenter admin project list '
              '-g ""',
              checks=checks)
 
@@ -721,7 +721,7 @@ def step_project_list2(test, checks=None):
 def step_project_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project update '
+    test.cmd('az devcenter admin project update '
              '--description "This is my first project." '
              '--tags CostCenter="R&D" '
              '--name "{myProject}" '
@@ -734,8 +734,8 @@ def step_project_update(test, checks=None):
 def step_pool_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin pool create '
+             '--location "westus3" '
              '--dev-box-definition-name "{myDevBoxDefinition}" '
              '--local-administrator "Enabled" '
              '--network-connection-name "{myNetworkConnection2}" '
@@ -743,7 +743,7 @@ def step_pool_create(test, checks=None):
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter pool wait --created '
+    test.cmd('az devcenter admin pool wait --created '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -755,7 +755,7 @@ def step_pool_create(test, checks=None):
 def step_pool_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool show '
+    test.cmd('az devcenter admin pool show '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -767,7 +767,7 @@ def step_pool_show(test, checks=None):
 def step_pool_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool list '
+    test.cmd('az devcenter admin pool list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -778,7 +778,7 @@ def step_pool_list(test, checks=None):
 def step_pool_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool update '
+    test.cmd('az devcenter admin pool update '
              '--dev-box-definition-name "{myDevBoxDefinition2}" '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
@@ -791,7 +791,7 @@ def step_pool_update(test, checks=None):
 def step_pool_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool delete -y '
+    test.cmd('az devcenter admin pool delete -y '
              '--name "{myPool2}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -803,7 +803,7 @@ def step_pool_delete(test, checks=None):
 def step_project_environment_type_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type create '
+    test.cmd('az devcenter admin project-environment-type create '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
@@ -824,7 +824,7 @@ def step_project_environment_type_create(test, checks=None):
 def step_project_environment_type_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type show '
+    test.cmd('az devcenter admin project-environment-type show '
              '--environment-type-name "{myEnvironmentType}" '
              '--project-name "{myProject2}" '
              '--resource-group "{rg}"',
@@ -836,7 +836,7 @@ def step_project_environment_type_show(test, checks=None):
 def step_project_environment_type_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type list '
+    test.cmd('az devcenter admin project-environment-type list '
              '--project-name "{myProject2}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -847,7 +847,7 @@ def step_project_environment_type_list(test, checks=None):
 def step_project_environment_type_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type update '
+    test.cmd('az devcenter admin project-environment-type update '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
@@ -867,7 +867,7 @@ def step_project_environment_type_update(test, checks=None):
 def step_project_environment_type_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type delete -y '
+    test.cmd('az devcenter admin project-environment-type delete -y '
              '--environment-type-name "{myEnvironmentType}" '
              '--project-name "{myProject2}" '
              '--resource-group "{rg}"',
@@ -879,7 +879,7 @@ def step_project_environment_type_delete(test, checks=None):
 def step_schedule_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule create '
+    test.cmd('az devcenter admin schedule create '
              '--state "Enabled" '
              '--time "17:30" '
              '--time-zone "America/Los_Angeles" '
@@ -888,7 +888,7 @@ def step_schedule_create(test, checks=None):
              '--resource-group "{rg}" '
              '--name "{mySchedule}"',
              checks=[])
-    test.cmd('az devcenter schedule wait --created '
+    test.cmd('az devcenter admin schedule wait --created '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject5}" '
              '--resource-group "{rg}" '
@@ -901,7 +901,7 @@ def step_schedule_create(test, checks=None):
 def step_schedule_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule show '
+    test.cmd('az devcenter admin schedule show '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject4}" '
              '--resource-group "{rg}" '
@@ -914,7 +914,7 @@ def step_schedule_show(test, checks=None):
 def step_schedule_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule list '
+    test.cmd('az devcenter admin schedule list '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject4}" '
              '--resource-group "{rg}"',
@@ -926,7 +926,7 @@ def step_schedule_list(test, checks=None):
 def step_schedule_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule update '
+    test.cmd('az devcenter admin schedule update '
              '--time "18:00" '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject4}" '
@@ -940,7 +940,7 @@ def step_schedule_update(test, checks=None):
 def step_schedule_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule delete -y '
+    test.cmd('az devcenter admin schedule delete -y '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject4}" '
              '--resource-group "{rg}" '
@@ -953,7 +953,7 @@ def step_schedule_delete(test, checks=None):
 def step_project_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project delete -y '
+    test.cmd('az devcenter admin project delete -y '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -981,16 +981,12 @@ def step_usage_list(test, checks=None):
 def step_dev_center_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin devcenter create '
+             '--location "westus3" '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
-             checks=[])
-    test.cmd('az devcenter dev-center wait --created '
-             '--name "{myDevCenter}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+             checks=[checks])
 
 
 # EXAMPLE: /DevCenters/put/DevCenters_CreateWithUserIdentity
@@ -998,19 +994,19 @@ def step_dev_center_create(test, checks=None):
 def step_dev_center_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center create '
+    test.cmd('az devcenter admin devcenter create '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
-             '--location "centralus" '
+             '--location "westus3" '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter dev-center wait --created '
+    test.cmd('az devcenter admin devcenter wait --created '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /DevCenters/get/DevCenters_Get
@@ -1018,7 +1014,7 @@ def step_dev_center_create2(test, checks=None):
 def step_dev_center_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center show '
+    test.cmd('az devcenter admin devcenter show '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1029,7 +1025,7 @@ def step_dev_center_show(test, checks=None):
 def step_dev_center_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center list '
+    test.cmd('az devcenter admin devcenter list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -1039,7 +1035,7 @@ def step_dev_center_list(test, checks=None):
 def step_dev_center_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center list '
+    test.cmd('az devcenter admin devcenter list '
              '-g ""',
              checks=checks)
 
@@ -1049,7 +1045,7 @@ def step_dev_center_list2(test, checks=None):
 def step_dev_center_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center update '
+    test.cmd('az devcenter admin devcenter update '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1061,7 +1057,7 @@ def step_dev_center_update(test, checks=None):
 def step_attached_network_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network create '
+    test.cmd('az devcenter admin attached-network create '
              '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
              '--network-connection-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCent'
              'er/NetworkConnections/{myNetworkConnection}" '
@@ -1075,7 +1071,7 @@ def step_attached_network_create(test, checks=None):
 def step_attached_network_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network show '
+    test.cmd('az devcenter admin attached-network show '
              '--attached-network-connection-name "{myNetworkConnection}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1087,7 +1083,7 @@ def step_attached_network_show(test, checks=None):
 def step_attached_network_show2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network show '
+    test.cmd('az devcenter admin attached-network show '
              '--attached-network-connection-name "{myNetworkConnection}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -1099,7 +1095,7 @@ def step_attached_network_show2(test, checks=None):
 def step_attached_network_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network list '
+    test.cmd('az devcenter admin attached-network list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1110,7 +1106,7 @@ def step_attached_network_list(test, checks=None):
 def step_attached_network_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network list '
+    test.cmd('az devcenter admin attached-network list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1121,7 +1117,7 @@ def step_attached_network_list2(test, checks=None):
 def step_attached_network_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter attached-network delete -y '
+    test.cmd('az devcenter admin attached-network delete -y '
              '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1133,14 +1129,14 @@ def step_attached_network_delete(test, checks=None):
 def step_catalog_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog create '
+    test.cmd('az devcenter admin catalog create '
              '--ado-git path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/Ce'
              'ntralRepoPat" uri="https://contoso@dev.azure.com/contoso/contosoOrg/_git/centralrepo-fakecontoso" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter catalog wait --created '
+    test.cmd('az devcenter admin catalog wait --created '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1152,14 +1148,14 @@ def step_catalog_create(test, checks=None):
 def step_catalog_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog create '
+    test.cmd('az devcenter admin catalog create '
              '--git-hub path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/Ce'
              'ntralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter catalog wait --created '
+    test.cmd('az devcenter admin catalog wait --created '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1171,7 +1167,7 @@ def step_catalog_create2(test, checks=None):
 def step_catalog_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog show '
+    test.cmd('az devcenter admin catalog show '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1183,7 +1179,7 @@ def step_catalog_show(test, checks=None):
 def step_catalog_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog list '
+    test.cmd('az devcenter admin catalog list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1194,7 +1190,7 @@ def step_catalog_list(test, checks=None):
 def step_catalog_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog update '
+    test.cmd('az devcenter admin catalog update '
              '--git-hub path="/environments" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
@@ -1207,7 +1203,7 @@ def step_catalog_update(test, checks=None):
 def step_catalog_sync(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog sync '
+    test.cmd('az devcenter admin catalog sync '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1219,7 +1215,7 @@ def step_catalog_sync(test, checks=None):
 def step_catalog_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter catalog delete -y '
+    test.cmd('az devcenter admin catalog delete -y '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -1292,14 +1288,14 @@ def step_environment_type_delete(test, checks=None):
 def step_gallery_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery create '
+    test.cmd('az devcenter admin gallery create '
              '--gallery-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/g'
              'alleries/{myGallery}" '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter gallery wait --created '
+    test.cmd('az devcenter admin gallery wait --created '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
@@ -1311,7 +1307,7 @@ def step_gallery_create(test, checks=None):
 def step_gallery_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery show '
+    test.cmd('az devcenter admin gallery show '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
@@ -1323,7 +1319,7 @@ def step_gallery_show(test, checks=None):
 def step_gallery_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery list '
+    test.cmd('az devcenter admin gallery list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1371,7 +1367,7 @@ def step_dev_box_definition_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az devcenter dev-box-definition create '
-             '--location "centralus" '
+             '--location "westus3" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.DevCente'
              'r/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0" '
              '--os-storage-type "SSD_1024" '
@@ -1490,7 +1486,7 @@ def step_image_version_show(test, checks=None):
 def step_gallery_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter gallery delete -y '
+    test.cmd('az devcenter admin gallery delete -y '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myGallery}" '
              '--resource-group "{rg}"',
@@ -1502,7 +1498,7 @@ def step_gallery_delete(test, checks=None):
 def step_dev_center_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter dev-center delete -y '
+    test.cmd('az devcenter admin devcenter delete -y '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1513,8 +1509,8 @@ def step_dev_center_delete(test, checks=None):
 def step_network_connection_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin network-connection create '
+             '--location "westus3" '
              '--domain-join-type "HybridAzureADJoin" '
              '--domain-name "mydomaincontroller.local" '
              '--domain-password "Password value for user" '
@@ -1525,7 +1521,7 @@ def step_network_connection_create(test, checks=None):
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter network-connection wait --created '
+    test.cmd('az devcenter admin network-connection wait --created '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1536,7 +1532,7 @@ def step_network_connection_create(test, checks=None):
 def step_network_connection_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection show '
+    test.cmd('az devcenter admin network-connection show '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1547,7 +1543,7 @@ def step_network_connection_show(test, checks=None):
 def step_network_connection_show_health_detail(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection show-health-detail '
+    test.cmd('az devcenter admin network-connection show-health-detail '
              '--name "{myNetworkConnection4}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1558,7 +1554,7 @@ def step_network_connection_show_health_detail(test, checks=None):
 def step_network_connection_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection list '
+    test.cmd('az devcenter admin network-connection list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -1568,7 +1564,7 @@ def step_network_connection_list(test, checks=None):
 def step_network_connection_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection list '
+    test.cmd('az devcenter admin network-connection list '
              '-g ""',
              checks=checks)
 
@@ -1578,7 +1574,7 @@ def step_network_connection_list2(test, checks=None):
 def step_network_connection_list_health_detail(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection list-health-detail '
+    test.cmd('az devcenter admin network-connection list-health-detail '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1589,7 +1585,7 @@ def step_network_connection_list_health_detail(test, checks=None):
 def step_network_connection_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection update '
+    test.cmd('az devcenter admin network-connection update '
              '--domain-password "New Password value for user" '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
@@ -1601,7 +1597,7 @@ def step_network_connection_update(test, checks=None):
 def step_network_connection_run_health_check(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection run-health-check '
+    test.cmd('az devcenter admin network-connection run-health-check '
              '--name "{myNetworkConnection3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1612,8 +1608,8 @@ def step_network_connection_run_health_check(test, checks=None):
 def step_pool_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin pool create '
+             '--location "westus3" '
              '--dev-box-definition-name "{myDevBoxDefinition}" '
              '--local-administrator "Enabled" '
              '--network-connection-name "{myNetworkConnection2}" '
@@ -1621,7 +1617,7 @@ def step_pool_create(test, checks=None):
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter pool wait --created '
+    test.cmd('az devcenter admin pool wait --created '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -1633,7 +1629,7 @@ def step_pool_create(test, checks=None):
 def step_pool_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool show '
+    test.cmd('az devcenter admin pool show '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -1645,7 +1641,7 @@ def step_pool_show(test, checks=None):
 def step_pool_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool list '
+    test.cmd('az devcenter admin pool list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1656,7 +1652,7 @@ def step_pool_list(test, checks=None):
 def step_pool_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool update '
+    test.cmd('az devcenter admin pool update '
              '--dev-box-definition-name "{myDevBoxDefinition2}" '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
@@ -1669,7 +1665,7 @@ def step_pool_update(test, checks=None):
 def step_pool_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter pool delete -y '
+    test.cmd('az devcenter admin pool delete -y '
              '--name "{myPool2}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -1681,7 +1677,7 @@ def step_pool_delete(test, checks=None):
 def step_network_connection_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter network-connection delete -y '
+    test.cmd('az devcenter admin network-connection delete -y '
              '--name "{myNetworkConnection4}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1692,7 +1688,7 @@ def step_network_connection_delete(test, checks=None):
 def step_operation_statuses_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter operation-statuses show '
+    test.cmd('az devcenter admin operation-statuses show '
              '--operation-id "{{operationId}}" '
              '--location "{{location}}"',
              checks=checks)
@@ -1703,8 +1699,8 @@ def step_operation_statuses_show(test, checks=None):
 def step_project_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project create '
-             '--location "centralus" '
+    test.cmd('az devcenter admin project create '
+             '--location "westus3" '
              '--description "This is my first project." '
              '--dev-center-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devce'
              'nters/{myDevCenter2}" '
@@ -1712,7 +1708,7 @@ def step_project_create(test, checks=None):
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter project wait --created '
+    test.cmd('az devcenter admin project wait --created '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1723,7 +1719,7 @@ def step_project_create(test, checks=None):
 def step_project_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project show '
+    test.cmd('az devcenter admin project show '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1734,7 +1730,7 @@ def step_project_show(test, checks=None):
 def step_project_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project list '
+    test.cmd('az devcenter admin project list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -1744,7 +1740,7 @@ def step_project_list(test, checks=None):
 def step_project_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project list '
+    test.cmd('az devcenter admin project list '
              '-g ""',
              checks=checks)
 
@@ -1754,7 +1750,7 @@ def step_project_list2(test, checks=None):
 def step_project_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project update '
+    test.cmd('az devcenter admin project update '
              '--description "This is my first project." '
              '--tags CostCenter="R&D" '
              '--name "{myProject}" '
@@ -1767,7 +1763,7 @@ def step_project_update(test, checks=None):
 def step_project_allowed_environment_type_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-allowed-environment-type show '
+    test.cmd('az devcenter admin project-allowed-environment-type show '
              '--environment-type-name "{myEnvironmentType}" '
              '--project-name "{myProject2}" '
              '--resource-group "{rg}"',
@@ -1779,7 +1775,7 @@ def step_project_allowed_environment_type_show(test, checks=None):
 def step_project_allowed_environment_type_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-allowed-environment-type list '
+    test.cmd('az devcenter admin project-allowed-environment-type list '
              '--project-name "{myProject2}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1790,7 +1786,7 @@ def step_project_allowed_environment_type_list(test, checks=None):
 def step_project_environment_type_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type create '
+    test.cmd('az devcenter admin project-environment-type create '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
@@ -1811,7 +1807,7 @@ def step_project_environment_type_create(test, checks=None):
 def step_project_environment_type_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type show '
+    test.cmd('az devcenter admin project-environment-type show '
              '--environment-type-name "{myEnvironmentType}" '
              '--project-name "{myProject3}" '
              '--resource-group "{rg}"',
@@ -1823,7 +1819,7 @@ def step_project_environment_type_show(test, checks=None):
 def step_project_environment_type_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type list '
+    test.cmd('az devcenter admin project-environment-type list '
              '--project-name "{myProject3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1834,7 +1830,7 @@ def step_project_environment_type_list(test, checks=None):
 def step_project_environment_type_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type update '
+    test.cmd('az devcenter admin project-environment-type update '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
@@ -1854,7 +1850,7 @@ def step_project_environment_type_update(test, checks=None):
 def step_project_environment_type_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project-environment-type delete -y '
+    test.cmd('az devcenter admin project-environment-type delete -y '
              '--environment-type-name "{myEnvironmentType}" '
              '--project-name "{myProject3}" '
              '--resource-group "{rg}"',
@@ -1866,20 +1862,18 @@ def step_project_environment_type_delete(test, checks=None):
 def step_schedule_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule create '
+    test.cmd('az devcenter admin schedule create '
              '--state "Enabled" '
              '--time "17:30" '
              '--time-zone "America/Los_Angeles" '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject6}" '
-             '--resource-group "{rg}" '
-             '--name "{mySchedule}"',
+             '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az devcenter schedule wait --created '
+    test.cmd('az devcenter admin schedule wait --created '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject6}" '
-             '--resource-group "{rg}" '
-             '--name "{mySchedule}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -1888,37 +1882,22 @@ def step_schedule_create(test, checks=None):
 def step_schedule_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule show '
-             '--pool-name "{myPool3}" '
-             '--project-name "{myProject5}" '
-             '--resource-group "{rg}" '
-             '--name "{mySchedule}"',
-             checks=checks)
-
-
-# EXAMPLE: /Schedules/get/Schedules_ListByPool
-@try_manual
-def step_schedule_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az devcenter schedule list '
+    test.cmd('az devcenter admin schedule show '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject5}" '
              '--resource-group "{rg}"',
              checks=checks)
-
 
 # EXAMPLE: /Schedules/patch/Schedules_Update
 @try_manual
 def step_schedule_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule update '
+    test.cmd('az devcenter admin schedule update '
              '--time "18:00" '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject5}" '
-             '--resource-group "{rg}" '
-             '--name "{mySchedule}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -1927,11 +1906,10 @@ def step_schedule_update(test, checks=None):
 def step_schedule_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter schedule delete -y '
+    test.cmd('az devcenter admin schedule delete -y '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject5}" '
-             '--resource-group "{rg}" '
-             '--name "{mySchedule}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -1940,7 +1918,7 @@ def step_schedule_delete(test, checks=None):
 def step_project_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter project delete -y '
+    test.cmd('az devcenter admin project delete -y '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -1951,7 +1929,7 @@ def step_project_delete(test, checks=None):
 def step_sku_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter sku list',
+    test.cmd('az devcenter admin sku list',
              checks=checks)
 
 
@@ -1960,6 +1938,6 @@ def step_sku_list(test, checks=None):
 def step_usage_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az devcenter usage list '
+    test.cmd('az devcenter admin usage list '
              '--location "westus"',
              checks=checks)
