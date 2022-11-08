@@ -12,10 +12,10 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
-from ...operations.workspace import WorkspaceInfo
+from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
 from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build
 
@@ -240,10 +240,49 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     @live_only()
     def test_submit_qir(self):
-        # set current workspace:
-        # self.cmd(f"az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace_qci()} -l {get_test_workspace_location()}")
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        # test_workspace_temp = get_test_workspace_random_name()
+        test_workspace_temp = "e2e-test-v-wjones-local"                                 # <<<<< Temporarily used for local debugging <<<<<
+        # test_qir-provider_sku_list = "qci/qci-freepreview"
+        test_qir_provider_sku_list = "qci/qci-freepreview, Microsoft/DZH3178M639F"      # <<<<< Microsoft SKU added here because it's also an auto-add provider, speeds up workspace creation <<<<<
+        # <<<<<                                                                         # <<<<< Remove Microsoft SKU after Task 46910 is implemented <<<<<
+        test_storage_account = get_test_workspace_storage()
+        test_bitcode_pathname = "src/quantum/azext_quantum/tests/latest/input_data/Qrng.bc"
+
+        # # Create a workspace
+        # self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_qir_provider_sku_list}" -o json', checks=[
+        # self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+        # ])
+        # <<<<< Temporarily commented-out to speed up the local tests during debugging <<<<<
+
+        # Run a QIR job
+        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
         self.cmd("az quantum target set -t qci.simulator")
 
-        # submit a QIR job
-        # results = self.cmd("az quantum job run --shots 100 --job-input-format qir.v1 --job-input-file 'src\\quantum\\azext_quantum\\tests\\latest\\input_data\\Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator")
-        # >>>>> Validate results <<<<<
+        # results = self.cmd("az quantum run --shots 100 --job-input-format qir.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator -o json")
+        # self.assertIn("Histogram", results)
+
+        # self.cmd(f"az quantum run --shots 99 --job-input-format qir.v1 --job-input-file {test_bitcode_pathname} --entry-point Qrng__SampleQuantumRandomNumberGenerator")
+        
+        # >>>>> Trying to suppress logging because "azdev test" tries to log the bitcode file data as utf-8 unicode and crashes >>>>
+        import logging
+        # logger = logging.getLogger(__name__)
+        logger = logging.getLogger()
+        
+        # logger.disable()
+        # logger.disabled()
+        # logger.shutdown()
+        # logger.manager.disable()
+        # logger.setLevel(logging.CRITICAL + 1)
+        # logger.disabled == True
+        logger.addFilter(lambda record: False)
+
+        #results = self.cmd(f"az quantum run --shots 99 --job-input-format qir.v1 --job-input-file {test_bitcode_pathname} --entry-point Qrng__SampleQuantumRandomNumberGenerator").get_output_in_json()
+
+        # # Delete the workspace
+        # self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+        # self.check("name", test_workspace_temp),
+        # self.check("provisioningState", "Deleting")
+        # ])
+        # <<<<< Temporarily commented-out during local debugging:  Re-use the workspace for local tests <<<<<

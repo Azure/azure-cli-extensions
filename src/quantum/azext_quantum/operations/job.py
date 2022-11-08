@@ -187,10 +187,10 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     if job_input_format is not None:
         if job_input_format.lower() == "qir.v1":
-            # Submit QIR
             return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                                job_name, shots, storage, job_params, target_capability,
                                job_input_file, job_input_format, job_output_format, entry_point)
+        
         #
         # Add elifs here to handle new job_input_format values
         #
@@ -244,7 +244,6 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
     content_type = "application/x-qir.v1"   # This is what a Q# executable sets for the inputData blob, but "qir.v1" is shown in the inputParams
     content_encoding = None
     return_sas_token = False
-    # with open(job_input_source, "rb") as qir_file:
     with open(job_input_file, "rb") as qir_file:
         blob_data = qir_file.read()
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
