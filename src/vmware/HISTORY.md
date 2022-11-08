@@ -4,8 +4,8 @@
 
 - Update to AVS 2022-05-01 API
 - Add `az vmware cluster list-zones`
-- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameter to `az vmware placement-policy vm-host create`
-- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameter to `az vmware placement-policy vm-host update`
+- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameters to `az vmware placement-policy vm-host create`
+- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameters to `az vmware placement-policy vm-host update`
 - Add `--express-route-id` parameter to `az vmware authorization create`
 - Add `vmware addon arc` command group
 - Add `az vmware location check-trial-availability`
