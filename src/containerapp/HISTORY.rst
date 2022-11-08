@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.14
+++++++
+* 'az containerapp logs show'/'az containerapp exec': Fix "KeyError" bug
+
 0.3.13
 ++++++
 * 'az containerapp compose create': Migrated from containerapp-compose extension
