@@ -69,24 +69,24 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         rec = recommends[option - 1]
         send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
     else:
-        # display scenario recommendations with prefix 'a', and command recommendations with prefix 'b'
-        print_styled_text([(Style.PRIMARY, "SCENARIO")])
-        print()
-        _give_recommends(cmd, scenario_recommendations, prefix='a')
+        # display scenario recommendations with prefix 'b', and command recommendations with prefix 'a'
         print_styled_text([(Style.PRIMARY, "COMMAND")])
         print()
-        _give_recommends(cmd, command_recommendations, prefix='b')
+        _give_recommends(cmd, command_recommendations, prefix='a')
+        print_styled_text([(Style.PRIMARY, "SCENARIO")])
+        print()
+        _give_recommends(cmd, scenario_recommendations, prefix='b')
         option_msg = [(Style.PRIMARY, "Please select your option "),
-                      (Style.SECONDARY, "(for example, enter \"a2\" for the second scenario. if none, enter 0)"),
+                      (Style.SECONDARY, "(for example, enter \"b2\" for the second scenario. if none, enter 0)"),
                       (Style.PRIMARY, ": ")]
         group, option = select_combined_option(
             option_msg,
-            {'a': OptionRange(1, len(scenario_recommendations)), 'b': OptionRange(1, len(command_recommendations))},
+            {'a': OptionRange(1, len(command_recommendations)), 'b': OptionRange(1, len(scenario_recommendations))},
             (None, -1))
         if group == 'a':
-            rec = scenario_recommendations[option - 1]
-        elif group == 'b':
             rec = command_recommendations[option - 1]
+        elif group == 'b':
+            rec = scenario_recommendations[option - 1]
         else:
             send_feedback(request_type, 0, command_history, processed_exception, recommends)
             print(
