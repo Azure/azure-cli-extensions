@@ -106,6 +106,7 @@ from azext_aks_preview._validators import (
     validate_nodepool_labels,
     validate_nodepool_name,
     validate_nodepool_tags,
+    validate_node_public_ip_tags,
     validate_nodes_count,
     validate_pod_identity_pod_labels,
     validate_pod_identity_resource_name,
@@ -349,6 +350,8 @@ def load_arguments(self, _):
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
         c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
+        c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
+                   help='space-separated tags: key[=value] [key[=value] ...].')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -516,6 +519,8 @@ def load_arguments(self, _):
         c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
         c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
         c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
+                   help='space-separated tags: key[=value] [key[=value] ...].')
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[

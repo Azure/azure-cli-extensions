@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.115
++++++++
+
+* Support node public IPTags by `az aks create` and `az aks nodepool add`.
+
 0.5.114
 +++++++
 

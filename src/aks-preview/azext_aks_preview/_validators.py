@@ -361,6 +361,15 @@ def validate_nodepool_tags(ns):
         ns.nodepool_tags = tags_dict
 
 
+def validate_node_public_ip_tags(ns):
+    """ Extracts multiple space-separated tags in key[=value] format """
+    if isinstance(ns.node_public_ip_tags, list):
+        tags_dict = {}
+        for item in ns.node_public_ip_tags:
+            tags_dict.update(validate_tag(item))
+        ns.node_public_ip_tags = tags_dict
+
+
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 
