@@ -110,6 +110,17 @@ def validate_git_uri(namespace):
     if uri and (not uri.startswith("https://")) and (not uri.startswith("git@")):
         raise InvalidArgumentValueError("Git URI should start with \"https://\" or \"git@\"")
 
+def validate_acc_git_url(namespace):
+    url = namespace.git_url
+    if url and (not url.startswith("https://")) and (not url.startswith("ssh://")):
+        raise InvalidArgumentValueError("Git URL should start with \"https://\" or \"ssh://\"")
+
+def validate_acc_git_refs(namespace):
+    branch = namespace.git_branch
+    commit = namespace.git_commit
+    tag = namespace.git_tag
+    if not branch and not commit and not tag:
+        raise InvalidArgumentValueError("Provide at least one of Git commit and Git branch and Git tag")
 
 def validate_acs_ssh_or_warn(namespace):
     private_key = namespace.private_key

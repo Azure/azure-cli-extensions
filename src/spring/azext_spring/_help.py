@@ -1074,3 +1074,48 @@ helps['spring application-accelerator predefined-accelerator enable'] = """
         - name: Enable a predefined accelerator.
           text: az spring application-accelerator predefined-accelerator enable --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
 """
+
+helps['spring application-accelerator customized-accelerator'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage customized accelerator in Azure Spring Apps.
+"""
+
+helps['spring application-accelerator customized-accelerator list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all existing customized accelerators.
+    examples:
+        - name: List all existing customized accelerators.
+          text: az spring application-accelerator customized-accelerator list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator customized-accelerator show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show the settings, provisioning status and runtime status of customized accelerator.
+    examples:
+        - name: Show details of a customized accelerator.
+          text: az spring application-accelerator customized-accelerator show --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator customized-accelerator add'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Add a customized accelerator.
+    examples:
+        - name: Add a customized accelerator.
+          text: az spring application-accelerator customized-accelerator add --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
+"""
+
+helps['spring application-accelerator customized-accelerator update'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Update a customized accelerator.
+    examples:
+        - name: Update a customized accelerator.
+          text: az spring application-accelerator customized-accelerator update --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
+"""
+
+helps['spring application-accelerator customized-accelerator delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete a customized accelerator.
+    examples:
+        - name: Delete a customized accelerator.
+          text: az spring application-accelerator customized-accelerator delete --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""

@@ -17,7 +17,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
-                                     validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
+                                     validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count,
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
@@ -772,3 +772,31 @@ def load_arguments(self, _):
                   'spring application-accelerator predefined-accelerator enable']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name for predefined accelerator.')
+
+    for scope in ['spring application-accelerator customized-accelerator list',
+                  'spring application-accelerator customized-accelerator show',
+                  'spring application-accelerator customized-accelerator add',
+                  'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for customized accelerator.')
+
+    for scope in ['spring application-accelerator customized-accelerator add',
+                  'spring application-accelerator customized-accelerator update']:
+        with self.argument_context(scope) as c:
+            c.argument('display_name', type=str, help='Display name for customized accelerator.')
+            c.argument('description', type=str, help='Description for customized accelerator.')
+            c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
+            c.argument('accelerator_tags', type=str, help='Tags for customized accelerator.')
+
+            c.argument('git_url', help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_interval_in_seconds', type=int, help='Interval for checking for updates to Git or image repository.')
+            c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
+            c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
+            c.argument('git_tag',type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
+
+            c.argument('username', help='Username of git repository basic auth.')
+            c.argument('password', help='Password of git repository basic auth.')
+            c.argument('private_key', help='Private SSH Key algorithm of git repository.')
+            c.argument('host_key', help='Public SSH Key of git repository.')
+            c.argument('host_key_algorithm', help='SSH Key algorithm of git repository.')

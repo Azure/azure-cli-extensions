@@ -244,3 +244,21 @@ def transform_predefined_accelerator_output(result):
         item['State'] = item['properties']['state']
 
     return result if is_list else result[0]
+
+def transform_customized_accelerator_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Display Name'] = item['properties']['displayName']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Git Url'] = item['properties']['gitRepository']['url']
+        item['Git Interval In Seconds'] = item['properties']['gitRepository']['intervalInSeconds']
+        item['Git branch'] = item['properties']['gitRepository']['branch']
+        item['Git commit'] = item['properties']['gitRepository']['commit']
+        item['Git tag'] = item['properties']['gitRepository']['gitTag']
+        item['Git Auth Type'] = item['properties']['gitRepository']['authSetting']['authType']
+
+    return result if is_list else result[0]
