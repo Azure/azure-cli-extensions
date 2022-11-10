@@ -32,11 +32,13 @@ helps['spring create'] = """
     - name: Create a Azure Spring Apps Enterprise instance if the Azure Subscription never hosts Azure Spring Apps Enterprise instance
       text: |
         az provider register -n Microsoft.SaaS
-        az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
+        az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
         az spring create -n MyService -g MyResourceGroup --sku Enterprise
     - name: Create a Azure Spring Apps Enterprise instance with Tanzu components enabled.
       text: |
-        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
+        az provider register -n Microsoft.SaaS
+        az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
+        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view
 """
 
 helps['spring list-marketplace-plan'] = """
@@ -722,6 +724,9 @@ helps['spring application-live-view show'] = """
 helps['spring application-live-view create'] = """
     type: command
     short-summary: Create Application Live View.
+    examples:
+        - name: Create Application Live View
+          text: az spring application-live-view create -s MyService -g MyResourceGroup
 """
 
 helps['spring application-live-view delete'] = """
@@ -742,11 +747,21 @@ helps['spring dev-tool show'] = """
 helps['spring dev-tool create'] = """
     type: command
     short-summary: Create Dev Tool Portal.
+    examples:
+        - name: Create Dev Tool Portal with public endpoint exposed
+          text: az spring dev-tool create -s MyService -g MyResourceGroup --assign-endpoint
+        - name: Create Dev Tool Portal with SSO enabled
+          text: az spring create --client-id 00000000-0000-0000-000000000000 --scopes scope1,scope2  --client-secret MySecret --metadata-url "https://example.com/.well-known/openid-configuration" --assign-endpoint
 """
 
 helps['spring dev-tool update'] = """
     type: command
     short-summary: Update Dev Tool Portal.
+    examples:
+        - name: Update Dev Tool Portal with public endpoint exposed
+          text: az spring dev-tool update -s MyService -g MyResourceGroup --assign-endpoint
+        - name: Update Dev Tool Portal with SSO enabled
+          text: az spring update --client-id 00000000-0000-0000-000000000000 --scopes scope1,scope2  --client-secret MySecret --metadata-url "https://example.com/.well-known/openid-configuration" --assign-endpoint
 """
 
 helps['spring dev-tool delete'] = """

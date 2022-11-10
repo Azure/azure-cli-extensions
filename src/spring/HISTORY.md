@@ -1,5 +1,11 @@
 Release History
 ===============
+1.3.0
+---
+* Add new command group `az spring application-live-view` to manage Application Live View.
+* Add new command group `az spring dev-tool` to manage Dev Tools.
+* Add argument `--enable-application-live-view` in command `az spring create` to support enable application live view when creating Enterprise sku Spring resource.
+
 1.2.0
 ---
 * Add command `az spring list-marketplace-plan` to list all supported VMware product. For more detail, see https://learn.microsoft.com/en-us/azure/spring-apps/how-to-enterprise-marketplace-offer.
