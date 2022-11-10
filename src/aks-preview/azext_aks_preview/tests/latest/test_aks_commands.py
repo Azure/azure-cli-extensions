@@ -6166,7 +6166,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--node-count=1 '
             '--node-vm-size={node_vm_size} '
             '--enable-node-public-ip '
-            '--node-public-ip-tags={node_public_ip_tags} ',
+            '--node-public-ip-tags={node_public_ip_tags} '
+            '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPTagsPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
                 self.check('agentPoolProfiles[0].networkProfile.nodePublicIpTags[0].ipTagType', "RoutingPreference"),
@@ -6185,7 +6186,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--name={node_pool_name} '
             '--node-vm-size={node_vm_size} '
             '--enable-node-public-ip '
-            '--node-public-ip-tags={node_public_ip_tags} ',
+            '--node-public-ip-tags={node_public_ip_tags} '
+            '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPTagsPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
                 self.check('networkProfile.nodePublicIpTags[0].ipTagType', "RoutingPreference"),
