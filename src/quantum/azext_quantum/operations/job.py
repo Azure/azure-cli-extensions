@@ -23,7 +23,13 @@ from .target import TargetInfo
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/en-us/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+JOB_TYPE_NOT_VALID_MSG = "Internal error: Job type not recognized."
 DEFAULT_SHOTS = 500
+
+# Job types
+QSHARP_JOB = 0
+QIO_JOB = 1
+QIR_JOB = 2
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -185,70 +191,98 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     Submit a quantum program to run on Azure Quantum.
     """
-    if job_input_format is not None:
-        if job_input_format.lower() == "qir.v1":
-            return _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                               job_name, shots, storage, job_params, target_capability,
-                               job_input_file, job_input_format, job_output_format, entry_point)
+    # Identify the type of job being submitted
+    if job_input_format is None:
+        job_type = QSHARP_JOB
+    elif job_input_format.lower() == "microsoft.qio.v2":
+        job_type = QIO_JOB
+    elif job_input_format.lower() == "qir.v1":
+        job_type = QIR_JOB
+    else:
+        raise InvalidArgumentValueError(f"Job input format {job_input_format} is not supported.", JOB_SUBMIT_DOC_LINK_MSG)
 
-        # elif job_input_format.lower() == "microsoft.qio.v2":
-        #     return _submit_qio(cmd, program_args, resource_group_name, workspace_name, location, target_id,...
+    if job_type == QIO_JOB:
+        return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+                                           job_name, shots, storage, job_params, target_capability,
+                                           job_input_file, job_input_format, job_output_format, entry_point)
 
-        #
-        # Add elifs here to handle new job_input_format values
-        #
+    if job_type == QIR_JOB:
+        return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+                                           job_name, shots, storage, job_params, target_capability,
+                                           job_input_file, job_input_format, job_output_format, entry_point)
 
-        # >>>>> Do we want to provide this?
-        elif job_input_format.lower() == "q#" or job_input_format.lower() == "qsharp":
-            pass    # Fall through, same as when job_input_format is None
-
-        else:
-            raise InvalidArgumentValueError(f"Job input format {job_input_format} is not supported.", JOB_SUBMIT_DOC_LINK_MSG)
-
-    # Submit a Q# project. (Do it the old way, for now.)
-    return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                          project, job_name, shots, storage, no_build, job_params, target_capability)
+    if job_type == QSHARP_JOB:
+        return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                              project, job_name, shots, storage, no_build, job_params, target_capability)
 
 
-def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                job_name, shots, storage, job_params, target_capability,
-                job_input_file, job_input_format, job_output_format, entry_point):
+def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+                                job_name, shots, storage, job_params, target_capability,
+                                job_input_file, job_input_format, job_output_format, entry_point):
 
     """
-    Submit QIR bitcode for a quantum program or circuit to run on Azure Quantum.
+    Submit QIO problem JSON or QIR bitcode to run on Azure Quantum.
     """
     if job_output_format is None:
-        job_output_format = "microsoft.quantum-results.v1"
+        if job_type == QIO_JOB:
+            job_output_format = "microsoft.qio-results.v2"
+        elif job_type == QIR_JOB:
+            job_output_format = "microsoft.quantum-results.v1"
+        else:
+            raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
 
     if job_input_file is None:
-        # If no pathname was specified, look for a QIR bitcode file in the current folder
+        if job_type == QIO_JOB:
+            input_file_extension = ".json"
+        elif job_type == QIR_JOB:
+            input_file_extension = ".bc"
+        else:
+            raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+
         path = os.path.abspath(os.curdir)
         for file_name in os.listdir(path):
-            if file_name.endswith('.bc'):
+            if file_name.endswith(input_file_extension):
                 # job_input_source = os.path.join(path, file_name)
                 job_input_file = os.path.join(path, file_name)
                 break
-    if job_input_file is None:
-        raise RequiredArgumentMissingError("Failed to submit QIR job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
 
-    # Upload the QIR file to the workspace's storage account
+    if job_input_file is None:
+        raise RequiredArgumentMissingError("Failed to submit job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
+
+    # Prepare for input file upload according to job type
+    if job_type == QIO_JOB:
+        container_name_prefix = "cli-qio-job-"
+        content_type = "application/json"
+        content_encoding = "gzip"
+        # content_encoding = None   # <<<<< Didn't fix this error: "The archive entry was compressed using an unsupported compression method."
+        return_sas_token = True     # <<<<< The URI from the Jupyter notebook had what looked like a SAS token appended to it
+        with open(job_input_file, encoding="utf-8") as qio_file:
+            blob_data = qio_file.read()
+    elif job_type == QIR_JOB:
+        container_name_prefix = "cli-qir-job-"
+        content_type = "application/x-qir.v1"
+        content_encoding = None
+        return_sas_token = False
+        with open(job_input_file, "rb") as qir_file:
+            blob_data = qir_file.read()
+    else:
+        raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+
+    # Upload the input file to the workspace's storage account
     if storage is None:
         from .workspace import get as ws_get
         ws = ws_get(cmd)
         storage = ws.storage_account.split('/')[-1]
-        # knack_logger.warning(f"storage = {storage}")
-        # return
 
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
     connection_string = connection_string_dict["connectionString"]
-    container_name = "cli-qir-job-" + str(uuid.uuid4())
+    # from datetime import datetime
+    # container_name = container_name_prefix + datetime().strftime('%y-%m-%d-%H-%M-%S') + str(uuid.uuid4())
+    container_name = container_name_prefix + str(uuid.uuid4())
     container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
-    content_type = "application/x-qir.v1"   # This is what a Q# executable sets for the inputData blob, but "qir.v1" is shown in the inputParams
-    content_encoding = None
-    return_sas_token = False
-    with open(job_input_file, "rb") as qir_file:
-        blob_data = qir_file.read()
+    # return_sas_token = False
+    return_sas_token = True
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
     # Set the job parameters
@@ -257,29 +291,36 @@ def _submit_qir(cmd, program_args, resource_group_name, workspace_name, location
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target_info = TargetInfo(cmd, target_id)
 
-    if shots is None:
-        shots = DEFAULT_SHOTS
+    if job_type == QIO_JOB:
+        # >>>>>
+        # >>>>> TODO: Get parameters from the command line <<<<<
+        # >>>>>
+        input_params = {"params": {"timeout": 100}}     # <<<<< What other params do we need here? <<<<< <<<<<
     else:
-        error_msg = "--shots value is not valid."
-        recommendation = "Enter a positive integer."
-        try:
-            shots = int(shots)
-            if shots < 1:
+        if shots is None:
+            shots = DEFAULT_SHOTS
+        else:
+            error_msg = "--shots value is not valid."
+            recommendation = "Enter a positive integer."
+            try:
+                shots = int(shots)
+                if shots < 1:
+                    raise InvalidArgumentValueError(error_msg, recommendation)
+            except:
                 raise InvalidArgumentValueError(error_msg, recommendation)
-        except:
-            raise InvalidArgumentValueError(error_msg, recommendation)
 
-    if target_capability is None:
-        target_capability = "AdaptiveExecution"     # <<<<< Cesar said to use this for QCI. Does it apply to other providers?
+        if target_capability is None:
+            target_capability = "AdaptiveExecution"     # <<<<< Cesar said to use this for QCI. Does it apply to other providers?
 
-    # >>>>>
-    # >>>>> TODO: Get more parameters from the command line <<<<<
-    # >>>>>
-    input_params = {'arguments': [], 'name': job_name, 'targetCapability': target_capability, 'shots': shots, 'entryPoint': entry_point}
+        # >>>>>
+        # >>>>> TODO: Get more parameters from the command line <<<<<
+        # >>>>>
+        input_params = {'arguments': [], 'name': job_name, 'targetCapability': target_capability, 'shots': shots, 'entryPoint': entry_point}
 
     job_id = str(uuid.uuid4())
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
-    job_details = {'container_uri': container_uri,          # job_details is defined in vendored_sdks\azure_quantum\models\_models_py3.py, starting at line 132
+    job_details = {'name': job_name,                # job_details is defined in vendored_sdks\azure_quantum\models\_models_py3.py, starting at line 132
+                   'container_uri': container_uri,
                    'input_data_format': job_input_format,
                    'output_data_format': job_output_format,
                    'inputParams': input_params,
