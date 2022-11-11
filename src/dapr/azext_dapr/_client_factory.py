@@ -60,7 +60,7 @@ def install_dapr_cli():
         dapr_cli_filename = f"dapr_{os_type}_{arch_type}.tar.gz"
     else:
         raise Exception("Unsupported OS type")
-    
+
     download_url = f"{base_download_url}/download/{dapr_cli_version}/{dapr_cli_filename}"
     logger.debug('Downloading dapr cli to "%s" from "%s"',
                    Path.home(), download_url)
@@ -69,7 +69,7 @@ def install_dapr_cli():
     cli_install_dir = os.path.join(Path.home(), "dapr_cli")
     if not os.path.exists(cli_install_dir):
         os.makedirs(cli_install_dir)
-    
+
     # download the cli
     try:
         _urlretrieve(download_url, os.path.join(cli_install_dir, dapr_cli_filename))
@@ -79,7 +79,7 @@ def install_dapr_cli():
 
     # extract the cli archive
     if os_type == "windows":
-        with ZipFile(os.path.join(cli_install_dir, dapr_cli_filename), 'r') as zip: 
+        with ZipFile(os.path.join(cli_install_dir, dapr_cli_filename), 'r') as zip:
             zip.extractall()
     else:
         with tarfile.open(os.path.join(cli_install_dir, dapr_cli_filename), "r:gz") as tar:

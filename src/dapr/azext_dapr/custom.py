@@ -8,15 +8,6 @@ import subprocess
 from knack.util import CLIError
 from azext_dapr._client_factory import get_dapr_cli_path 
 
-
-def create_dapr(cmd, resource_group_name, dapr_name, location=None, tags=None):
-    raise CLIError('TODO: Implement `dapr create`')
-
-
-def list_dapr(cmd, resource_group_name=None):
-    raise CLIError('TODO: Implement `dapr list`')
-
-
 def update_dapr(cmd, instance, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
