@@ -134,7 +134,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
 
     print()
     print("Getting credentials for cluster %s " % name)
-    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.disable_local_accounts)
+    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.aad_profile is not None)
 
     print()
     print("Starts collecting diag info for cluster %s " % name)
@@ -225,12 +225,12 @@ def aks_kanalyze_cmd(cmd, client, resource_group_name: str, name: str) -> None:
 
     mc = client.get(resource_group_name, name)
 
-    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.disable_local_accounts)
+    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.aad_profile is not None)
 
     _display_diagnostics_report(temp_kubeconfig_path)
 
 
-def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, disable_local_accounts: bool) -> str:
+def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, has_aad_profile: bool) -> str:
     _, temp_kubeconfig_path = tempfile.mkstemp()
 
     # Use normal user credentials, not admin credentials (admin creds will not be supplied if local accounts are disabled).
@@ -238,7 +238,7 @@ def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, 
     kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
     print_or_merge_credentials(temp_kubeconfig_path, kubeconfig, False, None)
 
-    if disable_local_accounts:
+    if has_aad_profile:
         # The current credentials require interactive login. We need to use kubelogin to update the kubeconfig credential.
         if not which('kubelogin'):
             # No kubelogin found...but we can install it if the user wants.
