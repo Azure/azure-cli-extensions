@@ -245,7 +245,7 @@ def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, 
             if not prompt_y_n('Can not find kubelogin executable in PATH. Install now?', default="y"):
                 # The user doesn't want us to install kubelogin automatically, so we cannot continue.
                 raise CLIError('kubelogin not found. Use az aks install-cli to install.')
-            
+
             # Install kubelogin
             kubelogin_install_location = _get_default_install_location('kubelogin')
             k8s_install_kubelogin(cmd, 'latest', kubelogin_install_location)
