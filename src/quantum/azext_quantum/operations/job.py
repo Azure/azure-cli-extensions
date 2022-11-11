@@ -202,9 +202,12 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
         raise InvalidArgumentValueError(f"Job input format {job_input_format} is not supported.", JOB_SUBMIT_DOC_LINK_MSG)
 
     if job_type == QIO_JOB:
-        return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
-                                           job_name, shots, storage, job_params, target_capability,
-                                           job_input_file, job_input_format, job_output_format, entry_point)
+        # return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+        #                                    job_name, shots, storage, job_params, target_capability,
+        #                                    job_input_file, job_input_format, job_output_format, entry_point)
+        return _submit_qio(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+                           job_name, storage, job_params, target_capability,
+                           job_input_file, job_input_format, job_output_format)
 
     if job_type == QIR_JOB:
         return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
@@ -214,6 +217,84 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     if job_type == QSHARP_JOB:
         return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                               project, job_name, shots, storage, no_build, job_params, target_capability)
+
+
+def _submit_qio(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+                job_name, storage, job_params, target_capability,
+                job_input_file, job_input_format, job_output_format):
+    # >>>>>
+    knack_logger.warning(">>>>> Submitting QIO job like a notebook <<<<<")
+    # return
+    # <<<<<
+
+    # from azure.quantum import Workspace
+    # workspace = Workspace (
+    #     subscription_id = <your subscription ID>, 
+    #     resource_group = <your resource group>,   
+    #     name = <your workspace name>,          
+    #     location = <your location>        
+    #     )
+
+    from azure.quantum import Workspace
+    workspace = Workspace (
+        subscription_id = "677fc922-91d0-4bf6-9b06-4274d319a0fa", 
+        resource_group = resource_group_name,   
+        name = workspace_name,          
+        location = location        
+        )
+
+    # >>>>>
+    knack_logger.warning(">>>>> Cell 1 completed <<<<<")
+    # return
+    # <<<<<
+
+    from typing import List
+    from azure.quantum.optimization import Term
+
+    # >>>>>
+    knack_logger.warning(">>>>> Cell 2 completed <<<<<")
+    # return
+    # <<<<<
+
+    from azure.quantum.optimization import Problem, ProblemType, Term
+
+    # problem = Problem(name="My First Problem", problem_type=ProblemType.ising)
+    problem = Problem(name=job_name, problem_type=ProblemType.ising)
+
+    # >>>>>
+    knack_logger.warning(">>>>> Cell 3 completed <<<<<")
+    # return
+    # <<<<<
+
+    terms = [
+        Term(c=-9, indices=[0]),
+        Term(c=-3, indices=[1,0]),
+        Term(c=5, indices=[2,0]),
+        Term(c=9, indices=[2,1]),
+        Term(c=2, indices=[3,0]),
+        Term(c=-4, indices=[3,1]),
+        Term(c=4, indices=[3,2])
+    ]
+
+    problem.add_terms(terms=terms)
+
+    # >>>>>
+    knack_logger.warning(">>>>> Cell 4 completed <<<<<")
+    # return
+    # <<<<<
+    
+    from azure.quantum.optimization import ParallelTempering
+
+    solver = ParallelTempering(workspace, timeout=100)
+
+    # >>>>>
+    knack_logger.warning('>>>>> "solver =" statement completed, calling solver.optimize() <<<<<')
+    # return
+    # <<<<<
+
+    result = solver.optimize(problem)
+    # print(result)
+    return result
 
 
 def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
@@ -255,7 +336,8 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         content_type = "application/json"
         content_encoding = "gzip"
         # content_encoding = None   # <<<<< Didn't fix this error: "The archive entry was compressed using an unsupported compression method."
-        return_sas_token = True     # <<<<< The URI from the Jupyter notebook had what looked like a SAS token appended to it
+        # return_sas_token = False
+        return_sas_token = True     # <<<<< containerURI from the Jupyter notebook had what looked like a SAS token appended to it
         with open(job_input_file, encoding="utf-8") as qio_file:
             blob_data = qio_file.read()
     elif job_type == QIR_JOB:
@@ -282,12 +364,29 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
     container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
     # return_sas_token = False
-    return_sas_token = True
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
+
+    # >>>>>
+    # knack_logger.warning(f">>>>> blob_uri = {blob_uri}")
+    # return
+    # <<<<<
 
     # Set the job parameters
     start_of_blob_name = blob_uri.find(blob_name)
-    container_uri = blob_uri[0:start_of_blob_name - 1]
+    if job_type == QIO_JOB:
+        end_of_blob_name = blob_uri.find("?")
+        container_uri = blob_uri[0:start_of_blob_name - 1] + blob_uri[end_of_blob_name:]
+    elif job_type == QIR_JOB:
+        container_uri = blob_uri[0:start_of_blob_name - 1]
+    else:
+        raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+
+    # >>>>>
+    # knack_logger.warning(f">>>>> blob_uri =      {blob_uri}")
+    # knack_logger.warning(f">>>>> container_uri = {container_uri}")
+    # return
+    # <<<<<
+
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target_info = TargetInfo(cmd, target_id)
 
