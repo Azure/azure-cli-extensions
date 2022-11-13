@@ -775,13 +775,13 @@ def load_arguments(self, _):
 
     for scope in ['spring application-accelerator customized-accelerator list',
                   'spring application-accelerator customized-accelerator show',
-                  'spring application-accelerator customized-accelerator add',
+                  'spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update',
                   'spring application-accelerator customized-accelerator delete']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name for customized accelerator.')
 
-    for scope in ['spring application-accelerator customized-accelerator add',
+    for scope in ['spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update']:
         with self.argument_context(scope) as c:
             c.argument('display_name', type=str, help='Display name for customized accelerator.')

@@ -341,7 +341,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'customized_accelerator_list', table_transformer=transform_customized_accelerator_output)                        
         g.custom_show_command('show', 'customized_accelerator_show', table_transformer=transform_customized_accelerator_output)
-        g.custom_command('add', 'customized_accelerator_upsert', supports_no_wait=True)
+        g.custom_command('create', 'customized_accelerator_upsert', supports_no_wait=True)
         g.custom_command('update', 'customized_accelerator_upsert', supports_no_wait=True)
         g.custom_command('delete', 'customized_accelerator_delete', supports_no_wait=True)
 

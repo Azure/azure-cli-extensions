@@ -25,7 +25,7 @@ class ApiCustomizedAcceleratorTest(ScenarioTest):
             'gitBranch': 'master',
         })
 
-        self.cmd('spring application-accelerator customized-accelerator add -n {name} -g {rg} -s {serviceName} --display-name {displayName} --git-url {gitUrl} --git-branch {gitBranch} --git-interval-in-seconds 10', 
+        self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --display-name {displayName} --git-url {gitUrl} --git-branch {gitBranch} --git-interval-in-seconds 10', 
         checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])

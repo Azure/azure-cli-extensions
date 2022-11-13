@@ -1096,12 +1096,12 @@ helps['spring application-accelerator customized-accelerator show'] = """
           text: az spring application-accelerator customized-accelerator show --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
 """
 
-helps['spring application-accelerator customized-accelerator add'] = """
+helps['spring application-accelerator customized-accelerator create'] = """
     type: command
-    short-summary: (Enterprise Tier Only) Add a customized accelerator.
+    short-summary: (Enterprise Tier Only) Create a customized accelerator.
     examples:
-        - name: Add a customized accelerator.
-          text: az spring application-accelerator customized-accelerator add --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
+        - name: Create a customized accelerator.
+          text: az spring application-accelerator customized-accelerator create --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
 """
 
 helps['spring application-accelerator customized-accelerator update'] = """
