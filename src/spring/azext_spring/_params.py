@@ -162,6 +162,8 @@ def load_arguments(self, _):
         c.argument('enable_application_accelerator',
                    arg_group="Application Accelerator",
                    action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-accelerator', '--enable-app-acc'],
                    help='(Enterprise Tier Only) Enable Application Accelerator.')                        
 
     with self.argument_context('spring update') as c:

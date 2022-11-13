@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.core.util import sdk_no_wait
 from .vendored_sdks.appplatform.v2022_11_01_preview import models
 
