@@ -13,6 +13,7 @@ Pending
 +++++++
 
 * Add custom transform for custom CA
+* Support updating kube-proxy configuration with `az aks update --kube-proxy-config file.json`.
 
 0.5.116
 +++++++
