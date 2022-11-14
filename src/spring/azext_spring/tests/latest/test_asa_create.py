@@ -79,6 +79,17 @@ class TestSpringCloudCreateEnerprise(BasicTest):
         self.assertEqual('E0', resource.sku.name)
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertIsNone(resource.properties.marketplace_resource)
+
+    def test_asc_create_enterprise_with_plan(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), disable_app_insights=True, marketplace_plan_id='my-plan')
+        resource = self.created_resource
+        self.assertEqual('E0', resource.sku.name)
+        self.assertEqual('Enterprise', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('my-plan', resource.properties.marketplace_resource.plan)
+        self.assertEqual('azure-spring-cloud-vmware-tanzu-2', resource.properties.marketplace_resource.product)
+        self.assertEqual('vmware-inc', resource.properties.marketplace_resource.publisher)
 
 
 class TestSpringCloudCreateWithAI(BasicTest):

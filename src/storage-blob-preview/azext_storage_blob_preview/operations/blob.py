@@ -720,3 +720,9 @@ def query_blob(cmd, client, query_expression, input_config=None, output_config=N
         return None
 
     return reader.readall().decode("utf-8")
+
+
+def find_blobs_by_tags(client, filter_expression, container_name=None):
+    if container_name:
+        client = client.get_container_client(container_name)
+    return client.find_blobs_by_tags(filter_expression=filter_expression)

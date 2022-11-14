@@ -683,6 +683,7 @@ def aks_create(
     gpu_instance_profile=None,
     workload_runtime=None,
     enable_custom_ca_trust=False,
+    node_public_ip_tags=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1178,6 +1179,7 @@ def aks_agentpool_add(
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
     asg_ids=None,
+    node_public_ip_tags=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
