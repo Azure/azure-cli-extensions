@@ -249,6 +249,12 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
         c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
+    with self.argument_context('containerapp ingress ip-restriction') as c:
+        c.argument('allow_access', help='Boolean indicating whether the ip security restriction allows or denies access.')
+        c.argument('ip_restriction_name', help="The ip security restriction name.")
+        c.argument('description', help="The description of the ip security restriction.")
+        c.argument('ip_address_range', help="The ip address range of the ip security restriction.")
+
     with self.argument_context('containerapp ingress traffic') as c:
         c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")
