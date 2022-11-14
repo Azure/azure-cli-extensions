@@ -28,7 +28,8 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
+                         LOGS_STRING)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
 
 logger = get_logger(__name__)
@@ -152,23 +153,24 @@ def get_github_repo(token, repo):
     return g.get_repo(repo)
 
 
-def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-statements
+def get_workflow(github_repo, workflow_name):  # pylint: disable=inconsistent-return-statements
     workflows = list(github_repo.get_workflows())
     workflows.sort(key=lambda r: r.created_at, reverse=True)  # sort by latest first
-    for wf in workflows:
-        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for" in wf.name:
-            return wf
+    workflow = [wf for wf in workflows if wf.path == f".github/workflows/{workflow_name}.yml"]
+
+    if not workflow:
+        raise CLIInternalError("Could not find workflow on github repo.")
+    return workflow[0]
 
 
-def trigger_workflow(token, repo, name, branch):
-    wf = get_workflow(get_github_repo(token, repo), name)
+def trigger_workflow(token, repo, workflow_name, branch):
+    wf = get_workflow(get_github_repo(token, repo), workflow_name)
     logger.warning(f"Triggering Github Action: {wf.path}")
     wf.create_dispatch(branch)
 
 
 # pylint:disable=unused-argument
-def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
-    from .custom import show_github_action
+def await_github_action(token, repo, workflow_name, timeout_secs=1200):
     from ._clients import PollingAnimation
 
     start = datetime.utcnow()
@@ -177,22 +179,14 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
     github_repo = get_github_repo(token, repo)
 
-    gh_action_status = "InProgress"
-    while gh_action_status == "InProgress":
-        time.sleep(SHORT_POLLING_INTERVAL_SECS)
-        animation.tick()
-        gh_action_status = safe_get(show_github_action(cmd, name, resource_group_name), "properties", "operationState")
-        if (datetime.utcnow() - start).seconds >= timeout_secs:
-            raise CLIInternalError("Timed out while waiting for the Github action to be created.")
-        animation.flush()
-    if gh_action_status == "Failed":
-        raise CLIInternalError("The Github Action creation failed.")  # TODO ask backend team for a status url / message
-
     workflow = None
     while workflow is None:
         animation.tick()
         time.sleep(SHORT_POLLING_INTERVAL_SECS)
-        workflow = get_workflow(github_repo, name)
+        try:
+            workflow = get_workflow(github_repo, workflow_name)
+        except CLIInternalError:
+            pass
         animation.flush()
 
         if (datetime.utcnow() - start).seconds >= timeout_secs:
@@ -1580,3 +1574,30 @@ def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, 
         }
         ip_restrictions.append(new_ip_restriction)
     return ip_restrictions
+
+def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination):
+    if logs_destination != "azure-monitor":
+        if storage_account:
+            logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
+        return
+    if not storage_account:
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        return
+
+    from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings
+    from azure.cli.command_modules.monitor._client_factory import cf_diagnostics
+
+    env_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx),
+                         resource_group=resource_group_name,
+                         namespace='Microsoft.App',
+                         type='managedEnvironments',
+                         name=name)
+    try:
+        create_diagnostics_settings(client=cf_diagnostics(cmd.cli_ctx, None),
+                                    name="diagnosticsettings",
+                                    resource_uri=env_id,
+                                    storage_account=storage_account,
+                                    logs=json.loads(LOGS_STRING))
+        logger.warning("Azure Monitor diagnastic settings created successfully.")
+    except Exception as ex:
+        handle_raw_exception(ex)

@@ -15,9 +15,6 @@ class TargetInfo:
         def select_value(key, value):
             if value is not None:
                 return value
-            value = cmd.cli_ctx.config.get('quantum', key, None)
-            if value is not None:
-                return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
             return value
 
@@ -30,7 +27,7 @@ class TargetInfo:
         from azure.cli.core.util import ConfiguredDefaultSetter
 
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
-            cmd.cli_ctx.config.set_value('quantum', 'target_id', self.target_id)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'target_id', self.target_id)
 
 
 def get(cmd, target_id=None):
@@ -41,7 +38,7 @@ def get(cmd, target_id=None):
     return info
 
 
-def set(cmd, target_id=None):
+def set(cmd, target_id):
     """
     Select the default target to use when submitting jobs to Azure Quantum.
     """
@@ -51,7 +48,7 @@ def set(cmd, target_id=None):
     return info
 
 
-def list(cmd, resource_group_name=None, workspace_name=None, location=None):
+def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
     """
@@ -67,3 +64,14 @@ def clear(cmd):
     info = TargetInfo(cmd)
     info.clear()
     info.save(cmd)
+
+
+# Added to fix output problem
+# def show(cmd, target_id):
+def target_show(cmd, target_id):
+    """
+    Show the currently selected default target.
+    """
+    info = TargetInfo(cmd, target_id)
+    info.target_id += ""    # Kludge excuse: Without this the only output we ever get is "targetId": {"isDefault": true}
+    return info

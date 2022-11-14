@@ -60,6 +60,8 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
+    with self.command_group('containerapp env logs') as g:
+        g.custom_show_command('show', 'stream_environment_logs')
 
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')
@@ -180,3 +182,6 @@ def load_command_table(self, _):
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp compose') as g:
+        g.custom_command('create', 'create_containerapps_from_compose')

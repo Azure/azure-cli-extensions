@@ -395,6 +395,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('exposedPort', 3020),
         ])
 
+<<<<<<< HEAD
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_ip_restrictions(self, resource_group):
@@ -464,6 +465,8 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
+=======
+>>>>>>> upstream/main
 
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)

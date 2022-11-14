@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.8
+++++++
+* Displaying asterisks (*****) for password input.
+
 0.1.7
 ++++++
 * Proxy support in vm guest agent.

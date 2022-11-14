@@ -809,7 +809,7 @@ def _create_github_action(
     try:
         action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
         if action:
-            trigger_workflow(token, repo, app.name, branch)
+            trigger_workflow(token, repo, action["properties"]["githubActionConfiguration"]["workflowName"], branch)
     except:  # pylint: disable=bare-except
         pass
 
