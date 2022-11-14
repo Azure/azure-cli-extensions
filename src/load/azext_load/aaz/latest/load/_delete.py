@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a load test resource.
+    """Delete a LoadTest resource.
 
     :example: Delete load test resource
         az load delete --name sample-resource --resource-group sample-rg
@@ -45,19 +45,14 @@ class Delete(AAZCommand):
 
         # define Arg Group ""
 
-        # define Arg Group "Optional Parameters"
-
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            arg_group="Optional Parameters",
-            help="Name of the load test resource.",
+            help="Load Test name.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            arg_group="Optional Parameters",
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
         return cls._args_schema

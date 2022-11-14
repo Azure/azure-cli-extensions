@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "load create",
-    confirmation="",
 )
 class Create(AAZCommand):
-    """Create a load test resource.
+    """Create LoadTest resource.
 
     :example: Create load test resource
         az load create --name sample-load-test --location westus2
@@ -46,82 +45,89 @@ class Create(AAZCommand):
 
         # define Arg Group ""
 
-        # define Arg Group "Optional Parameters"
+        _args_schema = cls._args_schema
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Load Test name.",
+            required=True,
+            id_part="name",
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "Encryption"
 
         _args_schema = cls._args_schema
-        _args_schema.identity_type = AAZStrArg(
-            options=["--identity-type"],
-            arg_group="Optional Parameters",
-            help="Type of managed service identity. Accepted values: \"None\", \"SystemAssigned\", \"UserAssigned\" \"SystemAssigned,UserAssigned\"",
-            default="None",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
-            arg_group="Optional Parameters",
-            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Optional Parameters",
-            help="Description of the resource.",
-            fmt=AAZStrArgFormat(
-                max_length=512,
-            ),
-        )
         _args_schema.encryption_identity = AAZStrArg(
             options=["--encryption-identity"],
-            arg_group="Optional Parameters",
-            help="The managed identity for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
+            arg_group="Encryption",
+            help="user assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId",
             nullable=True,
         )
         _args_schema.encryption_identity_type = AAZStrArg(
             options=["--encryption-identity-type"],
-            arg_group="Optional Parameters",
+            arg_group="Encryption",
             help="Managed identity type to use for accessing encryption key Url",
             enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
         )
         _args_schema.encryption_key = AAZStrArg(
             options=["--encryption-key"],
-            arg_group="Optional Parameters",
-            help="Encryption key URL, versioned. For example, https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
+            arg_group="Encryption",
+            help="key encryption key Url, versioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.",
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Optional Parameters",
-            help="Space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity_type = AAZStrArg(
+            options=["--identity-type"],
+            arg_group="Identity",
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            arg_group="Optional Parameters",
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
-            required=True,
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
+            arg_group="Identity",
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
             blank={},
         )
 
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
-        # define Arg Group "Required Parameters"
+        # define Arg Group "LoadTestResource"
 
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Required Parameters",
+            arg_group="LoadTestResource",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            arg_group="Required Parameters",
-            help="Name of the new load test resource.",
-            required=True,
-            id_part="name",
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="LoadTestResource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Properties",
+            help="Description of the resource.",
+            fmt=AAZStrArgFormat(
+                max_length=512,
+            ),
         )
         return cls._args_schema
 
@@ -243,7 +249,7 @@ class Create(AAZCommand):
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -323,7 +329,9 @@ class Create(AAZCommand):
             )
 
             user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(

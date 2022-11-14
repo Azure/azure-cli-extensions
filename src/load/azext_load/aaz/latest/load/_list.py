@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "load list",
-    confirmation="",
 )
 class List(AAZCommand):
-    """Lists load test resources.
+    """List loadtests resources in a subscription.
 
     :example: List all load test resources in a resource group
         az load list --resource-group sample-rg
@@ -47,13 +46,8 @@ class List(AAZCommand):
 
         # define Arg Group ""
 
-        # define Arg Group "Optional Parameters"
-
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            arg_group="Optional Parameters",
-            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -204,7 +198,9 @@ class List(AAZCommand):
             )
 
             user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
@@ -386,7 +382,9 @@ class List(AAZCommand):
             )
 
             user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
