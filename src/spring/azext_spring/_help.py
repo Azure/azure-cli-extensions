@@ -751,7 +751,7 @@ helps['spring dev-tool create'] = """
         - name: Create Dev Tool Portal with public endpoint exposed
           text: az spring dev-tool create -s MyService -g MyResourceGroup --assign-endpoint
         - name: Create Dev Tool Portal with SSO enabled
-          text: az spring create --client-id 00000000-0000-0000-000000000000 --scopes scope1,scope2  --client-secret MySecret --metadata-url "https://example.com/.well-known/openid-configuration" --assign-endpoint
+          text: az spring dev-tool create --client-id 00000000-0000-0000-000000000000 --scopes scope1,scope2  --client-secret MySecret --metadata-url "https://example.com/.well-known/openid-configuration" --assign-endpoint
 """
 
 helps['spring dev-tool update'] = """
@@ -761,7 +761,7 @@ helps['spring dev-tool update'] = """
         - name: Update Dev Tool Portal with public endpoint exposed
           text: az spring dev-tool update -s MyService -g MyResourceGroup --assign-endpoint
         - name: Update Dev Tool Portal with SSO enabled
-          text: az spring update --client-id 00000000-0000-0000-000000000000 --scopes scope1,scope2  --client-secret MySecret --metadata-url "https://example.com/.well-known/openid-configuration" --assign-endpoint
+          text: az spring dev-tool update --client-id 00000000-0000-0000-000000000000 --scopes scope1,scope2  --client-secret MySecret --metadata-url "https://example.com/.well-known/openid-configuration" --assign-endpoint
 """
 
 helps['spring dev-tool delete'] = """
