@@ -152,11 +152,12 @@ def post_transaction_regenerate_api_keys(cmd, resource_group_name, member_name, 
                                    "POST")
 
 
-def put_transaction(cmd, resource_group_name, member_name, transaction_node_name):
+def put_transaction(cmd, resource_group_name, member_name, transaction_node_name, archive_node=False):
+    is_archive_node_text = "true" if archive_node else "false"
     return qbs_request_with_member(cmd,
                                    resource_group_name,
                                    member_name,
-                                   f"/transactionNodes/{transaction_node_name}",
+                                   f"/transactionNodes/{transaction_node_name}?isArchiveNode={is_archive_node_text}",
                                    "PUT",
                                    result_plain_text=True)
 

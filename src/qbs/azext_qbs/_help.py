@@ -166,6 +166,10 @@ short-summary: Add or remove additional transaction nodes to your blockchain mem
 helps['qbs transaction-node add'] = """
 type: command
 short-summary: Adds a transaction node.
+parameters:
+  - name: --archive-node
+    type: bool
+    short-summary: New transaction node to use archive storage mode.
 """
 
 helps['qbs transaction-node list'] = """
