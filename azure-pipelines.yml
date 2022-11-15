@@ -141,12 +141,14 @@ jobs:
         az --version
         python scripts/ci/get_python_version.py
         pythonVersion=`cat python_version.txt`
+        echo $pythonVersion
         echo "##vso[task.setvariable variable=$pythonVersion;isoutput=true]"
       name: CustomParas
       displayName: 'get Python Version'
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
 
 - job: MinVersionTests
   dependsOn: getPythonVersion
@@ -158,9 +160,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python $(PythonVersion)'
+      displayName: 'Use Python $(variables.PythonVersion)'
       inputs:
-        versionSpec: '$(PythonVersion)'
+        versionSpec: '$(variables.PythonVersion)'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
