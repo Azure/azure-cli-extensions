@@ -947,6 +947,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, distribution, distribution_version, azure_hybrid_benefit)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
+
+    # Returning the ARM response if only AHB is being updated
+    arm_properties_only_ahb_set = (tags is None and distribution is None and distribution_version is None and azure_hybrid_benefit is not None)
+    if proxy_params_unset and auto_upgrade is None and container_log_path is None and arm_properties_only_ahb_set:
+        return patch_cc_response
+
     if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
