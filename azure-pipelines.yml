@@ -139,8 +139,8 @@ jobs:
 
         source env/bin/activate
         az --version
-        python scripts/ci/get_python_version.py
-        echo "##vso[task.setvariable variable=$?;isoutput=true]"
+        ref=`python scripts/ci/get_python_version.py`
+        echo "##vso[task.setvariable variable=$ref;isoutput=true]"
       name: CustomParas
       displayName: 'get Python Version'
       env:
@@ -151,7 +151,7 @@ jobs:
   dependsOn: getPythonVersion
   variables:
     PythonVersion: $[ dependencies.getPythonVersion.outputs['CustomParas.pythonVersion'] ]
-  condition: and(succeeded(), eq(variables.PythonVersion, 0))
+  condition: and(succeeded(), ne(variables.PythonVersion, 'false'))
   displayName: "Min Version Tests"
   pool:
     name: 'pool-ubuntu-2004'
