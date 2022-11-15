@@ -8,7 +8,7 @@ class LoadTestUpdate(Update):
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
-        
+
         # encryption_identity_type args are not exposed
         # encryption_identity_type is populated based on encryption_identity arg value
         args = [(name, arg) for (name, arg) in args if name not in ["encryption_identity_type"]]
@@ -38,5 +38,3 @@ class LoadTestUpdate(Update):
                     args.user_assigned[encryption_identity_id] = {}
             else:
                 raise ServiceRequestError("Invalid encryption identity parameter: " + encryption_identity_id + ". Please enter a valid resource id.")
-
-

@@ -3,6 +3,7 @@ from azure.cli.core.aaz import has_value
 from msrestazure.tools import is_valid_resource_id
 from azure.core.exceptions import ServiceRequestError
 
+
 class LoadTestCreate(Create):
 
     def _cli_arguments_loader(self):
