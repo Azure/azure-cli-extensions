@@ -1,5 +1,11 @@
 Release History
 ===============
+1.1.3
+-----
+* Add support to Microsoft.ConnectedVMwarevSphere/virtualMachines Resource Type.
+* Correct the format of expected input for --resource-type parameter. From Resource Provider name (e.g. "Microsoft.HybridCompute") to Resource Type name (e.g. "Microsoft.HybridCompute/machines").
+* [bug fix] SSH Banners are printed before authentication.
+
 1.1.2
 -----
 * Remove dependency to cryptography (Az CLI core alredy has cryptography)

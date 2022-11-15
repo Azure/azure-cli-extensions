@@ -85,7 +85,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',
                             custom_command_type=blob_service_custom_sdk) as g:
-        g.storage_command_oauth('filter', 'find_blobs_by_tags', is_preview=True)
+        g.storage_custom_command_oauth('filter', 'find_blobs_by_tags', is_preview=True)
 
     blob_lease_client_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storagev2.blob._lease#BlobLeaseClient.{}',
