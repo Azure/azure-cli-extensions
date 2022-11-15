@@ -1516,13 +1516,10 @@ def validate_environment_location(cmd, location):
         except Exception as e:  # pylint: disable=broad-except
             raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
 
-    if len(res_locations) > 0:
-        if not location:
-            logger.warning("Creating environment on location %s.", res_locations[0])
-            return res_locations[0]
-        return location
-    else:
-        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
+    if not location:
+        logger.warning("Creating environment on location %s.", res_locations[0])
+        return res_locations[0]
+    return location
 
 
 def list_environment_locations(cmd):
