@@ -5,13 +5,13 @@
 
 # pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements
 
-import logging
+import gzip
+import io
 import json
+import logging
 import os
 import uuid
 import knack.log
-import io
-import gzip
 
 from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
@@ -221,7 +221,6 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
 def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
                                 job_name, shots, storage, job_params, target_capability,
                                 job_input_file, job_input_format, job_output_format, entry_point):
-
     """
     Submit QIO problem JSON or QIR bitcode to run on Azure Quantum.
     """
@@ -289,28 +288,25 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
     blob_name = "inputData"
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
+    # Retrieve workspace and target information
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if ws_info is None:
         raise AzureInternalError("Failed to get workspace information.")
+    target_info = TargetInfo(cmd, target_id)
+    if target_info is None:
+        raise AzureInternalError("Failed to get target information.")
 
     # Set the job parameters
     start_of_blob_name = blob_uri.find(blob_name)
     if job_type == QIO_JOB:
         end_of_blob_name = blob_uri.find("?")
         container_uri = blob_uri[0:start_of_blob_name - 1] + blob_uri[end_of_blob_name:]
+
+        # >>>>> TODO: Get more parameters from the command line <<<<<
+        input_params = {"params": {"timeout": 100}}
+
     elif job_type == QIR_JOB:
         container_uri = blob_uri[0:start_of_blob_name - 1]
-    else:
-        raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
-
-    target_info = TargetInfo(cmd, target_id)
-
-    if job_type == QIO_JOB:
-        # >>>>>
-        # >>>>> TODO: Get parameters from the command line <<<<<
-        # >>>>>
-        input_params = {"params": {"timeout": 100}}     # <<<<< What other params do we need here? <<<<< <<<<<
-    else:
         if shots is None:
             shots = DEFAULT_SHOTS
         else:
@@ -326,12 +322,12 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         if target_capability is None:
             target_capability = "AdaptiveExecution"     # <<<<< Cesar said to use this for QCI. Does it apply to other providers?
 
-        # >>>>>
         # >>>>> TODO: Get more parameters from the command line <<<<<
-        # >>>>>
         input_params = {'arguments': [], 'name': job_name, 'targetCapability': target_capability, 'shots': shots, 'entryPoint': entry_point}
 
-    # job_id = str(uuid.uuid4())
+    else:
+        raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     job_details = {'name': job_name,                # job_details is defined in vendored_sdks\azure_quantum\models\_models_py3.py, starting at line 132
                    'container_uri': container_uri,
@@ -342,10 +338,7 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
                    'target': target_info.target_id}
 
     # Submit the job
-    job = client.create(job_id, job_details)
-
-    # >>>>> Do we need any logic based on status here? <<<<<
-    return job
+    return client.create(job_id, job_details)
 
 
 def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
