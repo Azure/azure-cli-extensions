@@ -121,21 +121,44 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
+- job: getPythonVersion
+  displayName: "get Python Version"
+  pool:
+    name: 'pool-ubuntu-2004'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.10'
+      inputs:
+        versionSpec: '3.10'
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: pip install wheel==0.30.0
+      displayName: 'Install wheel==0.30.0'
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+
+        source env/bin/activate
+        az --version
+        pythonVersion = python scripts/ci/test_min_version.py
+        echo "##vso[task.setvariable variable=pythonVersion;isoutput=true]"
+      name: myParas
+      displayName: 'get Python Version'
+      env:
+        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
 - job: MinVersionTests
+  dependsOn: getPythonVersion
+    variables:
+      PythonVersion: $[ dependencies.getPythonVersion.outputs['myParas.pythonVersion'] ]
   displayName: "Min Version Tests"
   pool:
     name: 'pool-ubuntu-2004'
-  strategy:
-    matrix:
-      Python37:
-        python.version: '3.7'
-      Python38:
-        python.version: '3.8'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python $(python.version)'
+      displayName: 'Use Python $(PythonVersion)'
       inputs:
-        versionSpec: '$(python.version)'
+        versionSpec: '$(PythonVersion)'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
