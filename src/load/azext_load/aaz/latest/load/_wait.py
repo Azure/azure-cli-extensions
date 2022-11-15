@@ -42,11 +42,12 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Load Test name.",
+            help="Name of the Azure Load Testing resource.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
         return cls._args_schema

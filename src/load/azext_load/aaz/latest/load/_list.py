@@ -13,15 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "load list",
+    confirmation="",
 )
 class List(AAZCommand):
-    """List loadtests resources in a subscription.
-
-    :example: List all load test resources in a resource group
-        az load list --resource-group sample-rg
-
-    :example: List all load test resources in a subscription
-        az load list
+    """Lists load test resources.
     """
 
     _aaz_info = {
@@ -47,7 +42,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
