@@ -149,8 +149,8 @@ jobs:
 
 - job: MinVersionTests
   dependsOn: getPythonVersion
-    variables:
-      PythonVersion: $[ dependencies.getPythonVersion.outputs['myParas.pythonVersion'] ]
+  variables:
+    PythonVersion: $[ dependencies.getPythonVersion.outputs['myParas.pythonVersion'] ]
   displayName: "Min Version Tests"
   pool:
     name: 'pool-ubuntu-2004'
