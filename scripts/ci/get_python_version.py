@@ -121,11 +121,6 @@ def run_command(cmd, check_return_code=False, cwd=None):
     return error_flag
 
 
-def run_tests():
-    cmd = ['azdev', 'test', ORIGINAL_EXTENSION_NAME, '--no-exitfirst', '--verbose']
-    return run_command(cmd, check_return_code=True)
-
-
 def main():
     get_all_tests()
     min_version = get_min_version()

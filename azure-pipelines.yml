@@ -139,7 +139,7 @@ jobs:
 
         source env/bin/activate
         az --version
-        python scripts/ci/test_min_version.py
+        python scripts/ci/get_python_version.py
         echo "##vso[task.setvariable variable=$?;isoutput=true]"
       name: CustomParas
       displayName: 'get Python Version'
