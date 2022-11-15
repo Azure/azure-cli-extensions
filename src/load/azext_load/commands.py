@@ -12,4 +12,8 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from .operations.create import LoadTestCreate
+    self.command_table['load create'] = LoadTestCreate(loader=self)
+
+    from .operations.update import LoadTestUpdate
+    self.command_table['load update'] = LoadTestUpdate(loader=self)

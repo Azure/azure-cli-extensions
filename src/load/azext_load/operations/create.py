@@ -1,15 +1,14 @@
 from ..aaz.latest.load._create import Create
-from azure.cli.core.aaz import AAZListArg, AAZStrArg, has_value
+from azure.cli.core.aaz import has_value
 from msrestazure.tools import is_valid_resource_id
-from azure.core.exceptions import raise_with_traceback, ServiceRequestError
-from ..utility.constants import LoadTestManagedIdentity
-
+from azure.core.exceptions import ServiceRequestError
 
 class LoadTestCreate(Create):
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
 
-        # encryption_identity_type args is not exposed
+        # encryption_identity_type args are not exposed
         # encryption_identity_type is populated based on encryption_identity arg value
         args = [(name, arg) for (name, arg) in args if name not in ["encryption_identity_type"]]
         return args
@@ -28,7 +27,4 @@ class LoadTestCreate(Create):
                     args.identity_type = "UserAssigned"
                 elif identity_type_str.lower() == "systemassigned":
                     args.identity_type = "SystemAssigned,UserAssigned"
-
-                if not has_value(args.user_assigned_identities):
-                    args.user_assigned_identities = {}
-                args.user_assigned_identities[encryption_identity_id] = {}
+                args.user_assigned[encryption_identity_id] = {}
