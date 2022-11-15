@@ -142,7 +142,7 @@ jobs:
         python scripts/ci/get_python_version.py
         pythonVersion=`cat python_version.txt`
         echo $pythonVersion
-        echo "##vso[task.setvariable variable=$pythonVersion;isoutput=true]"
+        echo "##vso[task.setvariable variable=pythonVersion;isoutput=true]$pythonVersion"
       name: CustomParas
       displayName: 'get Python Version'
       env:
@@ -160,9 +160,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python $(variables.PythonVersion)'
+      displayName: 'Use Python $(PythonVersion)'
       inputs:
-        versionSpec: '$(variables.PythonVersion)'
+        versionSpec: '$(PythonVersion)'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
