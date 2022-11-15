@@ -68,6 +68,7 @@ def get_all_tests():
         else:
             logger.error(f'can not any test in {test_dir}')
             print('false')
+            sys.exit(0)
 
     logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                 f'ado_target_branch: {ado_target_branch}, '
@@ -83,6 +84,7 @@ def get_min_version():
     except Exception as e:
         logger.error(f'can not get minCliCoreVersion: {e}')
         print('false')
+        sys.exit(0)
 
 
 def get_python_version(min_version):
@@ -107,11 +109,12 @@ def get_python_version(min_version):
     except Exception as e:
         logger.error(f'can not get python_version: {e}')
         print('false')
+        sys.exit(0)
 
 
 def run_command(cmd, check_return_code=False, cwd=None):
     error_flag = False
-    logger.info(f'testing extension with minCliCoreVersion: {cmd}')
+    logger.info(f'cmd: {cmd}')
     try:
         out = subprocess.run(cmd, check=True, cwd=cwd)
         if check_return_code and out.returncode:
