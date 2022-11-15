@@ -139,10 +139,8 @@ jobs:
 
         source env/bin/activate
         az --version
-        ref=`python scripts/ci/get_python_version.py`
-        # 3.8;isoutput=true]
-        echo $ref
-        pythonVersion=`echo $ref | cut -d ";" -f 1`
+        python scripts/ci/get_python_version.py
+        pythonVersion=`cat python_version.txt`
         echo "##vso[task.setvariable variable=$pythonVersion;isoutput=true]"
       name: CustomParas
       displayName: 'get Python Version'
