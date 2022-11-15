@@ -14,4 +14,4 @@ def load_arguments(self, _):
         c.argument('firewall_rule_name', help='The name of the firewall rule.')
 
     with self.argument_context('qbs invite') as c:
-        c.argument('invite_code', help='The name of the firewall rule.')
+        c.argument('invite_code', help='The consortium invite code.')
