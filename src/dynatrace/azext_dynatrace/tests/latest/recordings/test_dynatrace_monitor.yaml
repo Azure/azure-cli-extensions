@@ -1,0 +1,1002 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      User-Agent:
+      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dynatrace_monitor000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001",
+        "name": "cli_test_dynatrace_monitor000001", "type": "Microsoft.Resources/resourceGroups",
+        "location": "eastus2euap", "tags": {"product": "azurecli", "cause": "automation",
+        "date": "2022-09-14T08:43:56Z"}, "properties": {"provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '364'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:44:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"dynatraceEnvironmentProperties":
+      {"singleSignOnProperties": {"aadDomains": ["abc"]}}, "planData": {"billingCycle":
+      "Monthly", "effectiveDate": "2022-08-19T16:00:00.000Z", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
+      "usageType": "committed"}, "userInfo": {"country": "US", "emailAddress": "agarwald@microsoft.com",
+      "firstName": "Alice", "lastName": "Bobab", "phoneNumber": "1234567890"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '459'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
+        "eastus2euap", "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
+        "User", "createdAt": "2022-09-14T08:44:06.9550418Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:44:06.9550418Z"},
+        "properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+        "Active", "dynatraceEnvironmentProperties": {"userId": null, "accountInfo":
+        null, "environmentInfo": null, "singleSignOnProperties": {"singleSignOnState":
+        "Initial", "enterpriseAppId": null, "singleSignOnUrl": null, "aadDomains":
+        ["abc"], "provisioningState": "Accepted"}}, "userInfo": null, "planData":
+        {"usageType": "committed", "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
+        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
+        "liftrResourcePreference": 0, "provisioningState": "Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1174'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:44:15 GMT
+      etag:
+      - '"a500326d-0000-0300-0000-6321945e0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+      mise-correlation-id:
+      - ffa7fa4e-65ad-4eaf-9d74-7169c9f3cbbc
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "name": "6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Accepted", "startTime": "2022-09-14T08:44:13.4688138Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:44:44 GMT
+      etag:
+      - '"03023006-0000-0300-0000-6321945d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "name": "6515daec-1f3d-4e05-904e-99d84cc38130*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Succeeded", "startTime": "2022-09-14T08:44:13.4688138Z", "endTime":
+        "2022-09-14T08:45:10.6707115Z", "error": {}, "properties": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:15 GMT
+      etag:
+      - '"03027607-0000-0300-0000-632194960000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
+        "eastus2euap", "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
+        "User", "createdAt": "2022-09-14T08:44:06.9550418Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:44:06.9550418Z"},
+        "properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+        "Active", "dynatraceEnvironmentProperties": {"userId": "1db33da7-af65-4503-9812-6f0070e2130d",
+        "accountInfo": {"accountId": "df877719-854b-4025-8dd7-29d4bf29c23e", "regionId":
+        "eastus"}, "environmentInfo": {"environmentId": "msl44559", "logsIngestionEndpoint":
+        "https://msl44559.sprint.dynatracelabs.com/api/v2/logs/ingest", "landingURL":
+        "https://msl44559.sprint.dynatracelabs.com/"}, "singleSignOnProperties": {"singleSignOnState":
+        "Initial", "aadDomains": ["abc"], "provisioningState": "Accepted"}}, "userInfo":
+        {"firstName": "Alice", "lastName": "Bobab", "emailAddress": "agarwald@microsoft.com",
+        "phoneNumber": "1234567890", "country": "US"}, "planData": {"usageType": "committed",
+        "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
+        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
+        "liftrResourcePreference": 0, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:16 GMT
+      etag:
+      - '"a5009b71-0000-0300-0000-632194960000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
+        "eastus2euap", "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
+        "User", "createdAt": "2022-09-14T08:44:06.9550418Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:44:06.9550418Z"},
+        "properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
+        "Active", "dynatraceEnvironmentProperties": {"userId": "1db33da7-af65-4503-9812-6f0070e2130d",
+        "accountInfo": {"accountId": "df877719-854b-4025-8dd7-29d4bf29c23e", "regionId":
+        "eastus"}, "environmentInfo": {"environmentId": "msl44559", "logsIngestionEndpoint":
+        "https://msl44559.sprint.dynatracelabs.com/api/v2/logs/ingest", "landingURL":
+        "https://msl44559.sprint.dynatracelabs.com/"}, "singleSignOnProperties": {"singleSignOnState":
+        "Initial", "aadDomains": ["abc"], "provisioningState": "Accepted"}}, "userInfo":
+        {"firstName": "Alice", "lastName": "Bobab", "emailAddress": "agarwald@microsoft.com",
+        "phoneNumber": "1234567890", "country": "US"}, "planData": {"usageType": "committed",
+        "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
+        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
+        "liftrResourcePreference": 0, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:18 GMT
+      etag:
+      - '"a5009b71-0000-0300-0000-632194960000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"env": "dev"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '24'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
+        "eastus2euap", "tags": {"env": "dev"}, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2022-09-14T08:44:06.9550418Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2022-09-14T08:45:22.0385144Z"}, "properties": {"monitoringStatus": "Enabled",
+        "marketplaceSubscriptionStatus": "Active", "dynatraceEnvironmentProperties":
+        {"userId": "1db33da7-af65-4503-9812-6f0070e2130d", "accountInfo": {"accountId":
+        "df877719-854b-4025-8dd7-29d4bf29c23e", "regionId": "eastus"}, "environmentInfo":
+        {"environmentId": "msl44559", "logsIngestionEndpoint": "https://msl44559.sprint.dynatracelabs.com/api/v2/logs/ingest",
+        "landingURL": "https://msl44559.sprint.dynatracelabs.com/"}, "singleSignOnProperties":
+        {"singleSignOnState": "Initial", "aadDomains": ["abc"], "provisioningState":
+        "Accepted"}}, "userInfo": {"firstName": "Alice", "lastName": "Bobab", "emailAddress":
+        "agarwald@microsoft.com", "phoneNumber": "1234567890", "country": "US"}, "planData":
+        {"usageType": "committed", "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
+        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
+        "liftrResourcePreference": 0, "provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1555'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:26 GMT
+      etag:
+      - '"a500bc72-0000-0300-0000-632194a20000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5be38f9e-8553-443f-baf7-1afe433d1e56
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors?api-version=2021-09-01
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
+        "eastus2euap", "tags": {"env": "dev"}, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2022-09-14T08:44:06.9550418Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2022-09-14T08:45:22.0385144Z"}, "properties": {"monitoringStatus": "Enabled",
+        "marketplaceSubscriptionStatus": "Active", "dynatraceEnvironmentProperties":
+        {"userId": "1db33da7-af65-4503-9812-6f0070e2130d", "accountInfo": {"accountId":
+        "df877719-854b-4025-8dd7-29d4bf29c23e", "regionId": "eastus"}, "environmentInfo":
+        {"environmentId": "msl44559", "logsIngestionEndpoint": "https://msl44559.sprint.dynatracelabs.com/api/v2/logs/ingest",
+        "landingURL": "https://msl44559.sprint.dynatracelabs.com/"}, "singleSignOnProperties":
+        {"singleSignOnState": "Initial", "aadDomains": ["abc"], "provisioningState":
+        "Accepted"}}, "userInfo": {"firstName": "Alice", "lastName": "Bobab", "emailAddress":
+        "agarwald@microsoft.com", "phoneNumber": "1234567890", "country": "US"}, "planData":
+        {"usageType": "committed", "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
+        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
+        "liftrResourcePreference": 0, "provisioningState": "Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 23e06d6d-4787-49af-ae2b-2337f645780a
+      - 2981a166-5f62-4b5c-a2e4-ed8d0df55155
+      - b4903a0a-6748-4d25-9249-3bf03e0162a4
+      - 62b4f977-b000-4d79-adfa-3dc2d5c72ae2
+      - 965cf5c3-ef4f-4ba3-8558-625ee59ec38b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor list-app-service
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002/listAppServices?api-version=2021-09-01
+  response:
+    body:
+      string: '{"value": [], "nextLink": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '31'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:30 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 40a171a6-3177-4962-b969-28b4efe2a325
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor list-host
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002/listHosts?api-version=2021-09-01
+  response:
+    body:
+      string: '{"value": [], "nextLink": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '31'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:32 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 43c5fc83-a0e4-4000-ba1d-1c5a7e0d815d
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor list-monitored-resource
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002/listMonitoredResources?api-version=2021-09-01
+  response:
+    body:
+      string: '{"value": [], "nextLink": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '31'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:35 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6627e2fa-d11e-4ec9-84a7-f5778010de44
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"region": "eastus2euap", "tenantId": "be9927fa-821c-4178-9dae-e520c4beca74",
+      "userPrincipal": "agarwald@microsoft.com"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor list-linkable-environment
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '120'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --monitor-name --user-principal --region --tenant-id
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002/listLinkableEnvironments?api-version=2021-09-01
+  response:
+    body:
+      string: '{"value": [], "nextLink": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '31'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:37 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 07eb40e4-522f-4c24-8f77-2d66666f5a18
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"userPrincipal": "agarwald@microsoft.com"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor get-sso-detail
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --monitor-name --user-principal
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002/getSSODetails?api-version=2021-09-01
+  response:
+    body:
+      string: '{"singleSignOnUrl": null, "metadataUrl": null, "isSsoEnabled": "Disabled",
+        "aadDomains": [], "adminUsers": ["agarwald@microsoft.com", "abhargava@microsoft.com",
+        "sveeravalli@microsoft.com", "v-jingszhang@microsoft.com"]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '220'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:39 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1fc92fb5-473a-4082-971e-12cb5edbd2d0
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor get-vm-host-payload
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --monitor-name
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002/getVMHostPayload?api-version=2021-09-01
+  response:
+    body:
+      string: '{"ingestionKey": "aW5nZXN0aW9uS2V5IGNvbnRlbnQgcmVwbGFjZWQgYnkgRXhwcmVzc1JvdXRlUG9ydExPQUNvbnRlbnRSZXBsYWNlcg==",
+        "environmentId": "msl44559"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b9a91276-db4e-4e5a-81e1-e7d9392f8357
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:45:46 GMT
+      etag:
+      - '"a5005774-0000-0300-0000-632194b90000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+      mise-correlation-id:
+      - 8199eda5-1afe-4663-b292-a60672bb544b
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "name": "3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Deleting", "startTime": "2022-09-14T08:45:45.1853627Z", "error":
+        {}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '553'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:46:15 GMT
+      etag:
+      - '"03027208-0000-0300-0000-632194ba0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "name": "3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Deleting", "startTime": "2022-09-14T08:45:45.1853627Z", "error":
+        {}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '553'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:46:46 GMT
+      etag:
+      - '"03027208-0000-0300-0000-632194ba0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "name": "3a49cea9-85ba-4ea1-90d7-6af6a7ea6911*9A18A00D17A801D914F8B65C518468D8EFF8CEFB2D045EE7CDD4D5E317C3BD5F",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Succeeded", "startTime": "2022-09-14T08:45:45.1853627Z", "endTime":
+        "2022-09-14T08:46:51.4240111Z", "error": {}, "properties": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '617'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Sep 2022 08:47:16 GMT
+      etag:
+      - '"0302030a-0000-0300-0000-632194fb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

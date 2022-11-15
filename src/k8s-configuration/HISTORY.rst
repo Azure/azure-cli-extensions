@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.0
+++++++++++++++++++
+* Add support for Azure Blob Storage
+
 1.6.0
 ++++++++++++++++++
 * Add support for provisionedClusters

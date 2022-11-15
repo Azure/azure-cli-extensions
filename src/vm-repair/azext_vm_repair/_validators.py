@@ -87,7 +87,7 @@ def validate_create(cmd, namespace):
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
     # Prompt input for public ip usage
-    if not namespace.associate_public_ip:
+    if (not namespace.associate_public_ip) and (not namespace.yes):
         _prompt_public_ip(namespace)
 
 
@@ -313,7 +313,7 @@ def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\' || type==\'Microsoft.Compute/virtualMachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)

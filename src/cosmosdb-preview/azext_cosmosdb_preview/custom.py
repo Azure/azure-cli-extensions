@@ -1114,33 +1114,51 @@ def cosmosdb_data_transfer_copy_job(client,
                                     dest_cassandra_table=None,
                                     source_sql_container=None,
                                     dest_sql_container=None,
+                                    source_mongo=None,
+                                    dest_mongo=None,
                                     worker_count=0,
                                     job_name=None):
-    if source_cassandra_table is None and source_sql_container is None:
-        raise CLIError('source component ismissing')
-
-    if source_cassandra_table is not None and source_sql_container is not None:
-        raise CLIError('Invalid input: multiple source components')
-
-    if dest_cassandra_table is None and dest_sql_container is None:
-        raise CLIError('destination component is missing')
-
-    if dest_cassandra_table is not None and dest_sql_container is not None:
-        raise CLIError('Invalid input: multiple destination components')
-
     job_create_properties = {}
 
+    source = None
     if source_cassandra_table is not None:
-        job_create_properties['source'] = source_cassandra_table
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        source = source_cassandra_table
 
     if source_sql_container is not None:
-        job_create_properties['source'] = source_sql_container
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        source = source_sql_container
 
+    if source_mongo is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        source = source_mongo
+
+    if source is None:
+        raise CLIError('source component is missing')
+    job_create_properties['source'] = source
+
+    destination = None
     if dest_cassandra_table is not None:
-        job_create_properties['destination'] = dest_cassandra_table
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_cassandra_table
 
     if dest_sql_container is not None:
-        job_create_properties['destination'] = dest_sql_container
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_sql_container
+
+    if dest_mongo is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_mongo
+
+    if destination is None:
+        raise CLIError('destination component is missing')
+    job_create_properties['destination'] = destination
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count

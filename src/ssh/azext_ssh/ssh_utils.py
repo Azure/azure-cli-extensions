@@ -5,10 +5,10 @@
 import os
 import platform
 import subprocess
-import multiprocessing as mp
 import time
 import datetime
 import re
+import sys
 import colorama
 
 from knack import log
@@ -25,15 +25,20 @@ logger = log.get_logger(__name__)
 
 def start_ssh_connection(op_info, delete_keys, delete_cert):
     try:
-        # Initialize these so that if something fails in the try block before these
-        # are initialized, then the finally block won't fail.
-        cleanup_process = None
-        log_file = None
-        connection_status = None
-
         ssh_arg_list = []
         if op_info.ssh_args:
             ssh_arg_list = op_info.ssh_args
+
+        # Redirecting stderr:
+        # 1. Read SSH logs to determine if authentication was successful so credentials can be deleted
+        # 2. Read SSHProxy error messages to print friendly error messages for well known errors.
+        # When connecting to a local user on a host with a banner, output gets messed up if stderr redirected.
+        # If user expects logs to be printed, do not redirect logs. In some ocasions output gets messed up.
+        redirect_stderr = set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) and \
+            (delete_cert or op_info.delete_credentials)
+
+        if redirect_stderr:
+            ssh_arg_list = ['-v'] + ssh_arg_list
 
         env = os.environ.copy()
         if op_info.is_arc():
@@ -42,26 +47,19 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # Get ssh client before starting the clean up process in case there is an error in getting client.
         command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(), "-l", op_info.local_user]
 
-        if not op_info.cert_file and not op_info.private_key_file:
-            # In this case, even if delete_credentials is true, there is nothing to clean-up.
-            op_info.delete_credentials = False
-
-        log_file, ssh_arg_list, cleanup_process = _start_cleanup(op_info.cert_file, op_info.private_key_file,
-                                                                 op_info.public_key_file, op_info.delete_credentials,
-                                                                 delete_keys, delete_cert, ssh_arg_list)
         command = command + op_info.build_args() + ssh_arg_list
 
         connection_duration = time.time()
         logger.debug("Running ssh command %s", ' '.join(command))
 
-        # pylint: disable=subprocess-run-check
         try:
-            if set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) or log_file:
-                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env,
-                                                   stderr=subprocess.PIPE, encoding='utf-8')
+            # pylint: disable=consider-using-with
+            if redirect_stderr:
+                ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
+                _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
             else:
-                # Logs are sent to stderr. In that case, we shouldn't capture stderr.
-                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env)
+                ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
+                _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
         except OSError as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
@@ -69,15 +67,15 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-        if connection_status and connection_status.returncode == 0:
+        if ssh_process.poll() == 0:
             ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
     finally:
         # Even if something fails between the creation of the credentials and the end of the ssh connection, we
-        # want to make sure that all credentials are cleaned up, and that the clean up process is terminated.
-        _terminate_cleanup(delete_keys, delete_cert, op_info.delete_credentials, cleanup_process, op_info.cert_file,
-                           op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
+        # want to make sure that all credentials are cleaned up.
+        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
@@ -92,6 +90,51 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
         mode = 'a'
     with open(config_info.config_path, mode, encoding='utf-8') as f:
         f.write('\n'.join(config_text))
+
+
+def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
+    log_list = []
+    connection_established = False
+    t0 = time.time()
+
+    next_line = ssh_sub.stderr.readline()
+    while next_line:
+        log_list.append(next_line)
+        if not next_line.startswith("debug1:") and \
+           not next_line.startswith("debug2:") and \
+           not next_line.startswith("debug3:") and \
+           not next_line.startswith("Authenticated "):
+            sys.stderr.write(next_line)
+            _check_for_known_errors(next_line, delete_cert, log_list)
+
+        if "debug1: Entering interactive session." in next_line:
+            connection_established = True
+            do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                       op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+        if not connection_established and \
+           time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+            do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                       op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+        next_line = ssh_sub.stderr.readline()
+
+    ssh_sub.wait()
+
+
+def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
+    # wait for 2 minutes. If the process isn't closed until then, delete credentials.
+    if delete_cert or op_info.delete_credentials:
+        t0 = time.time()
+        while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+            if ssh_sub.poll() is not None:
+                break
+            time.sleep(1)
+
+        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+    ssh_sub.wait()
 
 
 def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
@@ -162,51 +205,44 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
     return principals
 
 
-def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert):
-    with open(log_file, 'r', encoding='utf-8') as ssh_log:
-        log_text = ssh_log.read()
-        log_lines = log_text.splitlines()
-        if ("debug1: Authentication succeeded" not in log_text and
-            not re.search("^Authenticated to .*\n", log_text, re.MULTILINE)) \
-           or (connection_status and connection_status.returncode):
-            for line in log_lines:
-                if "debug1:" not in line:
-                    print(line)
+def _check_for_known_errors(error_message, delete_cert, log_lines):
+    # This connection fails when using our generated certificates.
+    # Only throw error if conection fails with AAD login.
+    if "Permission denied (publickey)." in error_message and delete_cert:
+        # pylint: disable=bare-except
+        # pylint: disable=too-many-boolean-expressions
+        # Check if OpenSSH client and server versions are incompatible
+        try:
+            regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
+            local_major, local_minor = re.findall(regex, log_lines[0])[0]
+            remote_version_line = file_utils.get_line_that_contains("remote software version", log_lines)
+            remote_major, remote_minor = re.findall(regex, remote_version_line)[0]
+            local_major = int(local_major)
+            local_minor = int(local_minor)
+            remote_major = int(remote_major)
+            remote_minor = int(remote_minor)
+        except:
+            return
 
-            # This connection fails when using our generated certificates.
-            # Only throw error if conection fails with AAD login.
-            if "Permission denied (publickey)." in log_text and delete_cert:
-                # pylint: disable=bare-except
-                # pylint: disable=too-many-boolean-expressions
-                # Check if OpenSSH client and server versions are incompatible
-                try:
-                    regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
-                    local_major, local_minor = re.findall(regex, log_lines[0])[0]
-                    remote_major, remote_minor = re.findall(regex,
-                                                            file_utils.get_line_that_contains("remote software version",
-                                                                                              log_lines))[0]
-                    local_major = int(local_major)
-                    local_minor = int(local_minor)
-                    remote_major = int(remote_major)
-                    remote_minor = int(remote_minor)
-                except:
-                    ssh_log.close()
-                    return
+        if (remote_major < 7 or (remote_major == 7 and remote_minor < 8)) and \
+           (local_major > 8 or (local_major == 8 and local_minor >= 8)):
+            logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
+                           "Version incompatible with OpenSSH client version %d.%d. "
+                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           remote_major, remote_minor, local_major, local_minor)
 
-                if (remote_major < 7 or (remote_major == 7 and remote_minor < 8)) and \
-                   (local_major > 8 or (local_major == 8 and local_minor >= 8)):
-                    logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
-                                   "Version incompatible with OpenSSH client version %d.%d. "
-                                   "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
-                                   remote_major, remote_minor, local_major, local_minor)
+        elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
+             (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
+            logger.warning("The OpenSSH client version %d.%d is too old. "
+                           "Version incompatible with OpenSSH server version %d.%d in the target VM. "
+                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           local_major, local_minor, remote_major, remote_minor)
 
-                elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
-                     (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
-                    logger.warning("The OpenSSH client version %d.%d is too old. "
-                                   "Version incompatible with OpenSSH server version %d.%d in the target VM. "
-                                   "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
-                                   local_major, local_minor, remote_major, remote_minor)
-        ssh_log.close()
+    regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: "
+             ".*\",\"time\":\".*\"}.*")
+    if re.search(regex, error_message):
+        logger.error("Please make sure SSH port is allowed using \"azcmagent config list\" in the target "
+                     "Arc Server. Ensure SSHD is running on the target machine.\n")
 
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
@@ -263,96 +299,17 @@ def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     return ssh_path
 
 
-def do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
-    if log_file:
-        t0 = time.time()
-        match = False
-        while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
-            time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
-            # pylint: disable=bare-except
-            # pylint: disable=anomalous-backslash-in-string
-            try:
-                with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
-                    log_text = ssh_client_log.read()
-                    # The "debug1:..." message doesn't seems to exist in OpenSSH 3.9
-                    match = ("debug1: Authentication succeeded" in log_text or
-                             re.search("^Authenticated to .*\n", log_text, re.MULTILINE))
-                    ssh_client_log.close()
-            except:
-                # If there is an exception, wait for a little bit and try again
-                time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
-
-    elif wait:
-        # if we are not checking the logs, but still want to wait for connection before deleting files
-        time.sleep(const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS)
-
-    if delete_keys and private_key:
+def do_cleanup(delete_keys, delete_cert, delete_credentials, cert_file, private_key, public_key):
+    if (delete_keys or delete_credentials) and private_key:
         file_utils.delete_file(private_key, f"Couldn't delete private key {private_key}. ", True)
     if delete_keys and public_key:
         file_utils.delete_file(public_key, f"Couldn't delete public key {public_key}. ", True)
-    if delete_cert and cert_file:
+    if (delete_cert or delete_credentials) and cert_file:
         file_utils.delete_file(cert_file, f"Couldn't delete certificate {cert_file}. ", True)
-
-
-def _start_cleanup(cert_file, private_key_file, public_key_file, delete_credentials, delete_keys,
-                   delete_cert, ssh_arg_list):
-    log_file = None
-    cleanup_process = None
-    if delete_keys or delete_cert or delete_credentials:
-        if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
-            # If the user either provides his own client log file (-E) or
-            # wants the client log messages to be printed to the console (-vvv/-vv/-v),
-            # we should not use the log files to check for connection success.
-            if cert_file:
-                log_dir = os.path.dirname(cert_file)
-            elif private_key_file:
-                log_dir = os.path.dirname(private_key_file)
-            log_file_name = 'ssh_client_log_' + str(os.getpid())
-            log_file = os.path.join(log_dir, log_file_name)
-            ssh_arg_list = ['-E', log_file, '-v'] + ssh_arg_list
-        # Create a new process that will wait until the connection is established and then delete keys.
-        cleanup_process = mp.Process(target=do_cleanup, args=(delete_keys or delete_credentials,
-                                                              delete_cert or delete_credentials,
-                                                              cert_file, private_key_file, public_key_file,
-                                                              log_file, True))
-        cleanup_process.start()
-
-    return log_file, ssh_arg_list, cleanup_process
-
-
-def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_process, cert_file,
-                       private_key_file, public_key_file, log_file, connection_status):
-    try:
-        if connection_status and connection_status.stderr:
-            if connection_status.returncode != 0:
-                # Check if stderr is a proxy error
-                regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: "
-                         ".*\",\"time\":\".*\"}.*")
-                if re.search(regex, connection_status.stderr):
-                    logger.error("Please make sure SSH port is allowed using \"azcmagent config list\" in the target "
-                                 "Arc Server. Ensure SSHD is running on the target machine.")
-            print(connection_status.stderr)
-    finally:
-        if delete_keys or delete_cert or delete_credentials:
-            if cleanup_process and cleanup_process.is_alive():
-                cleanup_process.terminate()
-                # wait for process to terminate
-                t0 = time.time()
-                while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
-                    time.sleep(1)
-
-            if log_file and os.path.isfile(log_file):
-                _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
-
-            # Make sure all files have been properly removed.
-            do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
-                       cert_file, private_key_file, public_key_file)
-            if log_file:
-                file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
-            if delete_keys:
-                # This is only true if keys were generated, so they must be in a temp folder.
-                temp_dir = os.path.dirname(cert_file)
-                file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
+    if delete_keys and cert_file:
+        # This is only true if keys were generated, so they must be in a temp folder.
+        temp_dir = os.path.dirname(cert_file)
+        file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path, ssh_client_folder):
