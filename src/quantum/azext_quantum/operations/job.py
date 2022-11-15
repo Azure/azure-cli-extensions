@@ -10,6 +10,8 @@ import json
 import os
 import uuid
 import knack.log
+import io
+import gzip
 
 from azure.cli.command_modules.storage.operations.account import show_storage_account_connection_string
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
@@ -205,9 +207,6 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
         return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
                                            job_name, shots, storage, job_params, target_capability,
                                            job_input_file, job_input_format, job_output_format, entry_point)
-        # return _submit_qio(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
-        #                    job_name, storage, job_params, target_capability,
-        #                    job_input_file, job_input_format, job_output_format)
 
     if job_type == QIR_JOB:
         return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
@@ -218,77 +217,6 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
         return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                               project, job_name, shots, storage, no_build, job_params, target_capability)
 
-
-def _submit_qio(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
-                job_name, storage, job_params, target_capability,
-                job_input_file, job_input_format, job_output_format):
-    # >>>>>
-    knack_logger.warning(">>>>> Submitting QIO job from notebook quickstart article <<<<<")
-    # <<<<<
-
-    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    if ws_info is None:
-        raise AzureInternalError("Failed get workspace information. (_submit_qio)")
-
-    # # >>>>>
-    # knack_logger.warning(f'>>>>> ws_info.subscription = {ws_info.subscription} <<<<<')
-    # return
-    # # <<<<<
-
-    # Cell 1
-    from azure.quantum import Workspace
-    workspace = Workspace (
-        subscription_id = ws_info.subscription, 
-        resource_group = resource_group_name,   
-        name = workspace_name,          
-        location = location        
-        )
-
-    # # Cell 2
-    # from typing import List
-    # from azure.quantum.optimization import Term
-
-    # # Cell 3
-    # from azure.quantum.optimization import Problem, ProblemType, Term
-
-    # # problem = Problem(name="My First Problem", problem_type=ProblemType.ising)
-    # problem = Problem(name=job_name, problem_type=ProblemType.ising)
-
-    # # Cell 4
-    # terms = [
-    #     Term(c=-9, indices=[0]),
-    #     Term(c=-3, indices=[1,0]),
-    #     Term(c=5, indices=[2,0]),
-    #     Term(c=9, indices=[2,1]),
-    #     Term(c=2, indices=[3,0]),
-    #     Term(c=-4, indices=[3,1]),
-    #     Term(c=4, indices=[3,2])
-    # ]
-
-    # problem.add_terms(terms=terms)
-
-    # Cell 5
-    from azure.quantum.optimization import ParallelTempering
-
-    solver = ParallelTempering(workspace, timeout=100)
-
-    # # >>>>>
-    # knack_logger.warning('>>>>> "solver =" statement completed, calling solver.optimize() <<<<<')
-    # # <<<<<
-
-    # result = solver.optimize(problem)       # <<<<< Also takes a URI to an uploaded blob <<<<<
-    # # print(result)
-    # return result
-
-
-    # >>>>>
-    knack_logger.warning(">>>>> Calling solver.optimize() <<<<<")
-    # return
-    # <<<<<
-    # return solver.optimize("https://vwjonesstorage2.blob.core.windows.net/job-dc473644-5fa9-11ed-8346-00155d76d204/inputData")  # Notebook job
-    # return solver.optimize("https://vwjonesstorage2.blob.core.windows.net/cli-qio-job-14b6e2af-7e89-41fc-9f14-be77474ba6be/inputData")  # Job 7
-
-    return solver.optimize("https://vwjonesstorage2.blob.core.windows.net/cli-qio-job-1a61168a-40dc-49ed-b701-7a894f42b178/inputData")  # Job 14
 
 def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
                                 job_name, shots, storage, job_params, target_capability,
@@ -316,7 +244,6 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         path = os.path.abspath(os.curdir)
         for file_name in os.listdir(path):
             if file_name.endswith(input_file_extension):
-                # job_input_source = os.path.join(path, file_name)
                 job_input_file = os.path.join(path, file_name)
                 break
 
@@ -329,11 +256,14 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         content_type = "application/json"
         content_encoding = "gzip"
         return_sas_token = True
-        # return_sas_token = False
         with open(job_input_file, encoding="utf-8") as qio_file:
-        # with open(job_input_file) as qio_file:
-        # with open(job_input_file, "rb") as qio_file:
-            blob_data = qio_file.read()
+            uncompressed_blob_data = qio_file.read()
+        # Compress the input data (based on to_blob in qdk-python\azure-quantum\azure\quantum\optimization\problem.py)
+        data = io.BytesIO()
+        with gzip.GzipFile(fileobj=data, mode="w") as fo:
+            fo.write(uncompressed_blob_data.encode())
+        blob_data = data.getvalue()
+
     elif job_type == QIR_JOB:
         container_name_prefix = "cli-qir-job-"
         content_type = "application/x-qir.v1"
@@ -341,6 +271,7 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         return_sas_token = False
         with open(job_input_file, "rb") as qir_file:
             blob_data = qir_file.read()
+
     else:
         raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
 
@@ -358,30 +289,9 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
     blob_name = "inputData"
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
-    # >>>>>
-    # knack_logger.warning(f">>>>> blob_uri = {blob_uri}")
-    # return
-    # <<<<<
-
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if ws_info is None:
-        raise AzureInternalError("Failed get workspace information. (_submit_qio)")
-
-    # >>>>> Try submitting QIO jobs using a solver >>>>>
-    # if job_type == QIO_JOB:
-    #     from azure.quantum import Workspace
-    #     workspace = Workspace (
-    #         subscription_id = ws_info.subscription, 
-    #         resource_group = resource_group_name,   
-    #         name = workspace_name,          
-    #         location = location        
-    #         )
-
-    #     from azure.quantum.optimization import ParallelTempering
-
-    #     solver = ParallelTempering(workspace, timeout=100)
-    #     return solver.optimize(blob_uri)
-    # <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<<<< <<
+        raise AzureInternalError("Failed to get workspace information.")
 
     # Set the job parameters
     start_of_blob_name = blob_uri.find(blob_name)
@@ -393,13 +303,6 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
     else:
         raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
 
-    # >>>>>
-    # knack_logger.warning(f">>>>> blob_uri =      {blob_uri}")
-    # knack_logger.warning(f">>>>> container_uri = {container_uri}")
-    # return
-    # <<<<<
-
-    # ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target_info = TargetInfo(cmd, target_id)
 
     if job_type == QIO_JOB:
