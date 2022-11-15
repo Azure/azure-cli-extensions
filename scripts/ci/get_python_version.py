@@ -67,7 +67,7 @@ def get_all_tests():
             _, ORIGINAL_EXTENSION_NAME = EXTENSION_NAME.split('_', 1)
         else:
             logger.error(f'can not any test in {test_dir}')
-            sys.exit(0)
+            sys.exit(7)
 
     logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                 f'ado_target_branch: {ado_target_branch}, '
@@ -82,7 +82,7 @@ def get_min_version():
             return min_version
     except Exception as e:
         logger.error(f'can not get minCliCoreVersion: {e}')
-        sys.exit(0)
+        sys.exit(7)
 
 
 def get_python_version(min_version):
@@ -102,10 +102,11 @@ def get_python_version(min_version):
                 if 'Programming Language :: Python :: ' in line:
                     _, _, python_version = line.split(' :: ')
                     python_version = python_version.split('\'')[0]
-            return python_version
+        logger.info(f'return python verison: {python_version}')
+        return python_version
     except Exception as e:
         logger.error(f'can not get python_version: {e}')
-        sys.exit(0)
+        sys.exit(7)
 
 
 def run_command(cmd, check_return_code=False, cwd=None):
