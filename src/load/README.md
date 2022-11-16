@@ -8,9 +8,6 @@ Install this extension using the below CLI command
 az extension add --name load
 ```
 
-## Included Features ##
-
-
 ### Create Azure load testing resource ###
 
 ```
@@ -58,7 +55,7 @@ az load create \
 ---
 <br/>
 
-### Update Azure load testing resource/resources ###
+### Update Azure load testing resource ###
 
 ```
 az load update \
@@ -88,3 +85,48 @@ az load update \
     --encryption-key https://sample-kv.vault.azure.net/keys/samplekey2/2d1ccd5c50234ea2a0858fe148b69cde
     --encryption-identity SystemAssigned
 ```
+---
+<br/>
+
+### List Azure load testing resources ###
+
+```
+az load list \
+    --resource-group sample-rg 
+```
+
+```
+az load list
+```
+---
+<br/>
+
+### Show Azure load testing resource ###
+
+```
+az load show \
+    --name sample-resource \
+    --resource-group sample-rg 
+```
+
+```
+az load show \
+    --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.LoadTestService/loadtests/sample-resource1 /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg2/providers/Microsoft.LoadTestService/loadtests/sample-resource2 
+```
+---
+<br/>
+
+### Delete Azure load testing resource ###
+
+```
+az load delete \
+    --name sample-resource \
+    --resource-group sample-rg 
+```
+
+```
+az load delete \
+    --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.LoadTestService/loadtests/sample-resource1 /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg2/providers/Microsoft.LoadTestService/loadtests/sample-resource2 
+```
+---
+<br/>
