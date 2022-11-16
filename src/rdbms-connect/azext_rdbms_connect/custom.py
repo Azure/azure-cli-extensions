@@ -183,6 +183,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
         else:
             # set ssl param to allow for connection
             connection_kwargs['ssl'] = {"fake_flag_to_enable_tls": True}
+            connection_kwargs['autocommit'] = True
             connection = pymysql.connect(**connection_kwargs)
         logger.warning('Successfully connected to %s.', server_name)
     except Exception as e:

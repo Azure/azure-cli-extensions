@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: '{"destinationTenantId": "4adcf5e7-539d-451c-85d5-b6c3b47335d7"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order change-directory
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '63'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --destination-tenant-id
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/4861c652-9564-4e1c-aba2-5b96f639138c/changeDirectory?api-version=2022-03-01
+  response:
+    body:
+      string: '{"reservationOrder":{"id":"4861c652-9564-4e1c-aba2-5b96f639138c","name":"TestVm1","isSucceeded":true},"reservations":[{"id":"e52281b9-2e20-4cb2-8611-4b8cbc76a51a","name":"TestVm1","isSucceeded":true}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '201'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 22:38:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"10/2/2022
+        11:56:29 PM"}'
+    status:
+      code: 200
+      message: OK
+version: 1

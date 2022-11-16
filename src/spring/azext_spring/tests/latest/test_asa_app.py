@@ -8,7 +8,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_05_01_preview import models
+from ...vendored_sdks.appplatform.v2022_09_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment)
@@ -668,7 +668,17 @@ class TestAppCreate(BasicTest):
         self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
         resource = self.patch_app_resource
         self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
-
+        
+    def test_app_with_ingress_settings(self):
+        self._execute('rg', 'asc', 'app', instance_count=1, ingress_read_timeout=600, ingress_send_timeout=1200, session_affinity='Cookie', 
+                      session_max_age=1000, backend_protocol='Default')
+        resource = self.put_app_resource
+        self.assertEqual(600, resource.properties.ingress_settings.read_timeout_in_seconds)
+        resource = self.patch_app_resource
+        self.assertEqual(1200, resource.properties.ingress_settings.send_timeout_in_seconds)
+        self.assertEqual("Cookie", resource.properties.ingress_settings.session_affinity)
+        self.assertEqual(1000, resource.properties.ingress_settings.session_cookie_max_age)
+        self.assertEqual('Default', resource.properties.ingress_settings.backend_protocol)
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):

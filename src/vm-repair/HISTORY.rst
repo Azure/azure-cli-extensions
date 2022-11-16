@@ -2,6 +2,26 @@
 Release History
 ===============
 
+0.4.9
+++++++
+Fix for encrypted vm's auto unlock feature 
+
+0.4.8
+++++++
+Fix for encrypted vm's and fixing test cases
+
+0.4.7
+++++++
+Setting subscription account for reset-nic
+
+0.4.6
+++++++
+Updating the fetch_repair_vm to use the small letters in the query instead of capital letters
+
+0.4.5
+++++++
+Improve az vm repair reset-nic command to use subnet list available ips command
+
 0.4.4
 ++++++
 Add az vm repair reset-nic command
