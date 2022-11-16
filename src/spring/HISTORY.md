@@ -1,5 +1,28 @@
 Release History
 ===============
+1.2.0
+---
+* Add command `az spring list-marketplace-plan` to list all supported VMware product. For more detail, see https://learn.microsoft.com/en-us/azure/spring-apps/how-to-enterprise-marketplace-offer.
+* Add argument `--marketplace-plan-id` in command `az spring create` to support purchasing different VMware product plan when creating Enterprise sku Spring resource.
+
+1.1.14
+---
+* Add warn when update Config Server or Application Configuration Service with SSH auth.
+
+1.1.13
+---
+* Stop execution and throw exception when operation status is `Failed`.
+
+1.1.12
+---
+* Add warning logs when editing builders and buildpack bindings.
+
+1.1.11
+---
+* Add command `az spring app deployment enable-remote-debugging`.
+* Add command `az spring app deployment disable-remote-debugging`.
+* Add command `az spring app deployment get-remote-debugging-config`.
+
 1.1.10
 ---
 * Remove `Preview` tag for user-assigned identities of apps.

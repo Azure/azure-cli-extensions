@@ -598,6 +598,42 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_network_plugin_mode(), "")
 
+    def test_mc_get_enable_cilium_dataplane(self):
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_cilium_dataplane(), False)
+
+        # Flag set to True.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_cilium_dataplane": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_cilium_dataplane(), True)
+
+        # Flag set to False.
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_cilium_dataplane": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_cilium_dataplane(), False)
+
     def test_get_enable_managed_identity(self):
         # custom value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -3374,6 +3410,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             message_of_the_day="W10=",  # base64 encode of "[]"
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
@@ -4198,6 +4235,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
@@ -4603,6 +4641,107 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # fail on incomplete mc object (no network profile)
         with self.assertRaises(UnknownError):
             dec_9.update_load_balancer_profile(mc_9)
+        
+        # custom value
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"outbound_type": "managedNATGateway"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+                load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                    outbound_ip_prefixes=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                        public_ip_prefixes=[
+                            self.models.load_balancer_models.ResourceReference(
+                                id="id1"
+                            ),
+                            self.models.load_balancer_models.ResourceReference(
+                                id="id2"
+                            ),
+                        ]
+                    )
+                ),
+            ),
+        )
+        dec_10.context.attach_mc(mc_10)
+        dec_mc_10 = dec_10.update_load_balancer_profile(mc_10)
+
+        ground_truth_mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        self.assertEqual(dec_mc_10, ground_truth_mc_10)
+
+    def test_update_nat_gateway_profile(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"outbound_type": "loadBalancer"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_nat_gateway_profile(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                nat_gateway_profile=self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(),
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_nat_gateway_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type="loadBalancer",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_outbound_type(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": "managedNATGateway",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_outbound_type_in_network_profile(None)
+        dec_mc_1 = dec_1.update_outbound_type_in_network_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="managedNATGateway",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -4921,7 +5060,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
-        self.assertIsNone(updated_mc.oidc_issuer_profile)
+        self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
     def test_update_oidc_issuer_profile__enabled(self):
         dec = AKSPreviewManagedClusterUpdateDecorator(
@@ -5563,8 +5702,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             ),
         )
-        print(dec_mc_2.security_profile)
-        print(ground_truth_mc_2.security_profile)
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -5626,8 +5763,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             ),
         )
-        print(dec_mc_2.workload_auto_scaler_profile)
-        print(ground_truth_mc_2.workload_auto_scaler_profile)
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -5651,6 +5786,23 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_update_azure_monitor_profile(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_update_mc_profile_preview(self):
         import inspect

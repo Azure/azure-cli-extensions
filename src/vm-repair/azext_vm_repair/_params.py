@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('enable_nested', help='enable nested hyperv.')
         c.argument('associate_public_ip', help='Option to create repair vm with public ip')
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|suse12|ubuntu20|centos7|oracle7)')
+        c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')

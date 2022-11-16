@@ -215,6 +215,12 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --enable-cilium-dataplane
+          type: bool
+          short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires either --pod-subnet-id or --network-plugin-mode=overlay.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -275,7 +281,8 @@ helps['aks create'] = """
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
         - name: --enable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Enable pod security policy.
+          short-summary: Enable pod security policy.
+          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
@@ -366,7 +373,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --enable-workload-identity
           type: bool
-          short-summary: Enable workload identity addon.
+          short-summary: (PREVIEW) Enable workload identity addon.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -432,7 +439,7 @@ helps['aks create'] = """
           short-summary: The source cluster snapshot id is used to create new cluster.
         - name: --enable-oidc-issuer
           type: bool
-          short-summary: (PREVIEW) Enable OIDC issuer.
+          short-summary: Enable OIDC issuer.
         - name: --crg-id
           type: string
           short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
@@ -479,6 +486,15 @@ helps['aks create'] = """
         - name: --enable-vpa
           type: bool
           short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --nodepool-allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --nodepool-asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+        - name: --node-public-ip-tags
+          type: string
+          short-summary: The ipTags of the node public IPs.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -645,12 +661,18 @@ helps['aks update'] = """
           type: int
           short-summary: NAT gateway idle timeout in minutes.
           long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --outbound-type
+          type: string
+          short-summary: How outbound traffic will be configured for a cluster.
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Default is loadbalancer, other available options are managedNATGateway, userassignedNATGateway, UDR
         - name: --enable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Enable pod security policy.
+          short-summary: Enable pod security policy.
+          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --disable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Disable pod security policy.
+          short-summary: Disable pod security policy
+          long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -701,7 +723,7 @@ helps['aks update'] = """
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
         - name: --enable-workload-identity
           type: bool
-          short-summary: Enable Workload Identity addon for cluster.
+          short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -790,7 +812,7 @@ helps['aks update'] = """
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
         - name: --enable-oidc-issuer
           type: bool
-          short-summary: (PREVIEW) Enable OIDC issuer.
+          short-summary: Enable OIDC issuer.
         - name: --http-proxy-config
           type: string
           short-summary: HTTP Proxy configuration for this cluster.
@@ -882,6 +904,10 @@ helps['aks update'] = """
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
+        - name: --ssh-key-value
+          type: string
+          short-summary: Public key path or key contents to install on node VMs for SSH access. For example,
+                         'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -891,8 +917,6 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
-      - name: Enable pod security policy.
-        text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Disable pod security policy.
         text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.
@@ -901,6 +925,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+      - name: Update a kubernetes cluster with new outbound type
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --outbound-type managedNATGateway
       - name: Update a kubernetes cluster with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
       - name: Update a kubernetes cluster of managedNATGateway outbound type with two outbound AKS managed IPs an idle flow timeout of 4 minutes
@@ -1269,6 +1295,18 @@ helps['aks nodepool add'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --disable-windows-outbound-nat
+          type: bool
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
+        - name: --allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+        - name: --node-public-ip-tags
+          type: string
+          short-summary: The ipTags of the node public IPs.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1360,6 +1398,12 @@ helps['aks nodepool update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --allowed-host-ports
+          type: string
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+        - name: --asg-ids
+          type: string
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

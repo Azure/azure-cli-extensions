@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_20220901preview,
+from ._client_factory import (cf_spring_20221101preview,
+                              cf_spring_20220901preview,
                               cf_spring_20220501preview,
                               cf_spring_20220301preview,
                               cf_spring_20220101preview,
@@ -23,6 +24,7 @@ from ._transformers import (transform_spring_table_output,
                             transform_spring_cloud_gateway_output,
                             transform_api_portal_output)
 from ._validators import validate_app_insights_command_not_supported_tier
+from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
@@ -93,6 +95,9 @@ def load_command_table(self, _):
     with self.command_group('spring', custom_command_type=spring_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_create', supports_no_wait=True)
+        g.custom_command('list-marketplace-plan', 'spring_list_marketplace_plan',
+                         is_preview=True,
+                         table_transformer=transform_marketplace_plan_output)
 
     with self.command_group('spring', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
@@ -149,6 +154,9 @@ def load_command_table(self, _):
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
         g.custom_command('connect', 'app_connect')
+        g.custom_command('enable-remote-debugging', 'deployment_enable_remote_debugging', supports_no_wait=True)
+        g.custom_command('disable-remote-debugging', 'deployment_disable_remote_debugging', supports_no_wait=True)
+        g.custom_command('get-remote-debugging-config', 'deployment_get_remote_debugging')
 
     with self.command_group('spring app identity', custom_command_type=app_managed_identity_command,
                             exception_handler=handle_asc_exception) as g:

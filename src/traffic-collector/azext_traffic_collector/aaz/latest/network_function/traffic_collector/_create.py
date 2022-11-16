@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkfunction/azuretrafficcollectors/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkfunction/azuretrafficcollectors/{}", "2022-11-01"],
         ]
     }
 
@@ -74,96 +74,20 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.collector_policies = AAZListArg(
-            options=["--collector-policies"],
-            arg_group="Properties",
-            help="Collector Policies for Azure Traffic Collector.",
-        )
-
-        collector_policies = cls._args_schema.collector_policies
-        collector_policies.Element = AAZObjectArg()
-
-        _element = cls._args_schema.collector_policies.Element
-        _element.location = AAZResourceLocationArg(
-            options=["l", "location"],
-            help="Resource location.",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _element.emission_policies = AAZListArg(
-            options=["emission-policies"],
-            help="Emission policies.",
-        )
-        _element.ingestion_policy = AAZObjectArg(
-            options=["ingestion-policy"],
-            help="Ingestion policies.",
-        )
-        _element.tags = AAZDictArg(
-            options=["tags"],
-            help="Resource tags.",
-        )
-
-        emission_policies = cls._args_schema.collector_policies.Element.emission_policies
-        emission_policies.Element = AAZObjectArg()
-
-        _element = cls._args_schema.collector_policies.Element.emission_policies.Element
-        _element.emission_destinations = AAZListArg(
-            options=["emission-destinations"],
-            help="Emission policy destinations.",
-        )
-        _element.emission_type = AAZStrArg(
-            options=["emission-type"],
-            help="Emission format type.",
-            enum={"IPFIX": "IPFIX"},
-        )
-
-        emission_destinations = cls._args_schema.collector_policies.Element.emission_policies.Element.emission_destinations
-        emission_destinations.Element = AAZObjectArg()
-
-        _element = cls._args_schema.collector_policies.Element.emission_policies.Element.emission_destinations.Element
-        _element.destination_type = AAZStrArg(
-            options=["destination-type"],
-            help="Emission destination type.",
-            enum={"AzureMonitor": "AzureMonitor"},
-        )
-
-        ingestion_policy = cls._args_schema.collector_policies.Element.ingestion_policy
-        ingestion_policy.ingestion_sources = AAZListArg(
-            options=["ingestion-sources"],
-            help="Ingestion Sources.",
-        )
-        ingestion_policy.ingestion_type = AAZStrArg(
-            options=["ingestion-type"],
-            help="The ingestion type.",
-            enum={"IPFIX": "IPFIX"},
-        )
-
-        ingestion_sources = cls._args_schema.collector_policies.Element.ingestion_policy.ingestion_sources
-        ingestion_sources.Element = AAZObjectArg()
-
-        _element = cls._args_schema.collector_policies.Element.ingestion_policy.ingestion_sources.Element
-        _element.resource_id = AAZStrArg(
-            options=["resource-id"],
-            help="Resource ID.",
-        )
-        _element.source_type = AAZStrArg(
-            options=["source-type"],
-            help="Ingestion source type.",
-            enum={"Resource": "Resource"},
-        )
-
-        tags = cls._args_schema.collector_policies.Element.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.AzureTrafficCollectorsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -233,7 +157,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -259,62 +183,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("collectorPolicies", AAZListType, ".collector_policies")
-
-            collector_policies = _builder.get(".properties.collectorPolicies")
-            if collector_policies is not None:
-                collector_policies.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.collectorPolicies[]")
-            if _elements is not None:
-                _elements.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                _elements.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties.collectorPolicies[].properties")
-            if properties is not None:
-                properties.set_prop("emissionPolicies", AAZListType, ".emission_policies")
-                properties.set_prop("ingestionPolicy", AAZObjectType, ".ingestion_policy")
-
-            emission_policies = _builder.get(".properties.collectorPolicies[].properties.emissionPolicies")
-            if emission_policies is not None:
-                emission_policies.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.collectorPolicies[].properties.emissionPolicies[]")
-            if _elements is not None:
-                _elements.set_prop("emissionDestinations", AAZListType, ".emission_destinations")
-                _elements.set_prop("emissionType", AAZStrType, ".emission_type")
-
-            emission_destinations = _builder.get(".properties.collectorPolicies[].properties.emissionPolicies[].emissionDestinations")
-            if emission_destinations is not None:
-                emission_destinations.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.collectorPolicies[].properties.emissionPolicies[].emissionDestinations[]")
-            if _elements is not None:
-                _elements.set_prop("destinationType", AAZStrType, ".destination_type")
-
-            ingestion_policy = _builder.get(".properties.collectorPolicies[].properties.ingestionPolicy")
-            if ingestion_policy is not None:
-                ingestion_policy.set_prop("ingestionSources", AAZListType, ".ingestion_sources")
-                ingestion_policy.set_prop("ingestionType", AAZStrType, ".ingestion_type")
-
-            ingestion_sources = _builder.get(".properties.collectorPolicies[].properties.ingestionPolicy.ingestionSources")
-            if ingestion_sources is not None:
-                ingestion_sources.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.collectorPolicies[].properties.ingestionPolicy.ingestionSources[]")
-            if _elements is not None:
-                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
-                _elements.set_prop("sourceType", AAZStrType, ".source_type")
-
-            tags = _builder.get(".properties.collectorPolicies[].tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -367,6 +236,7 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.collector_policies = AAZListType(
                 serialized_name="collectorPolicies",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -374,115 +244,15 @@ class Create(AAZCommand):
             )
             properties.virtual_hub = AAZObjectType(
                 serialized_name="virtualHub",
+                flags={"read_only": True},
             )
+            _build_schema_resource_reference_read(properties.virtual_hub)
 
             collector_policies = cls._schema_on_200_201.properties.collector_policies
-            collector_policies.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.collector_policies.Element
-            _element.etag = AAZStrType(
+            collector_policies.Element = AAZObjectType(
                 flags={"read_only": True},
             )
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties.collector_policies.Element.properties
-            properties.emission_policies = AAZListType(
-                serialized_name="emissionPolicies",
-            )
-            properties.ingestion_policy = AAZObjectType(
-                serialized_name="ingestionPolicy",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            emission_policies = cls._schema_on_200_201.properties.collector_policies.Element.properties.emission_policies
-            emission_policies.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.collector_policies.Element.properties.emission_policies.Element
-            _element.emission_destinations = AAZListType(
-                serialized_name="emissionDestinations",
-            )
-            _element.emission_type = AAZStrType(
-                serialized_name="emissionType",
-            )
-
-            emission_destinations = cls._schema_on_200_201.properties.collector_policies.Element.properties.emission_policies.Element.emission_destinations
-            emission_destinations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.collector_policies.Element.properties.emission_policies.Element.emission_destinations.Element
-            _element.destination_type = AAZStrType(
-                serialized_name="destinationType",
-            )
-
-            ingestion_policy = cls._schema_on_200_201.properties.collector_policies.Element.properties.ingestion_policy
-            ingestion_policy.ingestion_sources = AAZListType(
-                serialized_name="ingestionSources",
-            )
-            ingestion_policy.ingestion_type = AAZStrType(
-                serialized_name="ingestionType",
-            )
-
-            ingestion_sources = cls._schema_on_200_201.properties.collector_policies.Element.properties.ingestion_policy.ingestion_sources
-            ingestion_sources.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.collector_policies.Element.properties.ingestion_policy.ingestion_sources.Element
-            _element.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-            _element.source_type = AAZStrType(
-                serialized_name="sourceType",
-            )
-
-            system_data = cls._schema_on_200_201.properties.collector_policies.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
-
-            tags = cls._schema_on_200_201.properties.collector_policies.Element.tags
-            tags.Element = AAZStrType()
-
-            virtual_hub = cls._schema_on_200_201.properties.virtual_hub
-            virtual_hub.id = AAZStrType(
-                flags={"read_only": True},
-            )
+            _build_schema_resource_reference_read(collector_policies.Element)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -510,6 +280,27 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+_schema_resource_reference_read = None
+
+
+def _build_schema_resource_reference_read(_schema):
+    global _schema_resource_reference_read
+    if _schema_resource_reference_read is not None:
+        _schema.id = _schema_resource_reference_read.id
+        return
+
+    _schema_resource_reference_read = AAZObjectType(
+        flags={"read_only": True}
+    )
+
+    resource_reference_read = _schema_resource_reference_read
+    resource_reference_read.id = AAZStrType(
+        flags={"read_only": True},
+    )
+
+    _schema.id = _schema_resource_reference_read.id
 
 
 __all__ = ["Create"]

@@ -21,6 +21,7 @@ from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
     CreateTableRestoreResource,
     AddCassandraTableAction,
+    AddMongoCollectionAction,
     AddSqlContainerAction,
     CreateTargetPhysicalPartitionThroughputInfoAction,
     CreateSourcePhysicalPartitionThroughputInfoAction,
@@ -314,8 +315,10 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb dts copy') as c:
         c.argument('job_name', job_name_type)
         c.argument('source_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Source cassandra table')
+        c.argument('source_mongo', nargs='+', action=AddMongoCollectionAction, help='Source mongo collection')
         c.argument('source_sql_container', nargs='+', action=AddSqlContainerAction, help='Source sql container')
         c.argument('dest_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Destination cassandra table')
+        c.argument('dest_mongo', nargs='+', action=AddMongoCollectionAction, help='Destination mongo collection')
         c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
 
