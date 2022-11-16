@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.6
+++++++
+
+* Updated patch behaviour for Azure Hybrid Benefit property
+
 1.3.5
 ++++++
 
