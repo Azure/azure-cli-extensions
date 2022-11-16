@@ -158,3 +158,21 @@ class LoadScenario(ScenarioTest):
                 '--resource-group {rg} '
                 '--encryption-identity SystemAssigned',
                 checks=checks)
+
+        self.cmd('az load show --name {resource_name_cmk} '
+                '--resource-group {rg}',
+                checks=checks)
+
+        checks = [JMESPathCheck('name', loadtest_resource_name),
+                    JMESPathCheck('location', self.location),
+                    JMESPathCheck('resourceGroup', resource_group),
+                    JMESPathCheck('provisioningState', 'Succeeded'),
+                    JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
+                    JMESPathCheck('identity.type', 'None'),
+                    JMESPathCheck('tags', {"test": "test"})]
+        
+        self.cmd('az load show --name {resource_name} '
+                '--resource-group {rg}',
+                checks=checks)
+
+        
