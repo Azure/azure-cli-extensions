@@ -200,6 +200,11 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
+        c.argument(
+            'retain',
+            action='store_true',
+            help='Disable the VM from azure but retain the VM in VMM.',
+        )
 
     with self.argument_context('connectedvmware vm stop') as c:
         c.argument(

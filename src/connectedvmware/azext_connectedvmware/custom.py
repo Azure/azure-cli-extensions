@@ -975,11 +975,12 @@ def delete_vm(
     resource_group_name,
     resource_name,
     force=False,
+    retain=None,
     no_wait=False,
 ):
 
     return sdk_no_wait(
-        no_wait, client.begin_delete, resource_group_name, resource_name, force
+        no_wait, client.begin_delete, resource_group_name, resource_name, force, retain,
     )
 
 
