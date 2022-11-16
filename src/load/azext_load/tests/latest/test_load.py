@@ -19,21 +19,59 @@ class LoadScenario(ScenarioTest):
     @KeyVaultPreparer(location=location)
     def test_load_create(self, resource_group, key_vault):
         loadtest_resource_name = self.create_random_name('load-test', 24)
+        loadtest_resource_name_cmk = self.create_random_name('load-test', 24)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id(),
             'resource_name': loadtest_resource_name,
+            'resource_name_cmk': loadtest_resource_name_cmk,
             'location': self.location,
-            'identity_name1': self.identity_name1,
-            'identity_name2': self.identity_name2,
+            'kv': key_vault
         })
 
-        create_checks = [JMESPathCheck('name', loadtest_resource_name),
-                         JMESPathCheck('location', self.location_name),
-                         JMESPathCheck('resourceGroup', resource_group),
-                         JMESPathCheck('provisioningState', 'Succeeded'),
-                         JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
-                         JMESPathCheck('identity.type', 'None')]
+        uami1 = self.cmd('identity create -n {identity_name1} -g {rg}').get_output_in_json()
+        uami2 = self.cmd('identity create -n {identity_name2} -g {rg}').get_output_in_json()
+        
+        self.kwargs['uami1ResourceId'] = uami1['id']
+        self.kwargs['uami1PrincipalId'] = uami1['principalId']
+        self.kwargs['uami1TenantId'] = uami1['tenantId']
+
+        self.kwargs['uami2ResourceId'] = uami2['id']
+        self.kwargs['uami2PrincipalId'] = uami2['principalId']
+        self.kwargs['uami2TenantId'] = uami2['tenantId']
+
+        checks = [JMESPathCheck('name', loadtest_resource_name),
+                    JMESPathCheck('location', self.location_name),
+                    JMESPathCheck('resourceGroup', resource_group),
+                    JMESPathCheck('provisioningState', 'Succeeded'),
+                    JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
+                    JMESPathCheck('identity.type', 'None')]
 
         self.cmd('az load create --name {resource_name} --location {location} '
                 '--resource-group {rg}',
-                checks=create_checks)
+                checks=checks)
+
+        checks = [JMESPathCheck('name', loadtest_resource_name),
+                    JMESPathCheck('location', self.location_name),
+                    JMESPathCheck('resourceGroup', resource_group),
+                    JMESPathCheck('provisioningState', 'Succeeded'),
+                    JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
+                    JMESPathCheck('identity.type', 'SystemAssigned,UserAssigned')]
+
+        self.cmd('az load create --name {resource_name} --location {location} '
+                '--resource-group {rg} --identity-type SystemAssigned,UserAssigned',
+                '--user-assigned \"{{uami1ResourceId}}\"'
+                checks=checks)
+
+        # self.cmd('az keyvault update -n {kv} -g {rg} --set properties.enableSoftDelete=true')
+
+        # checks = [JMESPathCheck('name', loadtest_resource_name_cmk),
+        #             JMESPathCheck('location', self.location_name),
+        #             JMESPathCheck('resourceGroup', resource_group),
+        #             JMESPathCheck('provisioningState', 'Succeeded'),
+        #             JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
+        #             JMESPathCheck('identity.type', 'SystemAssigned,UserAssigned')]
+        
+        # self.cmd('az load create --name {resource_name_cmk} --location {location} '
+        #         '--resource-group {rg} --identity-type SystemAssigned,UserAssigned',
+        #         '--user-assigned "{\'uami1\':{}, \'uami2\':{}}"'
+        #         checks=checks)
