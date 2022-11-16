@@ -6023,10 +6023,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path}'
 
-        # TODO: check actual values getting update, currently returned MC does not sync
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.kubeProxyConfig.enabled',True),
+            self.check('networkProfile.kubeProxyConfig.mode','IPVS'),
+            self.check('networkProfile.kubeProxyConfig.ipvsConfig.scheduler', 'LeastConnection'),
         ])
 
         # delete
