@@ -116,10 +116,10 @@ class NspScenario(ScenarioTest):
         self.cmd('network perimeter create --name {nsp_name} -l eastus2euap --resource-group {rg}')
         self.cmd('network perimeter profile create --name {profile_name} --perimeter-name {nsp_name} --resource-group {rg}')
 
-        self.cmd('cognitiveservices account create --name {resource_name} --resource-group {rg} --kind ComputerVision --sku S1 --location eastus2euap --yes')
+        self.cmd('keyvault create --name {resource_name} -l eastus2euap --resource-group {rg}')
 
         self.cmd('network perimeter association create --name {association_name} --perimeter-name {nsp_name} --resource-group {rg} --access-mode Learning '
-                 '--private-link-resource id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{resource_name}" '
+                 '--private-link-resource id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{resource_name}" '
                  '--profile id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp_name}/profiles/{profile_name}"')
 
         self.cmd('network perimeter association show --name {association_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
@@ -127,7 +127,7 @@ class NspScenario(ScenarioTest):
         ])
 
         self.cmd('network perimeter association update --name {association_name} --perimeter-name {nsp_name} --resource-group {rg} --access-mode Enforced '
-                 '--private-link-resource id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{resource_name}" '
+                 '--private-link-resource id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{resource_name}" '
                  '--profile id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/{nsp_name}/profiles/{profile_name}"')
 
         self.cmd('network perimeter association show --name {association_name} --perimeter-name {nsp_name} --resource-group {rg}', checks=[
@@ -140,5 +140,5 @@ class NspScenario(ScenarioTest):
         
         self.cmd('network perimeter association show --name {association_name} --perimeter-name {nsp_name} --resource-group {rg}', expect_failure=True)
 
-        self.cmd('cognitiveservices account delete --name {resource_name} --resource-group {rg}')
-        self.cmd('cognitiveservices account purge --name {resource_name} -l eastus2euap -g {rg}')
+        self.cmd('keyvault delete --name {resource_name} --resource-group {rg} --no-wait')
+        self.cmd('keyvault purge --name {resource_name} -l eastus2euap --no-wait')
