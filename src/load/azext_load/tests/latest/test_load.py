@@ -51,6 +51,7 @@ class LoadScenario(ScenarioTest):
                     JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
                     JMESPathCheck('identity.type', 'None')]
 
+        # Create basic Load Test resource
         self.cmd('az load create --name {resource_name} '
                 '--location {location} '
                 '--resource-group {rg}',
@@ -63,6 +64,7 @@ class LoadScenario(ScenarioTest):
                     JMESPathCheck('type', 'microsoft.loadtestservice/loadtests'),
                     JMESPathCheck('identity.type', 'SystemAssigned, UserAssigned')]
 
+        # Create Load Test resource with Managed Identity
         self.cmd('az load create --name {resource_name} '
                 '--location {location} '
                 '--resource-group {rg} '
@@ -70,6 +72,7 @@ class LoadScenario(ScenarioTest):
                 '--user-assigned \"{{{uami1ResourceId}}}\"',
                 checks=checks)
 
+        # Set keyvault properties
         self.cmd('az keyvault update --name {kv} '
                 '--resource-group {rg} '
                 '--set properties.enableSoftDelete=true')
@@ -78,11 +81,13 @@ class LoadScenario(ScenarioTest):
                 '--resource-group {rg} '
                 '--set properties.enablePurgeProtection=true')
         
+        # Set keyvault access policy for user assigned identity
         self.cmd('az keyvault set-policy --name {kv} '
                 '--resource-group {rg} '
                 '--object-id {uami1PrincipalId} '
                 '--key-permissions get wrapKey unwrapKey')
 
+        # Create a new Key for CMK encryption
         key = self.cmd('az keyvault key create -n {cmk_key1_name} '
                 '-p software '
                 '--vault-name {kv}').get_output_in_json()
@@ -99,6 +104,7 @@ class LoadScenario(ScenarioTest):
                     JMESPathCheck('encryption.identity.type', 'UserAssigned'),
                     JMESPathCheck('encryption.identity.resourceId', uami1['id'])]
         
+        # Create Load Test resource with CMK encryption
         self.cmd('az load create --name {resource_name_cmk} '
                 '--location {location} '
                 '--resource-group {rg} '
@@ -116,6 +122,7 @@ class LoadScenario(ScenarioTest):
                     JMESPathCheck('identity.type', 'None'),
                     JMESPathCheck('tags', {"test": "test"})]
 
+        # Update Load Test resource
         self.cmd('az load update --name {resource_name} '
                 '--resource-group {rg} '
                 '--tags test=test '
@@ -132,6 +139,7 @@ class LoadScenario(ScenarioTest):
                     JMESPathCheck('encryption.identity.type', 'UserAssigned'),
                     JMESPathCheck('encryption.identity.resourceId', uami1['id'])]
         
+        # Update Load Test resource with CMK encryption and managed identity
         loadtest_resource_with_cmk = self.cmd('az load update --name {resource_name_cmk} '
                 '--resource-group {rg} '
                 '--identity-type SystemAssigned,UserAssigned',
@@ -139,6 +147,7 @@ class LoadScenario(ScenarioTest):
         
         self.kwargs['systemAssignedIdentityPrincipalId'] = loadtest_resource_with_cmk['identity']['principalId']
 
+        # Set keyvault access policy for system assigned identity
         self.cmd('az keyvault set-policy --name {kv} '
                 '--resource-group {rg} '
                 '--object-id {systemAssignedIdentityPrincipalId} '
@@ -154,11 +163,13 @@ class LoadScenario(ScenarioTest):
                     JMESPathCheck('encryption.identity.type', 'SystemAssigned'),
                     JMESPathCheck('encryption.identity.resourceId', None)]
         
+        # Update Load Test resource with system managed identity
         self.cmd('az load update --name {resource_name_cmk} '
                 '--resource-group {rg} '
                 '--encryption-identity SystemAssigned',
                 checks=checks)
 
+        # Get Load Test resource
         self.cmd('az load show --name {resource_name_cmk} '
                 '--resource-group {rg}',
                 checks=checks)
@@ -175,4 +186,14 @@ class LoadScenario(ScenarioTest):
                 '--resource-group {rg}',
                 checks=checks)
 
+        # List Load Test resources
+        self.cmd('az load list '
+                '--resource-group {rg}',
+                checks=self.check('length(@)', 2))
         
+        # Delete Load Test resource
+        self.cmd('az load delete --name {resource_name} '
+                '--resource-group {rg} --yes')
+        
+        self.cmd('az load delete --name {resource_name_cmk} '
+                '--resource-group {rg} --yes')
