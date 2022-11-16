@@ -48,7 +48,7 @@ def run_cli_command(cmd, return_as_json=False):
         raise
 
 
-def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
+def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, only_show_errors=None):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
 
     if output_as_json:
@@ -70,6 +70,10 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
                     full_cmd.append(k)
                 else:
                     full_cmd.append(k + '=' + v)
+
+    # use --only-show-errors to run CLI commands if user specified
+    if only_show_errors is not None:
+        full_cmd += ['--only-show-errors']
 
     return full_cmd
 
