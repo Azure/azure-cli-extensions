@@ -9,5 +9,15 @@ from azure.cli.testsdk import *
 
 
 class AdpScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    def test_workpaces(self):
+        workspaces = self.cmd("az adp workspace list").get_output_in_json()
+        assert len(workspaces) > 0
+        workspace = workspaces[0]
+        assert workspace['name'] is not None
+        assert workspace['location'] is not None
+        assert workspace['type'] == "Microsoft.AutonomousDevelopmentPlatform/workspaces"
+        # assert workspace['city'] is not None
+        # assert workspace['providerName'] is not None
+        # assert workspace['longitudeDegrees'] is not None
+        # assert workspace['latitudeDegrees'] is not None
+        # assert workspace['altitudeMeters'] is not None

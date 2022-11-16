@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Workspace
+
+    :example: delete workspace
+        az adp workspace delete --subscription sample-subscription --resource-group sample-rg --name sample-ws
     """
 
     _aaz_info = {

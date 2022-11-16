@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "adp workspace",
 )
 class __CMDGroup(AAZCommandGroup):
-    """manage workspace
+    """manage adp workspace
     """
     pass
 

@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """Checks the resource name is available.
+
+    :example: workspaces check name availability
+        az adp check-name-availability --subscription "sample-subscription" --name "sample-name" --type Microsoft.AutonomousDevelopmentPlatform/workspaces
+
+    :example: accounts check name availability
+        az adp check-name-availability --subscription "sample-subscription" --name "sample-name" --type Microsoft.AutonomousDevelopmentPlatform/accounts
     """
 
     _aaz_info = {

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "adp",
 )
 class __CMDGroup(AAZCommandGroup):
-    """adp
+    """Manage Azure Autonomous Development Platform resources.
     """
     pass
 

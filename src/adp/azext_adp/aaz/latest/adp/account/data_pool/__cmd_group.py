@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "adp account data-pool",
 )
 class __CMDGroup(AAZCommandGroup):
-    """manage data-pool
+    """manage adp data-pool
     """
     pass
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "adp account",
 )
 class __CMDGroup(AAZCommandGroup):
-    """manage account
+    """manage adp accounts
     """
     pass
 
