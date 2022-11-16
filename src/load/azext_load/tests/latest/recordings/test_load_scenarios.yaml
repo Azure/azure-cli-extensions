@@ -1,0 +1,1642 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001","name":"cli_test_azure_load_testing000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-11-16T11:02:51Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:03:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-msi/6.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1?api-version=2022-01-31-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1","name":"clitestid1","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus2","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:03:44 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001","name":"cli_test_azure_load_testing000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-11-16T11:02:51Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:03:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-msi/6.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid2?api-version=2022-01-31-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid2","name":"clitestid2","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus2","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"acde46e0-3509-4d9d-be68-75e96be2398b","clientId":"c33d9ec2-17da-41ef-a7d7-d483fba92462"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:03:53 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"identity": {"type": "None"}, "location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '53'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","name":"load-test000003","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:58.1631051Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:03:58.1631051Z"},"identity":{"type":"None"},"properties":{"description":null,"dataPlaneURI":"b3e1396d-5b05-4680-bb16-847eb8b4f85b.westus2.cnt-prod.loadtesting.azure.com","encryption":null,"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/d4579a19-29f2-47f0-b5aa-c8dba7f9f03e*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '743'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:04:00 GMT
+      etag:
+      - '"bd00dfe5-0000-0800-0000-6374c39f0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c1286984-739e-431e-8ac9-45fe31a59b98
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/d4579a19-29f2-47f0-b5aa-c8dba7f9f03e*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/d4579a19-29f2-47f0-b5aa-c8dba7f9f03e*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5","name":"d4579a19-29f2-47f0-b5aa-c8dba7f9f03e*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","status":"Succeeded","startTime":"2022-11-16T11:03:59.3356517Z","endTime":"2022-11-16T11:04:00.5267066Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:04:30 GMT
+      etag:
+      - '"58006dd0-0000-0800-0000-6374c3a00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","name":"load-test000003","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:58.1631051Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:03:58.1631051Z"},"identity":{"type":"None"},"properties":{"description":null,"dataPlaneURI":"b3e1396d-5b05-4680-bb16-847eb8b4f85b.westus2.cnt-prod.loadtesting.azure.com","encryption":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '744'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:04:31 GMT
+      etag:
+      - '"bd0006e6-0000-0800-0000-6374c3a00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned,UserAssigned", "userAssignedIdentities":
+      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1":
+      {}}}, "location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '282'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group --identity-type --user-assigned
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","name":"load-test000003","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:58.1631051Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:04:32.7830099Z"},"identity":{"principalId":"75fa9494-1012-4498-abf7-1e066a1aef2f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/microsoft.managedidentity/userassignedidentities/clitestid1":{"principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}},"properties":{"description":null,"dataPlaneURI":"b3e1396d-5b05-4680-bb16-847eb8b4f85b.westus2.cnt-prod.loadtesting.azure.com","encryption":null,"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/6d8c6ab7-995f-48e8-a4b6-02dbe01e3a80*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1175'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:04:38 GMT
+      etag:
+      - '"bd00e3e8-0000-0800-0000-6374c3c40000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 29030e2c-1606-4534-8f40-41c0579b379b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1189'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --identity-type --user-assigned
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/6d8c6ab7-995f-48e8-a4b6-02dbe01e3a80*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/6d8c6ab7-995f-48e8-a4b6-02dbe01e3a80*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5","name":"6d8c6ab7-995f-48e8-a4b6-02dbe01e3a80*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","status":"Succeeded","startTime":"2022-11-16T11:04:35.7098536Z","endTime":"2022-11-16T11:04:37.1726949Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:07 GMT
+      etag:
+      - '"58002fd2-0000-0800-0000-6374c3c50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --identity-type --user-assigned
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","name":"load-test000003","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:58.1631051Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:04:32.7830099Z"},"identity":{"principalId":"75fa9494-1012-4498-abf7-1e066a1aef2f","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/microsoft.managedidentity/userassignedidentities/clitestid1":{"principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}},"properties":{"description":null,"dataPlaneURI":"b3e1396d-5b05-4680-bb16-847eb8b4f85b.westus2.cnt-prod.loadtesting.azure.com","encryption":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1176'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:08 GMT
+      etag:
+      - '"bd00f7e8-0000-0800-0000-6374c3c50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --set
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:03:02.828Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {}, "properties": {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "sku": {"family": "A", "name": "standard"}, "accessPolicies": [{"tenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId": "6cebd55a-b019-43e3-ba0c-79707d129832",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}], "vaultUri": "https://clitest000002.vault.azure.net/",
+      "enabledForDeployment": false, "enableSoftDelete": true, "softDeleteRetentionInDays":
+      7, "provisioningState": "Succeeded", "publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '583'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --set
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:12.121Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1188'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --set
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:12.121Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {}, "properties": {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "sku": {"family": "A", "name": "standard"}, "accessPolicies": [{"tenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId": "6cebd55a-b019-43e3-ba0c-79707d129832",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}], "vaultUri": "https://clitest000002.vault.azure.net/",
+      "enabledForDeployment": false, "enableSoftDelete": true, "softDeleteRetentionInDays":
+      7, "enablePurgeProtection": true, "provisioningState": "Succeeded", "publicNetworkAccess":
+      "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '614'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --set
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:14.92Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enablePurgeProtection":true,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1060'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1186'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:14.92Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enablePurgeProtection":true,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1060'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {}, "properties": {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "sku": {"family": "A", "name": "standard"}, "accessPolicies": [{"tenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId": "6cebd55a-b019-43e3-ba0c-79707d129832",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}, {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId":
+      "d8c98744-624d-4545-8618-93da95f42e88", "permissions": {"keys": ["get", "wrapKey",
+      "unwrapKey"]}}], "vaultUri": "https://clitest000002.vault.azure.net/", "enabledForDeployment":
+      false, "enableSoftDelete": true, "softDeleteRetentionInDays": 7, "enablePurgeProtection":
+      true, "provisioningState": "Succeeded", "publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '778'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:17.506Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"d8c98744-624d-4545-8618-93da95f42e88","permissions":{"keys":["get","wrapKey","unwrapKey"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enablePurgeProtection":true,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1187'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-keyvault-keys/4.5.1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://clitest000002.vault.azure.net/keys/testkey1/create?api-version=7.3
+  response:
+    body:
+      string: '{"error":{"code":"Unauthorized","message":"AKV10000: Request is missing
+        a Bearer or PoP token."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '97'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      www-authenticate:
+      - Bearer authorization="https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47",
+        resource="https://vault.azure.net"
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-network-info:
+      - conn_type=Ipv4;addr=167.220.238.88;act_addr_fam=InterNetwork;
+      x-ms-keyvault-region:
+      - westus2
+      x-ms-keyvault-service-version:
+      - 1.9.576.1
+    status:
+      code: 401
+      message: Unauthorized
+- request:
+    body: '{"kty": "RSA", "attributes": {"enabled": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-keyvault-keys/4.5.1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://clitest000002.vault.azure.net/keys/testkey1/create?api-version=7.3
+  response:
+    body:
+      string: '{"key":{"kid":"https://clitest000002.vault.azure.net/keys/testkey1/c28ea02af73d4c0a8502bff2790a65d3","kty":"RSA","key_ops":["encrypt","decrypt","sign","verify","wrapKey","unwrapKey"],"n":"oMXe-FfsXSmhoMO5gXgmv_VEOpTprd1SRvRQGA9XS4dy2RaWEyGuSg01TdBns_zvWknj-CCsUUia0M2onXD2QaSgnKtd8fI2_qOAb0iCkVB4wmaCXVBjrCYFeas2S6FmHtsFLUp7OmajEElQnKhiI_3TJ6PsgwW0KTyrF3bw4S9kJnJk9ZXd1c64NnggpcnZ332UiPWD5I-7hTTA8uMcKc7MmFpKrDgKIhXCyNhBbqwq6Fqgfkr4ncwoFgaSh27y8AhCqQufJ80vASksV43IdRX-4Zj_gtp0ypmPZPwin0JD-vYbjUN4gE_kiAz8wCntkbV9SiVQRWJmAyw8IcoCvQ","e":"AQAB"},"attributes":{"enabled":true,"created":1668596719,"updated":1668596719,"recoveryLevel":"CustomizedRecoverable","recoverableDays":7,"exportable":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '695'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-network-info:
+      - conn_type=Ipv4;addr=167.220.238.88;act_addr_fam=InterNetwork;
+      x-ms-keyvault-region:
+      - westus2
+      x-ms-keyvault-service-version:
+      - 1.9.576.1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1":
+      {}}}, "location": "westus2", "properties": {"encryption": {"identity": {"resourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1",
+      "type": "UserAssigned"}, "keyUrl": "https://clitest000002.vault.azure.net/keys/testkey1/c28ea02af73d4c0a8502bff2790a65d3"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '623'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group --identity-type --user-assigned --encryption-key
+        --encryption-identity
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","name":"load-test000004","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:05:23.5153889Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:23.5153889Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/microsoft.managedidentity/userassignedidentities/clitestid1":{"principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}},"properties":{"description":null,"dataPlaneURI":"109fdd88-30f2-4fc3-a4fb-1cdb3beab320.westus2.cnt-prod.loadtesting.azure.com","encryption":{"keyUrl":"https://clitest000002.vault.azure.net/keys/testkey1/c28ea02af73d4c0a8502bff2790a65d3","identity":{"type":"UserAssigned","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1"}},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/8c2e3d5b-5c79-4efd-a98c-752cfaedd815*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1370'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:29 GMT
+      etag:
+      - '"bd0034ee-0000-0800-0000-6374c3f80000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ed92f6de-69a7-4168-ae24-ffc4fcb1a943
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1189'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --identity-type --user-assigned --encryption-key
+        --encryption-identity
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/8c2e3d5b-5c79-4efd-a98c-752cfaedd815*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/8c2e3d5b-5c79-4efd-a98c-752cfaedd815*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A","name":"8c2e3d5b-5c79-4efd-a98c-752cfaedd815*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","status":"Succeeded","startTime":"2022-11-16T11:05:25.9416013Z","endTime":"2022-11-16T11:05:29.6812633Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:05:59 GMT
+      etag:
+      - '"580094d4-0000-0800-0000-6374c3f90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --identity-type --user-assigned --encryption-key
+        --encryption-identity
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","name":"load-test000004","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:05:23.5153889Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:23.5153889Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/microsoft.managedidentity/userassignedidentities/clitestid1":{"principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}},"properties":{"description":null,"dataPlaneURI":"109fdd88-30f2-4fc3-a4fb-1cdb3beab320.westus2.cnt-prod.loadtesting.azure.com","encryption":{"keyUrl":"https://clitest000002.vault.azure.net/keys/testkey1/c28ea02af73d4c0a8502bff2790a65d3","identity":{"type":"UserAssigned","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1"}},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:06:00 GMT
+      etag:
+      - '"bd004fee-0000-0800-0000-6374c3f90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "tags": {"test": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '56'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --tags --identity-type
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003?api-version=2022-12-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e230b72c-1cdb-4ddf-b11e-66baf4c76b5a*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:06:04 GMT
+      etag:
+      - '"bd00bcf1-0000-0800-0000-6374c41d0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e230b72c-1cdb-4ddf-b11e-66baf4c76b5a*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+      mise-correlation-id:
+      - c88ae044-a221-4f2f-a35e-fe3693f914a5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1187'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --tags --identity-type
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e230b72c-1cdb-4ddf-b11e-66baf4c76b5a*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e230b72c-1cdb-4ddf-b11e-66baf4c76b5a*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5","name":"e230b72c-1cdb-4ddf-b11e-66baf4c76b5a*2D61167E0E73024F47C8377091C7799EA7D025E48369DDC70088A2E3BFA028D5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","status":"Succeeded","startTime":"2022-11-16T11:06:05.1366546Z","endTime":"2022-11-16T11:06:06.3856753Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:06:35 GMT
+      etag:
+      - '"580051d6-0000-0800-0000-6374c41e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --tags --identity-type
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000003","name":"load-test000003","type":"microsoft.loadtestservice/loadtests","location":"westus2","tags":{"test":"test"},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:58.1631051Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:06:04.168209Z"},"identity":{"type":"None"},"properties":{"description":null,"dataPlaneURI":"b3e1396d-5b05-4680-bb16-847eb8b4f85b.westus2.cnt-prod.loadtesting.azure.com","encryption":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '766'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:06:36 GMT
+      etag:
+      - '"bd00e9f1-0000-0800-0000-6374c41e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned,UserAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '53'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --identity-type
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004?api-version=2022-12-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e2e31967-f402-4e44-80b4-9548e5a091af*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:06:39 GMT
+      etag:
+      - '"bd00ccf4-0000-0800-0000-6374c4400000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e2e31967-f402-4e44-80b4-9548e5a091af*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+      mise-correlation-id:
+      - 40433262-80d6-4776-9cf5-bc309f92388e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1186'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --identity-type
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e2e31967-f402-4e44-80b4-9548e5a091af*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/e2e31967-f402-4e44-80b4-9548e5a091af*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A","name":"e2e31967-f402-4e44-80b4-9548e5a091af*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","status":"Succeeded","startTime":"2022-11-16T11:06:40.1767572Z","endTime":"2022-11-16T11:06:41.3223333Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:10 GMT
+      etag:
+      - '"58002fd8-0000-0800-0000-6374c4410000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --identity-type
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","name":"load-test000004","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:05:23.5153889Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:06:39.1843909Z"},"identity":{"principalId":"5d400e04-3a2e-4ecd-bbed-15949cf93cb0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/microsoft.managedidentity/userassignedidentities/clitestid1":{"principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}},"properties":{"description":null,"dataPlaneURI":"109fdd88-30f2-4fc3-a4fb-1cdb3beab320.westus2.cnt-prod.loadtesting.azure.com","encryption":{"keyUrl":"https://clitest000002.vault.azure.net/keys/testkey1/c28ea02af73d4c0a8502bff2790a65d3","identity":{"type":"UserAssigned","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/clitestid1"}},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1490'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:10 GMT
+      etag:
+      - '"bd00dcf4-0000-0800-0000-6374c4410000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:05:17.506Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"d8c98744-624d-4545-8618-93da95f42e88","permissions":{"keys":["get","wrapKey","unwrapKey"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enablePurgeProtection":true,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {}, "properties": {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "sku": {"family": "A", "name": "standard"}, "accessPolicies": [{"tenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId": "6cebd55a-b019-43e3-ba0c-79707d129832",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}, {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId":
+      "d8c98744-624d-4545-8618-93da95f42e88", "permissions": {"keys": ["get", "wrapKey",
+      "unwrapKey"]}}, {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId":
+      "5d400e04-3a2e-4ecd-bbed-15949cf93cb0", "permissions": {"keys": ["get", "wrapKey",
+      "unwrapKey"]}}], "vaultUri": "https://clitest000002.vault.azure.net/", "enabledForDeployment":
+      false, "enableSoftDelete": true, "softDeleteRetentionInDays": 7, "enablePurgeProtection":
+      true, "provisioningState": "Succeeded", "publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '942'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"westus2","tags":{},"systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:03:02.828Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:07:13.328Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"6cebd55a-b019-43e3-ba0c-79707d129832","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"d8c98744-624d-4545-8618-93da95f42e88","permissions":{"keys":["get","wrapKey","unwrapKey"]}},{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"5d400e04-3a2e-4ecd-bbed-15949cf93cb0","permissions":{"keys":["get","wrapKey","unwrapKey"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enablePurgeProtection":true,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1188'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"encryption": {"identity": {"resourceId": null, "type":
+      "SystemAssigned"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --encryption-identity
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004?api-version=2022-12-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/a79eafab-75e3-4046-9883-b0bd13c69431*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:17 GMT
+      etag:
+      - '"bd009ff8-0000-0800-0000-6374c4660000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/a79eafab-75e3-4046-9883-b0bd13c69431*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+      mise-correlation-id:
+      - b4f6f0e4-6954-4a61-9f75-167dfac8b649
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1185'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --encryption-identity
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/a79eafab-75e3-4046-9883-b0bd13c69431*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.LoadTestService/locations/WESTUS2/operationStatuses/a79eafab-75e3-4046-9883-b0bd13c69431*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A","name":"a79eafab-75e3-4046-9883-b0bd13c69431*7A4788434920CF5433DC2CF4125E3F11FDD5BF72AF18B86055068761858F6C5A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","status":"Succeeded","startTime":"2022-11-16T11:07:15.0110909Z","endTime":"2022-11-16T11:07:19.1665184Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:47 GMT
+      etag:
+      - '"5800bfd9-0000-0800-0000-6374c4670000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - load update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --encryption-identity
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004?api-version=2022-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_load_testing000001/providers/Microsoft.LoadTestService/loadTests/load-test000004","name":"load-test000004","type":"microsoft.loadtestservice/loadtests","location":"westus2","systemData":{"createdBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","createdByType":"Application","createdAt":"2022-11-16T11:05:23.5153889Z","lastModifiedBy":"5b96bb74-67f0-463c-9319-6f766ae1c33f","lastModifiedByType":"Application","lastModifiedAt":"2022-11-16T11:07:14.856575Z"},"identity":{"principalId":"5d400e04-3a2e-4ecd-bbed-15949cf93cb0","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned,
+        UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_load_testing000001/providers/microsoft.managedidentity/userassignedidentities/clitestid1":{"principalId":"d8c98744-624d-4545-8618-93da95f42e88","clientId":"aa1481b5-4c0b-4220-953a-14dd4c5ad97c"}}},"properties":{"description":null,"dataPlaneURI":"109fdd88-30f2-4fc3-a4fb-1cdb3beab320.westus2.cnt-prod.loadtesting.azure.com","encryption":{"keyUrl":"https://clitest000002.vault.azure.net/keys/testkey1/c28ea02af73d4c0a8502bff2790a65d3","identity":{"type":"SystemAssigned","resourceId":null}},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1323'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 16 Nov 2022 11:07:48 GMT
+      etag:
+      - '"bd00c5f8-0000-0800-0000-6374c4670000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1
