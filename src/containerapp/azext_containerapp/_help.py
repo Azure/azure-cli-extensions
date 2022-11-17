@@ -678,7 +678,7 @@ helps['containerapp ingress access-restriction'] = """
 
 helps['containerapp ingress access-restriction set'] = """
     type: command
-    short-summary: Configure access restrictions for a container app.
+    short-summary: Configure IP access restrictions for a container app.
     examples:
     - name: Add an allow access restriction.
       text: |
