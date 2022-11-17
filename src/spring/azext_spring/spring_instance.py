@@ -11,6 +11,8 @@ from .custom import (_warn_enable_java_agent, _update_application_insights_asc_c
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
+                               create_application_live_view,
+                               create_dev_tool_portal,
                                create_service_registry,
                                create_gateway,
                                create_api_portal)
@@ -122,6 +124,8 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
                 self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size']),
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
             create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_application_live_view(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_dev_tool_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs)
@@ -156,6 +160,7 @@ def spring_create(cmd, client, resource_group, name,
                   zone_redundant=False,
                   build_pool_size=None,
                   enable_application_configuration_service=False,
+                  enable_application_live_view=False,
                   enable_service_registry=False,
                   enable_gateway=False,
                   gateway_instance_count=None,
@@ -188,6 +193,7 @@ def spring_create(cmd, client, resource_group, name,
         'zone_redundant': zone_redundant,
         'build_pool_size': build_pool_size,
         'enable_application_configuration_service': enable_application_configuration_service,
+        'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,
         'enable_gateway': enable_gateway,
         'gateway_instance_count': gateway_instance_count,
