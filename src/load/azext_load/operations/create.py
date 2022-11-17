@@ -1,7 +1,11 @@
-from ..aaz.latest.load._create import Create
 from azure.cli.core.aaz import has_value
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError
+)
+
 from msrestazure.tools import is_valid_resource_id
-from azure.core.exceptions import ServiceRequestError
+
+from ..aaz.latest.load._create import Create
 
 
 class LoadTestCreate(Create):
@@ -20,12 +24,12 @@ class LoadTestCreate(Create):
 
         if has_value(args.encryption_identity):
             encryption_identity_id = str(args.encryption_identity)
-            if not is_valid_resource_id(encryption_identity_id):
-                raise ServiceRequestError("Invalid encryption identity parameter: " + encryption_identity_id + ". Please enter a valid resource id.")
-            else:
+            if is_valid_resource_id(encryption_identity_id):
                 args.encryption_identity_type = "UserAssigned"
                 if identity_type_str.lower() == "none":
                     args.identity_type = "UserAssigned"
                 elif identity_type_str.lower() == "systemassigned":
                     args.identity_type = "SystemAssigned,UserAssigned"
                 args.user_assigned[encryption_identity_id] = {}
+            else:
+                raise InvalidArgumentValueError("--encryption-identity is not a valid Azure resource ID.")

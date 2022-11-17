@@ -1,7 +1,11 @@
-from ..aaz.latest.load._update import Update
 from azure.cli.core.aaz import has_value
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError
+)
+
 from msrestazure.tools import is_valid_resource_id
-from azure.core.exceptions import ServiceRequestError
+
+from ..aaz.latest.load._update import Update
 
 
 class LoadTestUpdate(Update):
@@ -37,4 +41,4 @@ class LoadTestUpdate(Update):
                         args.identity_type = "SystemAssigned,UserAssigned"
                     args.user_assigned[encryption_identity_id] = {}
             else:
-                raise ServiceRequestError("Invalid encryption identity parameter: " + encryption_identity_id + ". Please enter a valid resource id.")
+                raise InvalidArgumentValueError("--encryption-identity is not a valid Azure resource ID.")
