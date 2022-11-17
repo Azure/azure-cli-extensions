@@ -673,7 +673,7 @@ helps['containerapp ingress traffic show'] = """
 
 helps['containerapp ingress access-restriction'] = """
     type: group
-    short-summary: Commands to manage access restrictions.
+    short-summary: Commands to manage IP access restrictions.
 """
 
 helps['containerapp ingress access-restriction set'] = """
