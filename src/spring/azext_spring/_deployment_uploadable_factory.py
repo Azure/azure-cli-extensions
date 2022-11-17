@@ -9,7 +9,7 @@ from re import L
 import tempfile
 import uuid
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .azure_storage_file import FileService
+from azure.storage.file import FileService
 from ._utils import (get_azure_files_info, _pack_source_code)
 
 
