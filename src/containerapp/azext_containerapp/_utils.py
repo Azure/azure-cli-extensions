@@ -1557,13 +1557,13 @@ def list_environment_locations(cmd):
     return res_locations
 
 
-def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, allow_access):
+def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
     updated = False
     for e in ip_restrictions:
         if ip_restriction_name.lower() == e["name"].lower():
             e["description"] = description
             e["ipAddressRange"] = ip_address_range
-            e["action"] = "Allow" if allow_access else "Deny"
+            e["action"] = action
             updated = True
             break
     if not updated:
@@ -1571,7 +1571,7 @@ def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, 
             "name": ip_restriction_name,
             "description": description,
             "ipAddressRange": ip_address_range,
-            "action": "Allow" if allow_access else "Deny"
+            "action": action
         }
         ip_restrictions.append(new_ip_restriction)
     return ip_restrictions

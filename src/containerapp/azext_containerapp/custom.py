@@ -1952,7 +1952,7 @@ def show_ingress_traffic(cmd, name, resource_group_name):
         raise ValidationError("Ingress must be enabled to show ingress traffic. Try running `az containerapp ingress -h` for more info.") from e
 
 
-def set_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, ip_address_range, description=None, allow_access=False, no_wait=False):
+def set_ip_restriction(cmd, name, resource_group_name, rule_name, ip_address, action, description=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
@@ -1966,7 +1966,7 @@ def set_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, ip_a
 
     ip_restrictions = safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
 
-    ip_security_restrictions = set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, allow_access)
+    ip_security_restrictions = set_ip_restrictions(ip_restrictions, rule_name, ip_address, description, action)
     containerapp_patch = {}
     safe_set(containerapp_patch, "properties", "configuration", "ingress", "ipSecurityRestrictions", value=ip_security_restrictions)
     try:
@@ -1977,7 +1977,7 @@ def set_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, ip_a
         handle_raw_exception(e)
 
 
-def remove_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, no_wait=False):
+def remove_ip_restriction(cmd, name, resource_group_name, rule_name, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
@@ -1993,13 +1993,13 @@ def remove_ip_restriction(cmd, name, resource_group_name, ip_restriction_name, n
 
     restriction_removed = False
     for index, value in enumerate(ip_restrictions):
-        if value["name"].lower() == ip_restriction_name.lower():
+        if value["name"].lower() == rule_name.lower():
             ip_restrictions.pop(index)
             restriction_removed = True
             break
 
     if not restriction_removed:
-        raise ValidationError(f"Ip restriction name '{ip_restriction_name}' does not exist.")
+        raise ValidationError(f"Ip restriction name '{rule_name}' does not exist.")
 
     containerapp_patch = {}
     safe_set(containerapp_patch, "properties", "configuration", "ingress", "ipSecurityRestrictions", value=ip_restrictions)
@@ -2028,7 +2028,7 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         try:
             containerapp_def['properties']['configuration']['ingress']
         except Exception as e:
-            raise ValidationError("Ingress must be enabled to show ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
+            raise ValidationError("Ingress must be enabled to list ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
         return containerapp_def['properties']['configuration']['ingress']['ipSecurityRestrictions']
     except Exception as e:
         return []
