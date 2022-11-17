@@ -2,7 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
 import unittest
+from azure.cli.testsdk import (ScenarioTest, record_only)
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from ...vendored_sdks.appplatform.v2022_11_01_preview import models
@@ -40,16 +42,14 @@ def _mock_not_get_dev_tool_portal(*_):
 
 
 def _mock_dev_tool_portal(enable_live_view):
-    desired_state = models.DevToolPortalFeatureState.ENABLED if enable_live_view \
+    resource = models.DevToolPortalResource.deserialize(json.loads('{"properties":{"provisioningState": "Succeeded"}}'))
+    resource.properties.features = models.DevToolPortalFeatureSettings(
+        application_live_view=models.DevToolPortalFeatureDetail(
+            state=models.DevToolPortalFeatureState.ENABLED if enable_live_view \
                     else models.DevToolPortalFeatureState.DISABLED
-    return models.DevToolPortalResource(
-                properties=models.DevToolPortalProperties(
-                    features=models.DevToolPortalFeatureSettings(
-                        application_live_view=models.DevToolPortalFeatureDetail(
-                            state=desired_state
-                        )
-                    )
-                ))
+        )
+    )
+    return resource
 
 def _mock_enabled_get_dev_tool_portal(*_):
     return _mock_dev_tool_portal(enable_live_view=True)
@@ -126,3 +126,31 @@ class ApplicationLiveView(unittest.TestCase):
         self.assertIsNotNone(self.dev_tool_portal)
         self.assertEqual(models.DevToolPortalFeatureState.DISABLED,
                          self.dev_tool_portal.properties.features.application_live_view.state)
+
+@record_only()
+class LiveViewTest(ScenarioTest):
+
+    def test_live_view(self):
+        self.kwargs.update({
+            'serviceName': 'test-cli',
+            'rg': 'test-cli'
+        })
+
+        self.cmd('spring dev-tool create -g {rg} -s {serviceName} --assign-endpoint', checks=[
+            self.check('properties.public', True),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring application-live-view create -g {rg} -s {serviceName}', checks=[
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
+            self.check('properties.features.applicationLiveView.state', 'Enabled')
+        ])
+
+        self.cmd('spring application-live-view delete -g {rg} -s {serviceName}')
+
+        self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
+            self.check('properties.features.applicationLiveView.state', 'Disabled')
+        ])

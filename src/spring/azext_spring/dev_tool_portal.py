@@ -81,18 +81,19 @@ def delete(cmd, client, service, resource_group):
     return client.dev_tool_portals.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
-def try_get_updatable(cmd, client, service, resource_group):
+def is_updatable(resource):
+    return resource and resource.properties.provisioning_state in [
+        models.DevToolPortalProvisioningState.SUCCEEDED,
+        models.DevToolPortalProvisioningState.FAILED,
+        models.DevToolPortalProvisioningState.CANCELED
+    ]
+
+
+def try_get(cmd, client, service, resource_group):
     try:
-        resource = show(cmd, client, service, resource_group)
-        if resource.properties.provisioningState in [
-            models.DevToolPortalProvisioningState.SUCCEEDED,
-            models.DevToolPortalProvisioningState.FAILED,
-            models.DevToolPortalProvisioningState.CANCELED
-        ]:
-            return resource
+        return show(cmd, client, service, resource_group)
     except:
         return None
-    return None
 
 
 def _get_desired_state(enable):

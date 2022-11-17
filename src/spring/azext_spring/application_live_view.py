@@ -7,7 +7,8 @@
 from knack.log import get_logger
 
 from .vendored_sdks.appplatform.v2022_11_01_preview import models
-from .dev_tool_portal import (try_get_updatable as get_dev_tool_portal,
+from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
+                              try_get as get_dev_tool_portal,
                               create_or_update as create_or_update_dev_tool_portal,
                               _get_desired_state as get_dev_tool_portal_desired_state)
 from ._utils import (wait_till_end)
@@ -48,13 +49,15 @@ def _get_enable_dev_tool_portal_poller(cmd, client, service, resource_group):
                        '"az spring dev-tool create --service {} --resource-group {} --assign-endpoint"'
                        .format(service, resource_group))
         return None
+    if not is_dev_tool_portal_updatable(dev_tool_portal):
+        return None
     return _get_update_dev_tool_portal_poller(cmd, client, service, resource_group,
                                               dev_tool_portal, True)
 
 
 def _get_disable_dev_tool_portal_poller(cmd, client, service, resource_group):
     dev_tool_portal = get_dev_tool_portal(cmd, client, service, resource_group)
-    if not dev_tool_portal:
+    if not dev_tool_portal or not is_dev_tool_portal_updatable(dev_tool_portal):
         return None
     return _get_update_dev_tool_portal_poller(cmd, client, service, resource_group,
                                               dev_tool_portal, False)
