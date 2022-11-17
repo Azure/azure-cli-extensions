@@ -58,7 +58,7 @@ class Update(AAZCommand):
         _args_schema.encryption_identity = AAZStrArg(
             options=["--encryption-identity"],
             arg_group="Optional Parameters",
-            help="The managed identity for Customer-managed key settings defining which identity should be used to authenticate to Key Vault.",
+            help="The managed identity for Customer-managed key settings defining which identity should be used to authenticate to Key Vault. The value \"SystemAssigned\" uses the system-assigned managed identity, while \"<identity-resource-id>\" uses the user-assigned managed identity with the given Id.",
             nullable=True,
         )
         _args_schema.encryption_identity_type = AAZStrArg(
