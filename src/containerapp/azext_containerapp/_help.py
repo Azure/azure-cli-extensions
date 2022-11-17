@@ -680,7 +680,7 @@ helps['containerapp ingress access-restriction set'] = """
     type: command
     short-summary: Configure IP access restrictions for a container app.
     examples:
-    - name: Add an allow access restriction.
+    - name: Add an allow IP access restriction.
       text: |
           az containerapp ingress access-restriction set -n MyContainerapp -g MyResourceGroup --rule-name restrictionName --ip-address 192.168.1.1/32 --description "Restriction description." --action Allow
 """
