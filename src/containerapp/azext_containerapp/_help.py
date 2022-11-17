@@ -696,9 +696,9 @@ helps['containerapp ingress access-restriction remove'] = """
 
 helps['containerapp ingress access-restriction list'] = """
     type: command
-    short-summary: List access restrictions for a container app.
+    short-summary: List IP access restrictions for a container app.
     examples:
-    - name: List access restrictions.
+    - name: List IP access restrictions.
       text: |
           az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
 """
