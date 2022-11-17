@@ -682,7 +682,7 @@ helps['containerapp ingress ip-restriction set'] = """
     examples:
     - name: Add an allow ip security restriction.
       text: |
-          az containerapp ingress ip-restriction set --ip-restriction-name restrictionName --ip-address-range 192.168.1.1/32 --description "Restriction description." --allow-access
+          az containerapp ingress ip-restriction set -n MyContainerapp -g MyResourceGroup --ip-restriction-name restrictionName --ip-address-range 192.168.1.1/32 --description "Restriction description." --allow-access
 """
 
 helps['containerapp ingress ip-restriction remove'] = """
@@ -691,7 +691,7 @@ helps['containerapp ingress ip-restriction remove'] = """
     examples:
     - name: Remove an ip security restriction.
       text: |
-          az containerapp ingress ip-restriction remove --ip-restriction-name restrictionName
+          az containerapp ingress ip-restriction remove -n MyContainerapp -g MyResourceGroup --ip-restriction-name restrictionName
 """
 
 helps['containerapp ingress ip-restriction show'] = """
@@ -700,7 +700,7 @@ helps['containerapp ingress ip-restriction show'] = """
     examples:
     - name: Show ip security restrictions.
       text: |
-          az containerapp ingress ip-restriction show
+          az containerapp ingress ip-restriction show -n MyContainerapp -g MyResourceGroup
 """
 
 # Registry Commands
