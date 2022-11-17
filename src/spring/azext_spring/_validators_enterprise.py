@@ -111,6 +111,16 @@ def validate_git_uri(namespace):
         raise InvalidArgumentValueError("Git URI should start with \"https://\" or \"git@\"")
 
 
+def validate_acs_ssh_or_warn(namespace):
+    private_key = namespace.private_key
+    host_key = namespace.host_key
+    host_key_algorithm = namespace.host_key_algorithm
+    host_key_check = namespace.host_key_check
+    if private_key or host_key or host_key_algorithm or host_key_check:
+        logger.warning("SSH authentication only supports SHA-1 signature under ACS restriction. "
+                       "Please refer to https://aka.ms/asa-acs-ssh to understand how to use SSH under this restriction.")
+
+
 def validate_config_file_patterns(namespace):
     if namespace.config_file_patterns:
         _validate_patterns(namespace.config_file_patterns)

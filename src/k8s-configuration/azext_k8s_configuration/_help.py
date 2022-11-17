@@ -94,6 +94,14 @@ helps[
           --kind bucket --url https://bucket-provider.minio.io \\
           --bucket-name my-bucket --kustomization name=my-kustomization \\
           --bucket-access-key my-access-key --bucket-secret-key my-secret-key
+      - name: Create a Kubernetes v2 Flux Configuration with Azure Blob Source Kind
+        text: |-
+          az k8s-configuration flux create --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters \\
+          --name myconfig --scope cluster --namespace my-namespace \\
+          --kind azblob --url https://mystorageaccount.blob.core.windows.net \\
+          --container-name my-container --kustomization name=my-kustomization \\
+          --account-key my-account-key
 """
 
 helps[
@@ -108,11 +116,16 @@ helps[
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
           --url https://github.com/Azure/arc-k8s-demo --branch main \\
           --kustomization name=my-kustomization path=./my/new-path
-      - name: Update a Flux v2 Kubernetse configuration with Bucket Source Kind to connect insecurely
+      - name: Update a Flux v2 Kubernetes configuration with Bucket Source Kind to connect insecurely
         text: |-
           az k8s-configuration flux update --resource-group my-resource-group \\
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
           --bucket-insecure
+      - name: Update a Flux v2 Kubernetes configuration with Azure Blob Source Kind with another container name
+        text: |-
+          az k8s-configuration flux update --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
+          --container-name other-container
 """
 
 helps[

@@ -39,6 +39,14 @@ helps['spring create'] = """
         az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
 """
 
+helps['spring list-marketplace-plan'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List Marketplace plan to be purchased.
+    examples:
+    - name: List all plans.
+      text: az spring list-marketplace-plan -o table
+"""
+
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.
@@ -214,6 +222,21 @@ helps['spring app stop'] = """
 helps['spring app restart'] = """
     type: command
     short-summary: Restart instances of the app, default to production deployment.
+"""
+
+helps['spring app enable-remote-debugging'] = """
+    type: command
+    short-summary: Enable remote debugging for a deployment.
+"""
+
+helps['spring app disable-remote-debugging'] = """
+    type: command
+    short-summary: Disable remote debugging for a deployment.
+"""
+
+helps['spring app get-remote-debugging-config'] = """
+    type: command
+    short-summary: Get the remote debugging configuration of a deployment.
 """
 
 helps['spring app deploy'] = """

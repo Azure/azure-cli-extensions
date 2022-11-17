@@ -2,6 +2,14 @@
 
 Release History
 ===============
+
+1.3.6
+++++++++++++++++++
+* Update the api version and add tests for extension type calls
+* Fix the TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running all az k8s-extension extension-types commands
+* microsoft.azuremonitor.containers: Update DCR creation to Clusters resource group instead of workspace
+* microsoft.dataprotection.kubernetes: Authoring a new k8s partner extension for the BCDR solution of AKS clusters
+
 1.3.5
 ++++++++++++++++++
 * Use the api-version 2022-04-02-preview in the CLI command az k8s-extension extension-types list

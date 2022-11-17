@@ -13,7 +13,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout, validate_ingress_session_max_age)
+                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
+                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -21,7 +22,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
-                                     validate_build_env, validate_target_module, validate_runtime_version)
+                                     validate_build_env, validate_target_module, validate_runtime_version,
+                                     validate_acs_ssh_or_warn)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -153,6 +155,10 @@ def load_arguments(self, _):
                    validator=validate_api_portal_instance_count,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
+        c.argument('marketplace_plan_id',
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Specify a different Marketplace plan to purchase with Spring instance. '
+                        'List all plans by running `az spring list-marketplace-plan -o table`.')
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
@@ -286,6 +292,18 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+
+    for scope in ['spring app disable-remote-debugging', 'spring app get-remote-debugging-config']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+
+    with self.argument_context('spring app enable-remote-debugging') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
+                   help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
+                   validator=validate_remote_debugging_port)
 
     with self.argument_context('spring app unset-deployment') as c:
         c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
@@ -523,7 +541,7 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm',
                        help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_config_server_ssh_or_warn)
             c.argument('strict_host_key_checking',
                        options_list=['--strict-host-key-checking', '--host-key-check'],
                        help='Strict_host_key_checking of the added config.')
@@ -653,7 +671,7 @@ def load_arguments(self, _):
             c.argument('password', help='Password of the added config.')
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
 
     for scope in ['add', 'update', 'remove']:

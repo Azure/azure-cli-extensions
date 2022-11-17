@@ -5,7 +5,8 @@ Release History
 
 0.17.0
 ++++++
-* [2022-10-14] Version intended to work with QDK version 0.26.233415
+* [2022-11-02] Update default QDK version to latest 0.27.238334 - See https://learn.microsoft.com/azure/quantum/release-notes.
+* [2022-10-14] [Edited] The 0.17.0 release was originally intended to work with QDK version 0.26.233415, however additional functionality has been added to QDK version to 0.27.238334 that can be accessed by CLI extension 0.17.0.
 * The `az quantum` reference documentation now indicates which command parameters are required, and missing-parameter error messages are more informative. See https://learn.microsoft.com/cli/azure/quantum
 * You can submit jobs to the microsoft.simulator.resources-estimator target using the CLI.
 
