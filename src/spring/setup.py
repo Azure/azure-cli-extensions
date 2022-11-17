@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = ['azure-storage-file']
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
