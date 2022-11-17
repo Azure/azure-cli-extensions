@@ -250,7 +250,7 @@ def load_arguments(self, _):
         c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
     with self.argument_context('containerapp ingress access-restriction') as c:
-        c.argument('action', arg_type=get_enum_type(['Allow', 'Deny']), help='Boolean indicating whether the ip security restriction allows or denies access.')
+        c.argument('action', arg_type=get_enum_type(['Allow', 'Deny']), help='Whether the IP security restriction allows or denies access. All restrictions must be use the same action. If no restrictions are set, all traffic is allowed.')
         c.argument('rule_name', help="The ip security restriction name.")
         c.argument('description', help="The description of the ip security restriction.")
         c.argument('ip_address', help="The ip address range of the ip security restriction.")
