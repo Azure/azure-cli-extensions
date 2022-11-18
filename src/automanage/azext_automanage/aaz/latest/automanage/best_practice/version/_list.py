@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "automanage best-practice version list",
+)
 class List(AAZCommand):
     """List a list of Automanage best practices versions
     """

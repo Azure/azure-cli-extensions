@@ -13,8 +13,8 @@ interactions:
       ParameterSetName:
       - -n -g --configuration
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
-        (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rgtestautomanage?api-version=2021-04-01
   response:
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:54:38 GMT
+      - Fri, 18 Nov 2022 06:58:22 GMT
       expires:
       - '-1'
       pragma:
@@ -61,21 +61,21 @@ interactions:
       ParameterSetName:
       - -n -g --configuration
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","name":"profile000001","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2022-10-31T06:54:42.486196+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:54:42.486196+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","name":"profile000001","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2022-11-18T06:58:29.5019546+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:29.5019546+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '566'
+      - '568'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:54:44 GMT
+      - Fri, 18 Nov 2022 06:58:31 GMT
       expires:
       - '-1'
       location:
@@ -113,25 +113,23 @@ interactions:
       ParameterSetName:
       - -n -g --machine-name --configuration-profile
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"New"},"systemData":{"createdAt":"2022-10-31T06:54:45.0174341+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:54:45.0174341+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:32.7745211+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:32.7745211+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '891'
+      - '901'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:54:46 GMT
+      - Fri, 18 Nov 2022 06:58:35 GMT
       expires:
       - '-1'
-      location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default
       pragma:
       - no-cache
       request-context:
@@ -140,13 +138,17 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -161,21 +163,21 @@ interactions:
       ParameterSetName:
       - -n -g --machine-name
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"New"},"systemData":{"createdAt":"2022-10-31T06:54:45.0174341+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:54:45.0174341+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:32.7745211+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:32.7745211+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '891'
+      - '901'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:54:48 GMT
+      - Fri, 18 Nov 2022 06:58:38 GMT
       expires:
       - '-1'
       pragma:
@@ -209,21 +211,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"InProgress"},"systemData":{"createdAt":"2022-10-31T06:54:50.4346842+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:54:50.4346842+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:32.7745211+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:32.7745211+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '948'
+      - '913'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:54:50 GMT
+      - Fri, 18 Nov 2022 06:58:39 GMT
       expires:
       - '-1'
       pragma:
@@ -260,8 +262,8 @@ interactions:
       ParameterSetName:
       - -n -g --configuration
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
-        (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rgtestautomanage?api-version=2021-04-01
   response:
@@ -275,7 +277,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:54:50 GMT
+      - Fri, 18 Nov 2022 06:58:40 GMT
       expires:
       - '-1'
       pragma:
@@ -308,12 +310,12 @@ interactions:
       ParameterSetName:
       - -n -g --configuration
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2022-10-31T06:55:00.6149205+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:55:00.6149205+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2022-11-18T06:58:46.9530911+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:46.9530911+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -322,7 +324,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:55:01 GMT
+      - Fri, 18 Nov 2022 06:58:48 GMT
       expires:
       - '-1'
       location:
@@ -356,21 +358,21 @@ interactions:
       ParameterSetName:
       - --n -g --machine-name --configuration-profile
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-10-31T06:54:51.9978766+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:54:51.9978766+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:48.434161+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:58:48.434161+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '939'
+      - '937'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:55:05 GMT
+      - Fri, 18 Nov 2022 06:58:50 GMT
       expires:
       - '-1'
       pragma:
@@ -408,12 +410,12 @@ interactions:
       ParameterSetName:
       - --n -g --machine-name --configuration-profile
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"NonConformant"},"systemData":{"createdAt":"2022-10-31T06:55:06.0424209+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-10-31T06:55:06.0424209+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:51.4613214+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:51.4613214+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -422,7 +424,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:55:07 GMT
+      - Fri, 18 Nov 2022 06:58:52 GMT
       expires:
       - '-1'
       pragma:
@@ -458,25 +460,24 @@ interactions:
       ParameterSetName:
       - --assignment-name -g --machine-name
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/98f44c6f-7f23-462a-8d34-d2bab63f5e6b","name":"98f44c6f-7f23-462a-8d34-d2bab63f5e6b","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T05:33:58.7029002Z","endTime":"2022-10-31T05:34:00.3371492Z","lastModifiedTime":"2022-10-31T05:34:00.3371489Z","duration":"PT1.634249S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilesvsvdm7d54mgjm76b","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T05:34:00.6554125+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T05:34:00.6554125+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/8499e391-c0a2-4dc6-8d14-977d91eb8e5c","name":"8499e391-c0a2-4dc6-8d14-977d91eb8e5c","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T05:47:03.0403012Z","endTime":"2022-10-31T05:47:04.3284924Z","lastModifiedTime":"2022-10-31T05:47:04.3284922Z","duration":"PT1.2881912S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilej72ekba6eeus2b6an","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T05:47:04.569804+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T05:47:04.569804+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/79186299-dcb4-4349-8c7c-dfa9a3430ce6","name":"79186299-dcb4-4349-8c7c-dfa9a3430ce6","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T06:54:50.5353931Z","endTime":"2022-10-31T06:54:51.8792636Z","lastModifiedTime":"2022-10-31T06:54:51.8792635Z","duration":"PT1.3438705S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T06:54:52.1072526+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:54:52.1072526+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/e945ba3a-7b1c-43d4-8fdd-a987e2b5c913","name":"e945ba3a-7b1c-43d4-8fdd-a987e2b5c913","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T06:55:15.6311436Z","endTime":"2022-10-31T06:55:17.0178403Z","lastModifiedTime":"2022-10-31T06:55:17.0178402Z","duration":"PT1.3866967S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T06:55:17.2108198+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T06:55:17.2108198+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2","name":"2b572873-cc53-494b-9820-2a73e7cca2e2","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:59:12.9081733Z","endTime":"0001-01-01T00:00:00","lastModifiedTime":"2022-11-18T06:59:12.9081749Z","duration":null,"type":"Consistency","status":"InProgress","configurationProfile":null,"resources":[],"error":null,"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:59:12.9418005+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:59:12.9418005+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/ae6298ff-52e1-4d5a-a12a-d80a46215c4c","name":"ae6298ff-52e1-4d5a-a12a-d80a46215c4c","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:42:34.2355748Z","endTime":"2022-11-18T06:42:41.544651Z","lastModifiedTime":"2022-11-18T06:42:41.5446475Z","duration":"PT7.3090762S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilelnwkhworimhx5jzr6","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:42:42.1595345+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:42:42.1595345+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/ccd43d1a-caf6-47da-a1e3-34bd6a95d319","name":"ccd43d1a-caf6-47da-a1e3-34bd6a95d319","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:42:48.0456324Z","endTime":"2022-11-18T06:42:50.9932042Z","lastModifiedTime":"2022-11-18T06:42:50.993203Z","duration":"PT2.9475718S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilelnwkhworimhx5jzr6","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:42:51.8327907+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:42:51.8327907+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/c9f483b1-9ce0-45a6-b8b9-fce6a76c364b","name":"c9f483b1-9ce0-45a6-b8b9-fce6a76c364b","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:58:45.2422152Z","endTime":"2022-11-18T06:58:48.1918218Z","lastModifiedTime":"2022-11-18T06:58:48.1918204Z","duration":"PT2.9496066S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:58:48.7004997+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:58:48.7004997+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6426'
+      - '5773'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:55:19 GMT
+      - Fri, 18 Nov 2022 06:59:14 GMT
       expires:
       - '-1'
       pragma:
@@ -510,22 +511,22 @@ interactions:
       ParameterSetName:
       - -n --assignment-name -g --machine-name
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/98f44c6f-7f23-462a-8d34-d2bab63f5e6b?api-version=2022-05-04
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/98f44c6f-7f23-462a-8d34-d2bab63f5e6b","name":"98f44c6f-7f23-462a-8d34-d2bab63f5e6b","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-10-31T05:33:58.7029002Z","endTime":"2022-10-31T05:34:00.3371492Z","lastModifiedTime":"2022-10-31T05:34:00.3371489Z","duration":"PT1.634249S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilesvsvdm7d54mgjm76b","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-10-31T05:34:00.6554125+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-10-31T05:34:00.6554125+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2","name":"2b572873-cc53-494b-9820-2a73e7cca2e2","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:59:12.9081733Z","endTime":"2022-11-18T06:59:16.1912519Z","lastModifiedTime":"2022-11-18T06:59:16.1912498Z","duration":"PT3.2830786S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:59:16.39724+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:59:16.39724+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1606'
+      - '1596'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:55:21 GMT
+      - Fri, 18 Nov 2022 06:59:16 GMT
       expires:
       - '-1'
       pragma:
@@ -561,7 +562,7 @@ interactions:
       ParameterSetName:
       - -n -g --machine-name -y
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
@@ -573,7 +574,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 31 Oct 2022 06:55:24 GMT
+      - Fri, 18 Nov 2022 06:59:19 GMT
       expires:
       - '-1'
       pragma:
@@ -605,7 +606,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.41.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.42.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
   response:
@@ -619,7 +620,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 31 Oct 2022 06:55:25 GMT
+      - Fri, 18 Nov 2022 06:59:21 GMT
       expires:
       - '-1'
       pragma:

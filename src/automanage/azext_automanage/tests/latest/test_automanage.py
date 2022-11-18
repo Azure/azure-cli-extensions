@@ -16,14 +16,15 @@ class AutomanageScenario(ScenarioTest):
         if best_practice_name and len(best_practice_name) >= 2:
             best_practice_name = best_practice_name[1]["name"]
             self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
+
+            version_name = self.cmd('az automanage best-practice version list '
+                                    '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
             # TODO server error
-            # version_name = self.cmd('az automanage best-practice version list '
-            #                         '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
-            # if version_name and len(version_name) >= 1:
-            #     version_name = version_name[0]["name"]
-            #
-            #     self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
-            #              '{}'.format(best_practice_name, version_name))
+            if version_name and len(version_name) >= 1:
+                version_name = version_name[0]["name"].split('/')[1]
+
+                self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
+                         '{}'.format(best_practice_name, version_name))
 
         # service-principal
         self.cmd('az automanage service-principal list')
@@ -118,7 +119,7 @@ class AutomanageScenario(ScenarioTest):
     @record_only()
     # need to first run：
     # az group create -l eastus2euap -g rgtestautomanage
-    # Connect-AzConnectedMachine -ResourceGroupName rgtestautomanage -Name arc1 -Location eastus2euap
+    # (run as admin in Powershell) Connect-AzConnectedMachine -ResourceGroupName rgtestautomanage -Name arc1 -Location eastus2euap
     def test_automanage_configuration_profile_assignment_arc_scenarios(self):
         self.kwargs.update({
             'profile_name': self.create_random_name(prefix='profile', length=24),
@@ -144,7 +145,7 @@ class AutomanageScenario(ScenarioTest):
                  '--machine-name {arc_name} --configuration-profile {profile_id_2}',
                  checks=[JMESPathCheck('properties.configurationProfile', profile_id_2)])
 
-        sleep(10)
+        sleep(20)
         report_name = self.cmd('az automanage configuration-profile-assignment arc report list --assignment-name '
                                'default -g {rg} --machine-name {arc_name}').get_output_in_json()[0]["name"]
         self.kwargs.update({'report_name': report_name})
@@ -155,14 +156,10 @@ class AutomanageScenario(ScenarioTest):
                  '{arc_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
-    @record_only()
-    # need to first run：
-    # az group create -l eastus2euap -g rgtestautomanage
-    # az stack-hci cluster create --cluster-name cluster1 -g rgtestautomanage
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.cluster.')
     def test_automanage_configuration_profile_assignment_cluster_scenarios(self):
         self.kwargs.update({
             'profile_name': self.create_random_name(prefix='profile', length=24),
-            'rg': 'rgtestautomanage',
             'cluster_name': 'cluster1',
             'profile_name_2': self.create_random_name(prefix='profile', length=24),
         })
@@ -170,6 +167,7 @@ class AutomanageScenario(ScenarioTest):
                               '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id': profile_id})
 
+        self.cmd('az stack-hci cluster create --cluster-name {cluster_name} -g {rg}')
         self.cmd('az automanage configuration-profile-assignment cluster create -n default -g {rg} '
                  '--cluster-name {cluster_name} --configuration-profile {profile_id}')
         self.cmd('az automanage configuration-profile-assignment cluster show -n default -g {rg} '

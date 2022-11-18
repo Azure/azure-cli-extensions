@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "automanage configuration-profile-assignment arc report list",
-    confirmation="",
 )
 class List(AAZCommand):
     """List a list of reports within a given ARC machine configuration profile assignment

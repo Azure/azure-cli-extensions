@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "automanage configuration-profile-assignment vm report list",
-    confirmation="",
 )
 class List(AAZCommand):
     """List a list of reports within a given VM configuration profile assignment

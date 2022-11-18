@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "automanage configuration-profile-assignment cluster report show",
-    confirmation="",
 )
 class Show(AAZCommand):
     """Get information about a report associated with a AzureStackHCI cluster configuration profile assignment run
