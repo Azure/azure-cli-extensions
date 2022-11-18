@@ -11,9 +11,7 @@ from ._config_servers_operations import ConfigServersOperations
 from ._configuration_services_operations import ConfigurationServicesOperations
 from ._service_registries_operations import ServiceRegistriesOperations
 from ._application_live_views_operations import ApplicationLiveViewsOperations
-from ._application_live_view_operations import ApplicationLiveViewOperations
 from ._dev_tool_portals_operations import DevToolPortalsOperations
-from ._dev_tool_portal_operations import DevToolPortalOperations
 from ._build_service_operations import BuildServiceOperations
 from ._buildpack_binding_operations import BuildpackBindingOperations
 from ._build_service_builder_operations import BuildServiceBuilderOperations
@@ -47,9 +45,7 @@ __all__ = [
     "ConfigurationServicesOperations",
     "ServiceRegistriesOperations",
     "ApplicationLiveViewsOperations",
-    "ApplicationLiveViewOperations",
     "DevToolPortalsOperations",
-    "DevToolPortalOperations",
     "BuildServiceOperations",
     "BuildpackBindingOperations",
     "BuildServiceBuilderOperations",

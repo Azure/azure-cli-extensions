@@ -132,6 +132,11 @@ def load_arguments(self, _):
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('enable_application_live_view',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-live-view', '--enable-alv'],
+                   help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
                    action='store_true',
                    options_list=['--enable-service-registry', '--enable-sr'],
@@ -164,7 +169,7 @@ def load_arguments(self, _):
                    action='store_true',
                    is_preview=True,
                    options_list=['--enable-application-accelerator', '--enable-app-acc'],
-                   help='(Enterprise Tier Only) Enable Application Accelerator.')                        
+                   help='(Enterprise Tier Only) Enable Application Accelerator.')
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
@@ -651,9 +656,17 @@ def load_arguments(self, _):
             c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
-                  'gateway', 'api-portal', 'application-accelerator']:
+                  'gateway', 'api-portal', 'application-live-view', 'dev-tool', 'application-accelerator']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['dev-tool create', 'dev-tool update']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
+            c.argument('scopes', arg_group='Single Sign On (SSO)', help="Comma-separated list of the specific actions applications can be allowed to do on a user's behalf.")
+            c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
+            c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
+            c.argument('metadata_url', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
 
     for scope in ['bind', 'unbind']:
         with self.argument_context('spring service-registry {}'.format(scope)) as c:
