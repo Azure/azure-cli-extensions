@@ -6,15 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._source_control_configuration_client import SourceControlConfigurationClient
-__all__ = ['SourceControlConfigurationClient']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass
-
-from ._version import VERSION
-
-__version__ = VERSION
+VERSION = "1.1.0"

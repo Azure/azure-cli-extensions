@@ -12,6 +12,7 @@ from ..vendored_sdks.models import PatchExtension
 from ..vendored_sdks.models import ScopeCluster
 from ..vendored_sdks.models import ScopeNamespace
 from ..vendored_sdks.models import Scope
+from ..vendored_sdks.models import Plan
 
 from .PartnerExtensionModel import PartnerExtensionModel
 
@@ -37,6 +38,7 @@ class DefaultExtension(PartnerExtensionModel):
         configuration_protected_settings,
         configuration_settings_file,
         configuration_protected_settings_file,
+        plan_info
     ):
         """Default validations & defaults for Create
         Must create and return a valid 'Extension' object.
@@ -50,6 +52,14 @@ class DefaultExtension(PartnerExtensionModel):
                 scope_namespace = ScopeNamespace(target_namespace=target_namespace)
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
+        plan = None
+        if plan_info is not None and len(plan_info) > 0: 
+            plan_props = plan_info[0]
+            plan = Plan(
+            name= plan_props['name'], 
+            publisher = plan_props['publisher'], 
+            product= plan_props['product'])
+        
         create_identity = True
         extension = Extension(
             extension_type=extension_type,
@@ -59,6 +69,7 @@ class DefaultExtension(PartnerExtensionModel):
             scope=ext_scope,
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,
+            plan=plan
         )
         return extension, name, create_identity
 

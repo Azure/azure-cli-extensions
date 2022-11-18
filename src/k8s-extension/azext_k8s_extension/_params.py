@@ -12,7 +12,8 @@ from . import consts
 
 from .action import (
     AddConfigurationSettings,
-    AddConfigurationProtectedSettings
+    AddConfigurationProtectedSettings,
+    AddPlanInfo
 )
 
 
@@ -75,6 +76,12 @@ def load_arguments(self, _):
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
+        c.argument('plan_info',
+                   arg_group="Plan",
+                   options_list=['--plan-info', '--plan'],
+                   action=AddPlanInfo,
+                   nargs='+',
+                   help='Plan info for marketplace extension as a key=value pair. Provide name, publisher and product as a part of the plan info')           
 
     with self.argument_context(f"{consts.EXTENSION_NAME} update") as c:
         c.argument('yes',
