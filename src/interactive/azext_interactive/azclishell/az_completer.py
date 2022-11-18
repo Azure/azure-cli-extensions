@@ -173,7 +173,7 @@ class AzCompleter(Completer):
         self.complete_command = not self.subtree.children
 
         if not text.strip():
-            for comp in sort_completions(self.gen_recommend_completion()):
+            for comp in self.gen_recommend_completion():
                 yield comp
 
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
