@@ -17,14 +17,14 @@ class AutomanageScenario(ScenarioTest):
             best_practice_name = best_practice_name[1]["name"]
             self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
 
-            version_name = self.cmd('az automanage best-practice version list '
-                                    '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
             # TODO server error
-            if version_name and len(version_name) >= 1:
-                version_name = version_name[0]["name"].split('/')[1]
-
-                self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
-                         '{}'.format(best_practice_name, version_name))
+            # version_name = self.cmd('az automanage best-practice version list '
+            #                         '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
+            # if version_name and len(version_name) >= 1:
+            #     version_name = version_name[0]["name"].split('/')[1]
+            #
+            #     self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
+            #              '{}'.format(best_practice_name, version_name))
 
         # service-principal
         self.cmd('az automanage service-principal list')
@@ -116,7 +116,7 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment vm delete -n default -g {rg} --vm-name {vm_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
-    @record_only()
+    # @record_only()
     # need to first run：
     # az group create -l eastus2euap -g rgtestautomanage
     # (run as admin in Powershell) Connect-AzConnectedMachine -ResourceGroupName rgtestautomanage -Name arc1 -Location eastus2euap

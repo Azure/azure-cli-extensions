@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:22 GMT
+      - Fri, 18 Nov 2022 07:41:39 GMT
       expires:
       - '-1'
       pragma:
@@ -66,7 +66,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","name":"profile000001","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2022-11-18T06:58:29.5019546+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:29.5019546+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","name":"profile000001","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2022-11-18T07:41:45.7922547+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:41:45.7922547+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -75,7 +75,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:31 GMT
+      - Fri, 18 Nov 2022 07:41:52 GMT
       expires:
       - '-1'
       location:
@@ -118,18 +118,20 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:32.7745211+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:32.7745211+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"New"},"systemData":{"createdAt":"2022-11-18T07:41:53.1999496+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:41:53.1999496+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '901'
+      - '891'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:35 GMT
+      - Fri, 18 Nov 2022 07:41:54 GMT
       expires:
       - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default
       pragma:
       - no-cache
       request-context:
@@ -138,17 +140,13 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -168,16 +166,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:32.7745211+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:32.7745211+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"New"},"systemData":{"createdAt":"2022-11-18T07:41:53.1999496+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:41:53.1999496+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '901'
+      - '891'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:38 GMT
+      - Fri, 18 Nov 2022 07:41:57 GMT
       expires:
       - '-1'
       pragma:
@@ -216,16 +214,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfileAssignments?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:32.7745211+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:32.7745211+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"New"},"systemData":{"createdAt":"2022-11-18T07:41:53.1999496+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:41:53.1999496+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '913'
+      - '903'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:39 GMT
+      - Fri, 18 Nov 2022 07:41:58 GMT
       expires:
       - '-1'
       pragma:
@@ -277,7 +275,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:40 GMT
+      - Fri, 18 Nov 2022 07:41:58 GMT
       expires:
       - '-1'
       pragma:
@@ -315,7 +313,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2022-11-18T06:58:46.9530911+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:46.9530911+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2022-11-18T07:42:03.8908474+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:42:03.8908474+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -324,7 +322,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:48 GMT
+      - Fri, 18 Nov 2022 07:42:04 GMT
       expires:
       - '-1'
       location:
@@ -363,16 +361,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:48.434161+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:58:48.434161+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","status":"New"},"systemData":{"createdAt":"2022-11-18T07:41:53.1999496+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:41:53.1999496+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '937'
+      - '891'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:50 GMT
+      - Fri, 18 Nov 2022 07:42:06 GMT
       expires:
       - '-1'
       pragma:
@@ -415,16 +413,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"NonConformant"},"systemData":{"createdAt":"2022-11-18T06:58:51.4613214+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T06:58:51.4613214+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default","name":"default","type":"Microsoft.Automanage/configurationProfileAssignments","properties":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","status":"New"},"systemData":{"createdAt":"2022-11-18T07:42:06.4446903+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-11-18T07:42:06.4446903+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '901'
+      - '891'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:58:52 GMT
+      - Fri, 18 Nov 2022 07:42:08 GMT
       expires:
       - '-1'
       pragma:
@@ -442,7 +440,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -465,19 +463,23 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2","name":"2b572873-cc53-494b-9820-2a73e7cca2e2","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:59:12.9081733Z","endTime":"0001-01-01T00:00:00","lastModifiedTime":"2022-11-18T06:59:12.9081749Z","duration":null,"type":"Consistency","status":"InProgress","configurationProfile":null,"resources":[],"error":null,"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:59:12.9418005+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:59:12.9418005+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/ae6298ff-52e1-4d5a-a12a-d80a46215c4c","name":"ae6298ff-52e1-4d5a-a12a-d80a46215c4c","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:42:34.2355748Z","endTime":"2022-11-18T06:42:41.544651Z","lastModifiedTime":"2022-11-18T06:42:41.5446475Z","duration":"PT7.3090762S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilelnwkhworimhx5jzr6","resources":[],"error":{"code":"UnsupportedOS","message":"The
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2","name":"2b572873-cc53-494b-9820-2a73e7cca2e2","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:59:12.9081733Z","endTime":"2022-11-18T06:59:16.1912519Z","lastModifiedTime":"2022-11-18T06:59:16.1912498Z","duration":"PT3.2830786S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilem4p3azglmwlwob4yu","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:59:16.39724+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:59:16.39724+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/f7b347c7-821a-45f1-a851-acaa289a0030","name":"f7b347c7-821a-45f1-a851-acaa289a0030","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T07:41:22.0023153Z","endTime":"0001-01-01T00:00:00","lastModifiedTime":"2022-11-18T07:41:22.0023171Z","duration":null,"type":"Consistency","status":"InProgress","configurationProfile":null,"resources":[],"error":null,"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T07:41:22.1138737+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T07:41:22.1138737+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/4a05e774-8137-4f9f-9a62-ab1f1a75df0a","name":"4a05e774-8137-4f9f-9a62-ab1f1a75df0a","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T07:42:23.5214623Z","endTime":"2022-11-18T07:42:26.4730291Z","lastModifiedTime":"2022-11-18T07:42:26.473028Z","duration":"PT2.9515668S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T07:42:27.2539678+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T07:42:27.2539678+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/ae6298ff-52e1-4d5a-a12a-d80a46215c4c","name":"ae6298ff-52e1-4d5a-a12a-d80a46215c4c","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:42:34.2355748Z","endTime":"2022-11-18T06:42:41.544651Z","lastModifiedTime":"2022-11-18T06:42:41.5446475Z","duration":"PT7.3090762S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilelnwkhworimhx5jzr6","resources":[],"error":{"code":"UnsupportedOS","message":"The
         machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:42:42.1595345+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:42:42.1595345+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/ccd43d1a-caf6-47da-a1e3-34bd6a95d319","name":"ccd43d1a-caf6-47da-a1e3-34bd6a95d319","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:42:48.0456324Z","endTime":"2022-11-18T06:42:50.9932042Z","lastModifiedTime":"2022-11-18T06:42:50.993203Z","duration":"PT2.9475718S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilelnwkhworimhx5jzr6","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:42:51.8327907+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:42:51.8327907+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/c9f483b1-9ce0-45a6-b8b9-fce6a76c364b","name":"c9f483b1-9ce0-45a6-b8b9-fce6a76c364b","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:58:45.2422152Z","endTime":"2022-11-18T06:58:48.1918218Z","lastModifiedTime":"2022-11-18T06:58:48.1918204Z","duration":"PT2.9496066S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000001","resources":[],"error":{"code":"UnsupportedOS","message":"The
-        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:58:48.7004997+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:58:48.7004997+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:42:51.8327907+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:42:51.8327907+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/c9f483b1-9ce0-45a6-b8b9-fce6a76c364b","name":"c9f483b1-9ce0-45a6-b8b9-fce6a76c364b","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:58:45.2422152Z","endTime":"2022-11-18T06:58:48.1918218Z","lastModifiedTime":"2022-11-18T06:58:48.1918204Z","duration":"PT2.9496066S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilemqnqkrrowegy2t5z5","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:58:48.7004997+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:58:48.7004997+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/43fc80dd-5c04-441b-bf46-8da19e39f280","name":"43fc80dd-5c04-441b-bf46-8da19e39f280","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T07:41:07.6576656Z","endTime":"2022-11-18T07:41:11.8292333Z","lastModifiedTime":"2022-11-18T07:41:11.8292308Z","duration":"PT4.1715677S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilevg4v7qppbzpteemhs","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T07:41:12.0490949+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T07:41:12.0490949+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/5e8fe45a-2281-4399-9b00-3150e44062b5","name":"5e8fe45a-2281-4399-9b00-3150e44062b5","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T07:42:08.8840617Z","endTime":"2022-11-18T07:42:09.8293939Z","lastModifiedTime":"2022-11-18T07:42:09.8293937Z","duration":"PT0.9453322S","type":"Initial","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","resources":[],"error":{"code":"UnsupportedOS","message":"The
+        machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T07:42:10.1087234+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T07:42:10.1087234+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5773'
+      - '12197'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:59:14 GMT
+      - Fri, 18 Nov 2022 07:42:30 GMT
       expires:
       - '-1'
       pragma:
@@ -516,17 +518,17 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2","name":"2b572873-cc53-494b-9820-2a73e7cca2e2","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:59:12.9081733Z","endTime":"2022-11-18T06:59:16.1912519Z","lastModifiedTime":"2022-11-18T06:59:16.1912498Z","duration":"PT3.2830786S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profile000002","resources":[],"error":{"code":"UnsupportedOS","message":"The
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1/providers/Microsoft.Automanage/configurationProfileAssignments/default/reports/2b572873-cc53-494b-9820-2a73e7cca2e2","name":"2b572873-cc53-494b-9820-2a73e7cca2e2","type":"Microsoft.Automanage/configurationProfileAssignments/reports","properties":{"startTime":"2022-11-18T06:59:12.9081733Z","endTime":"2022-11-18T06:59:16.1912519Z","lastModifiedTime":"2022-11-18T06:59:16.1912498Z","duration":"PT3.2830786S","type":"Consistency","status":"NonConformant","configurationProfile":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.Automanage/configurationProfiles/profilem4p3azglmwlwob4yu","resources":[],"error":{"code":"UnsupportedOS","message":"The
         machine has an unsupported OS version or distribution.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgtestautomanage/providers/Microsoft.HybridCompute/machines/arc1","details":null,"additionalInfo":[{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"},{"type":"hyperlink","info":"https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/agent-linux"}]},"reportFormatVersion":null},"systemData":{"createdAt":"2022-11-18T06:59:16.39724+00:00","createdBy":"d828acde-4b48-47f5-a6e8-52460104a052","createdByType":"Application","lastModifiedAt":"2022-11-18T06:59:16.39724+00:00","lastModifiedBy":"d828acde-4b48-47f5-a6e8-52460104a052","lastModifiedByType":"Application"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1596'
+      - '1607'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:59:16 GMT
+      - Fri, 18 Nov 2022 07:42:32 GMT
       expires:
       - '-1'
       pragma:
@@ -574,7 +576,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 18 Nov 2022 06:59:19 GMT
+      - Fri, 18 Nov 2022 07:42:35 GMT
       expires:
       - '-1'
       pragma:
@@ -620,7 +622,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 18 Nov 2022 06:59:21 GMT
+      - Fri, 18 Nov 2022 07:42:37 GMT
       expires:
       - '-1'
       pragma:
