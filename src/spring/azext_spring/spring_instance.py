@@ -43,7 +43,6 @@ class DefaultSpringCloud:
     def before_create(self, **kwargs):
         _warn_enable_java_agent(**kwargs)
         validate_instance_not_existed(self.client,
-                                      self.resource_group,
                                       self.name,
                                       self.location)
 
@@ -113,7 +112,6 @@ class DefaultSpringCloud:
 class EnterpriseSpringCloud(DefaultSpringCloud):
     def before_create(self, **_):
         validate_instance_not_existed(self.client,
-                                      self.resource_group,
                                       self.name,
                                       self.location)
 
