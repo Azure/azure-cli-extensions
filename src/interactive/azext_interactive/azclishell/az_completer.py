@@ -17,6 +17,7 @@ from prompt_toolkit.completion import Completer, Completion  # pylint: disable=i
 
 from . import configuration
 from .argfinder import ArgsFinder
+from .recommendation import get_recommend
 from .util import parse_quotes
 
 SELECT_SYMBOL = configuration.SELECT_SYMBOL
@@ -171,6 +172,10 @@ class AzCompleter(Completer):
         self.shell_ctx.cli_ctx.raise_event(EVENT_INTERACTIVE_POST_SUB_TREE_CREATE, subtree=self.subtree)
         self.complete_command = not self.subtree.children
 
+        if not text.strip():
+            for comp in sort_completions(self.gen_recommend_completion()):
+                yield comp
+
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
             yield comp
 
@@ -258,6 +263,10 @@ class AzCompleter(Completer):
         # if the user isn't logged in
         except Exception:  # pylint: disable=broad-except
             pass
+
+    def gen_recommend_completion(self):
+        for rec in get_recommend(self.shell_ctx.cli_ctx, self.shell_ctx.history):
+            yield Completion(rec['command'], -1)
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """
