@@ -1557,6 +1557,26 @@ def list_environment_locations(cmd):
     return res_locations
 
 
+def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
+    updated = False
+    for e in ip_restrictions:
+        if ip_restriction_name.lower() == e["name"].lower():
+            e["description"] = description
+            e["ipAddressRange"] = ip_address_range
+            e["action"] = action
+            updated = True
+            break
+    if not updated:
+        new_ip_restriction = {
+            "name": ip_restriction_name,
+            "description": description,
+            "ipAddressRange": ip_address_range,
+            "action": action
+        }
+        ip_restrictions.append(new_ip_restriction)
+    return ip_restrictions
+
+
 def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination):
     if logs_destination != "azure-monitor":
         if storage_account:

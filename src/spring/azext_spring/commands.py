@@ -22,10 +22,12 @@ from ._transformers import (transform_spring_table_output,
                             transform_application_configuration_service_output,
                             transform_service_registry_output,
                             transform_spring_cloud_gateway_output,
+                            transform_dev_tool_portal_output,
+                            transform_live_view_output,
                             transform_api_portal_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
-from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
+from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
 
@@ -34,7 +36,7 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 def load_command_table(self, _):
     spring_routing_util = CliCommandType(
         operations_tmpl='azext_spring.spring_instance#{}',
-        client_factory=cf_spring_20220901preview
+        client_factory=cf_spring_20221101preview
     )
 
     app_command = CliCommandType(
@@ -67,6 +69,16 @@ def load_command_table(self, _):
         client_factory=cf_spring_20220101preview
     )
 
+    application_live_view_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.application_live_view#{}',
+        client_factory=cf_spring_20221101preview
+    )
+
+    dev_tool_portal_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.dev_tool_portal#{}',
+        client_factory=cf_spring_20221101preview
+    )
+
     gateway_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
         client_factory=cf_spring_20220101preview
@@ -79,7 +91,7 @@ def load_command_table(self, _):
 
     gateway_route_config_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
-        client_factory=cf_spring_20220901preview
+        client_factory=cf_spring_20221101preview
     )
 
     api_portal_cmd_group = CliCommandType(
@@ -240,6 +252,23 @@ def load_command_table(self, _):
                               table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
+
+    with self.command_group('spring dev-tool', is_preview=True,
+                            custom_command_type=dev_tool_portal_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'show',
+                              table_transformer=transform_dev_tool_portal_output)
+        g.custom_command('create', 'create', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
+        g.custom_command('update', 'update', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
+        g.custom_command('delete', 'delete')
+
+    with self.command_group('spring application-live-view', is_preview=True,
+                            custom_command_type=application_live_view_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'show',
+                              table_transformer=transform_live_view_output)
+        g.custom_command('create', 'create', table_transformer=transform_live_view_output, supports_no_wait=True)
+        g.custom_command('delete', 'delete', supports_no_wait=True)
 
     with self.command_group('spring application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,

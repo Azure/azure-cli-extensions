@@ -168,6 +168,14 @@ def validate_api_portal_update(namespace):
     validate_instance_count(namespace)
 
 
+def validate_dev_tool_portal(namespace):
+    args = [namespace.scopes, namespace.client_id, namespace.client_secret, namespace.metadata_url]
+    if not all(args) and not all(x is None for x in args):
+        raise ArgumentUsageError("Single Sign On configurations '--scopes --client-id --client-secret --metadata-url' should be all provided or none provided.")
+    if namespace.scopes is not None:
+        namespace.scopes = namespace.scopes.split(",") if namespace.scopes else []
+
+
 def _validate_sso(namespace):
     all_provided = namespace.scope is not None and namespace.client_id is not None and namespace.client_secret is not None and namespace.issuer_uri is not None
     none_provided = namespace.scope is None and namespace.client_id is None and namespace.client_secret is None and namespace.issuer_uri is None

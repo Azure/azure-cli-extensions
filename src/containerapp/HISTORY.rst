@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.15
+++++++
+* Add 'az containerapp containerapp ingress ip-restriction' command group to manage IP restrictions on the ingress of a container app.
+
 0.3.14
 ++++++
 * 'az containerapp logs show'/'az containerapp exec': Fix "KeyError" bug
