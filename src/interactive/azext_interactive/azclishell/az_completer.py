@@ -265,7 +265,8 @@ class AzCompleter(Completer):
             pass
 
     def gen_recommend_completion(self):
-        for rec in get_recommend(self.shell_ctx.cli_ctx, self.shell_ctx.history):
+        # for rec in get_recommend(self.shell_ctx.cli_ctx, self.shell_ctx.history):
+        for rec in self.shell_ctx.recommender.get_result() or []:
             yield Completion(rec['command'], -1)
 
     def yield_param_completion(self, param, last_word):

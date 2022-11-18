@@ -44,6 +44,7 @@ from .key_bindings import InteractiveKeyBindings
 from .layout import LayoutManager
 from .progress import progress_view
 from . import telemetry
+from .recommendation import Recommender
 from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word
 
@@ -122,6 +123,7 @@ class AzInteractiveShell(object):
         self.intermediate_sleep = intermediate_sleep
         self.final_sleep = final_sleep
         self.command_table_thread = None
+        self.recommender = Recommender(self.cli_ctx, self.history)
 
         # try to consolidate state information here...
         # Used by key bindings and layout
@@ -727,6 +729,7 @@ class AzInteractiveShell(object):
                     continue
 
                 self.set_prompt()
+                self.recommender.update()
 
                 if outside:
                     subprocess.Popen(cmd, shell=True).communicate()

@@ -6,6 +6,8 @@ import re
 from enum import Enum
 import hashlib
 import json
+import threading
+
 from azure.cli.core.azclierror import RecommendationError
 from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
@@ -18,6 +20,47 @@ class RecommendType(int, Enum):
     Solution = 2
     Command = 3
     Scenario = 4
+
+
+class RecommendThread(threading.Thread):
+    def __init__(self, cli_ctx, history):
+        super().__init__()
+        self.cli_ctx = cli_ctx
+        self.history = history
+        self.result = None
+
+    def run(self) -> None:
+        self.result = get_recommend(self.cli_ctx, self.history)
+
+
+class Recommender:
+    def __init__(self, cli_ctx, history):
+        self.cli_ctx = cli_ctx
+        self.history = history
+        self.cur_thread = None
+
+    def update(self):
+        """Update recommendation in new thread"""
+        self.cur_thread = RecommendThread(self.cli_ctx, self.history)
+        self.cur_thread.start()
+
+    def get_result(self, non_block=True, timeout=3.0):
+        """
+        Get the latest recommendation result
+        :param non_block: whether to wait for data to be prepared
+        :param timeout: block timeout
+        :return: recommendation or None if the result is not prepared
+        """
+        if not self.cur_thread:
+            if non_block:
+                return None
+            else:
+                self.update()
+        if non_block:
+            return self.cur_thread.result
+        else:
+            self.cur_thread.join(timeout)
+            return self.cur_thread.result
 
 
 def get_recommend(cli_ctx, history):
