@@ -159,6 +159,37 @@ def _transform_acs_service_registry_output(result):
     return result if is_list else result[0]
 
 
+def transform_dev_tool_portal_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['cpu'] = item['properties']['resourceRequests']['cpu']
+        item['memory'] = item['properties']['resourceRequests']['memory']
+        item['instance'] = '{}/{}'.format(len(item['properties'].get('instances', [])), item['properties']['resourceRequests']['instanceCount'])
+        item['url'] = item['properties'].get('url', '---')
+    return result if is_list else result[0]
+
+
+def transform_live_view_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Provisioning State'] = item['properties']['provisioningState']
+        for component in item['properties']['components']:
+            item[component['name'] + 'cpu'] = component['resourceRequests']['cpu']
+            item[component['name'] + 'memory'] = component['resourceRequests']['memory']
+            item[component['name'] + 'instance'] = '{}/{}'.format(len(component.get('instances', [])), component['resourceRequests']['instanceCount'])
+
+    return result if is_list else result[0]
+
+
 def transform_spring_cloud_gateway_output(result):
     is_list = isinstance(result, list)
 
