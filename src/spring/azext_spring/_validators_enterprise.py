@@ -112,15 +112,20 @@ def validate_git_uri(namespace):
 
 def validate_acc_git_url(namespace):
     url = namespace.git_url
+    if not url:
+        raise ArgumentUsageError("Git Repository configurations '--git-url' should be all provided.")
     if url and (not url.startswith("https://")) and (not url.startswith("ssh://")):
         raise InvalidArgumentValueError("Git URL should start with \"https://\" or \"ssh://\"")
 
 def validate_acc_git_refs(namespace):
-    branch = namespace.git_branch
-    commit = namespace.git_commit
-    tag = namespace.git_tag
-    if not branch and not commit and not tag:
-        raise InvalidArgumentValueError("Provide at least one of Git commit and Git branch and Git tag")
+    args = [namespace.git_branch, namespace.git_commit, namespace.git_tag]
+    if all(x is None for x in args):
+        raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch --git-commit --git-tag' should be all provided.")
+
+def validate_git_interval_in_seconds(namespace):
+    if namespace.git_interval_in_seconds is not None:
+        if namespace.git_interval_in_seconds < 1:
+            raise InvalidArgumentValueError("--git-interval-in-seconds must be greater than 0")
 
 def validate_acs_ssh_or_warn(namespace):
     private_key = namespace.private_key
@@ -260,3 +265,9 @@ def validate_buildpack_binding_exist(cmd, namespace):
                                  DEFAULT_BUILD_SERVICE_NAME,
                                  namespace.builder_name,
                                  namespace.name)
+
+def validate_customized_accelerator(namespace):
+    validate_acc_git_url(namespace)
+    validate_acc_git_refs(namespace)
+    if namespace.accelerator_tags is not None:
+        namespace.accelerator_tags = namespace.accelerator_tags.split(",") if namespace.accelerator_tags else []
