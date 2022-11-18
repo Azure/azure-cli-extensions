@@ -206,10 +206,10 @@ class ContainerAppEnvironment(Resource):
     def create(self):
         register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
 
-        res_locations = list_environment_locations(self.cmd)
-        for loc in res_locations:
-            try:
-                env = create_managed_environment(
+        self.location = validate_environment_location(self.cmd, self.location)
+
+        if self.location: 
+            env = create_managed_environment(
                     self.cmd,
                     self.name,
                     location=self.location,
@@ -218,17 +218,32 @@ class ContainerAppEnvironment(Resource):
                     logs_customer_id=self.logs_customer_id,
                     disable_warnings=True,
                 )
+            self.exists = True 
 
-                self.exists = True 
-                self.location = loc
+            return env
+        else: 
+            res_locations = list_environment_locations(self.cmd)
+            for loc in res_locations:
+                try:
+                    env = create_managed_environment(
+                        self.cmd,
+                        self.name,
+                        location=loc,
+                        resource_group_name=self.resource_group.name,
+                        logs_key=self.logs_key,
+                        logs_customer_id=self.logs_customer_id,
+                        disable_warnings=True,
+                    )
 
-                return env
-            except Exception as ex:
-                logger.info(
-                    f"Failed to create ManagedEnvironment in {loc} due to {ex}"
-                )
-        
-        raise ValidationError("Can not find a region with quota to create ManagedEnvironment")
+                    self.exists = True 
+                    self.location = loc
+
+                    return env
+                except Exception as ex:
+                    logger.info(
+                        f"Failed to create ManagedEnvironment in {loc} due to {ex}"
+                    )
+            raise ValidationError("Can not find a region with quota to create ManagedEnvironment")
 
     def get_rid(self):
         rid = self.name
