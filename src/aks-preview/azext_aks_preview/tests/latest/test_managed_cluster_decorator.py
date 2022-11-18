@@ -5804,6 +5804,34 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+    def test_update_linux_profile(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_key_value": "test_key"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_linux_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username=None,
+                ssh=self.models.ContainerServiceSshConfiguration(
+                    public_keys=[
+                        self.models.ContainerServiceSshPublicKey(
+                            key_data="test_key"
+                        )
+                    ]
+                ),
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
     def test_update_mc_profile_preview(self):
         import inspect
 

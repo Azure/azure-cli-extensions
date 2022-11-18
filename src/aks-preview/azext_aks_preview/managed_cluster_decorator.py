@@ -3176,14 +3176,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ssh_key_value = self.context.get_ssh_key_value_for_update()
 
         if ssh_key_value:
-            mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
+            ssh_config = self.models.ContainerServiceSshConfiguration(
                 public_keys=[
                     self.models.ContainerServiceSshPublicKey(
                         key_data=ssh_key_value
                     )
                 ]
             )
-
+            # apply default linux profile if not set when created
+            if mc.linux_profile == None:
+                mc.linux_profile = self.models.ContainerServiceLinuxProfile(
+                    admin_username=self.context.get_admin_username(),
+                    ssh=ssh_config,
+                )
+            else:
+                mc.linux_profile.ssh = ssh_config
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
