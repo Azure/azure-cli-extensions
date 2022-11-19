@@ -16,6 +16,7 @@ from ._utils import (wait_till_end)
 DEFAULT_NAME = "default"
 logger = get_logger(__name__)
 
+
 def application_accelerator_show(cmd, client, resource_group, service):
     return client.application_accelerators.get(resource_group, service, DEFAULT_NAME)
 
@@ -81,22 +82,22 @@ def customized_accelerator_show(cmd, client, resource_group, service, name):
 
 
 def customized_accelerator_upsert(cmd, client, resource_group, service, name,
-                            display_name,
-                            git_url,
-                            description=None,
-                            icon_url=None,
-                            accelerator_tags=None,
-                            git_interval_in_seconds=None,
-                            git_branch=None,
-                            git_commit=None,
-                            git_tag=None,
-                            username=None,
-                            password=None,
-                            private_key=None,
-                            host_key=None,
-                            host_key_algorithm=None,
-                            no_wait=False):
-    auth_setting=None
+                                  display_name,
+                                  git_url,
+                                  description=None,
+                                  icon_url=None,
+                                  accelerator_tags=None,
+                                  git_interval_in_seconds=None,
+                                  git_branch=None,
+                                  git_commit=None,
+                                  git_tag=None,
+                                  username=None,
+                                  password=None,
+                                  private_key=None,
+                                  host_key=None,
+                                  host_key_algorithm=None,
+                                  no_wait=False):
+    auth_setting = None
     if username and password:
         auth_setting = models.AcceleratorBasicAuthSetting(
             username=username,
@@ -104,7 +105,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         )
     elif private_key and host_key and host_key_algorithm:
         auth_setting = models.AcceleratorSshSetting(
-            private_key=private_key.replace('\\n','\n'),
+            private_key=private_key.replace('\\n', '\n'),
             host_key=host_key,
             host_key_algorithm=host_key_algorithm
         )
@@ -132,6 +133,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
 
 def customized_accelerator_delete(cmd, client, resource_group, service, name, no_wait=False):
     return sdk_no_wait(no_wait, client.customized_accelerators.begin_delete, resource_group, service, DEFAULT_NAME, name)
+
 
 def predefined_accelerator_list(cmd, client, resource_group, service):
     return client.predefined_accelerators.list(resource_group, service, DEFAULT_NAME)

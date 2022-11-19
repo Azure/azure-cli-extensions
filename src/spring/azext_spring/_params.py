@@ -807,7 +807,7 @@ def load_arguments(self, _):
             c.argument('git_interval_in_seconds', type=int, help='Interval for checking for updates to Git or image repository.', validator=validate_git_interval_in_seconds)
             c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
-            c.argument('git_tag',type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
+            c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
             c.argument('username', help='Username of git repository basic auth.')
             c.argument('password', help='Password of git repository basic auth.')

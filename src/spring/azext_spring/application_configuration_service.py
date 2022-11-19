@@ -149,7 +149,7 @@ def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username,
     if search_paths:
         search_paths = search_paths.split(",")
     if private_key:
-        private_key = private_key.replace('\\n','\n')
+        private_key = private_key.replace('\\n', '\n')
 
     repo.patterns = patterns or repo.patterns
     repo.uri = uri or repo.uri

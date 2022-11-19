@@ -237,6 +237,7 @@ def transform_api_portal_output(result):
 
     return result if is_list else result[0]
 
+
 def transform_application_accelerator_output(result):
     from collections import OrderedDict
     is_list = isinstance(result, list)
@@ -263,6 +264,7 @@ def transform_application_accelerator_output(result):
 
     return result if is_list else new_result
 
+
 def transform_predefined_accelerator_output(result):
     is_list = isinstance(result, list)
 
@@ -275,6 +277,7 @@ def transform_predefined_accelerator_output(result):
         item['State'] = item['properties']['state']
 
     return result if is_list else result[0]
+
 
 def transform_customized_accelerator_output(result):
     is_list = isinstance(result, list)

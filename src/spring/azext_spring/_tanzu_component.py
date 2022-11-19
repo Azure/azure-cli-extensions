@@ -78,6 +78,7 @@ def create_api_portal(cmd, client, resource_group, service, enable_api_portal, a
                                                  capacity=api_portal_instance_count)
         return client.api_portals.begin_create_or_update(resource_group, service, DEFAULT_NAME, api_portal_resource)
 
+
 def create_application_accelerator(cmd, client, resource_group, service, enable_application_accelerator, **_):
     if enable_application_accelerator:
         logger.warning(" - Creating Application Accelerator ..")
