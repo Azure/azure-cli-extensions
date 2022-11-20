@@ -17,6 +17,10 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a load test resource.
+
+    :example: Delete Azure load testing resource
+        az load delete --name sample-resource --resource-group sample-rg
+        az load delete --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.LoadTestService/loadtests/sample-resource1 /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg2/providers/Microsoft.LoadTestService/loadtests/sample-resource2
     """
 
     _aaz_info = {

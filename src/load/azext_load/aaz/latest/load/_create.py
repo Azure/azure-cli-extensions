@@ -17,6 +17,13 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a load test resource.
+
+    :example: Create a new Azure load testing resource
+        az load create --name sample-resource --resource-group sample-rg --location westus2
+        az load create -n sample-resource -g sample-rg -l westus2
+        az load create -n sample-resource -g sample-rg -l westus2 --tags type=testing target=infra
+        az az load create -n sample-resource -g sample-rg -l westus2 --identity-type SystemAssigned,UserAssigned --user-assigned "{'/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sample-mi':{}}"
+        az az load create -n sample-resource -g sample-rg -l westus2 --identity-type SystemAssigned,UserAssigned --user-assigned "{'/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sample-mi':{}}" --encryption-key https://sample-kv.vault.azure.net/keys/samplekey/2d1ccd5c50234ea2a0858fe148b69cde --encryption-identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sample-mi
     """
 
     _aaz_info = {
