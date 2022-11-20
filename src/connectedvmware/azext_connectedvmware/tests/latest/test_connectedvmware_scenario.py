@@ -53,7 +53,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             self.cmd('az connectedvmware vcenter list -g {rg}').get_output_in_json()
         )
         # vcenter count list should report 1
-        self.assertEqual(count, 1, 'vcenter resource count expected to be 1')
+        self.assertGreaterEqual(count, 1, 'vcenter resource count expected to be at least 1')
 
         # Create resource-pool resource.
         self.cmd(

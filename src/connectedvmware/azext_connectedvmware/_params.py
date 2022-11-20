@@ -203,7 +203,7 @@ def load_arguments(self, _):
         c.argument(
             'retain',
             action='store_true',
-            help='Disable the VM from azure but retain the VM in VMM.',
+            help='Disable the VM from azure; delete the ARM resource but retain the VM in VMware.',
         )
 
     with self.argument_context('connectedvmware vm stop') as c:
