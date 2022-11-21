@@ -342,6 +342,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring application-accelerator',
                             custom_command_type=application_accelerator_cmd_group,
+                            is_preview=True,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'application_accelerator_show', table_transformer=transform_application_accelerator_output)
         g.custom_command('create', 'application_accelerator_create', table_transformer=transform_application_accelerator_output, supports_no_wait=True)
