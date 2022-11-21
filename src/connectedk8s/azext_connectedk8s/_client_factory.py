@@ -34,8 +34,8 @@ def cf_connected_cluster(cli_ctx, _):
     return cf_connectedk8s(cli_ctx).connected_cluster
 
 
-def cf_connectedk8s_prev_2022_05_01(cli_ctx, *_):
-    from azext_connectedk8s.vendored_sdks.preview_2022_05_01 import ConnectedKubernetesClient
+def cf_connectedk8s_prev_2022_10_01(cli_ctx, *_):
+    from azext_connectedk8s.vendored_sdks.preview_2022_10_01 import ConnectedKubernetesClient
     if os.getenv('AZURE_ACCESS_TOKEN'):
         validate_custom_token()
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
@@ -44,8 +44,8 @@ def cf_connectedk8s_prev_2022_05_01(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
-def cf_connected_cluster_prev_2022_05_01(cli_ctx, _):
-    return cf_connectedk8s_prev_2022_05_01(cli_ctx).connected_cluster
+def cf_connected_cluster_prev_2022_10_01(cli_ctx, _):
+    return cf_connectedk8s_prev_2022_10_01(cli_ctx).connected_cluster
 
 
 def cf_connectedmachine(cli_ctx, subscription_id):

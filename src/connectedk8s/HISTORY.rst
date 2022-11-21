@@ -2,11 +2,22 @@
 
 Release History
 ===============
-1.3.5
+1.3.7
 ++++++
 
 * Added support for custom AAD token
+
+1.3.6
+++++++
+
+* Updated patch behaviour for Azure Hybrid Benefit property
+
+1.3.5
+++++++
+
+* Added software assurance related changes for AKS HCI
 * Added parameter for overriding container log path
+* Updated kubernetes package dependency to 24.2.0
 
 1.3.4
 ++++++
