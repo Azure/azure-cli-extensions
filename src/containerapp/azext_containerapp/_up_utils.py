@@ -208,20 +208,20 @@ class ContainerAppEnvironment(Resource):
 
         self.location = validate_environment_location(self.cmd, self.location)
 
-        if self.location: 
+        if self.location:
             env = create_managed_environment(
-                    self.cmd,
-                    self.name,
-                    location=self.location,
-                    resource_group_name=self.resource_group.name,
-                    logs_key=self.logs_key,
-                    logs_customer_id=self.logs_customer_id,
-                    disable_warnings=True,
-                )
-            self.exists = True 
+                self.cmd,
+                self.name,
+                location=self.location,
+                resource_group_name=self.resource_group.name,
+                logs_key=self.logs_key,
+                logs_customer_id=self.logs_customer_id,
+                disable_warnings=True,
+            )
+            self.exists = True
 
             return env
-        else: 
+        else:
             res_locations = list_environment_locations(self.cmd)
             for loc in res_locations:
                 try:
@@ -235,7 +235,7 @@ class ContainerAppEnvironment(Resource):
                         disable_warnings=True,
                     )
 
-                    self.exists = True 
+                    self.exists = True
                     self.location = loc
 
                     return env
