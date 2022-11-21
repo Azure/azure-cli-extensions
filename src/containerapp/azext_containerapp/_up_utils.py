@@ -206,9 +206,9 @@ class ContainerAppEnvironment(Resource):
     def create(self):
         register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
 
-        self.location = validate_environment_location(self.cmd, self.location)
-
         if self.location:
+            self.location = validate_environment_location(self.cmd, self.location)
+            
             env = create_managed_environment(
                 self.cmd,
                 self.name,
