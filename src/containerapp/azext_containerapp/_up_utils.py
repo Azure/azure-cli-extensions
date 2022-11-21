@@ -208,7 +208,7 @@ class ContainerAppEnvironment(Resource):
 
         if self.location:
             self.location = validate_environment_location(self.cmd, self.location)
-            
+
             env = create_managed_environment(
                 self.cmd,
                 self.name,

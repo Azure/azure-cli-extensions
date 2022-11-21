@@ -1517,9 +1517,10 @@ def validate_environment_location(cmd, location):
             return location
         except Exception as e:  # pylint: disable=broad-except
             raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
-    else: 
+    else:
         return res_locations[0]
-    
+
+
 def list_environment_locations(cmd):
     providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
     resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
