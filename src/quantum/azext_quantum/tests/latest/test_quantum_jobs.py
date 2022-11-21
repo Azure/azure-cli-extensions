@@ -5,13 +5,14 @@
 
 import json
 import os
+import pytest
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo
@@ -30,6 +31,17 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
+
+    # @pytest.fixture(autouse=True)
+    # def _pass_fixtures(self, capsys):
+    #     self.capsys = capsys
+    # # See "TODO" in issue_cmd_with_param_missing un utils.py
+
+    def test_job_errors(self):
+        issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
 
     def test_build(self):
         result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')

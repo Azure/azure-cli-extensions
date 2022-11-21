@@ -7,7 +7,9 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_20220501preview,
+from ._client_factory import (cf_spring_20221101preview,
+                              cf_spring_20220901preview,
+                              cf_spring_20220501preview,
                               cf_spring_20220301preview,
                               cf_spring_20220101preview,
                               cf_spring_20201101preview,
@@ -20,9 +22,12 @@ from ._transformers import (transform_spring_table_output,
                             transform_application_configuration_service_output,
                             transform_service_registry_output,
                             transform_spring_cloud_gateway_output,
+                            transform_dev_tool_portal_output,
+                            transform_live_view_output,
                             transform_api_portal_output)
 from ._validators import validate_app_insights_command_not_supported_tier
-from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
+from ._marketplace import (transform_marketplace_plan_output)
+from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
 
@@ -31,12 +36,12 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 def load_command_table(self, _):
     spring_routing_util = CliCommandType(
         operations_tmpl='azext_spring.spring_instance#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20221101preview
     )
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring.app#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20220901preview
     )
 
     app_managed_identity_command = CliCommandType(
@@ -51,7 +56,7 @@ def load_command_table(self, _):
 
     builder_cmd_group = CliCommandType(
         operations_tmpl="azext_spring._build_service#{}",
-        client_factory=cf_spring_20220101preview
+        client_factory=cf_spring_20220901preview
     )
 
     buildpack_binding_cmd_group = CliCommandType(
@@ -62,6 +67,16 @@ def load_command_table(self, _):
     application_configuration_service_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.application_configuration_service#{}',
         client_factory=cf_spring_20220101preview
+    )
+
+    application_live_view_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.application_live_view#{}',
+        client_factory=cf_spring_20221101preview
+    )
+
+    dev_tool_portal_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.dev_tool_portal#{}',
+        client_factory=cf_spring_20221101preview
     )
 
     gateway_cmd_group = CliCommandType(
@@ -76,7 +91,7 @@ def load_command_table(self, _):
 
     gateway_route_config_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20221101preview
     )
 
     api_portal_cmd_group = CliCommandType(
@@ -92,6 +107,9 @@ def load_command_table(self, _):
     with self.command_group('spring', custom_command_type=spring_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_create', supports_no_wait=True)
+        g.custom_command('list-marketplace-plan', 'spring_list_marketplace_plan',
+                         is_preview=True,
+                         table_transformer=transform_marketplace_plan_output)
 
     with self.command_group('spring', client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
@@ -128,7 +146,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)
 
-    with self.command_group('spring app', client_factory=cf_spring_20220501preview,
+    with self.command_group('spring app', client_factory=cf_spring_20220901preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
@@ -147,12 +165,16 @@ def load_command_table(self, _):
         g.custom_command('logs', 'app_tail_log')
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
+        g.custom_command('connect', 'app_connect')
+        g.custom_command('enable-remote-debugging', 'deployment_enable_remote_debugging', supports_no_wait=True)
+        g.custom_command('disable-remote-debugging', 'deployment_disable_remote_debugging', supports_no_wait=True)
+        g.custom_command('get-remote-debugging-config', 'deployment_get_remote_debugging')
 
     with self.command_group('spring app identity', custom_command_type=app_managed_identity_command,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('assign', 'app_identity_assign', validator=validate_app_identity_assign_or_warning)
         g.custom_command('remove', 'app_identity_remove', validator=validate_app_identity_remove_or_warning)
-        g.custom_command('force-set', 'app_identity_force_set', is_preview=True)
+        g.custom_command('force-set', 'app_identity_force_set')
         g.custom_show_command('show', 'app_identity_show')
 
     with self.command_group('spring app log', client_factory=cf_spring_20220101preview,
@@ -231,6 +253,23 @@ def load_command_table(self, _):
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
 
+    with self.command_group('spring dev-tool', is_preview=True,
+                            custom_command_type=dev_tool_portal_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'show',
+                              table_transformer=transform_dev_tool_portal_output)
+        g.custom_command('create', 'create', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
+        g.custom_command('update', 'update', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
+        g.custom_command('delete', 'delete')
+
+    with self.command_group('spring application-live-view', is_preview=True,
+                            custom_command_type=application_live_view_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'show',
+                              table_transformer=transform_live_view_output)
+        g.custom_command('create', 'create', table_transformer=transform_live_view_output, supports_no_wait=True)
+        g.custom_command('delete', 'delete', supports_no_wait=True)
+
     with self.command_group('spring application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,
                             exception_handler=handle_asc_exception) as g:
@@ -299,6 +338,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
         g.custom_show_command('show', 'builder_show')
+        g.custom_show_command('show-deployments', 'builder_show_deployments')
         g.custom_command('delete', 'builder_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring build-service builder buildpack-binding',

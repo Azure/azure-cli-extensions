@@ -31,7 +31,7 @@ class Connectedk8sScenarioTest(ScenarioTest):
             'kubeconfigpls': "%s" % (_get_test_data_file('pls-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
-        self.cmd('aks create -g akkeshar -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
+        self.cmd('aks create -g akkeshar -n {} -s Standard_B4ms -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
         self.cmd('aks get-credentials -g akkeshar -n {managed_cluster_name} -f {kubeconfig}')
         self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
@@ -43,9 +43,14 @@ class Connectedk8sScenarioTest(ScenarioTest):
             self.check('tags.foo', 'doo')
         ])
         self.cmd('connectedk8s delete -g akkeshar -n {name} --kube-config {kubeconfig} -y')
-        self.cmd('aks get-credentials -g akkeshar -n {managed_cluster_name} -f {kubeconfig}')
-        self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig}', checks=[
-            self.check('tags.foo', 'doo'),
+
+        # Test 2022-10-01-preview api properties
+        self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --distribution aks_management --infrastructure azure_stack_hci --distribution-version 1.0 --tags foo=doo --kube-config {kubeconfig}', checks=[
+            self.check('distributionVersion', '1.0'),
+            self.check('name', '{name}')
+        ])
+        self.cmd('connectedk8s update -g akkeshar -n {name} --azure-hybrid-benefit true --kube-config {kubeconfig} --yes', checks=[
+            self.check('azureHybridBenefit', 'True'),
             self.check('name', '{name}')
         ])
 
@@ -55,8 +60,8 @@ class Connectedk8sScenarioTest(ScenarioTest):
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
         # Private link test
-        self.cmd('aks get-credentials -g akkeshar -n akkeshar -f {kubeconfigpls}')
-        self.cmd('connectedk8s connect -g akkeshar -n cliplscc -l eastus --tags foo=doo --kube-config {kubeconfigpls} --enable-private-link true --pls-arm-id /subscriptions/1bfbb5d0-917e-4346-9026-1d3b344417f5/resourceGroups/akkeshar/providers/Microsoft.HybridCompute/privateLinkScopes/temppls --yes', checks=[
+        self.cmd('aks get-credentials -g akkeshar -n tempaks -f {kubeconfigpls}')
+        self.cmd('connectedk8s connect -g akkeshar -n cliplscc -l eastus2euap --tags foo=doo --kube-config {kubeconfigpls} --enable-private-link true --pls-arm-id /subscriptions/1bfbb5d0-917e-4346-9026-1d3b344417f5/resourceGroups/akkeshar/providers/Microsoft.HybridCompute/privateLinkScopes/temppls --yes', checks=[
             self.check('name', 'cliplscc')
         ])
         self.cmd('connectedk8s delete -g akkeshar -n cliplscc --kube-config {kubeconfigpls} -y')
@@ -472,39 +477,39 @@ class Connectedk8sScenarioTest(ScenarioTest):
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
-    # @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
-    # def test_test(self,resource_group):
+    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    def test_test(self,resource_group):
 
-    #     managed_cluster_name = self.create_random_name(prefix='pehla', length=24)
-    #     managed_cluster_name_second = self.create_random_name(prefix='dusra', length=24)
-    #     kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
-    #     # kubeconfigpls="%s" % (_get_test_data_file('pls-config.yaml'))
-    #     name = self.create_random_name(prefix='fir-', length=12)
-    #     name_second = self.create_random_name(prefix='sec-', length=12)
-    #     self.kwargs.update({
-    #         'rg': resource_group,
-    #         'name': name,
-    #         'name_second': name_second,
-    #         'kubeconfig': kubeconfig,
-    #         # 'kubeconfigpls': kubeconfigpls,
-    #         'managed_cluster_name': managed_cluster_name,
-    #         'managed_cluster_name_second': managed_cluster_name_second
-    #     })
+        managed_cluster_name = self.create_random_name(prefix='pehla', length=24)
+        managed_cluster_name_second = self.create_random_name(prefix='dusra', length=24)
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
+        # kubeconfigpls="%s" % (_get_test_data_file('pls-config.yaml'))
+        name = self.create_random_name(prefix='fir-', length=12)
+        name_second = self.create_random_name(prefix='sec-', length=12)
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': name,
+            'name_second': name_second,
+            'kubeconfig': kubeconfig,
+            # 'kubeconfigpls': kubeconfigpls,
+            'managed_cluster_name': managed_cluster_name,
+            'managed_cluster_name_second': managed_cluster_name_second
+        })
 
-    #     self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-    #     self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
-    #     self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
-    #         self.check('tags.foo', 'doo'),
-    #         self.check('name', '{name}')
-    #     ])
-    #     self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
-    #         self.check('name', '{name}'),
-    #         self.check('resourceGroup', '{rg}'),
-    #         self.check('tags.foo', 'doo')
-    #     ])
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}')
+        ])
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('tags.foo', 'doo')
+        ])
 
-    #     self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
 
-    #     self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
-    #     os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
-    #     # os.remove("%s" % (_get_test_data_file('pls-config.yaml')))
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+        # os.remove("%s" % (_get_test_data_file('pls-config.yaml')))

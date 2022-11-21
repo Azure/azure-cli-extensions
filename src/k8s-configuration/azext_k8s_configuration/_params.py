@@ -67,7 +67,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "kind",
-            arg_type=get_enum_type([consts.GIT, consts.BUCKET]),
+            arg_type=get_enum_type([consts.GIT, consts.BUCKET, consts.AZBLOB]),
             help="Source kind to reconcile",
         )
         c.argument(
@@ -177,6 +177,62 @@ def load_arguments(self, _):
             options_list=["--kustomization", "-k"],
             help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force']",
             nargs="+",
+        )
+        c.argument(
+            "container_name",
+            help="Name of the Azure Blob Storage container to sync",
+        )
+        c.argument(
+            "sp_client_id",
+            arg_group="Azure Blob Auth",
+            options_list=["--sp-client-id", "--service-principal-client-id"],
+            help="The client ID for authenticating a service principal with Azure Blob, required for this authentication method",
+        )
+        c.argument(
+            "sp_tenant_id",
+            arg_group="Azure Blob Auth",
+            options_list=["--sp-tenant-id", "--service-principal-tenant-id"],
+            help="The tenant ID for authenticating a service principal with Azure Blob, required for this authentication method",
+        )
+        c.argument(
+            "sp_client_secret",
+            arg_group="Azure Blob Auth",
+            options_list=["--sp-client-secret", "--service-principal-client-secret"],
+            help="The client secret for authenticating a service principal with Azure Blob",
+        )
+        c.argument(
+            "sp_client_cert",
+            arg_group="Azure Blob Auth",
+            options_list=["--sp-client-cert", "--service-principal-client-certificate"],
+            help="The Base64 encoded client certificate for authenticating a service principal with Azure Blob",
+        )
+        c.argument(
+            "sp_client_cert_password",
+            arg_group="Azure Blob Auth",
+            options_list=["--sp-cert-password", "--service-principal-client-certificate-password"],
+            help="The password for the client certificate used to authenticate a service principal with Azure Blob",
+        )
+        c.argument(
+            "sp_client_cert_send_chain",
+            arg_group="Azure Blob Auth",
+            options_list=["--sp-cert-send-chain", "--service-principal-client-certificate-send-chain"],
+            help="Specify whether to include x5c header in client claims when acquiring a token to enable subject name / issuer based authentication for the client certificate",
+        )
+        c.argument(
+            "account_key",
+            arg_group="Azure Blob Auth",
+            help="The Azure Blob Shared Key for authentication ",
+        )
+        c.argument(
+            "sas_token",
+            arg_group="Azure Blob Auth",
+            help="The Azure Blob SAS Token for authentication ",
+        )
+        c.argument(
+            "mi_client_id",
+            arg_group="Azure Blob Auth",
+            options_list=["--mi-client-id", "--managed-identity-client-id"],
+            help="The client ID of the managed identity for authentication with Azure Blob",
         )
 
     with self.argument_context("k8s-configuration flux update") as c:
