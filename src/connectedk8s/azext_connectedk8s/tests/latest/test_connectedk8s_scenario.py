@@ -11,7 +11,7 @@ from knack.util import CLIError
 import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -19,7 +19,7 @@ def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
 
-class Connectedk8sScenarioTest(ScenarioTest):
+class Connectedk8sScenarioTest(LiveScenarioTest):
 
     @live_only()
     def test_connect_pvtlink(self):
