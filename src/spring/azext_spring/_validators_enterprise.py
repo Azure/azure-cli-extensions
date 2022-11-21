@@ -125,10 +125,10 @@ def validate_acc_git_refs(namespace):
         raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch --git-commit --git-tag' should be all provided.")
 
 
-def validate_git_interval_in_seconds(namespace):
-    if namespace.git_interval_in_seconds is not None:
-        if namespace.git_interval_in_seconds < 1:
-            raise InvalidArgumentValueError("--git-interval-in-seconds must be greater than 0")
+def validate_git_interval(namespace):
+    if namespace.git_interval is not None:
+        if namespace.git_interval < 1:
+            raise InvalidArgumentValueError("--git-interval must be greater than 0")
 
 
 def validate_acs_ssh_or_warn(namespace):
