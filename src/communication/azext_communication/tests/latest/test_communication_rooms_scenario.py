@@ -51,5 +51,31 @@ class CommunicationRoomsScenarios(ScenarioTest):
             self.cmd('az communication rooms create --join-policy {join_policy}', checks = [
                 self.check('CommunicationError.code', 'Bad Request')])
         
-    
-    
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_communication_rooms_delete(self, communication_resource_info):
+        
+        # create a room and delete it with room id
+        room = self.cmd('az communication rooms create').get_output_in_json()
+        self.kwargs.update({
+            'room_id': room['id']})
+        
+        delete_res = self.cmd('az communication rooms delete --room {room_id}')
+        
+
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_communication_rooms_delete_with_invalid_id(self, communication_resource_info):
+        from azure.core.exceptions import HttpResponseError
+        # delete valid room with invalid room id
+        self.kwargs.update({
+            'room_id': '12345678'})
+        
+        with self.assertRaises(HttpResponseError) as raises:
+            self.cmd('az communication rooms delete --room {room_id}', checks = [
+                self.check('httpStatusCode', '400')])  
+
+        assert 'Invalid Room ID length' in str(raises.exception)
+        
+

@@ -154,6 +154,9 @@ def __to_room_participant(participants):
     from azure.communication.identity._shared.models import identifier_from_raw_id
     from azure.communication.rooms import RoomParticipant
 
+    if participants is None:
+        return None
+
     identifiers = [identifier_from_raw_id(p) for p in participants]
     participants = [RoomParticipant(communication_identifier=i) for i in identifiers]
 
@@ -167,7 +170,7 @@ def communication_rooms_get_room(client, room_id):
     return client.get_room(room_id)
 
 
-def communication_rooms_create_room(client, valid_from=None, valid_until=None, join_policy=None, participants=[]):
+def communication_rooms_create_room(client, valid_from=None, valid_until=None, join_policy=None, participants=None):
     room_participants = __to_room_participant(participants)
 
     return client.create_room(
