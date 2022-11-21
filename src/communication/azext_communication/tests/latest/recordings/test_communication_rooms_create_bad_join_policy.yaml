@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: '{"roomJoinPolicy": "azure12345"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '32'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - '2022-11-21T22:02:35.350921Z'
+      Repeatability-Request-ID:
+      - 348f9b5e-69e8-11ed-9fe7-6ca100547643
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - oyvw7nmJwqfGg4WefiXdtWSG0WwA8NpyXs5EaT2qzzQ=
+      x-ms-date:
+      - Mon, 21 Nov 2022 22:02:35 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://clitestj.communication.azure.com/rooms?api-version=2022-02-01
+  response:
+    body:
+      string: '{"type":"https://tools.ietf.org/html/rfc7231#section-6.5.1","title":"One
+        or more validation errors occurred.","status":400,"traceId":"00-c0bf8d56e170f9192737e050e09420ed-35d76deb7ce9a6a6-00","errors":{"createRoomRequest":["The
+        createRoomRequest field is required."],"$.roomJoinPolicy":["The JSON value
+        could not be converted to Microsoft.AzureCommunicationService.Rooms.Api.Contracts.V2022_02_01.RoomJoinPolicyDto.
+        Path: $.roomJoinPolicy | LineNumber: 0 | BytePositionInLine: 31."]}}'
+    headers:
+      content-type:
+      - application/problem+json; charset=utf-8
+      date:
+      - Mon, 21 Nov 2022 22:02:36 GMT
+      ms-cv:
+      - V90NC1MBo02DaCjmJlIJZQ.0
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0fPV7YwAAAACHdWgFWfSUTKkE85UYlqhCU0pDRURHRTA1MjEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 400
+      message: Bad Request
+version: 1

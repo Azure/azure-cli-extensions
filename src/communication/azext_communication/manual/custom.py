@@ -158,7 +158,7 @@ def __to_room_participant(participants):
     participants = [RoomParticipant(communication_identifier=i) for i in identifiers]
 
     # TODO: investigate
-    # as of azure-communication-identity-1.2.0, raw_id is missing in the objects returned by identifier_from_raw_id()  
+    # as of azure-communication-identity-1.2.0, raw_id is missing in the objects returned by identifier_from_raw_id()
 
     return participants
 
@@ -167,7 +167,7 @@ def communication_rooms_get_room(client, room_id):
     return client.get_room(room_id)
 
 
-def communication_rooms_create_room(client, valid_from=None, valid_until=None, join_policy=None, participants=None):
+def communication_rooms_create_room(client, valid_from=None, valid_until=None, join_policy=None, participants=[]):
     room_participants = __to_room_participant(participants)
 
     return client.create_room(
