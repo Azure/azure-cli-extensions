@@ -114,11 +114,11 @@ def validate_instance_count(namespace):
             raise InvalidArgumentValueError("--instance-count must be greater than 0")
 
 
-def validate_instance_not_existed(client, resource_group, name, location):
+def validate_instance_not_existed(client, name, location):
     availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
     name_availability = client.services.check_name_availability(location, availability_parameters)
     if not name_availability.name_available and name_availability.reason == "AlreadyExists":
-        raise InvalidArgumentValueError("Service instance '{}' under resource group '{}' is already existed in region '{}', cannot be created again.".format(name, resource_group, location))
+        raise InvalidArgumentValueError("The service name '{}' is already taken.".format(name))
 
 
 def validate_name(namespace):
