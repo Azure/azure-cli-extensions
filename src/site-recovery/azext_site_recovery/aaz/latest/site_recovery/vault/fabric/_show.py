@@ -63,7 +63,17 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ReplicationFabricsGet(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -303,9 +313,7 @@ class Show(AAZCommand):
             )
 
             agent_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").agent_details
-            agent_details.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            agent_details.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").agent_details.Element
             _element.agent_id = AAZStrType(
@@ -328,9 +336,7 @@ class Show(AAZCommand):
             )
 
             disks = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").agent_details.Element.disks
-            disks.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            disks.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").agent_details.Element.disks.Element
             _element.capacity_in_bytes = AAZIntType(
@@ -355,9 +361,7 @@ class Show(AAZCommand):
             )
 
             dras = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").dras
-            dras.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            dras.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").dras.Element
             _element.bios_id = AAZStrType(
@@ -394,15 +398,11 @@ class Show(AAZCommand):
             )
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").dras.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             mars_agents = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").mars_agents
-            mars_agents.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            mars_agents.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").mars_agents.Element
             _element.bios_id = AAZStrType(
@@ -438,21 +438,15 @@ class Show(AAZCommand):
             )
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").mars_agents.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             process_servers = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").process_servers
-            process_servers.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            process_servers.Element = AAZObjectType()
             _build_schema_process_server_details_read(process_servers.Element)
 
             push_installers = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").push_installers
-            push_installers.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            push_installers.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").push_installers.Element
             _element.bios_id = AAZStrType(
@@ -488,15 +482,11 @@ class Show(AAZCommand):
             )
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").push_installers.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             rcm_proxies = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").rcm_proxies
-            rcm_proxies.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            rcm_proxies.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").rcm_proxies.Element
             _element.bios_id = AAZStrType(
@@ -536,15 +526,11 @@ class Show(AAZCommand):
             )
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").rcm_proxies.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             replication_agents = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").replication_agents
-            replication_agents.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            replication_agents.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").replication_agents.Element
             _element.bios_id = AAZStrType(
@@ -580,15 +566,11 @@ class Show(AAZCommand):
             )
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").replication_agents.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             reprotect_agents = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").reprotect_agents
-            reprotect_agents.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            reprotect_agents.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").reprotect_agents.Element
             _element.accessible_datastores = AAZListType(
@@ -640,14 +622,10 @@ class Show(AAZCommand):
             )
 
             accessible_datastores = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").reprotect_agents.Element.accessible_datastores
-            accessible_datastores.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            accessible_datastores.Element = AAZStrType()
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").reprotect_agents.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             source_agent_identity_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "InMageRcm").source_agent_identity_details
@@ -839,9 +817,7 @@ class Show(AAZCommand):
             _element.uuid = AAZStrType()
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").master_target_servers.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             retention_volumes = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").master_target_servers.Element.retention_volumes
@@ -862,9 +838,7 @@ class Show(AAZCommand):
             )
 
             validation_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").master_target_servers.Element.validation_errors
-            validation_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            validation_errors.Element = AAZObjectType()
             _build_schema_health_error_read(validation_errors.Element)
 
             process_servers = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").process_servers
@@ -987,9 +961,7 @@ class Show(AAZCommand):
             )
 
             health_errors = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").process_servers.Element.health_errors
-            health_errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_errors.Element = AAZObjectType()
             _build_schema_health_error_read(health_errors.Element)
 
             mobility_service_updates = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").process_servers.Element.mobility_service_updates
@@ -1045,14 +1017,10 @@ class Show(AAZCommand):
             )
 
             error_message_parameters = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").switch_provider_blocking_error_details.Element.error_message_parameters
-            error_message_parameters.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_message_parameters.Element = AAZStrType()
 
             error_tags = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMware").switch_provider_blocking_error_details.Element.error_tags
-            error_tags.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_tags.Element = AAZStrType()
 
             disc_v_mware_v2 = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMwareV2")
             disc_v_mware_v2.migration_solution_id = AAZStrType(
@@ -1085,15 +1053,11 @@ class Show(AAZCommand):
             )
 
             process_servers = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMwareV2").process_servers
-            process_servers.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            process_servers.Element = AAZObjectType()
             _build_schema_process_server_details_read(process_servers.Element)
 
             health_error_details = cls._schema_on_200.properties.health_error_details
-            health_error_details.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            health_error_details.Element = AAZObjectType()
             _build_schema_health_error_read(health_error_details.Element)
 
             return cls._schema_on_200
@@ -1151,133 +1115,100 @@ def _build_schema_health_error_read(_schema):
         _schema.summary_message = _schema_health_error_read.summary_message
         return
 
-    _schema_health_error_read = AAZObjectType(
-        flags={"read_only": True}
-    )
+    _schema_health_error_read = AAZObjectType()
 
     health_error_read = _schema_health_error_read
     health_error_read.creation_time_utc = AAZStrType(
         serialized_name="creationTimeUtc",
-        flags={"read_only": True},
     )
     health_error_read.customer_resolvability = AAZStrType(
         serialized_name="customerResolvability",
-        flags={"read_only": True},
     )
     health_error_read.entity_id = AAZStrType(
         serialized_name="entityId",
-        flags={"read_only": True},
     )
     health_error_read.error_category = AAZStrType(
         serialized_name="errorCategory",
-        flags={"read_only": True},
     )
     health_error_read.error_code = AAZStrType(
         serialized_name="errorCode",
-        flags={"read_only": True},
     )
     health_error_read.error_id = AAZStrType(
         serialized_name="errorId",
-        flags={"read_only": True},
     )
     health_error_read.error_level = AAZStrType(
         serialized_name="errorLevel",
-        flags={"read_only": True},
     )
     health_error_read.error_message = AAZStrType(
         serialized_name="errorMessage",
-        flags={"read_only": True},
     )
     health_error_read.error_source = AAZStrType(
         serialized_name="errorSource",
-        flags={"read_only": True},
     )
     health_error_read.error_type = AAZStrType(
         serialized_name="errorType",
-        flags={"read_only": True},
     )
     health_error_read.inner_health_errors = AAZListType(
         serialized_name="innerHealthErrors",
-        flags={"read_only": True},
     )
     health_error_read.possible_causes = AAZStrType(
         serialized_name="possibleCauses",
-        flags={"read_only": True},
     )
     health_error_read.recommended_action = AAZStrType(
         serialized_name="recommendedAction",
-        flags={"read_only": True},
     )
     health_error_read.recovery_provider_error_message = AAZStrType(
         serialized_name="recoveryProviderErrorMessage",
-        flags={"read_only": True},
     )
     health_error_read.summary_message = AAZStrType(
         serialized_name="summaryMessage",
-        flags={"read_only": True},
     )
 
     inner_health_errors = _schema_health_error_read.inner_health_errors
-    inner_health_errors.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    inner_health_errors.Element = AAZObjectType()
 
     _element = _schema_health_error_read.inner_health_errors.Element
     _element.creation_time_utc = AAZStrType(
         serialized_name="creationTimeUtc",
-        flags={"read_only": True},
     )
     _element.customer_resolvability = AAZStrType(
         serialized_name="customerResolvability",
-        flags={"read_only": True},
     )
     _element.entity_id = AAZStrType(
         serialized_name="entityId",
-        flags={"read_only": True},
     )
     _element.error_category = AAZStrType(
         serialized_name="errorCategory",
-        flags={"read_only": True},
     )
     _element.error_code = AAZStrType(
         serialized_name="errorCode",
-        flags={"read_only": True},
     )
     _element.error_id = AAZStrType(
         serialized_name="errorId",
-        flags={"read_only": True},
     )
     _element.error_level = AAZStrType(
         serialized_name="errorLevel",
-        flags={"read_only": True},
     )
     _element.error_message = AAZStrType(
         serialized_name="errorMessage",
-        flags={"read_only": True},
     )
     _element.error_source = AAZStrType(
         serialized_name="errorSource",
-        flags={"read_only": True},
     )
     _element.error_type = AAZStrType(
         serialized_name="errorType",
-        flags={"read_only": True},
     )
     _element.possible_causes = AAZStrType(
         serialized_name="possibleCauses",
-        flags={"read_only": True},
     )
     _element.recommended_action = AAZStrType(
         serialized_name="recommendedAction",
-        flags={"read_only": True},
     )
     _element.recovery_provider_error_message = AAZStrType(
         serialized_name="recoveryProviderErrorMessage",
-        flags={"read_only": True},
     )
     _element.summary_message = AAZStrType(
         serialized_name="summaryMessage",
-        flags={"read_only": True},
     )
 
     _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
@@ -1334,9 +1265,7 @@ def _build_schema_process_server_details_read(_schema):
         _schema.version = _schema_process_server_details_read.version
         return
 
-    _schema_process_server_details_read = AAZObjectType(
-        flags={"read_only": True}
-    )
+    _schema_process_server_details_read = AAZObjectType()
 
     process_server_details_read = _schema_process_server_details_read
     process_server_details_read.available_memory_in_bytes = AAZIntType(
@@ -1452,15 +1381,11 @@ def _build_schema_process_server_details_read(_schema):
     )
 
     health_errors = _schema_process_server_details_read.health_errors
-    health_errors.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    health_errors.Element = AAZObjectType()
     _build_schema_health_error_read(health_errors.Element)
 
     ip_addresses = _schema_process_server_details_read.ip_addresses
-    ip_addresses.Element = AAZStrType(
-        flags={"read_only": True},
-    )
+    ip_addresses.Element = AAZStrType()
 
     _schema.available_memory_in_bytes = _schema_process_server_details_read.available_memory_in_bytes
     _schema.available_space_in_bytes = _schema_process_server_details_read.available_space_in_bytes

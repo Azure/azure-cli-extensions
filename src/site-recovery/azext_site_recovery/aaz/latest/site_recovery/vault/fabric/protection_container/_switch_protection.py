@@ -238,7 +238,17 @@ class SwitchProtection(AAZCommand):
         _schema.key_encryption_key_info = cls._args_disk_encryption_info_create.key_encryption_key_info
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.ReplicationProtectionContainersSwitchProtection(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

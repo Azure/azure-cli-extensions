@@ -108,7 +108,17 @@ class ApplyRecoveryPoint(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.ReplicationProtectedItemsApplyRecoveryPoint(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -1607,14 +1617,10 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             error_message_parameters = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").switch_provider_blocking_error_details.Element.error_message_parameters
-            error_message_parameters.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_message_parameters.Element = AAZStrType()
 
             error_tags = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").switch_provider_blocking_error_details.Element.error_tags
-            error_tags.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_tags.Element = AAZStrType()
 
             switch_provider_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").switch_provider_details
             switch_provider_details.target_appliance_id = AAZStrType(
@@ -1874,14 +1880,10 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             error_message_parameters = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").agent_upgrade_blocking_error_details.Element.error_message_parameters
-            error_message_parameters.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_message_parameters.Element = AAZStrType()
 
             error_tags = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").agent_upgrade_blocking_error_details.Element.error_tags
-            error_tags.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_tags.Element = AAZStrType()
 
             discovered_vm_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").discovered_vm_details
             discovered_vm_details.created_timestamp = AAZStrType(
@@ -1933,14 +1935,10 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").discovered_vm_details.datastores
-            datastores.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            datastores.Element = AAZStrType()
 
             ip_addresses = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").discovered_vm_details.ip_addresses
-            ip_addresses.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            ip_addresses.Element = AAZStrType()
 
             last_agent_upgrade_error_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").last_agent_upgrade_error_details
             last_agent_upgrade_error_details.Element = AAZObjectType()
@@ -1972,14 +1970,10 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             error_message_parameters = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").last_agent_upgrade_error_details.Element.error_message_parameters
-            error_message_parameters.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_message_parameters.Element = AAZStrType()
 
             error_tags = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").last_agent_upgrade_error_details.Element.error_tags
-            error_tags.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            error_tags.Element = AAZStrType()
 
             mobility_agent_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").mobility_agent_details
             mobility_agent_details.agent_version_expiry_date = AAZStrType(
@@ -2023,9 +2017,7 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             reasons_blocking_upgrade = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").mobility_agent_details.reasons_blocking_upgrade
-            reasons_blocking_upgrade.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            reasons_blocking_upgrade.Element = AAZStrType()
 
             protected_disks = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").protected_disks
             protected_disks.Element = AAZObjectType()
@@ -2304,14 +2296,10 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").discovered_vm_details.datastores
-            datastores.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            datastores.Element = AAZStrType()
 
             ip_addresses = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").discovered_vm_details.ip_addresses
-            ip_addresses.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            ip_addresses.Element = AAZStrType()
 
             mobility_agent_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").mobility_agent_details
             mobility_agent_details.agent_version_expiry_date = AAZStrType(
@@ -2351,9 +2339,7 @@ class ApplyRecoveryPoint(AAZCommand):
             )
 
             reasons_blocking_upgrade = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").mobility_agent_details.reasons_blocking_upgrade
-            reasons_blocking_upgrade.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            reasons_blocking_upgrade.Element = AAZStrType()
 
             protected_disks = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").protected_disks
             protected_disks.Element = AAZObjectType()

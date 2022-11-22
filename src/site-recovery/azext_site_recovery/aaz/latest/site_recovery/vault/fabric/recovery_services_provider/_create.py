@@ -153,7 +153,17 @@ class Create(AAZCommand):
         _schema.tenant_id = cls._args_identity_provider_input_create.tenant_id
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.ReplicationRecoveryServicesProvidersCreate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

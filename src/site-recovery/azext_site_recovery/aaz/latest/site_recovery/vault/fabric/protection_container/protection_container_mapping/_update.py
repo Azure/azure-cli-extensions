@@ -153,10 +153,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ReplicationProtectionContainerMappingsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.ReplicationProtectionContainerMappingsCreate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -648,9 +668,7 @@ def _build_schema_protection_container_mapping_read(_schema):
     )
 
     role_size_to_nic_count_map = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").role_size_to_nic_count_map
-    role_size_to_nic_count_map.Element = AAZIntType(
-        flags={"read_only": True},
-    )
+    role_size_to_nic_count_map.Element = AAZIntType()
 
     _schema.id = _schema_protection_container_mapping_read.id
     _schema.location = _schema_protection_container_mapping_read.location

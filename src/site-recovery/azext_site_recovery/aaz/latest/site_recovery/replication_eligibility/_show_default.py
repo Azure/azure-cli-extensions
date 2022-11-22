@@ -53,7 +53,17 @@ class ShowDefault(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ReplicationEligibilityResultsGet(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -146,9 +156,7 @@ class ShowDefault(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"read_only": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -158,29 +166,19 @@ class ShowDefault(AAZCommand):
                 serialized_name="clientRequestId",
                 flags={"read_only": True},
             )
-            properties.errors = AAZListType(
-                flags={"read_only": True},
-            )
+            properties.errors = AAZListType()
 
             errors = cls._schema_on_200.properties.errors
-            errors.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            errors.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.errors.Element
-            _element.code = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.message = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
             _element.possible_causes = AAZStrType(
                 serialized_name="possibleCauses",
-                flags={"read_only": True},
             )
             _element.recommended_action = AAZStrType(
                 serialized_name="recommendedAction",
-                flags={"read_only": True},
             )
             _element.status = AAZStrType(
                 flags={"read_only": True},

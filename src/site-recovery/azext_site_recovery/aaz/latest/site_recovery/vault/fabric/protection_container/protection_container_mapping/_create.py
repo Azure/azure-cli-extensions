@@ -144,7 +144,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.ReplicationProtectionContainerMappingsCreate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -501,9 +511,7 @@ class Create(AAZCommand):
             )
 
             role_size_to_nic_count_map = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").role_size_to_nic_count_map
-            role_size_to_nic_count_map.Element = AAZIntType(
-                flags={"read_only": True},
-            )
+            role_size_to_nic_count_map.Element = AAZIntType()
 
             return cls._schema_on_200
 

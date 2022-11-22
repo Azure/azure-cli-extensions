@@ -58,7 +58,17 @@ class Remove(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.ReplicationFabricsDelete(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     class ReplicationFabricsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"

@@ -258,10 +258,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ReplicationMigrationItemsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.ReplicationMigrationItemsCreate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -612,7 +632,6 @@ def _build_schema_migration_item_read(_schema):
     )
     properties.current_job = AAZObjectType(
         serialized_name="currentJob",
-        flags={"read_only": True},
     )
     properties.event_correlation_id = AAZStrType(
         serialized_name="eventCorrelationId",
@@ -682,14 +701,10 @@ def _build_schema_migration_item_read(_schema):
     )
 
     allowed_operations = _schema_migration_item_read.properties.allowed_operations
-    allowed_operations.Element = AAZStrType(
-        flags={"read_only": True},
-    )
+    allowed_operations.Element = AAZStrType()
 
     critical_job_history = _schema_migration_item_read.properties.critical_job_history
-    critical_job_history.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    critical_job_history.Element = AAZObjectType()
 
     _element = _schema_migration_item_read.properties.critical_job_history.Element
     _element.job_id = AAZStrType(
@@ -724,133 +739,100 @@ def _build_schema_migration_item_read(_schema):
     )
 
     health_errors = _schema_migration_item_read.properties.health_errors
-    health_errors.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    health_errors.Element = AAZObjectType()
 
     _element = _schema_migration_item_read.properties.health_errors.Element
     _element.creation_time_utc = AAZStrType(
         serialized_name="creationTimeUtc",
-        flags={"read_only": True},
     )
     _element.customer_resolvability = AAZStrType(
         serialized_name="customerResolvability",
-        flags={"read_only": True},
     )
     _element.entity_id = AAZStrType(
         serialized_name="entityId",
-        flags={"read_only": True},
     )
     _element.error_category = AAZStrType(
         serialized_name="errorCategory",
-        flags={"read_only": True},
     )
     _element.error_code = AAZStrType(
         serialized_name="errorCode",
-        flags={"read_only": True},
     )
     _element.error_id = AAZStrType(
         serialized_name="errorId",
-        flags={"read_only": True},
     )
     _element.error_level = AAZStrType(
         serialized_name="errorLevel",
-        flags={"read_only": True},
     )
     _element.error_message = AAZStrType(
         serialized_name="errorMessage",
-        flags={"read_only": True},
     )
     _element.error_source = AAZStrType(
         serialized_name="errorSource",
-        flags={"read_only": True},
     )
     _element.error_type = AAZStrType(
         serialized_name="errorType",
-        flags={"read_only": True},
     )
     _element.inner_health_errors = AAZListType(
         serialized_name="innerHealthErrors",
-        flags={"read_only": True},
     )
     _element.possible_causes = AAZStrType(
         serialized_name="possibleCauses",
-        flags={"read_only": True},
     )
     _element.recommended_action = AAZStrType(
         serialized_name="recommendedAction",
-        flags={"read_only": True},
     )
     _element.recovery_provider_error_message = AAZStrType(
         serialized_name="recoveryProviderErrorMessage",
-        flags={"read_only": True},
     )
     _element.summary_message = AAZStrType(
         serialized_name="summaryMessage",
-        flags={"read_only": True},
     )
 
     inner_health_errors = _schema_migration_item_read.properties.health_errors.Element.inner_health_errors
-    inner_health_errors.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+    inner_health_errors.Element = AAZObjectType()
 
     _element = _schema_migration_item_read.properties.health_errors.Element.inner_health_errors.Element
     _element.creation_time_utc = AAZStrType(
         serialized_name="creationTimeUtc",
-        flags={"read_only": True},
     )
     _element.customer_resolvability = AAZStrType(
         serialized_name="customerResolvability",
-        flags={"read_only": True},
     )
     _element.entity_id = AAZStrType(
         serialized_name="entityId",
-        flags={"read_only": True},
     )
     _element.error_category = AAZStrType(
         serialized_name="errorCategory",
-        flags={"read_only": True},
     )
     _element.error_code = AAZStrType(
         serialized_name="errorCode",
-        flags={"read_only": True},
     )
     _element.error_id = AAZStrType(
         serialized_name="errorId",
-        flags={"read_only": True},
     )
     _element.error_level = AAZStrType(
         serialized_name="errorLevel",
-        flags={"read_only": True},
     )
     _element.error_message = AAZStrType(
         serialized_name="errorMessage",
-        flags={"read_only": True},
     )
     _element.error_source = AAZStrType(
         serialized_name="errorSource",
-        flags={"read_only": True},
     )
     _element.error_type = AAZStrType(
         serialized_name="errorType",
-        flags={"read_only": True},
     )
     _element.possible_causes = AAZStrType(
         serialized_name="possibleCauses",
-        flags={"read_only": True},
     )
     _element.recommended_action = AAZStrType(
         serialized_name="recommendedAction",
-        flags={"read_only": True},
     )
     _element.recovery_provider_error_message = AAZStrType(
         serialized_name="recoveryProviderErrorMessage",
-        flags={"read_only": True},
     )
     _element.summary_message = AAZStrType(
         serialized_name="summaryMessage",
-        flags={"read_only": True},
     )
 
     provider_specific_details = _schema_migration_item_read.properties.provider_specific_details
