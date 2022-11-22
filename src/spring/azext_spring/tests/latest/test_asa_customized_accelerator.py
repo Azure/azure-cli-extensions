@@ -9,7 +9,10 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
-
+'''
+Since the scenarios covered here depend on a Azure Spring service instance creation. 
+It cannot support live run. So mark it as record_only. 
+'''
 
 @record_only()
 class ApiCustomizedAcceleratorTest(ScenarioTest):

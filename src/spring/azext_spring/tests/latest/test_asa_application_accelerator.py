@@ -129,6 +129,11 @@ class ApplicationAccelerator(unittest.TestCase):
         self.assertEqual(models.DevToolPortalFeatureState.DISABLED,
                          self.dev_tool_portal.properties.features.application_accelerator.state)
 
+'''
+Since the scenarios covered here depend on a Azure Spring service instance creation. 
+It cannot support live run. So mark it as record_only. 
+'''
+
 @record_only()
 class ApiApplicationAcceleratorTest(ScenarioTest):
 
