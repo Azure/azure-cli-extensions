@@ -9,5 +9,56 @@ from azure.cli.testsdk import *
 
 
 class SiteRecoveryScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.siterecovery.')
+    def test_siterecovery_scenarios(self):
+        self.kwargs.update({'vm_name': self.create_random_name(prefix='vm', length=16)})
+        self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS --size Standard_DS2_v2')
+
+        # replication-eligibility
+        self.cmd('az site-recovery replication-eligibility list -g {rg} --virtual-machine-name {vm_name}')
+        self.cmd('az site-recovery replication-eligibility show-default -g {rg} --virtual-machine-name {vm_name}')
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.siterecovery.vault')
+    def test_siterecovery_vault_scenarios(self):
+        self.kwargs.update({
+            'vault_name': self.create_random_name(prefix='vault', length=20),
+            'alert_setting_name': self.create_random_name(prefix='alert', length=20)
+        })
+        self.cmd('az backup vault create -n {vault_name} -g {rg} -l eastus2euap')
+
+        # # vault top-level commands
+        # self.cmd('az site-recovery vault list-appliance -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-migration-item -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-network -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-network-mapping -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-protected-item -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-protection-container -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-protection-container-mapping -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-recovery-services-provider -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-storage-classification -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-storage-classification-mapping -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault list-v-center -g {rg} --resource-name {vault_name}')
+        # self.cmd('az site-recovery vault show-supported-operating-system -g {rg} --resource-name {vault_name}')
+
+        # alert setting
+        self.cmd('az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} '
+                 '--resource-name {vault_name} --custom-email-addresses email@address.com --locale en_US '
+                 '--send-to-owners Send')
+        self.cmd('az site-recovery vault alert-setting show -n defaultAlertSetting -g {rg} '
+                 '--resource-name {vault_name}',
+                 checks=[
+                     self.check('name', 'defaultAlertSetting'),
+                     self.check('properties.locale', 'en_US'),
+                     self.check('properties.customEmailAddresses', ['email@address.com']),
+                     self.check('properties.sendToOwners', 'Send')])
+        self.cmd('az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} '
+                 '--resource-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR '
+                 '--send-to-owners DoNotSend',
+                 checks=[
+                     self.check('properties.locale', 'fr_FR'),
+                     self.check('properties.customEmailAddresses', ['email2@address.com']),
+                     self.check('properties.sendToOwners', 'DoNotSend')])
+        self.cmd('az site-recovery vault alert-setting list -g {rg} --resource-name {vault_name}',
+                 checks=[
+                     self.check('length(@)', 1)])
+
