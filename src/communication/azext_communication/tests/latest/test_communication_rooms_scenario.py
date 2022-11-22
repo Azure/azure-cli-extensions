@@ -89,4 +89,56 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': room['id']})
 
         get_res = self.cmd('az communication rooms get --room {room_id}') 
+    
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_communication_rooms_update_join_policy(self, communication_resource_info):
+        
+        # create a room first 
+        room = self.cmd('az communication rooms create').get_output_in_json()
+        self.kwargs.update({
+            'join_policy': 'CommunicationServiceUsers'})
+
+        # update the room join policy
+        with self.assertRaises(Exception) as raises:
+            self.cmd('az communication rooms update --room {room_id}', checks = [
+                self.check('InvalidInput', 'Room join policy cannot be updated after room start time has elapsed')])
+    
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_communication_rooms_update_valid_elapsed_time(self, communication_resource_info):
+        
+        # create a room first
+        room = self.cmd('az communication rooms create').get_output_in_json()
+
+        # update the room with valid elapsed time 
+        new_valid_from = '2022-11-22T19:14:59.829926+00:00'
+        new_valid_until = '2022-11-23T19:14:59.829926+00:00'
+        
+        self.kwargs.update({
+            'room_id': room['id'],
+            'validFrom': new_valid_from,
+            'validUntil': new_valid_until})
+        update_res = self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}')
+        
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_communication_rooms_update_invalid_elapsed_time(self, communication_resource_info):
+        
+        # create a room first
+        room = self.cmd('az communication rooms create').get_output_in_json()
+       
+        # update the room with invalid elapsed time 
+        new_valid_from = '2022-11-22T19:14:59.829926+00:00'
+        new_valid_until = '2022-11-23'
+        
+        self.kwargs.update({
+            'room_id': room['id'],
+            'validFrom': new_valid_from,
+            'validUntil': new_valid_until})
+
+        with self.assertRaises(Exception) as raises:
+            self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}',checks = [
+                self.check('Invalid Elaspsed Time', '2022-11-23 is not a valid ISO-8601 datetime')])
+
        
