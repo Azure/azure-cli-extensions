@@ -68,6 +68,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_communication_rooms_delete_with_invalid_id(self, communication_resource_info):
         from azure.core.exceptions import HttpResponseError
+       
         # delete valid room with invalid room id
         self.kwargs.update({
             'room_id': '12345678'})
@@ -78,4 +79,14 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
         assert 'Invalid Room ID length' in str(raises.exception)
         
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_communication_rooms_get(self, communication_resource_info):
+        
+        #create a room first
+        room = self.cmd('az communication rooms create').get_output_in_json()
+        self.kwargs.update({
+            'room_id': room['id']})
 
+        get_res = self.cmd('az communication rooms get --room {room_id}') 
+       
