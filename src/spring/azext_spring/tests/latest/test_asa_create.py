@@ -127,6 +127,41 @@ class TestSpringAppsCreateWithApplicationLiveView(BasicTest):
         self.assertIsNone(self.dev_tool)
 
 
+class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.acc_resource = None
+        self.dev_tool = None
+
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+        call_args = client.application_accelerators.begin_create_or_update.call_args_list
+        self.acc_resource = call_args[0][0][3] if call_args else None
+        call_args = client.dev_tool_portals.begin_create_or_update.call_args_list
+        self.dev_tool = call_args[0][0][3] if call_args else None
+
+    def test_asa_enterprise_with_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_accelerator=True, disable_app_insights=True)
+        self.assertIsNotNone(self.acc_resource)
+        self.assertIsNotNone(self.dev_tool)
+
+    def test_asa_enterprise_without_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_accelerator=False, disable_app_insights=True)
+        self.assertIsNone(self.acc_resource)
+        self.assertIsNone(self.dev_tool)
+    
+    def test_asa_standard_with_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_application_accelerator=True, disable_app_insights=True)
+        self.assertIsNone(self.acc_resource)
+        self.assertIsNone(self.dev_tool)
+
+    def test_asa_basic_with_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Basic'), enable_application_accelerator=True, disable_app_insights=True)
+        self.assertIsNone(self.acc_resource)
+        self.assertIsNone(self.dev_tool)
+
+
 class TestSpringCloudCreateWithAI(BasicTest):
     def _get_ai_client(ctx, type):
         ai_create_resource = mock.MagicMock()

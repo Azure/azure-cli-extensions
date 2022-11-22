@@ -104,6 +104,8 @@ def _check_tanzu_components_not_enable(cmd, namespace):
         raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
     if namespace.enable_application_live_view:
         raise ArgumentUsageError('--enable-application-live-view {}'.format(suffix))
+    if namespace.enable_application_accelerator:
+        raise ArgumentUsageError('--enable-application-accelerator {}'.format(suffix))
 
 
 def validate_instance_count(namespace):

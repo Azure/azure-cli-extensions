@@ -236,3 +236,63 @@ def transform_api_portal_output(result):
         item['Memory'] = item['properties']['resourceRequests']['memory']
 
     return result if is_list else result[0]
+
+
+def transform_application_accelerator_output(result):
+    from collections import OrderedDict
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    new_result = []
+    for item in result:
+        for component in item['properties']['components']:
+            new_entry = OrderedDict()
+            new_entry['Name'] = item['name']
+            new_entry['ResourceGroup'] = item['resourceGroup']
+            new_entry['Provisioning State'] = item['properties']['provisioningState']
+            new_entry['Component'] = component['name']
+            instance_count = component['resourceRequests']['instanceCount']
+            instances = component['instances'] or []
+            running_number = len(
+                [x for x in instances if x['status'].upper() == "RUNNING"])
+            new_entry['Running Instance'] = "{}/{}".format(running_number, instance_count)
+            new_entry['CPU'] = component['resourceRequests']['cpu']
+            new_entry['Memory'] = component['resourceRequests']['memory']
+            new_result.append(new_entry)
+
+    return result if is_list else new_result
+
+
+def transform_predefined_accelerator_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Display Name'] = item['properties']['displayName']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['State'] = item['properties']['state']
+
+    return result if is_list else result[0]
+
+
+def transform_customized_accelerator_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Display Name'] = item['properties']['displayName']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Git Url'] = item['properties']['gitRepository']['url']
+        item['Git Interval In Seconds'] = item['properties']['gitRepository']['intervalInSeconds']
+        item['Git branch'] = item['properties']['gitRepository']['branch']
+        item['Git commit'] = item['properties']['gitRepository']['commit']
+        item['Git tag'] = item['properties']['gitRepository']['gitTag']
+        item['Git Auth Type'] = item['properties']['gitRepository']['authSetting']['authType']
+
+    return result if is_list else result[0]
