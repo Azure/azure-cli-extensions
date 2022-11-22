@@ -45,29 +45,34 @@ type: command
 short-summary: Lists the blockchain members for a subscription or specific resource group.
 """
 
-helps['qbs member list-api-keys'] = """
-    type: command
-    short-summary: Gets the Member API keys for an installation of Quorum Blockchain Service.
-"""
-
-helps['qbs member regenerate-api-keys'] = """
-    type: command
-    short-summary: Regenerate the API keys for the blockchain member nodes.
-"""
-
 helps['qbs member show'] = """
-    type: command
-    short-summary: Get the details of the blockchain member.
+type: command
+short-summary: Get the details of the blockchain member.
 """
 
 helps['qbs member pause'] = """
-    type: command
-    short-summary: Pause the nodes for a blockchain member.
+type: command
+short-summary: Pause the nodes for a blockchain member.
 """
 
 helps['qbs member resume'] = """
-    type: command
-    short-summary: Resume the nodes for a blockchain member.
+type: command
+short-summary: Resume the nodes for a blockchain member.
+"""
+
+helps['qbs member api-keys'] = """
+type: group
+short-summary: Manage api key for a blockchain member.
+"""
+
+helps['qbs member api-keys list'] = """
+type: command
+short-summary: Gets the Member API keys for an installation of Quorum Blockchain Service.
+"""
+
+helps['qbs member api-keys regenerate'] = """
+type: command
+short-summary: Regenerate the API keys for the blockchain member nodes.
 """
 
 helps['qbs firewall'] = """
@@ -177,16 +182,6 @@ type: command
 short-summary: Lists the transaction nodes for a blockchain member.
 """
 
-helps['qbs transaction-node list-api-keys'] = """
-type: command
-short-summary: List the API keys for the transaction node.
-"""
-
-helps['qbs transaction-node regenerate-api-keys'] = """
-type: command
-short-summary: Regenerate the API keys for the transaction node.
-"""
-
 helps['qbs transaction-node remove'] = """
 type: command
 short-summary: Removes a transaction node.
@@ -195,6 +190,21 @@ short-summary: Removes a transaction node.
 helps['qbs transaction-node show'] = """
 type: command
 short-summary: Get the details of the transaction node.
+"""
+
+helps['qbs transaction-node api-keys'] = """
+type: group
+short-summary: Manage api keys of the transaction node.
+"""
+
+helps['qbs transaction-node api-keys list'] = """
+type: command
+short-summary: List the API keys for the transaction node.
+"""
+
+helps['qbs transaction-node api-keys regenerate'] = """
+type: command
+short-summary: Regenerate the API keys for the transaction node.
 """
 
 helps['qbs scheduled-restart'] = """
