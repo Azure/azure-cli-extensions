@@ -346,7 +346,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'application_accelerator_show', table_transformer=transform_application_accelerator_output)
         g.custom_command('create', 'application_accelerator_create', table_transformer=transform_application_accelerator_output, supports_no_wait=True)
-        g.custom_command('delete', 'application_accelerator_delete', supports_no_wait=True)
+        g.custom_command('delete', 'application_accelerator_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring application-accelerator predefined-accelerator',
                             custom_command_type=application_accelerator_cmd_group,
