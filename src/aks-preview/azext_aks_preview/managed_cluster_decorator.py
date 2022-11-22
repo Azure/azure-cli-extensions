@@ -1980,7 +1980,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_keda(enable_validation=True)
 
-    def get_custom_ca_trust_certificates(self) -> Union[List[str], None]:
+    def get_custom_ca_trust_certificates(self) -> Union[List[bytes], None]:
         """Obtain the value of custom ca trust certificates.
 
         :return: List[str] or None
@@ -1994,7 +1994,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     custom_ca_certs_file_path
                 )
             )
-        custom_ca_certs = read_file_content(custom_ca_certs_file_path)
+        custom_ca_certs = str.encode(read_file_content(custom_ca_certs_file_path))
         # TODO - read certs here and parse them to a proper array?
         return [custom_ca_certs]
 
