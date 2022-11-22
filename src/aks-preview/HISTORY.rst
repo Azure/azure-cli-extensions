@@ -13,6 +13,7 @@ Pending
 +++++++
 
 * Mark "--enable-pod-security-policy" deprecated
+* Support AAD clusters for "az aks kollect"
 
 0.5.115
 +++++++
