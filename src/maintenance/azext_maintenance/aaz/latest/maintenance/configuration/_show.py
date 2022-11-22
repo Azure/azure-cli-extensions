@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance configuration show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get Configuration record.

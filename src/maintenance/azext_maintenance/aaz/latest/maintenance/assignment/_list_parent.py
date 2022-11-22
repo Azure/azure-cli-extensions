@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance assignment list-parent",
+    is_preview=True,
 )
 class ListParent(AAZCommand):
     """List configurationAssignments for resource.

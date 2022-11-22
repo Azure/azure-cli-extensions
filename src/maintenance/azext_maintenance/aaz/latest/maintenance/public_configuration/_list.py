@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance public-configuration list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Get Public Maintenance Configuration records.

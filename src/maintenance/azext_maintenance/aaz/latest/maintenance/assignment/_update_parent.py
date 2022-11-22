@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance assignment update-parent",
+    is_preview=True,
 )
 class UpdateParent(AAZCommand):
     """Update configuration for resource.

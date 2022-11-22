@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance assignment create-parent",
+    is_preview=True,
 )
 class CreateParent(AAZCommand):
     """Create configuration for resource.

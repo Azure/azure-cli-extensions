@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "maintenance public-configuration",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage public maintenance configuration with maintenance.

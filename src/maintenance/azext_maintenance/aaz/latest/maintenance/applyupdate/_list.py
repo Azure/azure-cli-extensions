@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance applyupdate list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Get Configuration records within a subscription.

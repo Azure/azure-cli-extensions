@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance assignment show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get configuration for resource.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance assignment list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Track Maintenance Configuration Assignment

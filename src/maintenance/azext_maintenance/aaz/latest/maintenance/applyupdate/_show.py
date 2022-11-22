@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance applyupdate show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get maintenance updates to resource

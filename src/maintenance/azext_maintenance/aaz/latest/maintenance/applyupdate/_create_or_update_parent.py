@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance applyupdate create-or-update-parent",
+    is_preview=True,
 )
 class CreateOrUpdateParent(AAZCommand):
     """Create maintenance updates to resource with parent

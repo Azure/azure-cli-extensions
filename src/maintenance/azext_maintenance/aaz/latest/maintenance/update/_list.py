@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance update list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List updates to resources.

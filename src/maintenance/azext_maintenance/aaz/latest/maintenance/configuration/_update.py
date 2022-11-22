@@ -13,9 +13,26 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance configuration update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Patch configuration record.
+
+    Usage: --install-patches-windows-parameters kb-numbers-to-exclude=XX kb-numbers-to-include=XX 
+    classifications-to-include=XX exclude-kbs-requiring-reboot=XX
+                kb-numbers-to-exclude: Windows KBID to be excluded for patching.
+                kb-numbers-to-include: Windows KBID to be included for patching.
+                classifications-to-include: Classification category of patches to be patched
+                exclude-kbs-requiring-reboot: Exclude patches which need reboot
+          - name: --install-patches-linux-parameters --linux-parameters
+            short-summary: "Input parameters specific to patching Linux machine. For Windows machines, do not pass this 
+    property."
+            long-summary: |
+                Usage: --install-patches-linux-parameters package-name-masks-to-exclude=XX package-name-masks-to-include=XX
+     classifications-to-include=XX
+                package-name-masks-to-exclude: Package names to be excluded for patching.
+                package-name-masks-to-include: Package names to be included for patching.
+                classifications-to-include: Classification category of patches to be patched
 
     :example: MaintenanceConfigurations_UpdateForResource
         az maintenance configuration update --location "westus2" --maintenance-scope "OSImage" --maintenance-window-duration "05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" --maintenance-window-recur-every "Month Third Sunday" --maintenance-window-start-date-time "2020-04-30 08:00" --maintenance-window-time-zone "Pacific Standard Time" --namespace "Microsoft.Maintenance" --visibility "Custom" --resource-group "examplerg" --resource-name "configuration1"

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "maintenance update",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage update with maintenance.

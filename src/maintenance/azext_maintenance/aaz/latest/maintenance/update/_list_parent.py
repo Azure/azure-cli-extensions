@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance update list-parent",
+    is_preview=True,
 )
 class ListParent(AAZCommand):
     """List updates to resources.

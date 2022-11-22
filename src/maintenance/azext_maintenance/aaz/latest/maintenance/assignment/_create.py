@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance assignment create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create configuration for resource.

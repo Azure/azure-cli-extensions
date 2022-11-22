@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance applyupdate show-parent",
+    is_preview=True,
 )
 class ShowParent(AAZCommand):
     """Get maintenance updates to resource with parent
