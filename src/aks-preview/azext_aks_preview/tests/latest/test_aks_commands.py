@@ -5714,6 +5714,40 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
+        self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
+
+    @live_only() # because we're downloading a binary, and we're not testing the output of any ARM requests.
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_kollect_with_managed_aad(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        stg_acct_name = self.create_random_name('cliaksteststg', 24)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'location': resource_group_location,
+            'aks_name': aks_name,
+            'stg_acct_name': stg_acct_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_aks_cmd = 'aks create --resource-group={resource_group} --name={aks_name} ' \
+                         '--location={location} --ssh-key-value={ssh_key_value} ' \
+                         '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                         '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
+                         '-o json'
+        self.cmd(create_aks_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001')
+        ])
+
+        create_stg_cmd = 'storage account create --resource-group={resource_group} --name={stg_acct_name} --location={location} -o json'
+        self.cmd(create_stg_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
+
+    def assert_kollect_deploys_periscope(self, resource_group, aks_name, stg_acct_name):
         # Install kubectl (required by the 'kollect' command, and to perform verification of deployed resources).
         try:
             subprocess.call(['az', 'aks', 'install-cli'])
