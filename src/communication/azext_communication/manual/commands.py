@@ -89,12 +89,6 @@ def _load_rooms_command_table(self):
     rooms_arguments = ['connection_string']
     self.command_group('communication rooms', is_preview=True)
 
-    # TODO:
-    # for all commands that accept a list of participants as input:
-    # we may need to modify commands to allow different roles (presenter, attendee, consumer?)
-    # on option I did think of:
-    # replace --participant with three new arguments --presenter, --attendee, --consumer
-
     # room management
     with self.command_group('communication rooms', client_factory=cf_communication_rooms, is_preview=True) as g:
         g.communication_custom_command('get', 'communication_rooms_get_room', rooms_arguments)
