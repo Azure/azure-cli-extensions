@@ -129,7 +129,7 @@ def communication_chat_update_message(client, thread_id, message_id, message_con
 
 def communication_chat_delete_message(client, thread_id, message_id):
     chat_thread_client = client.get_chat_thread_client(thread_id)
-    return chat_thread_client.update_message(message_id)
+    return chat_thread_client.delete_message(message_id)
 
 
 def communication_chat_update_topic(client, thread_id, topic):

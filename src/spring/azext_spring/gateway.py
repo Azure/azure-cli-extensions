@@ -4,13 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import re
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_05_01_preview import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
@@ -139,7 +140,7 @@ def gateway_route_config_create(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
-    _validate_route_config_exist(client, resource_group, service, name)
+    _validate_route_config_not_exist(client, resource_group, service, name)
     route_properties = models.GatewayRouteConfigProperties()
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
@@ -149,8 +150,9 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
+    _validate_route_config_exist(client, resource_group, service, name)
     route_properties = client.gateway_route_configs.get(
-        resource_group, service, DEFAULT_NAME, name)
+        resource_group, service, DEFAULT_NAME, name).properties
     return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
                                                    app_name, routes_file, routes_json)
 
@@ -195,11 +197,18 @@ def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, ma
     return cors
 
 
-def _validate_route_config_exist(client, resource_group, service, name):
+def _validate_route_config_not_exist(client, resource_group, service, name):
     route_configs = client.gateway_route_configs.list(
         resource_group, service, DEFAULT_NAME)
     if name in (route_config.name for route_config in list(route_configs)):
         raise InvalidArgumentValueError("Route config " + name + " already exists")
+
+
+def _validate_route_config_exist(client, resource_group, service, name):
+    route_configs = client.gateway_route_configs.list(
+        resource_group, service, DEFAULT_NAME)
+    if name not in (route_config.name for route_config in list(route_configs)):
+        raise InvalidArgumentValueError("Route config " + name + " doesn't exist")
 
 
 def _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
@@ -225,6 +234,7 @@ def _create_or_update_routes_properties(routes_file, routes_json, route_properti
     if routes_file is None and routes_json is None:
         return route_properties
 
+    route_properties = models.GatewayRouteConfigProperties()
     if routes_file is not None:
         with open(routes_file, 'r') as json_file:
             raw_json = json.load(json_file)
@@ -235,5 +245,21 @@ def _create_or_update_routes_properties(routes_file, routes_json, route_properti
     if isinstance(raw_json, list):
         route_properties.routes = raw_json
     else:
+        raw_json = _route_config_property_convert(raw_json)
         route_properties = models.GatewayRouteConfigProperties(**raw_json)
     return route_properties
+
+
+# Convert camelCase to snake_case to align with backend
+def _route_config_property_convert(raw_json):
+    if raw_json is None:
+        return raw_json
+
+    convert_raw_json = {}
+    for key in raw_json:
+        if key == "routes":
+            convert_raw_json[key] = list(map(lambda v: _route_config_property_convert(v), raw_json[key]))
+        else:
+            replaced_key = re.sub('(?<!^)(?=[A-Z])', '_', key).lower()
+            convert_raw_json[replaced_key] = raw_json[key]
+    return convert_raw_json

@@ -65,8 +65,10 @@ def load_arguments(self, _):
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
         c.argument('allow_active_ftp', arg_type=get_three_state_flag(),
                    help="Allow Active FTP. By default it is false. It's only allowed for azure firewall on virtual network.")
-        c.argument('enable_fat_flow_logging', options_list=['--fat-flow-logging'], arg_type=get_three_state_flag(),
-                   help="Identify fat flows. By default it is false.")
+        c.argument('enable_fat_flow_logging', options_list=['--enable-fat-flow-logging', '--fat-flow-logging'],
+                   arg_type=get_three_state_flag(), help='Allow fat flow logging. By default it is false.')
+        c.argument('enable_udp_log_optimization', options_list=['--enable-udp-log-optimization', '--udp-log-optimization'],
+                   arg_type=get_three_state_flag(), help='Allow UDP log optimization. By default it is false.')
 
     with self.argument_context('network firewall', arg_group='Virtual Hub Public Ip') as c:
         c.argument('hub_public_ip_count', options_list=['--public-ip-count', '--count'], type=int,
