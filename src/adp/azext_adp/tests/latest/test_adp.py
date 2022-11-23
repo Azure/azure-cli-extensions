@@ -171,7 +171,7 @@ class AdpScenario(ScenarioTest):
             "domain-name-label-scope" : "TenantReuse",
         })
 
-        self.cmd("az adp workspace create -g {resource-group} --name {workspace-name} -l {location} --data-location {data-location} --storage-account-count {storage-account-count} --auto-generated-domain-name-label-scope {domain-name-label-scope}")
+        self.cmd("az adp workspace create -g {resource-group} --name {workspace-name} -l {location} --data-location {data-location} --storage-account-count {storage-account-count} --domain-name-scope {domain-name-label-scope}")
         workspace_list_by_rg = self.cmd("az adp workspace list -g {resource-group}").get_output_in_json()
         assert len(workspace_list_by_rg) > 0
         workspace = self.cmd("az adp workspace show --name {workspace-name} --resource-group {resource-group}", checks=[
