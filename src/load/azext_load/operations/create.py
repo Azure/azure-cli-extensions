@@ -26,10 +26,10 @@ class LoadTestCreate(Create):
 
     def pre_operations(self):
         args = self.ctx.args
-        identity_type_str = str(args.identity_type)
+        identity_type_str = args.identity_type.to_serialized_data()
 
         if has_value(args.encryption_identity):
-            encryption_identity_id = str(args.encryption_identity)
+            encryption_identity_id = args.encryption_identity.to_serialized_data()
             if is_valid_resource_id(encryption_identity_id):
                 args.encryption_identity_type = "UserAssigned"
                 if identity_type_str.lower() == "none":

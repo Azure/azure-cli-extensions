@@ -26,10 +26,10 @@ class LoadTestUpdate(Update):
 
     def pre_operations(self):
         args = self.ctx.args
-        identity_type_str = str(args.identity_type)
+        identity_type_str = args.identity_type.to_serialized_data()
 
         if has_value(args.encryption_identity):
-            encryption_identity_id = str(args.encryption_identity)
+            encryption_identity_id = args.encryption_identity.to_serialized_data()
             if encryption_identity_id.lower() == "systemassigned":
                 args.encryption_identity_type = "SystemAssigned"
                 args.encryption_identity = None
