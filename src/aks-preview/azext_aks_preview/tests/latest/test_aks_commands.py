@@ -5729,6 +5729,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
+        # Initially create with local accounts enabled (the default), so that we can use the admin account
+        # to grant the necessary k8s permissions to the AD user (the service principal).
         create_aks_cmd = 'aks create --resource-group={resource_group} --name={aks_name} ' \
                          '--location={location} --ssh-key-value={ssh_key_value} ' \
                          '--vm-set-type VirtualMachineScaleSets -c 1 ' \
@@ -5737,9 +5739,43 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_aks_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
-            self.check('aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001')
+            self.check('aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001'),
+            self.check('disableLocalAccounts', False)
         ])
 
+        # Get the object ID of the service principal
+        show_acct_cmd = 'account show'
+        authenticated_acct = self.cmd(show_acct_cmd).get_output_in_json()
+        sp_name = authenticated_acct["user"]["name"]
+        show_sp_cmd = f'ad sp show --id {sp_name}'
+        sp = self.cmd(show_sp_cmd, checks=[
+            self.check('appId', sp_name)
+        ]).get_output_in_json()
+        sp_oid = sp["id"]
+        print(f'objectid of service principal is {sp_oid}')
+
+        # Grant the service principal cluster-admin access using the admin account
+        # (it'd be nice if `az aks command invoke` had an --admin option, but it appears not to, so we have to download admin credentials)
+        fd, admin_kubeconfig_path = tempfile.mkstemp()
+        self.kwargs.update({ 'kubeconfig_path': admin_kubeconfig_path })
+        try:
+            get_credential_cmd = 'aks get-credentials --resource-group={resource_group} --name={aks_name} --admin -f {kubeconfig_path}'
+            self.cmd(get_credential_cmd)
+            create_rolebinding_output = subprocess.check_output(['kubectl', 'create', 'clusterrolebinding', '--kubeconfig', admin_kubeconfig_path, '--clusterrole', 'cluster-admin', '--user', sp_oid, 'test-clusterrolebinding'])
+            print(f'Output of create rolebinding:\n{create_rolebinding_output}')
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to create admin clusterrolebinding for {sp_oid}: '{err}'")
+        finally:
+            os.close(fd)
+            os.remove(admin_kubeconfig_path)
+
+        # Now the current user has the required permissions, we can disable admin access to the cluster
+        disable_admin_cmd = 'aks update --resource-group={resource_group} --name={aks_name} --disable-local-accounts'
+        self.cmd(disable_admin_cmd, checks=[
+            self.check('disableLocalAccounts', True)
+        ])
+
+        # Create the storage account to which to upload Periscope output
         create_stg_cmd = 'storage account create --resource-group={resource_group} --name={stg_acct_name} --location={location} -o json'
         self.cmd(create_stg_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
@@ -5748,20 +5784,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
 
     def assert_kollect_deploys_periscope(self, resource_group, aks_name, stg_acct_name):
-        # Install kubectl (required by the 'kollect' command, and to perform verification of deployed resources).
+        # Install kubectl (required by the 'kollect' command).
         try:
             subprocess.call(['az', 'aks', 'install-cli'])
         except subprocess.CalledProcessError as err:
             raise CliTestError(f"Failed to install kubectl with error: '{err}'")
-
-        # Create kubeconfig file
-        fd, kubeconfig_path = tempfile.mkstemp()
-        self.kwargs.update({ 'kubeconfig_path': kubeconfig_path })
-        try:
-            get_credential_cmd = 'aks get-credentials --resource-group={resource_group} --name={aks_name} -f {kubeconfig_path}'
-            self.cmd(get_credential_cmd)
-        finally:
-            os.close(fd)
 
         # The kollect command is interactive, with two prompts requiring 'y|n' followed by newline.
         # The prompting library used by the CLI checks for the presence of a TTY, so just passing these as input is not
@@ -5793,16 +5820,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 raise CliTestError(f"Output from kollect did not contain '{pattern}'. Output:\n{kollect_output}")
 
         # Invoke kubectl to get the daemonsets deployed to the cluster
-        k_get_daemonset_cmd = ["kubectl", "get", "daemonset", "-n", "aks-periscope", "-o", "name", "--kubeconfig", kubeconfig_path]
-        k_get_daemonset_output = subprocess.check_output(k_get_daemonset_cmd, text=True)
+        invoke_get_daemonset_cmd = "aks command invoke --resource-group={resource_group} --name={stg_acct_name} --command 'kubectl get daemonset -n aks-periscope -o name'"
+        get_daemonset_output = self.cmd(invoke_get_daemonset_cmd)
 
         # Check expected output of 'kubectl get daemonset' command
         for pattern in [
             "daemonset.apps/aks-periscope",
             "daemonset.apps/aks-periscope-win"
         ]:
-            if not pattern in k_get_daemonset_output:
-                raise CliTestError(f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{k_get_daemonset_output}")
+            if not pattern in get_daemonset_output:
+                raise CliTestError(f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{get_daemonset_output}")
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
