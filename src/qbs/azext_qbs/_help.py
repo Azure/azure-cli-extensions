@@ -25,7 +25,7 @@ parameters:
     short-summary: The name of the blockchain member that will get removed.
 """
 
-helps['qbs consortium genesis'] = """
+helps['qbs consortium get-genesis'] = """
 type: command
 short-summary: Get the genesis file for the consortium.
 """
