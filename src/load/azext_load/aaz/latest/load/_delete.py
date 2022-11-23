@@ -20,6 +20,8 @@ class Delete(AAZCommand):
 
     :example: Delete Azure load testing resource
         az load delete --name sample-resource --resource-group sample-rg
+
+    :example: Delete multiple Azure load testing resources
         az load delete --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.LoadTestService/loadtests/sample-resource1 /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg2/providers/Microsoft.LoadTestService/loadtests/sample-resource2
     """
 

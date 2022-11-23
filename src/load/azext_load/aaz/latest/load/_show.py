@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a LoadTest resource.
 
-    :example: Show Azure load testing resource
+    :example: Show an Azure load testing resource
         az load show --name sample-resource --resource-group sample-rg
+
+    :example: Show Azure load testing resources
         az load show --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.LoadTestService/loadtests/sample-resource1 /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg2/providers/Microsoft.LoadTestService/loadtests/sample-resource2
     """
 

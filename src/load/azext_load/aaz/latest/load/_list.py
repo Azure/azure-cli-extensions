@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """Lists load test resources.
 
-    :example: List Azure load testing resource
+    :example: List Azure load testing resources
         az load list --resource-group sample-rg
         az load list
     """
