@@ -13,6 +13,7 @@ Pending
 +++++++
 
 * Mark "--enable-pod-security-policy" deprecated
+* Deny create request if binding existed for command "trustedaccess rolebinding create"
 
 0.5.115
 +++++++
