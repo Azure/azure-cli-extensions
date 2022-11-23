@@ -150,18 +150,32 @@ def communication_chat_send_read_receipt(client, thread_id, message_id):
     return chat_thread_client.send_read_receipt(message_id)
 
 
-def __to_room_participant(participants):
+def __to_communication_identifier(participants):
     from azure.communication.identity._shared.models import identifier_from_raw_id
-    from azure.communication.rooms import RoomParticipant
 
     if participants is None:
         return None
 
-    identifiers = [identifier_from_raw_id(p) for p in participants]
-    participants = [RoomParticipant(communication_identifier=i) for i in identifiers]
+    return [identifier_from_raw_id(p) for p in participants]
 
-    # TODO: investigate
-    # as of azure-communication-identity-1.2.0, raw_id is missing in the objects returned by identifier_from_raw_id()
+
+def __to_room_participant(presenters, attendees, consumers):
+    from azure.communication.identity._shared.models import identifier_from_raw_id
+    from azure.communication.rooms import RoomParticipant, RoleType
+
+    participants = []
+
+    if presenters is not None:
+        identifiers = [identifier_from_raw_id(p) for p in presenters]
+        participants.extend([RoomParticipant(communication_identifier=i, role=RoleType.PRESENTER) for i in identifiers])
+
+    if attendees is not None:
+        identifiers = [identifier_from_raw_id(p) for p in attendees]
+        participants.extend([RoomParticipant(communication_identifier=i, role=RoleType.ATTENDEE) for i in identifiers])
+
+    if consumers is not None:
+        identifiers = [identifier_from_raw_id(p) for p in consumers]
+        participants.extend([RoomParticipant(communication_identifier=i, role=RoleType.CONSUMER) for i in identifiers])
 
     return participants
 
@@ -170,8 +184,14 @@ def communication_rooms_get_room(client, room_id):
     return client.get_room(room_id)
 
 
-def communication_rooms_create_room(client, valid_from=None, valid_until=None, join_policy=None, participants=None):
-    room_participants = __to_room_participant(participants)
+def communication_rooms_create_room(client,
+                                    valid_from=None,
+                                    valid_until=None,
+                                    join_policy=None,
+                                    presenters=None,
+                                    attendees=None,
+                                    consumers=None):
+    room_participants = __to_room_participant(presenters, attendees, consumers)
 
     return client.create_room(
         valid_from=valid_from,
@@ -188,8 +208,10 @@ def communication_rooms_update_room(client, room_id,
                                     valid_from=None,
                                     valid_until=None,
                                     join_policy=None,
-                                    participants=None):
-    room_participants = __to_room_participant(participants)
+                                    presenters=None,
+                                    attendees=None,
+                                    consumers=None):
+    room_participants = __to_room_participant(presenters, attendees, consumers)
 
     return client.update_room(
         room_id=room_id,
@@ -203,13 +225,25 @@ def communication_rooms_get_participants(client, room_id):
     return client.get_participants(room_id)
 
 
-def communication_rooms_add_participants(client, room_id, participants):
-    return client.add_participants(room_id, __to_room_participant(participants))
+def communication_rooms_add_participants(client, room_id,
+                                         presenters=None,
+                                         attendees=None,
+                                         consumers=None):
+    return client.add_participants(
+        room_id=room_id,
+        participants=__to_room_participant(presenters, attendees, consumers))
 
 
-def communication_rooms_update_participants(client, room_id, participants):
-    return client.update_participants(room_id, __to_room_participant(participants))
+def communication_rooms_update_participants(client, room_id,
+                                            presenters=None,
+                                            attendees=None,
+                                            consumers=None):
+    return client.update_participants(
+        room_id=room_id,
+        participants=__to_room_participant(presenters, attendees, consumers))
 
 
 def communication_rooms_remove_participants(client, room_id, participants):
-    return client.remove_participants(room_id, __to_room_participant(participants))
+    return client.remove_participants(
+        room_id=room_id,
+        communication_identifiers=__to_communication_identifier(participants))
