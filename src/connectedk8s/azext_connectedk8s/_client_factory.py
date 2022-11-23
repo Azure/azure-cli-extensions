@@ -25,8 +25,7 @@ def cf_connectedk8s(cli_ctx, *_):
     if os.getenv('AZURE_ACCESS_TOKEN'):
         validate_custom_token()
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
-        return ConnectedKubernetesClient(credential=credential, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                         base_url=cli_ctx.cloud.endpoints.resource_manager, credential_scopes=[cli_ctx.cloud.endpoints.resource_manager + '/.default'])
+        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'), credential=credential)
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
@@ -39,8 +38,7 @@ def cf_connectedk8s_prev_2022_10_01(cli_ctx, *_):
     if os.getenv('AZURE_ACCESS_TOKEN'):
         validate_custom_token()
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
-        return ConnectedKubernetesClient(credential=credential, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                         base_url=cli_ctx.cloud.endpoints.resource_manager, credential_scopes=[cli_ctx.cloud.endpoints.resource_manager + '/.default'])
+        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'), credential=credential)
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
@@ -52,8 +50,7 @@ def cf_connectedmachine(cli_ctx, subscription_id):
     from azure.mgmt.hybridcompute import HybridComputeManagementClient
     if os.getenv('AZURE_ACCESS_TOKEN'):
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
-        return HybridComputeManagementClient(credential=credential, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                             base_url=cli_ctx.cloud.endpoints.resource_manager, credential_scopes=[cli_ctx.cloud.endpoints.resource_manager + '/.default']).private_link_scopes
+        return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient, subscription_id=subscription_id, credential=credential).private_link_scopes
     return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient, subscription_id=subscription_id).private_link_scopes
 
 
@@ -65,8 +62,7 @@ def _resource_client_factory(cli_ctx, subscription_id=None):
     from azure.mgmt.resource import ResourceManagementClient
     if os.getenv('AZURE_ACCESS_TOKEN'):
         credential = AccessTokenCredential(access_token=os.getenv('AZURE_ACCESS_TOKEN'))
-        return ResourceManagementClient(credential=credential, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
-                                        base_url=cli_ctx.cloud.endpoints.resource_manager, credential_scopes=[cli_ctx.cloud.endpoints.resource_manager + '/.default'])
+        return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id, credential=credential)
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id)
 
 
