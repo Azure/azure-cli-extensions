@@ -417,9 +417,24 @@ helps['communication rooms create'] = """
     type: command
     short-summary: "Creates a new room."
     examples:
-      - name: Create room
+      - name: Create a room with default parameters
         text: |-
-               az communication rooms
+               az communication rooms create
+      - name: Create a room with valid-from and valid-until date/times
+        text: |-
+               az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+      - name: Create a room with InviteOnly join policy
+        text: |-
+               az communication rooms create --join-policy "InviteOnly"
+      - name: Create a room with a list of participants with presenter role
+        text: |-
+               az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with attendee role
+        text: |-
+               az communication rooms create --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with presenter and consumer roles
+        text: |-
+               az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms get'] = """
@@ -428,25 +443,25 @@ helps['communication rooms get'] = """
     examples:
       - name: Get room
         text: |-
-               az communication rooms
+               az communication rooms get --room "12345678901234567"
 """
 
 helps['communication rooms update'] = """
     type: command
     short-summary: "Updates attributes of an existing room."
     examples:
-      - name: Update room
+      - name: Update a room's valid-from and valid-until properties
         text: |-
-               az communication rooms
+               az communication rooms update --room "12345678901234567" --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
 """
 
 helps['communication rooms delete'] = """
     type: command
     short-summary: "Deletes an existing room."
     examples:
-      - name: Delete room
+      - name: Delete an existing room
         text: |-
-               az communication rooms
+               az communication rooms delete --room "12345678901234567"
 """
 
 helps['communication rooms participant'] = """
@@ -460,16 +475,16 @@ helps['communication rooms participant get'] = """
     examples:
       - name: Get room's participants
         text: |-
-               az communication rooms
+               az communication rooms participant get
 """
 
 helps['communication rooms participant add'] = """
     type: command
     short-summary: "Adds participants to a room."
     examples:
-      - name: Add room participants
+      - name: Add presenter and attendee participants to a room
         text: |-
-               az communication rooms
+               az communication rooms participant add --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms participant update'] = """
@@ -478,7 +493,7 @@ helps['communication rooms participant update'] = """
     examples:
       - name: Update room participants
         text: |-
-               az communication rooms
+               az communication rooms participant update --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms participant remove'] = """
@@ -487,5 +502,5 @@ helps['communication rooms participant remove'] = """
     examples:
       - name: Remove room participants
         text: |-
-               az communication rooms
+               az communication rooms --paticipants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
