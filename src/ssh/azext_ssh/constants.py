@@ -18,3 +18,35 @@ RECOMMENDATION_SSH_CLIENT_NOT_FOUND = (Fore.YELLOW + "Ensure OpenSSH is installe
 RECOMMENDATION_RESOURCE_NOT_FOUND = (Fore.YELLOW + "Please ensure the active subscription is set properly "
                                      "and resource exists." + Style.RESET_ALL)
 RDP_TERMINATE_SSH_WAIT_TIME_IN_SECONDS = 30
+
+ARC_RESOURCE_TYPE_PLACEHOLDER = "arc_resource_type_placeholder"
+
+SUPPORTED_RESOURCE_TYPES = ["microsoft.hybridcompute/machines",
+                            "microsoft.compute/virtualmachines",
+                            "microsoft.connectedvmwarevsphere/virtualmachines",
+                            "microsoft.scvmm/virtualmachines",
+                            "microsoft.azurestackhci/virtualmachines"]
+
+# Old version incorrectly used resource providers instead of resource type.
+# Will continue to support to avoid breaking backwards compatibility.
+LEGACY_SUPPORTED_RESOURCE_TYPES = ["microsoft.hybridcompute",
+                                   "microsoft.compute",
+                                   "microsoft.connectedvmwarevsphere",
+                                   "microsoft.scvmm",
+                                   "microsoft.azurestackhci"]
+
+RESOURCE_PROVIDER_TO_RESOURCE_TYPE = {
+    "microsoft.hybridcompute": "Microsoft.HybridCompute/machines",
+    "microsoft.compute": "Microsoft.Compute/virtualMachines",
+    "microsoft.connectedvmwarevsphere": "Microsoft.ConnectedVMwarevSphere/virtualMachines",
+    "microsoft.azurestackhci": "Microsoft.AzureStackHCI/virtualMachines",
+    "microsoft.scvmm": "Microsoft.ScVmm/virtualMachines"
+}
+
+RESOURCE_TYPE_LOWER_CASE_TO_CORRECT_CASE = {
+    "microsoft.hybridcompute/machines": "Microsoft.HybridCompute/machines",
+    "microsoft.compute/virtualmachines": "Microsoft.Compute/virtualMachines",
+    "microsoft.connectedvmwarevsphere/virtualmachines": "Microsoft.ConnectedVMwarevSphere/virtualMachines",
+    "microsoft.scvmm/virtualmachines": "Microsoft.ScVmm/virtualMachines",
+    "microsoft.azurestackhci/virtualmachines": "Microsoft.AzureStackHCI/virtualMachines"
+}

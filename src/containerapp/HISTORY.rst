@@ -3,6 +3,33 @@
 Release History
 ===============
 
+0.3.16
+++++++
+* Remove quota check for 'az containerapp up' and 'az containerapp env create'.
+
+0.3.15
+++++++
+* Add 'az containerapp containerapp ingress ip-restriction' command group to manage IP restrictions on the ingress of a container app.
+
+0.3.14
+++++++
+* 'az containerapp logs show'/'az containerapp exec': Fix "KeyError" bug
+
+0.3.13
+++++++
+* 'az containerapp compose create': Migrated from containerapp-compose extension
+* Add parameters --logs-destination and --storage-account support for new logs destinations to `az containerapp env create` and `az containerapp env update`
+
+0.3.12
+++++++
+* Add 'az containerapp env update' to update managed environment properties
+* Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
+* 'az containerapp logs show': add new parameter "--type" to allow showing system logs
+* Show system environment logs with new command 'az containerapp env logs show'
+* Add tcp support for ingress transport and scale rules
+* `az containerapp up/github-action add`: Retrieve workflow file name from github actions API
+* 'az containerapp create/update': validate revision suffixes
+
 0.3.11
 ++++++
 * Add keda scale rule parameters to 'az containerapp create', 'az containerapp update' and 'az containerapp revision copy'
