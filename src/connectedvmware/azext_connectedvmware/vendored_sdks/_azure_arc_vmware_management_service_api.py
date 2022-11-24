@@ -29,6 +29,8 @@ class AzureArcVMwareManagementServiceAPI(object):    # pylint: disable=too-many-
 
     :ivar operations: Operations operations
     :vartype operations: azure.mgmt.connectedvmware.operations.Operations
+    :ivar virtual_machines: VirtualMachinesOperations operations
+    :vartype virtual_machines: azure.mgmt.connectedvmware.operations.VirtualMachinesOperations
     :ivar resource_pools: ResourcePoolsOperations operations
     :vartype resource_pools: azure.mgmt.connectedvmware.operations.ResourcePoolsOperations
     :ivar clusters: ClustersOperations operations
@@ -39,8 +41,6 @@ class AzureArcVMwareManagementServiceAPI(object):    # pylint: disable=too-many-
     :vartype datastores: azure.mgmt.connectedvmware.operations.DatastoresOperations
     :ivar vcenters: VCentersOperations operations
     :vartype vcenters: azure.mgmt.connectedvmware.operations.VCentersOperations
-    :ivar virtual_machines: VirtualMachinesOperations operations
-    :vartype virtual_machines: azure.mgmt.connectedvmware.operations.VirtualMachinesOperations
     :ivar virtual_machine_templates: VirtualMachineTemplatesOperations operations
     :vartype virtual_machine_templates:
      azure.mgmt.connectedvmware.operations.VirtualMachineTemplatesOperations
@@ -61,7 +61,7 @@ class AzureArcVMwareManagementServiceAPI(object):    # pylint: disable=too-many-
     :type subscription_id: str
     :param base_url: Service URL. Default value is 'https://management.azure.com'.
     :type base_url: str
-    :keyword api_version: Api Version. The default value is "2020-10-01-preview". Note that
+    :keyword api_version: Api Version. The default value is "2022-01-10-preview". Note that
      overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -84,12 +84,12 @@ class AzureArcVMwareManagementServiceAPI(object):    # pylint: disable=too-many-
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
         self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_machines = VirtualMachinesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.resource_pools = ResourcePoolsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.clusters = ClustersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.hosts = HostsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.datastores = DatastoresOperations(self._client, self._config, self._serialize, self._deserialize)
         self.vcenters = VCentersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.virtual_machines = VirtualMachinesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machine_templates = VirtualMachineTemplatesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_networks = VirtualNetworksOperations(self._client, self._config, self._serialize, self._deserialize)
         self.inventory_items = InventoryItemsOperations(self._client, self._config, self._serialize, self._deserialize)

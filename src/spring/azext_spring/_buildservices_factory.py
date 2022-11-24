@@ -40,7 +40,7 @@ class BuildService:
         logger.warning("[1/{}] Requesting for upload URL.".format(total_steps))
         upload_info = self._get_upload_info()
         logger.warning("[2/{}] Uploading package to blob.".format(total_steps))
-        uploader_selector(upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
+        uploader_selector(cli_ctx=self.cmd.cli_ctx, upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
         logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, kwargs['app']))
         build_result_id = self._queue_build(upload_info.relative_path, **kwargs)
         logger.warning("[4/{}] Waiting for building container image to finish. This may take a few minutes.".format(total_steps))

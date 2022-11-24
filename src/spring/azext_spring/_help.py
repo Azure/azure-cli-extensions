@@ -38,7 +38,7 @@ helps['spring create'] = """
       text: |
         az provider register -n Microsoft.SaaS
         az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
-        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view
+        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
 """
 
 helps['spring list-marketplace-plan'] = """
@@ -1067,4 +1067,115 @@ helps['spring build-service builder buildpack-binding delete'] = """
     examples:
         - name: Delete a buildpack binding.
           text: az spring build-service builder buildpack-binding delete --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Application Accelerator in Azure Spring Apps.
+"""
+
+helps['spring application-accelerator create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create Application Accelerator in Azure Spring Apps instance.
+    examples:
+        - name: Create Application Accelerator in Azure Spring Apps instance.
+          text: az spring application-accelerator create --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show the settings, provisioning status and runtime status of Application Accelerator.
+    examples:
+        - name: Show details of a Application Accelerator.
+          text: az spring application-accelerator show --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete Application Accelerator from Azure Spring Apps instance.
+    examples:
+        - name: Delete Application Accelerator from Azure Spring Apps instance.
+          text: az spring application-accelerator delete --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage predefined accelerator in Azure Spring Apps.
+"""
+
+helps['spring application-accelerator predefined-accelerator list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all existing predefined accelerators.
+    examples:
+        - name: List all existing predefined accelerators.
+          text: az spring application-accelerator predefined-accelerator list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show the settings, provisioning status and runtime status of predefined accelerator.
+    examples:
+        - name: Show details of a predefined accelerator.
+          text: az spring application-accelerator predefined-accelerator show --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator disable'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Disable a predefined accelerator.
+    examples:
+        - name: Disable a predefined accelerator.
+          text: az spring application-accelerator predefined-accelerator disable --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator predefined-accelerator enable'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Enable a predefined accelerator.
+    examples:
+        - name: Enable a predefined accelerator.
+          text: az spring application-accelerator predefined-accelerator enable --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator customized-accelerator'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage customized accelerator in Azure Spring Apps.
+"""
+
+helps['spring application-accelerator customized-accelerator list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all existing customized accelerators.
+    examples:
+        - name: List all existing customized accelerators.
+          text: az spring application-accelerator customized-accelerator list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator customized-accelerator show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show the settings, provisioning status and runtime status of customized accelerator.
+    examples:
+        - name: Show details of a customized accelerator.
+          text: az spring application-accelerator customized-accelerator show --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring application-accelerator customized-accelerator create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create a customized accelerator.
+    examples:
+        - name: Create a customized accelerator.
+          text: az spring application-accelerator customized-accelerator create --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
+"""
+
+helps['spring application-accelerator customized-accelerator update'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Update a customized accelerator.
+    examples:
+        - name: Update a customized accelerator.
+          text: az spring application-accelerator customized-accelerator update --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
+"""
+
+helps['spring application-accelerator customized-accelerator delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete a customized accelerator.
+    examples:
+        - name: Delete a customized accelerator.
+          text: az spring application-accelerator customized-accelerator delete --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
 """
