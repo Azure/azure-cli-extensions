@@ -5826,16 +5826,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 raise CliTestError(f"Output from kollect did not contain '{pattern}'. Output:\n{kollect_output}")
 
         # Invoke kubectl to get the daemonsets deployed to the cluster
-        invoke_get_daemonset_cmd = "aks command invoke --resource-group={resource_group} --name={aks_name} --command 'kubectl get daemonset -n aks-periscope -o name'"
-        get_daemonset_output = self.cmd(invoke_get_daemonset_cmd).output
+        k_get_daemonset_cmd = ["az", "aks", "command", "invoke", "--resource-group", resource_group, "--name", aks_name, "--command", "kubectl get daemonset -n aks-periscope -o name"]
+        k_get_daemonset_output = subprocess.check_output(k_get_daemonset_cmd, text=True)
 
         # Check expected output of 'kubectl get daemonset' command
         for pattern in [
             "daemonset.apps/aks-periscope",
             "daemonset.apps/aks-periscope-win"
         ]:
-            if not pattern in get_daemonset_output:
-                raise CliTestError(f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{get_daemonset_output}")
+            if not pattern in k_get_daemonset_output:
+                raise CliTestError(f"Output from 'kubectl get daemonset' did not contain '{pattern}'. Output:\n{k_get_daemonset_output}")
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
