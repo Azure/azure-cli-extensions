@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Add custom transform for custom CA
+
 0.5.116
 +++++++
 
