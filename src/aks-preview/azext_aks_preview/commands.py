@@ -29,6 +29,45 @@ from azext_aks_preview._format import (
     aks_show_table_format,
     aks_upgrades_table_format,
 )
+from knack.log import get_logger
+
+logger = get_logger(__name__)
+
+def transform_mc_objects_with_custom_cas(result):
+    # convert custom_ca_trust_certificates in bytearray format encoded in utf-8 to string
+    if not result:
+        return result
+    from msrest.paging import Paged
+
+    def _patch_custom_cas_in_security_profile(security_profile):
+        # modify custom_ca_trust_certificates in-place
+        # security_profile shouldn't be None
+        custom_cas = getattr(security_profile, 'custom_ca_trust_certificates', None)
+        if custom_cas:
+            decoded_custom_cas = []
+            for custom_ca in custom_cas:
+                try:
+                    decoded_custom_ca = custom_ca.decode("utf-8")
+                except Exception:  # pylint: disable=broad-except
+                    logger.warning("failed to decode customCaTrustCertificates")
+                    decoded_custom_ca = None
+                decoded_custom_cas.append(decoded_custom_ca)
+            security_profile.custom_ca_trust_certificates = decoded_custom_cas
+
+    singular = False
+    if isinstance(result, Paged):
+        result = list(result)
+
+    if not isinstance(result, list):
+        singular = True
+        result = [result]
+
+    for r in result:
+        if getattr(r, 'security_profile', None):
+            # security_profile shouldn't be None
+            _patch_custom_cas_in_security_profile(r.security_profile)
+
+    return result[0] if singular else result
 
 
 def load_command_table(self, _):
@@ -77,7 +116,8 @@ def load_command_table(self, _):
     )
 
     # AKS managed cluster commands
-    with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+    with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters,
+                            transform=transform_mc_objects_with_custom_cas) as g:
         g.custom_command('kollect', 'aks_kollect')
         g.custom_command('kanalyze', 'aks_kanalyze')
         g.custom_command('browse', 'aks_browse')
