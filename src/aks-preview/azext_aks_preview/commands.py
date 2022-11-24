@@ -33,6 +33,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
+
 def transform_mc_objects_with_custom_cas(result):
     # convert custom_ca_trust_certificates in bytearray format encoded in utf-8 to string
     if not result:
