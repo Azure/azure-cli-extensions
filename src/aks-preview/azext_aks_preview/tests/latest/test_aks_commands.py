@@ -5714,6 +5714,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
+        # Install kubectl (required by the 'kollect' command).
+        try:
+            subprocess.call(['az', 'aks', 'install-cli'])
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
+
         self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
 
     @live_only() # because we're downloading a binary, and we're not testing the output of any ARM requests.
@@ -5754,6 +5760,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         sp_oid = sp["id"]
         print(f'objectid of service principal is {sp_oid}')
 
+        # Install kubectl (for setting up service principal permissions, and required by the 'kollect' command).
+        try:
+            subprocess.call(['az', 'aks', 'install-cli'])
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
+
         # Grant the service principal cluster-admin access using the admin account
         # (it'd be nice if `az aks command invoke` had an --admin option, but it appears not to, so we have to download admin credentials)
         fd, admin_kubeconfig_path = tempfile.mkstemp()
@@ -5784,12 +5796,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
 
     def assert_kollect_deploys_periscope(self, resource_group, aks_name, stg_acct_name):
-        # Install kubectl (required by the 'kollect' command).
-        try:
-            subprocess.call(['az', 'aks', 'install-cli'])
-        except subprocess.CalledProcessError as err:
-            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
-
         # The kollect command is interactive, with two prompts requiring 'y|n' followed by newline.
         # The prompting library used by the CLI checks for the presence of a TTY, so just passing these as input is not
         # sufficient and will raise an exception; we also need to attach a pseudo-TTY to the process.
