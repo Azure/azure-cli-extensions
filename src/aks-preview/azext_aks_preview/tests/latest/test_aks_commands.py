@@ -5826,7 +5826,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 raise CliTestError(f"Output from kollect did not contain '{pattern}'. Output:\n{kollect_output}")
 
         # Invoke kubectl to get the daemonsets deployed to the cluster
-        invoke_get_daemonset_cmd = "aks command invoke --resource-group={resource_group} --name={stg_acct_name} --command 'kubectl get daemonset -n aks-periscope -o name'"
+        invoke_get_daemonset_cmd = "aks command invoke --resource-group={resource_group} --name={aks_name} --command 'kubectl get daemonset -n aks-periscope -o name'"
         get_daemonset_output = self.cmd(invoke_get_daemonset_cmd)
 
         # Check expected output of 'kubectl get daemonset' command
