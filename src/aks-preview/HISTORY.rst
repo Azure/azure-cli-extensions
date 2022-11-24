@@ -14,6 +14,7 @@ Pending
 
 * Fix `az aks update` command failing on updating the ssh key value if cluster was created without ssh key, see issue `\#5559 <https://github.com/Azure/azure-cli-extensions/issues/5559>`_.
 * Mark "--enable-pod-security-policy" deprecated
+* Support AAD clusters for "az aks kollect"
 
 0.5.115
 +++++++
