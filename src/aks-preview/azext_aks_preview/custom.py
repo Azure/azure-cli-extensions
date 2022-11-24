@@ -1970,8 +1970,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                     container_logs, kube_objects, node_logs, node_logs_windows)
 
 
-def aks_kanalyze(client, resource_group_name, name):
-    aks_kanalyze_cmd(client, resource_group_name, name)
+def aks_kanalyze(cmd, client, resource_group_name, name):
+    aks_kanalyze_cmd(cmd, client, resource_group_name, name)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,

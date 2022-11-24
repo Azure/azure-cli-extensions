@@ -40,7 +40,7 @@ def build_create_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -80,7 +80,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -117,7 +117,7 @@ def build_update_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -157,7 +157,7 @@ def build_delete_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     force = kwargs.pop('force', None)  # type: Optional[bool]
 
     accept = "application/json"
@@ -195,7 +195,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -229,7 +229,7 @@ def build_list_by_resource_group_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -294,7 +294,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -370,7 +370,7 @@ class VCentersOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VCenter]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCenter"]
@@ -440,7 +440,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_get_request(
@@ -505,7 +505,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -561,7 +561,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_delete_request_initial(
@@ -623,7 +623,7 @@ class VCentersOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -676,7 +676,7 @@ class VCentersOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VCentersList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCentersList"]
         error_map = {
@@ -754,7 +754,7 @@ class VCentersOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VCentersList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCentersList"]
         error_map = {
