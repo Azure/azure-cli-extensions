@@ -5827,7 +5827,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # Invoke kubectl to get the daemonsets deployed to the cluster
         invoke_get_daemonset_cmd = "aks command invoke --resource-group={resource_group} --name={aks_name} --command 'kubectl get daemonset -n aks-periscope -o name'"
-        get_daemonset_output = self.cmd(invoke_get_daemonset_cmd)
+        get_daemonset_output = self.cmd(invoke_get_daemonset_cmd).output
 
         # Check expected output of 'kubectl get daemonset' command
         for pattern in [
