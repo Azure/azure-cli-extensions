@@ -188,7 +188,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
 
 
 def spring_delete(cmd, client, resource_group, name, no_wait=False):
-    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
+    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/asa_exitsurvey")
     return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
 
 

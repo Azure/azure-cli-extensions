@@ -5610,13 +5610,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    @AllowLargeResponse()
-    def test_list_trustedaccess_roles(self):
-        cmd = 'aks trustedaccess role list -l eastus2euap'
-        self.cmd(cmd, checks=[
-            self.exists('[0].sourceResourceType')
-        ])
-
     @live_only() # this test requires live_only because a binary is downloaded
     def test_aks_draft_with_helm(self):
         import tempfile, os
@@ -5714,21 +5707,88 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        # Install kubectl (required by the 'kollect' command, and to perform verification of deployed resources).
+        # Install kubectl (required by the 'kollect' command).
         try:
             subprocess.call(['az', 'aks', 'install-cli'])
         except subprocess.CalledProcessError as err:
             raise CliTestError(f"Failed to install kubectl with error: '{err}'")
 
-        # Create kubeconfig file
-        fd, kubeconfig_path = tempfile.mkstemp()
-        self.kwargs.update({ 'kubeconfig_path': kubeconfig_path })
+        self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
+
+    @live_only() # because we're downloading a binary, and we're not testing the output of any ARM requests.
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_kollect_with_managed_aad(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        stg_acct_name = self.create_random_name('cliaksteststg', 24)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'location': resource_group_location,
+            'aks_name': aks_name,
+            'stg_acct_name': stg_acct_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        # Initially create with local accounts enabled (the default), so that we can use the admin account
+        # to grant the necessary k8s permissions to the AD user (the service principal).
+        create_aks_cmd = 'aks create --resource-group={resource_group} --name={aks_name} ' \
+                         '--location={location} --ssh-key-value={ssh_key_value} ' \
+                         '--vm-set-type VirtualMachineScaleSets -c 1 ' \
+                         '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
+                         '-o json'
+        self.cmd(create_aks_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('aadProfile.managed', True),
+            self.check('aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001'),
+            self.check('disableLocalAccounts', False)
+        ])
+
+        # Get the object ID of the service principal
+        show_acct_cmd = 'account show'
+        authenticated_acct = self.cmd(show_acct_cmd).get_output_in_json()
+        sp_name = authenticated_acct["user"]["name"]
+        show_sp_cmd = f'ad sp show --id {sp_name}'
+        sp = self.cmd(show_sp_cmd, checks=[
+            self.check('appId', sp_name)
+        ]).get_output_in_json()
+        sp_oid = sp["id"]
+        print(f'objectid of service principal is {sp_oid}')
+
+        # Install kubectl (for setting up service principal permissions, and required by the 'kollect' command).
         try:
-            get_credential_cmd = 'aks get-credentials --resource-group={resource_group} --name={aks_name} -f {kubeconfig_path}'
+            subprocess.call(['az', 'aks', 'install-cli'])
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to install kubectl with error: '{err}'")
+
+        # Grant the service principal cluster-admin access using the admin account
+        # (it'd be nice if `az aks command invoke` had an --admin option, but it appears not to, so we have to download admin credentials)
+        fd, admin_kubeconfig_path = tempfile.mkstemp()
+        self.kwargs.update({ 'kubeconfig_path': admin_kubeconfig_path })
+        try:
+            get_credential_cmd = 'aks get-credentials --resource-group={resource_group} --name={aks_name} --admin -f {kubeconfig_path}'
             self.cmd(get_credential_cmd)
+            create_rolebinding_output = subprocess.check_output(['kubectl', 'create', 'clusterrolebinding', '--kubeconfig', admin_kubeconfig_path, '--clusterrole', 'cluster-admin', '--user', sp_oid, 'test-clusterrolebinding'])
+            print(f'Output of create rolebinding:\n{create_rolebinding_output}')
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to create admin clusterrolebinding for {sp_oid}: '{err}'")
         finally:
             os.close(fd)
+            os.remove(admin_kubeconfig_path)
 
+        # Now the current user has the required permissions, we can disable admin access to the cluster
+        disable_admin_cmd = 'aks update --resource-group={resource_group} --name={aks_name} --disable-local-accounts'
+        self.cmd(disable_admin_cmd, checks=[
+            self.check('disableLocalAccounts', True)
+        ])
+
+        # Create the storage account to which to upload Periscope output
+        create_stg_cmd = 'storage account create --resource-group={resource_group} --name={stg_acct_name} --location={location} -o json'
+        self.cmd(create_stg_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.assert_kollect_deploys_periscope(resource_group, aks_name, stg_acct_name)
+
+    def assert_kollect_deploys_periscope(self, resource_group, aks_name, stg_acct_name):
         # The kollect command is interactive, with two prompts requiring 'y|n' followed by newline.
         # The prompting library used by the CLI checks for the presence of a TTY, so just passing these as input is not
         # sufficient and will raise an exception; we also need to attach a pseudo-TTY to the process.
@@ -5759,7 +5819,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 raise CliTestError(f"Output from kollect did not contain '{pattern}'. Output:\n{kollect_output}")
 
         # Invoke kubectl to get the daemonsets deployed to the cluster
-        k_get_daemonset_cmd = ["kubectl", "get", "daemonset", "-n", "aks-periscope", "-o", "name", "--kubeconfig", kubeconfig_path]
+        k_get_daemonset_cmd = ["az", "aks", "command", "invoke", "--resource-group", resource_group, "--name", aks_name, "--command", "kubectl get daemonset -n aks-periscope -o name"]
         k_get_daemonset_output = subprocess.check_output(k_get_daemonset_cmd, text=True)
 
         # Check expected output of 'kubectl get daemonset' command
@@ -6200,3 +6260,94 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(cmd, checks=[
             self.is_empty(),
         ])
+
+    @AllowLargeResponse()
+    def test_get_trustedaccess_roles(self):
+        versions_cmd = 'aks trustedaccess role list -l eastus -o json'
+        roles = self.cmd(versions_cmd).get_output_in_json()
+        assert len(roles) > 0
+        role = roles[0]
+        assert len(role['rules']) > 0
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_trustedaccess_rolebinding(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'vm_size': 'Standard_D4s_v3',
+            'node_count': 1,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--node-vm-size {vm_size}',
+            '--node-count {node_count}',
+            '--ssh-key-value={ssh_key_value}',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedAccessPreview',
+        ])
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        binding_name = 'testbinding'
+        node_rg_cmd = 'aks list -g {resource_group} --query "[0].nodeResourceGroup" -o tsv'
+        node_rg = self.cmd(node_rg_cmd).output.strip()
+        self.kwargs.update({'node_rg': node_rg, 'binding_name': binding_name})
+
+        vmss_cmd = 'vmss list -g {node_rg} --query "[0].id" -o tsv'
+        vmss_id = self.cmd(vmss_cmd).output.strip()
+        self.kwargs.update({'vmss_id': vmss_id})
+
+        # test create rolebinding
+        create_ta_binding_cmd = ' '.join([
+            'aks', 'trustedaccess', 'rolebinding', 'create',
+            '-g {resource_group}',
+            '--cluster-name {name}',
+            '-n {binding_name}',
+            '-s {vmss_id}',
+            '--roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader,Microsoft.Compute/virtualMachineScaleSets/test-admin'
+        ])
+        binding = self.cmd(create_ta_binding_cmd, checks=[
+            self.check('name', binding_name),
+            self.check('type', 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'),
+            self.check('sourceResourceId', vmss_id)
+        ]).get_output_in_json()
+        assert len(binding['roles']) == 2
+        time.sleep(20)  # wait for binding creation
+        
+        # test list rolebinding
+        list_binding_cmd = 'aks trustedaccess rolebinding list --cluster-name {name} -g {resource_group}'
+        listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
+        assert len(listed_bindings) == 1
+        
+        # test get rolebinding
+        get_binding_cmd = 'aks trustedaccess rolebinding show --cluster-name {name} -g {resource_group} -n {binding_name}'
+        got_binding = self.cmd(get_binding_cmd).get_output_in_json()
+        assert got_binding['name'] == binding_name
+        assert len(got_binding['roles']) == 2
+        assert got_binding['sourceResourceId'] == vmss_id
+        assert got_binding['type'] == 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'
+        
+        # test update rolebinding
+        update_binding_cmd = 'aks trustedaccess rolebinding update -g {resource_group} --cluster-name {name} -n {binding_name} \
+            --roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader'
+        updated_binding = self.cmd(update_binding_cmd).get_output_in_json()
+        assert updated_binding['name'] == binding_name
+        assert len(updated_binding['roles']) == 1
+        assert updated_binding['roles'][0] == 'Microsoft.Compute/virtualMachineScaleSets/test-node-reader'
+
+        # test delete rolebinding
+        delete_binding_cmd = 'aks trustedaccess rolebinding delete -g {resource_group} --cluster-name {name} -n {binding_name} -y'
+        self.cmd(delete_binding_cmd)
+        time.sleep(20)  # wait for binding deleting
+        listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
+        assert len(listed_bindings) == 0
