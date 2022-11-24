@@ -120,6 +120,11 @@ def load_command_table(self, _):
         g.custom_command('set', 'set_ingress_traffic', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress_traffic')
 
+    with self.command_group('containerapp ingress access-restriction') as g:
+        g.custom_command('set', 'set_ip_restriction', exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_ip_restriction')
+        g.custom_show_command('list', 'show_ip_restrictions')
+
     with self.command_group('containerapp registry') as g:
         g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_registry')

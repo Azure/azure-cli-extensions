@@ -17,8 +17,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
-                                     validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
-                                     validate_routes, validate_gateway_instance_count,
+                                     validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
+                                     validate_routes, validate_gateway_instance_count, validate_git_interval,
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
@@ -132,6 +132,11 @@ def load_arguments(self, _):
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('enable_application_live_view',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-live-view', '--enable-alv'],
+                   help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
                    action='store_true',
                    options_list=['--enable-service-registry', '--enable-sr'],
@@ -159,6 +164,11 @@ def load_arguments(self, _):
                    is_preview=True,
                    help='(Enterprise Tier Only) Specify a different Marketplace plan to purchase with Spring instance. '
                         'List all plans by running `az spring list-marketplace-plan -o table`.')
+        c.argument('enable_application_accelerator',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-accelerator', '--enable-app-acc'],
+                   help='(Enterprise Tier Only) Enable Application Accelerator.')
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
@@ -645,9 +655,17 @@ def load_arguments(self, _):
             c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
-                  'gateway', 'api-portal']:
+                  'gateway', 'api-portal', 'application-live-view', 'dev-tool', 'application-accelerator']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['dev-tool create', 'dev-tool update']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
+            c.argument('scopes', arg_group='Single Sign On (SSO)', help="Comma-separated list of the specific actions applications can be allowed to do on a user's behalf.")
+            c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
+            c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
+            c.argument('metadata_url', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
 
     for scope in ['bind', 'unbind']:
         with self.argument_context('spring service-registry {}'.format(scope)) as c:
@@ -761,3 +779,38 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring application-accelerator predefined-accelerator list',
+                  'spring application-accelerator predefined-accelerator show',
+                  'spring application-accelerator predefined-accelerator disable',
+                  'spring application-accelerator predefined-accelerator enable']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for predefined accelerator.')
+
+    for scope in ['spring application-accelerator customized-accelerator list',
+                  'spring application-accelerator customized-accelerator show',
+                  'spring application-accelerator customized-accelerator create',
+                  'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for customized accelerator.')
+
+    for scope in ['spring application-accelerator customized-accelerator create',
+                  'spring application-accelerator customized-accelerator update']:
+        with self.argument_context(scope) as c:
+            c.argument('display_name', type=str, help='Display name for customized accelerator.')
+            c.argument('description', type=str, help='Description for customized accelerator.')
+            c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
+            c.argument('accelerator_tags', type=str, help="Comma-separated list of tags on the customized accelerator.")
+
+            c.argument('git_url', help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_interval', type=int, help='Interval in seconds for checking for updates to Git or image repository.', validator=validate_git_interval)
+            c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
+            c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
+            c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
+
+            c.argument('username', help='Username of git repository basic auth.')
+            c.argument('password', help='Password of git repository basic auth.')
+            c.argument('private_key', help='Private SSH Key algorithm of git repository.')
+            c.argument('host_key', help='Public SSH Key of git repository.')
+            c.argument('host_key_algorithm', help='SSH Key algorithm of git repository.')

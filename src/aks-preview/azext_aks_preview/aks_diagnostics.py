@@ -12,6 +12,8 @@ import tempfile
 import time
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.command_modules.acs.custom import k8s_install_kubelogin
+from azure.cli.command_modules.acs._params import _get_default_install_location
 from enum import Flag, auto
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -132,10 +134,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
 
     print()
     print("Getting credentials for cluster %s " % name)
-    _, temp_kubeconfig_path = tempfile.mkstemp()
-    credentialResults = client.list_cluster_admin_credentials(resource_group_name, name, None)
-    kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
-    print_or_merge_credentials(temp_kubeconfig_path, kubeconfig, False, None)
+    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.aad_profile is not None)
 
     print()
     print("Starts collecting diag info for cluster %s " % name)
@@ -221,17 +220,40 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
         _display_diagnostics_report(temp_kubeconfig_path)
 
 
-def aks_kanalyze_cmd(client, resource_group_name: str, name: str) -> None:
+def aks_kanalyze_cmd(cmd, client, resource_group_name: str, name: str) -> None:
     colorama.init()
 
-    client.get(resource_group_name, name)
+    mc = client.get(resource_group_name, name)
 
+    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.aad_profile is not None)
+
+    _display_diagnostics_report(temp_kubeconfig_path)
+
+
+def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, has_aad_profile: bool) -> str:
     _, temp_kubeconfig_path = tempfile.mkstemp()
-    credentialResults = client.list_cluster_admin_credentials(resource_group_name, name, None)
+
+    # Use normal user credentials, not admin credentials (admin creds will not be supplied if local accounts are disabled).
+    credentialResults = client.list_cluster_user_credentials(resource_group_name, name, None)
     kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
     print_or_merge_credentials(temp_kubeconfig_path, kubeconfig, False, None)
 
-    _display_diagnostics_report(temp_kubeconfig_path)
+    if has_aad_profile:
+        # The current credentials require interactive login. We need to use kubelogin to update the kubeconfig credential.
+        if not which('kubelogin'):
+            # No kubelogin found...but we can install it if the user wants.
+            if not prompt_y_n('Can not find kubelogin executable in PATH. Install now?', default="y"):
+                # The user doesn't want us to install kubelogin automatically, so we cannot continue.
+                raise CLIError('kubelogin not found. Use az aks install-cli to install.')
+
+            # Install kubelogin
+            kubelogin_install_location = _get_default_install_location('kubelogin')
+            k8s_install_kubelogin(cmd, 'latest', kubelogin_install_location)
+
+        # kubelogin is installed. Run it to populate user credentials that don't require interactive login.
+        subprocess.check_output(["kubelogin", "convert-kubeconfig", "--kubeconfig", temp_kubeconfig_path, "--login", "azurecli"], stderr=subprocess.STDOUT)
+
+    return temp_kubeconfig_path
 
 
 def _get_kustomize_yaml(storage_account_name,
