@@ -6194,7 +6194,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    @live_only()
     @AllowLargeResponse()
     def test_get_trustedaccess_roles(self):
         versions_cmd = 'aks trustedaccess role list -l eastus -o json'
@@ -6203,7 +6202,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         role = roles[0]
         assert len(role['rules']) > 0
     
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_trustedaccess_rolebinding(self, resource_group, resource_group_location):
