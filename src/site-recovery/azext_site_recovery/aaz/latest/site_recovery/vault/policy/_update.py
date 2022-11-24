@@ -112,7 +112,7 @@ class Update(AAZCommand):
         )
         a2_a.multi_vm_sync_status = AAZStrArg(
             options=["multi-vm-sync-status"],
-            help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enabled' or 'Disabled'.",
+            help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enable' or 'Disable'.",
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
         a2_a.recovery_point_history = AAZIntArg(

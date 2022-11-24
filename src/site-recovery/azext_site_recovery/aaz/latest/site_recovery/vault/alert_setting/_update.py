@@ -77,7 +77,7 @@ class Update(AAZCommand):
         _args_schema.send_to_owners = AAZStrArg(
             options=["--send-to-owners"],
             arg_group="Properties",
-            help="A value indicating whether to send email to subscription administrator.",
+            help="A value indicating whether to send email to subscription administrator. Allowed values: \"Send\", \"DoNotSend\"",
             nullable=True,
         )
 

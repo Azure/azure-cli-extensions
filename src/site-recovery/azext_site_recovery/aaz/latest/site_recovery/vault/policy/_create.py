@@ -107,7 +107,7 @@ class Create(AAZCommand):
         )
         a2_a.multi_vm_sync_status = AAZStrArg(
             options=["multi-vm-sync-status"],
-            help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enabled' or 'Disabled'.",
+            help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enable' or 'Disable'.",
             required=True,
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
