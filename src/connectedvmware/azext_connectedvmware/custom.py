@@ -7,8 +7,8 @@
 
 from pwinput import pwinput
 from knack.util import CLIError
-from azext_connectedvmware.vmware_utils import get_resource_id
 from azure.cli.core.util import sdk_no_wait
+from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
     VMWARE_NAMESPACE,
     VCENTER_RESOURCE_TYPE,
@@ -975,11 +975,12 @@ def delete_vm(
     resource_group_name,
     resource_name,
     force=False,
+    retain=None,
     no_wait=False,
 ):
 
     return sdk_no_wait(
-        no_wait, client.begin_delete, resource_group_name, resource_name, force
+        no_wait, client.begin_delete, resource_group_name, resource_name, force, retain,
     )
 
 
