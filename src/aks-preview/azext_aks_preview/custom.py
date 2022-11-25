@@ -1449,7 +1449,7 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
     power_state = PowerState(code="Running")
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, cluster_name, nodepool_name, headers=headers)
+    return sdk_no_wait(no_wait, client.begin_abort_latest_operation, resource_group_name, cluster_name, nodepool_name, headers=headers)
 
 
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
@@ -1470,7 +1470,7 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
         raise InvalidArgumentValueError("Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(name))
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(no_wait, client.abort_latest_operation, resource_group_name, name, headers=headers)
+    return sdk_no_wait(no_wait, client.begin_abort_latest_operation, resource_group_name, name, headers=headers)
 
 
 def aks_addon_list_available():
