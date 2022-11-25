@@ -67,8 +67,10 @@ def space_toolbar(settings_items, empty_space):
     if len(settings_items) == 1:
         spacing = ''
     else:
-        spacing = empty_space[
-            :int(math.floor((len(empty_space) - counter) / (len(settings_items) - 1)))]
+        spacing_len = (len(empty_space) - len(NOTIFICATIONS) - counter) // (len(settings_items) - 1)
+        if spacing_len < 0:
+            return space_toolbar(settings_items[1:], empty_space)
+        spacing = empty_space[:spacing_len]
 
     settings = spacing.join(settings_items)
 
@@ -243,16 +245,16 @@ class AzInteractiveShell(object):
         _, cols = get_window_dim()
         cols = int(cols)
 
-        empty_space = " " * cols
+        empty_space = " " * (cols - 1)
 
         delta = datetime.datetime.utcnow() - START_TIME
         if self.user_feedback and delta.seconds < DISPLAY_TIME:
             toolbar = [
-                ' Try out the \'feedback\' command',
+                'Try out the \'feedback\' command',
                 'If refreshed disappear in: {}'.format(str(DISPLAY_TIME - delta.seconds))]
         elif self.command_table_thread.is_alive():
             toolbar = [
-                ' Loading...',
+                'Loading...',
                 'Hit [enter] to refresh'
             ]
         else:
@@ -261,6 +263,7 @@ class AzInteractiveShell(object):
         toolbar, empty_space = space_toolbar(toolbar, empty_space)
         cli.buffers['bottom_toolbar'].reset(
             initial_document=Document(u'{}{}{}'.format(NOTIFICATIONS, toolbar, empty_space)))
+        cli.buffers['bottom_toolbar'].cursor_position = 0
 
     def _toolbar_info(self):
         sub_name = ""
@@ -275,9 +278,10 @@ class AzInteractiveShell(object):
         tool_val = 'Subscription: {}'.format(sub_name) if sub_name else curr_cloud
 
         settings_items = [
-            " [F1]Layout",
+            "[F1]Layout",
             "[F2]Defaults",
             "[F3]Keys",
+            "[Space]Predict",
             "[Ctrl+D]Quit",
             tool_val
         ]

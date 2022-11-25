@@ -6,6 +6,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
+import re
 
 from azure.cli.core.parser import AzCliCommandParser
 from azure.cli.core.commands.events import (
@@ -172,9 +173,8 @@ class AzCompleter(Completer):
         self.shell_ctx.cli_ctx.raise_event(EVENT_INTERACTIVE_POST_SUB_TREE_CREATE, subtree=self.subtree)
         self.complete_command = not self.subtree.children
 
-        if not text.strip():
-            for comp in self.gen_recommend_completion():
-                yield comp
+        for comp in self.gen_recommend_completion(text):
+            yield comp
 
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
             yield comp
@@ -264,10 +264,17 @@ class AzCompleter(Completer):
         except Exception:  # pylint: disable=broad-except
             pass
 
-    def gen_recommend_completion(self):
+    def gen_recommend_completion(self, text):
         # for rec in get_recommend(self.shell_ctx.cli_ctx, self.shell_ctx.history):
         for rec in self.shell_ctx.recommender.get_result() or []:
-            yield Completion(rec['command'], -1)
+            if text == '':
+                yield Completion(' '+rec['command'], 0)
+            elif text == 'a':
+                yield Completion('az '+rec['command'], -1)
+            else:
+                formatted_text = re.sub(r'\s+', ' ', text).strip()
+                if rec['command'].startswith(formatted_text) and rec['command'] != formatted_text:
+                    yield Completion(rec['command'], -len(text.lstrip()))
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """
