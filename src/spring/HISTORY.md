@@ -1,8 +1,13 @@
 Release History
 ===============
+1.4.0
+---
+* Show help link when `az spring app deploy` failed.
+
 1.3.0
 ---
 * Add new command group `az spring application-live-view` to manage Application Live View.
+* Support route to app level in command `az spring gateway route-config create` and `az spring gateway route-config create`
 * Add new command group `az spring dev-tool` to manage Dev Tools.
 * Add argument `--enable-application-live-view` in command `az spring create` to support enable application live view when creating Enterprise sku Spring resource.
 * Add new command group `az spring application-accelerator customized-accelerator` to manage Customized Accelerator.
