@@ -2332,7 +2332,7 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
     try:
         existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
     except ResourceNotFoundError:
-        logger.warning("TrustedAccess RoleBinding " + role_binding_name + " not existed, will create a new one!")
+        pass
 
     if existedBinding:
         raise Exception("TrustedAccess RoleBinding " + role_binding_name + " already existed, please use 'az aks trustedaccess rolebinding update' command to update!")
