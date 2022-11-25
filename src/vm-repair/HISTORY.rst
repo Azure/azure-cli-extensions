@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.4.9
+++++++
+Fix for encrypted vm's auto unlock feature 
+
 0.4.8
 ++++++
 Fix for encrypted vm's and fixing test cases

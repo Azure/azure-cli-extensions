@@ -281,7 +281,8 @@ helps['aks create'] = """
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
         - name: --enable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Enable pod security policy.
+          short-summary: Enable pod security policy.
+          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
@@ -372,7 +373,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --enable-workload-identity
           type: bool
-          short-summary: Enable workload identity addon.
+          short-summary: (PREVIEW) Enable workload identity addon.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -438,7 +439,7 @@ helps['aks create'] = """
           short-summary: The source cluster snapshot id is used to create new cluster.
         - name: --enable-oidc-issuer
           type: bool
-          short-summary: (PREVIEW) Enable OIDC issuer.
+          short-summary: Enable OIDC issuer.
         - name: --crg-id
           type: string
           short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
@@ -666,10 +667,12 @@ helps['aks update'] = """
           long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Default is loadbalancer, other available options are managedNATGateway, userassignedNATGateway, UDR
         - name: --enable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Enable pod security policy.
+          short-summary: Enable pod security policy.
+          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --disable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Disable pod security policy.
+          short-summary: Disable pod security policy
+          long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -720,7 +723,7 @@ helps['aks update'] = """
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
         - name: --enable-workload-identity
           type: bool
-          short-summary: Enable Workload Identity addon for cluster.
+          short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -809,7 +812,7 @@ helps['aks update'] = """
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
         - name: --enable-oidc-issuer
           type: bool
-          short-summary: (PREVIEW) Enable OIDC issuer.
+          short-summary: Enable OIDC issuer.
         - name: --http-proxy-config
           type: string
           short-summary: HTTP Proxy configuration for this cluster.
@@ -914,8 +917,6 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
-      - name: Enable pod security policy.
-        text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Disable pod security policy.
         text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.

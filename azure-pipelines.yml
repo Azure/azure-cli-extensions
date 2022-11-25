@@ -34,6 +34,23 @@ jobs:
       TSLint: false
       ToolLogsNotFoundAction: 'Standard'
 
+- job: PolicyCheck
+  displayName: "Policy Check"
+  pool:
+    name: 'pool-windows-2019'
+  steps:
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+    displayName: 'Run Policy Check'
+    inputs:
+      targetType: F
+      result: PoliCheckResult.xml
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
+    displayName: 'Post Analysis'
+    inputs:
+      GdnBreakAllTools: false
+      GdnBreakGdnToolPoliCheck: true
+      GdnBreakGdnToolPoliCheckSeverity: Error
+
 - job: CheckLicenseHeader
   displayName: "Check License"
   pool:

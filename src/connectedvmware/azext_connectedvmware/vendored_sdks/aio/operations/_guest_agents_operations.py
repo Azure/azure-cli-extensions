@@ -61,7 +61,7 @@ class GuestAgentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -141,7 +141,7 @@ class GuestAgentsOperations:
         :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.GuestAgent]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
@@ -214,7 +214,7 @@ class GuestAgentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_get_request(
@@ -263,7 +263,7 @@ class GuestAgentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_delete_request_initial(
@@ -324,7 +324,7 @@ class GuestAgentsOperations:
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -383,7 +383,7 @@ class GuestAgentsOperations:
          ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.GuestAgentList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgentList"]
         error_map = {

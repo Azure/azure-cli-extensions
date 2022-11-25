@@ -34,6 +34,10 @@ from azure.graphrbac.models import (
     PasswordCredential,
     ServicePrincipalCreateParameters,
 )
+from azure.core.exceptions import (
+    ResourceNotFoundError,
+    HttpResponseError,
+)
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
@@ -1966,8 +1970,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                     container_logs, kube_objects, node_logs, node_logs_windows)
 
 
-def aks_kanalyze(client, resource_group_name, name):
-    aks_kanalyze_cmd(client, resource_group_name, name)
+def aks_kanalyze(cmd, client, resource_group_name, name):
+    aks_kanalyze_cmd(cmd, client, resource_group_name, name)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
@@ -2324,6 +2328,15 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="trusted_access_role_bindings",
     )
+    existedBinding = None
+    try:
+        existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
+    except ResourceNotFoundError:
+        pass
+
+    if existedBinding:
+        raise Exception("TrustedAccess RoleBinding " + role_binding_name + " already existed, please use 'az aks trustedaccess rolebinding update' command to update!")
+
     roleList = roles.split(',')
     roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
     return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)

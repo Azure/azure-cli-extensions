@@ -3176,6 +3176,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ssh_key_value = self.context.get_ssh_key_value_for_update()
 
         if ssh_key_value:
+            if mc.linux_profile is None:
+                raise InvalidArgumentValueError("Updating the cluster with no ssh key set at creation is not supported")
             mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
                 public_keys=[
                     self.models.ContainerServiceSshPublicKey(
@@ -3183,7 +3185,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                 ]
             )
-
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
