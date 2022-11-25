@@ -1,0 +1,107 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - '2022-11-25T21:35:31.852854Z'
+      Repeatability-Request-ID:
+      - 16887624-6d09-11ed-9775-6ca100547643
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:35:31 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+  response:
+    body:
+      string: '{"id": "sanitized", "createdDateTime": "2022-11-25T21:35:32.3868736+00:00",
+        "validFrom": "2022-11-25T21:35:32.2945012+00:00", "validUntil": "2023-05-24T21:35:32.2945012+00:00",
+        "roomJoinPolicy": "InviteOnly", "participants": []}'
+    headers:
+      api-supported-versions:
+      - 2021-04-07, 2022-02-01
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:35:32 GMT
+      location:
+      - '99453569546679762'
+      ms-cv:
+      - /lLRc9WR4UK8Fy7YT+mGRA.0
+      repeatability-result:
+      - accepted
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0JDWBYwAAAACo9XsCrjR4TqjsImYdHsB6U0pDRURHRTA1MTIAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.3.0 azsdk-python-communication-identity/1.3.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:35:32 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-10-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01, 2022-10-01
+      content-length:
+      - '33'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:35:32 GMT
+      ms-cv:
+      - 4D/rFM+i8E6JrY43vjVL0g.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0JDWBYwAAAAB7e04NxH3pRLdHguO5G5W3U0pDRURHRTA1MTYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 85ms
+    status:
+      code: 201
+      message: Created
+version: 1

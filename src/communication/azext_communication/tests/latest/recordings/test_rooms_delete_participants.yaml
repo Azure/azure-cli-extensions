@@ -1,0 +1,240 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - '2022-11-25T21:32:10.062409Z'
+      Repeatability-Request-ID:
+      - 9e41aede-6d08-11ed-85fb-6ca100547643
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:32:10 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+  response:
+    body:
+      string: '{"id": "sanitized", "createdDateTime": "2022-11-25T21:32:10.5922327+00:00",
+        "validFrom": "2022-11-25T21:32:10.5118181+00:00", "validUntil": "2023-05-24T21:32:10.5118181+00:00",
+        "roomJoinPolicy": "InviteOnly", "participants": []}'
+    headers:
+      api-supported-versions:
+      - 2021-04-07, 2022-02-01
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:32:09 GMT
+      location:
+      - '99486211226355362'
+      ms-cv:
+      - qEmKElVZ40SAFRXsS4oB2w.0
+      repeatability-result:
+      - accepted
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0WjSBYwAAAAAtgPCoCbNvSp/wUmxk9NY4U0pDRURHRTAzMTgAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.3.0 azsdk-python-communication-identity/1.3.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:32:10 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-10-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01, 2022-10-01
+      content-length:
+      - '33'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:32:10 GMT
+      ms-cv:
+      - AmGLdfkOu0SBzrIlop+xNg.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0WzSBYwAAAADsClFVI4mjQLDWwD0oSU7WU0pDRURHRTAzMTIAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 60ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "8:acs:f4a8fcca-ba6c-410b-9ad9-3d0ded59715d_00000015-5096-27ac-0520-343a0d0073ba"}},
+      "role": "Consumer"}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '181'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - HuUGdmlW4ZUvEXynhz8M6hQK0FpWHZHcSqsdG/Cte3s=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:32:11 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms/99486211226355362/participants:add?api-version=2022-02-01
+  response:
+    body:
+      string: '{"participants": [{"communicationIdentifier": {"rawId": "8:acs:f4a8fcca-ba6c-410b-9ad9-3d0ded59715d_00000015-5096-27ac-0520-343a0d0073ba",
+        "communicationUser": {"id": "8:acs:f4a8fcca-ba6c-410b-9ad9-3d0ded59715d_00000015-5096-27ac-0520-343a0d0073ba"}},
+        "role": "Consumer"}]}'
+    headers:
+      api-supported-versions:
+      - '2022-02-01'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:32:10 GMT
+      ms-cv:
+      - Gu/bFRhuBkWGeHArVpUT+w.0
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0WzSBYwAAAAB6UjeBn0OeQ7vV2z0Lpr7pU0pDRURHRTA1MDcAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "8:acs:f4a8fcca-ba6c-410b-9ad9-3d0ded59715d_00000015-5096-27ac-0520-343a0d0073ba"}}}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '161'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - itVQjoRHt/S1lIhwz3Uo8iplDMXbtNoifm/8vic0qvM=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:32:11 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms/99486211226355362/participants:remove?api-version=2022-02-01
+  response:
+    body:
+      string: '{"participants": []}'
+    headers:
+      api-supported-versions:
+      - '2022-02-01'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:32:11 GMT
+      ms-cv:
+      - W2XrPRaxaUKddqdiSfXp/A.0
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0WzSBYwAAAABPC+bUcG8xQZy122MtYcZxU0pDRURHRTA1MTEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      x-ms-date:
+      - Fri, 25 Nov 2022 21:32:12 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: GET
+    uri: https://sanitized.communication.azure.com/rooms/99486211226355362/participants?api-version=2022-02-01
+  response:
+    body:
+      string: '{"participants": []}'
+    headers:
+      api-supported-versions:
+      - '2022-02-01'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 25 Nov 2022 21:32:11 GMT
+      ms-cv:
+      - tLpOnM7hBk276VBGU3tu5A.0
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0XDSBYwAAAAA9yhvmfY/4Q7f8ex0Gxs0/U0pDRURHRTAzMTYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1
