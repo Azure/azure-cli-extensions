@@ -20,6 +20,7 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
+from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
 
 
 def _get_test_data_file(filename):
@@ -2713,7 +2714,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
-        region_code = getRegionCodeForAzureRegion(self.cmd, resource_group_location)
+        region_code = getRegionCodeForAzureRegion(MockCmd(MockCLI()), resource_group_location)
         dataCollectionRuleName = sanitize_dcr_name(f"MSCI-{region_code}-{aks_name}")
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
@@ -2792,7 +2793,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
-        region_code = getRegionCodeForAzureRegion(self.cmd, resource_group_location)
+        region_code = getRegionCodeForAzureRegion(MockCmd(MockCLI()), resource_group_location)
         dataCollectionRuleName = sanitize_dcr_name(f"MSCI-{region_code}-{aks_name}")
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
@@ -2850,7 +2851,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         try:
             # check that the DCR was created
-            region_code = getRegionCodeForAzureRegion(self.cmd, resource_group_location)
+            region_code = getRegionCodeForAzureRegion(MockCmd(MockCLI()), resource_group_location)
             dataCollectionRuleName = sanitize_dcr_name(f"MSCI-{region_code}-{aks_name}")
             dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
             get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
