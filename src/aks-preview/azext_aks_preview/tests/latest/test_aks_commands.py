@@ -6022,7 +6022,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'kube_proxy_path': _get_test_data_file('kubeproxyconfig_update.json'),
         })
 
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path}'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview'
 
         # TODO: check actual values getting update, currently returned MC does not sync
         self.cmd(update_cmd, checks=[
