@@ -132,10 +132,10 @@ class DefaultApp:
         else:
             return None
 
-    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None, session_max_age=None, backend_protocol=None, client_auth_certificates=None, **_):
+    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None, session_max_age=None, backend_protocol=None, client_auth_certs=None, **_):
         if (ingress_read_timeout is not None) or (ingress_send_timeout is not None) or \
                 (session_affinity is not None) or (session_max_age is not None) or (backend_protocol is not None) or \
-                (client_auth_certificates is not None):
+                (client_auth_certs is not None):
             return models_20220901preview.IngressSettings(
                 read_timeout_in_seconds=ingress_read_timeout,
                 send_timeout_in_seconds=ingress_send_timeout,
@@ -143,8 +143,8 @@ class DefaultApp:
                 session_cookie_max_age=session_max_age,
                 backend_protocol=backend_protocol,
                 client_auth=IngressSettingsClientAuth(
-                    certificates=client_auth_certificates
-                ) if client_auth_certificates is not None and len(client_auth_certificates) > 0 else None
+                    certificates=client_auth_certs
+                ) if client_auth_certs is not None and len(client_auth_certs) > 0 else None
             )
         else:
             return None

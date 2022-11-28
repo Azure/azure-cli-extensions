@@ -248,8 +248,8 @@ def validate_ingress_session_max_age(namespace):
 
 
 def validate_ingress_client_auth_certificates(namespace):
-    if namespace.client_auth_certificates is not None:
-        namespace.client_auth_certificates = namespace.client_auth_certificates.split()
+    if namespace.client_auth_certs is not None:
+        namespace.client_auth_certs = namespace.client_auth_certs.split()
 
 
 def validate_tracing_parameters_asc_create(namespace):

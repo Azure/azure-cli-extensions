@@ -403,10 +403,10 @@ def load_arguments(self, _):
             c.argument('backend_protocol',
                        arg_type=get_enum_type(BackendProtocol),
                        help='Ingress backend protocol of app.')
-            c.argument('client_auth_certificates',
+            c.argument('client_auth_certs',
                        type=str,
                        validator=validate_ingress_client_auth_certificates,
-                       help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certificates='id0 id1'. Use '' to clear existing certificates.")
+                       help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
