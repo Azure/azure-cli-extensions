@@ -89,25 +89,25 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az site-recovery vault policy create -g {rg} --resource-name {vault_name} -n {policy_name_rcm} '
                  '--provider-specific-input {{in-mage-rcm:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
-                 'enable-multi-vm-sync:true,recovery-point-history-in-minutes:1440}}}}')
+                 'enable-multi-vm-sync:true,recovery-point-history-in-minutes:2880}}}}')
         self.cmd('az site-recovery vault policy show -g {rg} --resource-name {vault_name} -n {policy_name_rcm}',
                  checks=[self.check('properties.providerSpecificDetails.instanceType', 'InMageRcm'),
                          self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
                          self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
-                         self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 1440)
+                         self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 2880)
                          ])
         self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        # self.cmd('az site-recovery vault policy update --debug -g {rg} --resource-name {vault_name} '
-        #          '-n {policy_name_rcm} '
-        #          '--provider-specific-input {{in-mage-rcm:{{'
-        #          'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
-        #          'enable-multi-vm-sync:true,recovery-point-history-in-minutes:1440}}}}',
-        #          checks=[self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
-        #                  self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
-        #                  self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
-        #                  self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 1440)])
+        self.cmd('az site-recovery vault policy update --debug -g {rg} --resource-name {vault_name} '
+                 '-n {policy_name_rcm} '
+                 '--provider-specific-input {{in-mage-rcm:{{'
+                 'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
+                 'enable-multi-vm-sync:true,recovery-point-history-in-minutes:1440}}}}',
+                 checks=[self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
+                         self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
+                         self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
+                         self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 1440)])
         self.cmd('az site-recovery vault policy delete -g {rg} --resource-name {vault_name} '
                  '-n {policy_name_rcm} -y')
         self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
@@ -125,12 +125,12 @@ class SiteRecoveryScenario(ScenarioTest):
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5)])
         self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        # self.cmd('az site-recovery vault policy update -g {rg} --resource-name {vault_name} '
-        #          '-n {policy_name_rcm_failback} '
-        #          '--provider-specific-input {{in-mage-rcm-failback:{{'
-        #          'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:10}}}}',
-        #          checks=[self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
-        #                  self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 10)])
+        self.cmd('az site-recovery vault policy update -g {rg} --resource-name {vault_name} '
+                 '-n {policy_name_rcm_failback} '
+                 '--provider-specific-input {{in-mage-rcm-failback:{{'
+                 'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:10}}}}',
+                 checks=[self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
+                         self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 10)])
         self.cmd('az site-recovery vault policy delete -g {rg} --resource-name {vault_name} '
                  '-n {policy_name_rcm_failback} -y')
         self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
