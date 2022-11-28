@@ -290,7 +290,7 @@ def _submit_directly_to_service(cmd, program_args, resource_group_name, workspac
         return_sas_token = True
         with open(job_input_file, encoding="utf-8") as qio_file:
             uncompressed_blob_data = qio_file.read()
-        
+
         if "content_type" in uncompressed_blob_data and "application/x-protobuf" in uncompressed_blob_data:
             raise InvalidArgumentValueError('Content type "application/x-protobuf" is not supported.')
 
@@ -307,7 +307,7 @@ def _submit_directly_to_service(cmd, program_args, resource_group_name, workspac
         return_sas_token = False
         with open(job_input_file, "rb") as qir_file:
             blob_data = qir_file.read()
-    
+
     else:
         container_name_prefix = "cli-pass-through-job-"
         content_type = None         # <<<<< Should we get this from job_parameters? <<<<<
