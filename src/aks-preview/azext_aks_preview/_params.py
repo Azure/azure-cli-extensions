@@ -468,11 +468,6 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
-        # the following argument is declared for the wait command
-        c.argument('agent_pool_name', options_list=['--nodepool-name', '--agent-pool-name'], validator=validate_agent_pool_name, help='The node pool name.')
-
-    with self.argument_context('aks nodepool') as c:
-        c.argument('cluster_name', help='The cluster name.')
         c.argument('nodepool_name', options_list=['--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
     with self.argument_context('aks nodepool wait') as c:
