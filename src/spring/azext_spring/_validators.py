@@ -247,6 +247,11 @@ def validate_ingress_session_max_age(namespace):
         raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
 
 
+def validate_ingress_client_auth_certificates(namespace):
+    if namespace.client_auth_certificates is not None:
+        namespace.client_auth_certificates = namespace.client_auth_certificates.split()
+
+
 def validate_tracing_parameters_asc_create(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable_app_insights:

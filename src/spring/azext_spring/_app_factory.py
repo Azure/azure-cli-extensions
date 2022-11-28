@@ -11,6 +11,8 @@ from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_2022
 from .vendored_sdks.appplatform.v2022_09_01_preview import models as models_20220901preview
 from azure.cli.core.util import get_file_json
 
+from .vendored_sdks.appplatform.v2022_09_01_preview.models import IngressSettingsClientAuth
+
 
 class DefaultApp:
     def format_resource(self, **kwargs):
@@ -130,15 +132,19 @@ class DefaultApp:
         else:
             return None
 
-    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None, session_max_age=None, backend_protocol=None, **_):
+    def _load_ingress_settings(self, ingress_read_timeout=None, ingress_send_timeout=None, session_affinity=None, session_max_age=None, backend_protocol=None, client_auth_certificates=None, **_):
         if (ingress_read_timeout is not None) or (ingress_send_timeout is not None) or \
-                (session_affinity is not None) or (session_max_age is not None) or (backend_protocol is not None):
+                (session_affinity is not None) or (session_max_age is not None) or (backend_protocol is not None) or \
+                (client_auth_certificates is not None):
             return models_20220901preview.IngressSettings(
                 read_timeout_in_seconds=ingress_read_timeout,
                 send_timeout_in_seconds=ingress_send_timeout,
                 session_affinity=session_affinity,
                 session_cookie_max_age=session_max_age,
-                backend_protocol=backend_protocol
+                backend_protocol=backend_protocol,
+                client_auth=IngressSettingsClientAuth(
+                    certificates=client_auth_certificates
+                ) if client_auth_certificates is not None and len(client_auth_certificates) > 0 else None
             )
         else:
             return None
