@@ -733,6 +733,7 @@ class AzInteractiveShell(object):
                     continue
 
                 self.set_prompt()
+                self.recommender.feedback()
                 self.recommender.update()
 
                 if outside:

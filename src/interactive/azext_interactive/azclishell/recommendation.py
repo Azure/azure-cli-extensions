@@ -12,8 +12,6 @@ from azure.cli.core.azclierror import RecommendationError
 from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
 
-from enum import Enum
-
 
 class RecommendType(int, Enum):
     All = 1
@@ -38,6 +36,22 @@ class Recommender:
         self.cli_ctx = cli_ctx
         self.history = history
         self.cur_thread = None
+
+    def feedback(self):
+        """
+        Send User Feedback to telemetry.
+        This should only be called between command execution and recommendation update.
+        """
+        if self.cur_thread and not self.cur_thread.is_alive() and self.history.strings:
+            latest_command = self.history.strings[-1]
+            recommendations = self.cur_thread.result
+            if not recommendations:
+                send_feedback(-1, [latest_command], recommendations, None)
+                return
+            for idx, rec in enumerate(recommendations):
+                if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
+                    send_feedback(idx, [latest_command], recommendations, rec)
+                    return
 
     def update(self):
         """Update recommendation in new thread"""
@@ -69,9 +83,12 @@ def get_recommend(cli_ctx, history):
 
     processed_exception = None
 
-    recommends = get_recommend_from_api(command_history, 1,
-                                        cli_ctx.config.getint('next', 'num_limit', fallback=5),
-                                        error_info=processed_exception)
+    try:
+        recommends = get_recommend_from_api(command_history, 1,
+                                            cli_ctx.config.getint('next', 'num_limit', fallback=5),
+                                            error_info=processed_exception)
+    except RecommendationError:
+        return []
 
     return [rec for rec in recommends if rec['type'] == RecommendType.Command]
 
@@ -130,14 +147,69 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
         if subscription_id:
             payload['subscription_id'] = subscription_id
 
-    response = requests.post(url, json.dumps(payload))
-    if response.status_code != 200:
-        raise RecommendationError(
-            "Failed to connect to '{}' with status code '{}' and reason '{}'".format(
-                url, response.status_code, response.reason))
+    try:
+        response = requests.post(url, json.dumps(payload), timeout=1)
+        response.raise_for_status()
+    except requests.ConnectionError as e:
+        raise RecommendationError(f'Network Error: {e}') from e
+    except requests.exceptions.HTTPError as e:
+        raise RecommendationError(f'{e}') from e
+    except requests.RequestException as e:
+        raise RecommendationError(f'Request Error: {e}') from e
 
     recommends = []
     if 'data' in response.json():
         recommends = response.json()['data']
 
     return recommends
+
+
+def send_feedback(option_idx, latest_commands, recommends=None, rec=None):
+    feedback_data = ['1', str(option_idx)]
+
+    trigger_commands = latest_commands[-1]
+    if len(latest_commands) > 1:
+        trigger_commands = latest_commands[-2] + "," + trigger_commands
+    feedback_data.append(trigger_commands)
+    # processed_exception
+    feedback_data.append(' ')
+
+    has_personalized_rec = False
+    if recommends:
+        source_list = set()
+        rec_type_list = set()
+        for item in recommends:
+            source_list.add(str(item['source']))
+            rec_type_list.add(str(item['type']))
+            if 'is_personalized' in item:
+                has_personalized_rec = True
+        feedback_data.append(' '.join(source_list))
+        feedback_data.append(' '.join(rec_type_list))
+    else:
+        feedback_data.extend([' ', ' '])
+
+    if rec:
+        feedback_data.append(str(rec['source']))
+        feedback_data.append(str(rec['type']))
+        if rec['type'] == RecommendType.Scenario:
+            feedback_data.extend([rec['scenario'], ' '])
+        else:
+            feedback_data.append(rec['command'])
+            if "arguments" in rec and rec["arguments"]:
+                feedback_data.append(' '.join(rec["arguments"]))
+            else:
+                feedback_data.append(' ')
+
+        if not has_personalized_rec:
+            feedback_data.extend([' '])
+        elif 'is_personalized' in rec:
+            feedback_data.extend(['1'])
+        else:
+            feedback_data.extend(['0'])
+    else:
+        feedback_data.extend([' ', ' ', ' ', ' ', ' '])
+
+    telemetry.start(mode='interactive')
+    telemetry.set_command_details('next')
+    telemetry.set_feedback("#".join(feedback_data))
+    telemetry.flush()
