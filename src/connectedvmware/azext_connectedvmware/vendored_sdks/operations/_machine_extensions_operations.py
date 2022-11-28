@@ -41,7 +41,7 @@ def build_create_or_update_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -83,7 +83,7 @@ def build_update_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -125,7 +125,7 @@ def build_delete_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -164,7 +164,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -202,7 +202,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     expand = kwargs.pop('expand', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -272,7 +272,7 @@ class MachineExtensionsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         _json = self._serialize.body(extension_parameters, 'MachineExtension')
@@ -348,7 +348,7 @@ class MachineExtensionsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.MachineExtension]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtension"]
@@ -407,7 +407,7 @@ class MachineExtensionsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         _json = self._serialize.body(extension_parameters, 'MachineExtensionUpdate')
@@ -483,7 +483,7 @@ class MachineExtensionsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.MachineExtension]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtension"]
@@ -541,7 +541,7 @@ class MachineExtensionsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_delete_request_initial(
@@ -601,7 +601,7 @@ class MachineExtensionsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -667,7 +667,7 @@ class MachineExtensionsOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_get_request(
@@ -727,7 +727,7 @@ class MachineExtensionsOperations(object):
          ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.MachineExtensionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtensionsListResult"]
         error_map = {

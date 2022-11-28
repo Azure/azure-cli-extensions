@@ -19,7 +19,6 @@ from .operations import (
     ApiPortalCustomDomainsOperations,
     ApiPortalsOperations,
     ApplicationAcceleratorsOperations,
-    ApplicationLiveViewOperations,
     ApplicationLiveViewsOperations,
     AppsOperations,
     BindingsOperations,
@@ -33,7 +32,6 @@ from .operations import (
     CustomDomainsOperations,
     CustomizedAcceleratorsOperations,
     DeploymentsOperations,
-    DevToolPortalOperations,
     DevToolPortalsOperations,
     GatewayCustomDomainsOperations,
     GatewayRouteConfigsOperations,
@@ -70,15 +68,9 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
     :ivar application_live_views: ApplicationLiveViewsOperations operations
     :vartype application_live_views:
      azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.ApplicationLiveViewsOperations
-    :ivar application_live_view: ApplicationLiveViewOperations operations
-    :vartype application_live_view:
-     azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.ApplicationLiveViewOperations
     :ivar dev_tool_portals: DevToolPortalsOperations operations
     :vartype dev_tool_portals:
      azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.DevToolPortalsOperations
-    :ivar dev_tool_portal: DevToolPortalOperations operations
-    :vartype dev_tool_portal:
-     azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.DevToolPortalOperations
     :ivar build_service: BuildServiceOperations operations
     :vartype build_service:
      azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.BuildServiceOperations
@@ -180,11 +172,7 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         self.application_live_views = ApplicationLiveViewsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.application_live_view = ApplicationLiveViewOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
         self.dev_tool_portals = DevToolPortalsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.dev_tool_portal = DevToolPortalOperations(self._client, self._config, self._serialize, self._deserialize)
         self.build_service = BuildServiceOperations(self._client, self._config, self._serialize, self._deserialize)
         self.buildpack_binding = BuildpackBindingOperations(
             self._client, self._config, self._serialize, self._deserialize

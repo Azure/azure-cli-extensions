@@ -360,7 +360,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
             self._get_result_resource(status='Failed')
         ]
         deployment=self._get_deployment()
-        with self.assertRaisesRegexp(CLIError, 'Failed to build docker image'):
+        with self.assertRaisesRegexp(CLIError, 'Failed to build container image'):
             self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', client=client)
 
 
