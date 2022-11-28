@@ -29,60 +29,60 @@ class SiteRecoveryScenario(ScenarioTest):
         })
         self.cmd('az backup vault create -n {vault_name} -g {rg} -l eastus2euap')
 
-        # # vault top-level commands
-        # self.cmd('az site-recovery vault list-appliance -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-migration-item -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-network -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-network-mapping -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-protected-item -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-protection-container -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-protection-container-mapping -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-recovery-services-provider -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-storage-classification -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-storage-classification-mapping -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault list-v-center -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault show-supported-operating-system -g {rg} --resource-name {vault_name}')
+        # vault top-level commands
+        self.cmd('az site-recovery vault list-appliance -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-migration-item -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-network -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-network-mapping -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-protected-item -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-protection-container -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-protection-container-mapping -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-recovery-services-provider -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-storage-classification -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-storage-classification-mapping -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-v-center -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault show-supported-operating-system -g {rg} --resource-name {vault_name}')
 
-        # # alert setting
-        # self.cmd('az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} '
-        #          '--resource-name {vault_name} --custom-email-addresses email@address.com --locale en_US '
-        #          '--send-to-owners Send')
-        # self.cmd('az site-recovery vault alert-setting show -n defaultAlertSetting -g {rg} '
-        #          '--resource-name {vault_name}',
-        #          checks=[
-        #              self.check('name', 'defaultAlertSetting'),
-        #              self.check('properties.locale', 'en_US'),
-        #              self.check('properties.customEmailAddresses', ['email@address.com']),
-        #              self.check('properties.sendToOwners', 'Send')])
-        # self.cmd('az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} '
-        #          '--resource-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR '
-        #          '--send-to-owners DoNotSend',
-        #          checks=[
-        #              self.check('properties.locale', 'fr_FR'),
-        #              self.check('properties.customEmailAddresses', ['email2@address.com']),
-        #              self.check('properties.sendToOwners', 'DoNotSend')])
-        # self.cmd('az site-recovery vault alert-setting list -g {rg} --resource-name {vault_name}',
-        #          checks=[self.check('length(@)', 1)])
+        # alert setting
+        self.cmd('az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} '
+                 '--resource-name {vault_name} --custom-email-addresses email@address.com --locale en_US '
+                 '--send-to-owners Send')
+        self.cmd('az site-recovery vault alert-setting show -n defaultAlertSetting -g {rg} '
+                 '--resource-name {vault_name}',
+                 checks=[
+                     self.check('name', 'defaultAlertSetting'),
+                     self.check('properties.locale', 'en_US'),
+                     self.check('properties.customEmailAddresses', ['email@address.com']),
+                     self.check('properties.sendToOwners', 'Send')])
+        self.cmd('az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} '
+                 '--resource-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR '
+                 '--send-to-owners DoNotSend',
+                 checks=[
+                     self.check('properties.locale', 'fr_FR'),
+                     self.check('properties.customEmailAddresses', ['email2@address.com']),
+                     self.check('properties.sendToOwners', 'DoNotSend')])
+        self.cmd('az site-recovery vault alert-setting list -g {rg} --resource-name {vault_name}',
+                 checks=[self.check('length(@)', 1)])
 
-        # # event
-        # events = self.cmd('az site-recovery vault event list -g {rg} --resource-name {vault_name}').\
-        #     get_output_in_json()
-        # if events is not None and len(events) > 0:
-        #     self.cmd('az site-recovery vault event show -g {rg} --resource-name {vault_name} -n '+events[0]["name"])
-        #
-        # # health
-        # self.cmd('az site-recovery vault health refresh-default -g {rg} --resource-name {vault_name}')
-        # self.cmd('az site-recovery vault health show -g {rg} --resource-name {vault_name}')
-        #
-        # # job
-        # jobs = self.cmd('az site-recovery vault job list -g {rg} --resource-name {vault_name}').get_output_in_json()
-        # if jobs is not None and len(jobs) > 0:
-        #     self.cmd('az site-recovery vault job show -g {rg} --resource-name {vault_name} --job-name '+jobs[0]["name"])
-        #     # TODO need to test with actual jobs
-        #     # self.cmd('az site-recovery vault job restart -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
-        #     # self.cmd('az site-recovery vault job cancel -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
-        #     # self.cmd('az site-recovery vault job resume -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
-        # self.cmd('az site-recovery vault job export -g {rg} --resource-name {vault_name}')
+        # event
+        events = self.cmd('az site-recovery vault event list -g {rg} --resource-name {vault_name}').\
+            get_output_in_json()
+        if events is not None and len(events) > 0:
+            self.cmd('az site-recovery vault event show -g {rg} --resource-name {vault_name} -n '+events[0]["name"])
+
+        # health
+        self.cmd('az site-recovery vault health refresh-default -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault health show -g {rg} --resource-name {vault_name}')
+
+        # job
+        jobs = self.cmd('az site-recovery vault job list -g {rg} --resource-name {vault_name}').get_output_in_json()
+        if jobs is not None and len(jobs) > 0:
+            self.cmd('az site-recovery vault job show -g {rg} --resource-name {vault_name} --job-name '+jobs[0]["name"])
+            # TODO need to test with actual jobs
+            # self.cmd('az site-recovery vault job restart -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
+            # self.cmd('az site-recovery vault job cancel -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
+            # self.cmd('az site-recovery vault job resume -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
+        self.cmd('az site-recovery vault job export -g {rg} --resource-name {vault_name}')
 
         # policy
         # in-mage-rcm
@@ -136,7 +136,9 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
-
+        # protection-intent
+        # recovery-plan
+        # vault-setting
 
     # @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.siterecovery.fabric.')
     # def test_siterecovery_fabric_scenarios(self):
@@ -147,7 +149,7 @@ class SiteRecoveryScenario(ScenarioTest):
     #     self.cmd('az backup vault create -n {vault_name} -g {rg} -l eastus2euap')
     #
     #     # fabric
-    #
+    #     self.cmd('az site-recovery fabric create -n {vault_name} -g {rg} -l eastus2euap')
     #
     #     # protection intent
     #     self.cmd('az site-recovery vault protection-intent create -g {rg} --resource-name {vault_name} '
