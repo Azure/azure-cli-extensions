@@ -18,20 +18,26 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 from azure.quantum.storage import create_container, upload_blob
+# from azure.quantum.optimization.problem import compress_protobuf
+from azure.quantum.optimization.problem import Problem
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
-JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/en-us/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
-JOB_TYPE_NOT_VALID_MSG = "Internal error: Job type not recognized."
 DEFAULT_SHOTS = 500
+QIO_DEFAULT_TIMEOUT = 100
+
+ERROR_MSG_MISSING_INPUT_FILE = "The following argument is required: --job-input-file"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
+ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
+JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+JOB_TYPE_NOT_VALID_MSG = "Job type not recognized. This is a bug!"
 
 # Job types
-QSHARP_JOB = 0
 QIO_JOB = 1
 QIR_JOB = 2
+PASS_THROUGH_JOB = 3
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -193,52 +199,79 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     Submit a quantum program to run on Azure Quantum.
     """
-    # Identify the type of job being submitted
+    # # Identify the type of job being submitted
+    # if job_input_format is None:
+    #     job_type = QSHARP_JOB
+    # elif job_input_format.lower() == "microsoft.qio.v2":
+    #     job_type = QIO_JOB
+    #     if job_input_file is not None and job_input_file.split(".")[-1].lower() == "pb":
+    #         job_type = QIO_PB_JOB
+    # elif job_input_format.lower() == "qir.v1":
+    #     job_type = QIR_JOB
+    # else:
+    #     raise InvalidArgumentValueError(f"Job input format {job_input_format} is not supported.", JOB_SUBMIT_DOC_LINK_MSG)
+    #
+    # if job_type == QIO_JOB:
+    #     return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+    #                                        job_name, shots, storage, job_params, target_capability,
+    #                                        job_input_file, job_input_format, job_output_format, entry_point)
+    # if job_type == QIO_PB_JOB:
+    #     return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+    #                                        job_name, shots, storage, job_params, target_capability,
+    #                                        job_input_file, job_input_format, job_output_format, entry_point)
+    # if job_type == QIR_JOB:
+    #     return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+    #                                        job_name, shots, storage, job_params, target_capability,
+    #                                        job_input_file, job_input_format, job_output_format, entry_point)
+    # if job_type == QSHARP_JOB:
+    #     return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+    #                           project, job_name, shots, storage, no_build, job_params, target_capability)
+
     if job_input_format is None:
-        job_type = QSHARP_JOB
-    elif job_input_format.lower() == "microsoft.qio.v2":
-        job_type = QIO_JOB
-    elif job_input_format.lower() == "qir.v1":
-        job_type = QIR_JOB
-    else:
-        raise InvalidArgumentValueError(f"Job input format {job_input_format} is not supported.", JOB_SUBMIT_DOC_LINK_MSG)
-
-    if job_type == QIO_JOB:
-        return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
-                                           job_name, shots, storage, job_params, target_capability,
-                                           job_input_file, job_input_format, job_output_format, entry_point)
-
-    if job_type == QIR_JOB:
-        return _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
-                                           job_name, shots, storage, job_params, target_capability,
-                                           job_input_file, job_input_format, job_output_format, entry_point)
-
-    if job_type == QSHARP_JOB:
         return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                               project, job_name, shots, storage, no_build, job_params, target_capability)
+    else:
+        return _submit_directly_to_service(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                                           job_name, shots, storage, job_params, target_capability,
+                                           job_input_file, job_input_format, job_output_format, entry_point)
 
 
-def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+# def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
+#                                 job_name, shots, storage, job_params, target_capability,
+#                                 job_input_file, job_input_format, job_output_format, entry_point):
+def _submit_directly_to_service(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                                 job_name, shots, storage, job_params, target_capability,
                                 job_input_file, job_input_format, job_output_format, entry_point):
     """
-    Submit QIO problem JSON or QIR bitcode to run on Azure Quantum.
+    Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
     """
-    if job_output_format is None:
-        if job_type == QIO_JOB:
-            job_output_format = "microsoft.qio-results.v2"
-        elif job_type == QIR_JOB:
-            job_output_format = "microsoft.quantum-results.v1"
-        else:
-            raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+    # Identify the type of job being submitted
+    lc_job_input_format = job_input_format.lower()
+    if lc_job_input_format == "qir.v1":
+        job_type = QIR_JOB
+    elif lc_job_input_format == "microsoft.qio.v2":
+        job_type = QIO_JOB
+    else:
+        # raise InvalidArgumentValueError(f"Job input format {job_input_format} is not supported.", JOB_SUBMIT_DOC_LINK_MSG)
+        job_type = PASS_THROUGH_JOB
 
-    if job_input_file is None:
-        if job_type == QIO_JOB:
-            input_file_extension = ".json"
-        elif job_type == QIR_JOB:
-            input_file_extension = ".bc"
+    if job_output_format is None:
+        if job_type == QIR_JOB:
+            job_output_format = "microsoft.quantum-results.v1"
+        elif job_type == QIO_JOB:
+            job_output_format = "microsoft.qio-results.v2"
         else:
-            raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+            # raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+            raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
+
+    # Look for an input file based on job_input_format
+    if job_input_file is None:
+        if job_type == QIR_JOB:
+            input_file_extension = ".bc"
+        elif job_type == QIO_JOB:
+            input_file_extension = ".json"
+        else:
+            raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FILE, JOB_SUBMIT_DOC_LINK_MSG)
 
         path = os.path.abspath(os.curdir)
         for file_name in os.listdir(path):
@@ -247,7 +280,7 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
                 break
 
     if job_input_file is None:
-        raise RequiredArgumentMissingError("Failed to submit job: No --job-input-source path was specified.", JOB_SUBMIT_DOC_LINK_MSG)
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FILE, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Prepare for input file upload according to job type
     if job_type == QIO_JOB:
@@ -257,7 +290,11 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         return_sas_token = True
         with open(job_input_file, encoding="utf-8") as qio_file:
             uncompressed_blob_data = qio_file.read()
-        # Compress the input data (based on to_blob in qdk-python\azure-quantum\azure\quantum\optimization\problem.py)
+        
+        if "content_type" in uncompressed_blob_data and "application/x-protobuf" in uncompressed_blob_data:
+            raise InvalidArgumentValueError('Content type "application/x-protobuf" is not supported.')
+
+        # Compress the input data (This code is based on to_blob in qdk-python\azure-quantum\azure\quantum\optimization\problem.py)
         data = io.BytesIO()
         with gzip.GzipFile(fileobj=data, mode="w") as fo:
             fo.write(uncompressed_blob_data.encode())
@@ -270,9 +307,14 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         return_sas_token = False
         with open(job_input_file, "rb") as qir_file:
             blob_data = qir_file.read()
-
+    
     else:
-        raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+        container_name_prefix = "cli-pass-through-job-"
+        content_type = None         # <<<<< Should we get this from job_parameters? <<<<<
+        content_encoding = None
+        return_sas_token = False
+        with open(job_input_file, "rb") as qir_file:
+            blob_data = qir_file.read()
 
     # Upload the input file to the workspace's storage account
     if storage is None:
@@ -302,8 +344,13 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         end_of_blob_name = blob_uri.find("?")
         container_uri = blob_uri[0:start_of_blob_name - 1] + blob_uri[end_of_blob_name:]
 
-        # >>>>> TODO: Get more parameters from the command line <<<<<
-        input_params = {"params": {"timeout": 100}}
+        input_params = dict()
+        if job_params is None:
+            input_params = {"params": {"timeout": QIO_DEFAULT_TIMEOUT}}
+        else:
+            if "timeout" not in job_params:
+                job_params["timeout"] = QIO_DEFAULT_TIMEOUT
+            input_params["params"] = job_params
 
     elif job_type == QIR_JOB:
         container_uri = blob_uri[0:start_of_blob_name - 1]
@@ -322,11 +369,12 @@ def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name
         if target_capability is None:
             target_capability = "AdaptiveExecution"     # <<<<< Cesar said to use this for QCI. Does it apply to other providers?
 
-        # >>>>> TODO: Get more parameters from the command line <<<<<
+        # >>>>> TODO: Get parameters from the command line <<<<<
         input_params = {'arguments': [], 'name': job_name, 'targetCapability': target_capability, 'shots': shots, 'entryPoint': entry_point}
 
     else:
-        raise InvalidArgumentValueError(JOB_TYPE_NOT_VALID_MSG)
+        input_params = job_params
+        # >>>>> Is this all we do for pass-through jobs? <<<<<
 
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     job_details = {'name': job_name,                # job_details is defined in vendored_sdks\azure_quantum\models\_models_py3.py, starting at line 132
