@@ -13,7 +13,7 @@ from ._check_consistency import *
 from ._create import *
 from ._delete import *
 from ._list import *
-from ._migratetoaad import *
+from ._migrate_to_aad import *
 from ._reassociate_gateway import *
 from ._remove import *
 from ._renew_certificate import *

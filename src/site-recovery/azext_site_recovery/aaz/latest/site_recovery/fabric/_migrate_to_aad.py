@@ -12,9 +12,9 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric migratetoaad",
+    "site-recovery fabric migrate-to-aad",
 )
-class Migratetoaad(AAZCommand):
+class MigrateToAad(AAZCommand):
     """The operation to migrate an Azure Site Recovery fabric to AAD.
     """
 
@@ -148,4 +148,4 @@ class Migratetoaad(AAZCommand):
             pass
 
 
-__all__ = ["Migratetoaad"]
+__all__ = ["MigrateToAad"]
