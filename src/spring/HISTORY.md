@@ -1,5 +1,9 @@
 Release History
 ===============
+1.5.0
+---
+* Add argument `--client-auth-certificates` in command `az spring app create` and `az spring app update`.
+
 1.4.0
 ---
 * Show help link when `az spring app deploy` failed.
