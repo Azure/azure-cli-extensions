@@ -10,10 +10,11 @@
 from typing import Tuple
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from copy import deepcopy
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_y_n
 
-from ..vendored_sdks.models import Extension, Scope, ScopeCluster
+from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .DefaultExtension import DefaultExtension
 
 logger = get_logger(__name__)
@@ -31,6 +32,7 @@ class Dapr(DefaultExtension):
         # constants for configuration settings.
         self.CLUSTER_TYPE_KEY = 'global.clusterType'
         self.HA_KEY_ENABLED_KEY = 'global.ha.enabled'
+        self.APPLY_CRDS_HOOK_ENABLED_KEY = 'hooks.applyCrds'
         self.SKIP_EXISTING_DAPR_CHECK_KEY = 'skipExistingDaprCheck'
         self.EXISTING_DAPR_RELEASE_NAME_KEY = 'existingDaprReleaseName'
         self.EXISTING_DAPR_RELEASE_NAMESPACE_KEY = 'existingDaprReleaseNamespace'
@@ -144,3 +146,43 @@ class Dapr(DefaultExtension):
             location=""
         )
         return extension_instance, release_name, create_identity
+
+    def Update(self, cmd, resource_group_name: str, cluster_name: str, auto_upgrade_minor_version: bool,
+               release_train: str, version: str, configuration_settings: dict,
+               configuration_protected_settings: dict, original_extension: Extension, yes: bool = False) \
+            -> PatchExtension:
+        """ExtensionType 'Microsoft.Dapr' specific validations & defaults for Update.
+           Must create and return a valid 'PatchExtension' object.
+        """
+        input_configuration_settings = deepcopy(configuration_settings)
+
+        # configuration_settings can be None, so we need to set it to an empty dict.
+        if configuration_settings is None:
+            configuration_settings = {}
+
+        # If we are downgrading the extension, then we need to disable the apply-CRDs hook.
+        # This is because CRD updates while downgrading can cause issues.
+        # As CRDs are additive, skipping their removal while downgrading is safe.
+        original_version = original_extension.version
+        if self.APPLY_CRDS_HOOK_ENABLED_KEY in configuration_settings:
+            logger.debug("'%s' is set to '%s' in --configuration-settings, not overriding it.",
+                         self.APPLY_CRDS_HOOK_ENABLED_KEY, configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY])
+        elif original_version and version and version < original_version:
+            logger.debug("Downgrade detected from %s to %s. Setting %s to false.",
+                         original_version, version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
+        else:
+            # If we are not downgrading, enable the apply-CRDs hook explicitly.
+            # This is because the value may have been set to false during a previous downgrade.
+            logger.debug("No downgrade detected. Setting %s to true.", self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'true'
+
+        # If no changes were made, return the original dict (empty or None).
+        if len(configuration_settings) == 0:
+            configuration_settings = input_configuration_settings
+
+        return PatchExtension(auto_upgrade_minor_version=auto_upgrade_minor_version,
+                              release_train=release_train,
+                              version=version,
+                              configuration_settings=configuration_settings,
+                              configuration_protected_settings=configuration_protected_settings)
