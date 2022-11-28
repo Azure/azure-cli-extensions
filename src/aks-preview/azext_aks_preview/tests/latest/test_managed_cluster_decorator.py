@@ -73,6 +73,8 @@ from azure.cli.core.azclierror import (
     UnknownError,
 )
 
+from azure.cli.core.util import read_file_content
+
 
 class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
     def setUp(self):
@@ -4010,9 +4012,24 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_custom_ca_trust_certificates(mc_1)
-        test_cert = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNsakNDQVg0Q0NRQzl6VUFncXFxcld6QU5CZ2txaGtpRzl3MEJBUXNGQURBTk1Rc3dDUVlEVlFRR0V3SlEKVERBZUZ3MHlNakE1TVRRd05qSXpNamRhRncweU1qQTVNVFV3TmpJek1qZGFNQTB4Q3pBSkJnTlZCQVlUQWxCTQpNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQW9wS05JSWJ2dmNQQ3c5ZmM0S0xYCktEdFJab2JwNUwrLzFoQ04rM09HaGs1TnZTVHBTVXJGaWZ4cWMwbzNJRjdZa08zSzFuMmpBdkNNWE8xNkJmOWIKT0FSN1ZrQ3J3R0ZWa1hOak00d3ZYQVg4Q05OdmpxZDF6RFBYU0tkRTdXZDhrM2ZUeng2bkdVTTBVZ2xqSVBoSAp5aDRhNFp1amQ1SWcyUC9aU1gwcEdKbTQ3SlR0TXU3TURGSFZNNXdSV2NDck4vSDBUQ1lQSXZFT3MwQjhBWnhjCnAzVEY3QTZ2ZVQ1VTlwVmhRM1hsOUpONkx2dkxxUHhHM2VhMTByZHY5RFl6YWlYbVNZM3VqSTNSaTFRMTF1V0MKZHRyRklwRnU1Y0hXMk9CVytqQlh4TDB2OHhRbWt4VExpazRCUi9QTENsMzB3eEtRTnNxM3BqRGd1MG11dEt1dQo1d0lEQVFBQk1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQVZFQUlzL2hMd1RWQ3dwRVhkb1hSMjRMZWxOTnVCCi84cHRLNmx5akUxMVh3Zk1OM3l5N0Yyb0IxbHJBNHJJM2o5b2JwRHNIREpCTkIxM2JpL2xLZ3ZBY2JJbi9UeXUKUktUaHRVZFBneE5ucURVeXhuYjNPb2ZNRjNnQjhlUFR1K2pacGQzenJsRXV4ZGw0MEJ5QVRDU3lPZ1I2REhNdApTRGQram95cG5PSEZBZVNNK1YwQWFUZWxYU0NLOU9BV1NBcDVlNlM3NmE2bFJ4K0Q1WGwzaEJlZEJJMHRYNTloCnRFWU5FR1phUkVsRlU3OVdjRUYwY0grWlcwK2pKOTV4RTN0aFpmZlJ6NlFJNnlGNjNtOGFDOWw5YmJkSlMyemcKWXY4VytsQ1ppLy9PRGVPQlV1Z3IrK3o5dWordkdrNDdKRFNwVjBuNEpPdW4zQUxVREowZ3FtY1MKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+        test_cert_string = '-----BEGIN CERTIFICATE-----\n' \
+                           'MIICljCCAX4CCQC9zUAgqqqrWzANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJQ\n' \
+                           'TDAeFw0yMjA5MTQwNjIzMjdaFw0yMjA5MTUwNjIzMjdaMA0xCzAJBgNVBAYTAlBM\n' \
+                           'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAopKNIIbvvcPCw9fc4KLX\n' \
+                           'KDtRZobp5L+/1hCN+3OGhk5NvSTpSUrFifxqc0o3IF7YkO3K1n2jAvCMXO16Bf9b\n' \
+                           'OAR7VkCrwGFVkXNjM4wvXAX8CNNvjqd1zDPXSKdE7Wd8k3fTzx6nGUM0UgljIPhH\n' \
+                           'yh4a4Zujd5Ig2P/ZSX0pGJm47JTtMu7MDFHVM5wRWcCrN/H0TCYPIvEOs0B8AZxc\n' \
+                           'p3TF7A6veT5U9pVhQ3Xl9JN6LvvLqPxG3ea10rdv9DYzaiXmSY3ujI3Ri1Q11uWC\n' \
+                           'dtrFIpFu5cHW2OBW+jBXxL0v8xQmkxTLik4BR/PLCl30wxKQNsq3pjDgu0mutKuu\n' \
+                           '5wIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAVEAIs/hLwTVCwpEXdoXR24LelNNuB\n' \
+                           '/8ptK6lyjE11XwfMN3yy7F2oB1lrA4rI3j9obpDsHDJBNB13bi/lKgvAcbIn/Tyu\n' \
+                           'RKThtUdPgxNnqDUyxnb3OofMF3gB8ePTu+jZpd3zrlEuxdl40ByATCSyOgR6DHMt\n' \
+                           'SDd+joypnOHFAeSM+V0AaTelXSCK9OAWSAp5e6S76a6lRx+D5Xl3hBedBI0tX59h\n' \
+                           'tEYNEGZaRElFU79WcEF0cH+ZW0+jJ95xE3thZffRz6QI6yF63m8aC9l9bbdJS2zg\n' \
+                           'Yv8W+lCZi//ODeOBUugr++z9uj+vGk47JDSpV0n4JOun3ALUDJ0gqmcS\n' \
+                           '-----END CERTIFICATE-----\n'
         sec_profile = self.models.ManagedClusterSecurityProfile(
-            custom_ca_trust_certificates=[str.encode(test_cert) for _ in range(2)]
+            custom_ca_trust_certificates=[str.encode(test_cert_string) for _ in range(2)]
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location", security_profile=sec_profile)
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
@@ -5702,11 +5719,26 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         dec_mc_1 = dec_1.update_custom_ca_trust_certificates(mc_1)
 
-        test_cert = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNsakNDQVg0Q0NRQzl6VUFncXFxcld6QU5CZ2txaGtpRzl3MEJBUXNGQURBTk1Rc3dDUVlEVlFRR0V3SlEKVERBZUZ3MHlNakE1TVRRd05qSXpNamRhRncweU1qQTVNVFV3TmpJek1qZGFNQTB4Q3pBSkJnTlZCQVlUQWxCTQpNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQW9wS05JSWJ2dmNQQ3c5ZmM0S0xYCktEdFJab2JwNUwrLzFoQ04rM09HaGs1TnZTVHBTVXJGaWZ4cWMwbzNJRjdZa08zSzFuMmpBdkNNWE8xNkJmOWIKT0FSN1ZrQ3J3R0ZWa1hOak00d3ZYQVg4Q05OdmpxZDF6RFBYU0tkRTdXZDhrM2ZUeng2bkdVTTBVZ2xqSVBoSAp5aDRhNFp1amQ1SWcyUC9aU1gwcEdKbTQ3SlR0TXU3TURGSFZNNXdSV2NDck4vSDBUQ1lQSXZFT3MwQjhBWnhjCnAzVEY3QTZ2ZVQ1VTlwVmhRM1hsOUpONkx2dkxxUHhHM2VhMTByZHY5RFl6YWlYbVNZM3VqSTNSaTFRMTF1V0MKZHRyRklwRnU1Y0hXMk9CVytqQlh4TDB2OHhRbWt4VExpazRCUi9QTENsMzB3eEtRTnNxM3BqRGd1MG11dEt1dQo1d0lEQVFBQk1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQVZFQUlzL2hMd1RWQ3dwRVhkb1hSMjRMZWxOTnVCCi84cHRLNmx5akUxMVh3Zk1OM3l5N0Yyb0IxbHJBNHJJM2o5b2JwRHNIREpCTkIxM2JpL2xLZ3ZBY2JJbi9UeXUKUktUaHRVZFBneE5ucURVeXhuYjNPb2ZNRjNnQjhlUFR1K2pacGQzenJsRXV4ZGw0MEJ5QVRDU3lPZ1I2REhNdApTRGQram95cG5PSEZBZVNNK1YwQWFUZWxYU0NLOU9BV1NBcDVlNlM3NmE2bFJ4K0Q1WGwzaEJlZEJJMHRYNTloCnRFWU5FR1phUkVsRlU3OVdjRUYwY0grWlcwK2pKOTV4RTN0aFpmZlJ6NlFJNnlGNjNtOGFDOWw5YmJkSlMyemcKWXY4VytsQ1ppLy9PRGVPQlV1Z3IrK3o5dWordkdrNDdKRFNwVjBuNEpPdW4zQUxVREowZ3FtY1MKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+        test_cert_string = '-----BEGIN CERTIFICATE-----\n' \
+                           'MIICljCCAX4CCQC9zUAgqqqrWzANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJQ\n' \
+                           'TDAeFw0yMjA5MTQwNjIzMjdaFw0yMjA5MTUwNjIzMjdaMA0xCzAJBgNVBAYTAlBM\n' \
+                           'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAopKNIIbvvcPCw9fc4KLX\n' \
+                           'KDtRZobp5L+/1hCN+3OGhk5NvSTpSUrFifxqc0o3IF7YkO3K1n2jAvCMXO16Bf9b\n' \
+                           'OAR7VkCrwGFVkXNjM4wvXAX8CNNvjqd1zDPXSKdE7Wd8k3fTzx6nGUM0UgljIPhH\n' \
+                           'yh4a4Zujd5Ig2P/ZSX0pGJm47JTtMu7MDFHVM5wRWcCrN/H0TCYPIvEOs0B8AZxc\n' \
+                           'p3TF7A6veT5U9pVhQ3Xl9JN6LvvLqPxG3ea10rdv9DYzaiXmSY3ujI3Ri1Q11uWC\n' \
+                           'dtrFIpFu5cHW2OBW+jBXxL0v8xQmkxTLik4BR/PLCl30wxKQNsq3pjDgu0mutKuu\n' \
+                           '5wIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAVEAIs/hLwTVCwpEXdoXR24LelNNuB\n' \
+                           '/8ptK6lyjE11XwfMN3yy7F2oB1lrA4rI3j9obpDsHDJBNB13bi/lKgvAcbIn/Tyu\n' \
+                           'RKThtUdPgxNnqDUyxnb3OofMF3gB8ePTu+jZpd3zrlEuxdl40ByATCSyOgR6DHMt\n' \
+                           'SDd+joypnOHFAeSM+V0AaTelXSCK9OAWSAp5e6S76a6lRx+D5Xl3hBedBI0tX59h\n' \
+                           'tEYNEGZaRElFU79WcEF0cH+ZW0+jJ95xE3thZffRz6QI6yF63m8aC9l9bbdJS2zg\n' \
+                           'Yv8W+lCZi//ODeOBUugr++z9uj+vGk47JDSpV0n4JOun3ALUDJ0gqmcS\n' \
+                           '-----END CERTIFICATE-----\n'
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             security_profile=self.models.ManagedClusterSecurityProfile(
-                custom_ca_trust_certificates=[str.encode(test_cert) for _ in range(2)]
+                custom_ca_trust_certificates=[str.encode(test_cert_string) for _ in range(2)]
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
