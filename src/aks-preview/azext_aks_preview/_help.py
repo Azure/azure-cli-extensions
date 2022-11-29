@@ -816,6 +816,9 @@ helps['aks update'] = """
         - name: --http-proxy-config
           type: string
           short-summary: HTTP Proxy configuration for this cluster.
+        - name: --kube-proxy-config
+          type: string
+          short-summary: kube-proxy configuration for this cluster.
         - name: --enable-azure-keyvault-kms
           type: bool
           short-summary: Enable Azure KeyVault Key Management Service.

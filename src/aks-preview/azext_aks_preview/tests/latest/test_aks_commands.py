@@ -5986,8 +5986,49 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.kubeProxyConfig.enabled',True),
-            self.check('networkProfile.kubeProxyConfig.mode','IPVS'),
-            self.check('networkProfile.kubeProxyConfig.ipvsConfig.scheduler', 'LeastConnection'),
+            self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    # live only due to workspace is not mocked correctly
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_kube_proxy_config(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'kube_proxy_path': _get_test_data_file('kubeproxyconfig.json'),
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview ' \
+                     '--ssh-key-value={ssh_key_value} --enable-managed-identity --yes -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.kubeProxyConfig.enabled',True),
+            self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
+        ])
+
+        
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'kube_proxy_path': _get_test_data_file('kubeproxyconfig_update.json'),
+        })
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview'
+
+        # TODO: check actual values getting update, currently returned MC does not sync
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.kubeProxyConfig.enabled',True),
         ])
 
         # delete
