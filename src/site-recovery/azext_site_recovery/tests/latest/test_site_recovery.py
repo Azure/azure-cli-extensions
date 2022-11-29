@@ -144,13 +144,17 @@ class SiteRecoveryScenario(ScenarioTest):
     # def test_siterecovery_fabric_scenarios(self):
     #     self.kwargs.update({
     #         'vault_name': self.create_random_name(prefix='vault', length=20),
+    #         'fabric_name': self.create_random_name(prefix='fabric', length=20),
     #         'intent_name': self.create_random_name(prefix='intent', length=20),
     #     })
     #     self.cmd('az backup vault create -n {vault_name} -g {rg} -l eastus2euap')
     #
     #     # fabric
-    #     self.cmd('az site-recovery fabric create -n {vault_name} -g {rg} -l eastus2euap')
+    #     # self.cmd('az site-recovery fabric create -n {fabric_name} -g {rg} --resource-name {vault_name} '
+    #     #          '--custom-details {{in-mage-rcm:')
+    #     self.cmd('az site-recovery fabric list -g {rg} --resource-name {vault_name')
+    #
     #
     #     # protection intent
-    #     self.cmd('az site-recovery vault protection-intent create -g {rg} --resource-name {vault_name} '
-    #              '-n {intent_name} --provider-specific-details {{a2-a:{{fabric-object-id')
+    #     # self.cmd('az site-recovery vault protection-intent create -g {rg} --resource-name {vault_name} '
+    #     #          '-n {intent_name} --provider-specific-details {{a2-a:{{fabric-object-id')
