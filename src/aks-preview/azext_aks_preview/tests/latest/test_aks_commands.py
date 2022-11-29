@@ -1703,6 +1703,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--nodepool-name {node_pool_name} -c 1 ' \
                      '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomCATrustPreview' \
                      '--custom-ca-trust-certificates={custom_ca_trust_certificates}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
