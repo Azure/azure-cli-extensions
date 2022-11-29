@@ -349,7 +349,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
-        c.argument('custom_ca_trust_certificates', is_preview=True, help="path to file containing list of base64 encoded CAs")
+        c.argument('custom_ca_trust_certificates', options_list=["--custom_ca_trust_certificates", "--ca-certs"], is_preview=True, help="path to file containing list of base64 encoded CAs")
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
         c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
@@ -461,7 +461,7 @@ def load_arguments(self, _):
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
-        c.argument('custom_ca_trust_certificates', validator=validate_custom_ca_trust_certificates, is_preview=True)
+        c.argument('custom_ca_trust_certificates', options_list=["--custom_ca_trust_certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
