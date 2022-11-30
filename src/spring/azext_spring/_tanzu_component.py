@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 def create_dev_tool_portal(cmd, client, resource_group, service, enable_application_live_view, enable_application_accelerator, **_):
     if any([enable_application_live_view, enable_application_accelerator]):
         logger.warning('- Creating Dev Tool Portal ..')
-        return dev_tool_portal_create(cmd, client, resource_group, service,
+        return dev_tool_portal_create(cmd, client, service, resource_group,
                                       enable_application_live_view=enable_application_live_view,
                                       enable_application_accelerator=enable_application_accelerator)
 
