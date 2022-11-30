@@ -274,7 +274,7 @@ def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, user
         raise azclierror.InvalidArgumentValueError("--resource-type must be either "
                                                    "\"Microsoft.Compute/virtualMachines\", "
                                                    "\"Microsoft.HybridCompute/machines\", "
-                                                   "or \"Microsoft.ConnectedVMwareSphere/virtualMachines\".")
+                                                   "or \"Microsoft.ConnectedVMwarevSphere/virtualMachines\".")
 
     if not (resource_group or vm_name or ssh_ip):
         raise azclierror.RequiredArgumentMissingError(

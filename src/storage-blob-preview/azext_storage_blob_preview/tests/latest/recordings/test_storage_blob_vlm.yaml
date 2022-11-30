@@ -13,9 +13,10 @@ interactions:
       ParameterSetName:
       - -n -g --enable-versioning
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-storage/20.1.0 Python/3.7.9
+        (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default?api-version=2021-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default?api-version=2022-05-01
   response:
     body:
       string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/blobServices","properties":{"cors":{"corsRules":[]},"deleteRetentionPolicy":{"allowPermanentDelete":false,"enabled":false}}}'
@@ -27,7 +28,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 18 Apr 2022 05:43:03 GMT
+      - Mon, 24 Oct 2022 07:21:24 GMT
       expires:
       - '-1'
       pragma:
@@ -64,9 +65,10 @@ interactions:
       ParameterSetName:
       - -n -g --enable-versioning
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-storage/20.1.0 Python/3.7.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default?api-version=2021-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default?api-version=2022-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default","name":"default","type":"Microsoft.Storage/storageAccounts/blobServices","properties":{"cors":{"corsRules":[]},"deleteRetentionPolicy":{"allowPermanentDelete":false,"enabled":false},"isVersioningEnabled":true}}'
@@ -78,7 +80,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 18 Apr 2022 05:43:06 GMT
+      - Mon, 24 Oct 2022 07:21:27 GMT
       expires:
       - '-1'
       pragma:
@@ -94,7 +96,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -116,9 +118,10 @@ interactions:
       ParameterSetName:
       - -n --storage-account -g --enable-vlw
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-azure-mgmt-storage/20.1.0 Python/3.7.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default/containers/container000003?api-version=2021-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default/containers/container000003?api-version=2022-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Storage/storageAccounts/version000002/blobServices/default/containers/container000003","name":"container000003","type":"Microsoft.Storage/storageAccounts/blobServices/containers","properties":{"immutableStorageWithVersioning":{"enabled":true},"deleted":false,"remainingRetentionDays":0,"hasImmutabilityPolicy":false,"hasLegalHold":false}}'
@@ -130,9 +133,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 18 Apr 2022 05:43:09 GMT
+      - Mon, 24 Oct 2022 07:21:28 GMT
       etag:
-      - '"0x8DA20FE51FDAAA7"'
+      - '"0x8DAB5905DE2FAF6"'
       expires:
       - '-1'
       pragma:
@@ -144,7 +147,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -168,13 +171,13 @@ interactions:
       ParameterSetName:
       - -c -f -n --account-name --account-key
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-storage-blob/12.9.0b1 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-storage-blob/12.11.0 Python/3.7.9 (Windows-10-10.0.22621-SP0)
       x-ms-blob-type:
       - BlockBlob
       x-ms-date:
-      - Mon, 18 Apr 2022 05:43:10 GMT
+      - Mon, 24 Oct 2022 07:21:28 GMT
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     method: PUT
     uri: https://version000002.blob.core.windows.net/container000003/blob000004
   response:
@@ -186,11 +189,11 @@ interactions:
       content-md5:
       - EnZIEQLyGMmB4DJBgLr9nw==
       date:
-      - Mon, 18 Apr 2022 05:43:11 GMT
+      - Mon, 24 Oct 2022 07:21:29 GMT
       etag:
-      - '"0x8DA20FE53359BAD"'
+      - '"0x8DAB5905EE430A9"'
       last-modified:
-      - Mon, 18 Apr 2022 05:43:11 GMT
+      - Mon, 24 Oct 2022 07:21:29 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-content-crc64:
@@ -198,7 +201,7 @@ interactions:
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     status:
       code: 201
       message: Created
@@ -218,15 +221,15 @@ interactions:
       ParameterSetName:
       - -n -c --expiry-time --policy-mode --account-name --account-key
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-storage-blob/12.9.0b1 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-storage-blob/12.11.0 Python/3.7.9 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Mon, 18 Apr 2022 05:43:12 GMT
+      - Mon, 24 Oct 2022 07:21:29 GMT
       x-ms-immutability-policy-mode:
       - Unlocked
       x-ms-immutability-policy-until-date:
-      - Mon, 18 Apr 2022 06:43:00 GMT
+      - Mon, 24 Oct 2022 08:21:00 GMT
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     method: PUT
     uri: https://version000002.blob.core.windows.net/container000003/blob000004?comp=immutabilityPolicies
   response:
@@ -236,15 +239,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 18 Apr 2022 05:43:12 GMT
+      - Mon, 24 Oct 2022 07:21:31 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-immutability-policy-mode:
       - unlocked
       x-ms-immutability-policy-until-date:
-      - Mon, 18 Apr 2022 06:43:00 GMT
+      - Mon, 24 Oct 2022 08:21:00 GMT
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     status:
       code: 200
       message: OK
@@ -264,11 +267,11 @@ interactions:
       ParameterSetName:
       - -n -c --account-name --account-key
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-storage-blob/12.9.0b1 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-storage-blob/12.11.0 Python/3.7.9 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Mon, 18 Apr 2022 05:43:14 GMT
+      - Mon, 24 Oct 2022 07:21:31 GMT
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     method: DELETE
     uri: https://version000002.blob.core.windows.net/container000003/blob000004?comp=immutabilityPolicies
   response:
@@ -278,11 +281,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 18 Apr 2022 05:43:14 GMT
+      - Mon, 24 Oct 2022 07:21:34 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     status:
       code: 200
       message: OK
@@ -302,13 +305,13 @@ interactions:
       ParameterSetName:
       - --legal-hold -n -c --account-name --account-key
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-storage-blob/12.9.0b1 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-storage-blob/12.11.0 Python/3.7.9 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Mon, 18 Apr 2022 05:43:16 GMT
+      - Mon, 24 Oct 2022 07:21:34 GMT
       x-ms-legal-hold:
       - 'true'
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     method: PUT
     uri: https://version000002.blob.core.windows.net/container000003/blob000004?comp=legalhold
   response:
@@ -318,13 +321,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 18 Apr 2022 05:43:18 GMT
+      - Mon, 24 Oct 2022 07:21:37 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-legal-hold:
       - 'true'
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     status:
       code: 200
       message: OK
@@ -344,13 +347,13 @@ interactions:
       ParameterSetName:
       - --legal-hold -n -c --account-name --account-key
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-storage-blob/12.9.0b1 Python/3.8.7 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (PIP) azsdk-python-storage-blob/12.11.0 Python/3.7.9 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Mon, 18 Apr 2022 05:43:20 GMT
+      - Mon, 24 Oct 2022 07:21:37 GMT
       x-ms-legal-hold:
       - 'false'
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     method: PUT
     uri: https://version000002.blob.core.windows.net/container000003/blob000004?comp=legalhold
   response:
@@ -360,13 +363,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 18 Apr 2022 05:43:20 GMT
+      - Mon, 24 Oct 2022 07:21:39 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-legal-hold:
       - 'false'
       x-ms-version:
-      - '2020-10-02'
+      - '2021-04-10'
     status:
       code: 200
       message: OK

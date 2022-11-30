@@ -53,7 +53,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             self.cmd('az connectedvmware vcenter list -g {rg}').get_output_in_json()
         )
         # vcenter count list should report 1
-        self.assertEqual(count, 1, 'vcenter resource count expected to be 1')
+        self.assertGreaterEqual(count, 1, 'vcenter resource count expected to be at least 1')
 
         # Create resource-pool resource.
         self.cmd(
@@ -189,12 +189,16 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         )
 
         # Validate the show command output with vm name.
-        self.cmd(
+        vm = self.cmd(
             'az connectedvmware vm show -g {rg} --name {vm_name}',
             checks=[
                 self.check('name', '{vm_name}'),
             ],
-        )
+        ).get_output_in_json()
+        vm_moRefId = vm['moRefId']
+        self.kwargs.update({ 'vm_moRefId': vm_moRefId })
+        self.assertIsNotNone(vm_moRefId)
+        self.assertNotEqual(len(vm_moRefId), 0, 'moRefId of the VM should not be empty')
 
         # List the VM resources in this resource group.
         resource_list = self.cmd(
@@ -246,6 +250,14 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Start VM.
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
+
+        # Disable the VM from azure; delete the ARM resource, retain the VM in vCenter.
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} --retain -y')
+
+        # Enable the VM to azure again.
+        self.cmd(
+            'az connectedvmware vm create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {vm_moRefId} --name {vm_name}'
+        )
 
         # Delete the created VM.
         self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')

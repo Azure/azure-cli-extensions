@@ -671,6 +671,38 @@ helps['containerapp ingress traffic show'] = """
           az containerapp ingress traffic show -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress access-restriction'] = """
+    type: group
+    short-summary: Commands to manage IP access restrictions.
+"""
+
+helps['containerapp ingress access-restriction set'] = """
+    type: command
+    short-summary: Configure IP access restrictions for a container app.
+    examples:
+    - name: Add an allow IP access restriction.
+      text: |
+          az containerapp ingress access-restriction set -n MyContainerapp -g MyResourceGroup --rule-name restrictionName --ip-address 192.168.1.1/32 --description "Restriction description." --action Allow
+"""
+
+helps['containerapp ingress access-restriction remove'] = """
+    type: command
+    short-summary: Remove IP access restrictions from a container app.
+    examples:
+    - name: Remove an IP access restriction.
+      text: |
+          az containerapp ingress access-restriction remove -n MyContainerapp -g MyResourceGroup --rule-name restrictionName
+"""
+
+helps['containerapp ingress access-restriction list'] = """
+    type: command
+    short-summary: List IP access restrictions for a container app.
+    examples:
+    - name: List IP access restrictions.
+      text: |
+          az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
+"""
+
 # Registry Commands
 helps['containerapp registry'] = """
     type: group

@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.21.0
+* Add support for mongo data transfer jobs.
+
+++++++
 0.20.0
 * Add support for Continuous mode restore with user provided identity.
 
