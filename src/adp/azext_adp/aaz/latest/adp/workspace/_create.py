@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a Workspace
 
     :example: create workspace with 3 storage accounts with LRS sku
-        az adp workspaces create --subscription sample-subscription --resource-group sample-rg --location westus3 --storage-account-count 3 --storage-sku name=Standard_LRS
+        az adp workspaces create --name sample-ws --subscription sample-subscription --resource-group sample-rg --location westus3 --storage-account-count 3 --storage-sku name=Standard_LRS
 
     :example: create workspace with encryption
         az adp workspace create --name sample-ws --resource-group sample-rg --location westus3 --encryption key-encryption-key-url=https://contosovault.vault.azure.net/keys/contosokek user-assigned-identity-resource-id=/subscriptions/<subscriptionid>/resourceGroups/<resourcegroup>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId
