@@ -109,6 +109,7 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance')
+        c.argument('tags', tags_type)
         c.argument('friendly_name', type=str, help='Gets or sets the Backup Instance friendly name.')
         c.argument('data_source_info', action=AddDataSourceInfo, nargs='+', help='Gets or sets the data source '
                    'information.')

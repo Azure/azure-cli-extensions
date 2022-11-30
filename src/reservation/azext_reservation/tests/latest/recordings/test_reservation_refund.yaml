@@ -1,0 +1,116 @@
+interactions:
+- request:
+    body: '{"id": "/providers/microsoft.capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d",
+      "properties": {"reservationToReturn": {"quantity": 1, "reservationId": "/providers/microsoft.capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/reservations/2e2eb0e1-cea6-4df3-909d-6fe5c0e19320"},
+      "scope": "Reservation"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order calculate-refund
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '329'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --id --scope --quantity --reservation-id
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/calculateRefund?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/reservations/2e2eb0e1-cea6-4df3-909d-6fe5c0e19320","properties":{"sessionId":"ad137811-2651-4ec4-8314-38cd7e3daa81","quantity":1,"billingRefundAmount":{"currencyCode":"USD","amount":2.41},"pricingRefundAmount":{"currencyCode":"USD","amount":2.41},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":421.19},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":6,"totalTransactions":12,"billingCurrencyTotalPaidAmount":{"currencyCode":"USD","amount":28.38},"billingCurrencyProratedAmount":{"currencyCode":"USD","amount":25.97},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"USD","amount":15.48}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '827'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 22:58:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"v-heachang@microsoft.com","scenarios":"TestInProdcution,CSZ,Inv-v7,crs-vnext,GtmRiPurchase","retention":"12/31/2024
+        00:00:00"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"reservationToReturn": {"quantity": 1, "reservationId":
+      "/providers/microsoft.capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/reservations/2e2eb0e1-cea6-4df3-909d-6fe5c0e19320"},
+      "returnReason": "testing", "scope": "Reservation", "sessionId": "ad137811-2651-4ec4-8314-38cd7e3daa81"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order return
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '315'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --return-reason --scope --session-id --quantity --reservation-id
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/return?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/4336d060-da34-4228-91b0-feab5b2a1e1d/reservations/2e2eb0e1-cea6-4df3-909d-6fe5c0e19320","properties":{"sessionId":"ad137811-2651-4ec4-8314-38cd7e3daa81","quantity":1,"billingRefundAmount":{"currencyCode":"USD","amount":2.41},"pricingRefundAmount":{"currencyCode":"USD","amount":2.41},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":421.19},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":6,"totalTransactions":12,"billingCurrencyTotalPaidAmount":{"currencyCode":"USD","amount":28.38},"billingCurrencyProratedAmount":{"currencyCode":"USD","amount":25.97},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"USD","amount":15.48}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '827'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 22:59:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"v-heachang@microsoft.com","scenarios":"TestInProdcution,CSZ,Inv-v7,crs-vnext,GtmRiPurchase","retention":"12/31/2024
+        00:00:00"}'
+    status:
+      code: 202
+      message: Accepted
+version: 1

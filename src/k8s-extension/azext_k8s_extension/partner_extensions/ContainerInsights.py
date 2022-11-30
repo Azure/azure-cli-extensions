@@ -587,8 +587,8 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         raise ex
 
     # extract subscription ID and resource group from workspace_resource_id URL
-    parsed = parse_resource_id(workspace_resource_id)
-    workspace_subscription_id, workspace_resource_group = parsed["subscription"], parsed["resource_group"]
+    parsed = parse_resource_id(workspace_resource_id.lower())
+    workspace_subscription_id = parsed["subscription"]
     workspace_region = ''
     resources = cf_resources(cmd.cli_ctx, workspace_subscription_id)
     try:
@@ -601,7 +601,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         raise ex
 
     dataCollectionRuleName = f"MSCI-{cluster_name}-{cluster_region}"
-    dcr_resource_id = f"/subscriptions/{workspace_subscription_id}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+    dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
 
     # first get the association between region display names and region IDs (because for some reason
     # the "which RPs are available in which regions" check returns region display names)
