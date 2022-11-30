@@ -6,16 +6,21 @@
 
 from ._clients import DbConnectionClient
 from ._models import DbConnection
-from ._utils import get_database_type, get_location
+from ._utils import get_database_type, get_location, get_connection_string
 
 
 # TODO remove or use "use_connection_string"
 # TODO add MSI arguments
 # TODO add database username/password arguments
-def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environment=None, use_connection_string=None, connection_string=None):
+def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environment=None, use_connection_string=None,
+                        connection_string=None, username=None, password=None):
     db_type = get_database_type(db_resource_id)
     region = get_location(cmd, db_resource_id, db_type)
-    # TODO special logic for getting connection string from the resource id if not provided
+
+    if not connection_string:
+        connection_string = get_connection_string(cmd, db_resource_id, db_type, username, password)
+    # TODO add MSI logic
+    # print(connection_string)
 
     connection = DbConnection
     connection["properties"]["resourceId"] = db_resource_id

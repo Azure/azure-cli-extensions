@@ -7,9 +7,10 @@
 from enum import Enum, auto
 import re
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import send_raw_request
-
+from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
+from msrestazure.tools import parse_resource_id
 
 class DbType(Enum):
     COSMOS_DB = auto()
@@ -57,5 +58,29 @@ def get_location(cmd, resource_id: str, db_type: 'DbType') -> str:
 
 
 # TODO
-def get_connection_string(cmd, resource_id: str, db_type: 'DbType', username: str, password: str) -> str:
-    pass
+def get_connection_string(cmd, resource_id: str, db_type: 'DbType', username=None, password=None):
+    parsed_rid = parse_resource_id(resource_id)
+    resource_group = parsed_rid["resource_group"]
+    name = parsed_rid["name"]
+    if db_type == DbType.COSMOS_DB:
+        client = cf_db_accounts(cmd.cli_ctx, None)
+        return client.list_connection_strings(resource_group, name).connection_strings[0].connection_string
+    if db_type == DbType.AZURE_SQL:
+        if not username or not password:
+            raise RequiredArgumentMissingError("Must include database username and password for Azure SQL databases")
+        return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
+                f"User ID={username};Password={password};Encrypt=true;Connection Timeout=30;")
+    # TODO verify
+    if db_type == DbType.MYSQL_SINGLE:
+        pass  # TODO not supported? confirm with Thomas
+    # TODO verify
+    if db_type == DbType.MYSQL_FLEX:
+        return (f'Server="{your_server}.mysql.database.azure.com";UserID = "{your_username}";Password="{your_password}";Database="{your_database}";SslMode=MySqlSslMode.Required;SslCa="{{path_to_CA_cert}}"')
+    # TODO verify
+    if db_type == DbType.PGSQL_SINGLE:
+        return
+    # TODO verify
+    if db_type == DbType.PGSQL_FLEX:
+        return
+    raise InvalidArgumentValueError("Database resource ID is invalid or of an unsupported DB")
+
