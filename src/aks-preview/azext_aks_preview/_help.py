@@ -479,7 +479,7 @@ helps['aks create'] = """
           short-summary: Enable Custom CA Trust on agent node pool.
         - name: --custom-ca-trust-certificates
           type: string
-          short-summary: Path to a file containing up to 10 base64 encoded certificates. Only valid for linux nodes.
+          short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
         - name: --enable-keda
           type: bool
@@ -920,7 +920,7 @@ helps['aks update'] = """
                          'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
         - name: --custom-ca-trust-certificates
           type: string
-          short-summary: Path to a file containing up to 10 base64 encoded certificates. Only valid for linux nodes.
+          short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
     examples:
       - name: Reconcile the cluster back to its current state.
