@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "load update",
+    confirmation="",
 )
 class Update(AAZCommand):
-    """Update a loadtest resource.
+    """Update an Azure Load Testing resource.
 
     :example: Update Azure load testing resource
         az load update --name sample-resource --resource-group sample-rg --identity-type SystemAssigned
@@ -59,12 +60,12 @@ class Update(AAZCommand):
         _args_schema.user_assigned = AAZDictArg(
             options=["--user-assigned"],
             arg_group="Optional Parameters",
-            help="The list of user-assigned identities associated with the resource. The user-assigned identity will be ARM resource id. For example, a list of user-assigned identities would look like \"{'/subscriptions/ abcdef01-2345-6789-0abc-def012345678 /resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/identity1','/subscriptions/ abcdef01-2345-6789-0abc-def012345678 /resourcegroups/test-rg/providers/microsoft.managedidentity/userassignedidentities/identity2'}\"",
+            help={"short-summary": "The list of user-assigned identities associated with the resource.", "long-summary": "To remove an identity from the resource, provide null as the value. For example, \"{'/subscriptions/ abcdef01-2345-6789-0abc-def012345678 /resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/identity1':null}\""},
         )
         _args_schema.encryption_identity = AAZStrArg(
             options=["--encryption-identity"],
             arg_group="Optional Parameters",
-            help="The managed identity for Customer-managed key settings defining which identity should be used to authenticate to Key Vault. The value \"SystemAssigned\" uses the system-assigned managed identity, while \"<identity-resource-id>\" uses the user-assigned managed identity with the given Id.",
+            help={"short-summary": "The managed identity for Customer-managed key settings defining which identity should be used to authenticate to Key Vault.", "long-summary": "The value \"SystemAssigned\" uses the system-assigned managed identity, while \"<identity-resource-id>\" uses the given user-assigned managed identity."},
             nullable=True,
         )
         _args_schema.encryption_identity_type = AAZStrArg(

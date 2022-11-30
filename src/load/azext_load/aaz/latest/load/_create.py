@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     confirmation="",
 )
 class Create(AAZCommand):
-    """Create a load test resource.
+    """Create an Azure Load Testing resource.
+
+    The load test resource name must be unique to a resource group.
 
     :example: Create a new Azure load testing resource
         az load create --name sample-resource --resource-group sample-rg --location westus2

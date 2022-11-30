@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "load show",
+    confirmation="",
 )
 class Show(AAZCommand):
-    """Get a LoadTest resource.
+    """Show the details of one or more Azure Load Testing resources.
 
     :example: Show an Azure load testing resource
         az load show --name sample-resource --resource-group sample-rg

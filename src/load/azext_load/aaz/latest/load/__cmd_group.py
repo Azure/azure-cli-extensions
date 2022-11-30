@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "load",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage load test resources.
+    """Manage Azure Load Testing resources.
     """
     pass
 

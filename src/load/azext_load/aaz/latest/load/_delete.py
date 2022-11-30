@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a load test resource.
+    """Delete an Azure Load Testing resource.
 
     :example: Delete Azure load testing resource
         az load delete --name sample-resource --resource-group sample-rg
