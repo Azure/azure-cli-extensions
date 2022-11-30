@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account list",
+    is_experimental=True,
 )
 class List(AAZCommand):
     """List all ADP accounts available under the subscription

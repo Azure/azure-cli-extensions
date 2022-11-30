@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account show",
+    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get the properties of an ADP account

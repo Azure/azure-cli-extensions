@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account create",
+    is_experimental=True,
 )
 class Create(AAZCommand):
     """Create an ADP account

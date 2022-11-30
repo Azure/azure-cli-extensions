@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account data-pool update",
+    is_experimental=True,
 )
 class Update(AAZCommand):
     """Update a Data Pool

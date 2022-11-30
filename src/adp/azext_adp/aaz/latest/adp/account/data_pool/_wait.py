@@ -155,107 +155,130 @@ class Wait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.data_pool_id = AAZStrType(
-                serialized_name="dataPoolId",
-                flags={"read_only": True},
-            )
-            properties.locations = AAZListType(
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.tags = AAZDictType()
-
-            locations = cls._schema_on_200.properties.locations
-            locations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.locations.Element
-            _element.encryption = AAZObjectType()
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.storage_account_count = AAZIntType(
-                serialized_name="storageAccountCount",
-            )
-            _element.storage_sku = AAZObjectType(
-                serialized_name="storageSku",
-                nullable=True,
-            )
-
-            encryption = cls._schema_on_200.properties.locations.Element.encryption
-            encryption.key_name = AAZStrType(
-                serialized_name="keyName",
-                flags={"required": True},
-            )
-            encryption.key_vault_uri = AAZStrType(
-                serialized_name="keyVaultUri",
-                flags={"required": True},
-            )
-            encryption.key_version = AAZStrType(
-                serialized_name="keyVersion",
-            )
-            encryption.user_assigned_identity = AAZStrType(
-                serialized_name="userAssignedIdentity",
-                flags={"required": True},
-            )
-
-            storage_sku = cls._schema_on_200.properties.locations.Element.storage_sku
-            storage_sku.name = AAZStrType(
-                flags={"required": True},
-            )
-
-            tags = cls._schema_on_200.properties.tags
-            tags.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
+            _build_schema_data_pool_read(cls._schema_on_200)
 
             return cls._schema_on_200
+
+
+_schema_data_pool_read = None
+
+
+def _build_schema_data_pool_read(_schema):
+    global _schema_data_pool_read
+    if _schema_data_pool_read is not None:
+        _schema.id = _schema_data_pool_read.id
+        _schema.name = _schema_data_pool_read.name
+        _schema.properties = _schema_data_pool_read.properties
+        _schema.system_data = _schema_data_pool_read.system_data
+        _schema.type = _schema_data_pool_read.type
+        return
+
+    _schema_data_pool_read = AAZObjectType()
+
+    data_pool_read = _schema_data_pool_read
+    data_pool_read.id = AAZStrType(
+        flags={"read_only": True},
+    )
+    data_pool_read.name = AAZStrType(
+        flags={"read_only": True},
+    )
+    data_pool_read.properties = AAZObjectType(
+        flags={"client_flatten": True},
+    )
+    data_pool_read.system_data = AAZObjectType(
+        serialized_name="systemData",
+        flags={"read_only": True},
+    )
+    data_pool_read.type = AAZStrType(
+        flags={"read_only": True},
+    )
+
+    properties = _schema_data_pool_read.properties
+    properties.data_pool_id = AAZStrType(
+        serialized_name="dataPoolId",
+        flags={"read_only": True},
+    )
+    properties.locations = AAZListType(
+        flags={"required": True},
+    )
+    properties.provisioning_state = AAZStrType(
+        serialized_name="provisioningState",
+        flags={"read_only": True},
+    )
+    properties.tags = AAZDictType()
+
+    locations = _schema_data_pool_read.properties.locations
+    locations.Element = AAZObjectType()
+
+    _element = _schema_data_pool_read.properties.locations.Element
+    _element.encryption = AAZObjectType()
+    _element.name = AAZStrType(
+        flags={"required": True},
+    )
+    _element.storage_account_count = AAZIntType(
+        serialized_name="storageAccountCount",
+    )
+    _element.storage_sku = AAZObjectType(
+        serialized_name="storageSku",
+        nullable=True,
+    )
+
+    encryption = _schema_data_pool_read.properties.locations.Element.encryption
+    encryption.key_name = AAZStrType(
+        serialized_name="keyName",
+        flags={"required": True},
+    )
+    encryption.key_vault_uri = AAZStrType(
+        serialized_name="keyVaultUri",
+        flags={"required": True},
+    )
+    encryption.key_version = AAZStrType(
+        serialized_name="keyVersion",
+    )
+    encryption.user_assigned_identity = AAZStrType(
+        serialized_name="userAssignedIdentity",
+        flags={"required": True},
+    )
+
+    storage_sku = _schema_data_pool_read.properties.locations.Element.storage_sku
+    storage_sku.name = AAZStrType(
+        flags={"required": True},
+    )
+
+    tags = _schema_data_pool_read.properties.tags
+    tags.Element = AAZStrType()
+
+    system_data = _schema_data_pool_read.system_data
+    system_data.created_at = AAZStrType(
+        serialized_name="createdAt",
+        flags={"read_only": True},
+    )
+    system_data.created_by = AAZStrType(
+        serialized_name="createdBy",
+        flags={"read_only": True},
+    )
+    system_data.created_by_type = AAZStrType(
+        serialized_name="createdByType",
+        flags={"read_only": True},
+    )
+    system_data.last_modified_at = AAZStrType(
+        serialized_name="lastModifiedAt",
+        flags={"read_only": True},
+    )
+    system_data.last_modified_by = AAZStrType(
+        serialized_name="lastModifiedBy",
+        flags={"read_only": True},
+    )
+    system_data.last_modified_by_type = AAZStrType(
+        serialized_name="lastModifiedByType",
+        flags={"read_only": True},
+    )
+
+    _schema.id = _schema_data_pool_read.id
+    _schema.name = _schema_data_pool_read.name
+    _schema.properties = _schema_data_pool_read.properties
+    _schema.system_data = _schema_data_pool_read.system_data
+    _schema.type = _schema_data_pool_read.type
 
 
 __all__ = ["Wait"]

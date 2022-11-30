@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account data-pool create",
+    is_experimental=True,
 )
 class Create(AAZCommand):
     """Create a Data Pool

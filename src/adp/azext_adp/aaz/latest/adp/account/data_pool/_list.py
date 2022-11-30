@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account data-pool list",
+    is_experimental=True,
 )
 class List(AAZCommand):
     """List the data pools under the ADP account

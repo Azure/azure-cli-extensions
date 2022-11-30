@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "adp account data-pool show",
+    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get the properties of a Data Pool
