@@ -36,6 +36,11 @@ class Recommender:
         self.cli_ctx = cli_ctx
         self.history = history
         self.cur_thread = None
+        self.default_recommendations = {
+            'help': 'Get help message of Azure CLI',
+            'init': 'Set Azure CLI global configurations interactively',
+            'next': 'Recommend the possible next set of commands to take'
+        }
 
     def feedback(self):
         """
@@ -84,7 +89,7 @@ def get_recommend(cli_ctx, history):
     processed_exception = None
 
     try:
-        recommends = get_recommend_from_api(command_history, 1,
+        recommends = get_recommend_from_api(command_history[-5:], 1,
                                             cli_ctx.config.getint('next', 'num_limit', fallback=5),
                                             error_info=processed_exception)
     except RecommendationError:
@@ -107,6 +112,7 @@ def get_command_list_from_history(history):
         return False
 
     commands = [re.sub(r"^az ", "", command).strip() for command in commands if valid_command(command)]
+    commands = [command.split(' -')[0] for command in commands]
     commands = [json.dumps({"command": command}) for command in commands]
     return commands
 
@@ -148,7 +154,7 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
             payload['subscription_id'] = subscription_id
 
     try:
-        response = requests.post(url, json.dumps(payload), timeout=1)
+        response = requests.post(url, json.dumps(payload), timeout=2)
         response.raise_for_status()
     except requests.ConnectionError as e:
         raise RecommendationError(f'Network Error: {e}') from e

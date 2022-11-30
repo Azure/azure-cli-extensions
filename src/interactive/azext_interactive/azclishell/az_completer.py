@@ -18,7 +18,6 @@ from prompt_toolkit.completion import Completer, Completion  # pylint: disable=i
 
 from . import configuration
 from .argfinder import ArgsFinder
-from .recommendation import get_recommend
 from .util import parse_quotes
 
 SELECT_SYMBOL = configuration.SELECT_SYMBOL
@@ -265,16 +264,23 @@ class AzCompleter(Completer):
             pass
 
     def gen_recommend_completion(self, text):
-        # for rec in get_recommend(self.shell_ctx.cli_ctx, self.shell_ctx.history):
-        for rec in self.shell_ctx.recommender.get_result() or []:
+        recommend_result = self.shell_ctx.recommender.get_result() or []
+        if not recommend_result:
+            for rec in self.shell_ctx.recommender.default_recommendations:
+                description = self.shell_ctx.recommender.default_recommendations[rec]
+                description = description or self.command_description.get(rec, '')
+                if text.strip() == '':
+                    yield Completion(' ' + rec, 0, display_meta=description)
+        for rec in recommend_result:
+            description = self.command_description.get(rec['command'], 'Commonly used command by other users')
             if text == '':
-                yield Completion(' '+rec['command'], 0)
+                yield Completion(' '+rec['command'], 0, display_meta=description)
             elif text == 'a':
-                yield Completion('az '+rec['command'], -1)
+                yield Completion('az '+rec['command'], -1, display_meta=description)
             else:
                 formatted_text = re.sub(r'\s+', ' ', text).strip()
                 if rec['command'].startswith(formatted_text) and rec['command'] != formatted_text:
-                    yield Completion(rec['command'], -len(text.lstrip()))
+                    yield Completion(rec['command'], -len(text.lstrip()), display_meta=description)
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """
@@ -283,6 +289,8 @@ class AzCompleter(Completer):
 
     def gen_cmd_and_param_completions(self):
         """ generates command and parameter completions """
+        if not self.current_command and not self.unfinished_word.strip():
+            return
         if self.complete_command:
             for param in self.command_param_info.get(self.current_command, []):
                 if self.validate_param_completion(param, self.leftover_args):
@@ -290,7 +298,9 @@ class AzCompleter(Completer):
         elif not self.leftover_args:
             for child_command in self.subtree.children:
                 if self.validate_completion(child_command):
-                    yield Completion(child_command, -len(self.unfinished_word))
+                    full_command = f'{self.current_command} {child_command}'.strip()
+                    yield Completion(child_command, -len(self.unfinished_word),
+                                     display_meta=self.command_description.get(full_command))
 
     def gen_global_params_and_arg_completions(self):
         # global parameters

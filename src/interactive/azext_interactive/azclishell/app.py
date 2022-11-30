@@ -304,7 +304,9 @@ class AzInteractiveShell(object):
             command = new_command
 
         # get command/group help
-        if self.completer and command in self.completer.command_description:
+        if not command:
+            self.description_docs = u'Try [Space] or `az next` to get Command Recommendation'
+        elif self.completer and command in self.completer.command_description:
             self.description_docs = u'{}'.format(self.completer.command_description[command])
 
         # get parameter help if full command
