@@ -57,25 +57,22 @@ def get_all_tests():
         if pkg_name and test_dir:
             # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis')]
             all_tests.append((pkg_name, src_d_full))
-            # azext_healthcareapis
-            extension_name = all_tests[0][0]
-            # healthcareapis
-            _, original_extension_name = extension_name.split('_', 1)
-        else:
-            logger.error(f'can not any test in {test_dir}')
-            with open('python_version.txt', 'w') as f:
-                f.write('false')
-            sys.exit(0)
-
-    logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
-                f'ado_target_branch: {ado_target_branch}, '
-                f'detect which extension need to test: {all_tests}.')
-    return original_extension_name, extension_name
+            # azext_healthcareapis -> healthcareapis
+            _, extension_name = pkg_name.split('_', 1)
+            logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+                        f'ado_target_branch: {ado_target_branch}, '
+                        f'detect which extension need to test: {all_tests}.')
+            return pkg_name, extension_name
+    else:
+        logger.error(f'can not any test')
+        with open('python_version.txt', 'w') as f:
+            f.write('false')
+        sys.exit(0)
 
 
-def get_min_version(original_extension_name, extension_name):
+def get_min_version(pkg_name, extension_name):
     try:
-        with open(os.path.join(SRC_PATH, original_extension_name, extension_name, 'azext_metadata.json'), 'r') as f:
+        with open(os.path.join(SRC_PATH, extension_name, pkg_name, 'azext_metadata.json'), 'r') as f:
             min_version = json.load(f)['azext.minCliCoreVersion']
             logger.info(f'find minCliCoreVersion: {min_version}')
             return min_version
@@ -126,8 +123,8 @@ def run_command(cmd, check_return_code=False, cwd=None):
 
 
 def main():
-    original_extension_name, extension_name = get_all_tests()
-    min_version = get_min_version(original_extension_name, extension_name)
+    pkg_name, extension_name = get_all_tests()
+    min_version = get_min_version(pkg_name, extension_name)
     get_python_version(min_version)
 
 
