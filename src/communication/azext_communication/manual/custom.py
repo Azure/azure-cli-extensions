@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import sys
+from azure.core.exceptions import HttpResponseError
 
 def communication_identity_create_user(client):
     return client.create_user()
@@ -181,7 +183,12 @@ def __to_room_participant(presenters, attendees, consumers):
 
 
 def communication_rooms_get_room(client, room_id):
-    return client.get_room(room_id)
+    try:
+        return client.get_room(room_id)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_create_room(client,
@@ -191,17 +198,27 @@ def communication_rooms_create_room(client,
                                     presenters=None,
                                     attendees=None,
                                     consumers=None):
-    room_participants = __to_room_participant(presenters, attendees, consumers)
+    try:
+        room_participants = __to_room_participant(presenters, attendees, consumers)
 
-    return client.create_room(
-        valid_from=valid_from,
-        valid_until=valid_until,
-        room_join_policy=join_policy,
-        participants=room_participants)
+        return client.create_room(
+            valid_from=valid_from,
+            valid_until=valid_until,
+            room_join_policy=join_policy,
+            participants=room_participants)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_delete_room(client, room_id):
-    return client.delete_room(room_id)
+    try:
+        return client.delete_room(room_id)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_update_room(client, room_id,
@@ -211,39 +228,64 @@ def communication_rooms_update_room(client, room_id,
                                     presenters=None,
                                     attendees=None,
                                     consumers=None):
-    room_participants = __to_room_participant(presenters, attendees, consumers)
+    try:
+        room_participants = __to_room_participant(presenters, attendees, consumers)
 
-    return client.update_room(
-        room_id=room_id,
-        valid_from=valid_from,
-        valid_until=valid_until,
-        room_join_policy=join_policy,
-        participants=room_participants)
+        return client.update_room(
+            room_id=room_id,
+            valid_from=valid_from,
+            valid_until=valid_until,
+            room_join_policy=join_policy,
+            participants=room_participants)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_get_participants(client, room_id):
-    return client.get_participants(room_id)
+    try:
+        return client.get_participants(room_id)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_add_participants(client, room_id,
                                          presenters=None,
                                          attendees=None,
                                          consumers=None):
-    return client.add_participants(
-        room_id=room_id,
-        participants=__to_room_participant(presenters, attendees, consumers))
+    try:
+        return client.add_participants(
+            room_id=room_id,
+            participants=__to_room_participant(presenters, attendees, consumers))
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_update_participants(client, room_id,
                                             presenters=None,
                                             attendees=None,
                                             consumers=None):
-    return client.update_participants(
-        room_id=room_id,
-        participants=__to_room_participant(presenters, attendees, consumers))
+    try:
+        return client.update_participants(
+            room_id=room_id,
+            participants=__to_room_participant(presenters, attendees, consumers))
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
 
 
 def communication_rooms_remove_participants(client, room_id, participants):
-    return client.remove_participants(
-        room_id=room_id,
-        communication_identifiers=__to_communication_identifier(participants))
+    try:
+        return client.remove_participants(
+            room_id=room_id,
+            communication_identifiers=__to_communication_identifier(participants))
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
