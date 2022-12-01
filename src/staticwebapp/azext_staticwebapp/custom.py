@@ -6,25 +6,26 @@
 
 from ._clients import DbConnectionClient
 from ._models import DbConnection
-from ._utils import get_database_type, get_location, get_connection_string
+from ._utils import get_database_type, Sku, ConnectionType
+from azure.cli.command_modules.appservice.static_sites import show_staticsite
 
 
 # TODO remove or use "use_connection_string"
 # TODO add MSI arguments
-# TODO add database username/password arguments
 def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environment=None, use_connection_string=None,
                         connection_string=None, username=None, password=None):
+    app = show_staticsite(cmd, name, resource_group_name)
+    sku = Sku.FREE if app.sku.name.lower() == "free" else Sku.STANDARD
+    connection_type = ConnectionType.CONNECTION_STRING  # TODO make this conditional on MSI args
     db_type = get_database_type(db_resource_id)
-    region = get_location(cmd, db_resource_id, db_type)
+    region = db_type.get_location(cmd, db_resource_id)
 
     if not connection_string:
-        connection_string = get_connection_string(cmd, db_resource_id, db_type, username, password)
-    # TODO add MSI logic
-    # print(connection_string)
+        connection_string = db_type.get_connection_string(cmd, sku, connection_type, db_resource_id, username, password)
 
     connection = DbConnection
     connection["properties"]["resourceId"] = db_resource_id
-    connection["properties"]["connectionIdentity"] = None  # TODO ?
+    connection["properties"]["connectionIdentity"] = None  # TODO take this from MSI args
     connection["properties"]["connectionString"] = connection_string
     connection["properties"]["region"] = region
 

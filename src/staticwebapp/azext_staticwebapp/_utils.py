@@ -12,75 +12,209 @@ from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
 from msrestazure.tools import parse_resource_id
 
-class DbType(Enum):
-    COSMOS_DB = auto()
-    AZURE_SQL = auto()
-    MYSQL_SINGLE = auto()
-    MYSQL_FLEX = auto()
-    PGSQL_SINGLE = auto()
-    PGSQL_FLEX = auto()
+
+class ConnectionType(Enum):
+    CONNECTION_STRING = auto()
+    MANAGED_IDENTITY_USER_ASSIGNED = auto()
+    MANAGED_IDENTITY_SYTEM_ASSIGNED= auto()
 
 
-rid_to_db_type = {
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DocumentDB/databaseAccounts\/.*$": DbType.COSMOS_DB,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers/Microsoft.Sql/servers\/.*\/databases\/.*$": DbType.AZURE_SQL,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL\/servers\/.*$": DbType.MYSQL_SINGLE,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL/flexibleServers\/.*$": DbType.MYSQL_FLEX,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*$": DbType.PGSQL_SINGLE,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*$": DbType.PGSQL_FLEX,
+class Sku(Enum):
+    FREE = auto()
+    STANDARD = auto()
+
+
+class AbstractDbHandler:
+    DB_TYPE_NAME = ""  # used for emitting user-friendly error messages
+    API_VERSION = ""  # the API version for performing GET on RID
+
+    @classmethod
+    def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise NotImplementedError()
+
+    @classmethod
+    def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise NotImplementedError()
+
+    @classmethod
+    def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise NotImplementedError()
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                              username=None, password=None) -> str:
+        raise NotImplementedError()
+
+    @classmethod
+    def _validate(cls, sku: 'Sku', connection_type: 'ConnectionType', username=None, password=None):
+        if not cls._is_supported(sku, connection_type):
+            raise ValidationError(f"Authentication type '{connection_type}' is not supported for "
+                                  f"sku '{sku}' and database type '{cls.DB_TYPE_NAME}'")
+
+        missing_username = not username and cls._requires_username(sku, connection_type)
+        missing_password = not password and cls._requires_password(sku, connection_type)
+        if missing_password and missing_username:
+            raise RequiredArgumentMissingError("Missing database username and password")
+        if missing_password:
+            raise RequiredArgumentMissingError("Missing database password")
+        if missing_username:
+            raise RequiredArgumentMissingError("Missing database username")
+
+    @classmethod
+    def get_location(cls, cmd, resource_id: str) -> str:
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        request_url = f"{management_hostname.strip('/')}{resource_id}?api-version={cls.API_VERSION}"
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()["location"]
+
+    @classmethod
+    def get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                              username=None, password=None) -> str:
+        cls._validate(sku, connection_type, username, password)
+        return cls._get_connection_string(cmd, sku, connection_type, resource_id, username, password)
+
+
+class CosmosDbHandler(AbstractDbHandler):
+    DB_TYPE_NAME = "CosmosDB"
+    API_VERSION = "2021-10-15"
+
+    @classmethod
+    def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return False
+
+    @classmethod
+    def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return False
+
+    @classmethod
+    def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return not (sku == sku.FREE and connection_type != ConnectionType.CONNECTION_STRING)
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                               username=None, password=None) -> str:
+        parsed_rid = parse_resource_id(resource_id)
+        resource_group = parsed_rid["resource_group"]
+        name = parsed_rid["name"]
+        client = cf_db_accounts(cmd.cli_ctx, None)
+
+        if connection_type == ConnectionType.CONNECTION_STRING:
+            return client.list_connection_strings(resource_group, name).connection_strings[0].connection_string
+        else:
+            raise NotImplementedError()  # TODO -- MSI connection string
+
+
+class AzureSqlHandler(AbstractDbHandler):
+    DB_TYPE_NAME = "Azure SQL"
+    API_VERSION = "2021-11-01"
+
+    @classmethod
+    def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return sku == Sku.FREE or connection_type == connection_type.CONNECTION_STRING
+
+    @classmethod
+    def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return sku == Sku.FREE or connection_type == connection_type.CONNECTION_STRING
+
+    @classmethod
+    def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return not (sku == sku.FREE and connection_type != ConnectionType.CONNECTION_STRING)
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                              username=None, password=None) -> str:
+        parsed_rid = parse_resource_id(resource_id)
+        name = parsed_rid["name"]
+
+        if connection_type == ConnectionType.CONNECTION_STRING:
+            return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
+                    f"User ID={username};Password={password};Encrypt=true;Connection Timeout=30;")
+        else:
+            raise NotImplementedError()  # TODO -- MSI connection string
+
+
+class MySqlFlexHandler(AbstractDbHandler):
+    DB_TYPE_NAME = "MySQL Flex"
+    API_VERSION = "2021-05-01"
+
+    @classmethod
+    def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise True
+
+    @classmethod
+    def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise True
+
+    @classmethod
+    def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return connection_type == ConnectionType.CONNECTION_STRING
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                              username=None, password=None) -> str:
+        # TODO fix
+        # only connection string auth supported
+        return (f'Server="{your_server}.mysql.database.azure.com";UserID = "{your_username}";'
+                f'Password="{your_password}";Database="{your_database}";SslMode=MySqlSslMode.Required;'
+                'SslCa="{path_to_CA_cert}"')
+
+
+class PgSqlSingleHandler(AbstractDbHandler):
+    DB_TYPE_NAME = "PostgreSQL Single"
+    API_VERSION = "2017-12-01"
+
+    @classmethod
+    def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise True
+
+    @classmethod
+    def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return connection_type == connection_type.CONNECTION_STRING
+
+    @classmethod
+    def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        raise NotImplementedError()
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                              username=None, password=None) -> str:
+        raise NotImplementedError()  # TODO connection string / MSI auth
+
+
+class PgSqlFlexHandler(AbstractDbHandler):
+    DB_TYPE_NAME = "PostgreSQL Flex"
+    API_VERSION = "2021-06-01"
+
+    @classmethod
+    def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return True
+
+    @classmethod
+    def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return True
+
+    @classmethod
+    def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
+        return connection_type == ConnectionType.CONNECTION_STRING
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+                              username=None, password=None) -> str:
+        raise NotImplementedError()  # TODO connection string (MSI not supported)
+
+
+RESOURCE_ID_TO_DB_HANDLER = {
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DocumentDB/databaseAccounts\/.*$": CosmosDbHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers/Microsoft.Sql/servers\/.*\/databases\/.*$": AzureSqlHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL/flexibleServers\/.*$": MySqlFlexHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*$": PgSqlSingleHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*$": PgSqlFlexHandler,
 }
 
 
-db_type_to_api_version = {
-    DbType.COSMOS_DB: "2021-10-15",
-    DbType.AZURE_SQL: "2021-11-01",
-    DbType.MYSQL_SINGLE: "2017-12-01",
-    DbType.MYSQL_FLEX: "2021-05-01",
-    DbType.PGSQL_SINGLE: "2017-12-01",
-    DbType.PGSQL_FLEX: "2021-06-01",
-}
-
-
-def get_database_type(resource_id: str) -> 'DbType':
-    for pattern, db_type in rid_to_db_type.items():
+def get_database_type(resource_id: str) -> 'AbstractDbHandler':
+    for pattern, db_type in RESOURCE_ID_TO_DB_HANDLER.items():
         if re.fullmatch(pattern, resource_id, flags=re.IGNORECASE):
             return db_type
     raise InvalidArgumentValueError("Database resource ID is invalid or of an unsupported DB")
-
-
-def get_location(cmd, resource_id: str, db_type: 'DbType') -> str:
-    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-    api_version = db_type_to_api_version[db_type]
-    request_url = f"{management_hostname.strip('/')}{resource_id}?api-version={api_version}"
-
-    r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-    return r.json()["location"]
-
-
-# TODO
-def get_connection_string(cmd, resource_id: str, db_type: 'DbType', username=None, password=None):
-    parsed_rid = parse_resource_id(resource_id)
-    resource_group = parsed_rid["resource_group"]
-    name = parsed_rid["name"]
-    if db_type == DbType.COSMOS_DB:
-        client = cf_db_accounts(cmd.cli_ctx, None)
-        return client.list_connection_strings(resource_group, name).connection_strings[0].connection_string
-    if db_type == DbType.AZURE_SQL:
-        if not username or not password:
-            raise RequiredArgumentMissingError("Must include database username and password for Azure SQL databases")
-        return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
-                f"User ID={username};Password={password};Encrypt=true;Connection Timeout=30;")
-    # TODO verify
-    if db_type == DbType.MYSQL_SINGLE:
-        pass  # TODO not supported? confirm with Thomas
-    # TODO verify
-    if db_type == DbType.MYSQL_FLEX:
-        return (f'Server="{your_server}.mysql.database.azure.com";UserID = "{your_username}";Password="{your_password}";Database="{your_database}";SslMode=MySqlSslMode.Required;SslCa="{{path_to_CA_cert}}"')
-    # TODO verify
-    if db_type == DbType.PGSQL_SINGLE:
-        return
-    # TODO verify
-    if db_type == DbType.PGSQL_FLEX:
-        return
-    raise InvalidArgumentValueError("Database resource ID is invalid or of an unsupported DB")
-
