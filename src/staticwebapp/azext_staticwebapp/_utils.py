@@ -102,7 +102,7 @@ class CosmosDbHandler(AbstractDbHandler):
         if connection_type == ConnectionType.CONNECTION_STRING:
             return client.list_connection_strings(resource_group, name).connection_strings[0].connection_string
         else:
-            raise NotImplementedError()  # TODO -- MSI connection string
+            return client.get(resource_group, name).document_endpoint
 
 
 class AzureSqlHandler(AbstractDbHandler):
@@ -131,7 +131,8 @@ class AzureSqlHandler(AbstractDbHandler):
             return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
                     f"User ID={username};Password={password};Encrypt=true;Connection Timeout=30;")
         else:
-            raise NotImplementedError()  # TODO -- MSI connection string
+            return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
+                    f"Encrypt=true;Connection Timeout=30;")
 
 
 class MySqlFlexHandler(AbstractDbHandler):
@@ -140,11 +141,11 @@ class MySqlFlexHandler(AbstractDbHandler):
 
     @classmethod
     def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
-        raise True
+        return True
 
     @classmethod
     def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
-        raise True
+        return True
 
     @classmethod
     def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
@@ -153,11 +154,24 @@ class MySqlFlexHandler(AbstractDbHandler):
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                               username=None, password=None) -> str:
-        # TODO fix
+        parsed_rid = parse_resource_id(resource_id)
+        server = parsed_rid["name"]
+        db = parsed_rid["child_name_1"]
         # only connection string auth supported
-        return (f'Server="{your_server}.mysql.database.azure.com";UserID = "{your_username}";'
-                f'Password="{your_password}";Database="{your_database}";SslMode=MySqlSslMode.Required;'
+        return (f'Server="{server}.mysql.database.azure.com";UserID = "{username}";'
+                f'Password="{password}";Database="{db}";SslMode=MySqlSslMode.Required;'
                 'SslCa="{path_to_CA_cert}"')
+
+    @classmethod
+    def get_location(cls, cmd, resource_id: str) -> str:
+        from msrestazure.tools import resource_id as rid
+
+        parsed_rid = parse_resource_id(resource_id)
+        unneeded_props = ["child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"]
+        for k in unneeded_props:
+            if k in parsed_rid:
+                del parsed_rid[k]
+        return super(MySqlFlexHandler, cls).get_location(cmd, rid(**parsed_rid))
 
 
 class PgSqlSingleHandler(AbstractDbHandler):
@@ -166,7 +180,7 @@ class PgSqlSingleHandler(AbstractDbHandler):
 
     @classmethod
     def _requires_username(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
-        raise True
+        return True
 
     @classmethod
     def _requires_password(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
@@ -206,8 +220,8 @@ class PgSqlFlexHandler(AbstractDbHandler):
 
 RESOURCE_ID_TO_DB_HANDLER = {
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DocumentDB/databaseAccounts\/.*$": CosmosDbHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers/Microsoft.Sql/servers\/.*\/databases\/.*$": AzureSqlHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL/flexibleServers\/.*$": MySqlFlexHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.Sql\/servers\/.*\/databases\/.*$": AzureSqlHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL\/flexibleServers\/.*\/databases\/.*$": MySqlFlexHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*$": PgSqlSingleHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*$": PgSqlFlexHandler,
 }
