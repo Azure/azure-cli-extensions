@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
-import json
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.util import shell_safe_json_parse
@@ -32,10 +31,22 @@ class JobParamsAction(argparse._AppendAction):
         return params
 
 
+class ProgramArgsAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values)
+        namespace.program_args = action
+
+    def get_action(self, values):
+        args = []
+        for item in values:
+            args.append("--" + item)
+        return args
+
+
 def load_arguments(self, _):
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
-    program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
+    program_args_type = CLIArgumentType(options_list=['--program-args'], help='Program arguments passed to the Q# compiler as a list of key=value pairs separated by spaces.', action=ProgramArgsAction, nargs='+')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
     project_type = CLIArgumentType(help='The location of the Q# project to submit. Defaults to current folder.')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
@@ -84,7 +95,7 @@ def load_arguments(self, _):
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        c.positional('program_args', program_args_type)
+        c.argument('program_args', program_args_type)
 
     with self.argument_context('quantum execute') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -96,7 +107,7 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        c.positional('program_args', program_args_type)
+        c.argument('program_args', program_args_type)
 
     with self.argument_context('quantum run') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -108,7 +119,7 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        c.positional('program_args', program_args_type)
+        c.argument('program_args', program_args_type)
 
     with self.argument_context('quantum offerings') as c:
         c.argument('provider_id', provider_id_type)
