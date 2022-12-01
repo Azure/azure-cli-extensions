@@ -1,0 +1,488 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
+        --arrival-max-delay
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-11-24T08:05:38Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:05:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"sku": {"name": "Standard"}, "eventsOutOfOrderPolicy":
+      "Drop", "outputErrorPolicy": "Drop", "eventsOutOfOrderMaxDelayInSeconds": 0,
+      "eventsLateArrivalMaxDelayInSeconds": 5, "dataLocale": "en-US"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics job create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '234'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
+        --arrival-max-delay
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job?api-version=2020-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job","name":"job","type":"Microsoft.StreamAnalytics/streamingjobs","location":"West
+        US","properties":{"sku":{"name":"Standard"},"jobId":"1ddf1fd9-7e25-42f9-a526-8b0cb776e407","provisioningState":"Succeeded","jobState":"Created","eventsOutOfOrderPolicy":"Drop","outputErrorPolicy":"Drop","eventsOutOfOrderMaxDelayInSeconds":0,"eventsLateArrivalMaxDelayInSeconds":5,"dataLocale":"en-US","createdDate":"2021-11-24T08:05:50.487Z","compatibilityLevel":"1.0","package":null,"jobStorageAccount":null,"contentStoragePolicy":"SystemAccount","inputs":[],"functions":[],"outputs":[],"jobType":"Cloud","subnetResourceId":null,"cluster":null}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:05:50 GMT
+      etag:
+      - 6d028af0-46d9-451d-b65a-5dc14f5d2e06
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "Scalar", "properties": {"inputs": [{"dataType":
+      "Any"}], "output": {"dataType": "Any"}, "binding": {"type": "Microsoft.StreamAnalytics/JavascriptUdf",
+      "properties": {"script": "function (a, b) { return a + b; }"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics function create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --job-name --properties
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function?api-version=2020-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function","name":"function","type":"Microsoft.StreamAnalytics/streamingjobs/functions","properties":{"type":"Scalar","properties":{"inputs":[{"dataType":"Any","isConfigurationParameter":null}],"output":{"dataType":"Any"},"binding":{"type":"Microsoft.StreamAnalytics/JavascriptUdf","properties":{"script":"function
+        (a, b) { return a + b; }"}}}}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '558'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:05:53 GMT
+      etag:
+      - 90eb255a-5cc2-4257-adb3-f0669d14c26e
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "Scalar", "properties": {"inputs": [{"dataType":
+      "Any"}], "output": {"dataType": "Any"}, "binding": {"type": "Microsoft.StreamAnalytics/JavascriptUdf",
+      "properties": {"script": "function (a, b) { return a + b; }"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics function test
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --job-name --properties
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function/test?api-version=2020-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 24 Nov 2021 08:05:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function/OperationResults/90fc283f-c207-415f-91df-9ced07909b05?api-version=2020-03-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics function test
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --job-name --properties
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function/OperationResults/90fc283f-c207-415f-91df-9ced07909b05?api-version=2020-03-01
+  response:
+    body:
+      string: '{"status":"TestFailed","error":{"code":"BadRequest","message":"Test
+        operation is not supported for function type: Microsoft.StreamAnalytics/JavascriptUdf","details":null}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '171'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:06:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics function list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --job-name
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions?api-version=2020-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function","name":"function","type":"Microsoft.StreamAnalytics/streamingjobs/functions","properties":{"type":"Scalar","properties":{"inputs":[{"dataType":"Any","isConfigurationParameter":null}],"output":{"dataType":"Any"},"binding":{"type":"Microsoft.StreamAnalytics/JavascriptUdf","properties":{"script":"function
+        (a, b) { return a + b; }"}}},"etag":"90eb255a-5cc2-4257-adb3-f0669d14c26e"}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '632'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:06:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"type": "Scalar", "properties": {"inputs": [{"dataType":
+      "Any"}], "output": {"dataType": "Any"}, "binding": {"type": "Microsoft.StreamAnalytics/JavascriptUdf",
+      "properties": {"script": "function (a, b) { return a * b; }"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics function update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '241'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --job-name --properties
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function?api-version=2020-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function","name":"function","type":"Microsoft.StreamAnalytics/streamingjobs/functions","properties":{"type":"Scalar","properties":{"inputs":[{"dataType":"Any","isConfigurationParameter":null}],"output":{"dataType":"Any"},"binding":{"type":"Microsoft.StreamAnalytics/JavascriptUdf","properties":{"script":"function
+        (a, b) { return a * b; }"}}}}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '558'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:06:09 GMT
+      etag:
+      - 3c4737a1-acf5-4a5b-a05f-1d1fee58e878
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics function show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --job-name
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function?api-version=2020-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/functions/function","name":"function","type":"Microsoft.StreamAnalytics/streamingjobs/functions","properties":{"type":"Scalar","properties":{"inputs":[{"dataType":"Any","isConfigurationParameter":null}],"output":{"dataType":"Any"},"binding":{"type":"Microsoft.StreamAnalytics/JavascriptUdf","properties":{"script":"function
+        (a, b) { return a * b; }"}}}}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '558'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Nov 2021 08:06:10 GMT
+      etag:
+      - 3c4737a1-acf5-4a5b-a05f-1d1fee58e878
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stream-analytics job delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --job-name --yes
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job?api-version=2020-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Wed, 24 Nov 2021 08:06:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnetmvc-version:
+      - '5.0'
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

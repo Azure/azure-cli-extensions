@@ -6,6 +6,8 @@
 # pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
+import json
+import knack.log
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError)
@@ -14,10 +16,13 @@ from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
+MINIMUM_MAX_POLL_WAIT_SECS = 1
+
 logger = logging.getLogger(__name__)
+knack_logger = knack.log.get_logger(__name__)
 
 
-def list(cmd, resource_group_name=None, workspace_name=None, location=None):
+def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of jobs in a Quantum Workspace.
     """
@@ -51,7 +56,7 @@ def _check_dotnet_available():
         raise FileOperationError(f"Failed to run 'dotnet'. (Error {result.returncode})")
 
 
-def build(cmd, target_id=None, project=None):
+def build(cmd, target_id=None, project=None, target_capability=None):
     """
     Compile a Q# program to run on Azure Quantum.
     """
@@ -67,8 +72,13 @@ def build(cmd, target_id=None, project=None):
 
     args.append(f"-property:ExecutionTarget={target.target_id}")
 
+    if target_capability:
+        args.append(f"-property:TargetCapability={target_capability}")
+
     logger.debug("Building project with arguments:")
     logger.debug(args)
+
+    knack_logger.warning('Building project...')
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
@@ -133,7 +143,11 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     if job_params:
         args.append("--job-params")
         for k, v in job_params.items():
-            args.append(f"{k}={v}")
+            if isinstance(v, str):
+                # If value is string type already, do not use json.dumps(), since it will add extra escapes to the string
+                args.append(f"{k}={v}")
+            else:
+                args.append(f"{k}={json.dumps(v)}")
 
     args.extend(program_args)
 
@@ -159,8 +173,9 @@ def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
-def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
+def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
+           target_capability=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -169,7 +184,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
     if not no_build:
-        build(cmd, target_id=target_id, project=project)
+        build(cmd, target_id=target_id, project=project, target_capability=target_capability)
         logger.info("Project built successfully.")
     else:
         _check_dotnet_available()
@@ -181,6 +196,8 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
+    knack_logger.warning('Submitting job...')
+
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
@@ -191,7 +208,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
-    # The program compiled succesfully, but executing the stand-alone .exe failed to run.
+    # The program compiled successfully, but executing the stand-alone .exe failed to run.
     logger.error("Submission of job failed with error code %s", result.returncode)
     print(result.stdout.decode('ascii'))
     raise AzureInternalError("Failed to submit job.")
@@ -217,7 +234,7 @@ def _parse_blob_url(url):
     }
 
 
-def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+def output(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Get the results of running a Q# job.
     """
@@ -237,7 +254,10 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         logger.debug("Downloading job results blob into %s", path)
 
         if job.status != "Succeeded":
-            return f"Job status: {job.status}. Output only available if Succeeded."
+            return job  # If "-o table" is specified, this allows transform_output() in commands.py
+            #             to format the output, so the error info is shown. If "-o json" or no "-o"
+            #             parameter is specified, then the full JSON job output is displayed, being
+            #             consistent with other commands.
 
         args = _parse_blob_url(job.output_data_uri)
         blob_service = blob_data_service_factory(cmd.cli_ctx, args)
@@ -250,7 +270,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         if len(lines) == 0:
             return
 
-        if job.target.startswith("microsoft.simulator"):
+        if job.target.startswith("microsoft.simulator") and job.target != "microsoft.simulator.resources-estimator":
             result_start_line = len(lines) - 1
             is_result_string = lines[-1].endswith('"')
             if is_result_string:
@@ -274,7 +294,23 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         return data
 
 
-def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=None, max_poll_wait_secs=5):
+def _validate_max_poll_wait_secs(max_poll_wait_secs):
+    valid_max_poll_wait_secs = 0.0
+    error_message = f"--max-poll-wait-secs parameter is not valid: {max_poll_wait_secs}"
+    error_recommendation = f"Must be a number greater than or equal to {MINIMUM_MAX_POLL_WAIT_SECS}"
+
+    try:
+        valid_max_poll_wait_secs = float(max_poll_wait_secs)
+    except ValueError as e:
+        raise InvalidArgumentValueError(error_message, error_recommendation) from e
+
+    if valid_max_poll_wait_secs < MINIMUM_MAX_POLL_WAIT_SECS:
+        raise InvalidArgumentValueError(error_message, error_recommendation)
+
+    return valid_max_poll_wait_secs
+
+
+def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes running.
     """
@@ -286,6 +322,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
+    max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
     job = client.get(job_id)
 
     while not _has_completed(job):
@@ -302,13 +339,23 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     return job
 
 
-def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
+def job_show(cmd, job_id, resource_group_name, workspace_name, location):
+    """
+    Get the job's status and details.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
+    return job
+
+
+def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
     job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params)
+                 project, job_name, shots, storage, no_build, job_params, target_capability)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
@@ -321,7 +368,7 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
     return output(cmd, job.id, resource_group_name, workspace_name, location)
 
 
-def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     """
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """

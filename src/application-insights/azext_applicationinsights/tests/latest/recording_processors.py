@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure_devtools.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
 
 
 def _py3_byte_to_str(byte_or_str):

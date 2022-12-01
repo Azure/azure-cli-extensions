@@ -7,7 +7,8 @@ TEST_SUBS_DEFAULT = "916dfd6d-030c-4bd9-b579-7bb6d1926e97"
 TEST_RG_DEFAULT = "e2e-scenarios"
 TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
-TEST_WORKSPACE_DEFAULT_STORAGE = "/subscriptions/916dfd6d-030c-4bd9-b579-7bb6d1926e97/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"
+TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
+TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft/Basic"
 TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft" 
 
@@ -30,6 +31,9 @@ def get_test_workspace_location():
 def get_test_workspace_storage():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE", TEST_WORKSPACE_DEFAULT_STORAGE)
 
+def get_test_workspace_storage_grs():
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE_GRS", TEST_WORKSPACE_DEFAULT_STORAGE_GRS)
+
 def get_test_workspace_provider_sku_list():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_PROVIDER_SKU_LIST", TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST)
 
@@ -40,9 +44,31 @@ def get_test_workspace_random_name():
     import random
     return "e2e-test-w" + str(random.randint(1000000, 9999999))
 
+def get_test_workspace_random_long_name():
+    return get_test_workspace_random_name() + "-53-char-name12345678901234567890123"
+
 def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
     for provide_sku_pair in provider_sku_string.split(';'):
         provider = "new." + provide_sku_pair.split('/')[0].lower()
         if provider not in capabilities_string:
             return False
     return True
+
+# import pytest
+# import sys
+# import traceback
+# # See "TODO" in except block below
+
+# TEST_ERROR_MESSAGE_PREAMBLE = "the following arguments are required: "
+
+def issue_cmd_with_param_missing(calling_object, command, help_example):
+    try:
+        calling_object.cmd(command)
+        assert False    # Fail the test if we DON'T get an exception
+    except:
+        # TODO: Figure out why this works locally, but not in the Azure CLI CI/CD checks pipeline.  Is there an alternative way to capture the error message?
+        # print(traceback.format_exc())
+        # out, err = calling_object.capsys.readouterr()
+        # assert TEST_ERROR_MESSAGE_PREAMBLE in out
+        # assert help_example in err
+        pass

@@ -5,15 +5,21 @@
         ]
     },
     "exclude": {
-        "compatibility issue": [
+        "CBLMariner compatibility issue": [
             "test_aks_nodepool_add_with_ossku"
         ],
-        "need additional feature": [
+        "missing feature registration": [
             "test_aks_create_enable_encryption",
-            "test_aks_create_edge_zone",
-            "test_aks_create_with_auto_upgrade_channel",
-            "test_aks_enable_openservicemesh_addon",
-            "test_aks_disable_openservicemesh_addon"
+            "test_aks_create_edge_zone"
+        ],
+        "missing namespace registration (AME tenant)": [
+            "test_aks_create_with_monitoring_aad_auth_msi",
+            "test_aks_create_with_monitoring_aad_auth_uai",
+            "test_aks_enable_monitoring_with_aad_auth_msi",
+            "test_aks_enable_monitoring_with_aad_auth_uai"
+        ],
+        "no gpu quota": [
+            "test_aks_nodepool_add_with_gpu_instance_profile"
         ]
     }
 }

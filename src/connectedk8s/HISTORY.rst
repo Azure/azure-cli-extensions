@@ -2,6 +2,98 @@
 
 Release History
 ===============
+1.3.6
+++++++
+
+* Updated patch behaviour for Azure Hybrid Benefit property
+
+1.3.5
+++++++
+
+* Added software assurance related changes for AKS HCI
+* Added parameter for overriding container log path
+* Updated kubernetes package dependency to 24.2.0
+
+1.3.4
+++++++
+
+* Fixed a proxy related bug in connectedk8s upgrade
+
+1.3.3
+++++++
+
+* Added a timeout in force delete's CRD deletion command
+
+1.3.2
+++++++
+
+* Added force delete command which is an added functionality in connectedk8s delete function
+
+1.3.1
+++++++
+
+* Updated min cli core version to 2.30.0
+
+1.3.0
+++++++
+
+* Added private link support
+
+1.2.11
+++++++
+
+* Increased the timeout of diagnoser job completion to 180 seconds
+
+1.2.10
+++++++
+
+* Added troubleshoot command which can be used to diagnose Arc enabled K8s clusters
+
+1.2.9
+++++++
+
+* Add correlation-id parameter to internally track onboarding sources
+
+1.2.8
+++++++
+
+* Bump up CSP version to 1.3.019103, bump up `pycryptodome` to 3.14.1 to support Python 3.10
+
+1.2.7
+++++++
+
+* Avoid using packaging module and revert minCliCoreVersion to 2.16.0
+
+1.2.6
+++++++
+
+* Update minCliCoreVersion to 2.23.0
+
+1.2.5
+++++++
+
+* Using MSAL based auth for CLI version >= 2.30.0
+
+1.2.4
+++++++
+
+* Custom cert changes, using "userValues.txt" for existing values in update command instead of --reuse-values, fix to wait for LRO to complete before starting agent installation/deletion
+
+1.2.3
+++++++
+
+* Fetching the tenantID from subscription object instead of graphclient
+
+1.2.2
+++++++
+
+* Updated connectedk8s proxy to support mooncake
+
+1.2.1
+++++++
+
+* Add maxCliCoreVersion as 2.29.0
+
 1.2.0
 ++++++
 

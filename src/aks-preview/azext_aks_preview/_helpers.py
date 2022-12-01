@@ -2,123 +2,169 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
-# pylint: disable=no-name-in-module,import-error
+import errno
+import os
+import platform
+import re
+import stat
+import tempfile
+import yaml
+from typing import Any, List, TypeVar
+from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
+from azure.core.exceptions import AzureError
+from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
-from azure.cli.core.azclierror import ArgumentUsageError
 
-# pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterAPIServerAccessProfile
-from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
-from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, \
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
+from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
+
+logger = get_logger(__name__)
+
+# type variables
+ManagedCluster = TypeVar("ManagedCluster")
 
 
-def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance=None):
-    if instance is None or instance.api_server_access_profile is None:
-        profile = ManagedClusterAPIServerAccessProfile()
+def which(binary):
+    path_var = os.getenv('PATH')
+    if platform.system() == 'Windows':
+        binary = binary + '.exe'
+        parts = path_var.split(';')
     else:
-        profile = instance.api_server_access_profile
+        parts = path_var.split(':')
 
-    if api_server_authorized_ip_ranges is None or api_server_authorized_ip_ranges == "":
-        authorized_ip_ranges = []
+    for part in parts:
+        bin_path = os.path.join(part, binary)
+        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+            return bin_path
+
+    return None
+
+
+def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
+    """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
+    stdout if the path is "-".
+    """
+    # Special case for printing to stdout
+    if path == "-":
+        print(kubeconfig)
+        return
+
+    # ensure that at least an empty ~/.kube/config exists
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except OSError as ex:
+            if ex.errno != errno.EEXIST:
+                raise
+    if not os.path.exists(path):
+        with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
+            pass
+
+    # merge the new kubeconfig into the existing one
+    fd, temp_path = tempfile.mkstemp()
+    additional_file = os.fdopen(fd, 'w+t')
+    try:
+        additional_file.write(kubeconfig)
+        additional_file.flush()
+        _merge_kubernetes_configurations(
+            path, temp_path, overwrite_existing, context_name)
+    except yaml.YAMLError as ex:
+        logger.warning(
+            'Failed to merge credentials to kube config file: %s', ex)
+    finally:
+        additional_file.close()
+        os.remove(temp_path)
+
+
+def _merge_kubernetes_configurations(existing_file, addition_file, replace, context_name=None):
+    existing = _load_kubernetes_configuration(existing_file)
+    addition = _load_kubernetes_configuration(addition_file)
+
+    if context_name is not None:
+        addition['contexts'][0]['name'] = context_name
+        addition['contexts'][0]['context']['cluster'] = context_name
+        addition['clusters'][0]['name'] = context_name
+        addition['current-context'] = context_name
+
+    # rename the admin context so it doesn't overwrite the user context
+    for ctx in addition.get('contexts', []):
+        try:
+            if ctx['context']['user'].startswith('clusterAdmin'):
+                admin_name = ctx['name'] + '-admin'
+                addition['current-context'] = ctx['name'] = admin_name
+                break
+        except (KeyError, TypeError):
+            continue
+
+    if addition is None:
+        raise CLIError(
+            'failed to load additional configuration from {}'.format(addition_file))
+
+    if existing is None:
+        existing = addition
     else:
-        authorized_ip_ranges = [ip.strip() for ip in api_server_authorized_ip_ranges.split(",")]
+        _handle_merge(existing, addition, 'clusters', replace)
+        _handle_merge(existing, addition, 'users', replace)
+        _handle_merge(existing, addition, 'contexts', replace)
+        existing['current-context'] = addition['current-context']
 
-    if profile.enable_private_cluster and authorized_ip_ranges:
-        raise ArgumentUsageError(
-            '--api-server-authorized-ip-ranges is not supported for private cluster')
+    # check that ~/.kube/config is only read- and writable by its owner
+    if platform.system() != "Windows" and not os.path.islink(existing_file):
+        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        if not existing_file_perms.endswith("600"):
+            logger.warning(
+                '%s has permissions "%s".\nIt should be readable and writable only by its owner.',
+                existing_file,
+                existing_file_perms,
+            )
 
-    profile.authorized_ip_ranges = authorized_ip_ranges
-    return profile
+    with open(existing_file, 'w+') as stream:
+        yaml.safe_dump(existing, stream, default_flow_style=False)
 
-
-def _set_vm_set_type(vm_set_type, kubernetes_version):
-    if not vm_set_type:
-        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
-            print('Setting vm_set_type to availabilityset as it is \
-            not specified and kubernetes version(%s) less than 1.12.9 only supports \
-            availabilityset\n' % (kubernetes_version))
-            vm_set_type = "AvailabilitySet"
-
-    if not vm_set_type:
-        vm_set_type = "VirtualMachineScaleSets"
-
-    # normalize as server validation is case-sensitive
-    if vm_set_type.lower() == "AvailabilitySet".lower():
-        vm_set_type = "AvailabilitySet"
-
-    if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
-        vm_set_type = "VirtualMachineScaleSets"
-    return vm_set_type
+    current_context = addition.get('current-context', 'UNKNOWN')
+    msg = 'Merged "{}" as current context in {}'.format(
+        current_context, existing_file)
+    print(msg)
 
 
-def _set_outbound_type(outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile):
-    if (
-        outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and
-        outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY and
-        outbound_type != CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
-    ):
-        return CONST_OUTBOUND_TYPE_LOAD_BALANCER
-
-    if outbound_type == CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
-        if load_balancer_sku == "basic":
-            raise ArgumentUsageError("managedNATGateway doesn't support basic load balancer sku")
-
-        return CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
-
-    if outbound_type == CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY:
-        if load_balancer_sku == "basic":
-            raise ArgumentUsageError("userAssignedNATGateway doesn't support basic load balancer sku")
-
-        if vnet_subnet_id in ["", None]:
-            raise ArgumentUsageError("--vnet-subnet-id must be specified for userAssignedNATGateway and it must "
-                                     "be pre-associated with a NAT gateway with outbound public IPs or IP prefixes")
-
-        return CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
-
-    if vnet_subnet_id in ["", None]:
-        raise ArgumentUsageError("--vnet-subnet-id must be specified for userDefinedRouting and it must "
-                                 "be pre-configured with a route table with egress rules")
-
-    if load_balancer_sku == "basic":
-        raise ArgumentUsageError("userDefinedRouting doesn't support basic load balancer sku")
-
-    if load_balancer_profile:
-        if (load_balancer_profile.managed_outbound_i_ps or
-                load_balancer_profile.outbound_i_ps or
-                load_balancer_profile.outbound_ip_prefixes):
-            raise ArgumentUsageError("userDefinedRouting doesn't support customizing a standard load balancer "
-                                     "with IP addresses")
-
-    return CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+def _load_kubernetes_configuration(filename):
+    try:
+        with open(filename) as stream:
+            return yaml.safe_load(stream)
+    except (IOError, OSError) as ex:
+        if getattr(ex, 'errno', 0) == errno.ENOENT:
+            raise CLIError('{} does not exist'.format(filename))
+    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 
-def _parse_comma_separated_list(text):
-    if text is None:
-        return None
-    if text == "":
-        return []
-    return text.split(",")
+def _handle_merge(existing, addition, key, replace):
+    if not addition[key]:
+        return
+    if existing[key] is None:
+        existing[key] = addition[key]
+        return
 
-
-def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
-    """
-    Trims the storage blob name and takes everything prior to "-hcp-".
-    Currently it is displayed wrong: i.e. at time of creation cli has
-    following limitation:
-    https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/
-    error-storage-account-name
-
-    :param normalized_fqdn: storage blob name
-    :return: storage_name_without_hcp: Storage name without the hcp value
-    attached
-    """
-    storage_name_without_hcp, _, _ = normalized_fqdn.partition('-hcp-')
-    if len(storage_name_without_hcp) > CONST_CONTAINER_NAME_MAX_LENGTH:
-        storage_name_without_hcp = storage_name_without_hcp[:CONST_CONTAINER_NAME_MAX_LENGTH]
-    return storage_name_without_hcp.rstrip('-')
+    for i in addition[key]:
+        for j in existing[key]:
+            if i['name'] == j['name']:
+                if replace or i == j:
+                    existing[key].remove(j)
+                else:
+                    msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
+                    overwrite = False
+                    try:
+                        overwrite = prompt_y_n(msg.format(i['name']))
+                    except NoTTYException:
+                        pass
+                    if overwrite:
+                        existing[key].remove(j)
+                    else:
+                        msg = 'A different object named {} already exists in {} in your kubeconfig file.'
+                        raise CLIError(msg.format(i['name'], key))
+        existing[key].append(i)
 
 
 def _fuzzy_match(query, arr):
@@ -163,3 +209,76 @@ def _fuzzy_match(query, arr):
             matches.append(word)
 
     return matches
+
+
+def get_nodepool_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
+    _re_snapshot_resource_id = re.compile(
+        r"/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)",
+        flags=re.IGNORECASE,
+    )
+    snapshot_id = snapshot_id.lower()
+    match = _re_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        return get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name)
+    raise InvalidArgumentValueError("Cannot parse snapshot name from provided resource id '{}'.".format(snapshot_id))
+
+
+def get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name):
+    snapshot_client = get_nodepool_snapshots_client(cli_ctx, subscription_id=subscription_id)
+    try:
+        snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+    # track 2 sdk raise exception from azure.core.exceptions
+    except AzureError as ex:
+        if "not found" in ex.message:
+            raise ResourceNotFoundError("Snapshot '{}' not found.".format(snapshot_name))
+        raise map_azure_error_to_cli_error(ex)
+    return snapshot
+
+
+def get_cluster_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
+    _re_mc_snapshot_resource_id = re.compile(
+        r"/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/managedclustersnapshots/(.*)",
+        flags=re.IGNORECASE,
+    )
+    snapshot_id = snapshot_id.lower()
+    match = _re_mc_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        return get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name)
+    raise InvalidArgumentValueError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
+
+def get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name):
+    snapshot_client = get_mc_snapshots_client(cli_ctx, subscription_id)
+    try:
+        snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+    # track 2 sdk raise exception from azure.core.exceptions
+    except AzureError as ex:
+        if "not found" in ex.message:
+            raise ResourceNotFoundError("Managed cluster snapshot '{}' not found.".format(snapshot_name))
+        raise map_azure_error_to_cli_error(ex)
+    return snapshot
+
+
+def check_is_private_cluster(mc: ManagedCluster) -> bool:
+    """Check `mc` object to determine whether private cluster is enabled.
+    :return: bool
+    """
+    if mc and mc.api_server_access_profile:
+        return bool(mc.api_server_access_profile.enable_private_cluster)
+    return False
+
+
+def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
+    """Check `mc` object to determine whether apiserver vnet integration is enabled.
+    :return: bool
+    """
+    if mc and mc.api_server_access_profile:
+        return bool(mc.api_server_access_profile.enable_vnet_integration)
+    return False

@@ -14,9 +14,8 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.1'
+VERSION = '0.2.2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -32,7 +31,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
 with open('README.md', 'r', encoding='utf-8') as f:
@@ -43,11 +41,10 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='alertsmanagement',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Alerts Extension',
-    # TODO: Update author and email, if applicable
-    author='Github:qwordy',
-    author_email='fey@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/alertsmanagement',
+    description='Microsoft Azure Command-Line Tools AlertsManagementClient Extension',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/alertsmanagement',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

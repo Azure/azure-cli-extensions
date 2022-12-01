@@ -47,7 +47,7 @@ setup(
     description='Microsoft Azure Command-Line Tools FootprintMonitoringManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/footprint',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/footprint',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

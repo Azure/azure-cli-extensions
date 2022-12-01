@@ -45,7 +45,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S.%f')
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:
@@ -87,7 +87,7 @@ def validate_create(cmd, namespace):
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
     # Prompt input for public ip usage
-    if not namespace.associate_public_ip:
+    if (not namespace.associate_public_ip) and (not namespace.yes):
         _prompt_public_ip(namespace)
 
 
@@ -172,6 +172,20 @@ def validate_run(cmd, namespace):
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
+
+
+def validate_reset_nic(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+    if namespace._subscription:
+        # setting subscription Id
+        try:
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
+            logger.info('Setting the subscription...\n')
+            _call_az_command(set_sub_command)
+        except AzCommandError as azCommandError:
+            logger.error(azCommandError)
+            raise CLIError('Unexpected error occured while setting the subscription..')
+    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 
 def _prompt_encrypted_vm(namespace):
@@ -299,7 +313,7 @@ def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\' || type==\'Microsoft.Compute/virtualMachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)

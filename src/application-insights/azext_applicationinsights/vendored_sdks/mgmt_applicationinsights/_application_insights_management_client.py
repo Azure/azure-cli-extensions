@@ -424,10 +424,13 @@ class ApplicationInsightsManagementClient(MultiApiClientMixin, _SDKClient):
         """Instance depends on the API version:
 
            * 2015-05-01: :class:`WebTestsOperations<azure.mgmt.applicationinsights.v2015_05_01.operations.WebTestsOperations>`
+           * 2018-05-01-preview: :class:`WebTestsOperations<azure.mgmt.applicationinsights.v2018_05_01_preview.operations.WebTestsOperations>`
         """
         api_version = self._get_api_version('web_tests')
         if api_version == '2015-05-01':
             from .v2015_05_01.operations import WebTestsOperations as OperationClass
+        elif api_version == '2018-05-01-preview':
+            from .v2018_05_01_preview.operations import WebTestsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'web_tests'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))

@@ -8,9 +8,11 @@
 
 try:
     from ._models_py3 import BlobDetails
+    from ._models_py3 import CostEstimate
     from ._models_py3 import ErrorData
     from ._models_py3 import JobDetails
     from ._models_py3 import JobDetailsList
+    from ._models_py3 import JsonPatchDocument
     from ._models_py3 import ProviderStatus
     from ._models_py3 import ProviderStatusList
     from ._models_py3 import Quota
@@ -18,11 +20,14 @@ try:
     from ._models_py3 import RestError
     from ._models_py3 import SasUriResponse
     from ._models_py3 import TargetStatus
+    from ._models_py3 import UsageEvent
 except (SyntaxError, ImportError):
     from ._models import BlobDetails  # type: ignore
+    from ._models import CostEstimate  # type: ignore
     from ._models import ErrorData  # type: ignore
     from ._models import JobDetails  # type: ignore
     from ._models import JobDetailsList  # type: ignore
+    from ._models import JsonPatchDocument  # type: ignore
     from ._models import ProviderStatus  # type: ignore
     from ._models import ProviderStatusList  # type: ignore
     from ._models import Quota  # type: ignore
@@ -30,20 +35,26 @@ except (SyntaxError, ImportError):
     from ._models import RestError  # type: ignore
     from ._models import SasUriResponse  # type: ignore
     from ._models import TargetStatus  # type: ignore
+    from ._models import UsageEvent  # type: ignore
 
 from ._quantum_client_enums import (
     DimensionScope,
     JobStatus,
+    JsonPatchOperation,
     MeterPeriod,
     ProviderAvailability,
     TargetAvailability,
 )
-
+from ._patch import __all__ as _patch_all
+from ._patch import *  # type: ignore # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 __all__ = [
     'BlobDetails',
+    'CostEstimate',
     'ErrorData',
     'JobDetails',
     'JobDetailsList',
+    'JsonPatchDocument',
     'ProviderStatus',
     'ProviderStatusList',
     'Quota',
@@ -51,9 +62,13 @@ __all__ = [
     'RestError',
     'SasUriResponse',
     'TargetStatus',
+    'UsageEvent',
     'DimensionScope',
     'JobStatus',
+    'JsonPatchOperation',
     'MeterPeriod',
     'ProviderAvailability',
     'TargetAvailability',
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()

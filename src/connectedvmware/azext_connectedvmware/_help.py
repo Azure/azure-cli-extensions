@@ -31,8 +31,9 @@ helps[
       - name: Create resource pool
         text: |-
                az connectedvmware resource-pool create --custom-location "custom location name" \
-                --location "" --mo-ref-id "mo-ref id of the resource in vc" --name "resource pool name" \
-                --resource-group "resource group name" --vcenter "name or id of the vcenter"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "resource pool name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -86,8 +87,9 @@ helps[
       - name: Create cluster
         text: |-
                az connectedvmware cluster create --custom-location "custom location name" \
-               --mo-ref-id "mo-ref id of the resource in vc" --name "cluster name" -l "location" \
-               --resource-group "resource group name" --vcenter "name or id of the vcenter"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "cluster name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -141,8 +143,9 @@ helps[
       - name: Create datastore
         text: |-
                az connectedvmware datastore create --custom-location "custom location name" \
-               --mo-ref-id "mo-ref id of the resource in vc" --name "datastore name" -l "location" \
-               --resource-group "resource group name" --vcenter "name or id of the vcenter"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "datastore name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -196,8 +199,9 @@ helps[
       - name: Create host
         text: |-
                az connectedvmware host create --custom-location "custom location name" \
-               --mo-ref-id "mo-ref id of the resource in vc" --name "host name" -l "location" \
-               --resource-group "resource group name" --vcenter "name or id of the vcenter"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "host name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -252,8 +256,7 @@ helps[
         text: |-
                az connectedvmware vcenter connect --custom-location "custom location name" \
                --fqdn "vcenter fqdn/ip" --username "vcenter user name" --password "vcenter password" \
-               --resource-group "resource group name" --subscription "Name or ID of subscription" \
-               --location "region name" --name "vcenter name"
+               --resource-group "resource group name" --location "location name" --name "vcenter name"
 """
 
 helps[
@@ -338,9 +341,9 @@ helps[
       - name: Create virtual network
         text: |-
                az connectedvmware virtual-network create --custom-location "custom location name" \
-               --location "region name" --mo-ref-id "mo-ref id of the resource in vc" --name \
-               "virtual network name" --resource-group "resource group name" --vcenter "name or id of \
-               the vcenter" --inventory-item "inventory item name or id"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "virtual network name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -393,9 +396,10 @@ helps[
     examples:
       - name: Create vm
         text: |-
-               az connectedvmware vm create --custom-location "custom location name" --location \
-               "region name" --name "virtual machine name" --resource-group "resource group name" \
-               --vcenter "name or id of the vcenter" --inventory-item "inventory item name or id"
+               az connectedvmware vm create --custom-location "custom location name" \
+               --location "location name" --inventory-item "name or id of the inventory item" \
+               --name "virtual machine name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[
@@ -625,7 +629,6 @@ helps[
                --vm-name "vm name"
 """
 
-
 helps[
     'connectedvmware vm guest-agent show'
 ] = """
@@ -638,6 +641,63 @@ helps[
                --vm-name "name of the vm"
 """
 
+helps['connectedvmware vm extension'] = """
+    type: group
+    short-summary: Manage vm extension with connectedvmware
+"""
+
+helps['connectedvmware vm extension list'] = """
+    type: command
+    short-summary: "The operation to get all extensions of a non-Azure vm."
+    examples:
+      - name: Get all VM Extensions
+        text: |-
+               az connectedvmware vm extension list --vm-name "vm name" --resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension show'] = """
+    type: command
+    short-summary: "The operation to get the extension."
+    examples:
+      - name: Get VM Extension
+        text: |-
+               az connectedvmware vm extension show --name "CustomScriptExtension" --vm-name "vm name" \
+--resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension create'] = """
+    type: command
+    short-summary: "The operation to create the extension."
+    examples:
+      - name: Create a VM Extension
+        text: |-
+               az connectedvmware vm extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name \
+"vm name" --resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension update'] = """
+    type: command
+    short-summary: "The operation to update the extension."
+    examples:
+      - name: Update a VM Extension
+        text: |-
+               az connectedvmware vm extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
+--publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
+Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
+
+helps['connectedvmware vm extension delete'] = """
+    type: command
+    short-summary: "The operation to delete the extension."
+    examples:
+      - name: Delete a VM Extension
+        text: |-
+               az connectedvmware vm extension delete --name "vm extension name" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
 
 helps[
     'connectedvmware vm-template'
@@ -655,9 +715,9 @@ helps[
       - name: Create vm template
         text: |-
                az connectedvmware vm-template create --custom-location "custom location name" \
-               --location "region name" --mo-ref-id "mo-ref id of the resource in vc" --name \
-               "vm template name" --resource-group "resource group name" --vcenter "name or id of \
-               the vcenter" --inventory-item "inventory item name or id"
+               --location "location name" --inventory-item "name or id the inventory item" \
+               --name "vm template name" --resource-group "resource group name" \
+               --vcenter "name or id of the vcenter"
 """
 
 helps[

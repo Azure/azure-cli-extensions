@@ -21,9 +21,10 @@ def get_resource_id(
     Gets the resource id for the resource if name is given.
     """
 
-    if not is_valid_resource_id(resource):
-        _resource_id = None
-        if child_type_1 and child_name_1:
+    _resource_id = None
+    if child_type_1 and child_name_1:
+        if not is_valid_resource_id(child_name_1):
+            resource = resource.split('/')[-1]
             _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
@@ -34,6 +35,9 @@ def get_resource_id(
                 child_name_1=child_name_1,
             )
         else:
+            _resource_id = child_name_1
+    else:
+        if not is_valid_resource_id(resource):
             _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
@@ -41,10 +45,8 @@ def get_resource_id(
                 type=resource_type,
                 name=resource,
             )
-
-    else:
-        _resource_id = resource
-
+        else:
+            _resource_id = resource
     return _resource_id
 
 
@@ -59,6 +61,6 @@ def create_dictionary_from_arg_string(values, option_string=None):
             params_dict[key.lower()] = value
         except ValueError as item_no_exist:
             raise CLIError(
-                'usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string)
+                f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
             ) from item_no_exist
     return params_dict

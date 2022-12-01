@@ -9,11 +9,11 @@ from azure.cli.testsdk import (
     ResourceGroupPreparer,
     ScenarioTest
 )
-from azure_devtools.scenario_tests import (
+from azure.cli.testsdk.scenario_tests import (
     RecordingProcessor,
     live_only
 )
-from azure_devtools.scenario_tests.utilities import is_text_payload
+from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 
 
 class CredentialReplacer(RecordingProcessor):

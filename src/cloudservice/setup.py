@@ -50,7 +50,7 @@ setup(
     description='Microsoft Azure Command-Line Tools ComputeManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/cloudservice',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/cloudservice',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

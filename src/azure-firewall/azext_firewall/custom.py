@@ -7,7 +7,9 @@ import copy
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.azclierror import UserFault, ServiceError
+from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError
+from azure.cli.core.commands.client_factory import get_subscription_id
+from msrestazure.tools import is_valid_resource_id, resource_id
 from ._client_factory import network_client_factory
 
 logger = get_logger(__name__)
@@ -25,7 +27,7 @@ def _generic_list(cli_ctx, operation_name, resource_group_name):
 def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
-        raise CLIError("Property '{}' does not exist".format(name))
+        raise CLIError(f"Property '{name}' does not exist")
     return result
 
 
@@ -37,7 +39,7 @@ def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
     value = getattr(obj_to_add, key_name)
     if value is None:
         raise CLIError(
-            "Unable to resolve a value for key '{}' with which to match.".format(key_name))
+            f"Unable to resolve a value for key '{key_name}' with which to match.")
     match = next((x for x in collection if getattr(x, key_name, None) == value), None)
     if match:
         if warn:
@@ -59,7 +61,7 @@ def _find_item_at_path(instance, path):
             # property
             curr_item = getattr(curr_item, comp, None)
         if not curr_item:
-            raise CLIError("unable to find '{}'...".format(comp))
+            raise CLIError(f"unable to find '{comp}'...")
     return curr_item
 
 
@@ -68,23 +70,33 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
-                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None):
+                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None,
+                          enable_fat_flow_logging=None, enable_udp_log_optimization=None,
+                          virtual_network_name=None, conf_name=None, public_ip=None,
+                          management_conf_name=None, management_public_ip=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
         raise CLIError('usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
     if sku and sku.lower() == 'azfw_hub' and allow_active_ftp:
         raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
+    # validate basic sku firewall
+    if tier and tier.lower() == 'basic' and not all([management_conf_name, management_public_ip]):
+        err_msg = "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."
+        raise ValidationError(err_msg)
+
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     (AzureFirewall,
      SubResource,
      AzureFirewallSku,
      HubIPAddresses,
-     HubPublicIPAddresses) = cmd.get_models('AzureFirewall',
-                                            'SubResource',
-                                            'AzureFirewallSku',
-                                            'HubIPAddresses',
-                                            'HubPublicIPAddresses')
+     HubPublicIPAddresses,
+     AzureFirewallIPConfiguration) = cmd.get_models('AzureFirewall',
+                                                    'SubResource',
+                                                    'AzureFirewallSku',
+                                                    'HubIPAddresses',
+                                                    'HubPublicIPAddresses',
+                                                    'AzureFirewallIPConfiguration')
     sku_instance = AzureFirewallSku(name=sku, tier=tier)
     firewall = AzureFirewall(location=location,
                              tags=tags,
@@ -116,17 +128,78 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     if allow_active_ftp:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
-        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
+
+    if enable_fat_flow_logging:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+
+    if enable_udp_log_optimization:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+
+    if conf_name is not None:
+        subnet_id = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Network',
+            type='virtualNetworks',
+            name=virtual_network_name,
+            child_type_1='subnets',
+            child_name_1='AzureFirewallSubnet'
+        )
+        if public_ip and not is_valid_resource_id(public_ip):
+            public_ip = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Network',
+                type='publicIPAddresses',
+                name=public_ip
+            )
+        config = AzureFirewallIPConfiguration(
+            name=conf_name,
+            subnet=SubResource(id=subnet_id) if virtual_network_name else None,
+            public_ip_address=SubResource(id=public_ip) if public_ip else None
+        )
+        _upsert(firewall, 'ip_configurations', config, 'name', warn=False)
+
+    if tier and tier.lower() == 'basic':
+        management_subnet_id = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Network',
+            type='virtualNetworks',
+            name=virtual_network_name,
+            child_type_1='subnets',
+            child_name_1='AzureFirewallManagementSubnet'
+        )
+        if not is_valid_resource_id(management_public_ip):
+            management_public_ip = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Network',
+                type='publicIPAddresses',
+                name=management_public_ip
+            )
+        management_config = AzureFirewallIPConfiguration(
+            name=management_conf_name,
+            subnet=SubResource(id=management_subnet_id),
+            public_ip_address=SubResource(id=management_public_ip)
+        )
+        firewall.management_ip_configuration = management_config
 
     return client.begin_create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
-# pylint: disable=too-many-branches
+# pylint: disable=too-many-branches disable=too-many-statements
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
-                          hub_public_ip_count=None, allow_active_ftp=None):
+                          hub_public_ip_count=None, allow_active_ftp=None,
+                          enable_fat_flow_logging=None, enable_udp_log_optimization=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if all([hub_public_ip_addresses, hub_public_ip_count]):
@@ -183,16 +256,32 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                 raise CLIError('Number of public ip addresses must be less than or equal to existing ones.')
             instance.hub_ip_addresses.public_i_ps.addresses = [AzureFirewallPublicIPAddress(address=ip) for ip in hub_public_ip_addresses]  # pylint: disable=line-too-long
             instance.hub_ip_addresses.public_i_ps.count = len(hub_public_ip_addresses)
-        except AttributeError:
-            raise CLIError('Public Ip addresses must exist before deleting them.')
+        except AttributeError as err:
+            raise CLIError('Public Ip addresses must exist before deleting them.') from err
 
     if allow_active_ftp is not None:
         if instance.additional_properties is None:
             instance.additional_properties = {}
         if allow_active_ftp:
-            instance.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+            instance.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
         elif 'Network.FTP.AllowActiveFTP' in instance.additional_properties:
             del instance.additional_properties['Network.FTP.AllowActiveFTP']
+
+    if enable_fat_flow_logging is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if enable_fat_flow_logging:
+            instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+        elif 'Network.AdditionalLogs.EnableFatFlowLogging' in instance.additional_properties:
+            del instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging']
+
+    if enable_udp_log_optimization is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if enable_udp_log_optimization:
+            instance.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+        elif 'Network.AdditionalLogs.EnableUdpLogOptimization' in instance.additional_properties:
+            del instance.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization']
 
     return instance
 
@@ -287,7 +376,7 @@ def delete_af_ip_configuration(cmd, resource_group_name, resource_name, item_nam
     else:
         result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, resource_name, af).result()
         if next((x for x in getattr(result, 'ip_configurations') if x.name.lower() == item_name.lower()), None):
-            raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
+            raise CLIError(f"Failed to delete '{item_name}' on '{resource_name}'")
 
 
 def build_af_rule_list(item_param_name, collection_param_name):
@@ -296,9 +385,9 @@ def build_af_rule_list(item_param_name, collection_param_name):
     def list_func(cmd, resource_group_name, firewall_name, collection_name):
         client = network_client_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
-        return _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
+        return _find_item_at_path(af, f'{collection_param_name}.{collection_name}')
 
-    func_name = 'list_af_{}s'.format(item_param_name)
+    func_name = f'list_af_{item_param_name}s'
     setattr(sys.modules[__name__], func_name, list_func)
     return func_name
 
@@ -309,9 +398,9 @@ def build_af_rule_show(item_param_name, collection_param_name):
     def show_func(cmd, resource_group_name, firewall_name, collection_name, item_name):
         client = network_client_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
-        return _find_item_at_path(af, '{}.{}.rules.{}'.format(collection_param_name, collection_name, item_name))
+        return _find_item_at_path(af, f'{collection_param_name}.{collection_name}.rules.{item_name}')
 
-    func_name = 'show_af_{}'.format(item_param_name)
+    func_name = f'show_af_{item_param_name}'
     setattr(sys.modules[__name__], func_name, show_func)
     return func_name
 
@@ -322,11 +411,11 @@ def build_af_rule_delete(item_param_name, collection_param_name):
     def delete_func(cmd, resource_group_name, firewall_name, collection_name, item_name):
         client = network_client_factory(cmd.cli_ctx).azure_firewalls
         af = client.get(resource_group_name, firewall_name)
-        collection = _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
+        collection = _find_item_at_path(af, f'{collection_param_name}.{collection_name}')
         collection.rules = [rule for rule in collection.rules if rule.name != item_name]
         client.begin_create_or_update(resource_group_name, firewall_name, af)
 
-    func_name = 'delete_af_{}'.format(item_param_name)
+    func_name = f'delete_af_{item_param_name}'
     setattr(sys.modules[__name__], func_name, delete_func)
     return func_name
 
@@ -361,7 +450,7 @@ def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_na
     collection_match.rules.append(item_class(**params))
     _upsert(af, collection_param_name, collection_match, 'name', warn=False)
     af = client.begin_create_or_update(resource_group_name, firewall_name, af).result()
-    return _find_item_at_path(af, '{}.{}.rules.{}'.format(collection_param_name, collection_name, item_name))
+    return _find_item_at_path(af, f'{collection_param_name}.{collection_name}.rules.{item_name}')
 
 
 def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
@@ -489,11 +578,12 @@ def delete_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure
 
 
 # region AzureFirewallPolicies
+# pylint: disable=too-many-locals
 def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None,
+                                   sku=None, intrusion_detection_mode=None, sql=None,
                                    key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
@@ -507,6 +597,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                               'FirewallPolicyThreatIntelWhitelist',
                                               'DnsSettings',
                                               'FirewallPolicySku',
+                                              # pylint: disable=line-too-long
                                               'Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties',
                                               'ManagedServiceIdentity')
     firewall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
@@ -523,7 +614,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
             dns_settings = DnsSettings(servers=dns_servers,
                                        enable_proxy=enable_dns_proxy or False)
             firewall_policy.dns_settings = dns_settings
-    if cmd.supported_api_version(min_api='2020-07-01'):
+    if cmd.supported_api_version(min_api='2021-08-01'):
         if sku is not None:
             firewall_policy.sku = FirewallPolicySku(tier=sku)
 
@@ -544,10 +635,15 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                                                   name=certificate_name)
             firewall_policy.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
 
+    if cmd.supported_api_version(min_api='2021-03-01'):
+        if sql is not None:
+            FirewallPolicySQL = cmd.get_models('FirewallPolicySQL')
+            firewall_policy.sql = FirewallPolicySQL(allow_sql_redirect=sql)
+
     # identity
     if user_assigned_identity is not None:
         user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
-        user_assigned_identities_instance = dict()
+        user_assigned_identities_instance = {}
         user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
         identity_instance = ManagedServiceIdentity(
             type="UserAssigned",
@@ -558,14 +654,16 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
     return client.begin_create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
 
+# pylint: disable=too-many-locals
 def update_azure_firewall_policies(cmd,
                                    instance, tags=None, threat_intel_mode=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None,
+                                   sku=None, intrusion_detection_mode=None, sql=None,
                                    key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
 
-    (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist', 'FirewallPolicySku')
+    (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist',
+                                                                             'FirewallPolicySku')
     if tags is not None:
         instance.tags = tags
     if threat_intel_mode is not None:
@@ -587,7 +685,7 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_whitelist.ip_addresses = ip_addresses
     if fqdns is not None:
         instance.threat_intel_whitelist.fqdns = fqdns
-    if cmd.supported_api_version(min_api='2020-07-01'):
+    if cmd.supported_api_version(min_api='2021-08-01'):
         if sku is not None:
             instance.sku = FirewallPolicySku(tier=sku)
 
@@ -608,13 +706,19 @@ def update_azure_firewall_policies(cmd,
                                                                   name=certificate_name)
             instance.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
 
+    if cmd.supported_api_version(min_api='2021-03-01'):
+        if sql is not None:
+            FirewallPolicySQL = cmd.get_models('FirewallPolicySQL')
+            instance.sql = FirewallPolicySQL(allow_sql_redirect=sql)
+
     # identity
     (ManagedServiceIdentityUserAssignedIdentitiesValue,
-     ManagedServiceIdentity) = cmd.get_models('Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties',
+     ManagedServiceIdentity) = cmd.get_models('Components1Jq1T4ISchemasManagedserviceidentity\
+         PropertiesUserassignedidentitiesAdditionalproperties',
                                               'ManagedServiceIdentity')
     if user_assigned_identity is not None:
         user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
-        user_assigned_identities_instance = dict()
+        user_assigned_identities_instance = {}
         user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
         identity_instance = ManagedServiceIdentity(
             type="UserAssigned",
@@ -626,7 +730,7 @@ def update_azure_firewall_policies(cmd,
 
 
 def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
-    if parameters.identity is None:
+    if parameters.identity is None and parameters.sku.tier == 'Premium':
         ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
 
         identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
@@ -646,6 +750,7 @@ def list_azure_firewall_policies(cmd, resource_group_name=None):
 def add_firewall_policy_intrusion_detection_config(cmd,
                                                    resource_group_name,
                                                    firewall_policy_name,
+                                                   private_ranges=None,
                                                    signature_id=None,
                                                    signature_mode=None,
                                                    bypass_rule_name=None,
@@ -669,7 +774,7 @@ def add_firewall_policy_intrusion_detection_config(cmd,
         for overrided_signature in firewall_policy.intrusion_detection.configuration.signature_overrides:
             if overrided_signature.id == signature_id:
                 raise InvalidArgumentValueError(
-                    'Signature ID {} exists. Delete it first or try update instead'.format(signature_id))
+                    f'Signature ID {signature_id} exists. Delete it first or try update instead')
 
         FirewallPolicyIntrusionDetectionSignatureSpecification = \
             cmd.get_models('FirewallPolicyIntrusionDetectionSignatureSpecification')
@@ -693,6 +798,10 @@ def add_firewall_policy_intrusion_detection_config(cmd,
             destination_ip_groups=bypass_rule_destination_ip_groups,
         )
         firewall_policy.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
+
+    if private_ranges is not None:
+        __private_ranges = [x.strip() for x in private_ranges.split(",")]
+        firewall_policy.intrusion_detection.configuration.private_ranges = __private_ranges
 
     result = sdk_no_wait(False,
                          client.begin_create_or_update,
@@ -729,14 +838,14 @@ def remove_firewall_policy_intrusion_detection_config(cmd,
         signatures = firewall_policy.intrusion_detection.configuration.signature_overrides
         new_signatures = [s for s in signatures if s.id != signature_id]
         if len(signatures) == len(new_signatures):
-            raise InvalidArgumentValueError("Signature ID {} doesn't exist".format(signature_id))
+            raise InvalidArgumentValueError(f"Signature ID {signature_id} doesn't exist")
         firewall_policy.intrusion_detection.configuration.signature_overrides = new_signatures
 
     if bypass_rule_name is not None:
         bypass_settings = firewall_policy.intrusion_detection.configuration.bypass_traffic_settings
         new_bypass_settings = [s for s in bypass_settings if s.name != bypass_rule_name]
         if len(bypass_settings) == len(new_bypass_settings):
-            raise InvalidArgumentValueError("Bypass rule with name {} doesn't exist".format(signature_id))
+            raise InvalidArgumentValueError(f"Bypass rule with name {signature_id} doesn't exist")
         firewall_policy.intrusion_detection.configuration.bypass_traffic_settings = new_bypass_settings
 
     result = sdk_no_wait(False,
@@ -753,7 +862,8 @@ def create_azure_firewall_policy_rule_collection_group(cmd, resource_group_name,
     FirewallPolicyRuleCollectionGroup = cmd.get_models('FirewallPolicyRuleCollectionGroup')
     rule_group = FirewallPolicyRuleCollectionGroup(priority=priority,
                                                    name=rule_collection_group_name)
-    return client.begin_create_or_update(resource_group_name, firewall_policy_name, rule_collection_group_name, rule_group)
+    return client.begin_create_or_update(resource_group_name,
+                                         firewall_policy_name, rule_collection_group_name, rule_group)
 
 
 def update_azure_firewall_policy_rule_collection_group(instance, priority=None, tags=None):
@@ -765,10 +875,10 @@ def update_azure_firewall_policy_rule_collection_group(instance, priority=None, 
 
 
 def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, firewall_policy_name,
-                                                  rule_collection_group_name,
+                                                  rule_collection_group_name, ip_protocols,
                                                   rule_collection_name, rule_priority, translated_address=None,
                                                   translated_fqdn=None, translated_port=None, nat_action=None,
-                                                  rule_name=None, description=None, ip_protocols=None,
+                                                  rule_name=None, description=None,
                                                   source_addresses=None, destination_addresses=None,
                                                   destination_ports=None, source_ip_groups=None):
     FirewallPolicyNatRuleCollection, FirewallPolicyNatRuleCollectionAction, \
@@ -811,7 +921,8 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                      protocols=None, fqdn_tags=None, target_fqdns=None,
                                                      source_ip_groups=None, destination_ip_groups=None,
                                                      destination_fqdns=None,
-                                                     target_urls=None, enable_tls_inspection=False, web_categories=None):
+                                                     target_urls=None,
+                                                     enable_tls_inspection=False, web_categories=None):
     NetworkRule, FirewallPolicyRuleApplicationProtocol,\
         ApplicationRule, FirewallPolicyFilterRuleCollectionAction, FirewallPolicyFilterRuleCollection =\
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
@@ -999,8 +1110,7 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
     if target_rule_collection is None:
         raise UserFault("Cannot find corresponding rule, please check parameters")
 
-    for i in range(0, len(target_rule_collection.rules)):
-        rule = target_rule_collection.rules[i]
+    for i, rule in enumerate(target_rule_collection.rules):
         if rule_name == rule.name:
             new_rule = {}
             if rule.rule_type == "NetworkRule":
@@ -1047,8 +1157,7 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
             if new_rule:
                 target_rule_collection.rules[i] = copy.deepcopy(new_rule)
                 return instance
-            else:
-                raise ServiceError(f'Undefined rule_type : {rule.rule_type}')
+            raise ServiceError(f'Undefined rule_type : {rule.rule_type}')
 
     raise UserFault(f'{rule_name} does not exist!!!')
 # endregion

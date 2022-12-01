@@ -5,9 +5,13 @@
 
 # pylint: disable=line-too-long
 
+import logging
+
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
 from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
+
+logger = logging.getLogger(__name__)
 
 
 def transform_targets(providers):
@@ -27,7 +31,7 @@ def transform_targets(providers):
 
 
 def transform_job(result):
-    result = OrderedDict([
+    transformed_result = OrderedDict([
         ('Name', result['name']),
         ('Id', result['id']),
         ('Status', result['status']),
@@ -35,7 +39,17 @@ def transform_job(result):
         ('Submission time', result['creationTime']),
         ('Completion time', result['endExecutionTime'])
     ])
-    return result
+
+    # For backwards compatibility check if the field is present and only display if present
+    cost_estimate = result['costEstimate']
+    if cost_estimate is not None:
+        amount = cost_estimate['estimatedTotal']
+        currency = cost_estimate['currencyCode']
+        if (amount is not None) and (currency is not None):
+            price = str(amount) + ' ' + currency
+            transformed_result['Cost estimate'] = price
+
+    return transformed_result
 
 
 def transform_jobs(results):
@@ -48,8 +62,8 @@ def transform_jobs(results):
 def transform_offerings(offerings):
     def one(offering):
         return OrderedDict([
-            ('Provider Id', offering['id']),
-            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']])),
+            ('Provider ID', offering['id']),
+            ('SKU', ', '.join([s['id'] for s in offering['properties']['skus']])),
             ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
             ('Offer ID', offering['properties']['managedApplication']['offerId'])
         ])
@@ -64,7 +78,7 @@ def transform_output(results):
         return OrderedDict([
             ('Result', key),
             ('Frequency', f"{value:10.8f}"),
-            ('', f"\u007C{barra:^20}\u007C")
+            ('', f"\u007C{barra:<20}\u007C")
         ])
 
     if 'Histogram' in results:
@@ -83,6 +97,38 @@ def transform_output(results):
     elif 'histogram' in results:
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
+
+    elif 'reportData' in results:
+        table = []
+        for group in results['reportData']['groups']:
+            table.append(OrderedDict([
+                ("Label", (f"---{group['title']}---")),
+                ('Value', '---'),
+                ('Description', '---')
+            ]))
+            for entry in group['entries']:
+                val = results
+                for key in entry['path'].split("/"):
+                    val = val[key]
+                table.append(OrderedDict([
+                    ("Label", entry['label']),
+                    ('Value', val),
+                    ('Description', entry['description'])
+                ]))
+        return table
+
+    elif 'errorData' in results:
+        notFound = 'Not found'
+        errorData = results['errorData']
+        status = results.get('status', notFound)
+        errorCode = errorData.get('code', notFound)
+        errorMessage = errorData.get('message', notFound)
+        target = results.get('target', notFound)
+        jobId = results.get('id', notFound)
+        submissionTime = results.get('creationTime', notFound)
+
+        logger.error("Job was not successful. Job ID: %s, Status: %s, Error Code: %s, Error Message: %s, Target: %s", jobId, status, errorCode, errorMessage, target)
+        return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results
 
@@ -105,13 +151,13 @@ def load_command_table(self, _):
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
-        t.show_command('show', validator=validate_target_info)
+        t.show_command('show', 'target_show', validator=validate_target_info)
         t.command('set', 'set', validator=validate_target_info)
         t.command('clear', 'clear')
 
     with self.command_group('quantum job', job_ops) as j:
         j.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_jobs)
-        j.show_command('show', validator=validate_workspace_info, table_transformer=transform_job)
+        j.show_command('show', 'job_show', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)

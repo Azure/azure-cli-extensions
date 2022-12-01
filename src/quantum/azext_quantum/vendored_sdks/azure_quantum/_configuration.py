@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING
 
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
-from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
 from ._version import VERSION
 
@@ -21,7 +20,7 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 
-class QuantumClientConfiguration(Configuration):
+class QuantumClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
     """Configuration for QuantumClient.
 
     Note that all parameters used to create this instance are saved as instance
@@ -29,7 +28,8 @@ class QuantumClientConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).
+    :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g.
+     00000000-0000-0000-0000-000000000000).
     :type subscription_id: str
     :param resource_group_name: Name of an Azure resource group.
     :type resource_group_name: str
@@ -46,6 +46,7 @@ class QuantumClientConfiguration(Configuration):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
+        super(QuantumClientConfiguration, self).__init__(**kwargs)
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
         if subscription_id is None:
@@ -54,7 +55,6 @@ class QuantumClientConfiguration(Configuration):
             raise ValueError("Parameter 'resource_group_name' must not be None.")
         if workspace_name is None:
             raise ValueError("Parameter 'workspace_name' must not be None.")
-        super(QuantumClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
         self.subscription_id = subscription_id
@@ -73,7 +73,7 @@ class QuantumClientConfiguration(Configuration):
         self.headers_policy = kwargs.get('headers_policy') or policies.HeadersPolicy(**kwargs)
         self.proxy_policy = kwargs.get('proxy_policy') or policies.ProxyPolicy(**kwargs)
         self.logging_policy = kwargs.get('logging_policy') or policies.NetworkTraceLoggingPolicy(**kwargs)
-        self.http_logging_policy = kwargs.get('http_logging_policy') or ARMHttpLoggingPolicy(**kwargs)
+        self.http_logging_policy = kwargs.get('http_logging_policy') or policies.HttpLoggingPolicy(**kwargs)
         self.retry_policy = kwargs.get('retry_policy') or policies.RetryPolicy(**kwargs)
         self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
         self.redirect_policy = kwargs.get('redirect_policy') or policies.RedirectPolicy(**kwargs)

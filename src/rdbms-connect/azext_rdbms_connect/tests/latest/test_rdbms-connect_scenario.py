@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (
     JMESPathCheck,
     NoneCheck,
@@ -24,7 +24,7 @@ SERVER_LOGIN_PWD_MAX_LENGTH = 15
 class RdbmsConnectMgmtScenarioTest(ScenarioTest):
 
     postgres_location = 'eastus'
-    mysql_location = 'westus2'
+    mysql_location = 'northeurope'
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(location=postgres_location)
@@ -103,6 +103,13 @@ class RdbmsConnectMgmtScenarioTest(ScenarioTest):
         file_path = "./test.sql"
         with open(file_path, "w") as sql_file:
             sql_file.write("CREATE DATABASE sampledb;")
+
+        self.cmd('{} flexible-server execute -n {} -u {} -p {} -d {} -f {}'
+                 .format(database_engine, server_name, username, generated_password, default_database, file_path))
+
+        # test file execution encoded with BOM
+        with open(file_path, "wb") as sql_file:
+            sql_file.write(b"\xef\xbb\xbfCREATE DATABASE sampledb2;")
 
         self.cmd('{} flexible-server execute -n {} -u {} -p {} -d {} -f {}'
                  .format(database_engine, server_name, username, generated_password, default_database, file_path))

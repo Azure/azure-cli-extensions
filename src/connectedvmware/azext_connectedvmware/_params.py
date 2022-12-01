@@ -5,8 +5,14 @@
 # pylint: disable= too-many-statements
 
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import tags_type
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.parameters import (
+    tags_type,
+    get_three_state_flag,
+)
+from azure.cli.core.commands.validators import (
+    get_default_location_from_resource_group,
+    validate_file_or_dict
+)
 from ._actions import VmNicAddAction, VmDiskAddAction
 
 
@@ -25,11 +31,6 @@ def load_arguments(self, _):
         help='Name or ID of the vCenter that is managing this resource.',
     )
 
-    mo_ref_id = CLIArgumentType(
-        options_list=['--mo-ref-id', '-m'],
-        help='VCenter MoRef (Managed Object Reference) ID for the existing resource.',
-    )
-
     inventory_item = CLIArgumentType(
         options_list=['--inventory-item', '-i'],
         help='Name or ID of the inventory item.',
@@ -46,9 +47,6 @@ def load_arguments(self, _):
         )
         c.argument(
             'vcenter', vcenter, options_list=['--vcenter', '-v']
-        )
-        c.argument(
-            'mo_ref_id', mo_ref_id, options_list=['--mo-ref-id', '-m']
         )
         c.argument(
             'inventory_item', inventory_item, options_list=['--inventory-item', '-i']
@@ -111,14 +109,10 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm create') as c:
         c.argument(
-            'vm_template',
-            options_list=['--vm-template'],
-            help="Name or ID of the vm template for deploying the vm.",
+            'vm_template', help="Name or ID of the vm template for deploying the vm.",
         )
         c.argument(
-            'resource_pool',
-            options_list=['--resource-pool'],
-            help="Name or ID of the resource pool for deploying the vm.",
+            'resource_pool', help="Name or ID of the resource pool for deploying the vm.",
         )
         c.argument(
             'cluster',
@@ -206,6 +200,11 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
+        c.argument(
+            'retain',
+            action='store_true',
+            help='Disable the VM from azure; delete the ARM resource but retain the VM in VMware.',
+        )
 
     with self.argument_context('connectedvmware vm stop') as c:
         c.argument(
@@ -283,7 +282,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm disk delete') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
         c.argument(
             'disk_names',
@@ -294,7 +293,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm disk list') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
 
     with self.argument_context('connectedvmware vm disk show') as c:
@@ -306,7 +305,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm disk update') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
         c.argument(
             'disk_size',
@@ -338,7 +337,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm guest-agent enable') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the VM."
+            'vm_name', help="Name of the VM."
         )
         c.argument(
             'username',
@@ -346,12 +345,71 @@ def load_arguments(self, _):
             help="Username to use for connecting to the vm.",
         )
         c.argument(
-            'password',
-            options_list=['--password'],
+            'password', options_list=['--password'],
+            help="Username password credentials to use for connecting to the VM.",
+        )
+        c.argument(
+            'https_proxy', help="HTTPS proxy server url for the VM.",
+        )
+
+    with self.argument_context('connectedvmware vm guest-agent show') as c:
+        c.argument(
+            'password', options_list=['--password'],
             help="Username password credentials to use for connecting to the VM.",
         )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the VM.",
+            'vm_name', help="Name of the VM.",
         )
+
+    with self.argument_context('connectedvmware vm extension list') as c:
+        c.argument('vm_name', type=str, help='The name of the vm containing the extension.')
+        c.argument(
+            'expand', help='The expand expression to apply on the operation.')
+
+    with self.argument_context('connectedvmware vm extension show') as c:
+        c.argument(
+            'vm_name', type=str, help='The name of the vm containing the extension.',
+            id_part='name')
+        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
+
+    for scope in ['connectedvmware vm extension update', 'connectedvmware vm extension create']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                'vm_name', type=str, help='The name of the vm where the extension '
+                'should be created or updated.')
+            c.argument('name', type=str, help='The name of the vm extension.')
+            c.argument('tags', tags_type)
+            c.argument(
+                'force_update_tag', type=str, help='How the extension handler should be forced to update even if '
+                'the extension configuration has not changed.')
+            c.argument('publisher', type=str, help='The name of the extension handler publisher.')
+            c.argument(
+                'type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
+                'is "CustomScriptExtension".')
+            c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+            c.argument(
+                'auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
+                'use a newer minor version if one is available at deployment time. Once deployed, however, the '
+                'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
+            c.argument(
+                'settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
+                'Expected value: json-string/json-file/@json-file.')
+            c.argument(
+                'protected_settings', type=validate_file_or_dict, help='The extension can contain either '
+                'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
+                'value: json-string/json-file/@json-file.')
+
+    with self.argument_context('connectedvmware vm extension create') as c:
+        c.argument(
+            'instance_view_type', type=str, help='Specify the type of the extension; an example is '
+            '"CustomScriptExtension".', arg_group='Instance View')
+        c.argument(
+            'inst_handler_version', type=str, help='Specify the version of the script handler.',
+            arg_group='Instance View')
+
+    with self.argument_context('connectedvmware vm extension delete') as c:
+        c.argument('vm_name', type=str, help='The name of the vm where the extension '
+                   'should be deleted.', id_part='name')
+        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')

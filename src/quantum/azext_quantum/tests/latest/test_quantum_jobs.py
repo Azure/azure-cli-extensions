@@ -3,17 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
+import pytest
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from azure.cli.testsdk import ScenarioTest
+from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing
 from ..._client_factory import _get_data_credentials
+from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url
+from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -27,6 +31,32 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
+
+    # @pytest.fixture(autouse=True)
+    # def _pass_fixtures(self, capsys):
+    #     self.capsys = capsys
+    # # See "TODO" in issue_cmd_with_param_missing un utils.py
+
+    def test_job_errors(self):
+        issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
+
+    def test_build(self):
+        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
+        assert result == {'result': 'ok'}
+
+        self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test/obj/qsharp/config/qsc.rsp'))
+        self.testdata = self.testfile.read()
+        self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
+        self.testfile.close()
+
+        try:
+            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
+            assert False
+        except AzureInternalError as e:
+            assert str(e) == "Failed to compile program."
 
     @live_only()
     def test_submit_args(self):
@@ -88,3 +118,122 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(args['container'], "qio")
         self.assertEquals(args['blob'], "rawOutputData")
         self.assertEquals(args['sas_token'], sas)
+
+    def test_transform_output(self):
+        # Call with a good histogram
+        test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]",0.125]}'
+        table = transform_output(json.loads(test_job_results))
+        table_row = table[0]
+        hist_row = table_row['']
+        second_char = hist_row[1]
+        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here 
+
+        # Give it a malformed histogram
+        test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
+        table = transform_output(json.loads(test_job_results))
+        self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
+
+        # Call with output from a failed job
+        test_job_results = \
+        '{\
+            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "cancellationTime": null,\
+            "containerUri": "https://foo...",\
+            "costEstimate": null,\
+            "creationTime": "2022-02-25T18:56:53.275035+00:00",\
+            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "errorData": {\
+                "code": "InsufficientResources",\
+                "message": "Too many qubits requested"\
+            },\
+            "id": "11111111-2222-3333-4444-555555555555",\
+            "inputDataFormat": "microsoft.ionq-ir.v2",\
+            "inputDataUri": "https://bar...",\
+            "inputParams": {\
+                "shots": "500"\
+            },\
+            "isCancelling": false,\
+            "metadata": {\
+                "entryPointInput": {\"Qubits\":null},\
+                "outputMappingBlobUri": "https://baz..."\
+            },\
+            "name": "",\
+            "outputDataFormat": "microsoft.quantum-results.v1",\
+            "outputDataUri": "https://quux...",\
+            "providerId": "ionq",\
+            "status": "Failed",\
+            "tags": [],\
+            "target": "ionq.simulator"\
+        }'
+
+        table = transform_output(json.loads(test_job_results))
+        self.assertEquals(table['Status'], "Failed")
+        self.assertEquals(table['Error Code'], "InsufficientResources")
+        self.assertEquals(table['Error Message'], "Too many qubits requested")
+        self.assertEquals(table['Target'], "ionq.simulator")
+        self.assertEquals(table['Job ID'], "11111111-2222-3333-4444-555555555555")
+        self.assertEquals(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
+
+        # Call with missing "status", "code", "message", "target", "id", and "creationTime"
+        test_job_results = \
+        '{\
+            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "cancellationTime": null,\
+            "containerUri": "https://foo...",\
+            "costEstimate": null,\
+            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "errorData": {\
+            },\
+            "inputDataFormat": "microsoft.ionq-ir.v2",\
+            "inputDataUri": "https://bar...",\
+            "inputParams": {\
+                "shots": "500"\
+            },\
+            "isCancelling": false,\
+            "metadata": {\
+                "entryPointInput": {\"Qubits\":null},\
+                "outputMappingBlobUri": "https://baz..."\
+            },\
+            "name": "",\
+            "outputDataFormat": "microsoft.quantum-results.v1",\
+            "outputDataUri": "https://quux...",\
+            "providerId": "ionq",\
+            "tags": []\
+        }'
+
+        table = transform_output(json.loads(test_job_results))
+        notFound = "Not found"
+        self.assertEquals(table['Status'], notFound)
+        self.assertEquals(table['Error Code'], notFound)
+        self.assertEquals(table['Error Message'], notFound)
+        self.assertEquals(table['Target'], notFound)
+        self.assertEquals(table['Job ID'], notFound)
+        self.assertEquals(table['Submission Time'], notFound)
+
+    def test_validate_max_poll_wait_secs(self):
+        wait_secs = _validate_max_poll_wait_secs(1)
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 1.0)
+
+        wait_secs = _validate_max_poll_wait_secs("60")
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 60.0)
+
+        # Invalid values should raise errors
+        try:
+            wait_secs = _validate_max_poll_wait_secs(0.999999999)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: 0.999999999"
+
+        try:
+            wait_secs = _validate_max_poll_wait_secs(-1.0)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: -1.0"
+
+        try:
+            wait_secs = _validate_max_poll_wait_secs("foobar")
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"

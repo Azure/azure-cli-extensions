@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -6,90 +7,278 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
-import warnings
+
+from msrest import Serializer
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.core.pipeline.transport import HttpResponse
+from azure.core.rest import HttpRequest
+from azure.core.tracing.decorator import distributed_trace
+# from azure.core.utils import case_insensitive_dict    <--- Restore this line after Azure CLI version 2.38.0 is released
+from ..._utils import case_insensitive_dict
 
 from .. import models as _models
+from .._vendor import _convert_request, _format_url_section
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
-
+    from typing import Any, Callable, Dict, Iterable, List, Optional, TypeVar
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
+_SERIALIZER = Serializer()
+_SERIALIZER.client_side_validation = False
+# fmt: off
+
+def build_list_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    workspace_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+
+    accept = _headers.pop('Accept', "application/json")
+
+    # Construct URL
+    _url = kwargs.pop("template_url", "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct headers
+    _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        headers=_headers,
+        **kwargs
+    )
+
+
+def build_get_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    workspace_name,  # type: str
+    job_id,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+
+    accept = _headers.pop('Accept', "application/json")
+
+    # Construct URL
+    _url = kwargs.pop("template_url", "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, 'str'),
+        "jobId": _SERIALIZER.url("job_id", job_id, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct headers
+    _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="GET",
+        url=_url,
+        headers=_headers,
+        **kwargs
+    )
+
+
+def build_create_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    workspace_name,  # type: str
+    job_id,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+
+    content_type = kwargs.pop('content_type', _headers.pop('Content-Type', None))  # type: Optional[str]
+    accept = _headers.pop('Accept', "application/json")
+
+    # Construct URL
+    _url = kwargs.pop("template_url", "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, 'str'),
+        "jobId": _SERIALIZER.url("job_id", job_id, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct headers
+    if content_type is not None:
+        _headers['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="PUT",
+        url=_url,
+        headers=_headers,
+        **kwargs
+    )
+
+
+def build_cancel_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    workspace_name,  # type: str
+    job_id,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+
+    accept = _headers.pop('Accept', "application/json")
+
+    # Construct URL
+    _url = kwargs.pop("template_url", "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, 'str'),
+        "jobId": _SERIALIZER.url("job_id", job_id, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct headers
+    _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="DELETE",
+        url=_url,
+        headers=_headers,
+        **kwargs
+    )
+
+
+def build_patch_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    workspace_name,  # type: str
+    job_id,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+
+    content_type = kwargs.pop('content_type', _headers.pop('Content-Type', None))  # type: Optional[str]
+    accept = _headers.pop('Accept', "application/json")
+
+    # Construct URL
+    _url = kwargs.pop("template_url", "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, 'str'),
+        "jobId": _SERIALIZER.url("job_id", job_id, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct headers
+    if content_type is not None:
+        _headers['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="PATCH",
+        url=_url,
+        headers=_headers,
+        **kwargs
+    )
+
+# fmt: on
 class JobsOperations(object):
-    """JobsOperations operations.
+    """
+    .. warning::
+        **DO NOT** instantiate this class directly.
 
-    You should not instantiate this class directly. Instead, you should create a Client instance that
-    instantiates it for you and attaches it as an attribute.
-
-    :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.quantum.models
-    :param client: Client for service requests.
-    :param config: Configuration of service client.
-    :param serializer: An object model serializer.
-    :param deserializer: An object model deserializer.
+        Instead, you should access the following operations through
+        :class:`~azure.quantum._client.QuantumClient`'s
+        :attr:`jobs` attribute.
     """
 
     models = _models
 
-    def __init__(self, client, config, serializer, deserializer):
-        self._client = client
-        self._serialize = serializer
-        self._deserialize = deserializer
-        self._config = config
+    def __init__(self, *args, **kwargs):
+        input_args = list(args)
+        self._client = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._config = input_args.pop(0) if input_args else kwargs.pop("config")
+        self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
+        self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
+
+    @distributed_trace
     def list(
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.JobDetailsList"]
+        # type: (...) -> Iterable[_models.JobDetailsList]
         """List jobs.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either JobDetailsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.JobDetailsList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum._client.models.JobDetailsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.JobDetailsList"]
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.JobDetailsList]
+
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
-        error_map.update(kwargs.pop('error_map', {}))
-        accept = "application/json"
-
+        error_map.update(kwargs.pop('error_map', {}) or {})
         def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
             if not next_link:
-                # Construct URL
-                url = self.list.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("self._config.resource_group_name", self._config.resource_group_name, 'str'),
-                    'workspaceName': self._serialize.url("self._config.workspace_name", self._config.workspace_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
+                
+                request = build_list_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=self._config.resource_group_name,
+                    workspace_name=self._config.workspace_name,
+                    template_url=self.list.metadata['url'],
+                    headers=_headers,
+                    params=_params,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)  # type: ignore
 
-                request = self._client.get(url, query_parameters, header_parameters)
             else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                
+                request = build_list_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=self._config.resource_group_name,
+                    workspace_name=self._config.workspace_name,
+                    template_url=next_link,
+                    headers=_headers,
+                    params=_params,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)  # type: ignore
+                request.method = "GET"
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('JobDetailsList', pipeline_response)
+            deserialized = self._deserialize("JobDetailsList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -98,67 +287,75 @@ class JobsOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response)
 
             return pipeline_response
+
 
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs'}  # type: ignore
+    list.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs"}  # type: ignore
 
+    @distributed_trace
     def get(
         self,
         job_id,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.JobDetails"
+        # type: (...) -> _models.JobDetails
         """Get job by id.
 
         :param job_id: Id of the job.
         :type job_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JobDetails, or the result of cls(response)
-        :rtype: ~azure.quantum.models.JobDetails
+        :rtype: ~azure.quantum._client.models.JobDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.JobDetails"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
-        error_map.update(kwargs.pop('error_map', {}))
-        accept = "application/json"
+        error_map.update(kwargs.pop('error_map', {}) or {})
 
-        # Construct URL
-        url = self.get.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("self._config.resource_group_name", self._config.resource_group_name, 'str'),
-            'workspaceName': self._serialize.url("self._config.workspace_name", self._config.workspace_name, 'str'),
-            'jobId': self._serialize.url("job_id", job_id, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.JobDetails]
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        
+        request = build_get_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=self._config.resource_group_name,
+            workspace_name=self._config.workspace_name,
+            job_id=job_id,
+            template_url=self.get.metadata['url'],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)  # type: ignore
 
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.RestError, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('JobDetails', pipeline_response)
 
@@ -166,63 +363,67 @@ class JobsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}  # type: ignore
 
+    get.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"}  # type: ignore
+
+
+    @distributed_trace
     def create(
         self,
         job_id,  # type: str
-        job,  # type: "_models.JobDetails"
+        job,  # type: _models.JobDetails
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.JobDetails"
+        # type: (...) -> _models.JobDetails
         """Create a job.
 
         :param job_id: Id of the job.
         :type job_id: str
         :param job: The complete metadata of the job to submit.
-        :type job: ~azure.quantum.models.JobDetails
+        :type job: ~azure.quantum._client.models.JobDetails
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JobDetails, or the result of cls(response)
-        :rtype: ~azure.quantum.models.JobDetails
+        :rtype: ~azure.quantum._client.models.JobDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.JobDetails"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
-        error_map.update(kwargs.pop('error_map', {}))
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
+        error_map.update(kwargs.pop('error_map', {}) or {})
 
-        # Construct URL
-        url = self.create.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("self._config.resource_group_name", self._config.resource_group_name, 'str'),
-            'workspaceName': self._serialize.url("self._config.workspace_name", self._config.workspace_name, 'str'),
-            'jobId': self._serialize.url("job_id", job_id, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
+        content_type = kwargs.pop('content_type', _headers.pop('Content-Type', "application/json"))  # type: Optional[str]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.JobDetails]
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        _json = self._serialize.body(job, 'JobDetails')
 
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(job, 'JobDetails')
-        body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = build_create_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=self._config.resource_group_name,
+            workspace_name=self._config.workspace_name,
+            job_id=job_id,
+            content_type=content_type,
+            json=_json,
+            template_url=self.create.metadata['url'],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)  # type: ignore
+
+        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.RestError, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
 
         if response.status_code == 200:
             deserialized = self._deserialize('JobDetails', pipeline_response)
@@ -234,9 +435,12 @@ class JobsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}  # type: ignore
 
-    def cancel(
+    create.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"}  # type: ignore
+
+
+    @distributed_trace
+    def cancel(  # pylint: disable=inconsistent-return-statements
         self,
         job_id,  # type: str
         **kwargs  # type: Any
@@ -251,40 +455,113 @@ class JobsOperations(object):
         :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
-        error_map.update(kwargs.pop('error_map', {}))
-        accept = "application/json"
+        error_map.update(kwargs.pop('error_map', {}) or {})
 
-        # Construct URL
-        url = self.cancel.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("self._config.resource_group_name", self._config.resource_group_name, 'str'),
-            'workspaceName': self._serialize.url("self._config.workspace_name", self._config.workspace_name, 'str'),
-            'jobId': self._serialize.url("job_id", job_id, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
 
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
 
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        
+        request = build_cancel_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=self._config.resource_group_name,
+            workspace_name=self._config.workspace_name,
+            job_id=job_id,
+            template_url=self.cancel.metadata['url'],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)  # type: ignore
 
-        request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
         response = pipeline_response.http_response
 
         if response.status_code not in [204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.RestError, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    cancel.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}  # type: ignore
+    cancel.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"}  # type: ignore
+
+
+    @distributed_trace
+    def patch(
+        self,
+        job_id,  # type: str
+        patch_job,  # type: List[_models.JsonPatchDocument]
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Optional[_models.JobDetails]
+        """Patch a job.
+
+        :param job_id: Id of the job.
+        :type job_id: str
+        :param patch_job: The json patch document containing the patch operations.
+        :type patch_job: list[~azure.quantum._client.models.JsonPatchDocument]
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: JobDetails, or the result of cls(response)
+        :rtype: ~azure.quantum._client.models.JobDetails or None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
+
+        content_type = kwargs.pop('content_type', _headers.pop('Content-Type', "application/json"))  # type: Optional[str]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional[_models.JobDetails]]
+
+        _json = self._serialize.body(patch_job, '[JsonPatchDocument]')
+
+        request = build_patch_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=self._config.resource_group_name,
+            workspace_name=self._config.workspace_name,
+            job_id=job_id,
+            content_type=content_type,
+            json=_json,
+            template_url=self.patch.metadata['url'],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)  # type: ignore
+
+        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 204]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('JobDetails', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    patch.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"}  # type: ignore
+

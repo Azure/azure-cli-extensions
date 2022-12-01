@@ -5,10 +5,9 @@
 
 import os
 import time
-from unittest.case import skip
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, record_only)
-from azure.cli.testsdk.checkers import StringContainCheck
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
@@ -26,9 +25,23 @@ class AzureVWanVHubScenario(ScenarioTest):
         })
 
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard')
-
-        self.cmd('network vhub update -g {rg} -n {vhub} --sku Basic')
+        self.cmd(
+            'network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.0.0/24 -l SouthCentralUS '
+            '--sku Standard --hub-routing-preference ExpressRoute --asn 65515',
+            checks=[
+                self.check('sku', 'Standard'),
+                self.check('hubRoutingPreference', 'ExpressRoute'),
+                self.check('virtualRouterAsn', 65515)
+            ]
+        )
+        self.cmd(
+            'network vhub update -g {rg} -n {vhub} --sku Basic --hub-routing-preference VpnGateway --asn 65515',
+            checks=[
+                self.check('sku', 'Basic'),
+                self.check('hubRoutingPreference', 'VpnGateway'),
+                self.check('virtualRouterAsn', 65515)
+            ]
+        )
         self.cmd('network vwan update -g {rg} -n {vwan} --type Basic')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route')
@@ -186,7 +199,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--aad-audience {aad_audience} '
                  '--aad-issuer {aad_issuer} '
                  '--aad-tenant {aad_tenant} '
-                 '--auth-types Radius AAD Certificate',
+                 '--auth-types Radius AAD Certificate --protocols OpenVPN',
                  checks=[
                      self.check('name', '{vserverconfig}'),
                      self.exists('vpnClientRootCertificates[0].publicCertData'),
@@ -206,7 +219,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--aad-audience {aad_audience} '
                  '--aad-issuer {aad_issuer} '
                  '--aad-tenant {aad_tenant} '
-                 '--auth-types Radius AAD Certificate',
+                 '--auth-types Radius AAD Certificate --protocols OpenVPN',
                  checks=[
                      self.check('name', '{vserverconfig1}'),
                      self.check('length(vpnClientRootCertificates)', 1),
@@ -273,8 +286,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus')
         self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l westus')
-        with self.assertRaisesRegexp(CLIError, 'VPN gateway already exist'):
-            self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l westus')
         self.cmd('network vpn-gateway show -n {vpngateway} -g {rg}')
         self.cmd('network vpn-gateway list -g {rg}')
         self.cmd('network vpn-gateway list')
@@ -306,7 +317,7 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
                  checks=[])
 
-        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110')
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.2.110 --address-prefixes 10.0.2.0/24')
 
         self.cmd('network vpn-gateway connection create '
                  '-g {rg} '
@@ -364,6 +375,184 @@ class AzureVWanVHubScenario(ScenarioTest):
                      '-g {rg} '
                      '-n {connection} '
                      '--gateway-name {vpngateway}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway_connection_vpn_site_link', location='westus')
+    def test_azure_vwan_vpn_gateway_connection_vpn_site_link(self):
+        self.kwargs.update({
+            'vwan': 'test_vwan',
+            'vhub': 'test_vhub',
+            'vpngateway': 'test_s2s_vpn_gateway',
+            'connection': 'test_s2s_vpn_gateway_connection',
+            'vpn_site': 'remote_vpn_site_1',
+            'route_table1': 'test_vhub_routing_1',
+            'route_table2': 'test_vhub_routing_2',
+            'vpn_site_link_conn': 'Connection-Link1',
+            'vpn_site_link_name': 'VPN-Site-Link1',
+            'vpn_site_link_2_name': 'VPN-Site-Link2',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        rt1 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table1}').get_output_in_json()
+        rt2 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table2}').get_output_in_json()
+
+        self.kwargs.update({
+            'route_table1': rt1['id'],
+            'route_table2': rt2['id'],
+        })
+
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
+                 checks=[])
+
+        # Test vpn site with links
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.2.110 --address-prefixes 10.0.2.0/24')
+        with self.assertRaisesRegexp(HttpResponseError, 'MissingDefaultLinkForVpnSiteDuringMigrationToLinkFormat'):
+            self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0')
+        # Test ipsec policy
+        self.cmd('network vpn-gateway connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 ')
+        self.cmd('network vpn-gateway connection ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} --ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+        self.cmd('network vpn-gateway connection ipsec-policy list -g {rg} --gateway-name {vpngateway} --connection-name {connection}')
+        self.cmd('network vpn-gateway connection ipsec-policy remove -g {rg} --gateway-name {vpngateway} --connection-name {connection} --index 1')
+        self.cmd('network vpn-gateway connection delete -g {rg} -n {connection} --gateway-name {vpngateway}')
+        self.cmd('network vpn-site delete -g {rg} -n {vpn_site}')
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.4.110 --with-link --address-prefixes 10.0.4.0/24')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.4.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_2_name} --ip-address 10.0.4.112 --asn 1234 --bgp-peering-address 192.168.2.0')
+        self.cmd('network vpn-site link list -g {rg} --site-name {vpn_site}')
+        self.cmd('network vpn-site link remove -g {rg} --site-name {vpn_site} --index 2')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway_connection_vpn_site_link_conn', location='westus')
+    def test_azure_vwan_vpn_gateway_connection_vpn_site_link_conn(self):
+        self.kwargs.update({
+            'vwan': 'test_vwan',
+            'vhub': 'test_vhub',
+            'vpngateway': 'test_s2s_vpn_gateway',
+            'connection': 'test_s2s_vpn_gateway_connection',
+            'vpn_site': 'remote_vpn_site_1',
+            'route_table1': 'test_vhub_routing_1',
+            'route_table2': 'test_vhub_routing_2',
+            'vpn_site_link_conn': 'Connection-Link1',
+            'vpn_site_link_name': 'VPN-Site-Link1',
+            'vpn_site_link_2_name': 'VPN-Site-Link2',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        rt1 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table1}').get_output_in_json()
+        rt2 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table2}').get_output_in_json()
+
+        self.kwargs.update({
+            'route_table1': rt1['id'],
+            'route_table2': rt2['id'],
+        })
+
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
+                 checks=[])
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.2.110 --with-link --address-prefixes 10.0.2.0/24')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.2.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+
+        # Test vpn gateway connection with links
+        self.cmd('network vpn-gateway connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
+                 '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site}" '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 '
+                 '--with-link')
+
+        self.cmd('network vpn-gateway connection vpn-site-link-conn add '
+                 '-g {rg} '
+                 '--connection-name {connection} '
+                 '--gateway-name {vpngateway} '
+                 '-n {vpn_site_link_conn} '
+                 '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site_link_name}" '
+                 '--vpn-connection-protocol-type IKEv2')
+
+        self.cmd('network vpn-gateway connection vpn-site-link-conn list '
+                 '-g {rg} '
+                 '--connection-name {connection} '
+                 '--gateway-name {vpngateway}')
+
+        self.cmd('network vpn-gateway connection vpn-site-link-conn remove '
+                 '-g {rg} '
+                 '--connection-name {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--index 2')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_site_link_conn_ipsec_policy', location='westus')
+    def test_azure_vwan_vpn_site_link_conn_ipsec_policy(self):
+        self.kwargs.update({
+            'vwan': 'test_vwan',
+            'vhub': 'test_vhub',
+            'vpngateway': 'test_s2s_vpn_gateway',
+            'connection': 'test_s2s_vpn_gateway_connection',
+            'vpn_site': 'remote_vpn_site_1',
+            'route_table1': 'test_vhub_routing_1',
+            'route_table2': 'test_vhub_routing_2',
+            'vpn_site_link_conn': 'Connection-Link1',
+            'vpn_site_link_name': 'VPN-Site-Link1',
+            'vpn_site_link_2_name': 'VPN-Site-Link2',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        rt1 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table1}').get_output_in_json()
+        rt2 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table2}').get_output_in_json()
+
+        self.kwargs.update({
+            'route_table1': rt1['id'],
+            'route_table2': rt2['id'],
+        })
+
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
+                 checks=[])
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.2.110 --with-link --address-prefixes 10.0.2.0/24')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.2.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+
+        # Test vpn gateway connection with links
+        self.cmd('network vpn-gateway connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
+                 '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site}" '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 '
+                 '--with-link')
+ 
+        # Test issue:
+        # Ipsec policy setted on conneciton will fail due to multi-links on connection
+        with self.assertRaisesRegexp(HttpResponseError, 'VpnConnectionPropertyIsDeprecated'):
+            self.cmd('network vpn-gateway connection ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
+                    '--ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
+                    '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+
+        # Test link-conn ipsec policy
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
+                 '-n {connection} --ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 '
+                 '--sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy list -g {rg} --gateway-name {vpngateway} --connection-name {connection} -n {connection}')
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy remove -g {rg} --gateway-name {vpngateway} --connection-name {connection} -n {connection} --index 1')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_bgpconnection', location='westus')
     @VirtualNetworkPreparer()
@@ -597,3 +786,54 @@ class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
         out = self.cmd('network p2s-vpn-gateway vpn-client generate -g {rg} -n {p2s_gateway}').get_output_in_json()
         self.assertIsNotNone(out['profileUrl'])
         self.assertTrue(out['profileUrl'].endswith('.zip'))
+
+
+class RoutingIntentClientTest(ScenarioTest):
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_routing_intent_", location="westus")
+    def test_routing_intent_crud(self):
+        self.kwargs.update({
+            "routing_intent_name": self.create_random_name("routing-intent-", 20),
+            "vwan_name": self.create_random_name("vwan-", 12),
+            "vhub_name": self.create_random_name("vhub-", 12),
+            "firewall_name": self.create_random_name("firewall-", 16)
+        })
+
+        self.cmd("network vwan create -n {vwan_name} -g {rg}")
+        self.cmd("network vhub create -n {vhub_name} -g {rg} --vwan {vwan_name} --address-prefix 10.0.1.0/24")
+
+        self.cmd("extension add -n azure-firewall")
+        self.kwargs["firewall_id"] = self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub_name} --sku AZFW_Hub --count 1"
+        ).get_output_in_json()["id"]
+
+        self.cmd(
+            "network vhub routing-intent create -n {routing_intent_name} -g {rg} --vhub {vhub_name} "
+            "--routing-policies \"[{{name:InternetTraffic,destinations:[Internet],next-hop:{firewall_id}}},"
+            "{{name:PrivateTrafficPolicy,destinations:[PrivateTraffic],next-hop:{firewall_id}}}]\"",
+            checks=[
+                self.check("name", "{routing_intent_name}"),
+                self.check("length(routingPolicies)", 2)
+            ]
+        )
+        self.cmd(
+            "network vhub routing-intent list -g {rg} --vhub {vhub_name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].type", "Microsoft.Network/virtualHubs/routingIntent")
+            ]
+        )
+        self.cmd(
+            "network vhub routing-intent update -n {routing_intent_name} -g {rg} --vhub {vhub_name} "
+            "--routing-policies \"[{{name:InternetTraffic,destinations:[Internet],next-hop:{firewall_id}}}]\""
+        )
+        self.cmd(
+            "network vhub routing-intent show -n {routing_intent_name} -g {rg} --vhub {vhub_name}",
+            checks=[
+                self.check("name", "{routing_intent_name}"),
+                self.check("length(routingPolicies)", 1)
+            ]
+        )
+        self.cmd("network vhub routing-intent delete -n {routing_intent_name} -g {rg} --vhub {vhub_name} --yes")
+
+        self.cmd("extension remove -n azure-firewall")

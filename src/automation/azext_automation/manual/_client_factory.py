@@ -17,3 +17,19 @@ def cf_runbook_draft(cli_ctx, *_):
 
 def cf_job(cli_ctx, *_):
     return cf_automation_cl(cli_ctx).job
+
+
+def cf_schedule(cli_ctx, *_):
+    return cf_automation_cl(cli_ctx).schedule
+
+
+def cf_software_update_configuration(cli_ctx, *_):
+    return cf_automation_cl(cli_ctx).software_update_configurations
+
+
+def cf_software_update_configuration_runs(cli_ctx, *_):
+    return cf_automation_cl(cli_ctx).software_update_configuration_runs
+
+
+def cf_software_update_configuration_machine_runs(cli_ctx, *_):
+    return cf_automation_cl(cli_ctx).software_update_configuration_machine_runs

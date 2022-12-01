@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
+# pylint: disable= consider-using-dict-items, consider-using-f-string
 
-import sys
-from getpass import getpass
+from pwinput import pwinput
 from knack.util import CLIError
-from azext_connectedvmware.vmware_utils import get_resource_id
 from azure.cli.core.util import sdk_no_wait
+from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
     VMWARE_NAMESPACE,
     VCENTER_RESOURCE_TYPE,
@@ -18,7 +18,6 @@ from .vmware_constants import (
     DATASTORE_RESOURCE_TYPE,
     VMTEMPLATE_RESOURCE_TYPE,
     VIRTUALNETWORK_RESOURCE_TYPE,
-    DEFAULT_VCENTER_PORT,
     EXTENDED_LOCATION_NAMESPACE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
     EXTENDED_LOCATION_TYPE,
@@ -75,6 +74,7 @@ from .vendored_sdks.models import (
     GuestAgent,
     GuestCredential,
     PlacementProfile,
+    HttpProxyConfiguration,
 )
 
 from .vendored_sdks.operations import (
@@ -87,7 +87,8 @@ from .vendored_sdks.operations import (
     VirtualMachineTemplatesOperations,
     VirtualMachinesOperations,
     InventoryItemsOperations,
-    GuestAgentOperations,
+    GuestAgentsOperations,
+    MachineExtensionsOperations,
 )
 
 from ._client_factory import (
@@ -109,7 +110,7 @@ def connect_vcenter(
     fqdn=None,
     username=None,
     password=None,
-    port=DEFAULT_VCENTER_PORT,
+    port=None,
     tags=None,
     no_wait=False,
 ):
@@ -121,25 +122,31 @@ def connect_vcenter(
             'username': username,
             'password': password,
         }
-        if fqdn is None:
-            print('Please provide vcenter fqdn: ', end='', file=sys.stderr)
+        while not creds['fqdn']:
+            print('Please provide vcenter FQDN or IP address: ', end='')
             creds['fqdn'] = input()
-        if username is None:
-            print('Please provide vcenter username: ', end='', file=sys.stderr)
+            if not creds['fqdn']:
+                print('Parameter is required, please try again')
+        while not creds['username']:
+            print('Please provide vcenter username: ', end='')
             creds['username'] = input()
-        if password is None:
-            creds['password'] = getpass('Please provide vcenter password: ')
-        print('Is this OK? [Y/n]: ', end='', file=sys.stderr)
+            if not creds['username']:
+                print('Parameter is required, please try again')
+        while not creds['password']:
+            creds['password'] = pwinput('Please provide vcenter password: ')
+            if not creds['password']:
+                print('Parameter is required, please try again')
+            passwdConfim = pwinput('Please confirm vcenter password: ')
+            if creds['password'] != passwdConfim:
+                print('Passwords do not match, please try again')
+                creds['password'] = None
+        print('Confirm vcenter details? [Y/n]: ', end='')
         res = input().lower()
         if res in ['y', '']:
-            for cred_type, cred_val in creds.items():
-                if not cred_val:
-                    print(f'{cred_type} cannot be empty. Please try again.', file=sys.stderr)
-                    continue
             fqdn, username, password = creds['fqdn'], creds['username'], creds['password']
             creds_ok = True
         elif res != 'n':
-            print('Please type y/n or leave empty.', file=sys.stderr)
+            print('Please type y/n or leave empty.')
 
     username_creds = VICredential(username=username, password=password)
 
@@ -161,6 +168,7 @@ def connect_vcenter(
         port=port,
         extended_location=extended_location,
         credentials=username_creds,
+        tags=tags
     )
 
     return sdk_no_wait(
@@ -205,14 +213,14 @@ def show_inventory_item(
     inventory_item
 ):
 
-    return client.get(resource_group_name, vcenter, inventory_item)
+    return client.get(resource_group_name, vcenter.split('/')[-1], inventory_item.split('/')[-1])
 
 
 def list_inventory_item(
     client: InventoryItemsOperations, resource_group_name, vcenter
 ):
 
-    return client.list_by_v_center(resource_group_name, vcenter)
+    return client.list_by_v_center(resource_group_name, vcenter.split('/')[-1])
 
 
 # endregion
@@ -227,22 +235,11 @@ def create_resource_pool(
     resource_name,
     custom_location,
     location,
-    vcenter=None,
-    mo_ref_id=None,
-    inventory_item=None,
+    vcenter,
+    inventory_item,
     tags=None,
     no_wait=False,
 ):
-
-    if mo_ref_id is None and inventory_item is None:
-        raise CLIError(
-            "Missing parameter, provide either mo_ref_id or inventory_item id."
-        )
-
-    if mo_ref_id is not None and inventory_item is not None:
-        raise CLIError(
-            "mo_ref_id and inventory_item id both cannot be provided together."
-        )
 
     custom_location_id = get_resource_id(
         cmd,
@@ -256,40 +253,22 @@ def create_resource_pool(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
-    inventory_item_id = None
-    vcenter_id = None
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        INVENTORY_ITEM_TYPE,
+        inventory_item,
+    )
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
-        )
-    else:
-        if vcenter is None:
-            raise CLIError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
-    if inventory_item_id is not None:
-        resource_pool = ResourcePool(
-            location=location,
-            extended_location=extended_location,
-            inventory_item_id=inventory_item_id,
-        )
-    else:
-        resource_pool = ResourcePool(
-            location=location,
-            extended_location=extended_location,
-            v_center_id=vcenter_id,
-            mo_ref_id=mo_ref_id,
-        )
+    resource_pool = ResourcePool(
+        location=location,
+        extended_location=extended_location,
+        inventory_item_id=inventory_item_id,
+        tags=tags
+    )
 
     return sdk_no_wait(
         no_wait, client.begin_create, resource_group_name, resource_name, resource_pool
@@ -335,22 +314,11 @@ def create_cluster(
     resource_name,
     custom_location,
     location,
-    vcenter=None,
-    mo_ref_id=None,
-    inventory_item=None,
+    vcenter,
+    inventory_item,
     tags=None,
     no_wait=False,
 ):
-
-    if mo_ref_id is None and inventory_item is None:
-        raise CLIError(
-            "Missing parameter, provide either mo_ref_id or inventory_item id."
-        )
-
-    if mo_ref_id is not None and inventory_item is not None:
-        raise CLIError(
-            "mo_ref_id and inventory_item id both cannot be provided together."
-        )
 
     custom_location_id = get_resource_id(
         cmd,
@@ -364,40 +332,22 @@ def create_cluster(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
-    inventory_item_id = None
-    vcenter_id = None
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        INVENTORY_ITEM_TYPE,
+        inventory_item,
+    )
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
-        )
-    else:
-        if vcenter is None:
-            raise CLIError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
-    if inventory_item_id is not None:
-        cluster = Cluster(
-            location=location,
-            extended_location=extended_location,
-            inventory_item_id=inventory_item_id,
-        )
-    else:
-        cluster = Cluster(
-            location=location,
-            extended_location=extended_location,
-            v_center_id=vcenter_id,
-            mo_ref_id=mo_ref_id,
-        )
+    cluster = Cluster(
+        location=location,
+        extended_location=extended_location,
+        inventory_item_id=inventory_item_id,
+        tags=tags
+    )
 
     return sdk_no_wait(
         no_wait, client.begin_create, resource_group_name, resource_name, cluster
@@ -443,22 +393,11 @@ def create_datastore(
     resource_name,
     custom_location,
     location,
-    vcenter=None,
-    mo_ref_id=None,
-    inventory_item=None,
+    vcenter,
+    inventory_item,
     tags=None,
     no_wait=False,
 ):
-
-    if mo_ref_id is None and inventory_item is None:
-        raise CLIError(
-            "Missing parameter, provide either mo_ref_id or inventory_item id."
-        )
-
-    if mo_ref_id is not None and inventory_item is not None:
-        raise CLIError(
-            "mo_ref_id and inventory_item id both cannot be provided together."
-        )
 
     custom_location_id = get_resource_id(
         cmd,
@@ -472,40 +411,22 @@ def create_datastore(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
-    inventory_item_id = None
-    vcenter_id = None
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        INVENTORY_ITEM_TYPE,
+        inventory_item,
+    )
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
-        )
-    else:
-        if vcenter is None:
-            raise CLIError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
-    if inventory_item_id is not None:
-        datastore = Datastore(
-            location=location,
-            extended_location=extended_location,
-            inventory_item_id=inventory_item_id,
-        )
-    else:
-        datastore = Datastore(
-            location=location,
-            extended_location=extended_location,
-            v_center_id=vcenter_id,
-            mo_ref_id=mo_ref_id,
-        )
+    datastore = Datastore(
+        location=location,
+        extended_location=extended_location,
+        inventory_item_id=inventory_item_id,
+        tags=tags
+    )
 
     return sdk_no_wait(
         no_wait, client.begin_create, resource_group_name, resource_name, datastore
@@ -551,22 +472,11 @@ def create_host(
     resource_name,
     custom_location,
     location,
-    vcenter=None,
-    mo_ref_id=None,
-    inventory_item=None,
+    vcenter,
+    inventory_item,
     tags=None,
     no_wait=False,
 ):
-
-    if mo_ref_id is None and inventory_item is None:
-        raise CLIError(
-            "Missing parameter, provide either mo_ref_id or inventory_item id."
-        )
-
-    if mo_ref_id is not None and inventory_item is not None:
-        raise CLIError(
-            "mo_ref_id and inventory_item id both cannot be provided together."
-        )
 
     custom_location_id = get_resource_id(
         cmd,
@@ -580,40 +490,22 @@ def create_host(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
-    inventory_item_id = None
-    vcenter_id = None
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        INVENTORY_ITEM_TYPE,
+        inventory_item,
+    )
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
-        )
-    else:
-        if vcenter is None:
-            raise CLIError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
-    if inventory_item_id is not None:
-        host = Host(
-            location=location,
-            extended_location=extended_location,
-            inventory_item_id=inventory_item_id,
-        )
-    else:
-        host = Host(
-            location=location,
-            extended_location=extended_location,
-            v_center_id=vcenter_id,
-            mo_ref_id=mo_ref_id,
-        )
+    host = Host(
+        location=location,
+        extended_location=extended_location,
+        inventory_item_id=inventory_item_id,
+        tags=tags
+    )
 
     return sdk_no_wait(
         no_wait, client.begin_create, resource_group_name, resource_name, host
@@ -659,22 +551,11 @@ def create_virtual_network(
     resource_name,
     custom_location,
     location,
-    vcenter=None,
-    mo_ref_id=None,
-    inventory_item=None,
+    vcenter,
+    inventory_item,
     tags=None,
     no_wait=False,
 ):
-
-    if mo_ref_id is None and inventory_item is None:
-        raise CLIError(
-            "Missing parameter, provide either mo_ref_id or inventory_item id."
-        )
-
-    if mo_ref_id is not None and inventory_item is not None:
-        raise CLIError(
-            "mo_ref_id and inventory_item id both cannot be provided together."
-        )
 
     custom_location_id = get_resource_id(
         cmd,
@@ -688,40 +569,22 @@ def create_virtual_network(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
-    inventory_item_id = None
-    vcenter_id = None
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        INVENTORY_ITEM_TYPE,
+        inventory_item,
+    )
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
-        )
-    else:
-        if vcenter is None:
-            raise CLIError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
-    if inventory_item_id is not None:
-        virtual_network = VirtualNetwork(
-            location=location,
-            extended_location=extended_location,
-            inventory_item_id=inventory_item_id,
-        )
-    else:
-        virtual_network = VirtualNetwork(
-            location=location,
-            extended_location=extended_location,
-            v_center_id=vcenter_id,
-            mo_ref_id=mo_ref_id,
-        )
+    virtual_network = VirtualNetwork(
+        location=location,
+        extended_location=extended_location,
+        inventory_item_id=inventory_item_id,
+        tags=tags
+    )
 
     return sdk_no_wait(
         no_wait,
@@ -773,22 +636,11 @@ def create_vm_template(
     resource_name,
     custom_location,
     location,
-    vcenter=None,
-    mo_ref_id=None,
-    inventory_item=None,
+    vcenter,
+    inventory_item,
     tags=None,
     no_wait=True,
 ):
-
-    if mo_ref_id is None and inventory_item is None:
-        raise CLIError(
-            "Missing parameter, provide either mo_ref_id or inventory_item id."
-        )
-
-    if mo_ref_id is not None and inventory_item is not None:
-        raise CLIError(
-            "mo_ref_id and inventory_item id both cannot be provided together."
-        )
 
     custom_location_id = get_resource_id(
         cmd,
@@ -802,40 +654,22 @@ def create_vm_template(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
-    inventory_item_id = None
-    vcenter_id = None
+    inventory_item_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VCENTER_RESOURCE_TYPE,
+        vcenter,
+        INVENTORY_ITEM_TYPE,
+        inventory_item,
+    )
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
-        )
-    else:
-        if vcenter is None:
-            raise CLIError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
-    if inventory_item_id is not None:
-        vm_template = VirtualMachineTemplate(
-            location=location,
-            extended_location=extended_location,
-            inventory_item_id=inventory_item_id,
-        )
-    else:
-        vm_template = VirtualMachineTemplate(
-            location=location,
-            extended_location=extended_location,
-            v_center_id=vcenter_id,
-            mo_ref_id=mo_ref_id,
-        )
+    vm_template = VirtualMachineTemplate(
+        location=location,
+        extended_location=extended_location,
+        inventory_item_id=inventory_item_id,
+        tags=tags
+    )
 
     return sdk_no_wait(
         no_wait, client.begin_create, resource_group_name, resource_name, vm_template
@@ -1070,6 +904,7 @@ def create_vm(
                 os_profile=os_profile,
                 network_profile=network_profile,
                 storage_profile=storage_profile,
+                tags=tags
             )
         else:
             vm = VirtualMachine(
@@ -1081,6 +916,7 @@ def create_vm(
                 os_profile=os_profile,
                 network_profile=network_profile,
                 storage_profile=storage_profile,
+                tags=tags
             )
 
     return sdk_no_wait(
@@ -1120,14 +956,17 @@ def update_vm(
             num_cores_per_socket=num_cores_per_socket,
         )
 
-    vm_update = VirtualMachineUpdate(hardware_profile=hardware_profile)
+    vm_update = VirtualMachineUpdate(
+        hardware_profile=hardware_profile,
+        tags=tags
+    )
+
     return sdk_no_wait(
         no_wait,
         client.begin_update,
         resource_group_name,
         resource_name,
-        vm_update,
-        tags,
+        vm_update
     )
 
 
@@ -1136,11 +975,12 @@ def delete_vm(
     resource_group_name,
     resource_name,
     force=False,
+    retain=None,
     no_wait=False,
 ):
 
     return sdk_no_wait(
-        no_wait, client.begin_delete, resource_group_name, resource_name, force
+        no_wait, client.begin_delete, resource_group_name, resource_name, force, retain,
     )
 
 
@@ -1729,7 +1569,7 @@ def is_system_identity_enabled(
 
     vm = client.get(resource_group_name, vm_name)
 
-    if vm.identity is not None and vm.identity.type == "SystemAssigned":
+    if vm.identity is not None and vm.identity.type == VM_SYSTEM_ASSIGNED_INDENTITY_TYPE:
         return True
 
     return False
@@ -1739,6 +1579,7 @@ def enable_system_identity(
     client: VirtualMachinesOperations,
     resource_group_name,
     vm_name,
+    no_wait=False,
 ):
     """
     Enable system assigned identity on this vm.
@@ -1749,17 +1590,19 @@ def enable_system_identity(
     vm_update = VirtualMachineUpdate(identity=system_identity)
 
     return sdk_no_wait(
-        client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
     )
 
 
 def enable_guest_agent(
     cmd,
-    client: GuestAgentOperations,
+    client: GuestAgentsOperations,
     resource_group_name,
     vm_name,
     username,
     password,
+    https_proxy=None,
+    no_wait=False,
 ):
     """
     Enable guest agent on the given virtual machine.
@@ -1768,11 +1611,16 @@ def enable_guest_agent(
     vm_client = cf_virtual_machine(cmd.cli_ctx)
 
     if is_system_identity_enabled(vm_client, resource_group_name, vm_name) is False:
-        enable_system_identity(vm_client, resource_group_name, vm_name)
+        enable_system_identity(vm_client, resource_group_name, vm_name, no_wait)
 
     vm_creds = GuestCredential(username=username, password=password)
 
     resource_id = get_resource_id(cmd, resource_group_name, VMWARE_NAMESPACE, VIRTUALMACHINE_RESOURCE_TYPE, vm_name)
+
+    https_proxy_config = None
+
+    if https_proxy:
+        https_proxy_config = HttpProxyConfiguration(https_proxy=https_proxy)
 
     guest_agent = GuestAgent(
         id=resource_id,
@@ -1780,13 +1628,21 @@ def enable_guest_agent(
         name=DEFAULT_GUEST_AGENT_NAME,
         credentials=vm_creds,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
+        http_proxy_config=https_proxy_config,
     )
 
-    return client.begin_create(resource_group_name, vm_name, DEFAULT_GUEST_AGENT_NAME, guest_agent)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create,
+        resource_group_name,
+        vm_name,
+        DEFAULT_GUEST_AGENT_NAME,
+        guest_agent
+    )
 
 
 def show_guest_agent(
-    client: GuestAgentOperations,
+    client: GuestAgentsOperations,
     resource_group_name,
     vm_name,
 ):
@@ -1795,6 +1651,141 @@ def show_guest_agent(
     """
 
     return client.get(resource_group_name, vm_name, DEFAULT_GUEST_AGENT_NAME)
+
+
+# endregion
+
+# region Extenstion
+
+
+def connectedvmware_extension_list(
+    client: MachineExtensionsOperations,
+    resource_group_name,
+    vm_name,
+    expand=None
+):
+    """
+    List all the vm extension of a given vm.
+    """
+
+    return client.list(resource_group_name=resource_group_name,
+                       name=vm_name,
+                       expand=expand)
+
+
+def connectedvmware_extension_show(
+    client: MachineExtensionsOperations,
+    resource_group_name,
+    vm_name,
+    name
+):
+    """
+    Get the details of the vm extension of a given vm.
+    """
+
+    return client.get(resource_group_name=resource_group_name,
+                      name=vm_name,
+                      extension_name=name)
+
+
+def connectedvmware_extension_create(
+    client: MachineExtensionsOperations,
+    resource_group_name,
+    vm_name,
+    name,
+    location,
+    tags=None,
+    force_update_tag=None,
+    publisher=None,
+    type_=None,
+    type_handler_version=None,
+    auto_upgrade_minor=None,
+    settings=None,
+    protected_settings=None,
+    instance_view_type=None,
+    inst_handler_version=None,
+    no_wait=False
+):
+    """
+    Create the vm extension of a given vm.
+    """
+
+    extension_parameters = {}
+    extension_parameters['tags'] = tags
+    extension_parameters['location'] = location
+    extension_parameters['properties'] = {}
+    extension_parameters['properties']['force_update_tag'] = force_update_tag
+    extension_parameters['properties']['publisher'] = publisher
+    extension_parameters['properties']['type'] = type_
+    extension_parameters['properties']['type_handler_version'] = type_handler_version
+    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
+    extension_parameters['properties']['settings'] = settings
+    extension_parameters['properties']['protected_settings'] = protected_settings
+    extension_parameters['properties']['instance_view'] = {}
+    extension_parameters['properties']['instance_view']['name'] = name
+    extension_parameters['properties']['instance_view']['type'] = instance_view_type
+    extension_parameters['properties']['instance_view']['type_handler_version'] = inst_handler_version
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       name=vm_name,
+                       extension_name=name,
+                       extension_parameters=extension_parameters)
+
+
+def connectedvmware_extension_update(
+    client: MachineExtensionsOperations,
+    resource_group_name,
+    vm_name,
+    name,
+    tags=None,
+    force_update_tag=None,
+    publisher=None,
+    type_=None,
+    type_handler_version=None,
+    auto_upgrade_minor=None,
+    settings=None,
+    protected_settings=None,
+    no_wait=False
+):
+    """
+    Update the vm extension of a given vm.
+    """
+
+    extension_parameters = {}
+    extension_parameters['tags'] = tags
+    extension_parameters['properties'] = {}
+    extension_parameters['properties']['force_update_tag'] = force_update_tag
+    extension_parameters['properties']['publisher'] = publisher
+    extension_parameters['properties']['type'] = type_
+    extension_parameters['properties']['type_handler_version'] = type_handler_version
+    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
+    extension_parameters['properties']['settings'] = settings
+    extension_parameters['properties']['protected_settings'] = protected_settings
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       machine_name=vm_name,
+                       extension_name=name,
+                       extension_parameters=extension_parameters)
+
+
+def connectedvmware_extension_delete(
+    client: MachineExtensionsOperations,
+    resource_group_name,
+    vm_name,
+    name,
+    no_wait=False
+):
+    """
+    Delete the vm extension of a given vm.
+    """
+
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       name=vm_name,
+                       extension_name=name)
 
 
 # endregion

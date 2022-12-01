@@ -1,0 +1,98 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.2.2 azsdk-python-communication-identity/1.2.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      x-ms-content-sha256:
+      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      x-ms-date:
+      - Wed, 21 Sep 2022 22:50:58 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01
+      content-length:
+      - '33'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 21 Sep 2022 22:50:59 GMT
+      ms-cv:
+      - RBYIZtkOrEa28E6zNsQOrg.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0U5UrYwAAAABUywtMvZa/SpSLL41OFpqtWVZSMzExMDAwMTE2MDQ3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 120ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AzureCli/1.2.2 azsdk-python-communication-identity/1.2.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      x-ms-content-sha256:
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      x-ms-date:
+      - Wed, 21 Sep 2022 22:50:59 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: DELETE
+    uri: https://sanitized.communication.azure.com/identities/sanitized?api-version=2022-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01
+      date:
+      - Wed, 21 Sep 2022 22:51:01 GMT
+      ms-cv:
+      - wfFjtAnrUk+7lmcVNvMiQA.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0VJUrYwAAAACCVMO32FmYQaw0DQW2sAB5WVZSMzExMDAwMTE1MDUzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 345ms
+    status:
+      code: 204
+      message: No Content
+version: 1

@@ -12,7 +12,7 @@ from unittest import mock
 import time
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .test_confluent_scenario import mock_jwt_decode, mock_list_role_assignments
 

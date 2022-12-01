@@ -6,36 +6,6 @@
 from knack.help_files import helps
 
 # region VirtualHub
-helps['network vhub'] = """
-    type: group
-    short-summary: Manage virtual hubs.
-"""
-
-helps['network vhub create'] = """
-    type: command
-    short-summary: Create a virtual hub.
-"""
-
-helps['network vhub list'] = """
-    type: command
-    short-summary: List virtual hubs.
-"""
-
-helps['network vhub show'] = """
-    type: command
-    short-summary: Get the details of a virtual hub.
-"""
-
-helps['network vhub update'] = """
-    type: command
-    short-summary: Update settings of a virtual hub.
-"""
-
-helps['network vhub delete'] = """
-    type: command
-    short-summary: Delete a virtual hub.
-"""
-
 helps['network vhub get-effective-routes'] = """
     type: command
     short-summary: Get the effective routes configured for the Virtual Hub resource or the specified resource.
@@ -301,36 +271,6 @@ helps['network vwan delete'] = """
 # endregion
 
 # region VpnGateway
-helps['network vpn-gateway'] = """
-    type: group
-    short-summary: Manage site-to-site VPN gateways.
-"""
-
-helps['network vpn-gateway create'] = """
-    type: command
-    short-summary: Create a site-to-site VPN gateway.
-"""
-
-helps['network vpn-gateway list'] = """
-    type: command
-    short-summary: List site-to-site VPN gateways.
-"""
-
-helps['network vpn-gateway show'] = """
-    type: command
-    short-summary: Get the details of a site-to-site VPN gateway.
-"""
-
-helps['network vpn-gateway update'] = """
-    type: command
-    short-summary: Update settings of a site-to-site VPN gateway.
-"""
-
-helps['network vpn-gateway delete'] = """
-    type: command
-    short-summary: Delete a site-to-site VPN gateway.
-"""
-
 helps['network vpn-gateway connection'] = """
     type: group
     short-summary: Manage site-to-site VPN gateway connections.
@@ -411,6 +351,74 @@ helps['network vpn-gateway connection ipsec-policy remove'] = """
     type: command
     short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection.
 """
+
+helps['network vpn-gateway connection vpn-site-link-conn'] = """
+    type: group
+    short-summary: Manage site-to-site VPN gateway connection VPN site link connection.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn add'] = """
+    type: command
+    short-summary: Add a VPN site link connection to a site-to-site VPN gateway connection.
+    examples:
+      - name: Add a VPN site link connection to site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn add -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn \
+--vpn-site-link /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/vpnSites/MyVPNSite/vpnSiteLinks/vpnsitelink \
+--vpn-connection-protocol-type IKEv2
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn list'] = """
+    type: command
+    short-summary: List site-to-site VPN gateway connection VPN site link connection.
+    examples:
+      - name: List VPN site link connections on site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn list -g MyRG --connection-name MyConnection --gateway-name MyGateway
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn remove'] = """
+    type: command
+    short-summary: Remove a VPN site link connection from a site-to-site VPN gateway connection.
+    examples:
+      - name: Remove aVPN site link connection from site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn remove -g MyRG --connection-name MyConnection --gateway-name MyGateway --index 1
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy'] = """
+    type: group
+    short-summary: Manage site-to-site VPN gateway connection VPN site link IPSec policies.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy add'] = """
+    type: command
+    short-summary: Add an IPSec policy to a site-to-site VPN gateway connection VPN site link.
+    examples:
+      - name: Add an IPSec policy to a site-to-site VPN gateway connection VPN site link
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn \
+--ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 \
+--sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy list'] = """
+    type: command
+    short-summary: List site-to-site VPN gateway connection VPN site link IPSec policies.
+    examples:
+      - name: List IPSec policies on a site-to-site VPN gateway connection VPN site link
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn ipsec-policy list -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy remove'] = """
+    type: command
+    short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection VPN site link.
+    examples:
+      - name: Remove an IPSec policy from a site-to-site VPN gateway connection VPN site link
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn ipsec-policy remove -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn --index 1
+"""
 # endregion
 
 # region VpnSite
@@ -447,6 +455,39 @@ helps['network vpn-site delete'] = """
 helps['network vpn-site download'] = """
     type: command
     short-summary: Provide a SAS-URL to download the configuration for a VPN site.
+"""
+
+
+helps['network vpn-site link'] = """
+    type: group
+    short-summary: Manage VPN site link.
+"""
+
+helps['network vpn-site link add'] = """
+    type: command
+    short-summary: Add a VPN site link to VPN site configuration.
+    examples:
+      - name: Add a VPN site link to VPN site configuration
+        text: |
+            az network vpn-site link add -g MyRG --site-name VpnSite -n VpnSiteLinkName --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0
+"""
+
+helps['network vpn-site link list'] = """
+    type: command
+    short-summary: List VPN site links on VPN site configuration.
+    examples:
+      - name: List VPN site links on VPN site configuration
+        text: |
+            az network vpn-site link list -g MyRG --site-name VpnSite
+"""
+
+helps['network vpn-site link remove'] = """
+    type: command
+    short-summary: Remove a VPN site link from VPN site configuration.
+    examples:
+      - name: Remove a VPN site links from VPN site configuration
+        text: |
+            az network vpn-site link remove -g MyRG --site-name VpnSite --index 1
 """
 # endregion
 

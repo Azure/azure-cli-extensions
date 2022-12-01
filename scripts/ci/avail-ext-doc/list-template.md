@@ -6,16 +6,16 @@ ms.author: jianzen
 manager: yonzhan,yungezz
 ms.date: {{ date }}
 ms.topic: article
-ms.prod: azure
-ms.technology: azure-cli
+ms.service: azure-cli
 ms.devlang: azure-cli
+ms.tool: azure-cli
 ms.custom: devx-track-azurecli
 keywords: az extension, azure cli extensions, azure extensions
 ---
 
 # Available Azure CLI extensions
 
-This article is a complete list of the available extensions for the Azure CLI which are supported by Microsoft.  The list of extensions is also available from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az_extension_list_available):
+This article is a complete list of the available extensions for the Azure CLI which are supported by Microsoft.  The list of extensions is also available from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az-extension-list-available):
 
 ```azurecli-interactive
 az extension list-available --output table

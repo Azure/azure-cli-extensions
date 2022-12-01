@@ -240,6 +240,12 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
                                JMESPathCheck('[0].containerName', container1),
                                JMESPathCheck('[0].name', blob_name1))
 
+        # find blobs in specified container with index tags
+        self.storage_cmd("storage blob filter --tag-filter \"test='tag'\" -c {}", account_info, container1). \
+            assert_with_checks(JMESPathCheck('length(@)', 1),
+                               JMESPathCheck('[0].containerName', container1),
+                               JMESPathCheck('[0].name', blob_name1))
+
         # tag condition
         tag_condition = "test=\'tag\'"
         self.storage_cmd('storage blob copy start --source-blob {} --source-container {} -c {} -b {} '

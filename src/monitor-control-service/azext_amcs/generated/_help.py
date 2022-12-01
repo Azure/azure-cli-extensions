@@ -63,12 +63,16 @@ helps['monitor data-collection rule association'] = """
 helps['monitor data-collection rule association list'] = """
     type: command
     short-summary: "Lists associations for the specified data collection rule. And Lists associations for the \
-specified resource."
+specified data collection endpoint. And Lists associations for the specified resource."
     examples:
       - name: List associations for specified data collection rule
         text: |-
                az monitor data-collection rule association list --rule-name "myCollectionRule" --resource-group \
 "myResourceGroup"
+      - name: List associations for specified data collection endpoint
+        text: |-
+               az monitor data-collection rule association list --data-collection-endpoint-name \
+"myDataCollectionEndpointName" --resource-group "myResourceGroup"
       - name: List associations for specified resource
         text: |-
                az monitor data-collection rule association list --resource "subscriptions/703362b3-f278-4e4b-9179-c76ea\

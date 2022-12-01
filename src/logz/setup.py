@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools MicrosoftLogz Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/logz',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/logz',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

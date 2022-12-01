@@ -11,11 +11,57 @@ az extension add --name k8s-configuration
 ```
 
 ### Included Features
-#### Kubernetes Configuration:
-Kubernetes SourceControl Configuration: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
+
+#### Flux Configuration (Flux v2):
+Flux Configuration (Flux v1) Configuration: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
 *Examples:*
 
-##### Create a KubernetesConfiguration
+##### Create a Flux Configuration (Flux v2)
+```
+az k8s-configuration create flux \
+    --resource-group groupName \
+    --cluster-name clusterName \
+    --cluster-type clusterType \
+    --name configurationName \
+    --namespace configurationNamespace \
+    --scope cluster
+    --kind git \
+    --url https://github.com/Azure/arc-k8s-demo \
+    --branch main \
+    --kustomization name=my-kustomization 
+```
+
+##### Get a Flux Configuration (Flux v2)
+```
+az k8s-configuration flux show \
+    --resource-group groupName \
+    --cluster-name clusterName \
+    --cluster-type clusterType \
+    --name configurationName
+```
+
+##### Delete a Flux Configuration (Flux v2)
+```
+az k8s-configuration flux delete \
+    --resource-group groupName \
+    --cluster-name clusterName \
+    --cluster-type clusterType \
+    --name configurationName
+```
+
+##### List all Flux Configuration (Flux v2) on a cluster
+```
+az k8s-configuration flux list \
+    --resource-group groupName \
+    --cluster-name clusterName \
+    --cluster-type clusterType
+```
+
+#### Source Control Configuration (Flux v1):
+Source Control Configuration (Flux v1) Configuration: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
+*Examples:*
+
+##### Create a Source Control Configuration (Flux v1)
 ```
 az k8s-configuration create \
     --resource-group groupName \
@@ -31,7 +77,7 @@ az k8s-configuration create \
     --helm-operator-params chartParameters
 ```
 
-##### Get a KubernetesConfiguration
+##### Get a Source Control Configuration (Flux v1)
 ```
 az k8s-configuration show \
     --resource-group groupName \
@@ -40,7 +86,7 @@ az k8s-configuration show \
     --name configurationName
 ```
 
-##### Delete a KubernetesConfiguration
+##### Delete a Source Control Configuration (Flux v1)
 ```
 az k8s-configuration delete \
     --resource-group groupName \
@@ -49,7 +95,7 @@ az k8s-configuration delete \
     --name configurationName
 ```
 
-##### Update a KubernetesConfiguration
+##### Update a Source Control Configuration (Flux v1)
 ```
 az k8s-configuration create \
     --resource-group groupName \
@@ -63,7 +109,7 @@ az k8s-configuration create \
     --helm-operator-params chartParameters
 ```
 
-##### List all KubernetesConfigurations of a cluster
+##### List all Source Control Configuration (Flux v1) on a cluster
 ```
 az k8s-configuration list \
     --resource-group groupName \

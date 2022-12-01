@@ -3,7 +3,7 @@ name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mod
 trigger: none
 
 pool:
-  name: 1ES-AKS-Elastic-DevInfra-Normal-Pool
+  name: 1ES-AKS-Elastic-DevInfra-Auto-TearDown-Pool
 
 pr:
   branches:
@@ -54,7 +54,7 @@ jobs:
       condition: succeeded()
       displayName: "Start Container"
     - bash: |
-        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y
+        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y y /az_aks_tool-latest-py3-none-any.whl
         docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-az n azure-cli/ azure-cli-extensions/
       condition: succeeded()
       displayName: "Set up Virtual Environment"
