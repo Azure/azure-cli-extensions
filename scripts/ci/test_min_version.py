@@ -5,11 +5,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from get_python_version import get_all_tests, get_min_version, run_command
 from util import SRC_PATH
 import logging
 import os
 import sys
-from get_python_version import get_all_tests, get_min_version, run_command
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
