@@ -17,11 +17,8 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
-ALL_TESTS = []
-EXTENSION_NAME, ORIGINAL_EXTENSION_NAME = '', ''
 
-
-def prepare_for_min_version(min_version):
+def prepare_for_min_version(min_version, original_extension_name):
     logger.info(f'checkout to minCliCoreVersion: {min_version}')
     az_min_version = 'azure-cli-' + min_version
     azure_cli_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(SRC_PATH))), 'azure-cli')
@@ -35,19 +32,19 @@ def prepare_for_min_version(min_version):
     testsdk_path = os.path.join(azure_cli_path, 'src', 'azure-cli-testsdk')
     cmd = ['python', 'setup.py', 'install']
     run_command(cmd, check_return_code=True, cwd=testsdk_path)
-    logger.info(f'installing extension: {ORIGINAL_EXTENSION_NAME}')
-    cmd = ['azdev', 'extension', 'add', ORIGINAL_EXTENSION_NAME]
+    logger.info(f'installing extension: {original_extension_name}')
+    cmd = ['azdev', 'extension', 'add', original_extension_name]
     run_command(cmd, check_return_code=True)
 
 
-def run_tests():
-    cmd = ['azdev', 'test', ORIGINAL_EXTENSION_NAME, '--no-exitfirst', '--verbose']
+def run_tests(original_extension_name):
+    cmd = ['azdev', 'test', original_extension_name, '--no-exitfirst', '--verbose']
     return run_command(cmd, check_return_code=True)
 
 
 def main():
-    get_all_tests()
-    min_version = get_min_version()
+    original_extension_name, extension_name = get_all_tests()
+    min_version = get_min_version(original_extension_name, extension_name)
     prepare_for_min_version(min_version)
     sys.exit(1) if run_tests() else sys.exit(0)
 
