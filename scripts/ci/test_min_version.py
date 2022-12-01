@@ -5,15 +5,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from util import SRC_PATH
 import logging
 import os
-import json
-import subprocess
 import sys
-import shlex
-from subprocess import check_output
-
-from util import SRC_PATH
+from get_python_version import get_all_tests, get_min_version, run_command
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -23,66 +19,6 @@ logger.addHandler(ch)
 
 ALL_TESTS = []
 EXTENSION_NAME, ORIGINAL_EXTENSION_NAME = '', ''
-
-
-def get_all_tests():
-    global ALL_TESTS, EXTENSION_NAME, ORIGINAL_EXTENSION_NAME
-    for src_d in os.listdir(SRC_PATH):
-        src_d_full = os.path.join(SRC_PATH, src_d)
-        if not os.path.isdir(src_d_full):
-            continue
-        pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
-
-        # If running in Travis CI, only run tests for edited extensions
-        commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
-        if commit_range and not check_output(
-                ['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
-            continue
-
-        # Running in Azure DevOps
-        cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} -- {code_dir}'
-        ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
-        ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
-        if ado_branch_last_commit and ado_target_branch:
-            if ado_branch_last_commit == '$(System.PullRequest.SourceCommitId)':
-                # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
-                continue
-            elif ado_target_branch == '$(System.PullRequest.TargetBranch)':
-                # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
-                continue
-            else:
-                cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit,
-                                     code_dir=src_d_full)
-                if not check_output(shlex.split(cmd)):
-                    continue
-
-        # Find the package and check it has tests
-        test_dir = os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests'))
-        if pkg_name and test_dir:
-            # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis')]
-            ALL_TESTS.append((pkg_name, src_d_full))
-            # azext_healthcareapis
-            EXTENSION_NAME = ALL_TESTS[0][0]
-            # healthcareapis
-            _, ORIGINAL_EXTENSION_NAME = EXTENSION_NAME.split('_', 1)
-        else:
-            logger.error(f'can not any test in {test_dir}')
-            sys.exit(0)
-
-    logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
-                f'ado_target_branch: {ado_target_branch}, '
-                f'detect which extension need to test: {ALL_TESTS}.')
-
-
-def get_min_version():
-    try:
-        with open(os.path.join(SRC_PATH, ORIGINAL_EXTENSION_NAME, EXTENSION_NAME, 'azext_metadata.json'), 'r') as f:
-            min_version = json.load(f)['azext.minCliCoreVersion']
-            logger.info(f'find minCliCoreVersion: {min_version}')
-            return min_version
-    except Exception as e:
-        logger.error(f'can not get minCliCoreVersion: {e}')
-        sys.exit(0)
 
 
 def prepare_for_min_version(min_version):
@@ -102,18 +38,6 @@ def prepare_for_min_version(min_version):
     logger.info(f'installing extension: {ORIGINAL_EXTENSION_NAME}')
     cmd = ['azdev', 'extension', 'add', ORIGINAL_EXTENSION_NAME]
     run_command(cmd, check_return_code=True)
-
-
-def run_command(cmd, check_return_code=False, cwd=None):
-    error_flag = False
-    logger.info(f'testing extension with minCliCoreVersion: {cmd}')
-    try:
-        out = subprocess.run(cmd, check=True, cwd=cwd)
-        if check_return_code and out.returncode:
-            raise RuntimeError(f"{cmd} failed")
-    except subprocess.CalledProcessError:
-        error_flag = True
-    return error_flag
 
 
 def run_tests():

@@ -5,15 +5,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from subprocess import check_output
+from util import SRC_PATH
+import json
 import logging
 import os
-import json
+import shlex
 import subprocess
 import sys
-import shlex
-from subprocess import check_output
-
-from util import SRC_PATH
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
