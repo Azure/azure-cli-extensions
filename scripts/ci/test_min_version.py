@@ -45,8 +45,8 @@ def run_tests(original_extension_name):
 def main():
     original_extension_name, extension_name = get_all_tests()
     min_version = get_min_version(original_extension_name, extension_name)
-    prepare_for_min_version(min_version)
-    sys.exit(1) if run_tests() else sys.exit(0)
+    prepare_for_min_version(min_version, original_extension_name)
+    sys.exit(1) if run_tests(original_extension_name) else sys.exit(0)
 
 
 if __name__ == '__main__':
