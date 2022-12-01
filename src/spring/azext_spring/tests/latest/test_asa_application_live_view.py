@@ -63,6 +63,8 @@ class ApplicationLiveView(unittest.TestCase):
         self.created_resource = None
         self.dev_tool_portal =None
         self.deleted = False
+        self.created_alv_request = None
+        self.dev_tool_portal_request = None
     
     def setUp(self):
         resp = super().setUp()
@@ -73,16 +75,19 @@ class ApplicationLiveView(unittest.TestCase):
     def _execute(self, method, cmd, client, *kwargs):
         client = client or _get_basic_mock_client()
         method(cmd, client, *kwargs)
-        call_args = client.application_live_views.begin_create_or_update.call_args_list
-        self.created_resource = call_args[0][0][3] if call_args else None
-        call_args = client.dev_tool_portals.begin_create_or_update.call_args_list
-        self.dev_tool_portal = call_args[0][0][3] if call_args else None
+        self.created_alv_request = client.application_live_views.begin_create_or_update.call_args_list
+        self.created_resource = self.created_alv_request[0][0][3] if self.created_alv_request else None
+        self.dev_tool_portal_request = client.dev_tool_portals.begin_create_or_update.call_args_list
+        self.dev_tool_portal = self.dev_tool_portal_request[0][0][3] if self.dev_tool_portal_request else None
         self.deleted = client.application_live_views.begin_delete.call_args_list is not None
 
     @mock.patch('azext_spring.application_live_view.get_dev_tool_portal', _mock_not_get_dev_tool_portal)
     def test_asa_alv_create_dev_tool_portal_disable_wait(self):
         self._execute(create, _get_test_cmd(), None, 'asa', 'rg', False)
         self.assertIsNotNone(self.created_resource)
+        self.assertEqual('rg', self.created_alv_request[0][0][0])
+        self.assertEqual('asa', self.created_alv_request[0][0][1])
+        self.assertEqual('default', self.created_alv_request[0][0][2])
         self.assertIsNone(self.dev_tool_portal)
 
     
@@ -100,6 +105,9 @@ class ApplicationLiveView(unittest.TestCase):
         self.assertIsNotNone(self.dev_tool_portal)
         self.assertEqual(models.DevToolPortalFeatureState.ENABLED,
                          self.dev_tool_portal.properties.features.application_live_view.state)
+        self.assertEqual('rg', self.dev_tool_portal_request[0][0][0])
+        self.assertEqual('asa', self.dev_tool_portal_request[0][0][1])
+        self.assertEqual('default', self.dev_tool_portal_request[0][0][2])
 
 
     @mock.patch('azext_spring.application_live_view.get_dev_tool_portal', _mock_not_get_dev_tool_portal)
