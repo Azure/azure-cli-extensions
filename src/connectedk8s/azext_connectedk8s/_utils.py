@@ -133,10 +133,13 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None, least_privilege=False):
     # Setting uri
     get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
-    release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
+    if least_privilege:
+        release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'least-privilege-stable'
+    else:
+        release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     if dp_endpoint_dogfood:
         get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
         if release_train_dogfood:
@@ -294,7 +297,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout="600",
+                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, least_privilege, config_settings, onboarding_timeout="600",
                          container_log_path=None):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
@@ -338,6 +341,13 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
+    
+    if least_privilege:
+        platformServiceAccountName = get_serviceaccount_name_from_configsettings(config_settings)
+        cmd_helm_install.extend(["--set", "global.platformServiceAccountName={}".format(platformServiceAccountName)])
+        cmd_helm_install.extend(["--set", "global.isLeastPrivilegesMode={}".format(True)])
+        cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace, "--create-namespace"]) # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
+
     if not no_wait:
         # Change --timeout format for helm client to understand
         onboarding_timeout = onboarding_timeout + "s"
@@ -352,6 +362,15 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
+
+def get_serviceaccount_name_from_configsettings(config_settings):
+    data = json.loads(config_settings)
+    if not (data.get('service-account-name') is None): 
+        serviceaccount_name = data['service-account-name']
+        return serviceaccount_name
+    else:
+        telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type="", summary="Config settings input does not contain service-account-name")
+        raise ArgumentUsageError("Config settings input does not contain service-account-name", "Please ensure you pass the mandatory field- service-account-name in the config settings while onboarding the cluster with leastPrivileges")
 
 def flatten(dd, separator='.', prefix=''):
     try:

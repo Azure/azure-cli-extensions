@@ -67,7 +67,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
+                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None, least_privilege=False, config_settings=None):
     logger.warning("This operation might take a while...\n")
 
     # Prompt for confirmation for few parameters
@@ -79,6 +79,24 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if azure_hybrid_benefit == "True":
         confirmation_message = "I confirm I have an eligible Windows Server license with Azure Hybrid Benefit to apply this benefit to AKS on HCI or Windows Server. Visit https://aka.ms/ahb-aks for details"
         utils.user_confirmation(confirmation_message, yes)
+    
+    if least_privilege == "True":
+        # pre-checks specific to least privilege scenario
+        # check if config settings are passed
+        if config_settings == None:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception="Configuration settings are not passed", fault_type=consts.Config_Settings_Not_Passed_Fault_Type, summary="Configuration settings are not passed which are mandatory when onboarding with leastPrivileges")
+            raise ValidationError("Configuration settings are not passed", "Please pass required configuration settings using '--config-settings' flag while onboarding with least-privilege enabled.")
+        else:
+            logger.warning("You are onboarding your k8s cluster to Azure Arc in least privileges mode. Please ensure you have met all the pre-requisites.")
+        
+        # check if azure-arc ns is present - pre-req for least privilege
+        try:
+            api_instance.read_namespace("azure-arc")
+        except Exception as ex:
+            if ex.status == 404:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception="Azure-arc namespace is not found on the cluster", fault_type="", summary="Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges")           
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -290,7 +308,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     config_dp_endpoint = get_config_dp_endpoint(cmd, location)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood, least_privilege)
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
@@ -331,7 +349,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout, container_log_path)
+                               custom_locations_oid, helm_client_location, enable_private_link, least_privilege, config_settings, onboarding_timeout, container_log_path)
 
     return put_cc_response
 
@@ -921,6 +939,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        if auto_upgrade is True:
+            raise InvalidArgumentValueError("Your cluster is running in least privileges mode. Autoupdates are not supported in this mode")
+
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
 
@@ -947,12 +971,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, distribution, distribution_version, azure_hybrid_benefit)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
-
-    # Returning the ARM response if only AHB is being updated
-    arm_properties_only_ahb_set = (tags is None and distribution is None and distribution_version is None and azure_hybrid_benefit is not None)
-    if proxy_params_unset and auto_upgrade is None and container_log_path is None and arm_properties_only_ahb_set:
-        return patch_cc_response
-
     if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
@@ -1104,6 +1122,14 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    least_privilege = False
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
+        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before upgrading to a newer agent version.")
+
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
@@ -1198,7 +1224,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood, least_privilege)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -1347,8 +1373,17 @@ def get_all_helm_values(release_namespace, kube_config, kube_context, helm_clien
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
+                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None, yes=False):
     logger.warning("This operation might take a while...\n")
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    least_privilege = False
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
+        confirmation_message = "Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before enabling new features. Do you want to proceed?"
+        utils.user_confirmation(confirmation_message, yes)
 
     features = [x.lower() for x in features]
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
@@ -1441,7 +1476,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood, least_privilege)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
@@ -1581,9 +1616,16 @@ def get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, 
                                    disable_cluster_connect=False, disable_cl=False):
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+    
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    least_privilege = False
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood, least_privilege)
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]

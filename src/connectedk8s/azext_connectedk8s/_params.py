@@ -47,6 +47,8 @@ def load_arguments(self, _):
         c.argument('correlation_id', options_list=['--correlation-id'], help='A guid that is used to internally track the source of cluster onboarding. Please do not modify it unless advised', validator=override_client_request_id_header)
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('least_privilege', options_list=['--least-privilege'], help='')
+        c.argument('config_settings', options_list=['config-settings'], help='')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)
@@ -81,6 +83,7 @@ def load_arguments(self, _):
         c.argument('azrbac_client_secret', options_list=['--app-secret'], arg_group='Azure RBAC', help='Application secret for enabling Azure RBAC. Specify when enabling azure-rbac.')
         c.argument('azrbac_skip_authz_check', options_list=['--skip-azure-rbac-list'], arg_group='Azure RBAC', help='Comma separated list of names of usernames/email/oid. Azure RBAC will be skipped for these users. Specify when enabling azure-rbac.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('connectedk8s disable-features') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
