@@ -177,10 +177,9 @@ jobs:
       - bash: pip install wheel==0.30.0
         displayName: 'Install wheel==0.30.0'
       - bash: |
-          #!/usr/bin/env bash
           set -ev
 
-          source env/bin/activate
+          . env/bin/activate
           az --version
           python scripts/ci/test_min_version.py -v
         displayName: 'Run min version test ${{version.key}}'
@@ -205,10 +204,9 @@ jobs:
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
     - bash: |
-        #!/usr/bin/env bash
         set -ev
 
-        source env/bin/activate
+        . env/bin/activate
         az --version
         python scripts/ci/test_min_version.py -v
       displayName: 'Run min version test python310'
