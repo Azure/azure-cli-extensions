@@ -158,7 +158,7 @@ class BodyReplacerProcessor(RecordingProcessor):
             body = json.loads(body)
             _replace_recursively(body)
 
-        except (KeyError, ValueError) as ex:
+        except (KeyError, ValueError):
             return body
 
         return json.dumps(body)
