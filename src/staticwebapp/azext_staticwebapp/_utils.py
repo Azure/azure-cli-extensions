@@ -9,10 +9,16 @@ import re
 from functools import lru_cache
 
 from msrestazure.tools import parse_resource_id
+from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import send_raw_request
+from azure.cli.core.profiles import ResourceType
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
+from azure.cli.command_modules.role import graph_client_factory
 
+
+logger = get_logger(__name__)
 
 
 class ConnectionType(Enum):
@@ -50,7 +56,7 @@ class AbstractDbHandler:
     # saves some time by prevent reparsing of RIDs
     @classmethod
     @lru_cache(maxsize=100)
-    def _parse_resource_id(resource_id: str) -> dict:
+    def _parse_resource_id(cls, resource_id: str) -> dict:
         return parse_resource_id(resource_id)
 
     @classmethod
@@ -67,6 +73,16 @@ class AbstractDbHandler:
             raise RequiredArgumentMissingError("Missing database password")
         if missing_username:
             raise RequiredArgumentMissingError("Missing database username")
+
+
+        unnecessary_username = username and not cls._requires_username(sku, connection_type)
+        unnecessary_password = password and not cls._requires_password(sku, connection_type)
+        if unnecessary_username and unnecessary_password:
+            logger.warning("Username and password not required. Ignoring the provided username and password.")
+        elif unnecessary_username:
+            logger.warning("Username not required. Ignoring the provided username.")
+        elif unnecessary_password:
+            logger.warning("Password not required. Ignoring the provided password.")
 
     @classmethod
     def _get_location(cls, cmd, resource_id: str) -> str:
@@ -119,7 +135,7 @@ class CosmosDbHandler(AbstractDbHandler):
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                               username=None, password=None) -> str:
+                               username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         resource_group = parsed_rid["resource_group"]
         name = parsed_rid["name"]
@@ -149,7 +165,7 @@ class AzureSqlHandler(AbstractDbHandler):
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None) -> str:
+                              username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         name = parsed_rid["name"]
 
@@ -179,7 +195,7 @@ class MySqlFlexHandler(AbstractDbHandler):
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None) -> str:
+                              username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         db = parsed_rid["child_name_1"]
@@ -214,8 +230,24 @@ class PgSqlSingleHandler(AbstractDbHandler):
         return cls._get_location_from_server(cmd, resource_id)
 
     @classmethod
+    def _get_client_id(cls, cmd, connection_type: 'ConnectionType', app=None, identity_rid=None) -> str:
+        # TODO does this need to handle managed identities outside the user's sub?
+        # It will almost surely fail in this case ^
+        if connection_type == ConnectionType.MANAGED_IDENTITY_USER_ASSIGNED:
+            parsed_rid = cls._parse_resource_id(identity_rid)
+            resource_group_name = parsed_rid["resource_group"]
+            name = parsed_rid["name"]
+            client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities
+            identity = client.get(resource_group_name, name)
+            return identity.client_id
+        else:
+            client = graph_client_factory(cmd.cli_ctx)
+            sp = client.service_principal_get(app.identity.principal_id)
+            return sp["appId"]
+
+    @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None) -> str:
+                              username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         db = parsed_rid["child_name_1"]
@@ -223,7 +255,10 @@ class PgSqlSingleHandler(AbstractDbHandler):
             return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
                     f"User Id={username}@{server};Password={password};Ssl Mode=Require;")
         else:
-            raise NotImplementedError()
+            client_id = cls._get_client_id(cmd, connection_type, kwargs["app"], kwargs["identity_rid"])
+            return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
+                    f"User Id={client_id};Ssl Mode=Require;")
+
 
 
 class PgSqlFlexHandler(AbstractDbHandler):
@@ -248,7 +283,7 @@ class PgSqlFlexHandler(AbstractDbHandler):
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None) -> str:
+                              username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         db = parsed_rid["child_name_1"]
@@ -260,7 +295,7 @@ RESOURCE_ID_TO_DB_HANDLER = {
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DocumentDB/databaseAccounts\/.*$": CosmosDbHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.Sql\/servers\/.*\/databases\/.*$": AzureSqlHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL\/flexibleServers\/.*\/databases\/.*$": MySqlFlexHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*$": PgSqlSingleHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*\/databases\/.*$": PgSqlSingleHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*\/databases\/.*$": PgSqlFlexHandler,
 }
 

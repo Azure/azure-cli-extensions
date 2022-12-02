@@ -35,7 +35,8 @@ def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environm
     region = db_type.get_location(cmd, db_resource_id)
 
     if not connection_string:
-        connection_string = db_type.get_connection_string(cmd, sku, connection_type, db_resource_id, username, password)
+        connection_string = db_type.get_connection_string(cmd, sku, connection_type, db_resource_id, username, password,
+                                                          app=app, identity_rid=mi_user_assigned)
 
     identity = None
     if mi_user_assigned:
