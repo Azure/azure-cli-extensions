@@ -110,8 +110,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': 'f-123456789012345'})
         
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication rooms delete --room {room_id}', checks = [
-                self.check('httpStatusCode', '420')])  
+            self.cmd('az communication rooms delete --room {room_id}')  
 
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
