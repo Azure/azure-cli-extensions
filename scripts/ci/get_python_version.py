@@ -95,16 +95,22 @@ def get_python_version(min_version):
     run_command(cmd, check_return_code=True)
     try:
         core_path = os.path.join(azure_cli_path, 'src', 'azure-cli-core')
+        versions = ''
         with open(os.path.join(core_path, 'setup.py'), 'r') as f:
             for line in f.readlines():
+                # 'Programming Language :: Python :: 3.8',\n
                 if 'Programming Language :: Python :: ' in line:
+                    # 3.8',\n
                     _, _, python_version = line.split(' :: ')
+                    # 3.8
                     python_version = python_version.split('\'')[0]
-        logger.info(f'return python verison: {python_version}')
+                    # 3.6 3.7 3.8 3.9 3.10 3.11
+                    versions += python_version + ' '
+        logger.info(f'return python verisons: {versions}')
         with open('python_version.txt', 'w') as f:
-            f.write(python_version)
+            f.write(versions)
     except Exception as e:
-        logger.error(f'can not get python_version: {e}')
+        logger.error(f'can not get any python versions: {e}')
         with open('python_version.txt', 'w') as f:
             f.write('false')
         sys.exit(0)
