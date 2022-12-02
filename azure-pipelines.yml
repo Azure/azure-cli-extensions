@@ -160,7 +160,7 @@ jobs:
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - ${{each version in parameters.versions}}:
-  - job: MinVersionTests
+  - job: MinVersionTests${{version.key}}
     dependsOn: getPythonVersion
     variables:
       PythonVersion: $[ dependencies.getPythonVersion.outputs['CustomParas.pythonVersion'] ]
