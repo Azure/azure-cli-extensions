@@ -187,38 +187,6 @@ jobs:
           ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
           ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: MinVersionTestsPython36
-  dependsOn: getPythonVersion
-  variables:
-    PythonVersion: $[ dependencies.getPythonVersion.outputs['CustomParas.pythonVersion'] ]
-  condition: and(succeeded(), contains(variables.PythonVersion, '3.6'))
-  displayName: "Min Version Tests python36"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use python36'
-      inputs:
-        versionSpec: '3.6'
-        addToPath: true
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
-    - bash: |
-        set -ev
-
-        cd ..
-        # clone azure-cli
-        git clone https://github.com/Azure/azure-cli.git ./azure-cli
-        python -m pip install -U pip
-        pip install azdev==0.1.30
-        azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
-        az --version
-        python s/scripts/ci/test_min_version.py -v
-      displayName: 'Run min version test python36'
-      env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
-        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
-
 - job: MinVersionTestsPython310
   dependsOn: getPythonVersion
   variables:
