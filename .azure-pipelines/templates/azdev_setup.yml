@@ -19,6 +19,7 @@ steps:
       pip install azdev
       azdev --version
       azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
+      az --version
     displayName: 'azdev setup'
     env:
       CLI_REPO_PATH: ${{ parameters.CLIRepoPath }}

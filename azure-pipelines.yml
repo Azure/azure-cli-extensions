@@ -173,6 +173,7 @@ jobs:
         displayName: 'Use ${{version.key}}'
         inputs:
           versionSpec: '${{version.value}}'
+          addToPath: true
       - template: .azure-pipelines/templates/azdev_setup.yml
       - bash: pip install wheel==0.30.0
         displayName: 'Install wheel==0.30.0'
@@ -200,6 +201,7 @@ jobs:
       displayName: 'Use python310'
       inputs:
         versionSpec: '3.10'
+        addToPath: true
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
