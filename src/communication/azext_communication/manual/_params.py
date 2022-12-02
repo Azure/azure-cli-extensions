@@ -173,7 +173,7 @@ def _load_chat_message_management(self):
 def _load_rooms_arguments(self):
     with self.argument_context('communication rooms get') as c:
         c.argument('room_id', options_list=['--room'],
-                   type=str, help='')
+                   type=str, help='Room Id')
 
     with self.argument_context('communication rooms create') as c:
         c.argument('valid_from', options_list=['--valid-from'], type=str,
@@ -194,10 +194,10 @@ def _load_rooms_arguments(self):
 
     with self.argument_context('communication rooms delete') as c:
         c.argument('room_id', options_list=['--room'],
-                   type=str, help='')
+                   type=str, help='Room Id')
 
     with self.argument_context('communication rooms update') as c:
-        c.argument('room_id', options_list=['--room'], type=str, help='')
+        c.argument('room_id', options_list=['--room'], type=str, help='Room Id')
         c.argument('valid_from', options_list=['--valid-from'], type=str,
                    help='The timestamp from when the room is open for joining, in in ISO8601 format, '
                    'ex: 2022-07-14T10:21. Should be used together with --valid-until. Optional.')
@@ -215,11 +215,11 @@ def _load_rooms_arguments(self):
 
     with self.argument_context('communication rooms participant get') as c:
         c.argument('room_id', options_list=['--room'],
-                   type=str, help='')
+                   type=str, help='Room Id')
 
     with self.argument_context('communication rooms participant add') as c:
         c.argument('room_id', options_list=['--room'],
-                   type=str, help='')
+                   type=str, help='Room Id')
         c.argument('presenters', options_list=['--presenter-participants'],
                    nargs='+', help='Collection of identities to be added to the room as presenter. Optional.')
         c.argument('attendees', options_list=['--attendee-participants'],
@@ -229,7 +229,7 @@ def _load_rooms_arguments(self):
 
     with self.argument_context('communication rooms participant update') as c:
         c.argument('room_id', options_list=['--room'],
-                   type=str, help='')
+                   type=str, help='Room Id')
         c.argument('presenters', options_list=['--presenter-participants'],
                    nargs='+', help='Collection of identities to be added to the room as presenter. Optional.')
         c.argument('attendees', options_list=['--attendee-participants'],
@@ -239,6 +239,6 @@ def _load_rooms_arguments(self):
 
     with self.argument_context('communication rooms participant remove') as c:
         c.argument('room_id', options_list=['--room'],
-                   type=str, help='')
+                   type=str, help='Room Id')
         c.argument('participants', options_list=['--participants'],
                    nargs='+', help='Collection of identities that will be removed from the room.')
