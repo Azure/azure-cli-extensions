@@ -46,7 +46,7 @@ class ProgramArgsAction(argparse._AppendAction):
 def load_arguments(self, _):
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
-    program_args_type = CLIArgumentType(options_list=['--program-args'], help='Program arguments passed to the Q# compiler as a list of key=value pairs separated by spaces.', action=ProgramArgsAction, nargs='+')
+    program_args_type = CLIArgumentType(options_list=['--program-args'], help='Program arguments passed to the Q# compiler as a list of key=value pairs separated by spaces. Omit the leading "--" on argument names.', action=ProgramArgsAction, nargs='+')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
     project_type = CLIArgumentType(help='The location of the Q# project to submit. Defaults to current folder.')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')

@@ -173,9 +173,9 @@ def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
-def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+def submit(cmd, resource_group_name, workspace_name, location, target_id,
            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
-           target_capability=None):
+           target_capability=None, program_args=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -239,7 +239,6 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
     Get the results of running a Q# job.
     """
     import tempfile
-    import json
     import os
     from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
 
@@ -349,13 +348,13 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     return job
 
 
-def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
+def run(cmd, resource_group_name, workspace_name, location, target_id,
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None, program_args=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params, target_capability)
+    job = submit(cmd, resource_group_name, workspace_name, location, target_id,
+                 project, job_name, shots, storage, no_build, job_params, target_capability, program_args)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
