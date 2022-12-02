@@ -27,7 +27,7 @@ def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environm
             raise InvalidArgumentValueError("User-assigned identity must be a valid resource ID")
         connection_type = ConnectionType.MANAGED_IDENTITY_USER_ASSIGNED
     elif mi_system_assigned:
-        connection_type = ConnectionType.MANAGED_IDENTITY_SYTEM_ASSIGNED
+        connection_type = ConnectionType.MANAGED_IDENTITY_SYSTEM_ASSIGNED
 
     app = show_staticsite(cmd, name, resource_group_name)
     sku = Sku.FREE if app.sku.name.lower() == "free" else Sku.STANDARD

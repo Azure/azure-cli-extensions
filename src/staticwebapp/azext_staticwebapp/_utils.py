@@ -6,17 +6,19 @@
 
 from enum import Enum, auto
 import re
+from functools import lru_cache
 
+from msrestazure.tools import parse_resource_id
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
-from msrestazure.tools import parse_resource_id
+
 
 
 class ConnectionType(Enum):
     CONNECTION_STRING = auto()
     MANAGED_IDENTITY_USER_ASSIGNED = auto()
-    MANAGED_IDENTITY_SYTEM_ASSIGNED= auto()
+    MANAGED_IDENTITY_SYSTEM_ASSIGNED= auto()
 
 
 class Sku(Enum):
@@ -45,6 +47,12 @@ class AbstractDbHandler:
                               username=None, password=None, **kwargs) -> str:
         raise NotImplementedError()
 
+    # saves some time by prevent reparsing of RIDs
+    @classmethod
+    @lru_cache(maxsize=100)
+    def _parse_resource_id(resource_id: str) -> dict:
+        return parse_resource_id(resource_id)
+
     @classmethod
     def _validate(cls, sku: 'Sku', connection_type: 'ConnectionType', username=None, password=None):
         if not cls._is_supported(sku, connection_type):
@@ -61,12 +69,30 @@ class AbstractDbHandler:
             raise RequiredArgumentMissingError("Missing database username")
 
     @classmethod
-    def get_location(cls, cmd, resource_id: str) -> str:
+    def _get_location(cls, cmd, resource_id: str) -> str:
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         request_url = f"{management_hostname.strip('/')}{resource_id}?api-version={cls.API_VERSION}"
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()["location"]
+
+    @classmethod
+    def get_location(cls, cmd, resource_id: str) -> str:
+        return cls._get_location(cmd, resource_id)
+
+    # Needed when doing a GET on the DB doesn't give the location
+    @classmethod
+    def _get_location_from_server(cls, cmd, resource_id: str) -> str:
+        from msrestazure.tools import resource_id as rid
+
+        parsed_rid = cls._parse_resource_id(resource_id)
+        unneeded_props = {"child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"}
+        server_rid_parts = dict()
+        for k in parsed_rid:
+            if k not in unneeded_props:
+                server_rid_parts[k] = parsed_rid[k]
+
+        return cls._get_location(cmd, rid(**server_rid_parts))
 
     @classmethod
     def get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
@@ -94,7 +120,7 @@ class CosmosDbHandler(AbstractDbHandler):
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                                username=None, password=None) -> str:
-        parsed_rid = parse_resource_id(resource_id)
+        parsed_rid = cls._parse_resource_id(resource_id)
         resource_group = parsed_rid["resource_group"]
         name = parsed_rid["name"]
         client = cf_db_accounts(cmd.cli_ctx, None)
@@ -124,7 +150,7 @@ class AzureSqlHandler(AbstractDbHandler):
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                               username=None, password=None) -> str:
-        parsed_rid = parse_resource_id(resource_id)
+        parsed_rid = cls._parse_resource_id(resource_id)
         name = parsed_rid["name"]
 
         if connection_type == ConnectionType.CONNECTION_STRING:
@@ -154,7 +180,7 @@ class MySqlFlexHandler(AbstractDbHandler):
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                               username=None, password=None) -> str:
-        parsed_rid = parse_resource_id(resource_id)
+        parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         db = parsed_rid["child_name_1"]
         # only connection string auth supported
@@ -164,14 +190,7 @@ class MySqlFlexHandler(AbstractDbHandler):
 
     @classmethod
     def get_location(cls, cmd, resource_id: str) -> str:
-        from msrestazure.tools import resource_id as rid
-
-        parsed_rid = parse_resource_id(resource_id)
-        unneeded_props = ["child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"]
-        for k in unneeded_props:
-            if k in parsed_rid:
-                del parsed_rid[k]
-        return super(MySqlFlexHandler, cls).get_location(cmd, rid(**parsed_rid))
+        return cls._get_location_from_server(cmd, resource_id)
 
 
 class PgSqlSingleHandler(AbstractDbHandler):
@@ -188,12 +207,23 @@ class PgSqlSingleHandler(AbstractDbHandler):
 
     @classmethod
     def _is_supported(cls, sku: 'Sku', connection_type: 'ConnectionType') -> bool:
-        raise NotImplementedError()
+        return not (sku == sku.FREE and connection_type != ConnectionType.CONNECTION_STRING)
+
+    @classmethod
+    def get_location(cls, cmd, resource_id: str) -> str:
+        return cls._get_location_from_server(cmd, resource_id)
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                               username=None, password=None) -> str:
-        raise NotImplementedError()  # TODO connection string / MSI auth
+        parsed_rid = cls._parse_resource_id(resource_id)
+        server = parsed_rid["name"]
+        db = parsed_rid["child_name_1"]
+        if connection_type == ConnectionType.CONNECTION_STRING:
+            return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
+                    f"User Id={username}@{server};Password={password};Ssl Mode=Require;")
+        else:
+            raise NotImplementedError()
 
 
 class PgSqlFlexHandler(AbstractDbHandler):
@@ -214,19 +244,12 @@ class PgSqlFlexHandler(AbstractDbHandler):
 
     @classmethod
     def get_location(cls, cmd, resource_id: str) -> str:
-        from msrestazure.tools import resource_id as rid
-
-        parsed_rid = parse_resource_id(resource_id)
-        unneeded_props = ["child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"]
-        for k in unneeded_props:
-            if k in parsed_rid:
-                del parsed_rid[k]
-        return super(PgSqlFlexHandler, cls).get_location(cmd, rid(**parsed_rid))
+        return cls._get_location_from_server(cmd, resource_id)
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                               username=None, password=None) -> str:
-        parsed_rid = parse_resource_id(resource_id)
+        parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         db = parsed_rid["child_name_1"]
         return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
