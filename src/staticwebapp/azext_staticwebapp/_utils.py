@@ -42,7 +42,7 @@ class AbstractDbHandler:
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None) -> str:
+                              username=None, password=None, **kwargs) -> str:
         raise NotImplementedError()
 
     @classmethod
@@ -70,9 +70,9 @@ class AbstractDbHandler:
 
     @classmethod
     def get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None) -> str:
+                              username=None, password=None, **kwargs) -> str:
         cls._validate(sku, connection_type, username, password)
-        return cls._get_connection_string(cmd, sku, connection_type, resource_id, username, password)
+        return cls._get_connection_string(cmd, sku, connection_type, resource_id, username, password, **kwargs)
 
 
 class CosmosDbHandler(AbstractDbHandler):
@@ -213,9 +213,24 @@ class PgSqlFlexHandler(AbstractDbHandler):
         return connection_type == ConnectionType.CONNECTION_STRING
 
     @classmethod
+    def get_location(cls, cmd, resource_id: str) -> str:
+        from msrestazure.tools import resource_id as rid
+
+        parsed_rid = parse_resource_id(resource_id)
+        unneeded_props = ["child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"]
+        for k in unneeded_props:
+            if k in parsed_rid:
+                del parsed_rid[k]
+        return super(PgSqlFlexHandler, cls).get_location(cmd, rid(**parsed_rid))
+
+    @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
                               username=None, password=None) -> str:
-        raise NotImplementedError()  # TODO connection string (MSI not supported)
+        parsed_rid = parse_resource_id(resource_id)
+        server = parsed_rid["name"]
+        db = parsed_rid["child_name_1"]
+        return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
+                f"User Id={username};Password={password};Ssl Mode=Require;")
 
 
 RESOURCE_ID_TO_DB_HANDLER = {
@@ -223,7 +238,7 @@ RESOURCE_ID_TO_DB_HANDLER = {
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.Sql\/servers\/.*\/databases\/.*$": AzureSqlHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL\/flexibleServers\/.*\/databases\/.*$": MySqlFlexHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*$": PgSqlSingleHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*$": PgSqlFlexHandler,
+    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*\/databases\/.*$": PgSqlFlexHandler,
 }
 
 

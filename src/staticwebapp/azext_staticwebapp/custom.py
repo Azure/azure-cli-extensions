@@ -14,9 +14,8 @@ from azure.cli.command_modules.appservice.static_sites import show_staticsite
 from msrestazure.tools import is_valid_resource_id
 
 
-# TODO remove or use "use_connection_string"
 # TODO check these args against Thomas's spec
-def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environment=None, use_connection_string=None,
+def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environment=None,
                         connection_string=None, username=None, password=None,
                         mi_user_assigned=None, mi_system_assigned=False):
     if mi_system_assigned and mi_user_assigned:
