@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=W0703
+
+
 import sys
 from azure.core.exceptions import HttpResponseError
 
