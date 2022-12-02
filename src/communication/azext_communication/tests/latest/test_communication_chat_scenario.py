@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.core.exceptions import HttpResponseError
 import os
 from .recording_processors import URIIdentityReplacer, BodyReplacerProcessor
 from .preparers import CommunicationResourcePreparer
@@ -162,16 +163,17 @@ class CommunicationChatScenarios(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_chat_list_participants_bad_thread_id(self, communication_resource_info):
-        from azure.core.exceptions import HttpResponseError
+        from azure.core.exceptions import ResourceNotFoundError
 
         self.__update_environ(communication_resource_info)
 
         thread_id = 'sanitized'
         self.kwargs.update({
             'thread_id': thread_id })
-        with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant list --thread {thread_id}', checks = [
-                self.check('httpStatusCode', '400')])
+        with self.assertRaises(ResourceNotFoundError) as raises:
+            self.cmd('az communication chat participant list --thread {thread_id}')
+
+        assert 'Not Found' in str(raises.exception)
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -228,17 +230,15 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'user_id': '8:acs:fakeid===' })
 
-        with self.assertRaises(Exception) as raises:
-            self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}', checks = [
-                self.check('CommunicationError.code', 'Bad Request')])
+        with self.assertRaises(HttpResponseError) as raises:
+            self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}')
 
         assert 'Identifier format is invalid' in str(raises.exception)
+
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_chat_remove_participants(self, communication_resource_info):
-        from azure.core.exceptions import HttpResponseError
-
         self.__update_environ(communication_resource_info)
 
         user_id = self.__create_user(communication_resource_info)
@@ -264,8 +264,7 @@ class CommunicationChatScenarios(ScenarioTest):
             'user_id': '8:acs:fakeid' })
 
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}', checks = [
-                self.check('CommunicationError.code', 'Bad Request')])        
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')        
 
         assert 'Identifier format is invalid' in str(raises.exception)
 
