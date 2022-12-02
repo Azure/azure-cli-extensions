@@ -6,6 +6,7 @@
 
 import os
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from azure.core.exceptions import HttpResponseError
 from .preparers import CommunicationResourcePreparer
 from .recording_processors import URIIdentityReplacer, BodyReplacerProcessor
 
@@ -40,7 +41,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         participants = room['participants']
         roomJoinPolicy = room['roomJoinPolicy']
         
-        assert len(id) > 8
+        assert len(id) > 0
         assert len (participants) == 0
         assert roomJoinPolicy == 'InviteOnly'
 
@@ -54,9 +55,16 @@ class CommunicationRoomsScenarios(ScenarioTest):
         self.kwargs.update({
             'join_policy': 'azure12345'})
  
-        with self.assertRaises(Exception):
-            self.cmd('az communication rooms create --join-policy {join_policy}', checks = [
-                self.check('CommunicationError.code', 'Bad Request')])
+        with self.assertRaises(HttpResponseError) as raises:
+            self.cmd('az communication rooms create --join-policy {join_policy}')
+
+        assert 'Bad Request' in str(raises.exception.reason)
+        assert raises.exception.status_code == 400
+        
+        res = raises.exception.model.additional_properties
+        assert res['status'] == 400
+        assert res['traceId'] is not None
+        assert 'validation errors' in str(res['title'])
         
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -74,19 +82,43 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_rooms_delete_with_invalid_id(self, communication_resource_info):
+    def test_rooms_delete_with_id_with_invalid_length(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-        from azure.core.exceptions import HttpResponseError
        
         # delete valid room with invalid room id
         self.kwargs.update({
-            'room_id': 'fake-room-id'})
+            'room_id': 'f-1234567890'})
+        
+        with self.assertRaises(HttpResponseError) as raises:
+            self.cmd('az communication rooms delete --room {room_id}')  
+
+        assert 'Bad Request' in str(raises.exception.reason)
+        assert raises.exception.status_code == 400
+        
+        err = raises.exception.model.error
+        assert err.code == 'InvalidInput'
+        assert 'Invalid Room ID length' in err.message
+        
+
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_delete_with_invalid_id(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+       
+        # delete valid room with invalid room id
+        self.kwargs.update({
+            'room_id': 'f-123456789012345'})
         
         with self.assertRaises(HttpResponseError) as raises:
             self.cmd('az communication rooms delete --room {room_id}', checks = [
-                self.check('httpStatusCode', '400')])  
+                self.check('httpStatusCode', '420')])  
 
-        assert 'Invalid Room ID length' in str(raises.exception)
+        assert 'Bad Request' in str(raises.exception.reason)
+        assert raises.exception.status_code == 400
+        
+        err = raises.exception.model.error
+        assert err.code == 'InvalidInput'
+        assert 'Room ID is invalid' in err.message
         
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -99,12 +131,34 @@ class CommunicationRoomsScenarios(ScenarioTest):
         self.kwargs.update({
             'room_id': room['id']})
 
-        self.cmd('az communication rooms get --room {room_id}') 
+        get_room = self.cmd('az communication rooms get --room {room_id}').get_output_in_json() 
+
+        assert room['id'] == get_room['id']
     
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_update_join_policy(self, communication_resource_info):
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        
+        # create a room first, it should be in the future so we can update the policy 
+        room = self.cmd('az communication rooms create --valid-from 2023-04-01T13:35').get_output_in_json()
+        
+        self.kwargs.update({
+            'room_id': room['id'],
+            'join_policy': 'CommunicationServiceUsers'})
+
+        # update the room join policy
+        updated_room = self.cmd('az communication rooms update --room {room_id} --join-policy {join_policy}').get_output_in_json()
+        
+        assert room['id'] == updated_room['id']
+        assert room['roomJoinPolicy'] == "InviteOnly"
+        assert updated_room['roomJoinPolicy'] == "CommunicationServiceUsers"
+
+
+    @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_rooms_update_join_policy_after_start(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
         
         # create a room first 
@@ -114,9 +168,15 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'join_policy': 'CommunicationServiceUsers'})
 
         # update the room join policy
-        with self.assertRaises(Exception):
-            self.cmd('az communication rooms update --room {room_id}', checks = [
-                self.check('InvalidInput', 'Room join policy cannot be updated after room start time has elapsed')])
+        with self.assertRaises(Exception) as raises:
+            self.cmd('az communication rooms update --room {room_id} --join-policy {join_policy}')
+
+        assert 'Bad Request' in str(raises.exception.reason)
+        assert raises.exception.status_code == 400
+        
+        err = raises.exception.model.error
+        assert err.code == 'InvalidInput'
+        assert 'Room join policy cannot be updated after room start time has elapsed' in err.message
         
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -135,7 +195,12 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': room['id'],
             'validFrom': validFrom,
             'validUntil': validUntil})
-        self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}')
+        
+        updated_room = self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}').get_output_in_json()
+
+        assert room['id'] == updated_room['id']
+        assert room['validFrom'] != updated_room['validFrom']
+        assert room['validUntil'] != updated_room['validUntil']
         
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -155,9 +220,10 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'validFrom': validFrom,
             'validUntil': validUntil})
 
-        with self.assertRaises(SystemExit):
-            self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}',checks = [
-                self.check('Invalid Elaspsed Time', '2022-11-23 is not a valid ISO-8601 datetime')])
+        with self.assertRaises(SystemExit) as raises:
+            self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}')
+
+        assert 'is not a valid ISO-8601 datetime' in str(raises.exception)
 
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -172,21 +238,20 @@ class CommunicationRoomsScenarios(ScenarioTest):
         # update the room with newly created attendee participant
         self.kwargs.update({
             'room_id': room['id'],
-            'attendee_participants_id': attendee_participants_id,
-            'attendee_participants_role':'Attendee'})
+            'attendee_participants_id': attendee_participants_id})
         self.cmd('az communication rooms update --room {room_id} --attendee-participants {attendee_participants_id}')
-        room_after_update = self.cmd('az communication rooms get --room {room_id}').get_output_in_json()
-        attendee_participant = room_after_update['participants']
-        attendee_participant_role = attendee_participant[0]['role']
+
+        updated_room = self.cmd('az communication rooms get --room {room_id}').get_output_in_json()
+        participants = updated_room['participants']
 
         # verify the participants role and the number of participants 
-        assert len (attendee_participant) == 1
-        assert attendee_participant_role == 'Attendee'
+        assert len(participants) == 1
+        assert participants[0]['role'] == 'Attendee'
        
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
-    def test_rooms_get_default_participant(self, communication_resource_info):
+    def test_rooms_get_default_participants(self, communication_resource_info):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         # create a new room 
@@ -197,10 +262,10 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': room['id']})
         self.cmd('az communication rooms participant get --room {room_id}')
         get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
-        participant = get_participant['participants']
+        participants = get_participant['participants']
 
         # verify the defualt participants is null 
-        assert len(participant) == 0
+        assert len(participants) == 0
 
        
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -212,18 +277,21 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # create a valid participant
-        presenter_participants_id = self.__create_user(communication_resource_info)
+        participant_id = self.__create_user(communication_resource_info)
 
         # add valid participant into the created room
         self.kwargs.update({
             'room_id': room['id'],
-            'participants_id': presenter_participants_id})
+            'participants_id': participant_id})
         self.cmd('az communication rooms participant add --presenter-participants {participants_id} --room {room_id}')
+        
         get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
-        presenter_participants = get_participant['participants'][0]['role']
+        
+        assert len(get_participant['participants']) == 1
+        role = get_participant['participants'][0]['role']
 
         # verify the type of added participant
-        assert presenter_participants == 'Presenter'
+        assert role == 'Presenter'
 
     
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -242,9 +310,15 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': room['id'],
             'participants_id': participant_id})
         
-        with self.assertRaises(Exception):
-            self.cmd('az communication rooms participant add --consumer-participants {participants_id} --room {room_id}',checks = [
-                self.check('Identifier format is invalid')])
+        with self.assertRaises(Exception) as raises:
+            self.cmd('az communication rooms participant add --consumer-participants {participants_id} --room {room_id}')
+
+        assert 'Bad Request' in str(raises.exception.reason)
+        assert raises.exception.status_code == 400
+        
+        err = raises.exception.model.error
+        assert err.code == 'InvalidInput'
+        assert 'Identifier format is invalid' in err.message
 
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -260,13 +334,22 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
         # add valid participant into the created room 
         self.kwargs.update({
-            'room id': room['id'],
+            'room_id': room['id'],
             'participants_id': participant_id})
      
         # update the type of participants from presenter to attendee with the same participant id 
-        with self.assertRaises(Exception):
-            self.cmd('az communication rooms paritcipant update --presenter-participants {participants_id} --attendee-participants {participants_id} --room {room_id}',checks = [
-                self.check('Bad Request')])
+        with self.assertRaises(HttpResponseError) as raises:
+            self.cmd('az communication rooms participant update --presenter-participants {participants_id} --attendee-participants {participants_id} --room {room_id}')
+
+        assert 'Bad Request' in str(raises.exception.reason)
+        assert raises.exception.status_code == 400
+        
+        res = raises.exception.model.additional_properties
+        assert res['status'] == 400
+        assert res['traceId'] is not None
+        assert 'validation errors' in str(res['title'])
+        assert len(res['errors']['Participants']) == 1
+        assert 'duplicate participant' in str(res['errors']['Participants'])
 
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -278,29 +361,30 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # create valid participants
-        presenter_participant_id = self.__create_user(communication_resource_info)
-        consumer_participant_id = self.__create_user(communication_resource_info)
+        presenter_id = self.__create_user(communication_resource_info)
+        consumer_id = self.__create_user(communication_resource_info)
 
         # add participants into created room 
         self.kwargs.update({
             'room_id': room['id'],
-            'presenter_participant_id': presenter_participant_id, 
-            'consumer_participant_id': consumer_participant_id})
+            'presenter_id': presenter_id, 
+            'consumer_id': consumer_id})
         
-        self.cmd('az communication rooms participant add --presenter-participants {presenter_participant_id} --consumer-participants {consumer_participant_id} --room {room_id}')
+        self.cmd('az communication rooms participant add --presenter-participants {presenter_id} --consumer-participants {consumer_id} --room {room_id}')
         
-        get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
-        
-        presenter_participant = get_participant['participants'][0]['role']
+        # get updated room properties
+        updated_room = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
 
-        consumer_participant = get_participant['participants'][1]['role']
-
-        participants = get_participant['participants']
-        
-        # verify the type of participants and the length of participant
-        assert presenter_participant == 'Presenter'
-        assert consumer_participant == 'Consumer'
+        # verify the length of participant
+        participants = updated_room['participants']
         assert len(participants) == 2 
+        
+        presenter_role = participants[0]['role']
+        consumer_role = participants[1]['role']
+
+        # verify the type of participants
+        assert presenter_role == 'Presenter'
+        assert consumer_role == 'Consumer'
 
     
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -320,11 +404,11 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'participant_id': participant_id})
         self.cmd('az communication rooms participant add --consumer-participants {participant_id} --room {room_id}')
        
-        # delete the participant from the created room 
+        # remove the participant from the created room 
         self.cmd('az communication rooms participant remove --participants {participant_id} --room {room_id}')
         get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
         participant = get_participant['participants']
 
-        # verify the participant is null 
+        # verify the participant list is empty
         assert len(participant) == 0 
 
