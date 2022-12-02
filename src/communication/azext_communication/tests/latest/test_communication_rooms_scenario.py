@@ -14,8 +14,20 @@ class CommunicationRoomsScenarios(ScenarioTest):
     def __init__(self, method_name):
         super().__init__(method_name, recording_processors=[
             URIIdentityReplacer(),
-            BodyReplacerProcessor(keys=["id"])
+            BodyReplacerProcessor(keys=["id", "rawId"])
         ])
+
+
+    def __create_user(self, communication_resource_info):
+        connection_str = communication_resource_info[1]
+        if self.is_live or self.in_recording:
+            self.kwargs.update({ 'connection_string':  connection_str})
+        else:
+            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = connection_str
+
+        res = self.cmd('az communication identity user create').get_output_in_json()
+
+        return res['properties']['id']
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -68,7 +80,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
        
         # delete valid room with invalid room id
         self.kwargs.update({
-            'room_id': '12345678'})
+            'room_id': 'fake-room-id'})
         
         with self.assertRaises(HttpResponseError) as raises:
             self.cmd('az communication rooms delete --room {room_id}', checks = [
@@ -116,8 +128,8 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # update the room with valid elapsed time (to do: joanna_jiang updates the validation time range in every 180 dyas) 
-        validFrom = '2022-11-24T23:09:10.357939+00:00'
-        validUntil = '2022-11-25T23:09:10.357939+00:00'
+        validFrom = '2023-01-24T23:09:10.357939+00:00'
+        validUntil = '2023-06-25T13:09:10.357939+00:00'
         
         self.kwargs.update({
             'room_id': room['id'],
@@ -143,7 +155,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'validFrom': validFrom,
             'validUntil': validUntil})
 
-        with self.assertRaises(Exception):
+        with self.assertRaises(SystemExit):
             self.cmd('az communication rooms update --room {room_id} --valid-from {validFrom} --valid-until {validUntil}',checks = [
                 self.check('Invalid Elaspsed Time', '2022-11-23 is not a valid ISO-8601 datetime')])
 
@@ -155,8 +167,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
    
         # create a new room and a new participant
         room = self.cmd('az communication rooms create').get_output_in_json()
-        participant = self.cmd('az communication identity user create').get_output_in_json()
-        attendee_participants_id = participant['properties']['id']
+        attendee_participants_id = self.__create_user(communication_resource_info)
         
         # update the room with newly created attendee participant
         self.kwargs.update({
@@ -201,8 +212,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # create a valid participant
-        participant = self.cmd('az communication identity user create').get_output_in_json()
-        presenter_participants_id = participant['properties']['id']
+        presenter_participants_id = self.__create_user(communication_resource_info)
 
         # add valid participant into the created room
         self.kwargs.update({
@@ -246,8 +256,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # create a valid participant
-        participant = self.cmd('az communication identity user create').get_output_in_json()
-        participant_id = participant['properties']['id']
+        participant_id = self.__create_user(communication_resource_info)
 
         # add valid participant into the created room 
         self.kwargs.update({
@@ -269,27 +278,29 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # create valid participants
-        first_participant = self.cmd('az communication identity user create').get_output_in_json()
-        second_participant = self.cmd('az communication identity user create').get_output_in_json()
-
-        presenter_participant_id = first_participant['properties']['id']
-        consumer_participant_id = second_participant['properties']['id']
+        presenter_participant_id = self.__create_user(communication_resource_info)
+        consumer_participant_id = self.__create_user(communication_resource_info)
 
         # add participants into created room 
         self.kwargs.update({
             'room_id': room['id'],
             'presenter_participant_id': presenter_participant_id, 
             'consumer_participant_id': consumer_participant_id})
+        
         self.cmd('az communication rooms participant add --presenter-participants {presenter_participant_id} --consumer-participants {consumer_participant_id} --room {room_id}')
+        
         get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
+        
         presenter_participant = get_participant['participants'][0]['role']
+
         consumer_participant = get_participant['participants'][1]['role']
-        participant = get_participant['participants']
+
+        participants = get_participant['participants']
         
         # verify the type of participants and the length of participant
         assert presenter_participant == 'Presenter'
         assert consumer_participant == 'Consumer'
-        assert len(participant) == 2 
+        assert len(participants) == 2 
 
     
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -301,8 +312,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         room = self.cmd('az communication rooms create').get_output_in_json()
 
         # create a valid participants
-        participant = self.cmd('az communication identity user create').get_output_in_json()
-        participant_id = participant['properties']['id']
+        participant_id = self.__create_user(communication_resource_info)
 
         # add the participant into created room 
         self.kwargs.update({
@@ -318,8 +328,3 @@ class CommunicationRoomsScenarios(ScenarioTest):
         # verify the participant is null 
         assert len(participant) == 0 
 
-
-
-
-   
-        
