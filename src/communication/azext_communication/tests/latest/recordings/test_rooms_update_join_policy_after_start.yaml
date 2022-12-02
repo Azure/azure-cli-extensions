@@ -13,23 +13,23 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - '2022-12-02T05:18:33.491227Z'
+      - '2022-12-02T04:28:04.451972Z'
       Repeatability-Request-ID:
-      - c4288f0f-7200-11ed-a81c-a864f13124e5
+      - b6b5d92e-71f9-11ed-95fc-a864f13124e5
       User-Agent:
       - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
       x-ms-date:
-      - Fri, 02 Dec 2022 05:18:33 GMT
+      - Fri, 02 Dec 2022 04:28:04 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
     uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
   response:
     body:
-      string: '{"id": "sanitized", "createdDateTime": "2022-12-02T05:18:35.1544093+00:00",
-        "validFrom": "2022-12-02T05:18:35.0271249+00:00", "validUntil": "2023-05-31T05:18:35.0271249+00:00",
+      string: '{"id": "sanitized", "createdDateTime": "2022-12-02T04:28:05.8636201+00:00",
+        "validFrom": "2022-12-02T04:28:05.7656666+00:00", "validUntil": "2023-05-31T04:28:05.7656666+00:00",
         "roomJoinPolicy": "InviteOnly", "participants": []}'
     headers:
       api-supported-versions:
@@ -37,25 +37,24 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 02 Dec 2022 05:18:35 GMT
+      - Fri, 02 Dec 2022 04:28:05 GMT
       location:
-      - '99489271756267769'
+      - '99427524965511408'
       ms-cv:
-      - QNn65JwcvEWV0PJB4+w6Ew.0
+      - VZz5g5TDKkC23VvVWkw6tw.0
       repeatability-result:
       - accepted
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0qoqJYwAAAAArib4/Nd9wRqW1CALyvHr3WVZSMzExMDAwMTE1MDI3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 01X6JYwAAAADqobWXCKUlRL5IgahsKCq7WVZSMzBFREdFMDMxMAA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
       x-cache:
       - CONFIG_NOCACHE
     status:
       code: 201
       message: Created
 - request:
-    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
-      "sanitized"}}, "role": "Consumer"}]}'
+    body: '{"roomJoinPolicy": "CommunicationServiceUsers"}'
     headers:
       Accept:
       - application/json
@@ -64,36 +63,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '111'
+      - '47'
       Content-Type:
       - application/json
       User-Agent:
       - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - 9yM+xm0r0m7guClX1Hr5BsENOLhDxuDrsToSVRqbc60=
+      - tK6oIRSdGQ2WoGSYiG7V2igNFPdlkZuHloFEmNJ8iQc=
       x-ms-date:
-      - Fri, 02 Dec 2022 05:18:34 GMT
+      - Fri, 02 Dec 2022 04:28:05 GMT
       x-ms-return-client-request-id:
       - 'true'
-    method: POST
-    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants:add?api-version=2022-02-01
+    method: PATCH
+    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2022-02-01
   response:
     body:
-      string: '{"error": {"code": "InvalidInput", "message": "Identifier format is
-        invalid."}}'
+      string: '{"error": {"code": "InvalidInput", "message": "Room join policy cannot
+        be updated after room start time has elapsed"}}'
     headers:
       api-supported-versions:
-      - '2022-02-01'
+      - 2021-04-07, 2022-02-01
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 02 Dec 2022 05:18:35 GMT
+      - Fri, 02 Dec 2022 04:28:05 GMT
       ms-cv:
-      - Nr6d3Am1xEmfwLAzNvXClw.0
+      - 8RgeD9IjMUOwbOgxZuWP4A.0
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0q4qJYwAAAADpr/Ribnn1S5R2Xp9bL+yyWVZSMzExMDAwMTE1MDIzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 01n6JYwAAAADMUSrWnOKtTKN8ot4p9qS3WVZSMzExMDAwMTE1MDQ1ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:
