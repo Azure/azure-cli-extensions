@@ -210,8 +210,7 @@ jobs:
         # clone azure-cli
         git clone https://github.com/Azure/azure-cli.git ./azure-cli
         python -m pip install -U pip
-        pip install azdev
-        azdev --version
+        pip install azdev==0.1.30
         azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
         az --version
         python s/scripts/ci/test_min_version.py -v
