@@ -475,7 +475,7 @@ helps['communication rooms participant get'] = """
     examples:
       - name: Get room's participants
         text: |-
-               az communication rooms participant get
+               az communication rooms participant get --room "12345678901234567"
 """
 
 helps['communication rooms participant add'] = """
@@ -484,7 +484,7 @@ helps['communication rooms participant add'] = """
     examples:
       - name: Add presenter and attendee participants to a room
         text: |-
-               az communication rooms participant add --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+               az communication rooms participant add --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms participant update'] = """
@@ -493,7 +493,7 @@ helps['communication rooms participant update'] = """
     examples:
       - name: Update room participants
         text: |-
-               az communication rooms participant update --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+               az communication rooms participant update --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms participant remove'] = """
@@ -502,5 +502,5 @@ helps['communication rooms participant remove'] = """
     examples:
       - name: Remove room participants
         text: |-
-               az communication rooms participant remove --paticipants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
+               az communication rooms participant remove --room "12345678901234567" --paticipants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
