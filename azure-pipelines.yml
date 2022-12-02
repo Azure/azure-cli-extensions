@@ -192,12 +192,12 @@ jobs:
   variables:
     PythonVersion: $[ dependencies.getPythonVersion.outputs['CustomParas.pythonVersion'] ]
   condition: and(succeeded(), contains(variables.PythonVersion, '3.6'))
-  displayName: "Min Version Tests python310"
+  displayName: "Min Version Tests python36"
   pool:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use python310'
+      displayName: 'Use python36'
       inputs:
         versionSpec: '3.6'
         addToPath: true
