@@ -502,5 +502,5 @@ helps['communication rooms participant remove'] = """
     examples:
       - name: Remove room participants
         text: |-
-               az communication rooms participant remove --room "12345678901234567" --paticipants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
+               az communication rooms participant remove --room "12345678901234567" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
