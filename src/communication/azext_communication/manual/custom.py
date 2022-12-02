@@ -9,6 +9,7 @@
 import sys
 from azure.core.exceptions import HttpResponseError
 
+
 def communication_identity_create_user(client):
     return client.create_user()
 
