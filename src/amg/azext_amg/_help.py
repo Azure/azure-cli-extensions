@@ -280,3 +280,53 @@ helps['grafana api-key delete'] = """
     type: command
     short-summary: delete an api key.
 """
+
+helps['grafana service-account'] = """
+    type: group
+    short-summary: Commands to manage service accounts.
+"""
+
+helps['grafana service-account create'] = """
+    type: command
+    short-summary: create a new service account.
+"""
+
+helps['grafana service-account update'] = """
+    type: command
+    short-summary: update a service account.
+"""
+
+helps['grafana service-account show'] = """
+    type: command
+    short-summary: show details of a service account.
+"""
+
+helps['grafana service-account list'] = """
+    type: command
+    short-summary: list existing service accounts.
+"""
+
+helps['grafana service-account delete'] = """
+    type: command
+    short-summary: delete a service account.
+"""
+
+helps['grafana service-account token'] = """
+    type: group
+    short-summary: Commands to manage service account tokens.
+"""
+
+helps['grafana service-account token create'] = """
+    type: command
+    short-summary: create a new service account token.
+"""
+
+helps['grafana service-account token list'] = """
+    type: command
+    short-summary: list existing service account tokens.
+"""
+
+helps['grafana service-account token delete'] = """
+    type: command
+    short-summary: delete a service account token.
+"""

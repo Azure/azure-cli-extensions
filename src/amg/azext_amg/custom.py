@@ -521,7 +521,7 @@ def update_service_account(cmd, grafana_name, service_account, new_name=None,
 
     response = _send_request(cmd, resource_group_name, grafana_name, "patch",
                              "/api/serviceaccounts/" + service_account_id, data)
-    return json.loads(response.content)
+    return json.loads(response.content)['serviceaccount']
 
 
 def list_service_accounts(cmd, grafana_name, resource_group_name=None):
@@ -584,9 +584,24 @@ def list_service_account_tokens(cmd, grafana_name, service_account, resource_gro
 
 def delete_service_account_token(cmd, grafana_name, service_account, token, resource_group_name=None):
     service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
+    token_id = _get_service_account_token_id(cmd, resource_group_name, grafana_name, service_account, token)
+
     response = _send_request(cmd, resource_group_name, grafana_name, "delete",
-                             "/api/serviceaccounts/" + service_account_id + '/tokens' + '/' + token)
+                             "/api/serviceaccounts/" + service_account_id + '/tokens' + '/' + token_id)
     return json.loads(response.content)
+
+
+def _get_service_account_token_id(cmd, resource_group_name, grafana_name, service_account, token):
+    try:
+        _ = int(token)
+        return token
+    except ValueError:
+        accounts = list_service_account_tokens(cmd, grafana_name, service_account, resource_group_name)
+        match = next((a for a in accounts if a['name'].lower() == token.lower()), None)
+        # pylint: disable=raise-missing-from
+        if not match:
+            raise ArgumentUsageError(f"Could't find the service account token '{token}'")
+        return str(match['id'])
 
 
 def get_actual_user(cmd, grafana_name, resource_group_name=None, api_key_or_token=None):
