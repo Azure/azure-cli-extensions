@@ -18,7 +18,6 @@ def load_arguments(self, _):
     grafana_role_type = CLIArgumentType(arg_type=get_enum_type(["Admin", "Editor", "Viewer"]), options_list=["--role", "-r"],
                                         help="Grafana role name", default="Viewer")
 
-
     with self.argument_context("grafana") as c:
         c.argument("tags", tags_type)
         c.argument("location", validator=get_default_location_from_resource_group)
@@ -26,8 +25,8 @@ def load_arguments(self, _):
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
         c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
-        c.argument("api_key", options_list=["--api-key", "--service-token", '-t'],
-                  help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
+        c.argument("api_key_or_token", options_list=["--api-key", "--service-token", '-t'],
+                   help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
