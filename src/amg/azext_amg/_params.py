@@ -15,6 +15,9 @@ def load_arguments(self, _):
     grafana_name_type = CLIArgumentType(options_list="--grafana-name",
                                         help="Name of the Azure Managed Dashboard for Grafana.",
                                         id_part="name")
+    grafana_role_type = CLIArgumentType(arg_type=get_enum_type(["Admin", "Editor", "Viewer"]), options_list=["--role", "-r"],
+                                        help="Grafana role name", default="Viewer")
+
 
     with self.argument_context("grafana") as c:
         c.argument("tags", tags_type)
@@ -23,7 +26,8 @@ def load_arguments(self, _):
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
         c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
-        c.argument("api_key", help="api key, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
+        c.argument("api_key", options_list=["--api-key", "--service-token", '-t'],
+                  help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
@@ -34,7 +38,8 @@ def load_arguments(self, _):
 
     # api_key=None, deterministic_outbound_ip=None, public_network_access=None
     with self.argument_context("grafana update") as c:
-        c.argument("api_key", get_enum_type(["Enabled", "Disabled"]), help="If enabled, you will be able to configur Grafana api keys")
+        c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
+                   help="If enabled, you will be able to configur Grafana api keys and service accounts")
         c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
                    help="if enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
 
@@ -54,7 +59,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana api-key") as c:
         c.argument("key_name", help="api key name")
-        c.argument("role", get_enum_type(["Admin", "Editor", "Viewer"]), help="Grafana role name", default="Viewer")
+        c.argument("role", grafana_role_type)
         c.argument("time_to_live", default="1d", help="The API key life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
 
     with self.argument_context("grafana api-key create") as c:
@@ -85,3 +90,14 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana user") as c:
         c.argument("user", help="user login name or email")
+
+    with self.argument_context("grafana service-account") as c:
+        c.argument("role", grafana_role_type)
+        c.argument("service_account", help="id or name which can identify a service account")
+        c.argument("is_disabled", arg_type=get_three_state_flag(), help="disable the service account. default: false")
+
+    with self.argument_context("grafana service-account create") as c:
+        c.argument("service_account", help="service account name")
+
+    with self.argument_context("grafana service-account update") as c:
+        c.argument("new_name", help="new name of the service account")

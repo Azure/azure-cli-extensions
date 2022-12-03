@@ -148,16 +148,16 @@ def list_grafana(cmd, resource_group_name=None):
     return client.grafana.list()
 
 
-def update_grafana(cmd, grafana_name, api_key=None, deterministic_outbound_ip=None, resource_group_name=None,
+def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None, resource_group_name=None,
                    tags=None):
-    if not api_key and not deterministic_outbound_ip and not tags:
-        raise ArgumentUsageError("--api-key | --deterministic-outbound-ip | --public-network-access")
+    if not api_key_and_service_account and not deterministic_outbound_ip and not tags:
+        raise ArgumentUsageError("--api-key | --service-account | --deterministic-outbound-ip | --public-network-access")
 
     client = cf_amg(cmd.cli_ctx)
     instance = client.grafana.get(resource_group_name, grafana_name)
 
-    if api_key:
-        instance.properties.api_key = api_key
+    if api_key_and_service_account:
+        instance.properties.api_key = api_key_and_service_account
 
     if deterministic_outbound_ip:
         instance.properties.deterministic_outbound_ip = deterministic_outbound_ip
@@ -450,6 +450,20 @@ def delete_api_key(cmd, grafana_name, key, resource_group_name=None):
 
 
 def create_api_key(cmd, grafana_name, key, role=None, time_to_live=None, resource_group_name=None):
+    seconds = _convert_duration_to_seconds(time_to_live)
+
+    data = {
+        "name": key,
+        "role": role,
+        "secondsToLive": seconds
+    }
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/auth/keys", data)
+    content = json.loads(response.content)
+    logger.warning("You will only be able to view this key here once. Please save it in a secure place.")
+    return content
+
+
+def _convert_duration_to_seconds(time_to_live):
     unit_to_seconds = {
         "s": 1,
         "m": 60,
@@ -466,17 +480,94 @@ def create_api_key(cmd, grafana_name, key, role=None, time_to_live=None, resourc
         else:
             seconds = int(time_to_live)
     except ValueError:
-        raise ArgumentUsageError("Please provide valid API key life duration") from None
+        raise ArgumentUsageError("Please provide valid time duration") from None
 
+    return seconds
+
+
+def create_service_account(cmd, grafana_name, service_account, role=None, is_disabled=None, resource_group_name=None):
     data = {
-        "name": key,
-        "role": role,
-        "secondsToLive": seconds
+        "name": service_account,
+        "role": role
     }
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/auth/keys", data)
-    content = json.loads(response.content)
-    logger.warning("You will only be able to view this key here once. Please save it in a secure place.")
-    return content
+    if is_disabled is not None:
+        data["isDisabled"] = is_disabled
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/serviceaccounts", data)
+    return json.loads(response.content)
+
+
+def update_service_account(cmd, grafana_name, service_account, new_name=None,
+                           role=None, is_disabled=None, resource_group_name=None):
+    data = {}
+    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
+    if new_name:
+        data['name'] = new_name
+
+    if role:
+        data['role'] = role
+
+    if is_disabled is not None:
+        data["isDisabled"] = is_disabled
+
+    response = _send_request(cmd, resource_group_name, grafana_name, "patch", "/api/serviceaccounts/" + service_account_id, data)
+    return json.loads(response.content)
+
+
+def list_service_accounts(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                             "/api/serviceaccounts/search")
+    return json.loads(response.content)['serviceAccounts']
+
+
+def show_service_account(cmd, grafana_name, service_account, resource_group_name=None):
+    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
+    response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                             "/api/serviceaccounts/" + service_account_id)
+    return json.loads(response.content)
+
+
+def delete_service_account(cmd, grafana_name, service_account, resource_group_name=None):
+    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
+    response = _send_request(cmd, resource_group_name, grafana_name, "delete",
+                             "/api/serviceaccounts/" + service_account_id)
+    return json.loads(response.content)
+
+
+def _get_service_account_id(cmd, resource_group_name, grafana_name, service_account):
+    try:
+        _ = int(service_account)
+        return service_account
+    except ValueError:
+        all = list_service_accounts(cmd, grafana_name, resource_group_name)
+        match = next((a for a in all if a['name'].lower() == service_account.lower()), None)
+        if not match:
+            raise ArgumentUsageError(f"Could't find the service account '{service_account}'") 
+        return str(match['id'])
+
+
+def create_service_account_token(cmd, grafana_name, service_account, token, time_to_live=None, resource_group_name=None):
+    data = {
+        "name": token,
+    }
+
+    if time_to_live:
+        data['secondsToLive'] = _convert_duration_to_seconds(time_to_live)
+
+    response = _send_request(cmd, resource_group_name, grafana_name, "post",
+                             "/api/serviceaccounts/" + service_account + '/tokens', data)
+    return json.loads(response.content)
+
+
+def list_service_account_tokens(cmd, grafana_name, service_account, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                             "/api/serviceaccounts/" + service_account + '/tokens')
+    return json.loads(response.content)
+
+
+def delete_service_account_token(cmd, grafana_name, service_account, token, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "delete",
+                             "/api/serviceaccounts/" + service_account + '/tokens' + '/' + token)
+    return json.loads(response.content)
 
 
 def get_actual_user(cmd, grafana_name, resource_group_name=None, api_key=None):
