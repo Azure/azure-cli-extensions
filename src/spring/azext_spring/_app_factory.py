@@ -11,8 +11,6 @@ from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_2022
 from .vendored_sdks.appplatform.v2022_09_01_preview import models as models_20220901preview
 from azure.cli.core.util import get_file_json
 
-from .vendored_sdks.appplatform.v2022_09_01_preview.models import IngressSettingsClientAuth
-
 
 class DefaultApp:
     def format_resource(self, **kwargs):
@@ -142,9 +140,9 @@ class DefaultApp:
                 session_affinity=session_affinity,
                 session_cookie_max_age=session_max_age,
                 backend_protocol=backend_protocol,
-                client_auth=IngressSettingsClientAuth(
+                client_auth=models_20220901preview.IngressSettingsClientAuth(
                     certificates=client_auth_certs
-                ) if client_auth_certs is not None and len(client_auth_certs) > 0 else None
+                ) if client_auth_certs is not None else None
             )
         else:
             return None
