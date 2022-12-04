@@ -61,7 +61,7 @@ def load_command_table(self, _):
     with self.command_group('grafana service-account') as g:
         g.custom_command('create', 'create_service_account')
         g.custom_command('list', 'list_service_accounts')
-        g.custom_command('show', 'show_service_account')
+        g.custom_show_command('show', 'show_service_account')
         g.custom_command('delete', 'delete_service_account')
         g.custom_command('update', 'update_service_account')
 
