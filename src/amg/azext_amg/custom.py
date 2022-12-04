@@ -546,7 +546,7 @@ def delete_service_account(cmd, grafana_name, service_account, resource_group_na
 
 def _get_service_account_id(cmd, resource_group_name, grafana_name, service_account):
     try:
-        _ = int(service_account)
+        int(service_account)
         return service_account
     except ValueError:
         accounts = list_service_accounts(cmd, grafana_name, resource_group_name)
@@ -593,7 +593,7 @@ def delete_service_account_token(cmd, grafana_name, service_account, token, reso
 
 def _get_service_account_token_id(cmd, resource_group_name, grafana_name, service_account, token):
     try:
-        _ = int(token)
+        int(token)
         return token
     except ValueError:
         accounts = list_service_account_tokens(cmd, grafana_name, service_account, resource_group_name)

@@ -16,7 +16,7 @@ def load_arguments(self, _):
                                         help="Name of the Azure Managed Grafana.",
                                         id_part="name")
     grafana_role_type = CLIArgumentType(arg_type=get_enum_type(["Admin", "Editor", "Viewer"]), options_list=["--role", "-r"],
-                                        help="Grafana role name", default="Viewer")
+                                        help="Grafana role name")
 
     with self.argument_context("grafana") as c:
         c.argument("tags", tags_type)
@@ -61,7 +61,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana api-key") as c:
         c.argument("key_name", help="api key name")
-        c.argument("role", grafana_role_type)
+        c.argument("role", grafana_role_type, default="Viewer")
         c.argument("time_to_live", default="1d", help="The API key life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
 
     with self.argument_context("grafana api-key create") as c:
@@ -94,14 +94,15 @@ def load_arguments(self, _):
         c.argument("user", help="user login name or email")
 
     with self.argument_context("grafana service-account") as c:
-        c.argument("role", grafana_role_type)
         c.argument("service_account", help="id or name which can identify a service account")
         c.argument("is_disabled", arg_type=get_three_state_flag(), help="disable the service account. default: false")
 
     with self.argument_context("grafana service-account create") as c:
+        c.argument("role", grafana_role_type, default="Viewer")
         c.argument("service_account", help="service account name")
 
     with self.argument_context("grafana service-account update") as c:
+        c.argument("role", grafana_role_type)
         c.argument("new_name", help="new name of the service account")
 
     with self.argument_context("grafana service-account token") as c:
