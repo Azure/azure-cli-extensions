@@ -118,14 +118,14 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
                                                                       transient_resource_group_name,
                                                                       target_subscription)
 
-    cli_cmd = prepare_cli_command(['snapshot', 'create',
-                                   '--resource-group', snapshot_resource_group_name,
-                                   '--name', target_snapshot_name,
-                                   '--location', location,
-                                   '--source', target_blob_path,
-                                   '--source-storage-account-id', source_storage_account_id,
-                                   '--hyper-v-generation', hyper_v_generation],
-                                  subscription=target_subscription)
+    cmd_content = ['snapshot', 'create',
+                   '--resource-group', snapshot_resource_group_name,
+                   '--name', target_snapshot_name,
+                   '--location', location,
+                   '--source', target_blob_path,
+                   '--source-storage-account-id', source_storage_account_id,
+                   '--hyper-v-generation', hyper_v_generation]
+    cli_cmd = prepare_cli_command(cmd_content, subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
@@ -143,13 +143,14 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
         else:
             target_image_name = target_name
 
-        cli_cmd = prepare_cli_command(['image', 'create',
-                                       '--resource-group', target_resource_group_name,
-                                       '--name', target_image_name,
-                                       '--location', location,
-                                       '--os-type', source_os_type,
-                                       '--source', target_snapshot_id,
-                                       '--hyper-v-generation', hyper_v_generation],
+        cmd_content = ['image', 'create',
+                       '--resource-group', target_resource_group_name,
+                       '--name', target_image_name,
+                       '--location', location,
+                       '--os-type', source_os_type,
+                       '--source', target_snapshot_id,
+                       '--hyper-v-generation', hyper_v_generation]
+        cli_cmd = prepare_cli_command(cmd_content,
                                       tags=tags,
                                       subscription=target_subscription)
 

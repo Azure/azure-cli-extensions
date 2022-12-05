@@ -29,7 +29,7 @@ class AzureArcVMwareManagementServiceAPIConfiguration(Configuration):  # pylint:
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The Subscription ID.
     :type subscription_id: str
-    :keyword api_version: Api Version. The default value is "2020-10-01-preview". Note that
+    :keyword api_version: Api Version. The default value is "2022-01-10-preview". Note that
      overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     """
@@ -41,7 +41,7 @@ class AzureArcVMwareManagementServiceAPIConfiguration(Configuration):  # pylint:
         **kwargs: Any
     ) -> None:
         super(AzureArcVMwareManagementServiceAPIConfiguration, self).__init__(**kwargs)
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
