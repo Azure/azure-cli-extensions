@@ -10,8 +10,8 @@ This file contains actions for parsing complex arguments.
 
 import argparse
 from collections import defaultdict
-from azext_connectedvmware.vmware_utils import create_dictionary_from_arg_string
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azext_connectedvmware.vmware_utils import create_dictionary_from_arg_string
 
 
 class VmNicAddAction(argparse._AppendAction):
