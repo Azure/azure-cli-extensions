@@ -5,11 +5,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.10"
+# HISTORY.rst entry.
+VERSION = '1.0.0'
 
+# The full list of classifiers is available at
+# https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -24,17 +28,22 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
+with open('README.md', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
+
 setup(
-    name='image-copy-extension',
+    name='keyvault-preview',
     version=VERSION,
-    description='Support for copying managed vm images between regions',
-    long_description='Support for copying managed vm images between regions',
+    description='Microsoft Azure Command-Line Tools Keyvault-preview Extension',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/keyvault-preview',
+    long_description=README + '\n\n' + HISTORY,
     license='MIT',
-    author='Tamir Kamara',
-    author_email='tamir.kamara@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/image-copy',
     classifiers=CLASSIFIERS,
-    package_data={'azext_imagecopy': ['azext_metadata.json']},
     packages=find_packages(),
-    install_requires=DEPENDENCIES
+    install_requires=DEPENDENCIES,
+    package_data={'azext_keyvault_preview': ['azext_metadata.json']},
 )
