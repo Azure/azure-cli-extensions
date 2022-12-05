@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks workspace vnet-peering create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a vnet peering for a workspace.

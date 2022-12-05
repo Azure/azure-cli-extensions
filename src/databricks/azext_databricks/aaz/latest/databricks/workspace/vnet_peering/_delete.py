@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks workspace vnet-peering delete",
-    is_preview=True,
 )
 class Delete(AAZCommand):
     """Delete the vnet peering.

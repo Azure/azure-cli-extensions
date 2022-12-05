@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks workspace vnet-peering show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the vnet peering.

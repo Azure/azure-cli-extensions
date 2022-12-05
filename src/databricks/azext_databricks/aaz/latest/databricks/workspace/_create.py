@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "databricks workspace create",
-    is_preview=True,
-)
 class Create(AAZCommand):
     """Create a new workspace.
 
@@ -69,8 +65,8 @@ class Create(AAZCommand):
                 resource_group_arg="resource_group",
             ),
         )
-        _args_schema.managed_resource_group_id = AAZStrArg(
-            options=["--managed-resource-group-id"],
+        _args_schema.managed_resource_group = AAZStrArg(
+            options=["--managed-resource-group"],
             help="The managed resource group to create. It can be either a name or a resource ID.",
             required=True,
         )
@@ -269,7 +265,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("managedResourceGroupId", AAZStrType, ".managed_resource_group", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("requiredNsgRules", AAZStrType, ".required_nsg_rules")

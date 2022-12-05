@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks workspace show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the workspace.

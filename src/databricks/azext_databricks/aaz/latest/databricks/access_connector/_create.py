@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks access-connector create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create azure databricks accessConnector.

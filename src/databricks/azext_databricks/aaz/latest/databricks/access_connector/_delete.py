@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks access-connector delete",
-    is_preview=True,
 )
 class Delete(AAZCommand):
     """Delete the azure databricks accessConnector.

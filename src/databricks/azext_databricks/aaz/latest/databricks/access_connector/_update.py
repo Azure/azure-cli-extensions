@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks access-connector update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update azure databricks accessConnector.

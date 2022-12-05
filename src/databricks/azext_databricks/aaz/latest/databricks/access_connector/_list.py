@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databricks access-connector list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all the azure databricks accessConnectors within a subscription.
