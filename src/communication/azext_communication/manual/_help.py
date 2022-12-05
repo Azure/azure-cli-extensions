@@ -415,7 +415,7 @@ helps['communication rooms'] = """
 
 helps['communication rooms create'] = """
     type: command
-    short-summary: "Creates a new room."
+    short-summary: "Create a new room."
     examples:
       - name: Create a room with default parameters
         text: |-
@@ -439,7 +439,7 @@ helps['communication rooms create'] = """
 
 helps['communication rooms get'] = """
     type: command
-    short-summary: "Returns attributes of an existing room."
+    short-summary: "Return attributes of an existing room."
     examples:
       - name: Get room
         text: |-
@@ -448,7 +448,7 @@ helps['communication rooms get'] = """
 
 helps['communication rooms update'] = """
     type: command
-    short-summary: "Updates attributes of an existing room."
+    short-summary: "Update attributes of an existing room."
     examples:
       - name: Update a room's valid-from and valid-until properties
         text: |-
@@ -457,7 +457,7 @@ helps['communication rooms update'] = """
 
 helps['communication rooms delete'] = """
     type: command
-    short-summary: "Deletes an existing room."
+    short-summary: "Delete an existing room."
     examples:
       - name: Delete an existing room
         text: |-
@@ -471,7 +471,7 @@ helps['communication rooms participant'] = """
 
 helps['communication rooms participant get'] = """
     type: command
-    short-summary: "Gets participants of a room."
+    short-summary: "Get participants of a room."
     examples:
       - name: Get room's participants
         text: |-
@@ -480,7 +480,7 @@ helps['communication rooms participant get'] = """
 
 helps['communication rooms participant add'] = """
     type: command
-    short-summary: "Adds participants to a room."
+    short-summary: "Add participants to a room."
     examples:
       - name: Add presenter and attendee participants to a room
         text: |-
@@ -489,7 +489,7 @@ helps['communication rooms participant add'] = """
 
 helps['communication rooms participant update'] = """
     type: command
-    short-summary: "Replaces the participants of a room."
+    short-summary: "Replace the participants of a room."
     examples:
       - name: Update room participants
         text: |-
@@ -498,7 +498,7 @@ helps['communication rooms participant update'] = """
 
 helps['communication rooms participant remove'] = """
     type: command
-    short-summary: "Removes participants from a room."
+    short-summary: "Remove participants from a room."
     examples:
       - name: Remove room participants
         text: |-

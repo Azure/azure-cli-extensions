@@ -176,13 +176,13 @@ def _load_rooms_arguments(self):
                    type=str, help='Room Id')
 
     with self.argument_context('communication rooms create') as c:
-        c.argument('valid_from', options_list=['--valid-from'], type=str,
+        c.argument('valid_from',
                    help='The timestamp from when the room is open for joining, '
                    'in in ISO8601 format, ex: 2022-07-14T10:21. Optional.')
-        c.argument('valid_until', options_list=['--valid-until'], type=str,
+        c.argument('valid_until',
                    help='The timestamp from when the room can no longer be joined,'
                    ' in ISO8601 format, ex: 2022-07-14T10:21. Optional.')
-        c.argument('join_policy', options_list=['--join-policy'], type=str,
+        c.argument('join_policy',
                    help='The join policy of the room. '
                    'Can be InviteOnly or CommunicationServiceUsers. Optional.')
         c.argument('presenters', options_list=['--presenter-participants'],
@@ -198,13 +198,13 @@ def _load_rooms_arguments(self):
 
     with self.argument_context('communication rooms update') as c:
         c.argument('room_id', options_list=['--room'], type=str, help='Room Id')
-        c.argument('valid_from', options_list=['--valid-from'], type=str,
+        c.argument('valid_from',
                    help='The timestamp from when the room is open for joining, in in ISO8601 format, '
                    'ex: 2022-07-14T10:21. Should be used together with --valid-until. Optional.')
-        c.argument('valid_until', options_list=['--valid-until'], type=str,
+        c.argument('valid_until',
                    help='The timestamp from when the room can no longer be joined, in ISO8601 format, '
                    'ex: 2022-07-14T10:21. Should be used together with --valid-from. Optional.')
-        c.argument('join_policy', options_list=['--join-policy'], type=str,
+        c.argument('join_policy',
                    help='The join policy of the room. Can be InviteOnly or CommunicationServiceUsers. Optional.')
         c.argument('presenters', options_list=['--presenter-participants'],
                    nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
