@@ -346,7 +346,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         platformServiceAccountName = get_serviceaccount_name_from_configsettings(config_settings)
         cmd_helm_install.extend(["--set", "global.platformServiceAccountName={}".format(platformServiceAccountName)])
         cmd_helm_install.extend(["--set", "global.isLeastPrivilegesMode={}".format(True)])
-        cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace, "--create-namespace"])    # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
+        cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace])    # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
 
     if not no_wait:
         # Change --timeout format for helm client to understand
