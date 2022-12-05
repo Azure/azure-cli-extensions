@@ -1123,8 +1123,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    least_privilege = False
-
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
 
@@ -1190,6 +1188,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                  recommendation="Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
 
     helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    least_privilege = False
     if helm_values.get('global').get('isLeastPrivilegesMode') is True:
         least_privilege = True
         logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before upgrading to a newer agent version.")
@@ -1376,15 +1375,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
                     azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None, yes=False):
     logger.warning("This operation might take a while...\n")
 
-    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
-
-    least_privilege = False
-
-    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
-        least_privilege = True
-        confirmation_message = "Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before enabling new features. Do you want to proceed?"
-        utils.user_confirmation(confirmation_message, yes)
-
     features = [x.lower() for x in features]
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
@@ -1445,6 +1435,15 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    least_privilege = False
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
+        confirmation_message = "Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before enabling new features. Do you want to proceed?"
+        utils.user_confirmation(confirmation_message, yes)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1616,7 +1615,7 @@ def get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, 
                                    disable_cluster_connect=False, disable_cl=False):
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-    
+
     helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
 
     least_privilege = False
