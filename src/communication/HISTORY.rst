@@ -6,6 +6,7 @@ Release History
 1.4.0
 ++++++
  * Add communication rooms command group in preview mode.
+ * Add confirmation for delete/remote/revoke commands under identity, chat, rooms.
 
 
 1.3.0

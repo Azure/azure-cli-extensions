@@ -22,17 +22,17 @@ def load_command_table(self, _):
 def _load_identity_command_table(self):
     identity_arguments = ['connection_string']
     with self.command_group('communication identity user', client_factory=cf_communication_identity, is_preview=True) as g:
-        g.communication_custom_command('create', "communication_identity_create_user", identity_arguments, client_factory=cf_communication_identity)
-        g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, client_factory=cf_communication_identity)
+        g.communication_custom_command('create', "communication_identity_create_user", identity_arguments)
+        g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, confirmation=True)
 
     with self.command_group('communication identity', client_factory=cf_communication_identity) as g:
-        g.communication_custom_command('issue-access-token', "communication_identity_issue_access_token", identity_arguments, client_factory=cf_communication_identity,
+        g.communication_custom_command('issue-access-token', "communication_identity_issue_access_token", identity_arguments,
                                        deprecate_info=self.deprecate(redirect='token issue', hide=True))
 
     with self.command_group('communication identity token', client_factory=cf_communication_identity, is_preview=True) as g:
-        g.communication_custom_command('issue', "communication_identity_issue_access_token", identity_arguments, client_factory=cf_communication_identity)
-        g.communication_custom_command('revoke', "communication_identity_revoke_access_tokens", identity_arguments, client_factory=cf_communication_identity)
-        g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments, client_factory=cf_communication_identity)
+        g.communication_custom_command('issue', "communication_identity_issue_access_token", identity_arguments)
+        g.communication_custom_command('revoke', "communication_identity_revoke_access_tokens", identity_arguments, confirmation=True)
+        g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments)
 
 
 def _load_sms_command_table(self):
@@ -64,14 +64,14 @@ def _load_chat_command_table(self):
     with self.command_group('communication chat thread', client_factory=cf_communication_chat, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_chat_list_threads', chat_arguments)
         g.communication_custom_command('create', 'communication_chat_create_thread', chat_arguments)
-        g.communication_custom_command('delete', 'communication_chat_delete_thread', chat_arguments)
+        g.communication_custom_command('delete', 'communication_chat_delete_thread', chat_arguments, confirmation=True)
         g.communication_custom_command('update-topic', 'communication_chat_update_topic', chat_arguments)
 
     # participant management
     with self.command_group('communication chat participant', client_factory=cf_communication_chat, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_chat_list_participants', chat_arguments)
         g.communication_custom_command('add', 'communication_chat_add_participant', chat_arguments)
-        g.communication_custom_command('remove', 'communication_chat_remove_participant', chat_arguments)
+        g.communication_custom_command('remove', 'communication_chat_remove_participant', chat_arguments, confirmation=True)
 
     # message management
     with self.command_group('communication chat message', client_factory=cf_communication_chat, is_preview=True) as g:
@@ -79,7 +79,7 @@ def _load_chat_command_table(self):
         g.communication_custom_command('send', 'communication_chat_send_message', chat_arguments)
         g.communication_custom_command('get', 'communication_chat_get_message', chat_arguments)
         g.communication_custom_command('update', 'communication_chat_update_message', chat_arguments)
-        g.communication_custom_command('delete', 'communication_chat_delete_message', chat_arguments)
+        g.communication_custom_command('delete', 'communication_chat_delete_message', chat_arguments, confirmation=True)
     with self.command_group('communication chat message receipt', client_factory=cf_communication_chat, is_preview=True) as g:
         g.communication_custom_command('list', 'communication_chat_list_read_receipts', chat_arguments)
         g.communication_custom_command('send', 'communication_chat_send_read_receipt', chat_arguments)
@@ -94,11 +94,11 @@ def _load_rooms_command_table(self):
         g.communication_custom_command('get', 'communication_rooms_get_room', rooms_arguments)
         g.communication_custom_command('create', 'communication_rooms_create_room', rooms_arguments)
         g.communication_custom_command('update', 'communication_rooms_update_room', rooms_arguments)
-        g.communication_custom_command('delete', 'communication_rooms_delete_room', rooms_arguments)
+        g.communication_custom_command('delete', 'communication_rooms_delete_room', rooms_arguments, confirmation=True)
 
     # rooms participant management
     with self.command_group('communication rooms participant', client_factory=cf_communication_rooms, is_preview=True) as g:
         g.communication_custom_command('get', 'communication_rooms_get_participants', rooms_arguments)
         g.communication_custom_command('add', 'communication_rooms_add_participants', rooms_arguments)
         g.communication_custom_command('update', 'communication_rooms_update_participants', rooms_arguments)
-        g.communication_custom_command('remove', 'communication_rooms_remove_participants', rooms_arguments)
+        g.communication_custom_command('remove', 'communication_rooms_remove_participants', rooms_arguments, confirmation=True)

@@ -77,7 +77,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         self.kwargs.update({
             'room_id': room['id']})
         
-        self.cmd('az communication rooms delete --room {room_id}')
+        self.cmd('az communication rooms delete --room {room_id} --yes')
         
 
     @ResourceGroupPreparer(name_prefix ='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name ='rg')
@@ -90,7 +90,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': 'f-1234567890'})
         
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication rooms delete --room {room_id}')  
+            self.cmd('az communication rooms delete --room {room_id} --yes')  
 
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
@@ -110,7 +110,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
             'room_id': 'f-123456789012345'})
         
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication rooms delete --room {room_id}')  
+            self.cmd('az communication rooms delete --room {room_id} --yes')  
 
         assert 'Bad Request' in str(raises.exception.reason)
         assert raises.exception.status_code == 400
@@ -404,7 +404,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         self.cmd('az communication rooms participant add --consumer-participants {participant_id} --room {room_id}')
        
         # remove the participant from the created room 
-        self.cmd('az communication rooms participant remove --participants {participant_id} --room {room_id}')
+        self.cmd('az communication rooms participant remove --participants {participant_id} --room {room_id} --yes')
         get_participant = self.cmd('az communication rooms participant get --room {room_id}').get_output_in_json()
         participant = get_participant['participants']
 

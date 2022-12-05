@@ -140,7 +140,7 @@ class CommunicationChatScenarios(ScenarioTest):
         thread_id = res['chatThread']['id']
         
         self.kwargs.update({ 'thread_id': thread_id })
-        self.cmd('az communication chat thread delete --thread {thread_id}')
+        self.cmd('az communication chat thread delete --thread {thread_id} --yes')
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -257,25 +257,25 @@ class CommunicationChatScenarios(ScenarioTest):
         assert len(add_res) == 0
 
         # remove the new user from the chat thread
-        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')        
+        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')        
 
         # try to remove a user with invalid id
         self.kwargs.update({
             'user_id': '8:acs:fakeid' })
 
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')        
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')        
 
         assert 'Identifier format is invalid' in str(raises.exception)
 
         # remove the original user from the chat thread
         self.kwargs.update({
             'user_id': owner_id })
-        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')
+        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')
 
         # try to remove the original user again, should raise an error
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')
 
         assert 'The initiator doesn\'t have the permission to perform the requested operation.' in str(raises.exception)
 
@@ -491,7 +491,7 @@ class CommunicationChatScenarios(ScenarioTest):
         # and delete it
         self.kwargs.update({
             'message_id': message['id'] })
-        self.cmd('az communication chat message delete --thread {thread_id} --message-id {message_id}')
+        self.cmd('az communication chat message delete --thread {thread_id} --message-id {message_id} --yes')
         
         # now, check that it is actually deleted
         self.kwargs.update({
