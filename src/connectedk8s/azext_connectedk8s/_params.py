@@ -48,7 +48,7 @@ def load_arguments(self, _):
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('least_privilege', options_list=['--least-privilege'], help='')
-        c.argument('config_settings', options_list=['config-settings'], help='')
+        c.argument('config_settings', options_list=['--config-settings'], help='')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)
