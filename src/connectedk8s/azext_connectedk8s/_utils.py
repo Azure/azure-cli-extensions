@@ -341,12 +341,12 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
-    
+
     if least_privilege:
         platformServiceAccountName = get_serviceaccount_name_from_configsettings(config_settings)
         cmd_helm_install.extend(["--set", "global.platformServiceAccountName={}".format(platformServiceAccountName)])
         cmd_helm_install.extend(["--set", "global.isLeastPrivilegesMode={}".format(True)])
-        cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace, "--create-namespace"]) # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
+        cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace, "--create-namespace"])    # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
 
     if not no_wait:
         # Change --timeout format for helm client to understand
@@ -365,12 +365,13 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
 
 def get_serviceaccount_name_from_configsettings(config_settings):
     data = json.loads(config_settings)
-    if not (data.get('service-account-name') is None): 
+    if not (data.get('service-account-name') is None):
         serviceaccount_name = data['service-account-name']
         return serviceaccount_name
     else:
         telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type="", summary="Config settings input does not contain service-account-name")
         raise ArgumentUsageError("Config settings input does not contain service-account-name", "Please ensure you pass the mandatory field- service-account-name in the config settings while onboarding the cluster with leastPrivileges")
+
 
 def flatten(dd, separator='.', prefix=''):
     try:

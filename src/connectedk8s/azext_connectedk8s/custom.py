@@ -79,24 +79,25 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if azure_hybrid_benefit == "True":
         confirmation_message = "I confirm I have an eligible Windows Server license with Azure Hybrid Benefit to apply this benefit to AKS on HCI or Windows Server. Visit https://aka.ms/ahb-aks for details"
         utils.user_confirmation(confirmation_message, yes)
-    
+
     if least_privilege == "True":
         # pre-checks specific to least privilege scenario
         # check if config settings are passed
-        if config_settings == None:
+        if config_settings is None:
             telemetry.set_user_fault()
             telemetry.set_exception(exception="Configuration settings are not passed", fault_type=consts.Config_Settings_Not_Passed_Fault_Type, summary="Configuration settings are not passed which are mandatory when onboarding with leastPrivileges")
             raise ValidationError("Configuration settings are not passed", "Please pass required configuration settings using '--config-settings' flag while onboarding with least-privilege enabled.")
         else:
             logger.warning("You are onboarding your k8s cluster to Azure Arc in least privileges mode. Please ensure you have met all the pre-requisites.")
-        
+
         # check if azure-arc ns is present - pre-req for least privilege
         try:
+            api_instance = kube_client.CoreV1Api()
             api_instance.read_namespace("azure-arc")
         except Exception as ex:
             if ex.status == 404:
                 telemetry.set_user_fault()
-                telemetry.set_exception(exception="Azure-arc namespace is not found on the cluster", fault_type="", summary="Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges")           
+                telemetry.set_exception(exception="Azure-arc namespace is not found on the cluster", fault_type="", summary="Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges")
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -939,12 +940,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
-
-    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
-        if auto_upgrade is True:
-            raise InvalidArgumentValueError("Your cluster is running in least privileges mode. Autoupdates are not supported in this mode")
-
     # Escaping comma, forward slash present in https proxy urls, needed for helm params.
     https_proxy = escape_proxy_settings(https_proxy)
 
@@ -1000,6 +995,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        if auto_upgrade is True:
+            raise InvalidArgumentValueError("Your cluster is running in least privileges mode. Autoupdates are not supported in this mode")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1122,13 +1123,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
-
     least_privilege = False
-
-    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
-        least_privilege = True
-        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before upgrading to a newer agent version.")
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -1193,6 +1188,11 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                 summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
         raise ClientRequestError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.",
                                  recommendation="Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
+        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before upgrading to a newer agent version.")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
