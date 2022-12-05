@@ -83,16 +83,16 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--key-version {key_version} '
                  '--key-vault {key_vault}',
                  checks=[self.check('parameters.encryption.value.keySource', 'Microsoft.Keyvault'),
-                         self.check('parameters.encryption.value.keyName', '{key_name}'),
-                         self.check('parameters.encryption.value.keyVersion', '{key_version}'),
-                         self.check('parameters.encryption.value.keyVaultUri', '{key_vault}')])
+                         self.check('parameters.encryption.value.KeyName', '{key_name}'),
+                         self.check('parameters.encryption.value.keyversion', '{key_version}'),
+                         self.check('parameters.encryption.value.keyvaulturi', '{key_vault}')])
 
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
                  '--key-source Default',
                  checks=[self.check('parameters.encryption.value.keySource', 'Default'),
-                         self.not_exists('parameters.encryption.value.keyName')])
+                         self.not_exists('parameters.encryption.value.KeyName')])
 
         self.cmd('az databricks workspace show '
                  '--resource-group {rg} '
@@ -148,6 +148,46 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {workspace_name} '
                  '-y',
+                 checks=[])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_access_connector', location="westus")
+    def test_access_connector(self, resource_group):
+        self.kwargs.update({
+            'access_connector_name': 'my-test-access-connector',
+            'type': 'SystemAssigned',
+        })
+
+        self.cmd('az databricks access-connector create '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--location westus '
+                 '--identity-type {type} ',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'SystemAssigned')])
+
+        self.cmd('az databricks access-connector update '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--identity-type None '
+                 '--tags key=value ',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'None')])
+
+        self.cmd('az databricks access-connector list '
+                 '--resource-group {rg} ',
+                 checks=[self.check('length(@)', 1)])
+
+        self.cmd('az databricks access-connector show '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} ',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded')])
+
+        self.cmd('az databricks access-connector delete '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} ',
                  checks=[])
 
 

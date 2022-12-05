@@ -6,7 +6,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_fluid_relay._help import helps  # pylint: disable=unused-import
 
 
 class FluidRelayCommandsLoader(AzCommandsLoader):
