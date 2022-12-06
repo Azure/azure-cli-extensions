@@ -20,7 +20,6 @@ import tempfile
 import unittest
 
 from packaging import version
-from util import SRC_PATH
 from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data
@@ -51,8 +50,8 @@ def check_min_version_from_whl(ext_name, whl_file, metadata):
             extensions_dir = tempfile.mkdtemp()
             extract_dir = tempfile.mkdtemp(dir=extensions_dir)
             whl_file = glob.glob(whl_file)[0]
-            metadata = get_ext_metadata(extract_dir, whl_file, ext_name)
-            if 'azext.minCliCoreVersion' not in metadata:
+            local_metadata = get_ext_metadata(extract_dir, whl_file, ext_name)
+            if 'azext.minCliCoreVersion' not in local_metadata:
                 raise AssertionError(f'{ext_name} can not get azext.minCliCoreVersion')
         except Exception as e:
             logger.error(f'{ext_name} can not get azext.minCliCoreVersion: {e}')
