@@ -1887,7 +1887,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create snapshot from the nodepool
         create_snapshot_cmd = 'aks nodepool snapshot create --resource-group {resource_group} --name {snapshot_name} --location {location} ' \
-                              '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SnapshotPreview ' \
                               '--nodepool-id {nodepool_resource_id} -o json'
         response = self.cmd(create_snapshot_cmd, checks=[
             self.check('creationData.sourceResourceId', nodepool_resource_id)
@@ -1919,7 +1918,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group {resource_group} --name {aks_name2} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
                      '--node-count 1 --snapshot-id {snapshot_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SnapshotPreview ' \
                      '-k {k8s_version} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
@@ -1930,7 +1928,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add a new nodepool to this cluster using this snapshot
         add_nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={aks_name2} --name={nodepool_name2} --node-count 1 ' \
-                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SnapshotPreview ' \
                            '-k {k8s_version} ' \
                            '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(add_nodepool_cmd,
@@ -1940,20 +1937,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                                 snapshot_resource_id)
                  ])
 
-        # upgrade this cluster (snapshot is not allowed for cluster upgrading), snapshot info is reset
-        create_cmd = 'aks upgrade --resource-group {resource_group} --name {aks_name2} -k {upgrade_k8s_version} --yes -o json'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].creationData', None),
-            self.check('agentPoolProfiles[1].creationData', None)
-        ])
-
         # upgrade the nodepool2 using this snapshot again
         upgrade_node_image_only_nodepool_cmd = 'aks nodepool upgrade ' \
                                                '--resource-group {resource_group} ' \
                                                '--cluster-name {aks_name2} ' \
                                                '-n {nodepool_name2} ' \
-                                               '--node-image-only --no-wait ' \
+                                               '--node-image-only ' \
                                                '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(upgrade_node_image_only_nodepool_cmd)
 
@@ -1962,8 +1951,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                            '--cluster-name={aks_name2} ' \
                            '-n {nodepool_name2} '
         self.cmd(get_nodepool_cmd, checks=[
-            self.check('provisioningState', 'UpgradingNodeImageVersion'),
+            self.check('provisioningState', 'Succeeded'),
             self.check('creationData.sourceResourceId', snapshot_resource_id)
+        ])
+
+        # upgrade this cluster (snapshot is not allowed for cluster upgrading), snapshot info is reset
+        create_cmd = 'aks upgrade --resource-group {resource_group} --name {aks_name2} -k {upgrade_k8s_version} --yes -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].creationData', None),
+            self.check('agentPoolProfiles[1].creationData', None)
         ])
 
         # delete the 2nd AKS cluster
@@ -5989,8 +5986,49 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.kubeProxyConfig.enabled',True),
-            self.check('networkProfile.kubeProxyConfig.mode','IPVS'),
-            self.check('networkProfile.kubeProxyConfig.ipvsConfig.scheduler', 'LeastConnection'),
+            self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    # live only due to workspace is not mocked correctly
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_kube_proxy_config(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'kube_proxy_path': _get_test_data_file('kubeproxyconfig.json'),
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview ' \
+                     '--ssh-key-value={ssh_key_value} --enable-managed-identity --yes -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.kubeProxyConfig.enabled',True),
+            self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
+        ])
+
+        
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'kube_proxy_path': _get_test_data_file('kubeproxyconfig_update.json'),
+        })
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview'
+
+        # TODO: check actual values getting update, currently returned MC does not sync
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.kubeProxyConfig.enabled',True),
         ])
 
         # delete

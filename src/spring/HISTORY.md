@@ -4,6 +4,10 @@ Release History
 ---
 * Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.
 
+1.4.1
+---
+* Fix enabling dev tool failed when creating Azure Spring Apps Enterprise in command `az spring create --sku Enterprise --enable-application-live-view --enable-application-accelerator`.
+
 1.4.0
 ---
 * Show help link when `az spring app deploy` failed.

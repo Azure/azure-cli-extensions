@@ -729,6 +729,7 @@ def aks_update(
     load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
+    kube_proxy_config=None,
     auto_upgrade_channel=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,

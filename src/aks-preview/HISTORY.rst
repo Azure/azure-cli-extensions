@@ -12,7 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.117
++++++++
+
 * Add custom transform for custom CA
+* Support updating kube-proxy configuration with `az aks update --kube-proxy-config file.json`.
 
 0.5.116
 +++++++
