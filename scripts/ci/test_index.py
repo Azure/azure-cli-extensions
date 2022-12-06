@@ -12,6 +12,7 @@ from __future__ import print_function
 import glob
 import hashlib
 import json
+import logging
 import os
 import shutil
 import tempfile
@@ -22,6 +23,13 @@ from util import SRC_PATH
 from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 
 def get_sha256sum(a_file):
@@ -39,7 +47,7 @@ def check_min_version_local(extension_name):
             if metadata.get('azext.minCliCoreVersion'):
                 return True
     except Exception as e:
-        logger.error(f'can not get minCliCoreVersion: {e}')
+        logger.error(f'can not get minCliCoreVersion from local: {e}')
         return False
 
 
@@ -174,7 +182,7 @@ class TestIndex(unittest.TestCase):
             try:
                 # check key properties exists
                 if not check_min_version_local(ext_name):
-                    self.assertIn('azext.minCliCoreVersion', metadata) or check_min_version(ext_name)
+                    self.assertIn('azext.minCliCoreVersion', metadata)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
