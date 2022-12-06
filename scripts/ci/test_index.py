@@ -9,14 +9,16 @@
 
 from __future__ import print_function
 
-import os
+import glob
+import hashlib
 import json
+import os
+import shutil
 import tempfile
 import unittest
-import hashlib
-import shutil
 
 from packaging import version
+from util import SRC_PATH
 from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data
@@ -27,6 +29,18 @@ def get_sha256sum(a_file):
     with open(a_file, 'rb') as f:
         sha256.update(f.read())
     return sha256.hexdigest()
+
+
+def check_min_version(extension_name):
+    try:
+        azext_metadata = glob.glob(os.path.join(SRC_PATH, extension_name, 'azext_*', 'azext_metadata.json'))[0]
+        with open(azext_metadata, 'r') as f:
+            metadata = json.load(f)
+            self.assertIn('azext.minCliCoreVersion', metadata)
+            return True
+    except Exception as e:
+        logger.error(f'can not get minCliCoreVersion: {e}')
+        return False
 
 
 class TestIndex(unittest.TestCase):
@@ -158,7 +172,8 @@ class TestIndex(unittest.TestCase):
                     raise ex
 
             try:
-                self.assertIn('azext.minCliCoreVersion', metadata)  # check key properties exists
+                # check key properties exists
+                self.assertIn('azext.minCliCoreVersion', metadata) or check_min_version(extension_name)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
