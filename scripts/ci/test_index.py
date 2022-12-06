@@ -31,13 +31,13 @@ def get_sha256sum(a_file):
     return sha256.hexdigest()
 
 
-def check_min_version(extension_name):
+def check_min_version_local(extension_name):
     try:
         azext_metadata = glob.glob(os.path.join(SRC_PATH, extension_name, 'azext_*', 'azext_metadata.json'))[0]
         with open(azext_metadata, 'r') as f:
             metadata = json.load(f)
-            self.assertIn('azext.minCliCoreVersion', metadata)
-            return True
+            if metadata.get('azext.minCliCoreVersion'):
+                return True
     except Exception as e:
         logger.error(f'can not get minCliCoreVersion: {e}')
         return False
@@ -173,7 +173,8 @@ class TestIndex(unittest.TestCase):
 
             try:
                 # check key properties exists
-                self.assertIn('azext.minCliCoreVersion', metadata) or check_min_version(ext_name)
+                if not check_min_version_local(ext_name):
+                    self.assertIn('azext.minCliCoreVersion', metadata) or check_min_version(ext_name)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
