@@ -301,7 +301,7 @@ helps['grafana service-account update'] = """
     examples:
         - name: disable a service account
           text: |
-           az grafana service-account create -g myResourceGroup -n myGrafana --service-account myAccount --is-disabled true
+           az grafana service-account update -g myResourceGroup -n myGrafana --service-account myAccount --is-disabled true
 """
 
 helps['grafana service-account show'] = """
