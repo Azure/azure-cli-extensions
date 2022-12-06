@@ -4027,7 +4027,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                            'SDd+joypnOHFAeSM+V0AaTelXSCK9OAWSAp5e6S76a6lRx+D5Xl3hBedBI0tX59h\n' \
                            'tEYNEGZaRElFU79WcEF0cH+ZW0+jJ95xE3thZffRz6QI6yF63m8aC9l9bbdJS2zg\n' \
                            'Yv8W+lCZi//ODeOBUugr++z9uj+vGk47JDSpV0n4JOun3ALUDJ0gqmcS\n' \
-                           '-----END CERTIFICATE-----\n'
+                           '-----END CERTIFICATE-----'
         sec_profile = self.models.ManagedClusterSecurityProfile(
             custom_ca_trust_certificates=[str.encode(test_cert_string) for _ in range(2)]
         )
@@ -5734,7 +5734,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                            'SDd+joypnOHFAeSM+V0AaTelXSCK9OAWSAp5e6S76a6lRx+D5Xl3hBedBI0tX59h\n' \
                            'tEYNEGZaRElFU79WcEF0cH+ZW0+jJ95xE3thZffRz6QI6yF63m8aC9l9bbdJS2zg\n' \
                            'Yv8W+lCZi//ODeOBUugr++z9uj+vGk47JDSpV0n4JOun3ALUDJ0gqmcS\n' \
-                           '-----END CERTIFICATE-----\n'
+                           '-----END CERTIFICATE-----'
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             security_profile=self.models.ManagedClusterSecurityProfile(

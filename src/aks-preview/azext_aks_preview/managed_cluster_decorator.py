@@ -2003,7 +2003,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     len(file_content)
                 )
             )
-        return [str.encode((x + "\n")) for x in file_content if len(x) > 1]
+        return [str.encode(x) for x in file_content if len(x) > 1]
 
 
     def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
