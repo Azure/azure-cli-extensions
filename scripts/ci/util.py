@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import re
-import json
+import subprocess
 import zipfile
 
 # copy from wheel==0.30.0
@@ -117,3 +118,7 @@ def get_index_data():
             return json.load(f, object_pairs_hook=_catch_dup_keys)
     except ValueError as err:
         raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
+
+
+def build_extension(extension_name):
+    subprocess.check_call(['azdev', 'extension', 'build', extension_name])
