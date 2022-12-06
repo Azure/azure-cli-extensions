@@ -65,7 +65,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
@@ -151,14 +151,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
-    if distribution == 'auto':
-        kubernetes_distro = get_kubernetes_distro(node_api_response)  # (cluster heuristics)
-    else:
-        kubernetes_distro = distribution
-    if infrastructure == 'auto':
-        kubernetes_infra = get_kubernetes_infra(node_api_response)  # (cluster heuristics)
-    else:
-        kubernetes_infra = infrastructure
+    kubernetes_distro = distribution
+    kubernetes_infra = infrastructure
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
