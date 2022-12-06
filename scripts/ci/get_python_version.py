@@ -55,10 +55,12 @@ def get_all_tests():
         # Find the package and check it has tests
         test_dir = os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests'))
         if pkg_name and test_dir:
-            # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis')]
+            # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis'),
+            #  ('azext_firewall', '/mnt/vss/_work/1/s/src/azure-firewall')]
             all_tests.append((pkg_name, src_d_full))
-            # azext_healthcareapis -> healthcareapis
-            _, extension_name = pkg_name.split('_', 1)
+            # /mnt/vss/_work/1/s/src/healthcareapis -> healthcareapis
+            # /mnt/vss/_work/1/s/src/azure-firewall -> azure-firewall
+            extension_name = src_d_full.split('/')[-1]
             logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                         f'ado_target_branch: {ado_target_branch}, '
                         f'detect which extension need to test: {all_tests}.')
