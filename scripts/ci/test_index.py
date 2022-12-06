@@ -41,7 +41,7 @@ def get_sha256sum(a_file):
     return sha256.hexdigest()
 
 
-def check_min_version_from_whl(ext_name, whl_file):
+def check_min_version_from_local_whl(ext_name, whl_file):
     try:
         build_extension(ext_name)
         extensions_dir = tempfile.mkdtemp()
@@ -258,7 +258,7 @@ class TestIndex(unittest.TestCase):
         all_tests = get_all_tests()
         for pkg_name, pkg_dir in all_tests:
             ext_name = pkg_dir.split('/')[-1]
-            local_metadata = check_min_version_from_whl(ext_name, os.path.join('.', 'dist', '*.whl'))
+            local_metadata = check_min_version_from_local_whl(ext_name, os.path.join('.', 'dist', '*.whl'))
             self.assertIn('azext.minCliCoreVersion', local_metadata)
         shutil.rmtree(extensions_dir)
 
