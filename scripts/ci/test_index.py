@@ -214,6 +214,8 @@ class TestIndex(unittest.TestCase):
                                  "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
                                                                           separators=(',', ': '))))
 
+        # TODO: check the new extension which is not in the historical index.json file
+        # TODO: find the modified extension
         shutil.rmtree(extensions_dir)
 
 
