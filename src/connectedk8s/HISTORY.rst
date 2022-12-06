@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.7
+++++++
+
+* Removing detection of infrasturcture and distribution in connectedk8s connect
+
 1.3.6
 ++++++
 
