@@ -516,6 +516,65 @@ def get_private_key(key_pair):
     privKey_DER = key_pair.exportKey(format='DER')
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
+
+def get_kubernetes_distro(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
+    try:
+        for node in api_response.items:
+            labels = node.metadata.labels
+            provider_id = str(node.spec.provider_id)
+            annotations = node.metadata.annotations
+            if labels.get("node.openshift.io/os_id"):
+                return "openshift"
+            if labels.get("kubernetes.azure.com/node-image-version"):
+                return "aks"
+            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
+                return "gke"
+            if labels.get("eks.amazonaws.com/nodegroup"):
+                return "eks"
+            if labels.get("minikube.k8s.io/version"):
+                return "minikube"
+            if provider_id.startswith("kind://"):
+                return "kind"
+            if provider_id.startswith("k3s://"):
+                return "k3s"
+            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
+                return "rancher_rke"
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
+                                           raise_error=False)
+        return "generic"
+
+
+def get_kubernetes_infra(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
+    try:
+        for node in api_response.items:
+            provider_id = str(node.spec.provider_id)
+            infra = provider_id.split(':')[0]
+            if infra == "k3s" or infra == "kind":
+                return "generic"
+            if infra == "azure":
+                return "azure"
+            if infra == "gce":
+                return "gcp"
+            if infra == "aws":
+                return "aws"
+            k8s_infra = utils.validate_infrastructure_type(infra)
+            if k8s_infra is not None:
+                return k8s_infra
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
+                                           raise_error=False)
+        return "generic"
+
+
 def check_linux_amd64_node(api_response):
     try:
         for item in api_response.items:
