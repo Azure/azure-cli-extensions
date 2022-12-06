@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.7
+++++++
+
+* Added connectedk8s proxy support for fairfax
+
 1.3.6
 ++++++
 

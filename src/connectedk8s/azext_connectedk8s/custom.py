@@ -1826,6 +1826,8 @@ def client_side_proxy_wrapper(cmd,
     CSP_Url = consts.CSP_Storage_Url
     if cloud == consts.Azure_ChinaCloudName:
         CSP_Url = consts.CSP_Storage_Url_Mooncake
+    elif cloud == consts.Azure_USGovCloudName:
+        CSP_Url = consts.CSP_Storage_Url_Fairfax
 
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1925,6 +1927,8 @@ def client_side_proxy_wrapper(cmd,
 
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
         if not utils.is_cli_using_msal_auth():
             # Fetching creds
@@ -1964,6 +1968,8 @@ def client_side_proxy_wrapper(cmd,
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
     telemetry.set_debug_info('User type is ', user_type)
 
