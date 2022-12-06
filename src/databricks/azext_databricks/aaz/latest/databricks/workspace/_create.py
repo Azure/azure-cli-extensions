@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "databricks workspace create",
+)
 class Create(AAZCommand):
     """Create a new workspace.
 
@@ -68,7 +71,7 @@ class Create(AAZCommand):
         _args_schema.managed_resource_group = AAZStrArg(
             options=["--managed-resource-group"],
             help="The managed resource group to create. It can be either a name or a resource ID.",
-            required=True,
+            # required=True,
         )
         _args_schema.enable_no_public_ip = AAZBoolArg(
             options=["--enable-no-public-ip"],

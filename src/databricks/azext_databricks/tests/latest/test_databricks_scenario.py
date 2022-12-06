@@ -16,6 +16,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class DatabricksClientScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_databricks')
     @KeyVaultPreparer(location='eastus')
     def test_databricks(self, resource_group, key_vault):
@@ -126,6 +127,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_v1', location="westus")
     def test_databricks_v1(self, resource_group):
         self.kwargs.update({
@@ -193,6 +195,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
 
 class DatabricksVNetPeeringScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_vnet')
     def test_databricks_vnet_peering(self, resource_group):
         self.kwargs.update({

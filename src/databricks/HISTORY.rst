@@ -4,7 +4,7 @@ Release History
 ===============
 0.9.0
 +++++
-* az databricks workspace and az databricks workspace vnet-peering: Migrate to atomic commands
+* az databricks workspace and az databricks workspace vnet-peering: Migrate commands
 * az databricks access-connector: support access connector operations
 
 0.8.0
