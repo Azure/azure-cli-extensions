@@ -47,7 +47,7 @@ def check_min_version_local(extension_name):
             if metadata.get('azext.minCliCoreVersion'):
                 return True
     except Exception as e:
-        logger.error(f'can not get minCliCoreVersion from local: {e}')
+        logger.error(f'{extension_name} can not get minCliCoreVersion from local: {e}')
         return False
 
 
