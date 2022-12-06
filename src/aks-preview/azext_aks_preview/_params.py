@@ -106,6 +106,7 @@ from azext_aks_preview._validators import (
     validate_nodepool_labels,
     validate_nodepool_name,
     validate_nodepool_tags,
+    validate_node_public_ip_tags,
     validate_nodes_count,
     validate_pod_identity_pod_labels,
     validate_pod_identity_resource_name,
@@ -116,6 +117,7 @@ from azext_aks_preview._validators import (
     validate_snapshot_name,
     validate_spot_max_price,
     validate_ssh_key,
+    validate_ssh_key_for_update,
     validate_taints,
     validate_user,
     validate_vm_set_type,
@@ -123,6 +125,13 @@ from azext_aks_preview._validators import (
     validate_enable_custom_ca_trust,
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
+    validate_azuremonitorworkspaceresourceid,
+    validate_grafanaresourceid,
+    validate_ksm_labels,
+    validate_ksm_annotations,
+    validate_disable_windows_outbound_nat,
+    validate_allowed_host_ports,
+    validate_application_security_groups,
 )
 
 # candidates for enumeration
@@ -220,6 +229,7 @@ def load_arguments(self, _):
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
         c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
+        c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
@@ -305,11 +315,11 @@ def load_arguments(self, _):
         c.argument('pod_cidrs')
         c.argument('service_cidrs')
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
-        c.argument('enable_pod_security_policy', action='store_true')
+        c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag())
-        c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_oidc_issuer', action='store_true')
         c.argument('enable_azure_keyvault_kms', action='store_true')
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
         c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC)
@@ -327,6 +337,7 @@ def load_arguments(self, _):
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
+        c.argument('enable_cilium_dataplane', action='store_true', is_preview=True)
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -337,6 +348,10 @@ def load_arguments(self, _):
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
+        c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
+        c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
+        c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
+                   help='space-separated tags: key[=value] [key[=value] ...].')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -350,6 +365,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
@@ -377,6 +393,7 @@ def load_arguments(self, _):
         c.argument('disable_defender', action='store_true', validator=validate_defender_disable_and_enable_parameters)
         c.argument('enable_defender', action='store_true')
         c.argument('defender_config', validator=validate_defender_config_parameter)
+        c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(), validator=validate_ssh_key_for_update)
         # addons
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
@@ -398,13 +415,14 @@ def load_arguments(self, _):
         # managed cluster
         c.argument('http_proxy_config')
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
-        c.argument('enable_pod_security_policy', action='store_true')
-        c.argument('disable_pod_security_policy', action='store_true')
+        c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
+        c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
+        c.argument('disable_pod_security_policy', action='store_true', is_preview=True)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag())
-        c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_oidc_issuer', action='store_true')
         c.argument('enable_azure_keyvault_kms', action='store_true')
         c.argument('disable_azure_keyvault_kms', action='store_true')
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
@@ -431,11 +449,19 @@ def load_arguments(self, _):
         c.argument('enable_private_cluster', action='store_true', is_preview=True, help='enable private cluster for apiserver vnet integration')
         c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
         c.argument('private_dns_zone', is_preview=True)
+        c.argument('enable_azuremonitormetrics', action='store_true', is_preview=True)
+        c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid, is_preview=True)
+        c.argument('ksm_metric_labels_allow_list', validator=validate_ksm_labels, is_preview=True)
+        c.argument('ksm_metric_annotations_allow_list', validator=validate_ksm_annotations, is_preview=True)
+        c.argument('grafana_resource_id', validator=validate_grafanaresourceid, is_preview=True)
+        c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
+        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
+        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
@@ -443,12 +469,12 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
-        # the following argument is declared for the wait command
-        c.argument('agent_pool_name', options_list=['--nodepool-name', '--agent-pool-name'], validator=validate_agent_pool_name, help='The node pool name.')
+        c.argument('nodepool_name', options_list=['--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
-    for sub_command in ['add', 'update', 'upgrade', 'scale', 'show', 'list', 'delete']:
-        with self.argument_context('aks nodepool ' + sub_command) as c:
-            c.argument('nodepool_name', options_list=['--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+    with self.argument_context('aks nodepool wait') as c:
+        c.argument('resource_name', options_list=['--cluster-name'], help='The cluster name.')
+        # the option name '--agent-pool-name' is depracated, left for compatibility only
+        c.argument('agent_pool_name', options_list=['--nodepool-name', '--name', '-n', c.deprecate(target='--agent-pool-name', redirect='--nodepool-name', hide=True)], validator=validate_agent_pool_name, help='The node pool name.')
 
     with self.argument_context('aks nodepool add') as c:
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
@@ -491,6 +517,11 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
+        c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
+        c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
+        c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
+                   help='space-separated tags: key[=value] [key[=value] ...].')
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
@@ -510,6 +541,8 @@ def load_arguments(self, _):
         # extensions
         c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
         c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
+        c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
+        c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)

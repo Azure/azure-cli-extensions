@@ -537,6 +537,7 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(AKSPreviewAgentPoolA
             scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -629,6 +630,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(AKSPreviewAgentP
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 

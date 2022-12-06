@@ -1,5 +1,49 @@
 Release History
 ===============
+1.4.1
+---
+* Fix enabling dev tool failed when creating Azure Spring Apps Enterprise in command `az spring create --sku Enterprise --enable-application-live-view --enable-application-accelerator`.
+
+1.4.0
+---
+* Show help link when `az spring app deploy` failed.
+
+1.3.0
+---
+* Add new command group `az spring application-live-view` to manage Application Live View.
+* Support route to app level in command `az spring gateway route-config create` and `az spring gateway route-config create`.
+* Add new command group `az spring dev-tool` to manage Dev Tools.
+* Add argument `--enable-application-live-view` in command `az spring create` to support enable application live view when creating Enterprise sku Spring resource.
+* Add new command group `az spring application-accelerator customized-accelerator` to manage Customized Accelerator.
+* Add new command group `az spring application-accelerator predefined-accelerator` to manage Predefined Accelerator.
+* Add argument `--enable-application-accelerator` in command `az spring create` to support enable application accelerator when creating Enterprise sku Spring resource.
+
+1.2.0
+---
+* Add command `az spring list-marketplace-plan` to list all supported VMware product. For more detail, see https://learn.microsoft.com/en-us/azure/spring-apps/how-to-enterprise-marketplace-offer.
+* Add argument `--marketplace-plan-id` in command `az spring create` to support purchasing different VMware product plan when creating Enterprise sku Spring resource.
+
+1.1.14
+---
+* Add warn when update Config Server or Application Configuration Service with SSH auth.
+
+1.1.13
+---
+* Stop execution and throw exception when operation status is `Failed`.
+
+1.1.12
+---
+* Add warning logs when editing builders and buildpack bindings.
+
+1.1.11
+---
+* Add command `az spring app deployment enable-remote-debugging`.
+* Add command `az spring app deployment disable-remote-debugging`.
+* Add command `az spring app deployment get-remote-debugging-config`.
+
+1.1.10
+---
+* Remove `Preview` tag for user-assigned identities of apps.
 
 1.1.9
 ---

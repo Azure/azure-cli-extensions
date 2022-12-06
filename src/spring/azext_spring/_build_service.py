@@ -8,6 +8,9 @@
 import json
 from azure.cli.core.util import sdk_no_wait
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 DEFAULT_BUILD_SERVICE_NAME = "default"
 DEFAULT_BUILD_AGENT_POOL_NAME = "default"
@@ -25,6 +28,9 @@ def _update_default_build_agent_pool(cmd, client, resource_group, name, build_po
 
 
 def create_or_update_builder(cmd, client, resource_group, service, name, builder_json=None, builder_file=None, no_wait=False):
+    logger.warning('Editing builder will regenerate images for all app deployments using this builder. These new images will ' +
+                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     builder = _update_builder(builder_file, builder_json)
     builder_resource = models.BuilderResource(
         properties=builder
