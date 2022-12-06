@@ -173,7 +173,7 @@ class TestIndex(unittest.TestCase):
 
             try:
                 # check key properties exists
-                self.assertIn('azext.minCliCoreVersion', metadata) or check_min_version(extension_name)
+                self.assertIn('azext.minCliCoreVersion', metadata) or check_min_version(ext_name)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
