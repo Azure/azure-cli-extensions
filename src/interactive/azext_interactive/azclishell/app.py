@@ -36,7 +36,7 @@ from prompt_toolkit.shortcuts import create_eventloop
 
 from . import VERSION
 from .az_completer import AzCompleter
-from .az_lexer import get_az_lexer, ExampleLexer, ToolbarLexer
+from .az_lexer import get_az_lexer, ExampleLexer, ToolbarLexer, ScenarioLexer
 from .configuration import Configuration, SELECT_SYMBOL
 from .frequency_heuristic import DISPLAY_TIME, frequency_heuristic
 from .gather_commands import add_new_lines, GatherCommands
@@ -126,6 +126,7 @@ class AzInteractiveShell(object):
         self.final_sleep = final_sleep
         self.command_table_thread = None
         self.recommender = Recommender(self.cli_ctx, self.history)
+        self.recommender.set_on_recommendation_prepared(self.on_recommendation_prepared)
 
         # try to consolidate state information here...
         # Used by key bindings and layout
@@ -208,6 +209,13 @@ class AzInteractiveShell(object):
         if not self.lexer:
             self.lexer = get_az_lexer(command_info)
         self._cli = None
+
+    def on_recommendation_prepared(self):
+        scenarios = self.recommender.get_scenarios()
+        scenarios_rec_info = "\n\n".join([f'[{idx+1}] {s["scenario"]}' for idx, s in enumerate(scenarios)])
+        self.cli.buffers['scenarios'].reset(
+            initial_document=Document(u'{}'.format(scenarios_rec_info)))
+        self.cli.request_redraw()
 
     def _space_examples(self, list_examples, rows, section_value):
         """ makes the example text """
@@ -347,7 +355,7 @@ class AzInteractiveShell(object):
         """ makes the application object and the buffers """
         layout_manager = LayoutManager(self)
         if full_layout:
-            layout = layout_manager.create_layout(ExampleLexer, ToolbarLexer)
+            layout = layout_manager.create_layout(ExampleLexer, ToolbarLexer, ScenarioLexer)
         else:
             layout = layout_manager.create_tutorial_layout()
 
@@ -360,7 +368,8 @@ class AzInteractiveShell(object):
             'example_line': Buffer(is_multiline=True),
             'default_values': Buffer(),
             'symbols': Buffer(),
-            'progress': Buffer(is_multiline=False)
+            'progress': Buffer(is_multiline=False),
+            'scenarios': Buffer(is_multiline=True, read_only=True),
         }
 
         writing_buffer = Buffer(

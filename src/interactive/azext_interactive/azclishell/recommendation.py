@@ -21,14 +21,16 @@ class RecommendType(int, Enum):
 
 
 class RecommendThread(threading.Thread):
-    def __init__(self, cli_ctx, history):
+    def __init__(self, cli_ctx, history, on_prepared):
         super().__init__()
         self.cli_ctx = cli_ctx
         self.history = history
+        self.on_prepared = on_prepared
         self.result = None
 
     def run(self) -> None:
         self.result = get_recommend(self.cli_ctx, self.history)
+        self.on_prepared()
 
 
 class Recommender:
@@ -36,6 +38,7 @@ class Recommender:
         self.cli_ctx = cli_ctx
         self.history = history
         self.cur_thread = None
+        self.on_recommendation_prepared = lambda: None
         self.default_recommendations = {
             'help': 'Get help message of Azure CLI',
             'init': 'Set Azure CLI global configurations interactively',
@@ -54,32 +57,49 @@ class Recommender:
                 send_feedback(-1, [latest_command], recommendations, None)
                 return
             for idx, rec in enumerate(recommendations):
+                if rec['type'] != RecommendType.Command:
+                    continue
                 if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
                     send_feedback(idx, [latest_command], recommendations, rec)
                     return
 
     def update(self):
         """Update recommendation in new thread"""
-        self.cur_thread = RecommendThread(self.cli_ctx, self.history)
+        self.cur_thread = RecommendThread(self.cli_ctx, self.history, self.on_recommendation_prepared)
         self.cur_thread.start()
 
-    def get_result(self, non_block=True, timeout=3.0):
-        """
-        Get the latest recommendation result
-        :param non_block: whether to wait for data to be prepared
-        :param timeout: block timeout
-        :return: recommendation or None if the result is not prepared
-        """
+    def _get_result(self, non_block=True, timeout=3.0, rec_type=RecommendType.Command):
         if not self.cur_thread:
             if non_block:
                 return None
             else:
                 self.update()
-        if non_block:
-            return self.cur_thread.result
-        else:
+        if not non_block:
             self.cur_thread.join(timeout)
+        if not self.cur_thread.result:
             return self.cur_thread.result
+        return [rec for rec in self.cur_thread.result if rec['type'] == rec_type]
+
+    def get_commands(self, non_block=True, timeout=3.0):
+        """
+        Get the latest recommended commands
+        :param non_block: whether to wait for data to be prepared
+        :param timeout: block timeout
+        :return: recommendation or None if the result is not prepared
+        """
+        return self._get_result(non_block, timeout, RecommendType.Command)
+
+    def get_scenarios(self, non_block=True, timeout=3.0):
+        """
+        Get the latest recommended scenarios
+        :param non_block: whether to wait for data to be prepared
+        :param timeout: block timeout
+        :return: recommendation or None if the result is not prepared
+        """
+        return self._get_result(non_block, timeout, RecommendType.Scenario)
+
+    def set_on_recommendation_prepared(self, cb):
+        self.on_recommendation_prepared = cb
 
 
 def get_recommend(cli_ctx, history):
@@ -95,7 +115,7 @@ def get_recommend(cli_ctx, history):
     except RecommendationError:
         return []
 
-    return [rec for rec in recommends if rec['type'] == RecommendType.Command]
+    return [rec for rec in recommends]
 
 
 def get_command_list_from_history(history):
@@ -107,7 +127,7 @@ def get_command_list_from_history(history):
             return False
         elif command.startswith("az "):
             command = command[3:].strip()
-        if re.match(r"^\w", command):
+        if re.match(r"^[a-z]", command):
             return True
         return False
 
@@ -117,20 +137,8 @@ def get_command_list_from_history(history):
     return commands
 
 
-def get_latest_command(command_history):
-    if not command_history:
-        return ''
-
-    command_list_data = reversed(command_history)
-    for command_item in command_list_data:
-        cmd = json.loads(command_item)
-        if cmd['command'] == 'next':
-            continue
-        return cmd['command']
-
-
 def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # pylint: disable=unused-argument
-    '''query next command from web api'''
+    """query next command from web api"""
     import requests
     url = "https://cli-recommendation.azurewebsites.net/api/RecommendationService"
 

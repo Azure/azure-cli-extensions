@@ -264,17 +264,17 @@ class AzCompleter(Completer):
             pass
 
     def gen_recommend_completion(self, text):
-        recommend_result = self.shell_ctx.recommender.get_result() or []
+        recommend_result = self.shell_ctx.recommender.get_commands() or []
         if not recommend_result:
             for rec in self.shell_ctx.recommender.default_recommendations:
                 description = self.shell_ctx.recommender.default_recommendations[rec]
                 description = description or self.command_description.get(rec, '')
                 if text.strip() == '':
-                    yield Completion(' ' + rec, 0, display_meta=description)
+                    yield Completion(rec, 0, display_meta=description)
         for rec in recommend_result:
             description = self.command_description.get(rec['command'], 'Commonly used command by other users')
             if text == '':
-                yield Completion(' '+rec['command'], 0, display_meta=description)
+                yield Completion(rec['command'], 0, display_meta=description)
             elif text == 'a':
                 yield Completion('az '+rec['command'], -1, display_meta=description)
             else:

@@ -69,7 +69,8 @@ class Configuration(object):
         self.config.set('Help Files', 'frequency', 'frequency.json')
         self.config.set('Layout', 'command_description', 'yes')
         self.config.set('Layout', 'param_description', 'yes')
-        self.config.set('Layout', 'examples', 'yes')
+        self.config.set('Layout', 'examples', 'no')
+        self.config.set('Layout', 'scenarios', 'yes')
         self.config_dir = os.getenv('AZURE_CONFIG_DIR') or os.path.expanduser(os.path.join('~', '.azure-shell'))
 
         if not os.path.exists(self.config_dir):

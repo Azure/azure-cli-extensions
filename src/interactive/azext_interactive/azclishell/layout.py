@@ -80,7 +80,7 @@ class LayoutManager(object):
 
     def create_tutorial_layout(self):
         """ layout for example tutorial """
-        lexer, _, _ = get_lexers(self.shell_ctx.lexer, None, None)
+        lexer, _, _, _ = get_lexers(self.shell_ctx.lexer, None, None, None)
         layout_full = HSplit([
             FloatContainer(
                 Window(
@@ -118,9 +118,9 @@ class LayoutManager(object):
         ])
         return layout_full
 
-    def create_layout(self, exam_lex, toolbar_lex):
+    def create_layout(self, exam_lex, toolbar_lex, scenario_lex):
         """ creates the layout """
-        lexer, exam_lex, toolbar_lex = get_lexers(self.shell_ctx.lexer, exam_lex, toolbar_lex)
+        lexer, exam_lex, toolbar_lex, scenario_lex = get_lexers(self.shell_ctx.lexer, exam_lex, toolbar_lex, scenario_lex)
 
         if not any(isinstance(processor, DefaultPrompt) for processor in self.input_processors):
             self.input_processors.append(DefaultPrompt(self.get_prompt_tokens))
@@ -131,6 +131,8 @@ class LayoutManager(object):
                 get_descriptions(self.shell_ctx.config, exam_lex, lexer),
                 get_examplehline(self.shell_ctx.config),
                 get_example(self.shell_ctx.config, exam_lex),
+                get_scenario_hline(self.shell_ctx.config),
+                get_scenario(self.shell_ctx.config, scenario_lex),
 
                 ConditionalContainer(
                     get_hline(),
@@ -211,7 +213,7 @@ def get_tutorial_tokens(_):
     return [(Token.Toolbar, 'In Tutorial Mode: Press [Enter] after typing each part')]
 
 
-def get_lexers(main_lex, exam_lex, tool_lex):
+def get_lexers(main_lex, exam_lex, tool_lex, scenario_lex):
     """ gets all the lexer wrappers """
     if not main_lex:
         return None, None, None
@@ -230,7 +232,11 @@ def get_lexers(main_lex, exam_lex, tool_lex):
         if issubclass(tool_lex, PygLex):
             tool_lex = PygmentsLexer(tool_lex)
 
-    return lexer, exam_lex, tool_lex
+    if scenario_lex:
+        if issubclass(scenario_lex, PygLex):
+            scenario_lex = PygmentsLexer(scenario_lex)
+
+    return lexer, exam_lex, tool_lex, scenario_lex
 
 
 def get_anyhline(config):
@@ -273,6 +279,23 @@ def get_example(config, exam_lex):
 def get_examplehline(config):
     """ gets a line if there are examples """
     if config.BOOLEAN_STATES[config.config.get('Layout', 'examples')]:
+        return get_hline()
+    return get_empty()
+
+
+def get_scenario(config, scenario_lex):
+    """ scenario recommendation window """
+    if config.BOOLEAN_STATES[config.config.get('Layout', 'scenarios')]:
+        return Window(
+            content=BufferControl(
+                buffer_name="scenarios",
+                lexer=scenario_lex))
+    return get_empty()
+
+
+def get_scenario_hline(config):
+    """ gets a line if there are examples """
+    if config.BOOLEAN_STATES[config.config.get('Layout', 'scenarios')]:
         return get_hline()
     return get_empty()
 
