@@ -119,7 +119,6 @@ Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig duri
 Cannot_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindings on this Kubernets cluster'
 CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
 Default_Namespace_Does_Not_Exist_Fault_Type = "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
-ClusterConnect_Not_Present_Fault_Type = "cluster-connect-feature-unavailable"
 KAP_1P_Server_App_Scope = "6256c85f-0aad-4d50-b960-e6e9b21efe35/.default"
 KAP_1P_Server_AppId = "6256c85f-0aad-4d50-b960-e6e9b21efe35"
 Get_PublicKey_Info_Fault_Type = 'Error while fetching the PoP publickey information from client proxy'
