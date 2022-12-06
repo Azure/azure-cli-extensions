@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -49,6 +50,24 @@ def check_min_version(extension_name, metadata):
                     raise AssertionError(f'{extension_name} can not get azext.minCliCoreVersion')
         except Exception as e:
             logger.error(f'{extension_name} can not get azext.minCliCoreVersion: {e}')
+            raise e
+
+
+def build_extension(extension_name):
+    subprocess.check_call(['azdev', 'extension', 'build', '--extension', extension_name])
+
+
+def check_min_version_from_whl(ext_name, whl_file, metadata):
+    if 'azext.minCliCoreVersion' in metadata:
+        try:
+            build_extension(ext_name)
+            extensions_dir = tempfile.mkdtemp()
+            extract_dir = tempfile.mkdtemp(dir=extensions_dir)
+            metadata = get_ext_metadata(extract_dir, whl_file, ext_name)
+            if 'azext.minCliCoreVersion' not in metadata:
+                raise AssertionError(f'{ext_name} can not get azext.minCliCoreVersion')
+        except Exception as e:
+            logger.error(f'{ext_name} can not get azext.minCliCoreVersion: {e}')
             raise e
 
 
@@ -182,7 +201,8 @@ class TestIndex(unittest.TestCase):
 
             try:
                 # check key properties exists
-                check_min_version(ext_name, metadata)
+                # check_min_version(ext_name, metadata)
+                check_min_version_from_whl(ext_name, './dist/*.whl')
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
