@@ -40,29 +40,17 @@ def get_sha256sum(a_file):
     return sha256.hexdigest()
 
 
-def check_min_version(extension_name, metadata):
-    if 'azext.minCliCoreVersion' not in metadata:
-        try:
-            azext_metadata = glob.glob(os.path.join(SRC_PATH, extension_name, 'azext_*', 'azext_metadata.json'))[0]
-            with open(azext_metadata, 'r') as f:
-                metadata = json.load(f)
-                if not metadata.get('azext.minCliCoreVersion'):
-                    raise AssertionError(f'{extension_name} can not get azext.minCliCoreVersion')
-        except Exception as e:
-            logger.error(f'{extension_name} can not get azext.minCliCoreVersion: {e}')
-            raise e
-
-
 def build_extension(extension_name):
-    subprocess.check_call(['azdev', 'extension', 'build', '--extension', extension_name])
+    subprocess.check_call(['azdev', 'extension', 'build', extension_name])
 
 
 def check_min_version_from_whl(ext_name, whl_file, metadata):
-    if 'azext.minCliCoreVersion' in metadata:
+    if 'azext.minCliCoreVersion' not in metadata:
         try:
             build_extension(ext_name)
             extensions_dir = tempfile.mkdtemp()
             extract_dir = tempfile.mkdtemp(dir=extensions_dir)
+            whl_file = glob.glob(whl_file)[0]
             metadata = get_ext_metadata(extract_dir, whl_file, ext_name)
             if 'azext.minCliCoreVersion' not in metadata:
                 raise AssertionError(f'{ext_name} can not get azext.minCliCoreVersion')
@@ -201,8 +189,7 @@ class TestIndex(unittest.TestCase):
 
             try:
                 # check key properties exists
-                # check_min_version(ext_name, metadata)
-                check_min_version_from_whl(ext_name, './dist/*.whl')
+                check_min_version_from_whl(ext_name, os.path.join('.', 'dist', '*.whl'), metadata)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
