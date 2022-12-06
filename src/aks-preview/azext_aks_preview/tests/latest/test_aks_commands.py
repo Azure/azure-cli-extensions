@@ -2739,7 +2739,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         if syslog_enabled:
             self.cmd(get_cmd, checks=[
-                self.check('properties.dataSources.syslog.streams[0]', f'Microsoft-Syslog')
+                self.check('properties.dataSources.syslog[0].streams[0]', f'Microsoft-Syslog')
             ])
 
         # check that the DCR-A was created
@@ -2841,7 +2841,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         if syslog_enabled:
             self.cmd(get_cmd, checks=[
-                self.check('properties.dataSources.syslog.streams[0]', f'Microsoft-Syslog')
+                self.check('properties.dataSources.syslog[0].streams[0]', f'Microsoft-Syslog')
             ])
 
         # check that the DCR-A was created
