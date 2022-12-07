@@ -4,7 +4,6 @@ Release History
 ===============
 0.9.0
 +++++
-* az databricks workspace and az databricks workspace vnet-peering: Migrate commands
 * Upgrade API version from 2021-04-01-preview to 2022-04-01-preview
 * az databricks access-connector: support access connector operations
 
