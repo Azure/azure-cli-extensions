@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.118
++++++++
+
+* Support enabling syslog collection in monitoring on AKS clusters with msi auth
+* Add `--enable-syslog` option in aks create and aks enable-addons
+
 0.5.117
 +++++++
 

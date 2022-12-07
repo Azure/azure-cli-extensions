@@ -3569,6 +3569,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "rotation_poll_interval": None,
                 "appgw_subnet_prefix": None,
                 "enable_msi_auth_for_monitoring": False,
+                "enable_syslog": False,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3608,6 +3609,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_id": "test_appgw_id",
                 "appgw_subnet_id": "test_appgw_subnet_id",
                 "appgw_watch_namespace": "test_appgw_watch_namespace",
+                "enable_syslog": False,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )

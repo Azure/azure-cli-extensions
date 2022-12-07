@@ -2674,7 +2674,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.create_new_cluster_with_monitoring_aad_auth(
             resource_group, resource_group_location, aks_name, user_assigned_identity=True)
 
-    def create_new_cluster_with_monitoring_aad_auth(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False):
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_monitoring_aad_auth_msi_with_syslog(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=True)
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_monitoring_aad_auth_uai_with_syslog(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=True, syslog_enabled=True)
+
+    def create_new_cluster_with_monitoring_aad_auth(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False):
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -2697,7 +2713,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-msi-auth-for-monitoring ' \
                      '--node-count 1 ' \
                      '--ssh-key-value={ssh_key_value} '
-        create_cmd += f'--assign-identity {identity_id}' if user_assigned_identity else ''
+        create_cmd += f'--assign-identity {identity_id} ' if user_assigned_identity else ''
+        create_cmd += f'--enable-syslog ' if syslog_enabled else ''
 
         response = self.cmd(create_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
@@ -2719,6 +2736,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
         ])
+
+        if syslog_enabled:
+            self.cmd(get_cmd, checks=[
+                self.check('properties.dataSources.syslog[0].streams[0]', f'Microsoft-Syslog')
+            ])
 
         # check that the DCR-A was created
         dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
@@ -2751,7 +2773,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.enable_monitoring_existing_cluster_aad_atuh(
             resource_group, resource_group_location, aks_name, user_assigned_identity=True)
 
-    def enable_monitoring_existing_cluster_aad_atuh(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False):
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_enable_monitoring_with_aad_auth_msi_with_syslog(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.enable_monitoring_existing_cluster_aad_atuh(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=True)
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_enable_monitoring_with_aad_auth_uai_with_syslog(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.enable_monitoring_existing_cluster_aad_atuh(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=True, syslog_enabled=True)
+
+    def enable_monitoring_existing_cluster_aad_atuh(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False):
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -2777,6 +2815,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         enable_monitoring_cmd = f'aks enable-addons -a monitoring --resource-group={resource_group} --name={aks_name} ' \
                                 '--enable-msi-auth-for-monitoring '
+        if syslog_enabled:
+            enable_monitoring_cmd += f'--enable-syslog '
 
         response = self.cmd(enable_monitoring_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
@@ -2798,6 +2838,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
         ])
+
+        if syslog_enabled:
+            self.cmd(get_cmd, checks=[
+                self.check('properties.dataSources.syslog[0].streams[0]', f'Microsoft-Syslog')
+            ])
 
         # check that the DCR-A was created
         dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
