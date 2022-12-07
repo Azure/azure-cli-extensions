@@ -14,11 +14,13 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
+from azure.cli.command_modules.acs.addonconfiguration import getRegionCodeForAzureRegion, sanitize_dcr_name
 from azure.cli.core.azclierror import AzureInternalError, BadRequestError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
+from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
 
 
 def _get_test_data_file(filename):
@@ -1885,7 +1887,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create snapshot from the nodepool
         create_snapshot_cmd = 'aks nodepool snapshot create --resource-group {resource_group} --name {snapshot_name} --location {location} ' \
-                              '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SnapshotPreview ' \
                               '--nodepool-id {nodepool_resource_id} -o json'
         response = self.cmd(create_snapshot_cmd, checks=[
             self.check('creationData.sourceResourceId', nodepool_resource_id)
@@ -1917,7 +1918,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group {resource_group} --name {aks_name2} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
                      '--node-count 1 --snapshot-id {snapshot_resource_id} ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SnapshotPreview ' \
                      '-k {k8s_version} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
@@ -1928,7 +1928,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add a new nodepool to this cluster using this snapshot
         add_nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={aks_name2} --name={nodepool_name2} --node-count 1 ' \
-                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/SnapshotPreview ' \
                            '-k {k8s_version} ' \
                            '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(add_nodepool_cmd,
@@ -1938,20 +1937,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                                 snapshot_resource_id)
                  ])
 
-        # upgrade this cluster (snapshot is not allowed for cluster upgrading), snapshot info is reset
-        create_cmd = 'aks upgrade --resource-group {resource_group} --name {aks_name2} -k {upgrade_k8s_version} --yes -o json'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].creationData', None),
-            self.check('agentPoolProfiles[1].creationData', None)
-        ])
-
         # upgrade the nodepool2 using this snapshot again
         upgrade_node_image_only_nodepool_cmd = 'aks nodepool upgrade ' \
                                                '--resource-group {resource_group} ' \
                                                '--cluster-name {aks_name2} ' \
                                                '-n {nodepool_name2} ' \
-                                               '--node-image-only --no-wait ' \
+                                               '--node-image-only ' \
                                                '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(upgrade_node_image_only_nodepool_cmd)
 
@@ -1960,8 +1951,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                            '--cluster-name={aks_name2} ' \
                            '-n {nodepool_name2} '
         self.cmd(get_nodepool_cmd, checks=[
-            self.check('provisioningState', 'UpgradingNodeImageVersion'),
+            self.check('provisioningState', 'Succeeded'),
             self.check('creationData.sourceResourceId', snapshot_resource_id)
+        ])
+
+        # upgrade this cluster (snapshot is not allowed for cluster upgrading), snapshot info is reset
+        create_cmd = 'aks upgrade --resource-group {resource_group} --name {aks_name2} -k {upgrade_k8s_version} --yes -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].creationData', None),
+            self.check('agentPoolProfiles[1].creationData', None)
         ])
 
         # delete the 2nd AKS cluster
@@ -2675,7 +2674,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.create_new_cluster_with_monitoring_aad_auth(
             resource_group, resource_group_location, aks_name, user_assigned_identity=True)
 
-    def create_new_cluster_with_monitoring_aad_auth(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False):
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_monitoring_aad_auth_msi_with_syslog(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=True)
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_monitoring_aad_auth_uai_with_syslog(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=True, syslog_enabled=True)
+
+    def create_new_cluster_with_monitoring_aad_auth(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False):
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -2698,7 +2713,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-msi-auth-for-monitoring ' \
                      '--node-count 1 ' \
                      '--ssh-key-value={ssh_key_value} '
-        create_cmd += f'--assign-identity {identity_id}' if user_assigned_identity else ''
+        create_cmd += f'--assign-identity {identity_id} ' if user_assigned_identity else ''
+        create_cmd += f'--enable-syslog ' if syslog_enabled else ''
 
         response = self.cmd(create_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
@@ -2712,13 +2728,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
-        dataCollectionRuleName = f"MSCI-{aks_name}-{resource_group_location}"
+        region_code = getRegionCodeForAzureRegion(MockCmd(MockCLI()), resource_group_location)
+        dataCollectionRuleName = sanitize_dcr_name(f"MSCI-{region_code}-{aks_name}")
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
         self.cmd(get_cmd, checks=[
             self.check(
                 'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
         ])
+
+        if syslog_enabled:
+            self.cmd(get_cmd, checks=[
+                self.check('properties.dataSources.syslog[0].streams[0]', f'Microsoft-Syslog')
+            ])
 
         # check that the DCR-A was created
         dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
@@ -2751,7 +2773,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.enable_monitoring_existing_cluster_aad_atuh(
             resource_group, resource_group_location, aks_name, user_assigned_identity=True)
 
-    def enable_monitoring_existing_cluster_aad_atuh(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False):
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_enable_monitoring_with_aad_auth_msi_with_syslog(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.enable_monitoring_existing_cluster_aad_atuh(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=True)
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_enable_monitoring_with_aad_auth_uai_with_syslog(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.enable_monitoring_existing_cluster_aad_atuh(
+            resource_group, resource_group_location, aks_name, user_assigned_identity=True, syslog_enabled=True)
+
+    def enable_monitoring_existing_cluster_aad_atuh(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False):
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -2777,6 +2815,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         enable_monitoring_cmd = f'aks enable-addons -a monitoring --resource-group={resource_group} --name={aks_name} ' \
                                 '--enable-msi-auth-for-monitoring '
+        if syslog_enabled:
+            enable_monitoring_cmd += f'--enable-syslog '
 
         response = self.cmd(enable_monitoring_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
@@ -2790,13 +2830,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
-        dataCollectionRuleName = f"MSCI-{aks_name}-{resource_group_location}"
+        region_code = getRegionCodeForAzureRegion(MockCmd(MockCLI()), resource_group_location)
+        dataCollectionRuleName = sanitize_dcr_name(f"MSCI-{region_code}-{aks_name}")
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
         self.cmd(get_cmd, checks=[
             self.check(
                 'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
         ])
+
+        if syslog_enabled:
+            self.cmd(get_cmd, checks=[
+                self.check('properties.dataSources.syslog[0].streams[0]', f'Microsoft-Syslog')
+            ])
 
         # check that the DCR-A was created
         dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
@@ -2847,7 +2893,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         try:
             # check that the DCR was created
-            dataCollectionRuleName = f"MSCI-{aks_name}-{resource_group_location}"
+            region_code = getRegionCodeForAzureRegion(MockCmd(MockCLI()), resource_group_location)
+            dataCollectionRuleName = sanitize_dcr_name(f"MSCI-{region_code}-{aks_name}")
             dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
             get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
             self.cmd(get_cmd, checks=[
@@ -5984,8 +6031,49 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.kubeProxyConfig.enabled',True),
-            self.check('networkProfile.kubeProxyConfig.mode','IPVS'),
-            self.check('networkProfile.kubeProxyConfig.ipvsConfig.scheduler', 'LeastConnection'),
+            self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    # live only due to workspace is not mocked correctly
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_kube_proxy_config(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'kube_proxy_path': _get_test_data_file('kubeproxyconfig.json'),
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview ' \
+                     '--ssh-key-value={ssh_key_value} --enable-managed-identity --yes -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.kubeProxyConfig.enabled',True),
+            self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
+        ])
+
+        
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'kube_proxy_path': _get_test_data_file('kubeproxyconfig_update.json'),
+        })
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --kube-proxy-config={kube_proxy_path} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/KubeProxyConfigurationPreview'
+
+        # TODO: check actual values getting update, currently returned MC does not sync
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.kubeProxyConfig.enabled',True),
         ])
 
         # delete

@@ -266,6 +266,9 @@ helps['aks create'] = """
         - name: --enable-msi-auth-for-monitoring
           type: bool
           short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+        - name: --enable-syslog
+          type: bool
+          short-summary: Enable syslog data collection for Monitoring addon
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -816,6 +819,9 @@ helps['aks update'] = """
         - name: --http-proxy-config
           type: string
           short-summary: HTTP Proxy configuration for this cluster.
+        - name: --kube-proxy-config
+          type: string
+          short-summary: kube-proxy configuration for this cluster.
         - name: --enable-azure-keyvault-kms
           type: bool
           short-summary: Enable Azure KeyVault Key Management Service.
@@ -1424,19 +1430,12 @@ examples:
   - name: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
     text: az aks nodepool get-upgrades --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
     crafted: true
-parameters:
-  - name: --nodepool-name
-    type: string
-    short-summary: name of the node pool.
 """
 
 helps['aks nodepool stop'] = """
     type: command
     short-summary: Stop running agent pool in the managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1449,9 +1448,6 @@ helps['aks nodepool start'] = """
     type: command
     short-summary: Start stopped agent pool in the managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1476,9 +1472,6 @@ helps['aks nodepool operation-abort'] = """
     type: command
     short-summary: Abort last running operation on nodepool.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1566,6 +1559,9 @@ parameters:
   - name: --enable-msi-auth-for-monitoring
     type: bool
     short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --enable-syslog
+    type: bool
+    short-summary: Enable syslog data collection for Monitoring addon
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1624,6 +1620,9 @@ parameters:
   - name: --enable-msi-auth-for-monitoring
     type: bool
     short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --enable-syslog
+    type: bool
+    short-summary: Enable syslog data collection for Monitoring addon
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1696,6 +1695,9 @@ parameters:
   - name: --enable-msi-auth-for-monitoring
     type: bool
     short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --enable-syslog
+    type: bool
+    short-summary: Enable syslog data collection for Monitoring addon
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
