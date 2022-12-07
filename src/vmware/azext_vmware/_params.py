@@ -266,7 +266,7 @@ def load_arguments(self, _):
         c.argument('vm_members', nargs='+', help="Virtual machine members list.")
         c.argument('affinity_type', arg_type=get_enum_type(['Affinity', 'AntiAffinity']), help="Placement policy affinity type.")
         c.argument('host_members', nargs='+', help='Host members list.')
-        c.argument('affinity_strength', arg_type=get_enum_type(['Should', 'Must']), help='Vm host placement policy affinity strength (should/must).')
+        c.argument('affinity_strength', arg_type=get_enum_type(['Should', 'Must']), help='VM host placement policy affinity strength (should/must).')
         c.argument('azure_hybrid_benefit', arg_type=get_enum_type(['SqlHost', 'None']), help='Placement policy azure hybrid benefit opt-in type.')
         c.argument('yes', help='Delete without confirmation.')
 
