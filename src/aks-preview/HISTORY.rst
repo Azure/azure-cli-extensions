@@ -12,11 +12,36 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.117
++++++++
+
+* Add custom transform for custom CA
+* Support updating kube-proxy configuration with `az aks update --kube-proxy-config file.json`.
+
+0.5.116
++++++++
+
+* Fix `az aks update` command failing on updating the ssh key value if cluster was created without ssh key, see issue `\#5559 <https://github.com/Azure/azure-cli-extensions/issues/5559>`_.
+* Mark "--enable-pod-security-policy" deprecated.
+* Deny create request if binding existed for command "trustedaccess rolebinding create".
+* Support AAD clusters for "az aks kollect".
+* Vendor new SDK and bump API version to 2022-10-02-preview.
+
+0.5.115
++++++++
+
+* Support node public IPTags by `az aks create` and `az aks nodepool add`.
+
+0.5.114
++++++++
+
+* Fix `az aks create` and `az aks nodepool add` commands failing on adding nodepool with managed ApplicationSecurityGroups.
+
 0.5.113
 +++++++
 
 * Fix workload identity update error after oidc issure GA in azure-cli.
-* Fix `az aks update` command failing on SP-based cluster blocked by validation in AzureMonitorMetrics Addon, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5488>`_.
+* Fix `az aks update` command failing on SP-based cluster blocked by validation in AzureMonitorMetrics Addon, see issue `\#5488 <https://github.com/Azure/azure-cli-extensions/issues/5488>`_.
 * Fix `az aks update` command failing on changes not related to outbound type conversion, see issue `\#24430 https://github.com/Azure/azure-cli/issues/24430>`_.
 
 0.5.112

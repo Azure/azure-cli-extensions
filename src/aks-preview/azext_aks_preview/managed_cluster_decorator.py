@@ -2852,6 +2852,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc.http_proxy_config = self.context.get_http_proxy_config()
         return mc
 
+    def update_kube_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update kube proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
+            )
+
+        mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
+
+        return mc
+
     def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
         """Update pod security policy for the ManagedCluster object.
 
@@ -3176,6 +3192,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         ssh_key_value = self.context.get_ssh_key_value_for_update()
 
         if ssh_key_value:
+            if mc.linux_profile is None:
+                raise InvalidArgumentValueError("Updating the cluster with no ssh key set at creation is not supported")
             mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
                 public_keys=[
                     self.models.ContainerServiceSshPublicKey(
@@ -3183,7 +3201,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                 ]
             )
-
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -3227,5 +3244,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_linux_profile(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
+        # update kube proxy config
+        mc = self.update_kube_proxy_config(mc)
 
         return mc

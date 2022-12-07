@@ -3410,6 +3410,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             message_of_the_day="W10=",  # base64 encode of "[]"
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
@@ -4234,6 +4235,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
@@ -5801,6 +5803,21 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_linux_profile(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_key_value": "test_key"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        # fail on cluster has no linux profile
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_mc_1 = dec_1.update_linux_profile(mc_1)
 
     def test_update_mc_profile_preview(self):
         import inspect

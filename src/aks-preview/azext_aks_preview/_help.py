@@ -281,7 +281,8 @@ helps['aks create'] = """
           short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
         - name: --enable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Enable pod security policy.
+          short-summary: Enable pod security policy.
+          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
@@ -372,7 +373,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --enable-workload-identity
           type: bool
-          short-summary: Enable workload identity addon.
+          short-summary: (PREVIEW) Enable workload identity addon.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -438,7 +439,7 @@ helps['aks create'] = """
           short-summary: The source cluster snapshot id is used to create new cluster.
         - name: --enable-oidc-issuer
           type: bool
-          short-summary: (PREVIEW) Enable OIDC issuer.
+          short-summary: Enable OIDC issuer.
         - name: --crg-id
           type: string
           short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
@@ -491,6 +492,9 @@ helps['aks create'] = """
         - name: --nodepool-asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+        - name: --node-public-ip-tags
+          type: string
+          short-summary: The ipTags of the node public IPs.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -663,10 +667,12 @@ helps['aks update'] = """
           long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Default is loadbalancer, other available options are managedNATGateway, userassignedNATGateway, UDR
         - name: --enable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Enable pod security policy.
+          short-summary: Enable pod security policy.
+          long-summary: --enable-pod-security-policy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --disable-pod-security-policy
           type: bool
-          short-summary: (PREVIEW) Disable pod security policy.
+          short-summary: Disable pod security policy
+          long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -717,7 +723,7 @@ helps['aks update'] = """
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
         - name: --enable-workload-identity
           type: bool
-          short-summary: Enable Workload Identity addon for cluster.
+          short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -806,10 +812,13 @@ helps['aks update'] = """
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
         - name: --enable-oidc-issuer
           type: bool
-          short-summary: (PREVIEW) Enable OIDC issuer.
+          short-summary: Enable OIDC issuer.
         - name: --http-proxy-config
           type: string
           short-summary: HTTP Proxy configuration for this cluster.
+        - name: --kube-proxy-config
+          type: string
+          short-summary: kube-proxy configuration for this cluster.
         - name: --enable-azure-keyvault-kms
           type: bool
           short-summary: Enable Azure KeyVault Key Management Service.
@@ -911,8 +920,6 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
-      - name: Enable pod security policy.
-        text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Disable pod security policy.
         text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.
@@ -1300,6 +1307,9 @@ helps['aks nodepool add'] = """
         - name: --asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+        - name: --node-public-ip-tags
+          type: string
+          short-summary: The ipTags of the node public IPs.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1417,19 +1427,12 @@ examples:
   - name: Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.
     text: az aks nodepool get-upgrades --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
     crafted: true
-parameters:
-  - name: --nodepool-name
-    type: string
-    short-summary: name of the node pool.
 """
 
 helps['aks nodepool stop'] = """
     type: command
     short-summary: Stop running agent pool in the managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1442,9 +1445,6 @@ helps['aks nodepool start'] = """
     type: command
     short-summary: Start stopped agent pool in the managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1469,9 +1469,6 @@ helps['aks nodepool operation-abort'] = """
     type: command
     short-summary: Abort last running operation on nodepool.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Agent pool name
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2

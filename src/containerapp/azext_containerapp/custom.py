@@ -68,7 +68,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart)
+                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
+                     set_ip_restrictions)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1951,6 +1952,88 @@ def show_ingress_traffic(cmd, name, resource_group_name):
         raise ValidationError("Ingress must be enabled to show ingress traffic. Try running `az containerapp ingress -h` for more info.") from e
 
 
+def set_ip_restriction(cmd, name, resource_group_name, rule_name, ip_address, action, description=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    ip_restrictions = safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
+
+    ip_security_restrictions = set_ip_restrictions(ip_restrictions, rule_name, ip_address, description, action)
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "ipSecurityRestrictions", value=ip_security_restrictions)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['ipSecurityRestrictions']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_ip_restriction(cmd, name, resource_group_name, rule_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    ip_restrictions = safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
+
+    restriction_removed = False
+    for index, value in enumerate(ip_restrictions):
+        if value["name"].lower() == rule_name.lower():
+            ip_restrictions.pop(index)
+            restriction_removed = True
+            break
+
+    if not restriction_removed:
+        raise ValidationError(f"Ip restriction name '{rule_name}' does not exist.")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "ipSecurityRestrictions", value=ip_restrictions)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        ip_restrictions = safe_get(r, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
+        return ip_restrictions
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_ip_restrictions(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        try:
+            containerapp_def['properties']['configuration']['ingress']
+        except Exception as e:
+            raise ValidationError("Ingress must be enabled to list ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
+        return containerapp_def['properties']['configuration']['ingress']['ipSecurityRestrictions']
+    except Exception as e:
+        return []
+
+
 def show_registry(cmd, name, resource_group_name, server):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -2475,8 +2558,9 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     sub = get_subscription_id(cmd.cli_ctx)
     token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
-    logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
-    base_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")]
+
+    base_url = ContainerAppClient.show(cmd, resource_group_name, name)["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
 
     if kind == LOG_TYPE_CONSOLE:
         url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
