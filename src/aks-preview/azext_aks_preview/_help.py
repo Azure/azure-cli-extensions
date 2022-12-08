@@ -477,7 +477,7 @@ helps['aks create'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
-        - name: --custom-ca-trust-certificates
+        - name: --custom-ca-trust-certificates --ca-certs
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
@@ -918,7 +918,7 @@ helps['aks update'] = """
           type: string
           short-summary: Public key path or key contents to install on node VMs for SSH access. For example,
                          'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
-        - name: --custom-ca-trust-certificates
+        - name: --custom-ca-trust-certificates --ca-certs
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
