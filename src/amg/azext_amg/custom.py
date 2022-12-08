@@ -149,9 +149,10 @@ def list_grafana(cmd, resource_group_name=None):
 
 
 def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
-                   resource_group_name=None, tags=None):
-    if not api_key_and_service_account and not deterministic_outbound_ip and not tags:
-        raise ArgumentUsageError("--api-key | --service-account | "
+                   public_network_access=None, resource_group_name=None, tags=None):
+    if (not api_key_and_service_account and not deterministic_outbound_ip
+        and not public_network_access and not tags):
+        raise ArgumentUsageError("--api-key | --service-account | --tags"
                                  "--deterministic-outbound-ip | --public-network-access")
 
     client = cf_amg(cmd.cli_ctx)
@@ -162,6 +163,9 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if deterministic_outbound_ip:
         instance.properties.deterministic_outbound_ip = deterministic_outbound_ip
+
+    if public_network_access:
+        instance.properties.public_network_access = public_network_access
 
     if tags:
         instance.tags = tags

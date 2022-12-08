@@ -47,10 +47,11 @@ class AmgScenarioTest(ScenarioTest):
             self.check('length(properties.outboundIPs)', 2)
         ])
 
-        self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled')
+        self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled --public-network-access Disabled')
         self.cmd('grafana show -g {rg} -n {name}', checks=[
             self.check('properties.deterministicOutboundIp', 'Disabled'),
             self.check('properties.apiKey', 'Disabled'),
+            self.check('properties.publicNetworkAccess', 'Disabled'),
             self.check('properties.outboundIPs', None)
         ])
 
