@@ -1997,13 +1997,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         # CAs are supposed to be separated with a new line, we filter out empty strings (e.g. some stray new line). We only allow up to 10 CAs
         file_content = read_file_content(custom_ca_certs_file_path).split(os.linesep + os.linesep)
-        if len(file_content) > 10:
+        certs = [str.encode(x) for x in file_content if len(x) > 1]
+        if len(certs) > 10:
             raise InvalidArgumentValueError(
                 "Only up to 10 new-line separated CAs can be passed, got {} instead.".format(
-                    len(file_content)
+                    len(certs)
                 )
             )
-        return [str.encode(x) for x in file_content if len(x) > 1]
+        return certs
 
 
     def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
