@@ -139,9 +139,15 @@ jobs:
       displayName: 'Use Python $(python.version)'
       inputs:
         versionSpec: '$(python.version)'
+    - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
-    - bash: ./scripts/ci/test_source.sh
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+
+        source env/bin/activate
+        ./scripts/ci/test_source.sh
       displayName: 'Run integration test and build test'
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
