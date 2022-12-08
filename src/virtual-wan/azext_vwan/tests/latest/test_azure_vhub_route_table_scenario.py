@@ -9,37 +9,9 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class AzureVWanRouteTableScenario(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route_table', location='eastus')
-    def test_azure_vwan_route_table(self, resource_group):
-        self.kwargs.update({
-            'vwan': 'testvwan',
-            'vhub': 'myclitestvhub',
-            'vpngateway': 'mycligateway',
-            'routetable': 'testroutetable',
-            'rg': resource_group
-        })
-
-        # workaround due to service limitation. It should be fixed in the future.
-        self.cmd('network vwan create -n {vwan} -g {rg}')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus')
-        self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l eastus')
-
-        self.cmd('network vhub route-table create -n {routetable} -g {rg} --vhub-name {vhub}', checks=[
-            self.check('name', self.kwargs['routetable'])
-        ])
-        self.cmd('network vhub route-table show -n {routetable} -g {rg} --vhub-name {vhub}', checks=[
-            self.check('name', self.kwargs['routetable'])
-        ])
-        self.cmd('network vhub route-table list -g {rg} --vhub-name {vhub}', checks=[
-            self.check('@[2].name', self.kwargs['routetable']),
-            self.check('length(@)', 3)
-        ])
-
-        self.cmd('network vhub route-table delete -n {routetable} -g {rg} --vhub-name {vhub}')
-
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route_table_v3', location='eastus')
-    def test_azure_vwan_route_table_v3(self, resource_group):
+    def test_azure_vwan_route_table(self, resource_group):
         self.kwargs.update({
             'vwan': 'testvwan',
             'vhub': 'myclitestvhub',
