@@ -1535,7 +1535,7 @@ def app_connect(cmd, client, resource_group, service, name,
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(EXEC_PROTOCOL_CTRL_C_MSG)
-    
+
     try:
         import termios
         # Turn on the terminal echo after exiting.
