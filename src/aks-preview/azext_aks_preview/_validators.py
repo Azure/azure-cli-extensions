@@ -662,6 +662,7 @@ def validate_enable_custom_ca_trust(namespace):
             raise ArgumentUsageError(
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
 
+
 def validate_custom_ca_trust_certificates(namespace):
     """Validates Custom CA Trust Certificates can only be used on Linux."""
     if namespace.custom_ca_trust_certificates is not None and namespace.custom_ca_trust_certificates != "":
