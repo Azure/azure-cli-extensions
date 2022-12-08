@@ -151,7 +151,7 @@ def list_grafana(cmd, resource_group_name=None):
 def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
                    public_network_access=None, resource_group_name=None, tags=None):
     if (not api_key_and_service_account and not deterministic_outbound_ip
-        and not public_network_access and not tags):
+            and not public_network_access and not tags):
         raise ArgumentUsageError("--api-key | --service-account | --tags"
                                  "--deterministic-outbound-ip | --public-network-access")
 
