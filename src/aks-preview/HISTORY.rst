@@ -14,6 +14,11 @@ Pending
 
 * Update the minimum required cli core version to `2.43.0`.
 
+0.5.119
++++++++
+
+* Add `--custom-ca-trust-certificates` option for custom CA in aks create and aks update
+
 0.5.118
 +++++++
 
