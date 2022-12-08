@@ -113,5 +113,15 @@ class TestSourceWheels(unittest.TestCase):
         shutil.rmtree(built_whl_dir)
 
 
+class TestExtensionRecordingMode(unittest.TestCase):
+
+    def test_extension_recording_mode(self):
+        for pkg_name, ext_path in ALL_TESTS:
+            extension_name = ext_path.split(os.path.sep)[-1]
+            check_call(['azdev', 'extension', 'add', extension_name])
+            check_call(['azdev', 'extension', 'test', extension_name])
+            check_call(['azdev', 'extension', 'remove', extension_name])
+
+
 if __name__ == '__main__':
     unittest.main()
