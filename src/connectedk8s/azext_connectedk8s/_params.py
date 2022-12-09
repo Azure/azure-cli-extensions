@@ -47,7 +47,7 @@ def load_arguments(self, _):
         c.argument('correlation_id', options_list=['--correlation-id'], help='A guid that is used to internally track the source of cluster onboarding. Please do not modify it unless advised', validator=override_client_request_id_header)
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
-        c.argument('least_privilege', options_list=['--least-privilege'], help='')
+        c.argument('least_privilege', options_list=['--least-privilege'], help='', arg_type=get_enum_type(["true", "false"]))
         c.argument('config_settings', options_list=['--config-settings'], help='')
 
     with self.argument_context('connectedk8s update') as c:
