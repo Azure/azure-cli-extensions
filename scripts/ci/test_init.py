@@ -20,7 +20,7 @@ check_path = 'vendored_sdks'
 
 
 def check_init_files():
-    """ Check if the vendored_sdks directory contains __init__.py in all extensions"""
+    """ Check if the vendored_sdks directory contains __init__.py in all extensions """
     # SRC_PATH: azure-cli-extensions\src
     for src_d in os.listdir(SRC_PATH):
         # src_d: azure-cli-extensions\src\ext_name
