@@ -18,6 +18,7 @@ Pending
 +++++++
 
 * Add `--custom-ca-trust-certificates` option for custom CA in aks create and aks update
+* Bumped dependency on azure-cli-core
 
 0.5.118
 +++++++
