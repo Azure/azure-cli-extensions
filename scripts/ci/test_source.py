@@ -119,7 +119,7 @@ class TestExtensionRecordingMode(unittest.TestCase):
         for _, ext_path in ALL_TESTS:
             extension_name = ext_path.split(os.path.sep)[-1]
             check_call(['azdev', 'extension', 'add', extension_name])
-            check_call(['azdev', 'extension', 'test', extension_name])
+            check_call(['azdev', 'test', extension_name, '--discover'])
             check_call(['azdev', 'extension', 'remove', extension_name])
 
 
