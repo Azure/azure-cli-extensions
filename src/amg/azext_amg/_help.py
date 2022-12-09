@@ -39,7 +39,7 @@ helps['grafana update'] = """
     examples:
         - name: disable the public network access
           text: |
-           az grafana update -g myResourceGroup -n myGrafana --public-network-access disabled
+           az grafana update -g MyResourceGroup -n MyGrafana --public-network-access disabled
 """
 
 helps['grafana data-source'] = """
