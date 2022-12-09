@@ -2006,7 +2006,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return certs
 
-
     def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
         """Obtain the value of defender.
 
