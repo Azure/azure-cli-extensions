@@ -37,10 +37,10 @@ def check_init_files():
 
 def check_init_recursive(root_dir):
     """ Check if a extension contains __init__.py
-    :param root_dir: azure-cli-extensions\\src\\account\\azext_account
-    :param dirpath: azure-cli-extensions\\src\\account\\azext_account
-    :param dirnames: ['generated', 'manual', 'tests', 'vendored_sdks']
-    :param filenames: ['.flake8', 'action.py', 'azext_metadata.json', 'custom.py', '__init__.py']
+    :param root_dir: azure-cli-extensions\src\{ext_name}\azext_{ext_name}
+    :param dirpath: azure-cli-extensions\src\{ext_name}\azext_{ext_name}
+    :param dirnames: all directories under dirpath, type: List[str]
+    :param filenames: all files under dirpath, type: List[str]
     """
     error_flag = False
     for (dirpath, dirnames, filenames) in os.walk(root_dir):
