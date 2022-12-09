@@ -194,12 +194,12 @@ jobs:
 
 - job: CheckInit
   displayName: "Check Init Files"
-    pool:
-      name: 'pool-ubuntu-2004'
-    steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.x'
-      inputs:
-        versionSpec: 3.x
-    - bash: |
-      python scripts/ci/check_init.py -v
+  pool:
+    name: 'pool-ubuntu-2004'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.x'
+    inputs:
+      versionSpec: 3.x
+  - bash: |
+    python scripts/ci/test_init.py -v

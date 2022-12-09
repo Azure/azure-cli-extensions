@@ -5,9 +5,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
 from util import SRC_PATH
 import logging
+import os
+import sys
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -21,6 +22,7 @@ check_path = 'vendored_sdks'
 
 def check_init_files():
     """ Check if the vendored_sdks directory contains __init__.py in all extensions """
+    ref = []
     # SRC_PATH: azure-cli-extensions\src
     for src_d in os.listdir(SRC_PATH):
         # src_d: azure-cli-extensions\src\ext_name
@@ -29,7 +31,8 @@ def check_init_files():
             for d in os.listdir(src_d_full):
                 if d.startswith('azext_'):
                     # root_dir: azure-cli-extensions\src\ext_name\azext_ext_name
-                    check_init_recursive(os.path.join(src_d_full, d))
+                    ref.append(check_init_recursive(os.path.join(src_d_full, d)))
+    return ref
 
 
 def check_init_recursive(root_dir):
@@ -39,11 +42,14 @@ def check_init_recursive(root_dir):
     :param dirnames: ['generated', 'manual', 'tests', 'vendored_sdks']
     :param filenames: ['.flake8', 'action.py', 'azext_metadata.json', 'custom.py', '__init__.py']
     """
+    error_flag = False
     for (dirpath, dirnames, filenames) in os.walk(root_dir):
         if dirpath.endswith(check_path):
             # Check __init__.py not exists in the vendored_sdks dir and it contains at least one file
             if '__init__.py' not in filenames and not is_empty_dir(dirpath):
-                logger.error(f'Directory {dirpath} does not contain __init__.py')
+                logger.error(f'Directory {dirpath} does not contain __init__.py, please add it.')
+                error_flag = True
+    return error_flag
 
 
 def is_empty_dir(root_dir):
@@ -55,4 +61,5 @@ def is_empty_dir(root_dir):
 
 
 if __name__ == '__main__':
-    check_init_files()
+    ref = check_init_files()
+    sys.exit(1) if any(ref) else sys.exit(0)
