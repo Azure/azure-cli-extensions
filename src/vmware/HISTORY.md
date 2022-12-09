@@ -1,6 +1,6 @@
 # Release History
 
-## 5.0.0 (2022-12)
+## 5.0.1 (2022-12)
 
 - Update to AVS 2022-05-01 API
 - Add `az vmware cluster list-zones`
