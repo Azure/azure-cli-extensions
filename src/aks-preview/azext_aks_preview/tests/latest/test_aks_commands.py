@@ -12,7 +12,7 @@ import time
 from azext_aks_preview.tests.latest.custom_preparers import (
     AKSCustomResourceGroupPreparer,
 )
-from azure.cli.command_modules.acs._consts import (
+from azext_aks_preview._consts import (
     CONST_CUSTOM_CA_TEST_CERT,
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
