@@ -1300,130 +1300,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 if disk_driver_version:
                     profile.version = disk_driver_version
             elif disable_disk_driver:
-                msg = "Please make sure there are no existing PVs and PVCs that are used by AzureDisk CSI driver before disabling."
+                msg = (
+                    "Please make sure there are no existing PVs and PVCs "
+                    "that are used by AzureDisk CSI driver before disabling."
+                )
                 if not self.get_yes() and not prompt_y_n(msg, default="n"):
                     raise DecoratorEarlyExitException()
                 profile.enabled = False
-
-        return profile
-
-    def get_file_driver(self) -> Optional[ManagedClusterStorageProfileFileCSIDriver]:
-        """Obtain the value of storage_profile.file_csi_driver
-
-        :return: Optional[ManagedClusterStorageProfileFileCSIDriver]
-        """
-        enable_file_driver = self.raw_param.get("enable_file_driver")
-        disable_file_driver = self.raw_param.get("disable_file_driver")
-
-        if not enable_file_driver and not disable_file_driver:
-            return None
-        profile = self.models.ManagedClusterStorageProfileFileCSIDriver()
-
-        if enable_file_driver and disable_file_driver:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-file-driver and "
-                "--disable-file-driver at the same time."
-            )
-
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if disable_file_driver:
-                profile.enabled = False
-
-        if self.decorator_mode == DecoratorMode.UPDATE:
-            if enable_file_driver:
-                profile.enabled = True
-            elif disable_file_driver:
-                msg = "Please make sure there are no existing PVs and PVCs that are used by AzureFile CSI driver before disabling."
-                if not self.get_yes() and not prompt_y_n(msg, default="n"):
-                    raise DecoratorEarlyExitException()
-                profile.enabled = False
-
-        return profile
-
-    def get_blob_driver(self) -> Optional[ManagedClusterStorageProfileBlobCSIDriver]:
-        """Obtain the value of storage_profile.blob_csi_driver
-
-        :return: Optional[ManagedClusterStorageProfileBlobCSIDriver]
-        """
-        enable_blob_driver = self.raw_param.get("enable_blob_driver")
-        disable_blob_driver = self.raw_param.get("disable_blob_driver")
-
-        if enable_blob_driver is None and disable_blob_driver is None:
-            return None
-
-        profile = self.models.ManagedClusterStorageProfileBlobCSIDriver()
-
-        if enable_blob_driver and disable_blob_driver:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-blob-driver and "
-                "--disable-blob-driver at the same time."
-            )
-
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if enable_blob_driver:
-                profile.enabled = True
-
-        if self.decorator_mode == DecoratorMode.UPDATE:
-            if enable_blob_driver:
-                msg = "Please make sure there is no open-source Blob CSI driver installed before enabling."
-                if not self.get_yes() and not prompt_y_n(msg, default="n"):
-                    raise DecoratorEarlyExitException()
-                profile.enabled = True
-            elif disable_blob_driver:
-                msg = "Please make sure there are no existing PVs and PVCs that are used by Blob CSI driver before disabling."
-                if not self.get_yes() and not prompt_y_n(msg, default="n"):
-                    raise DecoratorEarlyExitException()
-                profile.enabled = False
-
-        return profile
-
-    def get_snapshot_controller(self) -> Optional[ManagedClusterStorageProfileSnapshotController]:
-        """Obtain the value of storage_profile.snapshot_controller
-
-        :return: Optional[ManagedClusterStorageProfileSnapshotController]
-        """
-        enable_snapshot_controller = self.raw_param.get("enable_snapshot_controller")
-        disable_snapshot_controller = self.raw_param.get("disable_snapshot_controller")
-
-        if not enable_snapshot_controller and not disable_snapshot_controller:
-            return None
-
-        profile = self.models.ManagedClusterStorageProfileSnapshotController()
-
-        if enable_snapshot_controller and disable_snapshot_controller:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-snapshot_controller and "
-                "--disable-snapshot_controller at the same time."
-            )
-
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if disable_snapshot_controller:
-                profile.enabled = False
-
-        if self.decorator_mode == DecoratorMode.UPDATE:
-            if enable_snapshot_controller:
-                profile.enabled = True
-            elif disable_snapshot_controller:
-                msg = "Please make sure there are no existing VolumeSnapshots, VolumeSnapshotClasses and VolumeSnapshotContents " \
-                      "that are used by the snapshot controller before disabling."
-                if not self.get_yes() and not prompt_y_n(msg, default="n"):
-                    raise DecoratorEarlyExitException()
-                profile.enabled = False
-
-        return profile
-
-    def get_storage_profile(self) -> Optional[ManagedClusterStorageProfile]:
-        """Obtain the value of storage_profile.
-
-        :return: Optional[ManagedClusterStorageProfile]
-        """
-        profile = self.models.ManagedClusterStorageProfile()
-        if self.mc.storage_profile is not None:
-            profile = self.mc.storage_profile
-        profile.disk_csi_driver = self.get_disk_driver()
-        profile.file_csi_driver = self.get_file_driver()
-        profile.blob_csi_driver = self.get_blob_driver()
-        profile.snapshot_controller = self.get_snapshot_controller()
 
         return profile
 
@@ -2678,8 +2561,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
-        # set up storage profile
-        mc = self.set_up_storage_profile(mc)
         # set up ingress web app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up workload auto scaler profile
@@ -3291,8 +3172,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_restriction(mc)
         # update image cleaner
         mc = self.update_image_cleaner(mc)
-        # update stroage profile
-        mc = self.update_storage_profile(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
         # update azure monitor metrics profile
