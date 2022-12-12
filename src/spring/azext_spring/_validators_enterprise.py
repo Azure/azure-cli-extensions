@@ -53,7 +53,7 @@ def validate_build_env(cmd, namespace):
                             result = {comps[0]: comps[1]}
                             env_dict.update(result)
                         else:
-                            raise ArgumentUsageError("The env name {} is not allowed, the valid env name should follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'.".format(comps[0]))
+                            raise ArgumentUsageError("The env name {} is not allowed. The valid env name should follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'(For example, BP_JVM_VERSION).".format(comps[0]))
             namespace.build_env = env_dict
 
 

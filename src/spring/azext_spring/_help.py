@@ -257,6 +257,8 @@ helps['spring app deploy'] = """
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
     - name: Deploy with Application Configuration Service config file patterns to an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --artifact-path app.jar
+    - name: Deploy a pre-built jar to an app with build env(For Enterprise tier only).
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --build-env BP_JVM_VERSION=11.*
 """
 
 helps['spring app scale'] = """
