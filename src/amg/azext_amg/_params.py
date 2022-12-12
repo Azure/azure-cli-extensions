@@ -35,12 +35,13 @@ def load_arguments(self, _):
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
         c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logon user as Grafana Admin")
 
-    # api_key=None, deterministic_outbound_ip=None, public_network_access=None
     with self.argument_context("grafana update") as c:
         c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
                    help="If enabled, you will be able to configur Grafana api keys and service accounts")
         c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
                    help="if enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
+        c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
+                   help="allow public network access")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
