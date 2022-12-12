@@ -36,6 +36,10 @@ helps['grafana show'] = """
 helps['grafana update'] = """
     type: command
     short-summary: Update a Azure Managed Grafana instance.
+    examples:
+        - name: disable the public network access
+          text: |
+           az grafana update -g MyResourceGroup -n MyGrafana --public-network-access disabled
 """
 
 helps['grafana data-source'] = """
