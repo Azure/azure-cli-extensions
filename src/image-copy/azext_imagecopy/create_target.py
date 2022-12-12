@@ -18,7 +18,7 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
-def create_target_image(cmd, location, transient_resource_group_name, source_type, source_object_name,
+def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
                         export_as_snapshot, timeout, hyper_v_generation='V1', only_show_errors=None):
@@ -118,8 +118,7 @@ def create_target_image(cmd, location, transient_resource_group_name, source_typ
     else:
         snapshot_resource_group_name = transient_resource_group_name
 
-    source_storage_account_id = get_storage_account_id_from_blob_path(cmd,
-                                                                      target_blob_path,
+    source_storage_account_id = get_storage_account_id_from_blob_path(target_blob_path,
                                                                       transient_resource_group_name,
                                                                       target_subscription)
 

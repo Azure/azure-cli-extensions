@@ -33,6 +33,10 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
             raise CLIError('Don\'t specify an existing resource group in --temporary-resource-group-name '
                            'when --cleanup is set')
 
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    target_subscription = get_subscription_id(cmd.cli_ctx)
+    logger.debug('subscription id - %s', target_subscription)
+
     # get the os disk id from source vm/image
     logger.warning("Getting OS disk ID of the source VM/image")
     cli_cmd = prepare_cli_command([source_type, 'show',
@@ -90,9 +94,9 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
     snapshot_location = json_cmd_output['location']
     hyper_v_generation = json_cmd_output['hyperVGeneration']
     if source_os_disk_type == "BLOB":
-        source_storage_account_id = get_storage_account_id_from_blob_path(cmd,
-                                                                          source_os_disk_id,
-                                                                          source_resource_group_name)
+        source_storage_account_id = get_storage_account_id_from_blob_path(source_os_disk_id,
+                                                                          source_resource_group_name,
+                                                                          target_subscription)
         cli_cmd = prepare_cli_command(['snapshot', 'create',
                                        '--name', source_os_disk_snapshot_name,
                                        '--location', snapshot_location,
@@ -164,11 +168,11 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
             logger.debug("Starting sync process for all locations")
             for location in target_location:
                 location = location.strip()
-                create_target_image(cmd, location, transient_resource_group_name, source_type,
+                create_target_image(location, transient_resource_group_name, source_type,
                                     source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                                     source_os_type, target_resource_group_name, azure_pool_frequency,
                                     tags, target_name, target_subscription, export_as_snapshot, timeout,
-                                    hyper_v_generation, only_show_errors=only_show_errors)
+                                    hyper_v_generation, only_show_errors)
         else:
             if parallel_degree == -1:
                 pool = Pool(target_locations_count)
@@ -178,8 +182,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
             tasks = []
             for location in target_location:
                 location = location.strip()
-                # '' is used as placeholder
-                tasks.append(('', location, transient_resource_group_name, source_type,
+                tasks.append((location, transient_resource_group_name, source_type,
                               source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                               source_os_type, target_resource_group_name, azure_pool_frequency,
                               tags, target_name, target_subscription, export_as_snapshot, timeout,
