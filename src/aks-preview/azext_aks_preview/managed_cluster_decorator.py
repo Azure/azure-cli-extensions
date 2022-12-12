@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from base64 import b64encode
 from types import SimpleNamespace
 from typing import Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -41,6 +42,7 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
+from azure.cli.core.util import read_file_content
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
@@ -1979,6 +1981,31 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_keda(enable_validation=True)
 
+    def get_custom_ca_trust_certificates(self) -> Union[List[bytes], None]:
+        """Obtain the value of custom ca trust certificates.
+
+        :return: List[str] or None
+        """
+        custom_ca_certs_file_path = self.raw_param.get("custom_ca_trust_certificates")
+        if not custom_ca_certs_file_path:
+            return None
+        if not os.path.isfile(custom_ca_certs_file_path):
+            raise InvalidArgumentValueError(
+                "{} is not valid file, or not accessible.".format(
+                    custom_ca_certs_file_path
+                )
+            )
+        # CAs are supposed to be separated with a new line, we filter out empty strings (e.g. some stray new line). We only allow up to 10 CAs
+        file_content = read_file_content(custom_ca_certs_file_path).split(os.linesep + os.linesep)
+        certs = [str.encode(x) for x in file_content if len(x) > 1]
+        if len(certs) > 10:
+            raise InvalidArgumentValueError(
+                "Only up to 10 new-line separated CAs can be passed, got {} instead.".format(
+                    len(certs)
+                )
+            )
+        return certs
+
     def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
         """Obtain the value of defender.
 
@@ -2559,6 +2586,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_custom_ca_trust_certificates(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up Custom CA Trust Certificates for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        ca_certs = self.context.get_custom_ca_trust_certificates()
+        if ca_certs:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+            mc.security_profile.custom_ca_trust_certificates = ca_certs
+
+        return mc
+
     def set_up_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile nodeRestriction for the ManagedCluster object.
 
@@ -2645,6 +2688,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_vpa(mc)
         # set up kube-proxy config
         mc = self.set_up_kube_proxy_config(mc)
+        # set up custom ca trust certificates
+        mc = self.set_up_custom_ca_trust_certificates(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3069,6 +3114,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_custom_ca_trust_certificates(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update Custom CA Trust Certificates for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        ca_certs = self.context.get_custom_ca_trust_certificates()
+        if ca_certs:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+            mc.security_profile.custom_ca_trust_certificates = ca_certs
+
+        return mc
+
     def update_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure monitor profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -3246,5 +3307,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_outbound_type_in_network_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
+        # update custom ca trust certificates
+        mc = self.update_custom_ca_trust_certificates(mc)
 
         return mc

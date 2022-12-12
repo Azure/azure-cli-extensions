@@ -680,6 +680,7 @@ def aks_create(
     enable_node_restriction=False,
     enable_vpa=False,
     enable_cilium_dataplane=False,
+    custom_ca_trust_certificates=None,
     # nodepool
     host_group_id=None,
     crg_id=None,
@@ -819,6 +820,7 @@ def aks_update(
     disable_vpa=False,
     cluster_snapshot_id=None,
     ssh_key_value=None,
+    custom_ca_trust_certificates=None
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
