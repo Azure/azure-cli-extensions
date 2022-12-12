@@ -97,23 +97,21 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
         source_storage_account_id = get_storage_account_id_from_blob_path(source_os_disk_id,
                                                                           source_resource_group_name,
                                                                           target_subscription)
-        cli_cmd = prepare_cli_command(['snapshot', 'create',
-                                       '--name', source_os_disk_snapshot_name,
-                                       '--location', snapshot_location,
-                                       '--resource-group', source_resource_group_name,
-                                       '--source', source_os_disk_id,
-                                       '--source-storage-account-id', source_storage_account_id,
-                                       '--hyper-v-generation', hyper_v_generation],
-                                      only_show_errors=only_show_errors)
+        cmd_content = ['snapshot', 'create',
+                       '--name', source_os_disk_snapshot_name,
+                       '--location', snapshot_location,
+                       '--resource-group', source_resource_group_name,
+                       '--source', source_os_disk_id,
+                       '--source-storage-account-id', source_storage_account_id]
     else:
-        cli_cmd = prepare_cli_command(['snapshot', 'create',
-                                       '--name', source_os_disk_snapshot_name,
-                                       '--location', snapshot_location,
-                                       '--resource-group', source_resource_group_name,
-                                       '--source', source_os_disk_id,
-                                       '--hyper-v-generation', hyper_v_generation],
-                                      only_show_errors=only_show_errors)
-
+        cmd_content = ['snapshot', 'create',
+                       '--name', source_os_disk_snapshot_name,
+                       '--location', snapshot_location,
+                       '--resource-group', source_resource_group_name,
+                       '--source', source_os_disk_id]
+    if hyper_v_generation:
+        cmd_content = cmd_content + ['--hyper-v-generation', hyper_v_generation]
+    cli_cmd = prepare_cli_command(cmd_content, only_show_errors=only_show_errors)
     run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
@@ -172,7 +170,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                     source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                                     source_os_type, target_resource_group_name, azure_pool_frequency,
                                     tags, target_name, target_subscription, export_as_snapshot, timeout,
-                                    hyper_v_generation, only_show_errors)
+                                    only_show_errors, hyper_v_generation)
         else:
             if parallel_degree == -1:
                 pool = Pool(target_locations_count)
@@ -182,11 +180,13 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
             tasks = []
             for location in target_location:
                 location = location.strip()
-                tasks.append((location, transient_resource_group_name, source_type,
-                              source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
-                              source_os_type, target_resource_group_name, azure_pool_frequency,
-                              tags, target_name, target_subscription, export_as_snapshot, timeout,
-                              hyper_v_generation, only_show_errors))
+                task_content = (location, transient_resource_group_name, source_type,
+                                source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
+                                source_os_type, target_resource_group_name, azure_pool_frequency,
+                                tags, target_name, target_subscription, export_as_snapshot, timeout, only_show_errors)
+                if hyper_v_generation:
+                    task_content = task_content + tuple(hyper_v_generation)
+                tasks.append(task_content)
 
             logger.warning("Starting async process for all locations")
 

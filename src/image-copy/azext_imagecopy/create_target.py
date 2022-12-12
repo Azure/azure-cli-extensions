@@ -21,7 +21,7 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
-                        export_as_snapshot, timeout, hyper_v_generation='V1', only_show_errors=None):
+                        export_as_snapshot, timeout, only_show_errors=None, hyper_v_generation='V1'):
 
     random_string = get_random_string(
         STORAGE_ACCOUNT_NAME_LENGTH - len(location))
@@ -122,15 +122,14 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                                                       transient_resource_group_name,
                                                                       target_subscription)
 
-    cli_cmd = prepare_cli_command(['snapshot', 'create',
-                                   '--resource-group', snapshot_resource_group_name,
-                                   '--name', target_snapshot_name,
-                                   '--location', location,
-                                   '--source', target_blob_path,
-                                   '--source-storage-account-id', source_storage_account_id,
-                                   '--hyper-v-generation', hyper_v_generation],
-                                  subscription=target_subscription,
-                                  only_show_errors=only_show_errors)
+    cmd_content = ['snapshot', 'create',
+                   '--resource-group', snapshot_resource_group_name,
+                   '--name', target_snapshot_name,
+                   '--location', location,
+                   '--source', target_blob_path,
+                   '--source-storage-account-id', source_storage_account_id,
+                   '--hyper-v-generation', hyper_v_generation]
+    cli_cmd = prepare_cli_command(cmd_content, subscription=target_subscription, only_show_errors=only_show_errors)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
@@ -148,13 +147,14 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         else:
             target_image_name = target_name
 
-        cli_cmd = prepare_cli_command(['image', 'create',
-                                       '--resource-group', target_resource_group_name,
-                                       '--name', target_image_name,
-                                       '--location', location,
-                                       '--os-type', source_os_type,
-                                       '--source', target_snapshot_id,
-                                       '--hyper-v-generation', hyper_v_generation],
+        cmd_content = ['image', 'create',
+                       '--resource-group', target_resource_group_name,
+                       '--name', target_image_name,
+                       '--location', location,
+                       '--os-type', source_os_type,
+                       '--source', target_snapshot_id,
+                       '--hyper-v-generation', hyper_v_generation]
+        cli_cmd = prepare_cli_command(cmd_content,
                                       tags=tags,
                                       subscription=target_subscription,
                                       only_show_errors=only_show_errors)
