@@ -1,5 +1,9 @@
 Release History
 ===============
+1.4.2
+---
+* Fix the missing echo in `bash` after exiting from `az spring app connect`.
+
 1.4.1
 ---
 * Fix enabling dev tool failed when creating Azure Spring Apps Enterprise in command `az spring create --sku Enterprise --enable-application-live-view --enable-application-accelerator`.
