@@ -5,7 +5,10 @@ Release History
 0.9.0
 +++++
 * Upgrade API version from 2021-04-01-preview to 2022-04-01-preview
-* az databricks access-connector: support access connector operations
+* az databricks access-connector: Support create/update/list/show/delete access connector.
+* az databricks workspace private-endpoint-connection: Support create/update/list/show/delete private endpoint connection.
+* az databricks workspace private-link-resource: Support list/show private link resource.
+* az databricks workspace outbound-endpoint: Support list outbound endpoint.
 
 0.8.0
 +++++

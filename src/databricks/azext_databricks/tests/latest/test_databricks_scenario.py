@@ -192,6 +192,116 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {access_connector_name} ',
                  checks=[])
 
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_v2', location="eastus2euap")
+    def test_databricks_v2(self, resource_group):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='wn', length=12),
+            'status': 'Rejected',
+            'description': 'Rejected by databricksadmin@contoso.com',
+            'loc': 'eastus2euap',
+            'vnet_name': self.create_random_name(prefix='vnet', length=12),
+            'peering_name': self.create_random_name(prefix='peering', length=12),
+            'subnet_name': self.create_random_name(prefix='subnet', length=12),
+            'npe_name': self.create_random_name(prefix='npe', length=12),
+            'nsg_name': self.create_random_name(prefix='nsg', length=12),
+        })
+        self.cmd('az network nsg create -g {rg} -n {nsg_name}')
+
+        vnet = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc} --nsg {nsg_name}', checks=[
+            self.check('newVNet.location', '{loc}'),
+            self.check('newVNet.name', '{vnet_name}'),
+            self.check('newVNet.provisioningState', 'Succeeded')
+        ]).get_output_in_json()
+        self.kwargs['vnet_id'] = vnet['newVNet']['id']
+
+        self.cmd('az network vnet subnet create -g {rg} '
+                 '--vnet-name {vnet_name} '
+                 '-n private-subnet '
+                 '--address-prefixes 10.0.1.0/24 '
+                 '--disable-private-endpoint-network-policies false '
+                 '--nsg {nsg_name} '
+                 '--delegations "Microsoft.Databricks/workspaces"')
+
+        self.cmd('az network vnet subnet create -g {rg} '
+                 '--vnet-name {vnet_name} -n public-subnet '
+                 '--address-prefixes 10.0.64.0/24 '
+                 '--disable-private-endpoint-network-policies false '
+                 '--nsg {nsg_name} '
+                 '--delegations "Microsoft.Databricks/workspaces"')
+
+        self.cmd('az network vnet subnet create -g {rg} '
+                 '-n {subnet_name} '
+                 '--vnet-name {vnet_name} '
+                 '--disable-private-endpoint-network-policies true '
+                 '--address-prefixes 10.0.32.0/24 '
+                 '--nsg {nsg_name}')
+
+        databricks_workspace = self.cmd('az databricks workspace create -g {rg} '
+                                        '-l {loc} '
+                                        '-n {workspace_name} '
+                                        '--private-subnet private-subnet '
+                                        '--public-subnet public-subnet '
+                                        '--vnet {vnet_id} --sku premium',
+                                        checks=[self.check('location', '{loc}'),
+                                                self.check('name', '{workspace_name}'),
+                                                self.check('provisioningState', 'Succeeded')]).get_output_in_json()
+
+        plr = self.cmd('az databricks workspace private-link-resource list -g {rg} --workspace-name {workspace_name}',
+                       checks=self.check('length(@)', 2)).get_output_in_json()
+
+        self.kwargs['group_id'] = plr[0]['properties']['groupId']
+        self.kwargs['dw_id'] = databricks_workspace['id']
+
+        self.cmd('az databricks workspace private-link-resource show -g {rg} '
+                 '--workspace-name {workspace_name} '
+                 '-n {group_id}',
+                 checks=self.check('name', '{group_id}'))
+
+        self.cmd('az network private-endpoint create -g {rg} '
+                 '-n {npe_name} '
+                 '--vnet-name {vnet_name} '
+                 '--subnet {subnet_name} '
+                 '--private-connection-resource-id "{dw_id}" '
+                 '--connection-name {npe_name} '
+                 '--group-id databricks_ui_api '
+                 '-l {loc}',
+                 checks=self.check('name', '{npe_name}'))
+
+        self.cmd('az databricks workspace private-endpoint-connection create -g {rg} '
+                 '--workspace-name {workspace_name} '
+                 '-n {npe_name} '
+                 '--status {status} '
+                 '--description "{description}"',
+                 checks=[self.check('name', '{npe_name}'),
+                         self.check('properties.privateLinkServiceConnectionState.status', '{status}'),
+                         self.check('properties.privateLinkServiceConnectionState.description', '{description}'),
+                         self.check('properties.provisioningState', "Succeeded"),
+                         self.check('type', "Microsoft.Databricks/workspaces/privateEndpointConnections")])
+
+        self.cmd('az databricks workspace private-endpoint-connection list -g {rg} '
+                 '--workspace-name {workspace_name} ',
+                 checks=[self.check('length(@)', 1)])
+
+        self.cmd('az databricks workspace private-endpoint-connection show -g {rg} '
+                 '--workspace-name {workspace_name} '
+                 '-n {npe_name}',
+                 checks=[self.check('name', '{npe_name}')])
+
+        self.cmd('az databricks workspace private-endpoint-connection delete -g {rg} '
+                 '--workspace-name {workspace_name} '
+                 '-n {npe_name}',
+                 checks=[])
+
+        self.cmd('az databricks workspace outbound-endpoint list -g {rg} --workspace-name {workspace_name}',
+                 checks=self.check('type(@)', 'array'))
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
 
 class DatabricksVNetPeeringScenarioTest(ScenarioTest):
 
