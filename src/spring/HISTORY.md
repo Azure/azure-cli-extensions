@@ -1,5 +1,9 @@
 Release History
 ===============
+1.5.0
+---
+* Add the validator for `--build-env`.
+
 1.4.2
 ---
 * Fix the missing echo in `bash` after exiting from `az spring app connect`.
