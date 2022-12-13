@@ -1609,7 +1609,7 @@ def enable_guest_agent(
     vm_client = cf_virtual_machine(cmd.cli_ctx)
 
     if is_system_identity_enabled(vm_client, resource_group_name, vm_name) is False:
-        _ = enable_system_identity(vm_client, resource_group_name, vm_name, False).result()
+        enable_system_identity(vm_client, resource_group_name, vm_name, False).result()
 
     vm_creds = GuestCredential(username=username, password=password)
 
