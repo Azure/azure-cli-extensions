@@ -6,6 +6,7 @@
 # pylint: disable=unused-argument
 
 from azure.cli.core.util import user_confirmation
+from azure.cli.core.azclierror import ArgumentUsageError
 
 from ..vendored_sdks.models import Extension
 from ..vendored_sdks.models import PatchExtension
@@ -38,7 +39,9 @@ class DefaultExtension(PartnerExtensionModel):
         configuration_protected_settings,
         configuration_settings_file,
         configuration_protected_settings_file,
-        plan_info
+        plan_name,
+        plan_publisher,
+        plan_product
     ):
         """Default validations & defaults for Create
         Must create and return a valid 'Extension' object.
@@ -53,13 +56,20 @@ class DefaultExtension(PartnerExtensionModel):
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
         plan = None
-        if plan_info is not None and len(plan_info) > 0: 
-            plan_props = plan_info[0]
+        if plan_name is not None or plan_product is not None or plan_publisher is not None:
+            if plan_name is None:
+                raise ArgumentUsageError(f'Usage error: Missing required plan info property: {plan_name}')
+            if plan_product is None:
+                raise ArgumentUsageError(f'Usage error: Missing required plan info property: {plan_product}')
+            if plan_publisher is None:
+                raise ArgumentUsageError(f'Usage error: Missing required plan info property: {plan_publisher}')
+
             plan = Plan(
-            name= plan_props['name'], 
-            publisher = plan_props['publisher'], 
-            product= plan_props['product'])
-        
+                name=plan_name,
+                publisher=plan_publisher,
+                product=plan_product
+            )
+
         create_identity = True
         extension = Extension(
             extension_type=extension_type,

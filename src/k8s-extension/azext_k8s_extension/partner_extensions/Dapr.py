@@ -108,7 +108,8 @@ class Dapr(DefaultExtension):
                cluster_rp: str, extension_type: str, scope: str, auto_upgrade_minor_version: bool,
                release_train: str, version: str, target_namespace: str, release_namespace: str,
                configuration_settings: dict, configuration_protected_settings: dict,
-               configuration_settings_file: str, configuration_protected_settings_file: str):
+               configuration_settings_file: str, configuration_protected_settings_file: str,
+               plan_name: str, plan_publisher: str, plan_product: str):
         """ExtensionType 'Microsoft.Dapr' specific validations & defaults for Create
            Must create and return a valid 'ExtensionInstance' object.
         """

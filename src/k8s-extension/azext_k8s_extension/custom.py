@@ -109,7 +109,9 @@ def create_k8s_extension(
     configuration_settings_file=None,
     configuration_protected_settings_file=None,
     no_wait=False,
-    plan_info=None
+    plan_name=None,
+    plan_publisher=None,
+    plan_product=None
 ):
     """Create a new Extension Instance."""
 
@@ -183,7 +185,9 @@ def create_k8s_extension(
         config_protected_settings,
         configuration_settings_file,
         configuration_protected_settings_file,
-        plan_info
+        plan_name,
+        plan_publisher,
+        plan_product
     )
 
     # Common validations

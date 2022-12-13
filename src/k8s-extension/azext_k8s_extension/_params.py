@@ -13,7 +13,6 @@ from . import consts
 from .action import (
     AddConfigurationSettings,
     AddConfigurationProtectedSettings,
-    AddPlanInfo
 )
 
 
@@ -53,36 +52,41 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config-settings', '--config'],
+                   options_list=['--configuration-settings', '--config'],
                    action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings', '--config-protected-settings', '--config-protected'],
+                   options_list=['--config-protected-settings', '--config-protected'],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings-file', '--config-settings-file', '--config-file'],
+                   options_list=['--config-settings-file', '--config-file'],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings-file', '--config-protected-settings-file', '--config-protected-file'],
+                   options_list=['--config-protected-file', '--protected-settings-file'],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
-        c.argument('plan_info',
-                   arg_group="Plan",
-                   options_list=['--plan-info', '--plan'],
-                   action=AddPlanInfo,
-                   nargs='+',
-                   help='Plan info for marketplace extension as a key=value pair. Provide name, publisher and product as a part of the plan info')           
-
+        c.argument('plan_name',
+                   arg_group="Marketplace",
+                   options_list=['--plan-name'],
+                   help='Name of the 3rd Party Artifact that is being procured.')
+        c.argument('plan_product',
+                   arg_group="Marketplace",
+                   options_list=['--plan-product'],
+                   help='The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the OfferID specified for the artifact at the time of Data Market onboarding.')
+        c.argument('plan_publisher',
+                   arg_group="Marketplace",
+                   options_list=['--plan-publisher'],
+                   help='The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic')
     with self.argument_context(f"{consts.EXTENSION_NAME} update") as c:
         c.argument('yes',
                    options_list=['--yes', '-y'],

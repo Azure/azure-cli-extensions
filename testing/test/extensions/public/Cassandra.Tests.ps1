@@ -1,6 +1,6 @@
 Describe 'Cassandra Testing' {
     BeforeAll {
-        $extensionType = "cassandradatacentersoperator"
+        $extensionType = "microsoft.contoso.clusters"
         $extensionName = "cassandra"
         
         . $PSScriptRoot/../../helper/Constants.ps1
@@ -32,10 +32,10 @@ Describe 'Cassandra Testing' {
             if ((Has-ExtensionData $extensionName) -And ($provisioningState -eq "Succeeded")) {
                 break
             }
-            Start-Sleep -Seconds 10
+            Start-Sleep -Seconds 40
             $n += 1
-        } while ($n -le 20)
-        $n | Should -BeLessOrEqual 20
+        } while ($n -le $MAX_RETRY_ATTEMPTS)
+        $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
     }
 
     It "Performs a show on the extension" {

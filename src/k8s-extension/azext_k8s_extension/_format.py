@@ -28,7 +28,7 @@ def __get_table_row(result):
         ('lastModifiedAt', result.get('systemData', {}).get('lastModifiedAt', '')),
         ('plan_name', plan_name),
         {'plan_publisher', plan_publisher},
-        ('plan_product',plan_product),
+        ('plan_product', plan_product),
         ('isSystemExtension', result.get('isSystemExtension', '')),
     ])
 
