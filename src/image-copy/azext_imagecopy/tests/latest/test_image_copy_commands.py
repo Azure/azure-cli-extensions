@@ -35,6 +35,7 @@ class ImageCopyTests(ScenarioTest):
             self.check('hyperVGeneration', '{hyperVGeneration}'),
         ])
 
+    # the recoding file does not contain the image copy command, so that this test have to be run in live mode
     @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_image_copy_loc_', location='westus')
     def test_image_copy_locations(self, resource_group):
