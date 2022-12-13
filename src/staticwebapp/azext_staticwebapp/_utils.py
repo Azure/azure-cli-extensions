@@ -103,7 +103,7 @@ class AbstractDbHandler:
 
         parsed_rid = cls._parse_resource_id(resource_id)
         unneeded_props = {"child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"}
-        server_rid_parts = dict()
+        server_rid_parts = {}
         for k in parsed_rid:
             if k not in unneeded_props:
                 server_rid_parts[k] = parsed_rid[k]
@@ -291,6 +291,7 @@ class PgSqlFlexHandler(AbstractDbHandler):
                 f"User Id={username};Password={password};Ssl Mode=Require;")
 
 
+# pylint: disable=line-too-long
 RESOURCE_ID_TO_DB_HANDLER = {
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DocumentDB/databaseAccounts\/.*$": CosmosDbHandler,
     r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.Sql\/servers\/.*\/databases\/.*$": AzureSqlHandler,
