@@ -371,7 +371,7 @@ class SerialConsole:
             chars_copy = chars.copy()
             chars_copy[indx] = "\u25A0"
             squares = " ".join(chars_copy)
-            # PC.clear_line()
+            PC.clear_line()
             PC.print("Connecting to console of VM   " +
                      squares, color=PrintClass.CYAN)
             PC.show_cursor()
