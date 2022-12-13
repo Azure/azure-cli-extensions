@@ -779,7 +779,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         timeout_for_crd_deletion = "20s"
         for crds in consts.CRD_FOR_FORCE_DELETE:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion), "--namespace", "{}".format(release_namespace)]
             if kube_config:
                 cmd_helm_delete.extend(["--kubeconfig", kube_config])
             if kube_context:
@@ -831,11 +831,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Loading config map
     api_instance = kube_client.CoreV1Api()
     try:
-        configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+        configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', release_namespace)
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in {} namespace: ".format(release_namespace),
+                                           message_for_not_found="The helm release 'azure-arc' is present but the {} namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -998,7 +998,10 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
 
+    least_privilege = False
+
     if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
         if auto_upgrade is True:
             raise InvalidArgumentValueError("Your cluster is running in least privileges mode. Autoupdates are not supported in this mode")
 
@@ -1315,7 +1318,7 @@ def validate_release_namespace(client, cluster_name, resource_group_name, kube_c
         # Loading config map
         api_instance = kube_client.CoreV1Api()
         try:
-            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', release_namespace)
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",

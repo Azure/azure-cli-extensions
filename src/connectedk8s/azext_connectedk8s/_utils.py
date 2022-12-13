@@ -137,7 +137,7 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
     # Setting uri
     get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
     if least_privilege:
-        release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'least-privilege-stable'
+        release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'preview'
     else:
         release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     if dp_endpoint_dogfood:
