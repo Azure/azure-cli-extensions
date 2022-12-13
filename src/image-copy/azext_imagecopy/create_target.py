@@ -21,7 +21,9 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
-                        export_as_snapshot, timeout, only_show_errors=None, hyper_v_generation='V1'):
+                        export_as_snapshot, timeout, hyper_v_generation, only_show_errors=None):
+
+    hyper_v_generation = 'V1' if hyper_v_generation is None else hyper_v_generation
 
     random_string = get_random_string(
         STORAGE_ACCOUNT_NAME_LENGTH - len(location))

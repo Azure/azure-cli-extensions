@@ -35,13 +35,15 @@ class ImageCopyTests(ScenarioTest):
             self.check('hyperVGeneration', '{hyperVGeneration}'),
         ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_image_copy_locations', location='westus')
-    def test_image_copy(self, resource_group):
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_image_copy_loc_', location='westus')
+    def test_image_copy_locations(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1',
             'image': 'image1',
-            'rg2': self.create_random_name(prefix='cli_test_image_copy_locations_', length=30),
-            'hyperVGeneration': 'V2'
+            'rg2': self.create_random_name(prefix='cli_test_image_copy_loc2_', length=30),
+            'loc1': 'southeastasia',
+            'loc2': 'australiaeast',
         })
 
         self.cmd('vm create -g {rg} -n {vm} --admin-username theuser --image centos --admin-password testPassword0 '
@@ -51,12 +53,11 @@ class ImageCopyTests(ScenarioTest):
         self.cmd('vm generalize -g {rg} -n {vm}')
         self.cmd('image create -g {rg} -n {image} --source {vm}')
 
-        self.cmd('image copy --source-object-name {image} --source-resource-group {rg} '
-                 '--target-location southeastasia australiaeast '
-                 '--target-resource-group {rg2} --target-name {image} --cleanup')
+        self.cmd('image copy --source-resource-group {rg} --source-object-name {image} --target-location '
+                 '{loc1} {loc2} --target-resource-group {rg2} --cleanup --only-show-errors')
 
-        self.kwargs['image_copied_loc1'] = self.kwargs['image'] + '-southeastasia'
-        self.kwargs['image_copied_loc2'] = self.kwargs['image'] + '-australiaeast'
+        self.kwargs['image_copied_loc1'] = self.kwargs['image'] + '-' + self.kwargs['loc1']
+        self.kwargs['image_copied_loc2'] = self.kwargs['image'] + '-' + self.kwargs['loc2']
         self.cmd('image show -g {rg2} -n {image_copied_loc1}', checks=[
             self.check('name', '{image_copied_loc1}')
         ])

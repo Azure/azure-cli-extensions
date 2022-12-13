@@ -5,6 +5,7 @@
 
 from knack.help_files import helps
 
+
 helps['image copy'] = """
     type: command
     short-summary: Copy a managed image (or vm) to other regions. It requires the source disk to be available.

@@ -170,7 +170,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                     source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                                     source_os_type, target_resource_group_name, azure_pool_frequency,
                                     tags, target_name, target_subscription, export_as_snapshot, timeout,
-                                    only_show_errors, hyper_v_generation)
+                                    hyper_v_generation, only_show_errors)
         else:
             if parallel_degree == -1:
                 pool = Pool(target_locations_count)
@@ -183,9 +183,8 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                 task_content = (location, transient_resource_group_name, source_type,
                                 source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                                 source_os_type, target_resource_group_name, azure_pool_frequency,
-                                tags, target_name, target_subscription, export_as_snapshot, timeout, only_show_errors)
-                if hyper_v_generation:
-                    task_content = task_content + tuple(hyper_v_generation)
+                                tags, target_name, target_subscription, export_as_snapshot, timeout,
+                                hyper_v_generation, only_show_errors)
                 tasks.append(task_content)
 
             logger.warning("Starting async process for all locations")

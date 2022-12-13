@@ -45,7 +45,7 @@ def run_cli_command(cmd, return_as_json=False):
         raise ex
     except Exception as ex:
         logger.error('command ended with an error: %s', cmd)
-        logger.error('output: %s', ex.output)
+        logger.error('args: %s', ex.args)
         raise ex
 
 
@@ -73,7 +73,7 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, 
                     full_cmd.append(k + '=' + v)
 
     # use --only-show-errors to run CLI commands if user specified
-    if only_show_errors is not None:
+    if only_show_errors:
         full_cmd += ['--only-show-errors']
 
     return full_cmd
@@ -81,7 +81,6 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, 
 
 def get_storage_account_id_from_blob_path(blob_path, resource_group, subscription_id):
     from msrestazure.tools import resource_id
-    from azure.cli.core.commands.client_factory import get_subscription_id
 
     logger.debug('Getting storage account id for blob: %s', blob_path)
 
