@@ -14,12 +14,12 @@ interactions:
       - --resource-group --name --enable-addons --dns-zone-resource-id --ssh-key-value
         -o
       User-Agent:
-      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Linux-5.15.0-1017-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.29)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-08-15T03:37:36Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-11-24T10:10:38Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 Aug 2022 03:37:36 GMT
+      - Thu, 24 Nov 2022 10:10:39 GMT
       expires:
       - '-1'
       pragma:
@@ -44,15 +44,15 @@ interactions:
       message: OK
 - request:
     body: '{"location": "westus2", "identity": {"type": "SystemAssigned"}, "properties":
-      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitestpi6ahf4wc-8ecadf",
+      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitestfu6kagedq-79a739",
       "agentPoolProfiles": [{"count": 3, "vmSize": "Standard_DS2_v2", "osDiskSizeGB":
       0, "workloadRuntime": "OCIContainer", "osType": "Linux", "enableAutoScaling":
       false, "type": "VirtualMachineScaleSets", "mode": "System", "orchestratorVersion":
       "", "upgradeSettings": {}, "enableNodePublicIP": false, "enableCustomCATrust":
       false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy": "Delete", "spotMaxPrice":
       -1.0, "nodeTaints": [], "enableEncryptionAtHost": false, "enableUltraSSD": false,
-      "enableFIPS": false, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
-      "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUHsDHdx1oB7ZkMbnYoj+Xx+quUZ5U+rQ40yBV1othkVFFJgtDwuaiu4lMlPeiB2H5Mu7lLbVhZPFTsgxIyGbH9CFz4QruDxt+uvQiI3oOGcnb/Nn4aQ/H+WAWRpvdQ4+LYqryMC9WwDrBNPdvs06/e0HRBaIbZ9ymBbsm+RHCh28Rh3S24gQkWDIsJ1PalDRPPruusx7H9V4yizE3YnHBkcErokWK4UQppAHFfye/dSay29eoOqt6T2Ww/Zls8YpUGNOx+YHBNs60Wp7a88DdRurKWD4076AoLGHROvDnyH5hMwmnCiS8/5fezboLRCWrpzrwuSriYdHQF2v/eSVr
+      "enableFIPS": false, "networkProfile": {}, "name": "nodepool1"}], "linuxProfile":
+      {"adminUsername": "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDgwJ1YLtrtaF7seObyf1xaMbixzWbi2HkGaOQ4C7BPyeho2pMacCkJ0qYZa0V+Muv+22BUMr0QNBnzuEYku5uM5AZW2j4fu/cRMp+1HtZHtbGRcHD2a4iMRMfUDXUCefmVhL9WzN3JUzc5sTu2HLEaAtEKAMbT/hOL75vaYug7WFsE7U7eia+E1LFMxXa+z5aKDPLYok4JduYqdALRqElogv8QekQLwjw1kt7IZY9z4krjo4FXPHd5RDIalO0mH4eNYhxbxW6r6M/OQsqxqUAOauFzF9QgU/gFMcIZC4eU2ZbQZMbMH/l+CMAwNK8ccxOEFLSmkZiPVvQ3l1ANjJeN
       azcli_aks_live_test@example.com\n"}]}}, "addonProfiles": {}, "enableRBAC": true,
       "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "kubenet",
       "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
@@ -69,17 +69,17 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1764'
+      - '1786'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --enable-addons --dns-zone-resource-id --ssh-key-value
         -o
       User-Agent:
-      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-containerservice/20.2.0b Python/3.8.10
-        (Linux-5.15.0-1017-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-containerservice/20.7.0b Python/3.8.10
+        (Linux-5.15.0-1023-azure-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2022-07-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2022-10-02-preview
   response:
     body:
       string: "{\n  \"code\": \"BadRequest\",\n  \"message\": \"The Azure DNS Zone
@@ -93,7 +93,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 15 Aug 2022 03:37:38 GMT
+      - Thu, 24 Nov 2022 10:10:43 GMT
       expires:
       - '-1'
       pragma:

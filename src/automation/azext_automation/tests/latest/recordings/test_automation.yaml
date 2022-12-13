@@ -11,8 +11,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2019-11-01
   response:
@@ -294,12 +293,6 @@ interactions:
         ,\"regionCategory\":\"Other\",\"geographyGroup\":\"Asia Pacific\",\"longitude\"\
         :\"70.05773\",\"latitude\":\"22.470701\",\"physicalLocation\":\"Jamnagar\"\
         ,\"pairedRegion\":[{\"name\":\"jioindiacentral\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/jioindiacentral\"\
-        }]}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/taiwannorth\"\
-        ,\"name\":\"taiwannorth\",\"displayName\":\"Taiwan North\",\"regionalDisplayName\"\
-        :\"(Asia Pacific) Taiwan North\",\"metadata\":{\"regionType\":\"Physical\"\
-        ,\"regionCategory\":\"Other\",\"geographyGroup\":\"Asia Pacific\",\"longitude\"\
-        :\"121.3662962\",\"latitude\":\"25.0174719\",\"physicalLocation\":\"Taiwan\
-        \ North\",\"pairedRegion\":[{\"name\":\"taiwannw\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/taiwannw\"\
         }]}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/centraluseuap\"\
         ,\"name\":\"centraluseuap\",\"displayName\":\"Central US EUAP\",\"regionalDisplayName\"\
         :\"(US) Central US EUAP\",\"metadata\":{\"regionType\":\"Physical\",\"regionCategory\"\
@@ -361,12 +354,6 @@ interactions:
         ,\"regionCategory\":\"Other\",\"geographyGroup\":\"Asia Pacific\",\"longitude\"\
         :\"80.1636\",\"latitude\":\"12.9822\",\"physicalLocation\":\"Chennai\",\"\
         pairedRegion\":[{\"name\":\"centralindia\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/centralindia\"\
-        }]}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/taiwannorthwest\"\
-        ,\"name\":\"taiwannorthwest\",\"displayName\":\"Taiwan Northwest\",\"regionalDisplayName\"\
-        :\"(Asia Pacific) Taiwan Northwest\",\"metadata\":{\"regionType\":\"Physical\"\
-        ,\"regionCategory\":\"Other\",\"geographyGroup\":\"Asia Pacific\",\"longitude\"\
-        :\"120.921008\",\"latitude\":\"24.7848456\",\"physicalLocation\":\"Taiwan\
-        \ Northwest\",\"pairedRegion\":[{\"name\":\"taiwann\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/taiwann\"\
         }]}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/locations/westindia\"\
         ,\"name\":\"westindia\",\"displayName\":\"West India\",\"regionalDisplayName\"\
         :\"(Asia Pacific) West India\",\"metadata\":{\"regionType\":\"Physical\",\"\
@@ -450,11 +437,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '33272'
+      - '32299'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:07 GMT
+      - Wed, 19 Oct 2022 08:11:51 GMT
       expires:
       - '-1'
       pragma:
@@ -487,44 +474,35 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2015-10-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2021-06-22
   response:
     body:
-      string: '{"name":"test-account-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://fd908d5d-3741-449e-895f-7e7f48b5c3fa.agentsvc.wus2.azure-automation.net/accounts/fd908d5d-3741-449e-895f-7e7f48b5c3fa","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-08-25T08:00:17.2766667+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-08-25T08:00:17.2766667+00:00"}}'
+      string: '{"name":"test-account-000002","systemData":{"createdAt":"2022-10-19T08:11:57.4033333+00:00","lastModifiedAt":"2022-10-19T08:11:57.4033333+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.agentsvc.wus2.azure-automation.net/accounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.jrds.wus2.azure-automation.net/automationAccounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-10-19T08:11:57.4033333+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-19T08:11:57.4033333+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '768'
+      - '1163'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:18 GMT
+      - Wed, 19 Oct 2022 08:11:59 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2015-10-31
-      ocp-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci?api-version=2015-10-31
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2021-06-22
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci?api-version=2015-10-31
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-      x-powered-by:
-      - ASP.NET
+      - '1195'
     status:
       code: 201
       message: Created
@@ -542,42 +520,37 @@ interactions:
       ParameterSetName:
       - --resource-group --name --tags
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2015-10-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2021-06-22
   response:
     body:
-      string: '{"name":"test-account-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://fd908d5d-3741-449e-895f-7e7f48b5c3fa.agentsvc.wus2.azure-automation.net/accounts/fd908d5d-3741-449e-895f-7e7f48b5c3fa","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-08-25T08:00:17.2766667+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-08-25T08:00:17.2766667+00:00"}}'
+      string: '{"name":"test-account-000002","systemData":{"createdAt":"2022-10-19T08:11:57.4033333+00:00","lastModifiedAt":"2022-10-19T08:11:57.4033333+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.agentsvc.wus2.azure-automation.net/accounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"privateEndpointConnections":[],"automationHybridServiceUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.jrds.wus2.azure-automation.net/automationAccounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-10-19T08:11:57.4033333+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-19T08:11:57.4033333+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '768'
+      - '1195'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:20 GMT
+      - Wed, 19 Oct 2022 08:12:00 GMT
       expires:
       - '-1'
       ocp-automation-accountid:
-      - fd908d5d-3741-449e-895f-7e7f48b5c3fa
+      - 0ff783fa-f9d8-49dd-9d0a-abd183083726
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -600,42 +573,37 @@ interactions:
       ParameterSetName:
       - --resource-group --name --tags
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2015-10-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2021-06-22
   response:
     body:
-      string: '{"name":"test-account-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{"A":"a"},"etag":null,"properties":{"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://fd908d5d-3741-449e-895f-7e7f48b5c3fa.agentsvc.wus2.azure-automation.net/accounts/fd908d5d-3741-449e-895f-7e7f48b5c3fa","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-08-25T08:00:17.2766667+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-08-25T08:00:22.7866667+00:00"}}'
+      string: '{"name":"test-account-000002","systemData":{"createdAt":"2022-10-19T08:11:57.4033333+00:00","lastModifiedAt":"2022-10-19T08:12:01.98+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{"A":"a"},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.agentsvc.wus2.azure-automation.net/accounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.jrds.wus2.azure-automation.net/automationAccounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-10-19T08:11:57.4033333+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-19T08:12:01.98+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '775'
+      - '1160'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:26 GMT
+      - Wed, 19 Oct 2022 08:12:03 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-      x-powered-by:
-      - ASP.NET
+      - '1197'
     status:
       code: 200
       message: OK
@@ -653,42 +621,37 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2015-10-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2021-06-22
   response:
     body:
-      string: '{"name":"test-account-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{"A":"a"},"etag":null,"properties":{"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://fd908d5d-3741-449e-895f-7e7f48b5c3fa.agentsvc.wus2.azure-automation.net/accounts/fd908d5d-3741-449e-895f-7e7f48b5c3fa","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-08-25T08:00:17.2766667+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-08-25T08:00:22.7866667+00:00"}}'
+      string: '{"name":"test-account-000002","systemData":{"createdAt":"2022-10-19T08:11:57.4033333+00:00","lastModifiedAt":"2022-10-19T08:12:01.98+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{"A":"a"},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.agentsvc.wus2.azure-automation.net/accounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"privateEndpointConnections":[],"automationHybridServiceUrl":"https://0ff783fa-f9d8-49dd-9d0a-abd183083726.jrds.wus2.azure-automation.net/automationAccounts/0ff783fa-f9d8-49dd-9d0a-abd183083726","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}}},"creationTime":"2022-10-19T08:11:57.4033333+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-19T08:12:01.98+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '775'
+      - '1192'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:28 GMT
+      - Wed, 19 Oct 2022 08:12:04 GMT
       expires:
       - '-1'
       ocp-automation-accountid:
-      - fd908d5d-3741-449e-895f-7e7f48b5c3fa
+      - 0ff783fa-f9d8-49dd-9d0a-abd183083726
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -706,40 +669,35 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts?api-version=2015-10-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts?api-version=2021-06-22
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","location":"westus2","name":"test-account-000002","type":"Microsoft.Automation/AutomationAccounts","tags":{"A":"a"},"properties":{"creationTime":"2022-08-25T08:00:17.2766667+00:00","lastModifiedTime":"2022-08-25T08:00:22.7866667+00:00","state":"Ok"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002","location":"westus2","name":"test-account-000002","type":"Microsoft.Automation/AutomationAccounts","tags":{"A":"a"},"properties":{"creationTime":"2022-10-19T08:11:57.4033333+00:00","lastModifiedTime":"2022-10-19T08:12:01.98+00:00","state":"Ok","disableLocalAuth":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '434'
+      - '454'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:30 GMT
+      - Wed, 19 Oct 2022 08:12:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -757,13 +715,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name --type
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_automation_000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001","name":"cli_test_automation_000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-08-25T07:59:59Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001","name":"cli_test_automation_000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-10-19T08:11:44Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -772,7 +729,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:29 GMT
+      - Wed, 19 Oct 2022 08:12:06 GMT
       expires:
       - '-1'
       pragma:
@@ -805,46 +762,37 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name --type
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003?api-version=2018-06-30
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003","name":"test-runbook-000003","type":"Microsoft.Automation/AutomationAccounts/Runbooks","location":"westus2","tags":{},"etag":"\"637970112386000000\"","properties":{"description":null,"logVerbose":false,"logProgress":false,"logActivityTrace":0,"runbookType":"PowerShell","parameters":{},"state":"New","jobCount":0,"provisioningState":"Succeeded","serviceManagementTags":null,"outputTypes":[],"creationTime":"2022-08-25T08:00:38.6+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-08-25T08:00:38.6+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003","name":"test-runbook-000003","type":"Microsoft.Automation/AutomationAccounts/Runbooks","location":"westus2","tags":{},"etag":"\"638017639321533333\"","properties":{"description":null,"logVerbose":false,"logProgress":false,"logActivityTrace":0,"runbookType":"PowerShell","parameters":{},"state":"New","jobCount":0,"provisioningState":"Succeeded","serviceManagementTags":null,"outputTypes":[],"creationTime":"2022-10-19T08:12:12.1533333+00:00","lastModifiedBy":null,"lastModifiedTime":"2022-10-19T08:12:12.1533333+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '709'
+      - '721'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:38 GMT
+      - Wed, 19 Oct 2022 08:12:12 GMT
       etag:
-      - '"637970112386000000"'
+      - '"638017639321533333"'
       expires:
       - '-1'
       location:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003?api-version=2018-06-30
-      ocp-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/runbooks/test-runbook-67vl5xncdks?api-version=2018-06-30
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/runbooks/test-runbook-67vl5xncdks?api-version=2018-06-30
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 201
       message: Created
@@ -868,49 +816,44 @@ interactions:
       - --resource-group --automation-account-name --name --log-activity-trace --log-verbose
         --log-progress
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003?api-version=2018-06-30
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003","name":"test-runbook-000003","type":"Microsoft.Automation/AutomationAccounts/Runbooks","location":"westus2","tags":{},"etag":"\"637970112406066667\"","properties":{"description":null,"logVerbose":true,"logProgress":true,"logActivityTrace":1,"runbookType":"PowerShell","parameters":{},"state":"New","jobCount":0,"provisioningState":"Succeeded","serviceManagementTags":null,"outputTypes":[],"creationTime":"2022-08-25T08:00:38.6+00:00","lastModifiedBy":"{scrubbed}","lastModifiedTime":"2022-08-25T08:00:40.6066667+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003","name":"test-runbook-000003","type":"Microsoft.Automation/AutomationAccounts/Runbooks","location":"westus2","tags":{},"etag":"\"638017639348900000\"","properties":{"description":null,"logVerbose":true,"logProgress":true,"logActivityTrace":1,"runbookType":"PowerShell","parameters":{},"state":"New","jobCount":0,"provisioningState":"Succeeded","serviceManagementTags":null,"outputTypes":[],"creationTime":"2022-10-19T08:12:12.1533333+00:00","lastModifiedBy":"{scrubbed}","lastModifiedTime":"2022-10-19T08:12:14.89+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '721'
+      - '722'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:39 GMT
+      - Wed, 19 Oct 2022 08:12:14 GMT
       etag:
-      - '"637970112406066667"'
+      - '"638017639348900000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '@C:UserskrmanupaAppDataLocalTempPowerShell.ps'
+    body: '@C:UserssupadhyayAppDataLocalTempPowerShell.ps'
     headers:
       Accept:
       - application/json
@@ -921,14 +864,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '45'
+      - '46'
       Content-Type:
       - text/powershell
       ParameterSetName:
       - --resource-group --automation-account-name --name --content
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/draft/content?api-version=2018-06-30
   response:
@@ -940,32 +882,24 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 25 Aug 2022 08:00:41 GMT
+      - Wed, 19 Oct 2022 08:12:15 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/036848c6-98dc-4026-97cb-82aaeb318ee7?api-version=2018-06-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/9822976c-fa29-4199-a837-8dcf4ebeb129?api-version=2018-06-30
       ocp-automation-operationresultid:
-      - 036848c6-98dc-4026-97cb-82aaeb318ee7
-      - 036848c6-98dc-4026-97cb-82aaeb318ee7
-      ocp-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/runbooks/test-runbook-67vl5xncdks/operationResults/036848c6-98dc-4026-97cb-82aaeb318ee7?api-version=2018-06-30
+      - 9822976c-fa29-4199-a837-8dcf4ebeb129
+      - 9822976c-fa29-4199-a837-8dcf4ebeb129
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/runbooks/test-runbook-67vl5xncdks/operationResults/036848c6-98dc-4026-97cb-82aaeb318ee7?api-version=2018-06-30
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
-      x-powered-by:
-      - ASP.NET
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -983,10 +917,9 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name --content
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/036848c6-98dc-4026-97cb-82aaeb318ee7?api-version=2018-06-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/9822976c-fa29-4199-a837-8dcf4ebeb129?api-version=2018-06-30
   response:
     body:
       string: ''
@@ -998,21 +931,17 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:50 GMT
+      - Wed, 19 Oct 2022 08:12:22 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1032,8 +961,7 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/publish?api-version=2018-06-30
   response:
@@ -1045,32 +973,24 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 25 Aug 2022 08:00:52 GMT
+      - Wed, 19 Oct 2022 08:12:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/4bb89dcc-711c-41be-a9bc-13690c062855?api-version=2018-06-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/d36523b8-0a10-483b-948b-86c157f24ee4?api-version=2018-06-30
       ocp-automation-operationresultid:
-      - 4bb89dcc-711c-41be-a9bc-13690c062855
-      - 4bb89dcc-711c-41be-a9bc-13690c062855
-      ocp-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/runbooks/test-runbook-67vl5xncdks/operationResults/4bb89dcc-711c-41be-a9bc-13690c062855?api-version=2018-06-30
+      - d36523b8-0a10-483b-948b-86c157f24ee4
+      - d36523b8-0a10-483b-948b-86c157f24ee4
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/runbooks/test-runbook-67vl5xncdks/operationResults/4bb89dcc-711c-41be-a9bc-13690c062855?api-version=2018-06-30
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1088,10 +1008,9 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/4bb89dcc-711c-41be-a9bc-13690c062855?api-version=2018-06-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/runbooks/test-runbook-000003/operationResults/d36523b8-0a10-483b-948b-86c157f24ee4?api-version=2018-06-30
   response:
     body:
       string: ''
@@ -1103,21 +1022,17 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:58 GMT
+      - Wed, 19 Oct 2022 08:12:30 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1139,12 +1054,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-02-22
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-08-08
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-08-25T08:00:59.5132162+00:00","lastModifiedAt":"2022-08-25T08:00:59.5132162+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-10-19T08:12:33.4464471+00:00","lastModifiedAt":"2022-10-19T08:12:33.4464471+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -1153,29 +1068,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:00:59 GMT
+      - Wed, 19 Oct 2022 08:12:33 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-02-22
-      ocp-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/hybridRunbookWorkerGroups/hwg-yxy4sg?api-version=2022-02-22
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-08-08
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/hybridRunbookWorkerGroups/hwg-yxy4sg?api-version=2022-02-22
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-      x-powered-by:
-      - ASP.NET
+      - '1199'
     status:
       code: 201
       message: Created
@@ -1197,12 +1104,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-02-22
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-08-08
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-08-25T08:00:59.5132162+00:00","lastModifiedAt":"2022-08-25T08:01:01.1538683+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-10-19T08:12:33.4464471+00:00","lastModifiedAt":"2022-10-19T08:12:35.2433953+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -1211,27 +1118,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:01 GMT
+      - Wed, 19 Oct 2022 08:12:35 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
-      x-powered-by:
-      - ASP.NET
+      - '1196'
     status:
       code: 200
       message: OK
@@ -1249,12 +1152,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-02-22
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-08-08
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-08-25T08:00:59.5132162+00:00","lastModifiedAt":"2022-08-25T08:01:01.1538683+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-10-19T08:12:33.4464471+00:00","lastModifiedAt":"2022-10-19T08:12:35.2433953+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -1263,25 +1166,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:02 GMT
+      - Wed, 19 Oct 2022 08:12:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1299,12 +1198,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups?api-version=2022-02-22
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups?api-version=2022-08-08
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-08-25T08:00:59.5132162+00:00","lastModifiedAt":"2022-08-25T08:01:01.1538683+00:00"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004","name":"hwg-000004","type":"Microsoft.Automation/AutomationAccounts/HybridRunbookWorkerGroups","properties":{"groupType":"User","credential":{"name":null},"hybridRunbookWorkers":null},"systemData":{"createdAt":"2022-10-19T08:12:33.4464471+00:00","lastModifiedAt":"2022-10-19T08:12:35.2433953+00:00"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -1313,25 +1212,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:02 GMT
+      - Wed, 19 Oct 2022 08:12:38 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1349,9 +1244,9 @@ interactions:
       ParameterSetName:
       - --automation-account-name --hybrid-runbook-worker-group-name -g
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004/hybridRunbookWorkers?api-version=2021-06-22
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004/hybridRunbookWorkers?api-version=2022-08-08
   response:
     body:
       string: '{"value":[]}'
@@ -1363,25 +1258,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:03 GMT
+      - Wed, 19 Oct 2022 08:12:41 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1401,9 +1292,9 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name --yes
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-02-22
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/hybridRunbookWorkerGroups/hwg-000004?api-version=2022-08-08
   response:
     body:
       string: ''
@@ -1413,23 +1304,307 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 25 Aug 2022 08:01:04 GMT
+      - Wed, 19 Oct 2022 08:12:42 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"contentLink": {"uri": "https://files.pythonhosted.org/packages/7f/e2/85dfb9f7364cbd7a9213caea0e91fc948da3c912a2b222a3e43bc9cc6432/requires.io-0.2.6-py2.py3-none-any.whl"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation python3-package create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '189'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --automation-account-name --name --content-link
+      User-Agent:
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005?api-version=2022-08-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005","name":"py3-package-000005","type":"Microsoft.Automation/AutomationAccounts/Python3Packages","location":"westus2","tags":{},"etag":null,"properties":{"isGlobal":false,"version":null,"sizeInBytes":0,"activityCount":0,"creationTime":"2022-10-19T08:12:44.83+00:00","lastModifiedTime":"2022-10-19T08:12:44.8866667+00:00","error":{"code":null,"message":null},"provisioningState":"Creating","isComposite":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Oct 2022 08:12:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005?api-version=2022-08-08
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation python3-package update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --automation-account-name --name --content-link
+      User-Agent:
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005?api-version=2022-08-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005","name":"py3-package-000005","type":"Microsoft.Automation/AutomationAccounts/Python3Packages","location":"westus2","tags":{},"etag":null,"properties":{"isGlobal":false,"version":null,"sizeInBytes":0,"activityCount":0,"creationTime":"2022-10-19T08:12:44.83+00:00","lastModifiedTime":"2022-10-19T08:12:44.8866667+00:00","error":{"code":null,"message":""},"provisioningState":"Creating","isComposite":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Oct 2022 08:12:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "properties": {"activityCount": 0, "contentLink":
+      {"uri": "https://files.pythonhosted.org/packages/7f/e2/85dfb9f7364cbd7a9213caea0e91fc948da3c912a2b222a3e43bc9cc6432/requires.io-0.2.6-py2.py3-none-any.whl"},
+      "creationTime": "2022-10-19T08:12:44.83+00:00", "error": {"message": ""}, "isComposite":
+      false, "isGlobal": false, "lastModifiedTime": "2022-10-19T08:12:44.8866667+00:00",
+      "provisioningState": "Creating", "sizeInBytes": 0}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation python3-package update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '467'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --automation-account-name --name --content-link
+      User-Agent:
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005?api-version=2022-08-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005","name":"py3-package-000005","type":"Microsoft.Automation/AutomationAccounts/Python3Packages","location":"westus2","tags":{},"etag":null,"properties":{"isGlobal":false,"version":null,"sizeInBytes":0,"activityCount":0,"creationTime":"2022-10-19T08:12:44.83+00:00","lastModifiedTime":"2022-10-19T08:12:47.3733333+00:00","error":{"code":null,"message":null},"provisioningState":"Creating","isComposite":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Oct 2022 08:12:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation python3-package show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --automation-account-name --name
+      User-Agent:
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005?api-version=2022-08-08
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005","name":"py3-package-000005","type":"Microsoft.Automation/AutomationAccounts/Python3Packages","location":"westus2","tags":{},"etag":null,"properties":{"isGlobal":false,"version":null,"sizeInBytes":0,"activityCount":0,"creationTime":"2022-10-19T08:12:44.83+00:00","lastModifiedTime":"2022-10-19T08:12:47.3733333+00:00","error":{"code":null,"message":""},"provisioningState":"Creating","isComposite":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '611'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Oct 2022 08:12:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation python3-package list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --automation-account-name
+      User-Agent:
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages?api-version=2022-08-08
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005","name":"py3-package-000005","properties":{"isGlobal":false,"version":null,"sizeInBytes":0,"activityCount":0,"creationTime":"2022-10-19T08:12:44.83+00:00","lastModifiedTime":"2022-10-19T08:12:47.3733333+00:00","provisioningState":"Creating","isComposite":false}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '480'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Oct 2022 08:12:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation python3-package delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --automation-account-name --name --yes
+      User-Agent:
+      - AZURECLI/2.41.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/python3Packages/py3-package-000005?api-version=2022-08-08
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 19 Oct 2022 08:12:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1451,44 +1626,35 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2017-05-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2019-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e","name":"ef6919bf-b827-4b18-8475-8d4a03a49d0e","type":"Microsoft.Automation/AutomationAccounts/Jobs","properties":{"jobId":"d44d22c2-f22f-4b3a-9cd8-fae716f99290","creationTime":"2022-08-25T08:01:06.12+00:00","provisioningState":"Processing","status":"New","statusDetails":"None","startedBy":null,"startTime":null,"endTime":null,"lastModifiedTime":"2022-08-25T08:01:06.12+00:00","lastStatusModifiedTime":"2022-08-25T08:01:06.12+00:00","exception":null,"parameters":{},"runOn":null,"runbook":{"name":"test-runbook-000003"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e","name":"ef6919bf-b827-4b18-8475-8d4a03a49d0e","type":"Microsoft.Automation/AutomationAccounts/Jobs","properties":{"jobId":"0f8e8dbc-426f-4dcf-beef-4aff5e8d3a63","creationTime":"2022-10-19T08:12:56.1766667+00:00","provisioningState":"Processing","status":"New","statusDetails":"None","startedBy":null,"startTime":null,"endTime":null,"lastModifiedTime":"2022-10-19T08:12:56.1766667+00:00","lastStatusModifiedTime":"2022-10-19T08:12:56.1766667+00:00","exception":null,"parameters":{},"runOn":null,"runbook":{"name":"test-runbook-000003"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '735'
+      - '750'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:05 GMT
+      - Wed, 19 Oct 2022 08:12:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2017-05-15-preview
-      ocp-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2017-05-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2019-06-01
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-location:
-      - https://management.azure.com/subscriptions/cd45f23b-b832-4fa4-a434-1bf7e6f14a5a/resourceGroups/cli_test_automation_eklazgbqrgf7nsv6fd2kmudgisaicdk4murr2da7cw67sga7sldm4an/providers/Microsoft.Automation/automationAccounts/test-account-2ynzoj76zci/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2017-05-15-preview
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '1999'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 201
       message: Created
@@ -1506,13 +1672,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs?api-version=2017-05-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs?api-version=2019-06-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e","name":"ef6919bf-b827-4b18-8475-8d4a03a49d0e","type":"Microsoft.Automation/AutomationAccounts/Jobs","properties":{"jobId":"d44d22c2-f22f-4b3a-9cd8-fae716f99290","runbook":{"name":"test-runbook-000003"},"provisioningState":"Processing","status":"New","creationTime":"2022-08-25T08:01:06.1225581+00:00","startTime":null,"lastModifiedTime":"2022-08-25T08:01:06.1225581+00:00","endTime":null,"runOn":null}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e","name":"ef6919bf-b827-4b18-8475-8d4a03a49d0e","type":"Microsoft.Automation/AutomationAccounts/Jobs","properties":{"jobId":"0f8e8dbc-426f-4dcf-beef-4aff5e8d3a63","runbook":{"name":"test-runbook-000003"},"provisioningState":"Processing","status":"New","creationTime":"2022-10-19T08:12:56.1906698+00:00","startTime":null,"lastModifiedTime":"2022-10-19T08:12:56.1906698+00:00","endTime":null,"runOn":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -1521,27 +1686,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:06 GMT
+      - Wed, 19 Oct 2022 08:12:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '599'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1559,13 +1720,12 @@ interactions:
       ParameterSetName:
       - --resource-group --automation-account-name --name
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2017-05-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e?api-version=2019-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e","name":"ef6919bf-b827-4b18-8475-8d4a03a49d0e","type":"Microsoft.Automation/AutomationAccounts/Jobs","properties":{"jobId":"d44d22c2-f22f-4b3a-9cd8-fae716f99290","creationTime":"2022-08-25T08:01:06.1225581+00:00","provisioningState":"Processing","status":"New","statusDetails":"None","startedBy":"{scrubbed}","startTime":null,"endTime":null,"lastModifiedTime":"2022-08-25T08:01:06.1225581+00:00","lastStatusModifiedTime":"2022-08-25T08:01:06.1225581+00:00","exception":null,"parameters":{},"runOn":null,"runbook":{"name":"test-runbook-000003"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002/jobs/ef6919bf-b827-4b18-8475-8d4a03a49d0e","name":"ef6919bf-b827-4b18-8475-8d4a03a49d0e","type":"Microsoft.Automation/AutomationAccounts/Jobs","properties":{"jobId":"0f8e8dbc-426f-4dcf-beef-4aff5e8d3a63","creationTime":"2022-10-19T08:12:56.1906698+00:00","provisioningState":"Processing","status":"New","statusDetails":"None","startedBy":"{scrubbed}","startTime":null,"endTime":null,"lastModifiedTime":"2022-10-19T08:12:56.1906698+00:00","lastStatusModifiedTime":"2022-10-19T08:12:56.1906698+00:00","exception":null,"parameters":{},"runOn":null,"runbook":{"name":"test-runbook-000003"}}}'
     headers:
       cache-control:
       - no-cache
@@ -1574,27 +1734,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Aug 2022 08:01:07 GMT
+      - Wed, 19 Oct 2022 08:12:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '599'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1614,10 +1770,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - AZURECLI/2.39.0 (PIP) azsdk-python-automationclient/unknown Python/3.10.5
-        (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.41.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2015-10-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_000001/providers/Microsoft.Automation/automationAccounts/test-account-000002?api-version=2021-06-22
   response:
     body:
       string: ''
@@ -1627,23 +1782,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 25 Aug 2022 08:01:19 GMT
+      - Wed, 19 Oct 2022 08:13:12 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK

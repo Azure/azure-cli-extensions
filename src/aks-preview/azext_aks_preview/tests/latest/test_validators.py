@@ -114,6 +114,16 @@ class EnableCustomCATrustNamespace:
         self.os_type = os_type
         self.enable_custom_ca_trust = enable_custom_ca_trust
 
+class CustomCATrustCertificatesNamespace:
+    def __init__(self, os_type, custom_ca_trust_certificates):
+        self.os_type = os_type
+        self.custom_ca_trust_certificates = custom_ca_trust_certificates
+
+class DisableWindowsOutboundNatNamespace:
+    def __init__(self, os_type, disable_windows_outbound_nat):
+        self.os_type = os_type
+        self.disable_windows_outbound_nat = disable_windows_outbound_nat
+
 
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
@@ -189,6 +199,38 @@ class TestEnableCustomCATrust(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
         self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestCustomCATrustCertificates(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["foo", ""]
+        for v in valid:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Linux", v))
+
+    def test_fail_if_os_type_windows(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Windows", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("invalid", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestDisableWindowsOutboundNAT(unittest.TestCase):
+    def test_pass_if_os_type_windows(self):
+        validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Windows", True))
+
+    def test_fail_if_os_type_linux(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Linux", True))
+        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("invalid", True))
+        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
 class ValidateAddonsNamespace:
@@ -386,6 +428,28 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
+class ImageCleanerNamespace:
+    def __init__(
+        self,
+        enable_image_cleaner=False,
+        disable_image_cleaner=False,
+        image_cleaner_interval_hours=None,
+    ):
+        self.enable_image_cleaner = enable_image_cleaner 
+        self.disable_image_cleaner = disable_image_cleaner 
+        self.image_cleaner_interval_hours = image_cleaner_interval_hours 
+
+class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
+    def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
+        namespace = ImageCleanerNamespace(
+            enable_image_cleaner=True,
+            disable_image_cleaner=True,
+        )
+        err = 'Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time.'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_image_cleaner_enable_disable_mutually_exclusive(namespace)
+        self.assertEqual(str(cm.exception), err)
 
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
 
@@ -472,6 +536,66 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         validators.validate_agent_pool_name(
+            namespace
+        )
+
+
+class TestValidateAllowedHostPorts(unittest.TestCase):
+    def test_invalid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80,443,8080",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_allowed_host_ports(
+                namespace
+            )
+
+    def test_valid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80/tcp,443/tcp,8080-8090/tcp,53/udp",
+            }
+        )
+        validators.validate_allowed_host_ports(
+            namespace
+        )
+
+
+class TestValidateApplicationSecurityGroups(unittest.TestCase):
+    def test_invalid_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "invalid",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_empty_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "",
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_multiple_application_security_groups(self):
+        asg_ids = ','.join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": asg_ids,
+            }
+        )
+        validators.validate_application_security_groups(
             namespace
         )
 

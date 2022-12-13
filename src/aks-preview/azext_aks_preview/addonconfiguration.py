@@ -61,7 +61,8 @@ def enable_addons(cmd,
                   rotation_poll_interval=None,
                   no_wait=False,
                   dns_zone_resource_id=None,
-                  enable_msi_auth_for_monitoring=False):
+                  enable_msi_auth_for_monitoring=False,
+                  enable_syslog=False):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
     msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
@@ -76,7 +77,7 @@ def enable_addons(cmd,
                              appgw_watch_namespace=appgw_watch_namespace,
                              enable_sgxquotehelper=enable_sgxquotehelper,
                              enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                             dns_zone_resource_id=dns_zone_resource_id)
+                             dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
        CONST_MONITORING_ADDON_NAME].enabled:
@@ -162,7 +163,8 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   enable_secret_rotation=False,
                   rotation_poll_interval=None,
                   dns_zone_resource_id=None,
-                  no_wait=False):  # pylint: disable=unused-argument
+                  no_wait=False,  # pylint: disable=unused-argument
+                  enable_syslog=False):
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
@@ -224,7 +226,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
                                    'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
-                                   'before enabling it again.')
+                                   ' before enabling it again.')
                 if not workspace_resource_id:
                     workspace_resource_id = ensure_default_log_analytics_workspace_for_monitoring(
                         cmd,

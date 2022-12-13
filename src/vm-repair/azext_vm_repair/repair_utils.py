@@ -358,7 +358,7 @@ def _check_linux_hyperV_gen(source_vm):
                         .format(i=disk_id)
     hyperVGen = loads(_call_az_command(show_disk_command))
     if hyperVGen != 'V2':
-        logger.info('Trying to check on the source VM if it has the parameter of gen2')
+        logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
@@ -682,3 +682,19 @@ def _get_function_param_dict(frame):
         if param in values:
             values[param] = '********'
     return values
+
+
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+    logger.debug('Unlock script STDOUT:\n%s', stdout)
+    if stderr:
+        logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+
+
+def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+    if not fix_uuid:
+        create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+    logger.info('Validating VM template before continuing...')
+    _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
+    logger.info('Creating repair VM...')
+    _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
