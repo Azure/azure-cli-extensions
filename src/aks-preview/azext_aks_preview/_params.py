@@ -123,6 +123,7 @@ from azext_aks_preview._validators import (
     validate_vm_set_type,
     validate_vnet_subnet_id,
     validate_enable_custom_ca_trust,
+    validate_custom_ca_trust_certificates,
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_azuremonitorworkspaceresourceid,
@@ -266,6 +267,7 @@ def load_arguments(self, _):
         c.argument('enable_addons', options_list=['--enable-addons', '-a'], validator=validate_addons)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('aci_subnet_name')
         c.argument('appgw_name', arg_group='Application Gateway')
         c.argument('appgw_subnet_cidr', arg_group='Application Gateway')
@@ -347,6 +349,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
+        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
         c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
@@ -458,6 +461,7 @@ def load_arguments(self, _):
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
+        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, is_preview=True, help="path to file containing list of new line separated CAs")
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -600,6 +604,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks addon disable') as c:
@@ -629,6 +634,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks disable-addons') as c:
@@ -649,6 +655,7 @@ def load_arguments(self, _):
         c.argument('rotation_poll_interval')
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks get-credentials') as c:

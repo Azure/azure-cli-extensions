@@ -1,8 +1,16 @@
 Release History
 ===============
-1.5.0
+1.6.0
 ---
 * Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.
+
+1.5.0
+---
+* Add the validator for `--build-env`.
+
+1.4.2
+---
+* Fix the missing echo in `bash` after exiting from `az spring app connect`.
 
 1.4.1
 ---

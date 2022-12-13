@@ -12,6 +12,20 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* GA file, blob csi driver and snapshot controller.
+
+0.5.119
++++++++
+
+* Add `--custom-ca-trust-certificates` option for custom CA in aks create and aks update
+* Update the minimum required cli core version to `2.43.0`.
+
+0.5.118
++++++++
+
+* Support enabling syslog collection in monitoring on AKS clusters with msi auth
+* Add `--enable-syslog` option in aks create and aks enable-addons
+
 0.5.117
 +++++++
 

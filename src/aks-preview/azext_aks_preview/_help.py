@@ -266,6 +266,9 @@ helps['aks create'] = """
         - name: --enable-msi-auth-for-monitoring
           type: bool
           short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+        - name: --enable-syslog
+          type: bool
+          short-summary: Enable syslog data collection for Monitoring addon
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -474,6 +477,10 @@ helps['aks create'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
+        - name: --ca-certs --custom-ca-trust-certificates
+          type: string
+          short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
         - name: --enable-keda
           type: bool
           short-summary: Enable KEDA workload auto-scaler.
@@ -911,6 +918,10 @@ helps['aks update'] = """
           type: string
           short-summary: Public key path or key contents to install on node VMs for SSH access. For example,
                          'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.
+        - name: --ca-certs --custom-ca-trust-certificates
+          type: string
+          short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
+          long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1556,6 +1567,9 @@ parameters:
   - name: --enable-msi-auth-for-monitoring
     type: bool
     short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --enable-syslog
+    type: bool
+    short-summary: Enable syslog data collection for Monitoring addon
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1614,6 +1628,9 @@ parameters:
   - name: --enable-msi-auth-for-monitoring
     type: bool
     short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --enable-syslog
+    type: bool
+    short-summary: Enable syslog data collection for Monitoring addon
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1686,6 +1703,9 @@ parameters:
   - name: --enable-msi-auth-for-monitoring
     type: bool
     short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --enable-syslog
+    type: bool
+    short-summary: Enable syslog data collection for Monitoring addon
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
