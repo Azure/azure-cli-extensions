@@ -341,7 +341,7 @@ def load_arguments(self, _):
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         c.argument('enable_cilium_dataplane', action='store_true', is_preview=True)
         # nodepool
-        c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
+        c.argument('host_group_id', validator=validate_host_group_id)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         # no validation for aks create because it already only supports Linux.
         c.argument('message_of_the_day')
@@ -515,7 +515,7 @@ def load_arguments(self, _):
         c.argument('linux_os_config')
         c.argument('aks_custom_headers')
         # extensions
-        c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
+        c.argument('host_group_id', validator=validate_host_group_id)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         c.argument('message_of_the_day', validator=validate_message_of_the_day)
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
