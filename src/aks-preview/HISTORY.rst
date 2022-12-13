@@ -13,6 +13,7 @@ Pending
 +++++++
 
 * GA file, blob csi driver and snapshot controller.
+* GA Azure Dedicated Host.
 
 0.5.119
 +++++++
