@@ -12,8 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.120
++++++++
 * GA file, blob csi driver and snapshot controller.
 * GA Azure Dedicated Host.
+* GA KMS.
 
 0.5.119
 +++++++
