@@ -199,6 +199,7 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error(azCommandError)
         logger.error("Clean up failed.")
 
+
 def _check_existing_rg(rg_name):
     # Check for existing dup name
     try:
@@ -208,10 +209,9 @@ def _check_existing_rg(rg_name):
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
         raise Exception('Unexpected error occured while fetching existing resource groups.')
-    
+
     logger.info('Resource group exists is \'%s\'', group_exists)
     return group_exists
-
 
 
 def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):

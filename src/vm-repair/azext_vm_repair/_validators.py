@@ -302,7 +302,6 @@ def _validate_resource_group_name(rg_name):
         logger.warning("Using preexisting resource group")
 
 
-
 def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
