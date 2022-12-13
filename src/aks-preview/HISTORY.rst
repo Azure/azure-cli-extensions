@@ -14,9 +14,9 @@ Pending
 
 0.5.120
 +++++++
-* GA file, blob csi driver and snapshot controller.
-* GA Azure Dedicated Host.
-* GA KMS.
+* Remove file, blob csi driver and snapshot controller related CSI driver code after GA, reuse the implementation in azure-cli/acs.
+* Remove Azure Dedicated Host related code after GA, reuse the implementation in azure-cli/acs.
+* Remove KMS related code after GA, reuse the implementation in azure-cli/acs.
 
 0.5.119
 +++++++
