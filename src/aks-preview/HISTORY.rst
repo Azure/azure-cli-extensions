@@ -12,8 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-* GA file, blob csi driver and snapshot controller.
-* GA Azure Dedicated Host.
+0.5.120
++++++++
+* Remove file, blob csi driver and snapshot controller related CSI driver code after GA, reuse the implementation in azure-cli/acs.
+* Remove Azure Dedicated Host related code after GA, reuse the implementation in azure-cli/acs.
+* Remove KMS related code after GA, reuse the implementation in azure-cli/acs.
 
 0.5.119
 +++++++
