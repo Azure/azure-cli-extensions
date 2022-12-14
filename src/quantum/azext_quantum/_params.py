@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
-import json
+# import json
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.util import shell_safe_json_parse

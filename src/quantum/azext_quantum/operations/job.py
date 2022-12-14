@@ -17,9 +17,12 @@ from azure.cli.command_modules.storage.operations.account import show_storage_ac
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
+
+# from azure.quantum.optimization.problem import Problem
 from azure.quantum.storage import create_container, upload_blob
-# from azure.quantum.optimization.problem import compress_protobuf
-from azure.quantum.optimization.problem import Problem
+from azure.quantum.target import Quantinuum, IonQ
+from azure.quantum.target.rigetti.target import Rigetti
+
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
@@ -230,21 +233,103 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     if job_input_format is None:
         return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                               project, job_name, shots, storage, no_build, job_params, target_capability)
-    else:
-        return _submit_directly_to_service(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                                           job_name, shots, storage, job_params, target_capability,
-                                           job_input_file, job_input_format, job_output_format, entry_point)
+    # else:
+    #     return _submit_directly_to_service(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+    #                                        job_name, shots, storage, job_params, target_capability,
+    #                                        job_input_file, job_input_format, job_output_format, entry_point)
+    return _submit_directly_to_service(cmd, resource_group_name, workspace_name, location, target_id,
+                                       job_name, shots, storage, job_params, target_capability,
+                                       job_input_file, job_input_format, job_output_format, entry_point)
+
+
+# def _get_default_job_parameters(provider, workspace):
+#     if provider == "quantinuum":
+#         target_parameters = Quantinuum(workspace)
+#     elif provider == "ionq":
+#         target_parameters = IonQ(workspace)
+#     elif provider == "rigetti":
+#         target_parameters = Rigetti(workspace)
+#     else:
+#         print("Provider not recognized")
+#         return
+#
+#     if target_parameters is not None:
+#         default_input_format = target_parameters.input_data_format
+#         default_output_format = target_parameters.output_data_format
+#         default_content_type = target_parameters.content_type
+#         default_encoding = target_parameters.encoding
+
+#     # >>>>>>>>>>
+#         print(f"provider = {provider}")
+#         print(f"input_format = {default_input_format}")
+#         print(f"output_format = {default_output_format}")
+#         print(f"content_type = {default_content_type}")
+#         print(f"encoding = {default_encoding}")
+#     else:
+#         print("Provider not recognized")
+#
+#     return
+#     # <<<<<<<<<<
 
 
 # def _submit_directly_to_service(cmd, job_type, program_args, resource_group_name, workspace_name, location, target_id,
 #                                 job_name, shots, storage, job_params, target_capability,
 #                                 job_input_file, job_input_format, job_output_format, entry_point):
-def _submit_directly_to_service(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+def _submit_directly_to_service(cmd, resource_group_name, workspace_name, location, target_id,
                                 job_name, shots, storage, job_params, target_capability,
                                 job_input_file, job_input_format, job_output_format, entry_point):
     """
     Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
     """
+    # Get workspace and target information
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    if ws_info is None:
+        raise AzureInternalError("Failed to get workspace information.")
+    target_info = TargetInfo(cmd, target_id)
+    if target_info is None:
+        raise AzureInternalError("Failed to get target information.")
+    provider = target_info.target_id.split('.')[0]
+
+    # >>>>>>>>>> Is this useful??? >>>>>>>>>>
+    # Get default job parameters for this provider
+    if provider == "quantinuum":
+        target_parameters = Quantinuum(workspace_name)
+    elif provider == "ionq":
+        target_parameters = IonQ(workspace_name)
+    elif provider == "rigetti":
+        target_parameters = Rigetti(workspace_name)
+    else:
+        target_parameters = None
+        # print("Provider defaults not defined in qdk-python")
+        # return
+
+    if target_parameters is None:
+        # default_input_format = None
+        default_output_format = None
+        default_content_type = None
+        default_encoding = None
+    else:
+        # default_input_format = target_parameters.input_data_format
+        default_output_format = target_parameters.output_data_format
+        default_content_type = target_parameters.content_type
+        default_encoding = target_parameters.encoding
+
+    # >>>>>>>>>>
+    if job_output_format is None and default_output_format is not None:
+        job_output_format = default_output_format
+    # <<<<<<<<<<
+
+    # >>>>>>>>>>
+        # print(f"provider = {provider}")
+        # print(f"input_format = {default_input_format}")
+        # print(f"output_format = {default_output_format}")
+        # print(f"content_type = {default_content_type}")
+        # print(f"encoding = {default_encoding}")
+    # else:
+    #     print("Provider not recognized")
+    # return
+    # <<<<<<<<<<
+
     # Identify the type of job being submitted
     lc_job_input_format = job_input_format.lower()
     if lc_job_input_format == "qir.v1":
@@ -310,8 +395,10 @@ def _submit_directly_to_service(cmd, program_args, resource_group_name, workspac
 
     else:
         container_name_prefix = "cli-pass-through-job-"
-        content_type = None         # <<<<< Should we get this from job_parameters? <<<<<
-        content_encoding = None
+        # content_type = None         # <<<<< Should we get this from job_params? <<<<<
+        # content_encoding = None
+        content_type = default_content_type
+        content_encoding = default_encoding
         return_sas_token = False
         with open(job_input_file, "rb") as qir_file:
             blob_data = qir_file.read()
@@ -330,21 +417,14 @@ def _submit_directly_to_service(cmd, program_args, resource_group_name, workspac
     blob_name = "inputData"
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
-    # Retrieve workspace and target information
-    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    if ws_info is None:
-        raise AzureInternalError("Failed to get workspace information.")
-    target_info = TargetInfo(cmd, target_id)
-    if target_info is None:
-        raise AzureInternalError("Failed to get target information.")
-
     # Set the job parameters
     start_of_blob_name = blob_uri.find(blob_name)
     if job_type == QIO_JOB:
         end_of_blob_name = blob_uri.find("?")
         container_uri = blob_uri[0:start_of_blob_name - 1] + blob_uri[end_of_blob_name:]
 
-        input_params = dict()
+        # input_params = dict()
+        input_params = {}
         if job_params is None:
             input_params = {"params": {"timeout": QIO_DEFAULT_TIMEOUT}}
         else:
@@ -369,12 +449,17 @@ def _submit_directly_to_service(cmd, program_args, resource_group_name, workspac
         if target_capability is None:
             target_capability = "AdaptiveExecution"     # <<<<< Cesar said to use this for QCI. Does it apply to other providers?
 
-        # >>>>> TODO: Get parameters from the command line <<<<<
+        # >>>>> TODO: Get additional parameters from the command line <<<<<
         input_params = {'arguments': [], 'name': job_name, 'targetCapability': target_capability, 'shots': shots, 'entryPoint': entry_point}
-
+        # if job_params is not None:
+        #     input_params.extend(job_params)
     else:
-        input_params = job_params
-        # >>>>> Is this all we do for pass-through jobs? <<<<<
+        # input_params = job_params
+        # >>>>>>>>>>
+        container_uri = blob_uri[0:start_of_blob_name - 1]
+        input_params = {"count": 2}
+        # <<<<<<<<<<
+        # >>>>> TODO: Get additional parameters from the command line <<<<<
 
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     job_details = {'name': job_name,                # job_details is defined in vendored_sdks\azure_quantum\models\_models_py3.py, starting at line 132
