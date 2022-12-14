@@ -49,7 +49,6 @@ class Create(AAZCommand):
             options=["--sim-group-name"],
             help="The name of the SIM Group.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -59,7 +58,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--sim-name"],
             help="The name of the SIM.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -82,16 +80,16 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="An optional free-form text field that can be used to record the device type this SIM is associated with, for example 'Video camera'. The Azure portal allows SIMs to be grouped and filtered based on this value.",
         )
-        _args_schema.integrated_circuit_card_identifier = AAZStrArg(
-            options=["--integrated-circuit-card-identifier"],
+        _args_schema.icc_id = AAZStrArg(
+            options=["--icc-id"],
             arg_group="Properties",
             help="The integrated circuit card ID (ICCID) for the SIM.",
             fmt=AAZStrArgFormat(
                 pattern="^89[0-9]{17,18}$",
             ),
         )
-        _args_schema.international_mobile_subscriber_identity = AAZStrArg(
-            options=["--international-mobile-subscriber-identity"],
+        _args_schema.international_msi = AAZStrArg(
+            options=["--international-msi"],
             arg_group="Properties",
             help="The international mobile subscriber identity (IMSI) for the SIM.",
             required=True,
@@ -112,8 +110,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The SIM policy used by this SIM.",
         )
-        _args_schema.static_ip_configuration = AAZListArg(
-            options=["--static-ip-configuration"],
+        _args_schema.static_ip_config = AAZListArg(
+            options=["--static-ip-config"],
             arg_group="Properties",
             help="A list of static IP addresses assigned to this SIM. Each address is assigned at a defined network scope, made up of {attached data network, slice}.",
             fmt=AAZListArgFormat(
@@ -131,10 +129,10 @@ class Create(AAZCommand):
             ),
         )
 
-        static_ip_configuration = cls._args_schema.static_ip_configuration
-        static_ip_configuration.Element = AAZObjectArg()
+        static_ip_config = cls._args_schema.static_ip_config
+        static_ip_config.Element = AAZObjectArg()
 
-        _element = cls._args_schema.static_ip_configuration.Element
+        _element = cls._args_schema.static_ip_config.Element
         _element.attached_data_network = AAZObjectArg(
             options=["attached-data-network"],
             help="The attached data network on which the static IP address will be used. The combination of attached data network and slice defines the network scope of the IP address.",
@@ -148,7 +146,7 @@ class Create(AAZCommand):
             help="The static IP configuration for the SIM to use at the defined network scope.",
         )
 
-        attached_data_network = cls._args_schema.static_ip_configuration.Element.attached_data_network
+        attached_data_network = cls._args_schema.static_ip_config.Element.attached_data_network
         attached_data_network.id = AAZStrArg(
             options=["id"],
             help="Attached data network resource ID.",
@@ -158,7 +156,7 @@ class Create(AAZCommand):
             ),
         )
 
-        slice = cls._args_schema.static_ip_configuration.Element.slice
+        slice = cls._args_schema.static_ip_config.Element.slice
         slice.id = AAZStrArg(
             options=["id"],
             help="Slice resource ID.",
@@ -168,7 +166,7 @@ class Create(AAZCommand):
             ),
         )
 
-        static_ip = cls._args_schema.static_ip_configuration.Element.static_ip
+        static_ip = cls._args_schema.static_ip_config.Element.static_ip
         static_ip.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address assigned to the SIM at this network scope. This address must be in the userEquipmentStaticAddressPoolPrefix defined in the attached data network.",
@@ -294,11 +292,11 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("authenticationKey", AAZStrType, ".authentication_key")
                 properties.set_prop("deviceType", AAZStrType, ".device_type")
-                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".integrated_circuit_card_identifier")
-                properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_mobile_subscriber_identity", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".icc_id")
+                properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_msi", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code")
                 properties.set_prop("simPolicy", AAZObjectType, ".sim_policy")
-                properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_configuration")
+                properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_config")
 
             sim_policy = _builder.get(".properties.simPolicy")
             if sim_policy is not None:
@@ -442,6 +440,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

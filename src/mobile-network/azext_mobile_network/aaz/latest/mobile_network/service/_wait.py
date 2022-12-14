@@ -229,19 +229,19 @@ class Wait(AAZWaitCommand):
             )
 
             rule_qos_policy = cls._schema_on_200.properties.pcc_rules.Element.rule_qos_policy
-            rule_qos_policy['5qi'] = AAZIntType()
+            rule_qos_policy["5qi"] = AAZIntType()
             rule_qos_policy.allocation_and_retention_priority_level = AAZIntType(
                 serialized_name="allocationAndRetentionPriorityLevel",
             )
             rule_qos_policy.guaranteed_bit_rate = AAZObjectType(
                 serialized_name="guaranteedBitRate",
             )
-            _build_schema_ambr_read(rule_qos_policy.guaranteed_bit_rate)
+            _WaitHelper._build_schema_ambr_read(rule_qos_policy.guaranteed_bit_rate)
             rule_qos_policy.maximum_bit_rate = AAZObjectType(
                 serialized_name="maximumBitRate",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(rule_qos_policy.maximum_bit_rate)
+            _WaitHelper._build_schema_ambr_read(rule_qos_policy.maximum_bit_rate)
             rule_qos_policy.preemption_capability = AAZStrType(
                 serialized_name="preemptionCapability",
             )
@@ -279,7 +279,7 @@ class Wait(AAZWaitCommand):
             remote_ip_list.Element = AAZStrType()
 
             service_qos_policy = cls._schema_on_200.properties.service_qos_policy
-            service_qos_policy['5qi'] = AAZIntType()
+            service_qos_policy["5qi"] = AAZIntType()
             service_qos_policy.allocation_and_retention_priority_level = AAZIntType(
                 serialized_name="allocationAndRetentionPriorityLevel",
             )
@@ -287,7 +287,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="maximumBitRate",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(service_qos_policy.maximum_bit_rate)
+            _WaitHelper._build_schema_ambr_read(service_qos_policy.maximum_bit_rate)
             service_qos_policy.preemption_capability = AAZStrType(
                 serialized_name="preemptionCapability",
             )
@@ -321,28 +321,30 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-_schema_ambr_read = None
+class _WaitHelper:
+    """Helper class for Wait"""
 
+    _schema_ambr_read = None
 
-def _build_schema_ambr_read(_schema):
-    global _schema_ambr_read
-    if _schema_ambr_read is not None:
-        _schema.downlink = _schema_ambr_read.downlink
-        _schema.uplink = _schema_ambr_read.uplink
-        return
+    @classmethod
+    def _build_schema_ambr_read(cls, _schema):
+        if cls._schema_ambr_read is not None:
+            _schema.downlink = cls._schema_ambr_read.downlink
+            _schema.uplink = cls._schema_ambr_read.uplink
+            return
 
-    _schema_ambr_read = AAZObjectType()
+        cls._schema_ambr_read = _schema_ambr_read = AAZObjectType()
 
-    ambr_read = _schema_ambr_read
-    ambr_read.downlink = AAZStrType(
-        flags={"required": True},
-    )
-    ambr_read.uplink = AAZStrType(
-        flags={"required": True},
-    )
+        ambr_read = _schema_ambr_read
+        ambr_read.downlink = AAZStrType(
+            flags={"required": True},
+        )
+        ambr_read.uplink = AAZStrType(
+            flags={"required": True},
+        )
 
-    _schema.downlink = _schema_ambr_read.downlink
-    _schema.uplink = _schema_ambr_read.uplink
+        _schema.downlink = cls._schema_ambr_read.downlink
+        _schema.uplink = cls._schema_ambr_read.uplink
 
 
 __all__ = ["Wait"]

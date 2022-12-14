@@ -46,7 +46,6 @@ class Create(AAZCommand):
             options=["--mobile-network-name"],
             help="The name of the mobile network.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -59,7 +58,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--site-name"],
             help="The name of the mobile network site.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -318,6 +316,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

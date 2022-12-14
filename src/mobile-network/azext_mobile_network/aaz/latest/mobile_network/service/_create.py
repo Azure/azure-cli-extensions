@@ -46,7 +46,6 @@ class Create(AAZCommand):
             options=["--mobile-network-name"],
             help="The name of the mobile network.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -59,7 +58,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--service-name"],
             help="The name of the service. You must not use any of the following reserved strings - `default`, `requested` or `service`",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^(?!(default|requested|service)$)[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -469,8 +467,8 @@ class Create(AAZCommand):
             if rule_qos_policy is not None:
                 rule_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
                 rule_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
-                _build_schema_ambr_create(rule_qos_policy.set_prop("guaranteedBitRate", AAZObjectType, ".guaranteed_bit_rate"))
-                _build_schema_ambr_create(rule_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_ambr_create(rule_qos_policy.set_prop("guaranteedBitRate", AAZObjectType, ".guaranteed_bit_rate"))
+                _CreateHelper._build_schema_ambr_create(rule_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
                 rule_qos_policy.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
                 rule_qos_policy.set_prop("preemptionVulnerability", AAZStrType, ".preemption_vulnerability")
 
@@ -502,7 +500,7 @@ class Create(AAZCommand):
             if service_qos_policy is not None:
                 service_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
                 service_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
-                _build_schema_ambr_create(service_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_ambr_create(service_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
                 service_qos_policy.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
                 service_qos_policy.set_prop("preemptionVulnerability", AAZStrType, ".preemption_vulnerability")
 
@@ -592,19 +590,19 @@ class Create(AAZCommand):
             )
 
             rule_qos_policy = cls._schema_on_200_201.properties.pcc_rules.Element.rule_qos_policy
-            rule_qos_policy['5qi'] = AAZIntType()
+            rule_qos_policy["5qi"] = AAZIntType()
             rule_qos_policy.allocation_and_retention_priority_level = AAZIntType(
                 serialized_name="allocationAndRetentionPriorityLevel",
             )
             rule_qos_policy.guaranteed_bit_rate = AAZObjectType(
                 serialized_name="guaranteedBitRate",
             )
-            _build_schema_ambr_read(rule_qos_policy.guaranteed_bit_rate)
+            _CreateHelper._build_schema_ambr_read(rule_qos_policy.guaranteed_bit_rate)
             rule_qos_policy.maximum_bit_rate = AAZObjectType(
                 serialized_name="maximumBitRate",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(rule_qos_policy.maximum_bit_rate)
+            _CreateHelper._build_schema_ambr_read(rule_qos_policy.maximum_bit_rate)
             rule_qos_policy.preemption_capability = AAZStrType(
                 serialized_name="preemptionCapability",
             )
@@ -642,7 +640,7 @@ class Create(AAZCommand):
             remote_ip_list.Element = AAZStrType()
 
             service_qos_policy = cls._schema_on_200_201.properties.service_qos_policy
-            service_qos_policy['5qi'] = AAZIntType()
+            service_qos_policy["5qi"] = AAZIntType()
             service_qos_policy.allocation_and_retention_priority_level = AAZIntType(
                 serialized_name="allocationAndRetentionPriorityLevel",
             )
@@ -650,7 +648,7 @@ class Create(AAZCommand):
                 serialized_name="maximumBitRate",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(service_qos_policy.maximum_bit_rate)
+            _CreateHelper._build_schema_ambr_read(service_qos_policy.maximum_bit_rate)
             service_qos_policy.preemption_capability = AAZStrType(
                 serialized_name="preemptionCapability",
             )
@@ -684,35 +682,37 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-def _build_schema_ambr_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("downlink", AAZStrType, ".downlink", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("uplink", AAZStrType, ".uplink", typ_kwargs={"flags": {"required": True}})
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_ambr_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("downlink", AAZStrType, ".downlink", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("uplink", AAZStrType, ".uplink", typ_kwargs={"flags": {"required": True}})
 
-_schema_ambr_read = None
+    _schema_ambr_read = None
 
+    @classmethod
+    def _build_schema_ambr_read(cls, _schema):
+        if cls._schema_ambr_read is not None:
+            _schema.downlink = cls._schema_ambr_read.downlink
+            _schema.uplink = cls._schema_ambr_read.uplink
+            return
 
-def _build_schema_ambr_read(_schema):
-    global _schema_ambr_read
-    if _schema_ambr_read is not None:
-        _schema.downlink = _schema_ambr_read.downlink
-        _schema.uplink = _schema_ambr_read.uplink
-        return
+        cls._schema_ambr_read = _schema_ambr_read = AAZObjectType()
 
-    _schema_ambr_read = AAZObjectType()
+        ambr_read = _schema_ambr_read
+        ambr_read.downlink = AAZStrType(
+            flags={"required": True},
+        )
+        ambr_read.uplink = AAZStrType(
+            flags={"required": True},
+        )
 
-    ambr_read = _schema_ambr_read
-    ambr_read.downlink = AAZStrType(
-        flags={"required": True},
-    )
-    ambr_read.uplink = AAZStrType(
-        flags={"required": True},
-    )
-
-    _schema.downlink = _schema_ambr_read.downlink
-    _schema.uplink = _schema_ambr_read.uplink
+        _schema.downlink = cls._schema_ambr_read.downlink
+        _schema.uplink = cls._schema_ambr_read.uplink
 
 
 __all__ = ["Create"]

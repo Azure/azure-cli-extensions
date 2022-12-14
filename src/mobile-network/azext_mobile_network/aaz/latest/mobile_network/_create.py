@@ -46,7 +46,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--mobile-network-name"],
             help="The name of the mobile network.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -79,15 +78,15 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.public_land_mobile_network_identifier = AAZObjectArg(
-            options=["--public-land-mobile-network-identifier"],
+        _args_schema.identifier = AAZObjectArg(
+            options=["--identifier"],
             arg_group="Properties",
             help="The unique public land mobile network identifier for the network. This is made up of the mobile country code and mobile network code, as defined in https://www.itu.int/rec/T-REC-E.212. The values 001-01 and 001-001 can be used for testing and the values 999-99 and 999-999 can be used on internal private networks.",
             required=True,
         )
 
-        public_land_mobile_network_identifier = cls._args_schema.public_land_mobile_network_identifier
-        public_land_mobile_network_identifier.mcc = AAZStrArg(
+        identifier = cls._args_schema.identifier
+        identifier.mcc = AAZStrArg(
             options=["mcc"],
             help="Mobile country code (MCC).",
             required=True,
@@ -95,7 +94,7 @@ class Create(AAZCommand):
                 pattern="^\d{3}$",
             ),
         )
-        public_land_mobile_network_identifier.mnc = AAZStrArg(
+        identifier.mnc = AAZStrArg(
             options=["mnc"],
             help="Mobile network code (MNC).",
             required=True,
@@ -217,7 +216,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("publicLandMobileNetworkIdentifier", AAZObjectType, ".public_land_mobile_network_identifier", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("publicLandMobileNetworkIdentifier", AAZObjectType, ".identifier", typ_kwargs={"flags": {"required": True}})
 
             public_land_mobile_network_identifier = _builder.get(".properties.publicLandMobileNetworkIdentifier")
             if public_land_mobile_network_identifier is not None:
@@ -315,6 +314,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

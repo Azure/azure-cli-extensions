@@ -44,8 +44,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["-n", "--name", "--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["-n", "--name", "--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
             id_part="name",
@@ -100,20 +100,20 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.control_plane_access_interface = AAZObjectArg(
-            options=["--control-plane-access-interface"],
+        _args_schema.access_interface = AAZObjectArg(
+            options=["--access-interface"],
             arg_group="Properties",
             help="The control plane interface on the access network. For 5G networks, this is the N2 interface. For 4G networks, this is the S1-MME interface.",
         )
-        _args_schema.core_network_technology = AAZStrArg(
-            options=["--core-network-technology"],
+        _args_schema.core_network_tec = AAZStrArg(
+            options=["--core-network-tec"],
             arg_group="Properties",
             help="The core network technology generation (5G core or EPC / 4G core).",
             nullable=True,
             enum={"5GC": "5GC", "EPC": "EPC"},
         )
-        _args_schema.local_diagnostics_access = AAZObjectArg(
-            options=["--local-diagnostics-access"],
+        _args_schema.local_diagnostics = AAZObjectArg(
+            options=["--local-diagnostics"],
             arg_group="Properties",
             help="The kubernetes ingress configuration to control access to packet core diagnostics over local APIs.",
             nullable=True,
@@ -142,8 +142,8 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        control_plane_access_interface = cls._args_schema.control_plane_access_interface
-        control_plane_access_interface.ipv4_address = AAZStrArg(
+        access_interface = cls._args_schema.access_interface
+        access_interface.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address.",
             nullable=True,
@@ -151,7 +151,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        control_plane_access_interface.ipv4_gateway = AAZStrArg(
+        access_interface.ipv4_gateway = AAZStrArg(
             options=["ipv4-gateway"],
             help="The default IPv4 gateway (router).",
             nullable=True,
@@ -159,7 +159,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        control_plane_access_interface.ipv4_subnet = AAZStrArg(
+        access_interface.ipv4_subnet = AAZStrArg(
             options=["ipv4-subnet"],
             help="The IPv4 subnet.",
             nullable=True,
@@ -167,20 +167,20 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
-        control_plane_access_interface.name = AAZStrArg(
+        access_interface.name = AAZStrArg(
             options=["name"],
             help="The logical name for this interface. This should match one of the interfaces configured on your Azure Stack Edge device.",
             nullable=True,
         )
 
-        local_diagnostics_access = cls._args_schema.local_diagnostics_access
-        local_diagnostics_access.https_server_certificate = AAZObjectArg(
+        local_diagnostics = cls._args_schema.local_diagnostics
+        local_diagnostics.https_server_certificate = AAZObjectArg(
             options=["https-server-certificate"],
             help="The HTTPS server TLS certificate used to secure local access to diagnostics.",
             nullable=True,
         )
 
-        https_server_certificate = cls._args_schema.local_diagnostics_access.https_server_certificate
+        https_server_certificate = cls._args_schema.local_diagnostics.https_server_certificate
         https_server_certificate.certificate_url = AAZStrArg(
             options=["certificate-url"],
             help="The certificate URL, unversioned. For example: https://contosovault.vault.azure.net/certificates/ingress.",
@@ -306,7 +306,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -355,7 +355,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_packet_core_control_plane_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_packet_core_control_plane_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -405,7 +405,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -466,7 +466,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_packet_core_control_plane_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_packet_core_control_plane_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -496,9 +496,9 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("controlPlaneAccessInterface", AAZObjectType, ".control_plane_access_interface", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("coreNetworkTechnology", AAZStrType, ".core_network_technology")
-                properties.set_prop("localDiagnosticsAccess", AAZObjectType, ".local_diagnostics_access")
+                properties.set_prop("controlPlaneAccessInterface", AAZObjectType, ".access_interface", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("coreNetworkTechnology", AAZStrType, ".core_network_tec")
+                properties.set_prop("localDiagnosticsAccess", AAZObjectType, ".local_diagnostics")
                 properties.set_prop("mobileNetwork", AAZObjectType, ".mobile_network", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("platform", AAZObjectType, ".platform")
                 properties.set_prop("sku", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
@@ -557,188 +557,190 @@ class Update(AAZCommand):
             )
 
 
-_schema_packet_core_control_plane_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_packet_core_control_plane_read = None
 
-def _build_schema_packet_core_control_plane_read(_schema):
-    global _schema_packet_core_control_plane_read
-    if _schema_packet_core_control_plane_read is not None:
-        _schema.id = _schema_packet_core_control_plane_read.id
-        _schema.identity = _schema_packet_core_control_plane_read.identity
-        _schema.location = _schema_packet_core_control_plane_read.location
-        _schema.name = _schema_packet_core_control_plane_read.name
-        _schema.properties = _schema_packet_core_control_plane_read.properties
-        _schema.system_data = _schema_packet_core_control_plane_read.system_data
-        _schema.tags = _schema_packet_core_control_plane_read.tags
-        _schema.type = _schema_packet_core_control_plane_read.type
-        return
+    @classmethod
+    def _build_schema_packet_core_control_plane_read(cls, _schema):
+        if cls._schema_packet_core_control_plane_read is not None:
+            _schema.id = cls._schema_packet_core_control_plane_read.id
+            _schema.identity = cls._schema_packet_core_control_plane_read.identity
+            _schema.location = cls._schema_packet_core_control_plane_read.location
+            _schema.name = cls._schema_packet_core_control_plane_read.name
+            _schema.properties = cls._schema_packet_core_control_plane_read.properties
+            _schema.system_data = cls._schema_packet_core_control_plane_read.system_data
+            _schema.tags = cls._schema_packet_core_control_plane_read.tags
+            _schema.type = cls._schema_packet_core_control_plane_read.type
+            return
 
-    _schema_packet_core_control_plane_read = AAZObjectType()
+        cls._schema_packet_core_control_plane_read = _schema_packet_core_control_plane_read = AAZObjectType()
 
-    packet_core_control_plane_read = _schema_packet_core_control_plane_read
-    packet_core_control_plane_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    packet_core_control_plane_read.identity = AAZObjectType()
-    packet_core_control_plane_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    packet_core_control_plane_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    packet_core_control_plane_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    packet_core_control_plane_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    packet_core_control_plane_read.tags = AAZDictType()
-    packet_core_control_plane_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        packet_core_control_plane_read = _schema_packet_core_control_plane_read
+        packet_core_control_plane_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        packet_core_control_plane_read.identity = AAZObjectType()
+        packet_core_control_plane_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        packet_core_control_plane_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        packet_core_control_plane_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        packet_core_control_plane_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        packet_core_control_plane_read.tags = AAZDictType()
+        packet_core_control_plane_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    identity = _schema_packet_core_control_plane_read.identity
-    identity.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
-    identity.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-        flags={"read_only": True},
-    )
-    identity.type = AAZStrType(
-        flags={"required": True},
-    )
-    identity.user_assigned_identities = AAZDictType(
-        serialized_name="userAssignedIdentities",
-    )
+        identity = _schema_packet_core_control_plane_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
 
-    user_assigned_identities = _schema_packet_core_control_plane_read.identity.user_assigned_identities
-    user_assigned_identities.Element = AAZObjectType()
+        user_assigned_identities = _schema_packet_core_control_plane_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType()
 
-    _element = _schema_packet_core_control_plane_read.identity.user_assigned_identities.Element
-    _element.client_id = AAZStrType(
-        serialized_name="clientId",
-        flags={"read_only": True},
-    )
-    _element.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
+        _element = _schema_packet_core_control_plane_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
 
-    properties = _schema_packet_core_control_plane_read.properties
-    properties.control_plane_access_interface = AAZObjectType(
-        serialized_name="controlPlaneAccessInterface",
-        flags={"required": True},
-    )
-    properties.core_network_technology = AAZStrType(
-        serialized_name="coreNetworkTechnology",
-    )
-    properties.local_diagnostics_access = AAZObjectType(
-        serialized_name="localDiagnosticsAccess",
-    )
-    properties.mobile_network = AAZObjectType(
-        serialized_name="mobileNetwork",
-        flags={"required": True},
-    )
-    properties.platform = AAZObjectType()
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.sku = AAZStrType(
-        flags={"required": True},
-    )
-    properties.version = AAZStrType()
+        properties = _schema_packet_core_control_plane_read.properties
+        properties.control_plane_access_interface = AAZObjectType(
+            serialized_name="controlPlaneAccessInterface",
+            flags={"required": True},
+        )
+        properties.core_network_technology = AAZStrType(
+            serialized_name="coreNetworkTechnology",
+        )
+        properties.local_diagnostics_access = AAZObjectType(
+            serialized_name="localDiagnosticsAccess",
+        )
+        properties.mobile_network = AAZObjectType(
+            serialized_name="mobileNetwork",
+            flags={"required": True},
+        )
+        properties.platform = AAZObjectType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sku = AAZStrType(
+            flags={"required": True},
+        )
+        properties.version = AAZStrType()
 
-    control_plane_access_interface = _schema_packet_core_control_plane_read.properties.control_plane_access_interface
-    control_plane_access_interface.ipv4_address = AAZStrType(
-        serialized_name="ipv4Address",
-    )
-    control_plane_access_interface.ipv4_gateway = AAZStrType(
-        serialized_name="ipv4Gateway",
-    )
-    control_plane_access_interface.ipv4_subnet = AAZStrType(
-        serialized_name="ipv4Subnet",
-    )
-    control_plane_access_interface.name = AAZStrType()
+        control_plane_access_interface = _schema_packet_core_control_plane_read.properties.control_plane_access_interface
+        control_plane_access_interface.ipv4_address = AAZStrType(
+            serialized_name="ipv4Address",
+        )
+        control_plane_access_interface.ipv4_gateway = AAZStrType(
+            serialized_name="ipv4Gateway",
+        )
+        control_plane_access_interface.ipv4_subnet = AAZStrType(
+            serialized_name="ipv4Subnet",
+        )
+        control_plane_access_interface.name = AAZStrType()
 
-    local_diagnostics_access = _schema_packet_core_control_plane_read.properties.local_diagnostics_access
-    local_diagnostics_access.https_server_certificate = AAZObjectType(
-        serialized_name="httpsServerCertificate",
-    )
+        local_diagnostics_access = _schema_packet_core_control_plane_read.properties.local_diagnostics_access
+        local_diagnostics_access.https_server_certificate = AAZObjectType(
+            serialized_name="httpsServerCertificate",
+        )
 
-    https_server_certificate = _schema_packet_core_control_plane_read.properties.local_diagnostics_access.https_server_certificate
-    https_server_certificate.certificate_url = AAZStrType(
-        serialized_name="certificateUrl",
-    )
+        https_server_certificate = _schema_packet_core_control_plane_read.properties.local_diagnostics_access.https_server_certificate
+        https_server_certificate.certificate_url = AAZStrType(
+            serialized_name="certificateUrl",
+        )
 
-    mobile_network = _schema_packet_core_control_plane_read.properties.mobile_network
-    mobile_network.id = AAZStrType(
-        flags={"required": True},
-    )
+        mobile_network = _schema_packet_core_control_plane_read.properties.mobile_network
+        mobile_network.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    platform = _schema_packet_core_control_plane_read.properties.platform
-    platform.azure_stack_edge_device = AAZObjectType(
-        serialized_name="azureStackEdgeDevice",
-    )
-    platform.connected_cluster = AAZObjectType(
-        serialized_name="connectedCluster",
-    )
-    platform.custom_location = AAZObjectType(
-        serialized_name="customLocation",
-    )
-    platform.type = AAZStrType(
-        flags={"required": True},
-    )
+        platform = _schema_packet_core_control_plane_read.properties.platform
+        platform.azure_stack_edge_device = AAZObjectType(
+            serialized_name="azureStackEdgeDevice",
+        )
+        platform.connected_cluster = AAZObjectType(
+            serialized_name="connectedCluster",
+        )
+        platform.custom_location = AAZObjectType(
+            serialized_name="customLocation",
+        )
+        platform.type = AAZStrType(
+            flags={"required": True},
+        )
 
-    azure_stack_edge_device = _schema_packet_core_control_plane_read.properties.platform.azure_stack_edge_device
-    azure_stack_edge_device.id = AAZStrType(
-        flags={"required": True},
-    )
+        azure_stack_edge_device = _schema_packet_core_control_plane_read.properties.platform.azure_stack_edge_device
+        azure_stack_edge_device.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    connected_cluster = _schema_packet_core_control_plane_read.properties.platform.connected_cluster
-    connected_cluster.id = AAZStrType(
-        flags={"required": True},
-    )
+        connected_cluster = _schema_packet_core_control_plane_read.properties.platform.connected_cluster
+        connected_cluster.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    custom_location = _schema_packet_core_control_plane_read.properties.platform.custom_location
-    custom_location.id = AAZStrType(
-        flags={"required": True},
-    )
+        custom_location = _schema_packet_core_control_plane_read.properties.platform.custom_location
+        custom_location.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    system_data = _schema_packet_core_control_plane_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_packet_core_control_plane_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_packet_core_control_plane_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_packet_core_control_plane_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.id = _schema_packet_core_control_plane_read.id
-    _schema.identity = _schema_packet_core_control_plane_read.identity
-    _schema.location = _schema_packet_core_control_plane_read.location
-    _schema.name = _schema_packet_core_control_plane_read.name
-    _schema.properties = _schema_packet_core_control_plane_read.properties
-    _schema.system_data = _schema_packet_core_control_plane_read.system_data
-    _schema.tags = _schema_packet_core_control_plane_read.tags
-    _schema.type = _schema_packet_core_control_plane_read.type
+        _schema.id = cls._schema_packet_core_control_plane_read.id
+        _schema.identity = cls._schema_packet_core_control_plane_read.identity
+        _schema.location = cls._schema_packet_core_control_plane_read.location
+        _schema.name = cls._schema_packet_core_control_plane_read.name
+        _schema.properties = cls._schema_packet_core_control_plane_read.properties
+        _schema.system_data = cls._schema_packet_core_control_plane_read.system_data
+        _schema.tags = cls._schema_packet_core_control_plane_read.tags
+        _schema.type = cls._schema_packet_core_control_plane_read.type
 
 
 __all__ = ["Update"]

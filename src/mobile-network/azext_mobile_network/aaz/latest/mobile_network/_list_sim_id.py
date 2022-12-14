@@ -168,40 +168,42 @@ class ListSimId(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_sim_id_list_result_read(cls._schema_on_200)
+            _ListSimIdHelper._build_schema_sim_id_list_result_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-_schema_sim_id_list_result_read = None
+class _ListSimIdHelper:
+    """Helper class for ListSimId"""
 
+    _schema_sim_id_list_result_read = None
 
-def _build_schema_sim_id_list_result_read(_schema):
-    global _schema_sim_id_list_result_read
-    if _schema_sim_id_list_result_read is not None:
-        _schema.next_link = _schema_sim_id_list_result_read.next_link
-        _schema.value = _schema_sim_id_list_result_read.value
-        return
+    @classmethod
+    def _build_schema_sim_id_list_result_read(cls, _schema):
+        if cls._schema_sim_id_list_result_read is not None:
+            _schema.next_link = cls._schema_sim_id_list_result_read.next_link
+            _schema.value = cls._schema_sim_id_list_result_read.value
+            return
 
-    _schema_sim_id_list_result_read = AAZObjectType()
+        cls._schema_sim_id_list_result_read = _schema_sim_id_list_result_read = AAZObjectType()
 
-    sim_id_list_result_read = _schema_sim_id_list_result_read
-    sim_id_list_result_read.next_link = AAZStrType(
-        serialized_name="nextLink",
-        flags={"read_only": True},
-    )
-    sim_id_list_result_read.value = AAZListType()
+        sim_id_list_result_read = _schema_sim_id_list_result_read
+        sim_id_list_result_read.next_link = AAZStrType(
+            serialized_name="nextLink",
+            flags={"read_only": True},
+        )
+        sim_id_list_result_read.value = AAZListType()
 
-    value = _schema_sim_id_list_result_read.value
-    value.Element = AAZObjectType()
+        value = _schema_sim_id_list_result_read.value
+        value.Element = AAZObjectType()
 
-    _element = _schema_sim_id_list_result_read.value.Element
-    _element.id = AAZStrType(
-        flags={"required": True},
-    )
+        _element = _schema_sim_id_list_result_read.value.Element
+        _element.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    _schema.next_link = _schema_sim_id_list_result_read.next_link
-    _schema.value = _schema_sim_id_list_result_read.value
+        _schema.next_link = cls._schema_sim_id_list_result_read.next_link
+        _schema.value = cls._schema_sim_id_list_result_read.value
 
 
 __all__ = ["ListSimId"]

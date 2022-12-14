@@ -239,7 +239,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_sim_group_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_sim_group_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -350,7 +350,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_sim_group_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_sim_group_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -406,129 +406,131 @@ class Update(AAZCommand):
             )
 
 
-_schema_sim_group_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_sim_group_read = None
 
-def _build_schema_sim_group_read(_schema):
-    global _schema_sim_group_read
-    if _schema_sim_group_read is not None:
-        _schema.id = _schema_sim_group_read.id
-        _schema.identity = _schema_sim_group_read.identity
-        _schema.location = _schema_sim_group_read.location
-        _schema.name = _schema_sim_group_read.name
-        _schema.properties = _schema_sim_group_read.properties
-        _schema.system_data = _schema_sim_group_read.system_data
-        _schema.tags = _schema_sim_group_read.tags
-        _schema.type = _schema_sim_group_read.type
-        return
+    @classmethod
+    def _build_schema_sim_group_read(cls, _schema):
+        if cls._schema_sim_group_read is not None:
+            _schema.id = cls._schema_sim_group_read.id
+            _schema.identity = cls._schema_sim_group_read.identity
+            _schema.location = cls._schema_sim_group_read.location
+            _schema.name = cls._schema_sim_group_read.name
+            _schema.properties = cls._schema_sim_group_read.properties
+            _schema.system_data = cls._schema_sim_group_read.system_data
+            _schema.tags = cls._schema_sim_group_read.tags
+            _schema.type = cls._schema_sim_group_read.type
+            return
 
-    _schema_sim_group_read = AAZObjectType()
+        cls._schema_sim_group_read = _schema_sim_group_read = AAZObjectType()
 
-    sim_group_read = _schema_sim_group_read
-    sim_group_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    sim_group_read.identity = AAZObjectType()
-    sim_group_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    sim_group_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    sim_group_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    sim_group_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    sim_group_read.tags = AAZDictType()
-    sim_group_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        sim_group_read = _schema_sim_group_read
+        sim_group_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        sim_group_read.identity = AAZObjectType()
+        sim_group_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        sim_group_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        sim_group_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        sim_group_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        sim_group_read.tags = AAZDictType()
+        sim_group_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    identity = _schema_sim_group_read.identity
-    identity.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
-    identity.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-        flags={"read_only": True},
-    )
-    identity.type = AAZStrType(
-        flags={"required": True},
-    )
-    identity.user_assigned_identities = AAZDictType(
-        serialized_name="userAssignedIdentities",
-    )
+        identity = _schema_sim_group_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
 
-    user_assigned_identities = _schema_sim_group_read.identity.user_assigned_identities
-    user_assigned_identities.Element = AAZObjectType()
+        user_assigned_identities = _schema_sim_group_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType()
 
-    _element = _schema_sim_group_read.identity.user_assigned_identities.Element
-    _element.client_id = AAZStrType(
-        serialized_name="clientId",
-        flags={"read_only": True},
-    )
-    _element.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
+        _element = _schema_sim_group_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
 
-    properties = _schema_sim_group_read.properties
-    properties.encryption_key = AAZObjectType(
-        serialized_name="encryptionKey",
-    )
-    properties.mobile_network = AAZObjectType(
-        serialized_name="mobileNetwork",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
+        properties = _schema_sim_group_read.properties
+        properties.encryption_key = AAZObjectType(
+            serialized_name="encryptionKey",
+        )
+        properties.mobile_network = AAZObjectType(
+            serialized_name="mobileNetwork",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
 
-    encryption_key = _schema_sim_group_read.properties.encryption_key
-    encryption_key.key_url = AAZStrType(
-        serialized_name="keyUrl",
-    )
+        encryption_key = _schema_sim_group_read.properties.encryption_key
+        encryption_key.key_url = AAZStrType(
+            serialized_name="keyUrl",
+        )
 
-    mobile_network = _schema_sim_group_read.properties.mobile_network
-    mobile_network.id = AAZStrType(
-        flags={"required": True},
-    )
+        mobile_network = _schema_sim_group_read.properties.mobile_network
+        mobile_network.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    system_data = _schema_sim_group_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_sim_group_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_sim_group_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_sim_group_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.id = _schema_sim_group_read.id
-    _schema.identity = _schema_sim_group_read.identity
-    _schema.location = _schema_sim_group_read.location
-    _schema.name = _schema_sim_group_read.name
-    _schema.properties = _schema_sim_group_read.properties
-    _schema.system_data = _schema_sim_group_read.system_data
-    _schema.tags = _schema_sim_group_read.tags
-    _schema.type = _schema_sim_group_read.type
+        _schema.id = cls._schema_sim_group_read.id
+        _schema.identity = cls._schema_sim_group_read.identity
+        _schema.location = cls._schema_sim_group_read.location
+        _schema.name = cls._schema_sim_group_read.name
+        _schema.properties = cls._schema_sim_group_read.properties
+        _schema.system_data = cls._schema_sim_group_read.system_data
+        _schema.tags = cls._schema_sim_group_read.tags
+        _schema.type = cls._schema_sim_group_read.type
 
 
 __all__ = ["Update"]

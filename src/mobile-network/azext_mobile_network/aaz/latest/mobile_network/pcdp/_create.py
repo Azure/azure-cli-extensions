@@ -42,21 +42,19 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_data_plane_name = AAZStrArg(
-            options=["-n", "--name", "--packet-core-data-plane-name"],
+        _args_schema.pcdp_name = AAZStrArg(
+            options=["-n", "--name", "--pcdp-name"],
             help="The name of the packet core data plane.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -89,36 +87,36 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.user_plane_access_interface = AAZObjectArg(
-            options=["--user-plane-access-interface"],
+        _args_schema.plane_access_interface = AAZObjectArg(
+            options=["--plane-access-interface"],
             arg_group="Properties",
             help="The user plane interface on the access network. For 5G networks, this is the N3 interface. For 4G networks, this is the S1-U interface.",
             required=True,
         )
 
-        user_plane_access_interface = cls._args_schema.user_plane_access_interface
-        user_plane_access_interface.ipv4_address = AAZStrArg(
+        plane_access_interface = cls._args_schema.plane_access_interface
+        plane_access_interface.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        user_plane_access_interface.ipv4_gateway = AAZStrArg(
+        plane_access_interface.ipv4_gateway = AAZStrArg(
             options=["ipv4-gateway"],
             help="The default IPv4 gateway (router).",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        user_plane_access_interface.ipv4_subnet = AAZStrArg(
+        plane_access_interface.ipv4_subnet = AAZStrArg(
             options=["ipv4-subnet"],
             help="The IPv4 subnet.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
-        user_plane_access_interface.name = AAZStrArg(
+        plane_access_interface.name = AAZStrArg(
             options=["name"],
             help="The logical name for this interface. This should match one of the interfaces configured on your Azure Stack Edge device.",
         )
@@ -187,11 +185,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreDataPlaneName", self.ctx.args.packet_core_data_plane_name,
+                    "packetCoreDataPlaneName", self.ctx.args.pcdp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -240,7 +238,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("userPlaneAccessInterface", AAZObjectType, ".user_plane_access_interface", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("userPlaneAccessInterface", AAZObjectType, ".plane_access_interface", typ_kwargs={"flags": {"required": True}})
 
             user_plane_access_interface = _builder.get(".properties.userPlaneAccessInterface")
             if user_plane_access_interface is not None:
@@ -340,6 +338,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

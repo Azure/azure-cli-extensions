@@ -168,150 +168,152 @@ class Deactivate(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_sim_read(cls._schema_on_200)
+            _DeactivateHelper._build_schema_sim_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-_schema_sim_read = None
+class _DeactivateHelper:
+    """Helper class for Deactivate"""
 
+    _schema_sim_read = None
 
-def _build_schema_sim_read(_schema):
-    global _schema_sim_read
-    if _schema_sim_read is not None:
-        _schema.id = _schema_sim_read.id
-        _schema.location = _schema_sim_read.location
-        _schema.name = _schema_sim_read.name
-        _schema.properties = _schema_sim_read.properties
-        _schema.system_data = _schema_sim_read.system_data
-        _schema.tags = _schema_sim_read.tags
-        _schema.type = _schema_sim_read.type
-        return
+    @classmethod
+    def _build_schema_sim_read(cls, _schema):
+        if cls._schema_sim_read is not None:
+            _schema.id = cls._schema_sim_read.id
+            _schema.location = cls._schema_sim_read.location
+            _schema.name = cls._schema_sim_read.name
+            _schema.properties = cls._schema_sim_read.properties
+            _schema.system_data = cls._schema_sim_read.system_data
+            _schema.tags = cls._schema_sim_read.tags
+            _schema.type = cls._schema_sim_read.type
+            return
 
-    _schema_sim_read = AAZObjectType()
+        cls._schema_sim_read = _schema_sim_read = AAZObjectType()
 
-    sim_read = _schema_sim_read
-    sim_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    sim_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    sim_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    sim_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    sim_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    sim_read.tags = AAZDictType()
-    sim_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        sim_read = _schema_sim_read
+        sim_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        sim_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        sim_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        sim_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        sim_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        sim_read.tags = AAZDictType()
+        sim_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_sim_read.properties
-    properties.activation_state = AAZStrType(
-        serialized_name="activationState",
-        flags={"read_only": True},
-    )
-    properties.device_type = AAZStrType(
-        serialized_name="deviceType",
-    )
-    properties.integrated_circuit_card_identifier = AAZStrType(
-        serialized_name="integratedCircuitCardIdentifier",
-    )
-    properties.international_mobile_subscriber_identity = AAZStrType(
-        serialized_name="internationalMobileSubscriberIdentity",
-        flags={"required": True},
-    )
-    properties.mobile_network = AAZObjectType(
-        serialized_name="mobileNetwork",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.sim_policy = AAZObjectType(
-        serialized_name="simPolicy",
-    )
-    properties.sim_state = AAZStrType(
-        serialized_name="simState",
-        flags={"read_only": True},
-    )
-    properties.static_ip_configuration = AAZListType(
-        serialized_name="staticIpConfiguration",
-    )
+        properties = _schema_sim_read.properties
+        properties.activation_state = AAZStrType(
+            serialized_name="activationState",
+            flags={"read_only": True},
+        )
+        properties.device_type = AAZStrType(
+            serialized_name="deviceType",
+        )
+        properties.integrated_circuit_card_identifier = AAZStrType(
+            serialized_name="integratedCircuitCardIdentifier",
+        )
+        properties.international_mobile_subscriber_identity = AAZStrType(
+            serialized_name="internationalMobileSubscriberIdentity",
+            flags={"required": True},
+        )
+        properties.mobile_network = AAZObjectType(
+            serialized_name="mobileNetwork",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sim_policy = AAZObjectType(
+            serialized_name="simPolicy",
+        )
+        properties.sim_state = AAZStrType(
+            serialized_name="simState",
+            flags={"read_only": True},
+        )
+        properties.static_ip_configuration = AAZListType(
+            serialized_name="staticIpConfiguration",
+        )
 
-    mobile_network = _schema_sim_read.properties.mobile_network
-    mobile_network.id = AAZStrType(
-        flags={"required": True},
-    )
+        mobile_network = _schema_sim_read.properties.mobile_network
+        mobile_network.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    sim_policy = _schema_sim_read.properties.sim_policy
-    sim_policy.id = AAZStrType(
-        flags={"required": True},
-    )
+        sim_policy = _schema_sim_read.properties.sim_policy
+        sim_policy.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    static_ip_configuration = _schema_sim_read.properties.static_ip_configuration
-    static_ip_configuration.Element = AAZObjectType()
+        static_ip_configuration = _schema_sim_read.properties.static_ip_configuration
+        static_ip_configuration.Element = AAZObjectType()
 
-    _element = _schema_sim_read.properties.static_ip_configuration.Element
-    _element.attached_data_network = AAZObjectType(
-        serialized_name="attachedDataNetwork",
-    )
-    _element.slice = AAZObjectType()
-    _element.static_ip = AAZObjectType(
-        serialized_name="staticIp",
-    )
+        _element = _schema_sim_read.properties.static_ip_configuration.Element
+        _element.attached_data_network = AAZObjectType(
+            serialized_name="attachedDataNetwork",
+        )
+        _element.slice = AAZObjectType()
+        _element.static_ip = AAZObjectType(
+            serialized_name="staticIp",
+        )
 
-    attached_data_network = _schema_sim_read.properties.static_ip_configuration.Element.attached_data_network
-    attached_data_network.id = AAZStrType(
-        flags={"required": True},
-    )
+        attached_data_network = _schema_sim_read.properties.static_ip_configuration.Element.attached_data_network
+        attached_data_network.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    slice = _schema_sim_read.properties.static_ip_configuration.Element.slice
-    slice.id = AAZStrType(
-        flags={"required": True},
-    )
+        slice = _schema_sim_read.properties.static_ip_configuration.Element.slice
+        slice.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    static_ip = _schema_sim_read.properties.static_ip_configuration.Element.static_ip
-    static_ip.ipv4_address = AAZStrType(
-        serialized_name="ipv4Address",
-    )
+        static_ip = _schema_sim_read.properties.static_ip_configuration.Element.static_ip
+        static_ip.ipv4_address = AAZStrType(
+            serialized_name="ipv4Address",
+        )
 
-    system_data = _schema_sim_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_sim_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_sim_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_sim_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.id = _schema_sim_read.id
-    _schema.location = _schema_sim_read.location
-    _schema.name = _schema_sim_read.name
-    _schema.properties = _schema_sim_read.properties
-    _schema.system_data = _schema_sim_read.system_data
-    _schema.tags = _schema_sim_read.tags
-    _schema.type = _schema_sim_read.type
+        _schema.id = cls._schema_sim_read.id
+        _schema.location = cls._schema_sim_read.location
+        _schema.name = cls._schema_sim_read.name
+        _schema.properties = cls._schema_sim_read.properties
+        _schema.system_data = cls._schema_sim_read.system_data
+        _schema.tags = cls._schema_sim_read.tags
+        _schema.type = cls._schema_sim_read.type
 
 
 __all__ = ["Deactivate"]

@@ -40,8 +40,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -102,7 +102,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -230,6 +230,10 @@ class List(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

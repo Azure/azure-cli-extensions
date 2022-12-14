@@ -86,8 +86,8 @@ class Update(AAZCommand):
             help="An optional free-form text field that can be used to record the device type this SIM is associated with, for example 'Video camera'. The Azure portal allows SIMs to be grouped and filtered based on this value.",
             nullable=True,
         )
-        _args_schema.integrated_circuit_card_identifier = AAZStrArg(
-            options=["--integrated-circuit-card-identifier"],
+        _args_schema.icc_id = AAZStrArg(
+            options=["--icc-id"],
             arg_group="Properties",
             help="The integrated circuit card ID (ICCID) for the SIM.",
             nullable=True,
@@ -110,8 +110,8 @@ class Update(AAZCommand):
             help="The SIM policy used by this SIM.",
             nullable=True,
         )
-        _args_schema.static_ip_configuration = AAZListArg(
-            options=["--static-ip-configuration"],
+        _args_schema.static_ip_config = AAZListArg(
+            options=["--static-ip-config"],
             arg_group="Properties",
             help="A list of static IP addresses assigned to this SIM. Each address is assigned at a defined network scope, made up of {attached data network, slice}.",
             nullable=True,
@@ -129,12 +129,12 @@ class Update(AAZCommand):
             ),
         )
 
-        static_ip_configuration = cls._args_schema.static_ip_configuration
-        static_ip_configuration.Element = AAZObjectArg(
+        static_ip_config = cls._args_schema.static_ip_config
+        static_ip_config.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.static_ip_configuration.Element
+        _element = cls._args_schema.static_ip_config.Element
         _element.attached_data_network = AAZObjectArg(
             options=["attached-data-network"],
             help="The attached data network on which the static IP address will be used. The combination of attached data network and slice defines the network scope of the IP address.",
@@ -151,7 +151,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        attached_data_network = cls._args_schema.static_ip_configuration.Element.attached_data_network
+        attached_data_network = cls._args_schema.static_ip_config.Element.attached_data_network
         attached_data_network.id = AAZStrArg(
             options=["id"],
             help="Attached data network resource ID.",
@@ -160,7 +160,7 @@ class Update(AAZCommand):
             ),
         )
 
-        slice = cls._args_schema.static_ip_configuration.Element.slice
+        slice = cls._args_schema.static_ip_config.Element.slice
         slice.id = AAZStrArg(
             options=["id"],
             help="Slice resource ID.",
@@ -169,7 +169,7 @@ class Update(AAZCommand):
             ),
         )
 
-        static_ip = cls._args_schema.static_ip_configuration.Element.static_ip
+        static_ip = cls._args_schema.static_ip_config.Element.static_ip
         static_ip.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address assigned to the SIM at this network scope. This address must be in the userEquipmentStaticAddressPoolPrefix defined in the attached data network.",
@@ -293,7 +293,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_sim_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_sim_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -408,7 +408,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_sim_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_sim_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -429,10 +429,10 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("authenticationKey", AAZStrType, ".authentication_key")
                 properties.set_prop("deviceType", AAZStrType, ".device_type")
-                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".integrated_circuit_card_identifier")
+                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".icc_id")
                 properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code")
                 properties.set_prop("simPolicy", AAZObjectType, ".sim_policy")
-                properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_configuration")
+                properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_config")
 
             sim_policy = _builder.get(".properties.simPolicy")
             if sim_policy is not None:
@@ -471,122 +471,124 @@ class Update(AAZCommand):
             )
 
 
-_schema_sim_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_sim_read = None
 
-def _build_schema_sim_read(_schema):
-    global _schema_sim_read
-    if _schema_sim_read is not None:
-        _schema.id = _schema_sim_read.id
-        _schema.name = _schema_sim_read.name
-        _schema.properties = _schema_sim_read.properties
-        _schema.system_data = _schema_sim_read.system_data
-        _schema.type = _schema_sim_read.type
-        return
+    @classmethod
+    def _build_schema_sim_read(cls, _schema):
+        if cls._schema_sim_read is not None:
+            _schema.id = cls._schema_sim_read.id
+            _schema.name = cls._schema_sim_read.name
+            _schema.properties = cls._schema_sim_read.properties
+            _schema.system_data = cls._schema_sim_read.system_data
+            _schema.type = cls._schema_sim_read.type
+            return
 
-    _schema_sim_read = AAZObjectType()
+        cls._schema_sim_read = _schema_sim_read = AAZObjectType()
 
-    sim_read = _schema_sim_read
-    sim_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    sim_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    sim_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    sim_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    sim_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        sim_read = _schema_sim_read
+        sim_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        sim_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        sim_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        sim_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        sim_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_sim_read.properties
-    properties.device_type = AAZStrType(
-        serialized_name="deviceType",
-    )
-    properties.integrated_circuit_card_identifier = AAZStrType(
-        serialized_name="integratedCircuitCardIdentifier",
-    )
-    properties.international_mobile_subscriber_identity = AAZStrType(
-        serialized_name="internationalMobileSubscriberIdentity",
-        flags={"required": True},
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.sim_policy = AAZObjectType(
-        serialized_name="simPolicy",
-    )
-    properties.sim_state = AAZStrType(
-        serialized_name="simState",
-        flags={"read_only": True},
-    )
-    properties.static_ip_configuration = AAZListType(
-        serialized_name="staticIpConfiguration",
-    )
+        properties = _schema_sim_read.properties
+        properties.device_type = AAZStrType(
+            serialized_name="deviceType",
+        )
+        properties.integrated_circuit_card_identifier = AAZStrType(
+            serialized_name="integratedCircuitCardIdentifier",
+        )
+        properties.international_mobile_subscriber_identity = AAZStrType(
+            serialized_name="internationalMobileSubscriberIdentity",
+            flags={"required": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sim_policy = AAZObjectType(
+            serialized_name="simPolicy",
+        )
+        properties.sim_state = AAZStrType(
+            serialized_name="simState",
+            flags={"read_only": True},
+        )
+        properties.static_ip_configuration = AAZListType(
+            serialized_name="staticIpConfiguration",
+        )
 
-    sim_policy = _schema_sim_read.properties.sim_policy
-    sim_policy.id = AAZStrType(
-        flags={"required": True},
-    )
+        sim_policy = _schema_sim_read.properties.sim_policy
+        sim_policy.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    static_ip_configuration = _schema_sim_read.properties.static_ip_configuration
-    static_ip_configuration.Element = AAZObjectType()
+        static_ip_configuration = _schema_sim_read.properties.static_ip_configuration
+        static_ip_configuration.Element = AAZObjectType()
 
-    _element = _schema_sim_read.properties.static_ip_configuration.Element
-    _element.attached_data_network = AAZObjectType(
-        serialized_name="attachedDataNetwork",
-    )
-    _element.slice = AAZObjectType()
-    _element.static_ip = AAZObjectType(
-        serialized_name="staticIp",
-    )
+        _element = _schema_sim_read.properties.static_ip_configuration.Element
+        _element.attached_data_network = AAZObjectType(
+            serialized_name="attachedDataNetwork",
+        )
+        _element.slice = AAZObjectType()
+        _element.static_ip = AAZObjectType(
+            serialized_name="staticIp",
+        )
 
-    attached_data_network = _schema_sim_read.properties.static_ip_configuration.Element.attached_data_network
-    attached_data_network.id = AAZStrType(
-        flags={"required": True},
-    )
+        attached_data_network = _schema_sim_read.properties.static_ip_configuration.Element.attached_data_network
+        attached_data_network.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    slice = _schema_sim_read.properties.static_ip_configuration.Element.slice
-    slice.id = AAZStrType(
-        flags={"required": True},
-    )
+        slice = _schema_sim_read.properties.static_ip_configuration.Element.slice
+        slice.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    static_ip = _schema_sim_read.properties.static_ip_configuration.Element.static_ip
-    static_ip.ipv4_address = AAZStrType(
-        serialized_name="ipv4Address",
-    )
+        static_ip = _schema_sim_read.properties.static_ip_configuration.Element.static_ip
+        static_ip.ipv4_address = AAZStrType(
+            serialized_name="ipv4Address",
+        )
 
-    system_data = _schema_sim_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_sim_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    _schema.id = _schema_sim_read.id
-    _schema.name = _schema_sim_read.name
-    _schema.properties = _schema_sim_read.properties
-    _schema.system_data = _schema_sim_read.system_data
-    _schema.type = _schema_sim_read.type
+        _schema.id = cls._schema_sim_read.id
+        _schema.name = cls._schema_sim_read.name
+        _schema.properties = cls._schema_sim_read.properties
+        _schema.system_data = cls._schema_sim_read.system_data
+        _schema.type = cls._schema_sim_read.type
 
 
 __all__ = ["Update"]

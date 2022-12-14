@@ -40,8 +40,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.attached_data_network_name = AAZStrArg(
-            options=["-n", "--name", "--attached-data-network-name"],
+        _args_schema.adn_name = AAZStrArg(
+            options=["-n", "--name", "--adn-name"],
             help="The name of the attached data network.",
             required=True,
             id_part="child_name_2",
@@ -50,8 +50,8 @@ class Wait(AAZWaitCommand):
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
             id_part="name",
@@ -60,8 +60,8 @@ class Wait(AAZWaitCommand):
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_data_plane_name = AAZStrArg(
-            options=["--packet-core-data-plane-name"],
+        _args_schema.pcdp_name = AAZStrArg(
+            options=["--pcdp-name"],
             help="The name of the packet core data plane.",
             required=True,
             id_part="child_name_1",
@@ -122,15 +122,15 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "attachedDataNetworkName", self.ctx.args.attached_data_network_name,
+                    "attachedDataNetworkName", self.ctx.args.adn_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreDataPlaneName", self.ctx.args.packet_core_data_plane_name,
+                    "packetCoreDataPlaneName", self.ctx.args.pcdp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -301,6 +301,10 @@ class Wait(AAZWaitCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
 __all__ = ["Wait"]

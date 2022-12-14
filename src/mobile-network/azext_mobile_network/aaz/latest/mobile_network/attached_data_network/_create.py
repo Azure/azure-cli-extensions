@@ -42,31 +42,28 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.attached_data_network_name = AAZStrArg(
-            options=["-n", "--name", "--attached-data-network-name"],
+        _args_schema.adn_name = AAZStrArg(
+            options=["-n", "--name", "--adn-name"],
             help="The name of the attached data network.",
             required=True,
-            id_part="child_name_2",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])*(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])*)*$",
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_data_plane_name = AAZStrArg(
-            options=["--packet-core-data-plane-name"],
+        _args_schema.pcdp_name = AAZStrArg(
+            options=["--pcdp-name"],
             help="The name of the packet core data plane.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -112,24 +109,24 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The network address and port translation (NAPT) configuration. If this is not specified, the attached data network will use a default NAPT configuration with NAPT enabled.",
         )
-        _args_schema.user_equipment_address_pool_prefix = AAZListArg(
-            options=["--user-equipment-address-pool-prefix"],
+        _args_schema.address_pool = AAZListArg(
+            options=["--address-pool"],
             arg_group="Properties",
             help="The user equipment (UE) address pool prefixes for the attached data network from which the packet core instance will dynamically assign IP addresses to UEs. The packet core instance assigns an IP address to a UE when the UE sets up a PDU session.  You must define at least one of userEquipmentAddressPoolPrefix and userEquipmentStaticAddressPoolPrefix. If you define both, they must be of the same size.",
             fmt=AAZListArgFormat(
                 unique=True,
             ),
         )
-        _args_schema.user_equipment_static_address_pool_prefix = AAZListArg(
-            options=["--user-equipment-static-address-pool-prefix"],
+        _args_schema.static_address_pool = AAZListArg(
+            options=["--static-address-pool"],
             arg_group="Properties",
             help="The user equipment (UE) address pool prefixes for the attached data network from which the packet core instance will assign static IP addresses to UEs. The packet core instance assigns an IP address to a UE when the UE sets up a PDU session. The static IP address for a specific UE is set in StaticIPConfiguration on the corresponding SIM resource. At least one of userEquipmentAddressPoolPrefix and userEquipmentStaticAddressPoolPrefix must be defined. If both are defined, they must be of the same size.",
             fmt=AAZListArgFormat(
                 unique=True,
             ),
         )
-        _args_schema.user_plane_data_interface = AAZObjectArg(
-            options=["--user-plane-data-interface"],
+        _args_schema.data_interface = AAZObjectArg(
+            options=["--data-interface"],
             arg_group="Properties",
             help="The user plane interface on the data network. For 5G networks, this is the N6 interface. For 4G networks, this is the SGi interface.",
             required=True,
@@ -235,43 +232,43 @@ class Create(AAZCommand):
             ),
         )
 
-        user_equipment_address_pool_prefix = cls._args_schema.user_equipment_address_pool_prefix
-        user_equipment_address_pool_prefix.Element = AAZStrArg(
+        address_pool = cls._args_schema.address_pool
+        address_pool.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
 
-        user_equipment_static_address_pool_prefix = cls._args_schema.user_equipment_static_address_pool_prefix
-        user_equipment_static_address_pool_prefix.Element = AAZStrArg(
+        static_address_pool = cls._args_schema.static_address_pool
+        static_address_pool.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
 
-        user_plane_data_interface = cls._args_schema.user_plane_data_interface
-        user_plane_data_interface.ipv4_address = AAZStrArg(
+        data_interface = cls._args_schema.data_interface
+        data_interface.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        user_plane_data_interface.ipv4_gateway = AAZStrArg(
+        data_interface.ipv4_gateway = AAZStrArg(
             options=["ipv4-gateway"],
             help="The default IPv4 gateway (router).",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        user_plane_data_interface.ipv4_subnet = AAZStrArg(
+        data_interface.ipv4_subnet = AAZStrArg(
             options=["ipv4-subnet"],
             help="The IPv4 subnet.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
-        user_plane_data_interface.name = AAZStrArg(
+        data_interface.name = AAZStrArg(
             options=["name"],
             help="The logical name for this interface. This should match one of the interfaces configured on your Azure Stack Edge device.",
         )
@@ -340,15 +337,15 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "attachedDataNetworkName", self.ctx.args.attached_data_network_name,
+                    "attachedDataNetworkName", self.ctx.args.adn_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreDataPlaneName", self.ctx.args.packet_core_data_plane_name,
+                    "packetCoreDataPlaneName", self.ctx.args.pcdp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -399,9 +396,9 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("dnsAddresses", AAZListType, ".dns_addresses")
                 properties.set_prop("naptConfiguration", AAZObjectType, ".napt_configuration")
-                properties.set_prop("userEquipmentAddressPoolPrefix", AAZListType, ".user_equipment_address_pool_prefix")
-                properties.set_prop("userEquipmentStaticAddressPoolPrefix", AAZListType, ".user_equipment_static_address_pool_prefix")
-                properties.set_prop("userPlaneDataInterface", AAZObjectType, ".user_plane_data_interface", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("userEquipmentAddressPoolPrefix", AAZListType, ".address_pool")
+                properties.set_prop("userEquipmentStaticAddressPoolPrefix", AAZListType, ".static_address_pool")
+                properties.set_prop("userPlaneDataInterface", AAZObjectType, ".data_interface", typ_kwargs={"flags": {"required": True}})
 
             dns_addresses = _builder.get(".properties.dnsAddresses")
             if dns_addresses is not None:
@@ -590,6 +587,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

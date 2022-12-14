@@ -230,7 +230,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_slice_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_slice_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -345,7 +345,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_slice_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_slice_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -388,91 +388,93 @@ class Update(AAZCommand):
             )
 
 
-_schema_slice_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_slice_read = None
 
-def _build_schema_slice_read(_schema):
-    global _schema_slice_read
-    if _schema_slice_read is not None:
-        _schema.id = _schema_slice_read.id
-        _schema.location = _schema_slice_read.location
-        _schema.name = _schema_slice_read.name
-        _schema.properties = _schema_slice_read.properties
-        _schema.system_data = _schema_slice_read.system_data
-        _schema.tags = _schema_slice_read.tags
-        _schema.type = _schema_slice_read.type
-        return
+    @classmethod
+    def _build_schema_slice_read(cls, _schema):
+        if cls._schema_slice_read is not None:
+            _schema.id = cls._schema_slice_read.id
+            _schema.location = cls._schema_slice_read.location
+            _schema.name = cls._schema_slice_read.name
+            _schema.properties = cls._schema_slice_read.properties
+            _schema.system_data = cls._schema_slice_read.system_data
+            _schema.tags = cls._schema_slice_read.tags
+            _schema.type = cls._schema_slice_read.type
+            return
 
-    _schema_slice_read = AAZObjectType()
+        cls._schema_slice_read = _schema_slice_read = AAZObjectType()
 
-    slice_read = _schema_slice_read
-    slice_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    slice_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    slice_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    slice_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    slice_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    slice_read.tags = AAZDictType()
-    slice_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        slice_read = _schema_slice_read
+        slice_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        slice_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        slice_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        slice_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        slice_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        slice_read.tags = AAZDictType()
+        slice_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_slice_read.properties
-    properties.description = AAZStrType()
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.snssai = AAZObjectType(
-        flags={"required": True},
-    )
+        properties = _schema_slice_read.properties
+        properties.description = AAZStrType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.snssai = AAZObjectType(
+            flags={"required": True},
+        )
 
-    snssai = _schema_slice_read.properties.snssai
-    snssai.sd = AAZStrType()
-    snssai.sst = AAZIntType(
-        flags={"required": True},
-    )
+        snssai = _schema_slice_read.properties.snssai
+        snssai.sd = AAZStrType()
+        snssai.sst = AAZIntType(
+            flags={"required": True},
+        )
 
-    system_data = _schema_slice_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_slice_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_slice_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_slice_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.id = _schema_slice_read.id
-    _schema.location = _schema_slice_read.location
-    _schema.name = _schema_slice_read.name
-    _schema.properties = _schema_slice_read.properties
-    _schema.system_data = _schema_slice_read.system_data
-    _schema.tags = _schema_slice_read.tags
-    _schema.type = _schema_slice_read.type
+        _schema.id = cls._schema_slice_read.id
+        _schema.location = cls._schema_slice_read.location
+        _schema.name = cls._schema_slice_read.name
+        _schema.properties = cls._schema_slice_read.properties
+        _schema.system_data = cls._schema_slice_read.system_data
+        _schema.tags = cls._schema_slice_read.tags
+        _schema.type = cls._schema_slice_read.type
 
 
 __all__ = ["Update"]

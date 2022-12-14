@@ -76,21 +76,21 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.public_land_mobile_network_identifier = AAZObjectArg(
-            options=["--public-land-mobile-network-identifier"],
+        _args_schema.identifier = AAZObjectArg(
+            options=["--identifier"],
             arg_group="Properties",
             help="The unique public land mobile network identifier for the network. This is made up of the mobile country code and mobile network code, as defined in https://www.itu.int/rec/T-REC-E.212. The values 001-01 and 001-001 can be used for testing and the values 999-99 and 999-999 can be used on internal private networks.",
         )
 
-        public_land_mobile_network_identifier = cls._args_schema.public_land_mobile_network_identifier
-        public_land_mobile_network_identifier.mcc = AAZStrArg(
+        identifier = cls._args_schema.identifier
+        identifier.mcc = AAZStrArg(
             options=["mcc"],
             help="Mobile country code (MCC).",
             fmt=AAZStrArgFormat(
                 pattern="^\d{3}$",
             ),
         )
-        public_land_mobile_network_identifier.mnc = AAZStrArg(
+        identifier.mnc = AAZStrArg(
             options=["mnc"],
             help="Mobile network code (MNC).",
             fmt=AAZStrArgFormat(
@@ -208,7 +208,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_mobile_network_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_mobile_network_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -319,7 +319,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_mobile_network_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_mobile_network_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -339,7 +339,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("publicLandMobileNetworkIdentifier", AAZObjectType, ".public_land_mobile_network_identifier", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("publicLandMobileNetworkIdentifier", AAZObjectType, ".identifier", typ_kwargs={"flags": {"required": True}})
 
             public_land_mobile_network_identifier = _builder.get(".properties.publicLandMobileNetworkIdentifier")
             if public_land_mobile_network_identifier is not None:
@@ -361,97 +361,99 @@ class Update(AAZCommand):
             )
 
 
-_schema_mobile_network_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_mobile_network_read = None
 
-def _build_schema_mobile_network_read(_schema):
-    global _schema_mobile_network_read
-    if _schema_mobile_network_read is not None:
-        _schema.id = _schema_mobile_network_read.id
-        _schema.location = _schema_mobile_network_read.location
-        _schema.name = _schema_mobile_network_read.name
-        _schema.properties = _schema_mobile_network_read.properties
-        _schema.system_data = _schema_mobile_network_read.system_data
-        _schema.tags = _schema_mobile_network_read.tags
-        _schema.type = _schema_mobile_network_read.type
-        return
+    @classmethod
+    def _build_schema_mobile_network_read(cls, _schema):
+        if cls._schema_mobile_network_read is not None:
+            _schema.id = cls._schema_mobile_network_read.id
+            _schema.location = cls._schema_mobile_network_read.location
+            _schema.name = cls._schema_mobile_network_read.name
+            _schema.properties = cls._schema_mobile_network_read.properties
+            _schema.system_data = cls._schema_mobile_network_read.system_data
+            _schema.tags = cls._schema_mobile_network_read.tags
+            _schema.type = cls._schema_mobile_network_read.type
+            return
 
-    _schema_mobile_network_read = AAZObjectType()
+        cls._schema_mobile_network_read = _schema_mobile_network_read = AAZObjectType()
 
-    mobile_network_read = _schema_mobile_network_read
-    mobile_network_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    mobile_network_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    mobile_network_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    mobile_network_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    mobile_network_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    mobile_network_read.tags = AAZDictType()
-    mobile_network_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        mobile_network_read = _schema_mobile_network_read
+        mobile_network_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        mobile_network_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        mobile_network_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        mobile_network_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        mobile_network_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        mobile_network_read.tags = AAZDictType()
+        mobile_network_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_mobile_network_read.properties
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.public_land_mobile_network_identifier = AAZObjectType(
-        serialized_name="publicLandMobileNetworkIdentifier",
-        flags={"required": True},
-    )
-    properties.service_key = AAZStrType(
-        serialized_name="serviceKey",
-        flags={"read_only": True},
-    )
+        properties = _schema_mobile_network_read.properties
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.public_land_mobile_network_identifier = AAZObjectType(
+            serialized_name="publicLandMobileNetworkIdentifier",
+            flags={"required": True},
+        )
+        properties.service_key = AAZStrType(
+            serialized_name="serviceKey",
+            flags={"read_only": True},
+        )
 
-    public_land_mobile_network_identifier = _schema_mobile_network_read.properties.public_land_mobile_network_identifier
-    public_land_mobile_network_identifier.mcc = AAZStrType(
-        flags={"required": True},
-    )
-    public_land_mobile_network_identifier.mnc = AAZStrType(
-        flags={"required": True},
-    )
+        public_land_mobile_network_identifier = _schema_mobile_network_read.properties.public_land_mobile_network_identifier
+        public_land_mobile_network_identifier.mcc = AAZStrType(
+            flags={"required": True},
+        )
+        public_land_mobile_network_identifier.mnc = AAZStrType(
+            flags={"required": True},
+        )
 
-    system_data = _schema_mobile_network_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_mobile_network_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_mobile_network_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_mobile_network_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.id = _schema_mobile_network_read.id
-    _schema.location = _schema_mobile_network_read.location
-    _schema.name = _schema_mobile_network_read.name
-    _schema.properties = _schema_mobile_network_read.properties
-    _schema.system_data = _schema_mobile_network_read.system_data
-    _schema.tags = _schema_mobile_network_read.tags
-    _schema.type = _schema_mobile_network_read.type
+        _schema.id = cls._schema_mobile_network_read.id
+        _schema.location = cls._schema_mobile_network_read.location
+        _schema.name = cls._schema_mobile_network_read.name
+        _schema.properties = cls._schema_mobile_network_read.properties
+        _schema.system_data = cls._schema_mobile_network_read.system_data
+        _schema.tags = cls._schema_mobile_network_read.tags
+        _schema.type = cls._schema_mobile_network_read.type
 
 
 __all__ = ["Update"]

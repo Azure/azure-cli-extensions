@@ -193,7 +193,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="defaultSlice",
                 flags={"required": True},
             )
-            _build_schema_slice_resource_id_read(properties.default_slice)
+            _WaitHelper._build_schema_slice_resource_id_read(properties.default_slice)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -212,7 +212,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="ueAmbr",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(properties.ue_ambr)
+            _WaitHelper._build_schema_ambr_read(properties.ue_ambr)
 
             slice_configurations = cls._schema_on_200.properties.slice_configurations
             slice_configurations.Element = AAZObjectType()
@@ -226,17 +226,17 @@ class Wait(AAZWaitCommand):
                 serialized_name="defaultDataNetwork",
                 flags={"required": True},
             )
-            _build_schema_data_network_resource_id_read(_element.default_data_network)
+            _WaitHelper._build_schema_data_network_resource_id_read(_element.default_data_network)
             _element.slice = AAZObjectType(
                 flags={"required": True},
             )
-            _build_schema_slice_resource_id_read(_element.slice)
+            _WaitHelper._build_schema_slice_resource_id_read(_element.slice)
 
             data_network_configurations = cls._schema_on_200.properties.slice_configurations.Element.data_network_configurations
             data_network_configurations.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.slice_configurations.Element.data_network_configurations.Element
-            _element['5qi'] = AAZIntType()
+            _element["5qi"] = AAZIntType()
             _element.additional_allowed_session_types = AAZListType(
                 serialized_name="additionalAllowedSessionTypes",
             )
@@ -251,7 +251,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="dataNetwork",
                 flags={"required": True},
             )
-            _build_schema_data_network_resource_id_read(_element.data_network)
+            _WaitHelper._build_schema_data_network_resource_id_read(_element.data_network)
             _element.default_session_type = AAZStrType(
                 serialized_name="defaultSessionType",
             )
@@ -265,7 +265,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="sessionAmbr",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(_element.session_ambr)
+            _WaitHelper._build_schema_ambr_read(_element.session_ambr)
 
             additional_allowed_session_types = cls._schema_on_200.properties.slice_configurations.Element.data_network_configurations.Element.additional_allowed_session_types
             additional_allowed_session_types.Element = AAZStrType()
@@ -304,66 +304,64 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-_schema_ambr_read = None
+class _WaitHelper:
+    """Helper class for Wait"""
 
+    _schema_ambr_read = None
 
-def _build_schema_ambr_read(_schema):
-    global _schema_ambr_read
-    if _schema_ambr_read is not None:
-        _schema.downlink = _schema_ambr_read.downlink
-        _schema.uplink = _schema_ambr_read.uplink
-        return
+    @classmethod
+    def _build_schema_ambr_read(cls, _schema):
+        if cls._schema_ambr_read is not None:
+            _schema.downlink = cls._schema_ambr_read.downlink
+            _schema.uplink = cls._schema_ambr_read.uplink
+            return
 
-    _schema_ambr_read = AAZObjectType()
+        cls._schema_ambr_read = _schema_ambr_read = AAZObjectType()
 
-    ambr_read = _schema_ambr_read
-    ambr_read.downlink = AAZStrType(
-        flags={"required": True},
-    )
-    ambr_read.uplink = AAZStrType(
-        flags={"required": True},
-    )
+        ambr_read = _schema_ambr_read
+        ambr_read.downlink = AAZStrType(
+            flags={"required": True},
+        )
+        ambr_read.uplink = AAZStrType(
+            flags={"required": True},
+        )
 
-    _schema.downlink = _schema_ambr_read.downlink
-    _schema.uplink = _schema_ambr_read.uplink
+        _schema.downlink = cls._schema_ambr_read.downlink
+        _schema.uplink = cls._schema_ambr_read.uplink
 
+    _schema_data_network_resource_id_read = None
 
-_schema_data_network_resource_id_read = None
+    @classmethod
+    def _build_schema_data_network_resource_id_read(cls, _schema):
+        if cls._schema_data_network_resource_id_read is not None:
+            _schema.id = cls._schema_data_network_resource_id_read.id
+            return
 
+        cls._schema_data_network_resource_id_read = _schema_data_network_resource_id_read = AAZObjectType()
 
-def _build_schema_data_network_resource_id_read(_schema):
-    global _schema_data_network_resource_id_read
-    if _schema_data_network_resource_id_read is not None:
-        _schema.id = _schema_data_network_resource_id_read.id
-        return
+        data_network_resource_id_read = _schema_data_network_resource_id_read
+        data_network_resource_id_read.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    _schema_data_network_resource_id_read = AAZObjectType()
+        _schema.id = cls._schema_data_network_resource_id_read.id
 
-    data_network_resource_id_read = _schema_data_network_resource_id_read
-    data_network_resource_id_read.id = AAZStrType(
-        flags={"required": True},
-    )
+    _schema_slice_resource_id_read = None
 
-    _schema.id = _schema_data_network_resource_id_read.id
+    @classmethod
+    def _build_schema_slice_resource_id_read(cls, _schema):
+        if cls._schema_slice_resource_id_read is not None:
+            _schema.id = cls._schema_slice_resource_id_read.id
+            return
 
+        cls._schema_slice_resource_id_read = _schema_slice_resource_id_read = AAZObjectType()
 
-_schema_slice_resource_id_read = None
+        slice_resource_id_read = _schema_slice_resource_id_read
+        slice_resource_id_read.id = AAZStrType(
+            flags={"required": True},
+        )
 
-
-def _build_schema_slice_resource_id_read(_schema):
-    global _schema_slice_resource_id_read
-    if _schema_slice_resource_id_read is not None:
-        _schema.id = _schema_slice_resource_id_read.id
-        return
-
-    _schema_slice_resource_id_read = AAZObjectType()
-
-    slice_resource_id_read = _schema_slice_resource_id_read
-    slice_resource_id_read.id = AAZStrType(
-        flags={"required": True},
-    )
-
-    _schema.id = _schema_slice_resource_id_read.id
+        _schema.id = cls._schema_slice_resource_id_read.id
 
 
 __all__ = ["Wait"]

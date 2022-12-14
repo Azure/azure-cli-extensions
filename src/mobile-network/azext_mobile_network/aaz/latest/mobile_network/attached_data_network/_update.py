@@ -44,8 +44,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.attached_data_network_name = AAZStrArg(
-            options=["-n", "--name", "--attached-data-network-name"],
+        _args_schema.adn_name = AAZStrArg(
+            options=["-n", "--name", "--adn-name"],
             help="The name of the attached data network.",
             required=True,
             id_part="child_name_2",
@@ -54,8 +54,8 @@ class Update(AAZCommand):
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
             id_part="name",
@@ -64,8 +64,8 @@ class Update(AAZCommand):
                 max_length=64,
             ),
         )
-        _args_schema.packet_core_data_plane_name = AAZStrArg(
-            options=["--packet-core-data-plane-name"],
+        _args_schema.pcdp_name = AAZStrArg(
+            options=["--pcdp-name"],
             help="The name of the packet core data plane.",
             required=True,
             id_part="child_name_1",
@@ -111,8 +111,8 @@ class Update(AAZCommand):
             help="The network address and port translation (NAPT) configuration. If this is not specified, the attached data network will use a default NAPT configuration with NAPT enabled.",
             nullable=True,
         )
-        _args_schema.user_equipment_address_pool_prefix = AAZListArg(
-            options=["--user-equipment-address-pool-prefix"],
+        _args_schema.address_pool = AAZListArg(
+            options=["--address-pool"],
             arg_group="Properties",
             help="The user equipment (UE) address pool prefixes for the attached data network from which the packet core instance will dynamically assign IP addresses to UEs. The packet core instance assigns an IP address to a UE when the UE sets up a PDU session.  You must define at least one of userEquipmentAddressPoolPrefix and userEquipmentStaticAddressPoolPrefix. If you define both, they must be of the same size.",
             nullable=True,
@@ -120,8 +120,8 @@ class Update(AAZCommand):
                 unique=True,
             ),
         )
-        _args_schema.user_equipment_static_address_pool_prefix = AAZListArg(
-            options=["--user-equipment-static-address-pool-prefix"],
+        _args_schema.static_address_pool = AAZListArg(
+            options=["--static-address-pool"],
             arg_group="Properties",
             help="The user equipment (UE) address pool prefixes for the attached data network from which the packet core instance will assign static IP addresses to UEs. The packet core instance assigns an IP address to a UE when the UE sets up a PDU session. The static IP address for a specific UE is set in StaticIPConfiguration on the corresponding SIM resource. At least one of userEquipmentAddressPoolPrefix and userEquipmentStaticAddressPoolPrefix must be defined. If both are defined, they must be of the same size.",
             nullable=True,
@@ -129,8 +129,8 @@ class Update(AAZCommand):
                 unique=True,
             ),
         )
-        _args_schema.user_plane_data_interface = AAZObjectArg(
-            options=["--user-plane-data-interface"],
+        _args_schema.plane_data_interface = AAZObjectArg(
+            options=["--plane-data-interface"],
             arg_group="Properties",
             help="The user plane interface on the data network. For 5G networks, this is the N6 interface. For 4G networks, this is the SGi interface.",
         )
@@ -239,24 +239,24 @@ class Update(AAZCommand):
             ),
         )
 
-        user_equipment_address_pool_prefix = cls._args_schema.user_equipment_address_pool_prefix
-        user_equipment_address_pool_prefix.Element = AAZStrArg(
+        address_pool = cls._args_schema.address_pool
+        address_pool.Element = AAZStrArg(
             nullable=True,
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
 
-        user_equipment_static_address_pool_prefix = cls._args_schema.user_equipment_static_address_pool_prefix
-        user_equipment_static_address_pool_prefix.Element = AAZStrArg(
+        static_address_pool = cls._args_schema.static_address_pool
+        static_address_pool.Element = AAZStrArg(
             nullable=True,
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
 
-        user_plane_data_interface = cls._args_schema.user_plane_data_interface
-        user_plane_data_interface.ipv4_address = AAZStrArg(
+        plane_data_interface = cls._args_schema.plane_data_interface
+        plane_data_interface.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address.",
             nullable=True,
@@ -264,7 +264,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        user_plane_data_interface.ipv4_gateway = AAZStrArg(
+        plane_data_interface.ipv4_gateway = AAZStrArg(
             options=["ipv4-gateway"],
             help="The default IPv4 gateway (router).",
             nullable=True,
@@ -272,7 +272,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        user_plane_data_interface.ipv4_subnet = AAZStrArg(
+        plane_data_interface.ipv4_subnet = AAZStrArg(
             options=["ipv4-subnet"],
             help="The IPv4 subnet.",
             nullable=True,
@@ -280,7 +280,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
-        user_plane_data_interface.name = AAZStrArg(
+        plane_data_interface.name = AAZStrArg(
             options=["name"],
             help="The logical name for this interface. This should match one of the interfaces configured on your Azure Stack Edge device.",
             nullable=True,
@@ -347,15 +347,15 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "attachedDataNetworkName", self.ctx.args.attached_data_network_name,
+                    "attachedDataNetworkName", self.ctx.args.adn_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreDataPlaneName", self.ctx.args.packet_core_data_plane_name,
+                    "packetCoreDataPlaneName", self.ctx.args.pcdp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -404,7 +404,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_attached_data_network_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_attached_data_network_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -454,15 +454,15 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "attachedDataNetworkName", self.ctx.args.attached_data_network_name,
+                    "attachedDataNetworkName", self.ctx.args.adn_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "packetCoreDataPlaneName", self.ctx.args.packet_core_data_plane_name,
+                    "packetCoreDataPlaneName", self.ctx.args.pcdp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -523,7 +523,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_attached_data_network_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_attached_data_network_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -545,9 +545,9 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("dnsAddresses", AAZListType, ".dns_addresses")
                 properties.set_prop("naptConfiguration", AAZObjectType, ".napt_configuration")
-                properties.set_prop("userEquipmentAddressPoolPrefix", AAZListType, ".user_equipment_address_pool_prefix")
-                properties.set_prop("userEquipmentStaticAddressPoolPrefix", AAZListType, ".user_equipment_static_address_pool_prefix")
-                properties.set_prop("userPlaneDataInterface", AAZObjectType, ".user_plane_data_interface", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("userEquipmentAddressPoolPrefix", AAZListType, ".address_pool")
+                properties.set_prop("userEquipmentStaticAddressPoolPrefix", AAZListType, ".static_address_pool")
+                properties.set_prop("userPlaneDataInterface", AAZObjectType, ".plane_data_interface", typ_kwargs={"flags": {"required": True}})
 
             dns_addresses = _builder.get(".properties.dnsAddresses")
             if dns_addresses is not None:
@@ -607,150 +607,152 @@ class Update(AAZCommand):
             )
 
 
-_schema_attached_data_network_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_attached_data_network_read = None
 
-def _build_schema_attached_data_network_read(_schema):
-    global _schema_attached_data_network_read
-    if _schema_attached_data_network_read is not None:
-        _schema.id = _schema_attached_data_network_read.id
-        _schema.location = _schema_attached_data_network_read.location
-        _schema.name = _schema_attached_data_network_read.name
-        _schema.properties = _schema_attached_data_network_read.properties
-        _schema.system_data = _schema_attached_data_network_read.system_data
-        _schema.tags = _schema_attached_data_network_read.tags
-        _schema.type = _schema_attached_data_network_read.type
-        return
+    @classmethod
+    def _build_schema_attached_data_network_read(cls, _schema):
+        if cls._schema_attached_data_network_read is not None:
+            _schema.id = cls._schema_attached_data_network_read.id
+            _schema.location = cls._schema_attached_data_network_read.location
+            _schema.name = cls._schema_attached_data_network_read.name
+            _schema.properties = cls._schema_attached_data_network_read.properties
+            _schema.system_data = cls._schema_attached_data_network_read.system_data
+            _schema.tags = cls._schema_attached_data_network_read.tags
+            _schema.type = cls._schema_attached_data_network_read.type
+            return
 
-    _schema_attached_data_network_read = AAZObjectType()
+        cls._schema_attached_data_network_read = _schema_attached_data_network_read = AAZObjectType()
 
-    attached_data_network_read = _schema_attached_data_network_read
-    attached_data_network_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    attached_data_network_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    attached_data_network_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    attached_data_network_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    attached_data_network_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    attached_data_network_read.tags = AAZDictType()
-    attached_data_network_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        attached_data_network_read = _schema_attached_data_network_read
+        attached_data_network_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        attached_data_network_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        attached_data_network_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        attached_data_network_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        attached_data_network_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        attached_data_network_read.tags = AAZDictType()
+        attached_data_network_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_attached_data_network_read.properties
-    properties.dns_addresses = AAZListType(
-        serialized_name="dnsAddresses",
-    )
-    properties.napt_configuration = AAZObjectType(
-        serialized_name="naptConfiguration",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.user_equipment_address_pool_prefix = AAZListType(
-        serialized_name="userEquipmentAddressPoolPrefix",
-    )
-    properties.user_equipment_static_address_pool_prefix = AAZListType(
-        serialized_name="userEquipmentStaticAddressPoolPrefix",
-    )
-    properties.user_plane_data_interface = AAZObjectType(
-        serialized_name="userPlaneDataInterface",
-        flags={"required": True},
-    )
+        properties = _schema_attached_data_network_read.properties
+        properties.dns_addresses = AAZListType(
+            serialized_name="dnsAddresses",
+        )
+        properties.napt_configuration = AAZObjectType(
+            serialized_name="naptConfiguration",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.user_equipment_address_pool_prefix = AAZListType(
+            serialized_name="userEquipmentAddressPoolPrefix",
+        )
+        properties.user_equipment_static_address_pool_prefix = AAZListType(
+            serialized_name="userEquipmentStaticAddressPoolPrefix",
+        )
+        properties.user_plane_data_interface = AAZObjectType(
+            serialized_name="userPlaneDataInterface",
+            flags={"required": True},
+        )
 
-    dns_addresses = _schema_attached_data_network_read.properties.dns_addresses
-    dns_addresses.Element = AAZStrType()
+        dns_addresses = _schema_attached_data_network_read.properties.dns_addresses
+        dns_addresses.Element = AAZStrType()
 
-    napt_configuration = _schema_attached_data_network_read.properties.napt_configuration
-    napt_configuration.enabled = AAZStrType()
-    napt_configuration.pinhole_limits = AAZIntType(
-        serialized_name="pinholeLimits",
-    )
-    napt_configuration.pinhole_timeouts = AAZObjectType(
-        serialized_name="pinholeTimeouts",
-    )
-    napt_configuration.port_range = AAZObjectType(
-        serialized_name="portRange",
-    )
-    napt_configuration.port_reuse_hold_time = AAZObjectType(
-        serialized_name="portReuseHoldTime",
-    )
+        napt_configuration = _schema_attached_data_network_read.properties.napt_configuration
+        napt_configuration.enabled = AAZStrType()
+        napt_configuration.pinhole_limits = AAZIntType(
+            serialized_name="pinholeLimits",
+        )
+        napt_configuration.pinhole_timeouts = AAZObjectType(
+            serialized_name="pinholeTimeouts",
+        )
+        napt_configuration.port_range = AAZObjectType(
+            serialized_name="portRange",
+        )
+        napt_configuration.port_reuse_hold_time = AAZObjectType(
+            serialized_name="portReuseHoldTime",
+        )
 
-    pinhole_timeouts = _schema_attached_data_network_read.properties.napt_configuration.pinhole_timeouts
-    pinhole_timeouts.icmp = AAZIntType()
-    pinhole_timeouts.tcp = AAZIntType()
-    pinhole_timeouts.udp = AAZIntType()
+        pinhole_timeouts = _schema_attached_data_network_read.properties.napt_configuration.pinhole_timeouts
+        pinhole_timeouts.icmp = AAZIntType()
+        pinhole_timeouts.tcp = AAZIntType()
+        pinhole_timeouts.udp = AAZIntType()
 
-    port_range = _schema_attached_data_network_read.properties.napt_configuration.port_range
-    port_range.max_port = AAZIntType(
-        serialized_name="maxPort",
-    )
-    port_range.min_port = AAZIntType(
-        serialized_name="minPort",
-    )
+        port_range = _schema_attached_data_network_read.properties.napt_configuration.port_range
+        port_range.max_port = AAZIntType(
+            serialized_name="maxPort",
+        )
+        port_range.min_port = AAZIntType(
+            serialized_name="minPort",
+        )
 
-    port_reuse_hold_time = _schema_attached_data_network_read.properties.napt_configuration.port_reuse_hold_time
-    port_reuse_hold_time.tcp = AAZIntType()
-    port_reuse_hold_time.udp = AAZIntType()
+        port_reuse_hold_time = _schema_attached_data_network_read.properties.napt_configuration.port_reuse_hold_time
+        port_reuse_hold_time.tcp = AAZIntType()
+        port_reuse_hold_time.udp = AAZIntType()
 
-    user_equipment_address_pool_prefix = _schema_attached_data_network_read.properties.user_equipment_address_pool_prefix
-    user_equipment_address_pool_prefix.Element = AAZStrType()
+        user_equipment_address_pool_prefix = _schema_attached_data_network_read.properties.user_equipment_address_pool_prefix
+        user_equipment_address_pool_prefix.Element = AAZStrType()
 
-    user_equipment_static_address_pool_prefix = _schema_attached_data_network_read.properties.user_equipment_static_address_pool_prefix
-    user_equipment_static_address_pool_prefix.Element = AAZStrType()
+        user_equipment_static_address_pool_prefix = _schema_attached_data_network_read.properties.user_equipment_static_address_pool_prefix
+        user_equipment_static_address_pool_prefix.Element = AAZStrType()
 
-    user_plane_data_interface = _schema_attached_data_network_read.properties.user_plane_data_interface
-    user_plane_data_interface.ipv4_address = AAZStrType(
-        serialized_name="ipv4Address",
-    )
-    user_plane_data_interface.ipv4_gateway = AAZStrType(
-        serialized_name="ipv4Gateway",
-    )
-    user_plane_data_interface.ipv4_subnet = AAZStrType(
-        serialized_name="ipv4Subnet",
-    )
-    user_plane_data_interface.name = AAZStrType()
+        user_plane_data_interface = _schema_attached_data_network_read.properties.user_plane_data_interface
+        user_plane_data_interface.ipv4_address = AAZStrType(
+            serialized_name="ipv4Address",
+        )
+        user_plane_data_interface.ipv4_gateway = AAZStrType(
+            serialized_name="ipv4Gateway",
+        )
+        user_plane_data_interface.ipv4_subnet = AAZStrType(
+            serialized_name="ipv4Subnet",
+        )
+        user_plane_data_interface.name = AAZStrType()
 
-    system_data = _schema_attached_data_network_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_attached_data_network_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    tags = _schema_attached_data_network_read.tags
-    tags.Element = AAZStrType()
+        tags = _schema_attached_data_network_read.tags
+        tags.Element = AAZStrType()
 
-    _schema.id = _schema_attached_data_network_read.id
-    _schema.location = _schema_attached_data_network_read.location
-    _schema.name = _schema_attached_data_network_read.name
-    _schema.properties = _schema_attached_data_network_read.properties
-    _schema.system_data = _schema_attached_data_network_read.system_data
-    _schema.tags = _schema_attached_data_network_read.tags
-    _schema.type = _schema_attached_data_network_read.type
+        _schema.id = cls._schema_attached_data_network_read.id
+        _schema.location = cls._schema_attached_data_network_read.location
+        _schema.name = cls._schema_attached_data_network_read.name
+        _schema.properties = cls._schema_attached_data_network_read.properties
+        _schema.system_data = cls._schema_attached_data_network_read.system_data
+        _schema.tags = cls._schema_attached_data_network_read.tags
+        _schema.type = cls._schema_attached_data_network_read.type
 
 
 __all__ = ["Update"]

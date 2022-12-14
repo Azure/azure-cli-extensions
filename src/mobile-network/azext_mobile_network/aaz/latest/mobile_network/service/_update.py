@@ -440,7 +440,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_service_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_service_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -555,7 +555,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_service_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_service_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -595,8 +595,8 @@ class Update(AAZCommand):
             if rule_qos_policy is not None:
                 rule_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
                 rule_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
-                _build_schema_ambr_update(rule_qos_policy.set_prop("guaranteedBitRate", AAZObjectType, ".guaranteed_bit_rate"))
-                _build_schema_ambr_update(rule_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
+                _UpdateHelper._build_schema_ambr_update(rule_qos_policy.set_prop("guaranteedBitRate", AAZObjectType, ".guaranteed_bit_rate"))
+                _UpdateHelper._build_schema_ambr_update(rule_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
                 rule_qos_policy.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
                 rule_qos_policy.set_prop("preemptionVulnerability", AAZStrType, ".preemption_vulnerability")
 
@@ -628,7 +628,7 @@ class Update(AAZCommand):
             if service_qos_policy is not None:
                 service_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
                 service_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
-                _build_schema_ambr_update(service_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
+                _UpdateHelper._build_schema_ambr_update(service_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
                 service_qos_policy.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
                 service_qos_policy.set_prop("preemptionVulnerability", AAZStrType, ".preemption_vulnerability")
 
@@ -647,213 +647,213 @@ class Update(AAZCommand):
             )
 
 
-def _build_schema_ambr_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("downlink", AAZStrType, ".downlink", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("uplink", AAZStrType, ".uplink", typ_kwargs={"flags": {"required": True}})
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    @classmethod
+    def _build_schema_ambr_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("downlink", AAZStrType, ".downlink", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("uplink", AAZStrType, ".uplink", typ_kwargs={"flags": {"required": True}})
 
-_schema_ambr_read = None
+    _schema_ambr_read = None
 
+    @classmethod
+    def _build_schema_ambr_read(cls, _schema):
+        if cls._schema_ambr_read is not None:
+            _schema.downlink = cls._schema_ambr_read.downlink
+            _schema.uplink = cls._schema_ambr_read.uplink
+            return
 
-def _build_schema_ambr_read(_schema):
-    global _schema_ambr_read
-    if _schema_ambr_read is not None:
-        _schema.downlink = _schema_ambr_read.downlink
-        _schema.uplink = _schema_ambr_read.uplink
-        return
+        cls._schema_ambr_read = _schema_ambr_read = AAZObjectType()
 
-    _schema_ambr_read = AAZObjectType()
+        ambr_read = _schema_ambr_read
+        ambr_read.downlink = AAZStrType(
+            flags={"required": True},
+        )
+        ambr_read.uplink = AAZStrType(
+            flags={"required": True},
+        )
 
-    ambr_read = _schema_ambr_read
-    ambr_read.downlink = AAZStrType(
-        flags={"required": True},
-    )
-    ambr_read.uplink = AAZStrType(
-        flags={"required": True},
-    )
+        _schema.downlink = cls._schema_ambr_read.downlink
+        _schema.uplink = cls._schema_ambr_read.uplink
 
-    _schema.downlink = _schema_ambr_read.downlink
-    _schema.uplink = _schema_ambr_read.uplink
+    _schema_service_read = None
 
+    @classmethod
+    def _build_schema_service_read(cls, _schema):
+        if cls._schema_service_read is not None:
+            _schema.id = cls._schema_service_read.id
+            _schema.location = cls._schema_service_read.location
+            _schema.name = cls._schema_service_read.name
+            _schema.properties = cls._schema_service_read.properties
+            _schema.system_data = cls._schema_service_read.system_data
+            _schema.tags = cls._schema_service_read.tags
+            _schema.type = cls._schema_service_read.type
+            return
 
-_schema_service_read = None
+        cls._schema_service_read = _schema_service_read = AAZObjectType()
 
+        service_read = _schema_service_read
+        service_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        service_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        service_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        service_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        service_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"client_flatten": True, "read_only": True},
+        )
+        service_read.tags = AAZDictType()
+        service_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-def _build_schema_service_read(_schema):
-    global _schema_service_read
-    if _schema_service_read is not None:
-        _schema.id = _schema_service_read.id
-        _schema.location = _schema_service_read.location
-        _schema.name = _schema_service_read.name
-        _schema.properties = _schema_service_read.properties
-        _schema.system_data = _schema_service_read.system_data
-        _schema.tags = _schema_service_read.tags
-        _schema.type = _schema_service_read.type
-        return
+        properties = _schema_service_read.properties
+        properties.pcc_rules = AAZListType(
+            serialized_name="pccRules",
+            flags={"required": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.service_precedence = AAZIntType(
+            serialized_name="servicePrecedence",
+            flags={"required": True},
+        )
+        properties.service_qos_policy = AAZObjectType(
+            serialized_name="serviceQosPolicy",
+        )
 
-    _schema_service_read = AAZObjectType()
+        pcc_rules = _schema_service_read.properties.pcc_rules
+        pcc_rules.Element = AAZObjectType()
 
-    service_read = _schema_service_read
-    service_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    service_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    service_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    service_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    service_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"client_flatten": True, "read_only": True},
-    )
-    service_read.tags = AAZDictType()
-    service_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        _element = _schema_service_read.properties.pcc_rules.Element
+        _element.rule_name = AAZStrType(
+            serialized_name="ruleName",
+            flags={"required": True},
+        )
+        _element.rule_precedence = AAZIntType(
+            serialized_name="rulePrecedence",
+            flags={"required": True},
+        )
+        _element.rule_qos_policy = AAZObjectType(
+            serialized_name="ruleQosPolicy",
+        )
+        _element.service_data_flow_templates = AAZListType(
+            serialized_name="serviceDataFlowTemplates",
+            flags={"required": True},
+        )
+        _element.traffic_control = AAZStrType(
+            serialized_name="trafficControl",
+        )
 
-    properties = _schema_service_read.properties
-    properties.pcc_rules = AAZListType(
-        serialized_name="pccRules",
-        flags={"required": True},
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.service_precedence = AAZIntType(
-        serialized_name="servicePrecedence",
-        flags={"required": True},
-    )
-    properties.service_qos_policy = AAZObjectType(
-        serialized_name="serviceQosPolicy",
-    )
+        rule_qos_policy = _schema_service_read.properties.pcc_rules.Element.rule_qos_policy
+        rule_qos_policy["5qi"] = AAZIntType()
+        rule_qos_policy.allocation_and_retention_priority_level = AAZIntType(
+            serialized_name="allocationAndRetentionPriorityLevel",
+        )
+        rule_qos_policy.guaranteed_bit_rate = AAZObjectType(
+            serialized_name="guaranteedBitRate",
+        )
+        cls._build_schema_ambr_read(rule_qos_policy.guaranteed_bit_rate)
+        rule_qos_policy.maximum_bit_rate = AAZObjectType(
+            serialized_name="maximumBitRate",
+            flags={"required": True},
+        )
+        cls._build_schema_ambr_read(rule_qos_policy.maximum_bit_rate)
+        rule_qos_policy.preemption_capability = AAZStrType(
+            serialized_name="preemptionCapability",
+        )
+        rule_qos_policy.preemption_vulnerability = AAZStrType(
+            serialized_name="preemptionVulnerability",
+        )
 
-    pcc_rules = _schema_service_read.properties.pcc_rules
-    pcc_rules.Element = AAZObjectType()
+        service_data_flow_templates = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates
+        service_data_flow_templates.Element = AAZObjectType()
 
-    _element = _schema_service_read.properties.pcc_rules.Element
-    _element.rule_name = AAZStrType(
-        serialized_name="ruleName",
-        flags={"required": True},
-    )
-    _element.rule_precedence = AAZIntType(
-        serialized_name="rulePrecedence",
-        flags={"required": True},
-    )
-    _element.rule_qos_policy = AAZObjectType(
-        serialized_name="ruleQosPolicy",
-    )
-    _element.service_data_flow_templates = AAZListType(
-        serialized_name="serviceDataFlowTemplates",
-        flags={"required": True},
-    )
-    _element.traffic_control = AAZStrType(
-        serialized_name="trafficControl",
-    )
+        _element = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element
+        _element.direction = AAZStrType(
+            flags={"required": True},
+        )
+        _element.ports = AAZListType()
+        _element.protocol = AAZListType(
+            flags={"required": True},
+        )
+        _element.remote_ip_list = AAZListType(
+            serialized_name="remoteIpList",
+            flags={"required": True},
+        )
+        _element.template_name = AAZStrType(
+            serialized_name="templateName",
+            flags={"required": True},
+        )
 
-    rule_qos_policy = _schema_service_read.properties.pcc_rules.Element.rule_qos_policy
-    rule_qos_policy['5qi'] = AAZIntType()
-    rule_qos_policy.allocation_and_retention_priority_level = AAZIntType(
-        serialized_name="allocationAndRetentionPriorityLevel",
-    )
-    rule_qos_policy.guaranteed_bit_rate = AAZObjectType(
-        serialized_name="guaranteedBitRate",
-    )
-    _build_schema_ambr_read(rule_qos_policy.guaranteed_bit_rate)
-    rule_qos_policy.maximum_bit_rate = AAZObjectType(
-        serialized_name="maximumBitRate",
-        flags={"required": True},
-    )
-    _build_schema_ambr_read(rule_qos_policy.maximum_bit_rate)
-    rule_qos_policy.preemption_capability = AAZStrType(
-        serialized_name="preemptionCapability",
-    )
-    rule_qos_policy.preemption_vulnerability = AAZStrType(
-        serialized_name="preemptionVulnerability",
-    )
+        ports = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element.ports
+        ports.Element = AAZStrType()
 
-    service_data_flow_templates = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates
-    service_data_flow_templates.Element = AAZObjectType()
+        protocol = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element.protocol
+        protocol.Element = AAZStrType()
 
-    _element = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element
-    _element.direction = AAZStrType(
-        flags={"required": True},
-    )
-    _element.ports = AAZListType()
-    _element.protocol = AAZListType(
-        flags={"required": True},
-    )
-    _element.remote_ip_list = AAZListType(
-        serialized_name="remoteIpList",
-        flags={"required": True},
-    )
-    _element.template_name = AAZStrType(
-        serialized_name="templateName",
-        flags={"required": True},
-    )
+        remote_ip_list = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element.remote_ip_list
+        remote_ip_list.Element = AAZStrType()
 
-    ports = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element.ports
-    ports.Element = AAZStrType()
+        service_qos_policy = _schema_service_read.properties.service_qos_policy
+        service_qos_policy["5qi"] = AAZIntType()
+        service_qos_policy.allocation_and_retention_priority_level = AAZIntType(
+            serialized_name="allocationAndRetentionPriorityLevel",
+        )
+        service_qos_policy.maximum_bit_rate = AAZObjectType(
+            serialized_name="maximumBitRate",
+            flags={"required": True},
+        )
+        cls._build_schema_ambr_read(service_qos_policy.maximum_bit_rate)
+        service_qos_policy.preemption_capability = AAZStrType(
+            serialized_name="preemptionCapability",
+        )
+        service_qos_policy.preemption_vulnerability = AAZStrType(
+            serialized_name="preemptionVulnerability",
+        )
 
-    protocol = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element.protocol
-    protocol.Element = AAZStrType()
+        system_data = _schema_service_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    remote_ip_list = _schema_service_read.properties.pcc_rules.Element.service_data_flow_templates.Element.remote_ip_list
-    remote_ip_list.Element = AAZStrType()
+        tags = _schema_service_read.tags
+        tags.Element = AAZStrType()
 
-    service_qos_policy = _schema_service_read.properties.service_qos_policy
-    service_qos_policy['5qi'] = AAZIntType()
-    service_qos_policy.allocation_and_retention_priority_level = AAZIntType(
-        serialized_name="allocationAndRetentionPriorityLevel",
-    )
-    service_qos_policy.maximum_bit_rate = AAZObjectType(
-        serialized_name="maximumBitRate",
-        flags={"required": True},
-    )
-    _build_schema_ambr_read(service_qos_policy.maximum_bit_rate)
-    service_qos_policy.preemption_capability = AAZStrType(
-        serialized_name="preemptionCapability",
-    )
-    service_qos_policy.preemption_vulnerability = AAZStrType(
-        serialized_name="preemptionVulnerability",
-    )
-
-    system_data = _schema_service_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
-
-    tags = _schema_service_read.tags
-    tags.Element = AAZStrType()
-
-    _schema.id = _schema_service_read.id
-    _schema.location = _schema_service_read.location
-    _schema.name = _schema_service_read.name
-    _schema.properties = _schema_service_read.properties
-    _schema.system_data = _schema_service_read.system_data
-    _schema.tags = _schema_service_read.tags
-    _schema.type = _schema_service_read.type
+        _schema.id = cls._schema_service_read.id
+        _schema.location = cls._schema_service_read.location
+        _schema.name = cls._schema_service_read.name
+        _schema.properties = cls._schema_service_read.properties
+        _schema.system_data = cls._schema_service_read.system_data
+        _schema.tags = cls._schema_service_read.tags
+        _schema.type = cls._schema_service_read.type
 
 
 __all__ = ["Update"]

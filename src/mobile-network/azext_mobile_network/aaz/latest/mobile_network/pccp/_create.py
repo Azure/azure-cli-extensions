@@ -42,11 +42,10 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["-n", "--name", "--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["-n", "--name", "--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -101,20 +100,20 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.control_plane_access_interface = AAZObjectArg(
-            options=["--control-plane-access-interface"],
+        _args_schema.access_interface = AAZObjectArg(
+            options=["--access-interface"],
             arg_group="Properties",
             help="The control plane interface on the access network. For 5G networks, this is the N2 interface. For 4G networks, this is the S1-MME interface.",
             required=True,
         )
-        _args_schema.core_network_technology = AAZStrArg(
-            options=["--core-network-technology"],
+        _args_schema.core_network_tec = AAZStrArg(
+            options=["--core-network-tec"],
             arg_group="Properties",
             help="The core network technology generation (5G core or EPC / 4G core).",
             enum={"5GC": "5GC", "EPC": "EPC"},
         )
-        _args_schema.local_diagnostics_access = AAZObjectArg(
-            options=["--local-diagnostics-access"],
+        _args_schema.local_diagnostics = AAZObjectArg(
+            options=["--local-diagnostics"],
             arg_group="Properties",
             help="The kubernetes ingress configuration to control access to packet core diagnostics over local APIs.",
         )
@@ -142,40 +141,40 @@ class Create(AAZCommand):
             help="The version of the packet core software that is deployed.",
         )
 
-        control_plane_access_interface = cls._args_schema.control_plane_access_interface
-        control_plane_access_interface.ipv4_address = AAZStrArg(
+        access_interface = cls._args_schema.access_interface
+        access_interface.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        control_plane_access_interface.ipv4_gateway = AAZStrArg(
+        access_interface.ipv4_gateway = AAZStrArg(
             options=["ipv4-gateway"],
             help="The default IPv4 gateway (router).",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        control_plane_access_interface.ipv4_subnet = AAZStrArg(
+        access_interface.ipv4_subnet = AAZStrArg(
             options=["ipv4-subnet"],
             help="The IPv4 subnet.",
             fmt=AAZStrArgFormat(
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
-        control_plane_access_interface.name = AAZStrArg(
+        access_interface.name = AAZStrArg(
             options=["name"],
             help="The logical name for this interface. This should match one of the interfaces configured on your Azure Stack Edge device.",
         )
 
-        local_diagnostics_access = cls._args_schema.local_diagnostics_access
-        local_diagnostics_access.https_server_certificate = AAZObjectArg(
+        local_diagnostics = cls._args_schema.local_diagnostics
+        local_diagnostics.https_server_certificate = AAZObjectArg(
             options=["https-server-certificate"],
             help="The HTTPS server TLS certificate used to secure local access to diagnostics.",
         )
 
-        https_server_certificate = cls._args_schema.local_diagnostics_access.https_server_certificate
+        https_server_certificate = cls._args_schema.local_diagnostics.https_server_certificate
         https_server_certificate.certificate_url = AAZStrArg(
             options=["certificate-url"],
             help="The certificate URL, unversioned. For example: https://contosovault.vault.azure.net/certificates/ingress.",
@@ -305,7 +304,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -364,9 +363,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("controlPlaneAccessInterface", AAZObjectType, ".control_plane_access_interface", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("coreNetworkTechnology", AAZStrType, ".core_network_technology")
-                properties.set_prop("localDiagnosticsAccess", AAZObjectType, ".local_diagnostics_access")
+                properties.set_prop("controlPlaneAccessInterface", AAZObjectType, ".access_interface", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("coreNetworkTechnology", AAZStrType, ".core_network_tec")
+                properties.set_prop("localDiagnosticsAccess", AAZObjectType, ".local_diagnostics")
                 properties.set_prop("mobileNetwork", AAZObjectType, ".mobile_network", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("platform", AAZObjectType, ".platform")
                 properties.set_prop("sku", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
@@ -590,6 +589,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

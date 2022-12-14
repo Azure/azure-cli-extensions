@@ -46,7 +46,6 @@ class Create(AAZCommand):
             options=["--mobile-network-name"],
             help="The name of the mobile network.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -59,7 +58,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--sim-policy-name"],
             help="The name of the SIM policy.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -114,8 +112,8 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
-        _args_schema.slice_configurations = AAZListArg(
-            options=["--slice-configurations"],
+        _args_schema.slice_config = AAZListArg(
+            options=["--slice-config"],
             arg_group="Properties",
             help="The allowed slices and the settings to use for them. The list must not contain duplicate items and must contain at least one item.",
             required=True,
@@ -131,12 +129,12 @@ class Create(AAZCommand):
         )
         cls._build_args_ambr_create(_args_schema.ue_ambr)
 
-        slice_configurations = cls._args_schema.slice_configurations
-        slice_configurations.Element = AAZObjectArg()
+        slice_config = cls._args_schema.slice_config
+        slice_config.Element = AAZObjectArg()
 
-        _element = cls._args_schema.slice_configurations.Element
-        _element.data_network_configurations = AAZListArg(
-            options=["data-network-configurations"],
+        _element = cls._args_schema.slice_config.Element
+        _element.data_network_config = AAZListArg(
+            options=["data-network-config"],
             help="The allowed data networks and the settings to use for them. The list must not contain duplicate items and must contain at least one item.",
             required=True,
             fmt=AAZListArgFormat(
@@ -156,10 +154,10 @@ class Create(AAZCommand):
         )
         cls._build_args_slice_resource_id_create(_element.slice)
 
-        data_network_configurations = cls._args_schema.slice_configurations.Element.data_network_configurations
-        data_network_configurations.Element = AAZObjectArg()
+        data_network_config = cls._args_schema.slice_config.Element.data_network_config
+        data_network_config.Element = AAZObjectArg()
 
-        _element = cls._args_schema.slice_configurations.Element.data_network_configurations.Element
+        _element = cls._args_schema.slice_config.Element.data_network_config.Element
         _element.five_qi = AAZIntArg(
             options=["five-qi"],
             help="Default QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
@@ -169,12 +167,12 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
-        _element.additional_allowed_session_types = AAZListArg(
-            options=["additional-allowed-session-types"],
+        _element.additional_session_type = AAZListArg(
+            options=["additional-session-type"],
             help="Allowed session types in addition to the default session type. Must not duplicate the default session type.",
         )
-        _element.allocation_and_retention_priority_level = AAZIntArg(
-            options=["allocation-and-retention-priority-level"],
+        _element.arp_level = AAZIntArg(
+            options=["arp-level"],
             help="Default QoS Flow allocation and retention priority (ARP) level. Flows with higher priority preempt flows with lower priority, if the settings of `preemptionCapability` and `preemptionVulnerability` allow it. 1 is the highest level of priority. If this field is not specified then `5qi` is used to derive the ARP value. See 3GPP TS23.501 section 5.7.2.2 for a full description of the ARP parameters.",
             default=9,
             fmt=AAZIntArgFormat(
@@ -221,15 +219,15 @@ class Create(AAZCommand):
         )
         cls._build_args_ambr_create(_element.session_ambr)
 
-        additional_allowed_session_types = cls._args_schema.slice_configurations.Element.data_network_configurations.Element.additional_allowed_session_types
-        additional_allowed_session_types.Element = AAZStrArg(
+        additional_session_type = cls._args_schema.slice_config.Element.data_network_config.Element.additional_session_type
+        additional_session_type.Element = AAZStrArg(
             enum={"IPv4": "IPv4", "IPv6": "IPv6"},
         )
 
-        allowed_services = cls._args_schema.slice_configurations.Element.data_network_configurations.Element.allowed_services
+        allowed_services = cls._args_schema.slice_config.Element.data_network_config.Element.allowed_services
         allowed_services.Element = AAZObjectArg()
 
-        _element = cls._args_schema.slice_configurations.Element.data_network_configurations.Element.allowed_services.Element
+        _element = cls._args_schema.slice_config.Element.data_network_config.Element.allowed_services.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="Service resource ID.",
@@ -432,11 +430,11 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                _build_schema_slice_resource_id_create(properties.set_prop("defaultSlice", AAZObjectType, ".default_slice", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_slice_resource_id_create(properties.set_prop("defaultSlice", AAZObjectType, ".default_slice", typ_kwargs={"flags": {"required": True}}))
                 properties.set_prop("registrationTimer", AAZIntType, ".registration_timer")
                 properties.set_prop("rfspIndex", AAZIntType, ".rfsp_index")
-                properties.set_prop("sliceConfigurations", AAZListType, ".slice_configurations", typ_kwargs={"flags": {"required": True}})
-                _build_schema_ambr_create(properties.set_prop("ueAmbr", AAZObjectType, ".ue_ambr", typ_kwargs={"flags": {"required": True}}))
+                properties.set_prop("sliceConfigurations", AAZListType, ".slice_config", typ_kwargs={"flags": {"required": True}})
+                _CreateHelper._build_schema_ambr_create(properties.set_prop("ueAmbr", AAZObjectType, ".ue_ambr", typ_kwargs={"flags": {"required": True}}))
 
             slice_configurations = _builder.get(".properties.sliceConfigurations")
             if slice_configurations is not None:
@@ -444,9 +442,9 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.sliceConfigurations[]")
             if _elements is not None:
-                _elements.set_prop("dataNetworkConfigurations", AAZListType, ".data_network_configurations", typ_kwargs={"flags": {"required": True}})
-                _build_schema_data_network_resource_id_create(_elements.set_prop("defaultDataNetwork", AAZObjectType, ".default_data_network", typ_kwargs={"flags": {"required": True}}))
-                _build_schema_slice_resource_id_create(_elements.set_prop("slice", AAZObjectType, ".slice", typ_kwargs={"flags": {"required": True}}))
+                _elements.set_prop("dataNetworkConfigurations", AAZListType, ".data_network_config", typ_kwargs={"flags": {"required": True}})
+                _CreateHelper._build_schema_data_network_resource_id_create(_elements.set_prop("defaultDataNetwork", AAZObjectType, ".default_data_network", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_slice_resource_id_create(_elements.set_prop("slice", AAZObjectType, ".slice", typ_kwargs={"flags": {"required": True}}))
 
             data_network_configurations = _builder.get(".properties.sliceConfigurations[].dataNetworkConfigurations")
             if data_network_configurations is not None:
@@ -455,14 +453,14 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.sliceConfigurations[].dataNetworkConfigurations[]")
             if _elements is not None:
                 _elements.set_prop("5qi", AAZIntType, ".five_qi")
-                _elements.set_prop("additionalAllowedSessionTypes", AAZListType, ".additional_allowed_session_types")
-                _elements.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
+                _elements.set_prop("additionalAllowedSessionTypes", AAZListType, ".additional_session_type")
+                _elements.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".arp_level")
                 _elements.set_prop("allowedServices", AAZListType, ".allowed_services", typ_kwargs={"flags": {"required": True}})
-                _build_schema_data_network_resource_id_create(_elements.set_prop("dataNetwork", AAZObjectType, ".data_network", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_data_network_resource_id_create(_elements.set_prop("dataNetwork", AAZObjectType, ".data_network", typ_kwargs={"flags": {"required": True}}))
                 _elements.set_prop("defaultSessionType", AAZStrType, ".default_session_type")
                 _elements.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
                 _elements.set_prop("preemptionVulnerability", AAZStrType, ".preemption_vulnerability")
-                _build_schema_ambr_create(_elements.set_prop("sessionAmbr", AAZObjectType, ".session_ambr", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_ambr_create(_elements.set_prop("sessionAmbr", AAZObjectType, ".session_ambr", typ_kwargs={"flags": {"required": True}}))
 
             additional_allowed_session_types = _builder.get(".properties.sliceConfigurations[].dataNetworkConfigurations[].additionalAllowedSessionTypes")
             if additional_allowed_session_types is not None:
@@ -526,7 +524,7 @@ class Create(AAZCommand):
                 serialized_name="defaultSlice",
                 flags={"required": True},
             )
-            _build_schema_slice_resource_id_read(properties.default_slice)
+            _CreateHelper._build_schema_slice_resource_id_read(properties.default_slice)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -545,7 +543,7 @@ class Create(AAZCommand):
                 serialized_name="ueAmbr",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(properties.ue_ambr)
+            _CreateHelper._build_schema_ambr_read(properties.ue_ambr)
 
             slice_configurations = cls._schema_on_200_201.properties.slice_configurations
             slice_configurations.Element = AAZObjectType()
@@ -559,17 +557,17 @@ class Create(AAZCommand):
                 serialized_name="defaultDataNetwork",
                 flags={"required": True},
             )
-            _build_schema_data_network_resource_id_read(_element.default_data_network)
+            _CreateHelper._build_schema_data_network_resource_id_read(_element.default_data_network)
             _element.slice = AAZObjectType(
                 flags={"required": True},
             )
-            _build_schema_slice_resource_id_read(_element.slice)
+            _CreateHelper._build_schema_slice_resource_id_read(_element.slice)
 
             data_network_configurations = cls._schema_on_200_201.properties.slice_configurations.Element.data_network_configurations
             data_network_configurations.Element = AAZObjectType()
 
             _element = cls._schema_on_200_201.properties.slice_configurations.Element.data_network_configurations.Element
-            _element['5qi'] = AAZIntType()
+            _element["5qi"] = AAZIntType()
             _element.additional_allowed_session_types = AAZListType(
                 serialized_name="additionalAllowedSessionTypes",
             )
@@ -584,7 +582,7 @@ class Create(AAZCommand):
                 serialized_name="dataNetwork",
                 flags={"required": True},
             )
-            _build_schema_data_network_resource_id_read(_element.data_network)
+            _CreateHelper._build_schema_data_network_resource_id_read(_element.data_network)
             _element.default_session_type = AAZStrType(
                 serialized_name="defaultSessionType",
             )
@@ -598,7 +596,7 @@ class Create(AAZCommand):
                 serialized_name="sessionAmbr",
                 flags={"required": True},
             )
-            _build_schema_ambr_read(_element.session_ambr)
+            _CreateHelper._build_schema_ambr_read(_element.session_ambr)
 
             additional_allowed_session_types = cls._schema_on_200_201.properties.slice_configurations.Element.data_network_configurations.Element.additional_allowed_session_types
             additional_allowed_session_types.Element = AAZStrType()
@@ -637,85 +635,83 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-def _build_schema_ambr_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("downlink", AAZStrType, ".downlink", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("uplink", AAZStrType, ".uplink", typ_kwargs={"flags": {"required": True}})
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_ambr_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("downlink", AAZStrType, ".downlink", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("uplink", AAZStrType, ".uplink", typ_kwargs={"flags": {"required": True}})
 
-def _build_schema_data_network_resource_id_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+    @classmethod
+    def _build_schema_data_network_resource_id_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
+    @classmethod
+    def _build_schema_slice_resource_id_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
-def _build_schema_slice_resource_id_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+    _schema_ambr_read = None
 
+    @classmethod
+    def _build_schema_ambr_read(cls, _schema):
+        if cls._schema_ambr_read is not None:
+            _schema.downlink = cls._schema_ambr_read.downlink
+            _schema.uplink = cls._schema_ambr_read.uplink
+            return
 
-_schema_ambr_read = None
+        cls._schema_ambr_read = _schema_ambr_read = AAZObjectType()
 
+        ambr_read = _schema_ambr_read
+        ambr_read.downlink = AAZStrType(
+            flags={"required": True},
+        )
+        ambr_read.uplink = AAZStrType(
+            flags={"required": True},
+        )
 
-def _build_schema_ambr_read(_schema):
-    global _schema_ambr_read
-    if _schema_ambr_read is not None:
-        _schema.downlink = _schema_ambr_read.downlink
-        _schema.uplink = _schema_ambr_read.uplink
-        return
+        _schema.downlink = cls._schema_ambr_read.downlink
+        _schema.uplink = cls._schema_ambr_read.uplink
 
-    _schema_ambr_read = AAZObjectType()
+    _schema_data_network_resource_id_read = None
 
-    ambr_read = _schema_ambr_read
-    ambr_read.downlink = AAZStrType(
-        flags={"required": True},
-    )
-    ambr_read.uplink = AAZStrType(
-        flags={"required": True},
-    )
+    @classmethod
+    def _build_schema_data_network_resource_id_read(cls, _schema):
+        if cls._schema_data_network_resource_id_read is not None:
+            _schema.id = cls._schema_data_network_resource_id_read.id
+            return
 
-    _schema.downlink = _schema_ambr_read.downlink
-    _schema.uplink = _schema_ambr_read.uplink
+        cls._schema_data_network_resource_id_read = _schema_data_network_resource_id_read = AAZObjectType()
 
+        data_network_resource_id_read = _schema_data_network_resource_id_read
+        data_network_resource_id_read.id = AAZStrType(
+            flags={"required": True},
+        )
 
-_schema_data_network_resource_id_read = None
+        _schema.id = cls._schema_data_network_resource_id_read.id
 
+    _schema_slice_resource_id_read = None
 
-def _build_schema_data_network_resource_id_read(_schema):
-    global _schema_data_network_resource_id_read
-    if _schema_data_network_resource_id_read is not None:
-        _schema.id = _schema_data_network_resource_id_read.id
-        return
+    @classmethod
+    def _build_schema_slice_resource_id_read(cls, _schema):
+        if cls._schema_slice_resource_id_read is not None:
+            _schema.id = cls._schema_slice_resource_id_read.id
+            return
 
-    _schema_data_network_resource_id_read = AAZObjectType()
+        cls._schema_slice_resource_id_read = _schema_slice_resource_id_read = AAZObjectType()
 
-    data_network_resource_id_read = _schema_data_network_resource_id_read
-    data_network_resource_id_read.id = AAZStrType(
-        flags={"required": True},
-    )
+        slice_resource_id_read = _schema_slice_resource_id_read
+        slice_resource_id_read.id = AAZStrType(
+            flags={"required": True},
+        )
 
-    _schema.id = _schema_data_network_resource_id_read.id
-
-
-_schema_slice_resource_id_read = None
-
-
-def _build_schema_slice_resource_id_read(_schema):
-    global _schema_slice_resource_id_read
-    if _schema_slice_resource_id_read is not None:
-        _schema.id = _schema_slice_resource_id_read.id
-        return
-
-    _schema_slice_resource_id_read = AAZObjectType()
-
-    slice_resource_id_read = _schema_slice_resource_id_read
-    slice_resource_id_read.id = AAZStrType(
-        flags={"required": True},
-    )
-
-    _schema.id = _schema_slice_resource_id_read.id
+        _schema.id = cls._schema_slice_resource_id_read.id
 
 
 __all__ = ["Create"]

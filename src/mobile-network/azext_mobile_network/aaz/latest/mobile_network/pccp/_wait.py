@@ -40,8 +40,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.packet_core_control_plane_name = AAZStrArg(
-            options=["-n", "--name", "--packet-core-control-plane-name"],
+        _args_schema.pccp_name = AAZStrArg(
+            options=["-n", "--name", "--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
             id_part="name",
@@ -102,7 +102,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "packetCoreControlPlaneName", self.ctx.args.packet_core_control_plane_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -309,6 +309,10 @@ class Wait(AAZWaitCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
 __all__ = ["Wait"]

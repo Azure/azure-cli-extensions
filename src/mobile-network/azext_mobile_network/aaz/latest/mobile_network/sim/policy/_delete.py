@@ -171,4 +171,8 @@ class Delete(AAZCommand):
             pass
 
 
+class _DeleteHelper:
+    """Helper class for Delete"""
+
+
 __all__ = ["Delete"]
