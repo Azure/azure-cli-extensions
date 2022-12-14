@@ -1645,53 +1645,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return certs
 
-    def get_defender_config(self) -> Union[ManagedClusterSecurityProfileDefender, None]:
-        """Obtain the value of defender.
-
-        Note: Overwritten in aks-preview to adapt to v2 defender structure.
-
-        :return: ManagedClusterSecurityProfileDefender or None
-        """
-        disable_defender = self.raw_param.get("disable_defender")
-        if disable_defender:
-            return self.models.ManagedClusterSecurityProfileDefender(
-                security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
-                    enabled=False
-                )
-            )
-
-        enable_defender = self.raw_param.get("enable_defender")
-
-        if not enable_defender:
-            return None
-
-        workspace = ""
-        config_file_path = self.raw_param.get("defender_config")
-        if config_file_path:
-            if not os.path.isfile(config_file_path):
-                raise InvalidArgumentValueError(
-                    "{} is not valid file, or not accessable.".format(
-                        config_file_path
-                    )
-                )
-            defender_config = get_file_json(config_file_path)
-            if "logAnalyticsWorkspaceResourceId" in defender_config:
-                workspace = defender_config["logAnalyticsWorkspaceResourceId"]
-
-        if workspace == "":
-            workspace = self.external_functions.ensure_default_log_analytics_workspace_for_monitoring(
-                self.cmd,
-                self.get_subscription_id(),
-                self.get_resource_group_name())
-
-        azure_defender = self.models.ManagedClusterSecurityProfileDefender(
-            log_analytics_workspace_resource_id=workspace,
-            security_monitoring=self.models.ManagedClusterSecurityProfileDefenderSecurityMonitoring(
-                enabled=enable_defender
-            ),
-        )
-        return azure_defender
-
     def _get_enable_node_restriction(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_node_restriction.
         This function supports the option of enable_node_restriction. When enabled, if both enable_node_restriction and disable_node_restriction are
@@ -2184,24 +2137,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
-    def set_up_defender(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up defender for the ManagedCluster object.
-
-        Note: Overwritten in aks-preview to adapt to v2 defender structure.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        defender = self.context.get_defender_config()
-        if defender:
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()
-
-            mc.security_profile.defender = defender
-
-        return mc
-
     def set_up_custom_ca_trust_certificates(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up Custom CA Trust Certificates for the ManagedCluster object.
 
@@ -2662,24 +2597,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.workload_auto_scaler_profile is None:
                 mc.workload_auto_scaler_profile = self.models.ManagedClusterWorkloadAutoScalerProfile()
             mc.workload_auto_scaler_profile.keda = self.models.ManagedClusterWorkloadAutoScalerProfileKeda(enabled=False)
-
-        return mc
-
-    def update_defender(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update defender for the ManagedCluster object.
-
-        Note: Overwritten in aks-preview to adapt to v2 defender structure.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        defender = self.context.get_defender_config()
-        if defender:
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()
-
-            mc.security_profile.defender = defender
 
         return mc
 
