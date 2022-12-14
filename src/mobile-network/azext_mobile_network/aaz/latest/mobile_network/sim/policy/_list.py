@@ -232,7 +232,7 @@ class List(AAZCommand):
             data_network_configurations.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.slice_configurations.Element.data_network_configurations.Element
-            _element.5qi = AAZIntType()
+            _element['5qi'] = AAZIntType()
             _element.additional_allowed_session_types = AAZListType(
                 serialized_name="additionalAllowedSessionTypes",
             )

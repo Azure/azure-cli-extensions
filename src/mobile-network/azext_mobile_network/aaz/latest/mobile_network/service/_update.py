@@ -758,7 +758,7 @@ def _build_schema_service_read(_schema):
     )
 
     rule_qos_policy = _schema_service_read.properties.pcc_rules.Element.rule_qos_policy
-    rule_qos_policy.5qi = AAZIntType()
+    rule_qos_policy['5qi'] = AAZIntType()
     rule_qos_policy.allocation_and_retention_priority_level = AAZIntType(
         serialized_name="allocationAndRetentionPriorityLevel",
     )
@@ -808,7 +808,7 @@ def _build_schema_service_read(_schema):
     remote_ip_list.Element = AAZStrType()
 
     service_qos_policy = _schema_service_read.properties.service_qos_policy
-    service_qos_policy.5qi = AAZIntType()
+    service_qos_policy['5qi'] = AAZIntType()
     service_qos_policy.allocation_and_retention_priority_level = AAZIntType(
         serialized_name="allocationAndRetentionPriorityLevel",
     )

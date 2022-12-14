@@ -230,7 +230,7 @@ class Show(AAZCommand):
             )
 
             rule_qos_policy = cls._schema_on_200.properties.pcc_rules.Element.rule_qos_policy
-            rule_qos_policy.5qi = AAZIntType()
+            rule_qos_policy['5qi'] = AAZIntType()
             rule_qos_policy.allocation_and_retention_priority_level = AAZIntType(
                 serialized_name="allocationAndRetentionPriorityLevel",
             )
@@ -280,7 +280,7 @@ class Show(AAZCommand):
             remote_ip_list.Element = AAZStrType()
 
             service_qos_policy = cls._schema_on_200.properties.service_qos_policy
-            service_qos_policy.5qi = AAZIntType()
+            service_qos_policy['5qi'] = AAZIntType()
             service_qos_policy.allocation_and_retention_priority_level = AAZIntType(
                 serialized_name="allocationAndRetentionPriorityLevel",
             )

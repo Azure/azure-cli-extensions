@@ -764,7 +764,7 @@ def _build_schema_sim_policy_read(_schema):
     data_network_configurations.Element = AAZObjectType()
 
     _element = _schema_sim_policy_read.properties.slice_configurations.Element.data_network_configurations.Element
-    _element.5qi = AAZIntType()
+    _element['5qi'] = AAZIntType()
     _element.additional_allowed_session_types = AAZListType(
         serialized_name="additionalAllowedSessionTypes",
     )
