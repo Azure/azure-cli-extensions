@@ -17,6 +17,7 @@ from azext_devcenter.manual._client_factory import (
     cf_catalog_item_dp,
     cf_catalog_item_version_dp,
     cf_environment_type_dp,
+    cf_notification_setting_dp
 )
 from azext_devcenter.generated._client_factory import (
     cf_dev_center,
@@ -97,6 +98,13 @@ def load_command_table(self, _):
             "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._schedule_operations#ScheduleOperations.{}"
         ),
         client_factory=cf_schedule_dp,
+    )
+
+    devcenter_notification_setting_dp = CliCommandType(
+        operations_tmpl=(
+            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._notification_setting_operations#NotificationSettingOperations.{}"
+        ),
+        client_factory=cf_notification_setting_dp,
     )
 
     # control plane
@@ -233,6 +241,10 @@ def load_command_table(self, _):
         )
         g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
         g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
+        g.custom_command('delay-upcoming-action', 'devcenter_dev_box_delay_upcoming_action')
+        g.custom_command('list-upcoming-action', 'devcenter_dev_box_list_upcoming_action')
+        g.custom_command('show-upcoming-action', 'devcenter_dev_box_show_upcoming_action')
+        g.custom_command('skip-upcoming-action', 'devcenter_dev_box_skip_upcoming_action')
 
     with self.command_group(
         "devcenter dev artifact", devcenter_artifact_dp, client_factory=cf_artifact_dp
@@ -280,16 +292,10 @@ def load_command_table(self, _):
             supports_no_wait=True,
         )
         g.custom_command(
-            "delete-action",
-            "devcenter_environment_delete_action",
-            supports_no_wait=True,
-        )
-        g.custom_command(
             "deploy-action",
             "devcenter_environment_deploy_action",
             supports_no_wait=True,
         )
-        g.custom_command("list-by-project", "devcenter_environment_list_by_project")
         g.custom_wait_command("wait", "devcenter_environment_show")
 
     with self.command_group(
@@ -304,6 +310,15 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command("list", "devcenter_schedule_list_dp")
         g.custom_show_command("show", "devcenter_schedule_show_dp")
+
+    with self.command_group(
+        "devcenter dev notification setting", devcenter_notification_setting_dp, client_factory=cf_notification_setting_dp
+    ) as g:
+        g.custom_command("list-allowed-culture", "devcenter_notification_setting_list_allowed_culture_dp")
+        g.custom_show_command("show", "devcenter_notification_setting_show_dp")
+        g.custom_command(
+            "create", "devcenter_notification_setting_create_dp", supports_no_wait=True
+        )
 
     # control plane
     with self.command_group(

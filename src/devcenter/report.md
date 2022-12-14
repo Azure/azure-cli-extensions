@@ -1297,3 +1297,544 @@ az devcenter usage list --location "westus"
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--location**|string|The Azure region|location|location|
+
+##Dataplane commands 
+## GROUPS
+### <a name="CommandGroups">Command groups in `az devcenter` extension </a>
+|CLI Command Group|Group Swagger name|Commands|
+|---------|------------|--------|
+|az devcenter dev-box|DevBoxes|[commands](#CommandsInDevBoxes)|
+|az devcenter dev-center|DevCenter|[commands](#CommandsInDevCenter)|
+|az devcenter environment|Environments|[commands](#CommandsInEnvironments)|
+
+## COMMANDS
+### <a name="CommandsInDevBoxes">Commands in `az devcenter dev-box` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az devcenter dev-box create-dev-box](#DevBoxesCreateDevBox)|CreateDevBox|[Parameters](#ParametersDevBoxesCreateDevBox)|[Example](#ExamplesDevBoxesCreateDevBox)|
+|[az devcenter dev-box delay-upcoming-action](#DevBoxesDelayUpcomingAction)|DelayUpcomingAction|[Parameters](#ParametersDevBoxesDelayUpcomingAction)|[Example](#ExamplesDevBoxesDelayUpcomingAction)|
+|[az devcenter dev-box delete-dev-box](#DevBoxesDeleteDevBox)|DeleteDevBox|[Parameters](#ParametersDevBoxesDeleteDevBox)|[Example](#ExamplesDevBoxesDeleteDevBox)|
+|[az devcenter dev-box list-dev-box](#DevBoxesListDevBoxesByUser)|ListDevBoxesByUser|[Parameters](#ParametersDevBoxesListDevBoxesByUser)|[Example](#ExamplesDevBoxesListDevBoxesByUser)|
+|[az devcenter dev-box list-pool](#DevBoxesListPools)|ListPools|[Parameters](#ParametersDevBoxesListPools)|[Example](#ExamplesDevBoxesListPools)|
+|[az devcenter dev-box list-schedule](#DevBoxesListSchedulesByPool)|ListSchedulesByPool|[Parameters](#ParametersDevBoxesListSchedulesByPool)|[Example](#ExamplesDevBoxesListSchedulesByPool)|
+|[az devcenter dev-box list-upcoming-action](#DevBoxesListUpcomingActions)|ListUpcomingActions|[Parameters](#ParametersDevBoxesListUpcomingActions)|[Example](#ExamplesDevBoxesListUpcomingActions)|
+|[az devcenter dev-box show-dev-box](#DevBoxesGetDevBoxByUser)|GetDevBoxByUser|[Parameters](#ParametersDevBoxesGetDevBoxByUser)|[Example](#ExamplesDevBoxesGetDevBoxByUser)|
+|[az devcenter dev-box show-pool](#DevBoxesGetPool)|GetPool|[Parameters](#ParametersDevBoxesGetPool)|[Example](#ExamplesDevBoxesGetPool)|
+|[az devcenter dev-box show-remote-connection](#DevBoxesGetRemoteConnection)|GetRemoteConnection|[Parameters](#ParametersDevBoxesGetRemoteConnection)|[Example](#ExamplesDevBoxesGetRemoteConnection)|
+|[az devcenter dev-box show-schedule](#DevBoxesGetScheduleByPool)|GetScheduleByPool|[Parameters](#ParametersDevBoxesGetScheduleByPool)|[Example](#ExamplesDevBoxesGetScheduleByPool)|
+|[az devcenter dev-box show-upcoming-action](#DevBoxesGetUpcomingAction)|GetUpcomingAction|[Parameters](#ParametersDevBoxesGetUpcomingAction)|[Example](#ExamplesDevBoxesGetUpcomingAction)|
+|[az devcenter dev-box skip-upcoming-action](#DevBoxesSkipUpcomingAction)|SkipUpcomingAction|[Parameters](#ParametersDevBoxesSkipUpcomingAction)|[Example](#ExamplesDevBoxesSkipUpcomingAction)|
+|[az devcenter dev-box start-dev-box](#DevBoxesStartDevBox)|StartDevBox|[Parameters](#ParametersDevBoxesStartDevBox)|[Example](#ExamplesDevBoxesStartDevBox)|
+|[az devcenter dev-box stop-dev-box](#DevBoxesStopDevBox)|StopDevBox|[Parameters](#ParametersDevBoxesStopDevBox)|[Example](#ExamplesDevBoxesStopDevBox)|
+
+### <a name="CommandsInDevCenter">Commands in `az devcenter dev-center` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az devcenter dev-center create-notification-setting](#DevCenterCreateNotificationSettings)|CreateNotificationSettings|[Parameters](#ParametersDevCenterCreateNotificationSettings)|[Example](#ExamplesDevCenterCreateNotificationSettings)|
+|[az devcenter dev-center list-all-dev-box](#DevCenterListAllDevBoxesByUser)|ListAllDevBoxesByUser|[Parameters](#ParametersDevCenterListAllDevBoxesByUser)|[Example](#ExamplesDevCenterListAllDevBoxesByUser)|
+|[az devcenter dev-center list-all-dev-box](#DevCenterListAllDevBoxes)|ListAllDevBoxes|[Parameters](#ParametersDevCenterListAllDevBoxes)|[Example](#ExamplesDevCenterListAllDevBoxes)|
+|[az devcenter dev-center list-notification-setting-allowed-culture](#DevCenterListNotificationSettingsAllowedCultures)|ListNotificationSettingsAllowedCultures|[Parameters](#ParametersDevCenterListNotificationSettingsAllowedCultures)|[Example](#ExamplesDevCenterListNotificationSettingsAllowedCultures)|
+|[az devcenter dev-center list-project](#DevCenterListProjects)|ListProjects|[Parameters](#ParametersDevCenterListProjects)|[Example](#ExamplesDevCenterListProjects)|
+|[az devcenter dev-center show-notification-setting](#DevCenterGetNotificationSettings)|GetNotificationSettings|[Parameters](#ParametersDevCenterGetNotificationSettings)|[Example](#ExamplesDevCenterGetNotificationSettings)|
+|[az devcenter dev-center show-project](#DevCenterGetProject)|GetProject|[Parameters](#ParametersDevCenterGetProject)|[Example](#ExamplesDevCenterGetProject)|
+
+### <a name="CommandsInEnvironments">Commands in `az devcenter environment` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az devcenter environment create-or-update-environment](#EnvironmentsCreateOrUpdateEnvironment)|CreateOrUpdateEnvironment|[Parameters](#ParametersEnvironmentsCreateOrUpdateEnvironment)|[Example](#ExamplesEnvironmentsCreateOrUpdateEnvironment)|
+|[az devcenter environment custom-environment-action](#EnvironmentsCustomEnvironmentAction)|CustomEnvironmentAction|[Parameters](#ParametersEnvironmentsCustomEnvironmentAction)|[Example](#ExamplesEnvironmentsCustomEnvironmentAction)|
+|[az devcenter environment delete-environment](#EnvironmentsDeleteEnvironment)|DeleteEnvironment|[Parameters](#ParametersEnvironmentsDeleteEnvironment)|[Example](#ExamplesEnvironmentsDeleteEnvironment)|
+|[az devcenter environment deploy-environment-action](#EnvironmentsDeployEnvironmentAction)|DeployEnvironmentAction|[Parameters](#ParametersEnvironmentsDeployEnvironmentAction)|[Example](#ExamplesEnvironmentsDeployEnvironmentAction)|
+|[az devcenter environment list-artifact](#EnvironmentsListArtifactsByEnvironmentAndPath)|ListArtifactsByEnvironmentAndPath|[Parameters](#ParametersEnvironmentsListArtifactsByEnvironmentAndPath)|Not Found|
+|[az devcenter environment list-artifact](#EnvironmentsListArtifactsByEnvironment)|ListArtifactsByEnvironment|[Parameters](#ParametersEnvironmentsListArtifactsByEnvironment)|Not Found|
+|[az devcenter environment list-catalog-item](#EnvironmentsListCatalogItems)|ListCatalogItems|[Parameters](#ParametersEnvironmentsListCatalogItems)|[Example](#ExamplesEnvironmentsListCatalogItems)|
+|[az devcenter environment list-catalog-item-version](#EnvironmentsListCatalogItemVersions)|ListCatalogItemVersions|[Parameters](#ParametersEnvironmentsListCatalogItemVersions)|[Example](#ExamplesEnvironmentsListCatalogItemVersions)|
+|[az devcenter environment list-environment](#EnvironmentsListEnvironmentsByUser)|ListEnvironmentsByUser|[Parameters](#ParametersEnvironmentsListEnvironmentsByUser)|[Example](#ExamplesEnvironmentsListEnvironmentsByUser)|
+|[az devcenter environment list-environment](#EnvironmentsListEnvironments)|ListEnvironments|[Parameters](#ParametersEnvironmentsListEnvironments)|[Example](#ExamplesEnvironmentsListEnvironments)|
+|[az devcenter environment list-environment-type](#EnvironmentsListEnvironmentTypes)|ListEnvironmentTypes|[Parameters](#ParametersEnvironmentsListEnvironmentTypes)|[Example](#ExamplesEnvironmentsListEnvironmentTypes)|
+|[az devcenter environment show-catalog-item](#EnvironmentsGetCatalogItem)|GetCatalogItem|[Parameters](#ParametersEnvironmentsGetCatalogItem)|[Example](#ExamplesEnvironmentsGetCatalogItem)|
+|[az devcenter environment show-catalog-item-version](#EnvironmentsGetCatalogItemVersion)|GetCatalogItemVersion|[Parameters](#ParametersEnvironmentsGetCatalogItemVersion)|[Example](#ExamplesEnvironmentsGetCatalogItemVersion)|
+|[az devcenter environment show-environment](#EnvironmentsGetEnvironmentByUser)|GetEnvironmentByUser|[Parameters](#ParametersEnvironmentsGetEnvironmentByUser)|[Example](#ExamplesEnvironmentsGetEnvironmentByUser)|
+|[az devcenter environment update-environment](#EnvironmentsUpdateEnvironment)|UpdateEnvironment|[Parameters](#ParametersEnvironmentsUpdateEnvironment)|[Example](#ExamplesEnvironmentsUpdateEnvironment)|
+
+
+## COMMAND DETAILS
+### group `az devcenter dev-box`
+#### <a name="DevBoxesCreateDevBox">Command `az devcenter dev-box create-dev-box`</a>
+
+##### <a name="ExamplesDevBoxesCreateDevBox">Example</a>
+```
+az devcenter dev-box create-dev-box --pool-name "LargeDevWorkStationPool" --name "MyDevBox" --user-id "me"
+```
+##### <a name="ParametersDevBoxesCreateDevBox">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+|**--pool-name**|string|The name of the Dev Box pool this machine belongs to.|pool_name|poolName|
+|**--local-administrator**|choice|Indicates whether the owner of the Dev Box is a local administrator.|local_administrator|localAdministrator|
+
+#### <a name="DevBoxesDelayUpcomingAction">Command `az devcenter dev-box delay-upcoming-action`</a>
+
+##### <a name="ExamplesDevBoxesDelayUpcomingAction">Example</a>
+```
+az devcenter dev-box delay-upcoming-action --delay-until "2022-09-30T17:00:00Z" --name "myDevBox" --upcoming-action-id \
+"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+```
+##### <a name="ParametersDevBoxesDelayUpcomingAction">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+|**--upcoming-action-id**|string|The upcoming action id.|upcoming_action_id|upcomingActionId|
+|**--delay-until**|date-time|The delayed action time (UTC).|delay_until|delayUntil|
+
+#### <a name="DevBoxesDeleteDevBox">Command `az devcenter dev-box delete-dev-box`</a>
+
+##### <a name="ExamplesDevBoxesDeleteDevBox">Example</a>
+```
+az devcenter dev-box delete-dev-box --name "MyDevBox" --user-id "me"
+```
+##### <a name="ParametersDevBoxesDeleteDevBox">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+
+#### <a name="DevBoxesListDevBoxesByUser">Command `az devcenter dev-box list-dev-box`</a>
+
+##### <a name="ExamplesDevBoxesListDevBoxesByUser">Example</a>
+```
+az devcenter dev-box list-dev-box --user-id "me"
+```
+##### <a name="ParametersDevBoxesListDevBoxesByUser">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--filter**|string|An OData filter clause to apply to the operation.|filter|filter|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+
+#### <a name="DevBoxesListPools">Command `az devcenter dev-box list-pool`</a>
+
+##### <a name="ExamplesDevBoxesListPools">Example</a>
+```
+az devcenter dev-box list-pool
+```
+##### <a name="ParametersDevBoxesListPools">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+|**--filter**|string|An OData filter clause to apply to the operation.|filter|filter|
+
+#### <a name="DevBoxesListSchedulesByPool">Command `az devcenter dev-box list-schedule`</a>
+
+##### <a name="ExamplesDevBoxesListSchedulesByPool">Example</a>
+```
+az devcenter dev-box list-schedule --pool-name "DevPool"
+```
+##### <a name="ParametersDevBoxesListSchedulesByPool">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+|**--filter**|string|An OData filter clause to apply to the operation.|filter|filter|
+|**--pool-name**|string|The name of a pool of Dev Boxes.|pool_name|poolName|
+
+#### <a name="DevBoxesListUpcomingActions">Command `az devcenter dev-box list-upcoming-action`</a>
+
+##### <a name="ExamplesDevBoxesListUpcomingActions">Example</a>
+```
+az devcenter dev-box list-upcoming-action --name "myDevBox" --user-id "me"
+```
+##### <a name="ParametersDevBoxesListUpcomingActions">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+
+#### <a name="DevBoxesGetDevBoxByUser">Command `az devcenter dev-box show-dev-box`</a>
+
+##### <a name="ExamplesDevBoxesGetDevBoxByUser">Example</a>
+```
+az devcenter dev-box show-dev-box --name "MyDevBox" --user-id "me"
+```
+##### <a name="ParametersDevBoxesGetDevBoxByUser">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+
+#### <a name="DevBoxesGetPool">Command `az devcenter dev-box show-pool`</a>
+
+##### <a name="ExamplesDevBoxesGetPool">Example</a>
+```
+az devcenter dev-box show-pool --pool-name "DevPool"
+```
+##### <a name="ParametersDevBoxesGetPool">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--pool-name**|string|The name of a pool of Dev Boxes.|pool_name|poolName|
+
+#### <a name="DevBoxesGetRemoteConnection">Command `az devcenter dev-box show-remote-connection`</a>
+
+##### <a name="ExamplesDevBoxesGetRemoteConnection">Example</a>
+```
+az devcenter dev-box show-remote-connection --name "MyDevBox" --user-id "me"
+```
+##### <a name="ParametersDevBoxesGetRemoteConnection">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+
+#### <a name="DevBoxesGetScheduleByPool">Command `az devcenter dev-box show-schedule`</a>
+
+##### <a name="ExamplesDevBoxesGetScheduleByPool">Example</a>
+```
+az devcenter dev-box show-schedule --pool-name "DevPool" --schedule-name "default"
+```
+##### <a name="ParametersDevBoxesGetScheduleByPool">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--pool-name**|string|The name of a pool of Dev Boxes.|pool_name|poolName|
+|**--schedule-name**|string|The name of a schedule.|schedule_name|scheduleName|
+
+#### <a name="DevBoxesGetUpcomingAction">Command `az devcenter dev-box show-upcoming-action`</a>
+
+##### <a name="ExamplesDevBoxesGetUpcomingAction">Example</a>
+```
+az devcenter dev-box show-upcoming-action --name "myDevBox" --upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7"\
+ --user-id "me"
+```
+##### <a name="ParametersDevBoxesGetUpcomingAction">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+|**--upcoming-action-id**|string|The upcoming action id.|upcoming_action_id|upcomingActionId|
+
+#### <a name="DevBoxesSkipUpcomingAction">Command `az devcenter dev-box skip-upcoming-action`</a>
+
+##### <a name="ExamplesDevBoxesSkipUpcomingAction">Example</a>
+```
+az devcenter dev-box skip-upcoming-action --name "myDevBox" --upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7"\
+ --user-id "me"
+```
+##### <a name="ParametersDevBoxesSkipUpcomingAction">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+|**--upcoming-action-id**|string|The upcoming action id.|upcoming_action_id|upcomingActionId|
+
+#### <a name="DevBoxesStartDevBox">Command `az devcenter dev-box start-dev-box`</a>
+
+##### <a name="ExamplesDevBoxesStartDevBox">Example</a>
+```
+az devcenter dev-box start-dev-box --name "MyDevBox" --user-id "me"
+```
+##### <a name="ParametersDevBoxesStartDevBox">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+
+#### <a name="DevBoxesStopDevBox">Command `az devcenter dev-box stop-dev-box`</a>
+
+##### <a name="ExamplesDevBoxesStopDevBox">Example</a>
+```
+az devcenter dev-box stop-dev-box --name "MyDevBox" --hibernate "true" --user-id "me"
+```
+##### <a name="ParametersDevBoxesStopDevBox">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--dev-box-name**|string|The name of a Dev Box.|dev_box_name|devBoxName|
+|**--hibernate**|boolean|Optional parameter to hibernate the dev box.|hibernate|hibernate|
+
+### group `az devcenter dev-center`
+#### <a name="DevCenterCreateNotificationSettings">Command `az devcenter dev-center create-notification-setting`</a>
+
+##### <a name="ExamplesDevCenterCreateNotificationSettings">Example</a>
+```
+az devcenter dev-center create-notification-setting --culture "en-us" --enabled false --boolean-enabled true \
+--email-notification cc="stubcc@domain.com" enabled=true recipients="stubrecipient@domain.com" --webhook-notification \
+enabled=false url="https://fake.domain/url/hook" --user-id "me"
+```
+##### <a name="ParametersDevCenterCreateNotificationSettings">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--enabled**|boolean|If notification is enabled for the user.|enabled|enabled|
+|**--culture**|string|The culture that MEO can accommdate requests to send emails in.|culture|culture|
+|**--boolean-enabled**|boolean|If notification is enabled for DevBox provisioning.|boolean_enabled|enabled|
+|**--email-notification**|object|The email notification|email_notification|emailNotification|
+|**--webhook-notification**|object|The webhook notification|webhook_notification|webhookNotification|
+
+#### <a name="DevCenterListAllDevBoxesByUser">Command `az devcenter dev-center list-all-dev-box`</a>
+
+##### <a name="ExamplesDevCenterListAllDevBoxesByUser">Example</a>
+```
+az devcenter dev-center list-all-dev-box --user-id "me"
+```
+##### <a name="ParametersDevCenterListAllDevBoxesByUser">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--filter**|string|An OData filter clause to apply to the operation.|filter|filter|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+
+#### <a name="DevCenterListAllDevBoxes">Command `az devcenter dev-center list-all-dev-box`</a>
+
+##### <a name="ExamplesDevCenterListAllDevBoxes">Example</a>
+```
+az devcenter dev-center list-all-dev-box
+```
+##### <a name="ParametersDevCenterListAllDevBoxes">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--filter**|string|An OData filter clause to apply to the operation.|filter|filter|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+
+#### <a name="DevCenterListNotificationSettingsAllowedCultures">Command `az devcenter dev-center list-notification-setting-allowed-culture`</a>
+
+##### <a name="ExamplesDevCenterListNotificationSettingsAllowedCultures">Example</a>
+```
+az devcenter dev-center list-notification-setting-allowed-culture --user-id "me"
+```
+##### <a name="ParametersDevCenterListNotificationSettingsAllowedCultures">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+
+#### <a name="DevCenterListProjects">Command `az devcenter dev-center list-project`</a>
+
+##### <a name="ExamplesDevCenterListProjects">Example</a>
+```
+az devcenter dev-center list-project
+```
+##### <a name="ParametersDevCenterListProjects">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--filter**|string|An OData filter clause to apply to the operation.|filter|filter|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+
+#### <a name="DevCenterGetNotificationSettings">Command `az devcenter dev-center show-notification-setting`</a>
+
+##### <a name="ExamplesDevCenterGetNotificationSettings">Example</a>
+```
+az devcenter dev-center show-notification-setting --user-id "me"
+```
+##### <a name="ParametersDevCenterGetNotificationSettings">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+
+#### <a name="DevCenterGetProject">Command `az devcenter dev-center show-project`</a>
+
+##### <a name="ExamplesDevCenterGetProject">Example</a>
+```
+az devcenter dev-center show-project --project-name "myProject"
+```
+##### <a name="ParametersDevCenterGetProject">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--project-name**|string|The DevCenter Project upon which to execute operations.|project_name|projectName|
+
+### group `az devcenter environment`
+#### <a name="EnvironmentsCreateOrUpdateEnvironment">Command `az devcenter environment create-or-update-environment`</a>
+
+##### <a name="ExamplesEnvironmentsCreateOrUpdateEnvironment">Example</a>
+```
+az devcenter environment create-or-update-environment --description "Personal Dev Environment" --catalog-item-name \
+"helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
+torageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "me"
+az devcenter environment create-or-update-environment --description "Personal Dev Environment" --catalog-item-name \
+"helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
+torageAccountType\\":\\"Standard_LRS\\"}" --scheduled-tasks "{\\"autoExpire\\":{\\"type\\":\\"AutoExpire\\",\\"startTim\
+e\\":\\"2022-01-01T00:01:00Z\\"}}" --name "mydevenv" --user-id "me"
+```
+##### <a name="ParametersEnvironmentsCreateOrUpdateEnvironment">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+|**--description**|string|Description of the Environment.|description|description|
+|**--catalog-name**|string|Name of the catalog.|catalog_name|catalogName|
+|**--catalog-item-name**|string|Name of the catalog item.|catalog_item_name|catalogItemName|
+|**--parameters**|any|Parameters object for the deploy action|parameters|parameters|
+|**--scheduled-tasks**|dictionary|Set of supported scheduled tasks to help manage cost.|scheduled_tasks|scheduledTasks|
+|**--tags**|dictionary|Key value pairs that will be applied to resources deployed in this environment as tags.|tags|tags|
+|**--environment-type**|string|Environment type.|environment_type|environmentType|
+|**--user**|string|The AAD object id of the owner of this Environment.|user|user|
+
+#### <a name="EnvironmentsCustomEnvironmentAction">Command `az devcenter environment custom-environment-action`</a>
+
+##### <a name="ExamplesEnvironmentsCustomEnvironmentAction">Example</a>
+```
+az devcenter environment custom-environment-action --action-id "someCustomActionId" --parameters \
+"{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "me"
+```
+##### <a name="ParametersEnvironmentsCustomEnvironmentAction">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+|**--action-id**|string|The Catalog Item action id to execute|action_id|actionId|
+|**--parameters**|any|Parameters object for the Action|parameters|parameters|
+
+#### <a name="EnvironmentsDeleteEnvironment">Command `az devcenter environment delete-environment`</a>
+
+##### <a name="ExamplesEnvironmentsDeleteEnvironment">Example</a>
+```
+az devcenter environment delete-environment --name "mydevenv" --user-id "me"
+```
+##### <a name="ParametersEnvironmentsDeleteEnvironment">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+
+#### <a name="EnvironmentsDeployEnvironmentAction">Command `az devcenter environment deploy-environment-action`</a>
+
+##### <a name="ExamplesEnvironmentsDeployEnvironmentAction">Example</a>
+```
+az devcenter environment deploy-environment-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "me"
+```
+##### <a name="ParametersEnvironmentsDeployEnvironmentAction">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+|**--action-id**|string|The Catalog Item action id to execute|action_id|actionId|
+|**--parameters**|any|Parameters object for the Action|parameters|parameters|
+
+#### <a name="EnvironmentsListArtifactsByEnvironmentAndPath">Command `az devcenter environment list-artifact`</a>
+
+
+##### <a name="ParametersEnvironmentsListArtifactsByEnvironmentAndPath">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+|**--artifact-path**|string|The path of the artifact.|artifact_path|artifactPath|
+
+#### <a name="EnvironmentsListArtifactsByEnvironment">Command `az devcenter environment list-artifact`</a>
+
+
+##### <a name="ParametersEnvironmentsListArtifactsByEnvironment">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+
+#### <a name="EnvironmentsListCatalogItems">Command `az devcenter environment list-catalog-item`</a>
+
+##### <a name="ExamplesEnvironmentsListCatalogItems">Example</a>
+```
+az devcenter environment list-catalog-item
+```
+##### <a name="ParametersEnvironmentsListCatalogItems">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+
+#### <a name="EnvironmentsListCatalogItemVersions">Command `az devcenter environment list-catalog-item-version`</a>
+
+##### <a name="ExamplesEnvironmentsListCatalogItemVersions">Example</a>
+```
+az devcenter environment list-catalog-item-version --catalog-item-id "foo"
+```
+##### <a name="ParametersEnvironmentsListCatalogItemVersions">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+|**--catalog-item-id**|string|The unique id of the catalog item.|catalog_item_id|catalogItemId|
+
+#### <a name="EnvironmentsListEnvironmentsByUser">Command `az devcenter environment list-environment`</a>
+
+##### <a name="ExamplesEnvironmentsListEnvironmentsByUser">Example</a>
+```
+az devcenter environment list-environment --user-id "me"
+```
+##### <a name="ParametersEnvironmentsListEnvironmentsByUser">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+
+#### <a name="EnvironmentsListEnvironments">Command `az devcenter environment list-environment`</a>
+
+##### <a name="ExamplesEnvironmentsListEnvironments">Example</a>
+```
+az devcenter environment list-environment
+```
+##### <a name="ParametersEnvironmentsListEnvironments">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+
+#### <a name="EnvironmentsListEnvironmentTypes">Command `az devcenter environment list-environment-type`</a>
+
+##### <a name="ExamplesEnvironmentsListEnvironmentTypes">Example</a>
+```
+az devcenter environment list-environment-type
+```
+##### <a name="ParametersEnvironmentsListEnvironmentTypes">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: 'top=10'.|top|top|
+
+#### <a name="EnvironmentsGetCatalogItem">Command `az devcenter environment show-catalog-item`</a>
+
+##### <a name="ExamplesEnvironmentsGetCatalogItem">Example</a>
+```
+az devcenter environment show-catalog-item --catalog-item-id "foo"
+```
+##### <a name="ParametersEnvironmentsGetCatalogItem">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--catalog-item-id**|string|The unique id of the catalog item.|catalog_item_id|catalogItemId|
+
+#### <a name="EnvironmentsGetCatalogItemVersion">Command `az devcenter environment show-catalog-item-version`</a>
+
+##### <a name="ExamplesEnvironmentsGetCatalogItemVersion">Example</a>
+```
+az devcenter environment show-catalog-item-version --catalog-item-id "foo" --version "1.0.0"
+```
+##### <a name="ParametersEnvironmentsGetCatalogItemVersion">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--catalog-item-id**|string|The unique id of the catalog item.|catalog_item_id|catalogItemId|
+|**--version**|string|The version of the catalog item.|version|version|
+
+#### <a name="EnvironmentsGetEnvironmentByUser">Command `az devcenter environment show-environment`</a>
+
+##### <a name="ExamplesEnvironmentsGetEnvironmentByUser">Example</a>
+```
+az devcenter environment show-environment --name "mydevenv" --user-id "me"
+```
+##### <a name="ParametersEnvironmentsGetEnvironmentByUser">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+
+#### <a name="EnvironmentsUpdateEnvironment">Command `az devcenter environment update-environment`</a>
+
+##### <a name="ExamplesEnvironmentsUpdateEnvironment">Example</a>
+```
+az devcenter environment update-environment --description "Personal Dev Environment 2" --name "mydevenv" --user-id \
+"me"
+```
+##### <a name="ParametersEnvironmentsUpdateEnvironment">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--user-id**|string|The AAD object id of the user. If value is 'me', the identity is taken from the authentication context.|user_id|userId|
+|**--environment-name**|string|The name of the environment.|environment_name|environmentName|
+|**--description**|string|Description of the Environment.|description|description|
+|**--catalog-name**|string|Name of the catalog.|catalog_name|catalogName|
+|**--catalog-item-name**|string|Name of the catalog item.|catalog_item_name|catalogItemName|
+|**--parameters**|any|Parameters object for the deploy action|parameters|parameters|
+|**--scheduled-tasks**|dictionary|Set of supported scheduled tasks to help manage cost.|scheduled_tasks|scheduledTasks|
+|**--tags**|dictionary|Key value pairs that will be applied to resources deployed in this environment as tags.|tags|tags|

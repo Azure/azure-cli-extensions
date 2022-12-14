@@ -62,3 +62,71 @@ class AddRepo(argparse.Action):
                 )
 
         return d
+
+class AddEmailNotification(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.email_notification = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'enabled':
+                d['enabled'] = v[0]
+
+            elif kl == 'recipients':
+                d['recipients'] = v[0]
+
+            elif kl == 'cc':
+                d['cc'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter email-notification. All possible keys are: enabled,'
+                    ' recipients, cc'.format(k)
+                )
+
+        return d
+
+
+class AddWebhookNotification(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.webhook_notification = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'enabled':
+                d['enabled'] = v[0]
+
+            elif kl == 'url':
+                d['url'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter webhook-notification. All possible keys are:'
+                    ' enabled, url'.format(k)
+                )
+
+        return d
