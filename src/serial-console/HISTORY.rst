@@ -4,6 +4,7 @@ Release History
 0.1.4
 ++++++
 * Fix repeating loading message
+* Bump websocket-client version
 
 0.1.3
 ++++++

@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ["websocket-client~=0.56.0"]
+DEPENDENCIES = ["websocket-client==1.3.1"]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
