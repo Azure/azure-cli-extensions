@@ -81,24 +81,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # read the original value passed by the command
         return self.raw_param.get("node_zones")
 
-    def get_host_group_id(self) -> Union[str, None]:
-        """Obtain the value of host_group_id.
-
-        :return: string or None
-        """
-        # read the original value passed by the command
-        host_group_id = self.raw_param.get("host_group_id")
-        # try to read the property value corresponding to the parameter from the `agentpool` object
-        if (
-            self.agentpool and
-            self.agentpool.host_group_id is not None
-        ):
-            host_group_id = self.agentpool.host_group_id
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return host_group_id
-
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.
 
@@ -357,7 +339,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        agentpool.host_group_id = self.context.get_host_group_id()
         agentpool.capacity_reservation_group_id = self.context.get_crg_id()
         return agentpool
 

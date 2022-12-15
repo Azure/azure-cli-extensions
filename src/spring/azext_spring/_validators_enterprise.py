@@ -43,7 +43,17 @@ def validate_build_env(cmd, namespace):
         if isinstance(namespace.build_env, list):
             env_dict = {}
             for item in namespace.build_env:
-                env_dict.update(validate_tag(item))
+                if item:
+                    comps = item.split('=', 1)
+                    if len(comps) <= 1:
+                        raise ArgumentUsageError("The value of env {} should not be empty.".format(item))
+                    else:
+                        if match(r"^[-._a-zA-Z][-._a-zA-Z0-9]*$", comps[0]):
+                            result = {}
+                            result = {comps[0]: comps[1]}
+                            env_dict.update(result)
+                        else:
+                            raise ArgumentUsageError("The env name {} is not allowed. The valid env name should follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'(For example, BP_JVM_VERSION).".format(comps[0]))
             namespace.build_env = env_dict
 
 
