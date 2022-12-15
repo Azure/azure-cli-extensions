@@ -66,3 +66,15 @@ def cf_communication_chat(cli_ctx, kwargs):
     client = ChatClient(endpoint, CommunicationTokenCredential(token), **args)
 
     return client
+
+
+def cf_communication_rooms(cli_ctx, kwargs):
+    from azure.communication.rooms import RoomsClient
+
+    connection_string = kwargs.pop('connection_string', None)
+    if connection_string is None:
+        error_msg = 'Please specify --connection-string, or set AZURE_COMMUNICATION_CONNECTION_STRING.'
+        raise RequiredArgumentMissingError(error_msg)
+
+    client = RoomsClient.from_connection_string(connection_string)
+    return client
