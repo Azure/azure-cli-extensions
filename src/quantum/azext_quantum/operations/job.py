@@ -288,15 +288,26 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     target_info = TargetInfo(cmd, target_id)
     if target_info is None:
         raise AzureInternalError("Failed to get target information.")
-    provider = target_info.target_id.split('.')[0]
+    provider_id = target_info.target_id.split('.')[0]                   # <<<<< Is provider_id case sensitive? <<<<<
+
+    # Microsoft provider_id values don't follow the same pattern as all the other companies' provider_id
+    if provider_id.lower() == "microsoft":
+        after_the_dot = target_info.target_id.split('.')[1]
+        if after_the_dot.lower() == "simulator" or after_the_dot.lower() == "fleetmanagement":  # <<<<< Are there more like these?
+            provider_id = f"{provider_id}.{after_the_dot}"
+
+    # >>>>>>>>>>
+    # print(f"provider_id = {provider_id}")
+    # return
+    # <<<<<<<<<<
 
     # >>>>>>>>>> Is this useful??? >>>>>>>>>>
     # Get default job parameters for this provider
-    if provider == "quantinuum":
+    if provider_id == "quantinuum":
         target_parameters = Quantinuum(workspace_name)
-    elif provider == "ionq":
+    elif provider_id == "ionq":
         target_parameters = IonQ(workspace_name)
-    elif provider == "rigetti":
+    elif provider_id == "rigetti":
         target_parameters = Rigetti(workspace_name)
     else:
         target_parameters = None
@@ -314,13 +325,12 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         default_content_type = target_parameters.content_type
         default_encoding = target_parameters.encoding
 
-    # >>>>>>>>>>
     if job_output_format is None and default_output_format is not None:
         job_output_format = default_output_format
     # <<<<<<<<<<
 
     # >>>>>>>>>>
-        # print(f"provider = {provider}")
+        # print(f"provider_id = {provider_id}")
         # print(f"input_format = {default_input_format}")
         # print(f"output_format = {default_output_format}")
         # print(f"content_type = {default_content_type}")
@@ -332,7 +342,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
 
     # Identify the type of job being submitted
     lc_job_input_format = job_input_format.lower()
-    if lc_job_input_format == "qir.v1":
+    if lc_job_input_format == "qir.v1":                 # <<<<< <<<<<< What about Rigetti and Quantimuum QIR?
         job_type = QIR_JOB
     elif lc_job_input_format == "microsoft.qio.v2":
         job_type = QIO_JOB
@@ -457,7 +467,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         # input_params = job_params
         # >>>>>>>>>>
         container_uri = blob_uri[0:start_of_blob_name - 1]
-        input_params = {"count": 2}
+        input_params = {"count": 2}                         # <<<<< Is there a default for "count", like for "shots"?
         # <<<<<<<<<<
         # >>>>> TODO: Get additional parameters from the command line <<<<<
 
@@ -467,7 +477,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                    'input_data_format': job_input_format,
                    'output_data_format': job_output_format,
                    'inputParams': input_params,
-                   'provider_id': target_info.target_id.split('.')[0],
+                   'provider_id': provider_id,
                    'target': target_info.target_id}
 
     # Submit the job
