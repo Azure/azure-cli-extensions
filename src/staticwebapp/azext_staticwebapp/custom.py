@@ -14,10 +14,8 @@ from azure.cli.command_modules.appservice.static_sites import show_staticsite
 from msrestazure.tools import is_valid_resource_id
 
 
-# TODO check these args against Thomas's spec
-def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environment=None,
-                        connection_string=None, username=None, password=None,
-                        mi_user_assigned=None, mi_system_assigned=False):
+def create_dbconnection(cmd, resource_group_name, name, db_resource_id, db_name=None, environment=None,
+                        username=None, password=None, mi_user_assigned=None, mi_system_assigned=False):
     if mi_system_assigned and mi_user_assigned:
         raise MutuallyExclusiveArgumentError("Cannot use both system and user assigned identities")
 
@@ -34,9 +32,8 @@ def create_dbconnection(cmd, resource_group_name, name, db_resource_id, environm
     db_type = get_database_type(db_resource_id)
     region = db_type.get_location(cmd, db_resource_id)
 
-    if not connection_string:
-        connection_string = db_type.get_connection_string(cmd, sku, connection_type, db_resource_id, username, password,
-                                                          app=app, identity_rid=mi_user_assigned)
+    connection_string = db_type.get_connection_string(cmd, sku, connection_type, db_resource_id, db_name,
+                                                      username, password, app=app, identity_rid=mi_user_assigned)
 
     identity = None
     if mi_user_assigned:

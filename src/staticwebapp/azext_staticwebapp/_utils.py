@@ -49,8 +49,12 @@ class AbstractDbHandler:
         raise NotImplementedError()
 
     @classmethod
-    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None, **kwargs) -> str:
+    def _requires_database_name(cls) -> bool:
+        raise NotImplementedError()
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
+                              username=None, password=None, **kwargs):
         raise NotImplementedError()
 
     # saves some time by prevent reparsing of RIDs
@@ -60,7 +64,7 @@ class AbstractDbHandler:
         return parse_resource_id(resource_id)
 
     @classmethod
-    def _validate(cls, sku: 'Sku', connection_type: 'ConnectionType', username=None, password=None):
+    def _validate(cls, sku: 'Sku', connection_type: 'ConnectionType', database_name, username, password):
         if not cls._is_supported(sku, connection_type):
             raise ValidationError(f"Authentication type '{connection_type}' is not supported for "
                                   f"sku '{sku}' and database type '{cls.DB_TYPE_NAME}'")
@@ -74,7 +78,6 @@ class AbstractDbHandler:
         if missing_username:
             raise RequiredArgumentMissingError("Missing database username")
 
-
         unnecessary_username = username and not cls._requires_username(sku, connection_type)
         unnecessary_password = password and not cls._requires_password(sku, connection_type)
         if unnecessary_username and unnecessary_password:
@@ -83,6 +86,13 @@ class AbstractDbHandler:
             logger.warning("Username not required. Ignoring the provided username.")
         elif unnecessary_password:
             logger.warning("Password not required. Ignoring the provided password.")
+
+        requires_db_name = cls._requires_database_name()
+        if not database_name and requires_db_name:
+            raise RequiredArgumentMissingError("Database name (--db-name/-b) required for database type "
+                                               f"'{cls.DB_TYPE_NAME}'.")
+        if database_name and not requires_db_name:
+            logger.warning("Database name not required. Ignoring the provided database name.")
 
     @classmethod
     def _get_location(cls, cmd, resource_id: str) -> str:
@@ -111,10 +121,11 @@ class AbstractDbHandler:
         return cls._get_location(cmd, rid(**server_rid_parts))
 
     @classmethod
-    def get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+    def get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
                               username=None, password=None, **kwargs) -> str:
-        cls._validate(sku, connection_type, username, password)
-        return cls._get_connection_string(cmd, sku, connection_type, resource_id, username, password, **kwargs)
+        cls._validate(sku, connection_type, database_name, username, password)
+        return cls._get_connection_string(cmd, sku, connection_type, resource_id, database_name,
+                                          username, password, **kwargs)
 
 
 class CosmosDbHandler(AbstractDbHandler):
@@ -134,7 +145,11 @@ class CosmosDbHandler(AbstractDbHandler):
         return not (sku == sku.FREE and connection_type != ConnectionType.CONNECTION_STRING)
 
     @classmethod
-    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+    def _requires_database_name(cls) -> bool:
+        return False
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
                                username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         resource_group = parsed_rid["resource_group"]
@@ -164,16 +179,20 @@ class AzureSqlHandler(AbstractDbHandler):
         return not (sku == sku.FREE and connection_type != ConnectionType.CONNECTION_STRING)
 
     @classmethod
-    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
+    def _requires_database_name(cls) -> bool:
+        return True
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
                               username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         name = parsed_rid["name"]
 
         if connection_type == ConnectionType.CONNECTION_STRING:
-            return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
+            return (f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
                     f"User ID={username};Password={password};Encrypt=true;Connection Timeout=30;")
         else:
-            return (f"Server=tcp:{name}.database.windows.net,1433;Database={parsed_rid['child_name_1']};"
+            return (f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
                     f"Encrypt=true;Connection Timeout=30;")
 
 
@@ -194,14 +213,17 @@ class MySqlFlexHandler(AbstractDbHandler):
         return connection_type == ConnectionType.CONNECTION_STRING
 
     @classmethod
-    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None, **kwargs) -> str:
+    def _requires_database_name(cls) -> bool:
+        return True
+
+    @classmethod
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
+                               username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
-        db = parsed_rid["child_name_1"]
         # only connection string auth supported
         return (f'Server="{server}.mysql.database.azure.com";UserID = "{username}";'
-                f'Password="{password}";Database="{db}";SslMode=MySqlSslMode.Required;'
+                f'Password="{password}";Database="{database_name}";SslMode=MySqlSslMode.Required;'
                 'SslCa="{path_to_CA_cert}"')
 
     @classmethod
@@ -226,6 +248,10 @@ class PgSqlSingleHandler(AbstractDbHandler):
         return not (sku == sku.FREE and connection_type != ConnectionType.CONNECTION_STRING)
 
     @classmethod
+    def _requires_database_name(cls) -> bool:
+        return True
+
+    @classmethod
     def get_location(cls, cmd, resource_id: str) -> str:
         return cls._get_location_from_server(cmd, resource_id)
 
@@ -246,17 +272,16 @@ class PgSqlSingleHandler(AbstractDbHandler):
             return sp["appId"]
 
     @classmethod
-    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None, **kwargs) -> str:
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
+                               username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
-        db = parsed_rid["child_name_1"]
         if connection_type == ConnectionType.CONNECTION_STRING:
-            return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
+            return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
                     f"User Id={username}@{server};Password={password};Ssl Mode=Require;")
         else:
             client_id = cls._get_client_id(cmd, connection_type, kwargs["app"], kwargs["identity_rid"])
-            return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
+            return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
                     f"User Id={client_id};Ssl Mode=Require;")
 
 
@@ -278,26 +303,29 @@ class PgSqlFlexHandler(AbstractDbHandler):
         return connection_type == ConnectionType.CONNECTION_STRING
 
     @classmethod
+    def _requires_database_name(cls) -> bool:
+        return True
+
+    @classmethod
     def get_location(cls, cmd, resource_id: str) -> str:
         return cls._get_location_from_server(cmd, resource_id)
 
     @classmethod
-    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id: str,
-                              username=None, password=None, **kwargs) -> str:
+    def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
+                               username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
-        db = parsed_rid["child_name_1"]
-        return (f"Server={server}.postgres.database.azure.com;Database={db};Port=5432;"
+        return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
                 f"User Id={username};Password={password};Ssl Mode=Require;")
 
 
 # pylint: disable=line-too-long
 RESOURCE_ID_TO_DB_HANDLER = {
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DocumentDB/databaseAccounts\/.*$": CosmosDbHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.Sql\/servers\/.*\/databases\/.*$": AzureSqlHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforMySQL\/flexibleServers\/.*\/databases\/.*$": MySqlFlexHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/servers\/.*\/databases\/.*$": PgSqlSingleHandler,
-    r"^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/Microsoft.DBforPostgreSQL\/flexibleServers\/.*\/databases\/.*$": PgSqlFlexHandler,
+    r"^/subscriptions/.+/resourceGroups/.+/providers/Microsoft\.DocumentDB/databaseAccounts/[^/]+$": CosmosDbHandler,
+    r"^/subscriptions/.+/resourceGroups/.+/providers/Microsoft\.Sql/servers/[^/]+$": AzureSqlHandler,
+    r"^/subscriptions/.+/resourceGroups/.+/providers/Microsoft\.DBforMySQL/flexibleServers/[^/]+$": MySqlFlexHandler,
+    r"^/subscriptions/.+/resourceGroups/.+/providers/Microsoft\.DBforPostgreSQL/servers/[^/]+$": PgSqlSingleHandler,
+    r"^/subscriptions/.+/resourceGroups/.+/providers/Microsoft\.DBforPostgreSQL/flexibleServers/[^/]+$": PgSqlFlexHandler,
 }
 
 
