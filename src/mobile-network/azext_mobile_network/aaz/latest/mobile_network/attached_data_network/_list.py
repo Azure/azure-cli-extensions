@@ -44,7 +44,7 @@ class List(AAZCommand):
             options=["--pccp-name"],
             help="The name of the packet core control plane.",
             required=True,
-            # id_part="name",
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
