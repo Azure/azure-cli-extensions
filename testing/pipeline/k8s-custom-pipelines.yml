@@ -55,7 +55,7 @@ stages:
       path: ./test/extensions/public/Flux.Tests.ps1
   - job: BuildPublishExtension
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-20.04'
     displayName: "Build and Publish the Extension Artifact"
     variables: 
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
@@ -105,10 +105,11 @@ stages:
 
         azdev verify license
 
+
   - job: StaticAnalysis
     displayName: "Static Analysis"
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-20.04'
     steps:
       - task: UsePythonVersion@0
         displayName: 'Use Python 3.6'
