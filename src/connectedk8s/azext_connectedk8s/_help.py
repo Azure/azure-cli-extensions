@@ -31,7 +31,7 @@ helps['connectedk8s connect'] = """
     - name: Onboard a connected kubernetes cluster with custom onboarding timeout.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-timeout 600
     - name: Onboard a connected kubernetes cluster with least privileges
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --config-settings "{\"service-account-name\":\"azure-arc-operator-sa\"}" --least-privilege true
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --config-settings "{\\"service-account-name\\":\\"azure-arc-operator-sa\\"}" --least-privilege true
 
 """
 
