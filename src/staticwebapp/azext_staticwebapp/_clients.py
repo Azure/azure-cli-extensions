@@ -68,7 +68,7 @@ class DbConnectionClient():
             resource_group_name,
             name,
             environment,
-            connection_name,
+            connection_name if not detailed else f"{connection_name}/show",
             api_version)
 
         verb = "GET" if not detailed else "POST"
