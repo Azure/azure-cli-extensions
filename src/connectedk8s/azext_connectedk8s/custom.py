@@ -1618,8 +1618,6 @@ def get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, 
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
-    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
-
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
