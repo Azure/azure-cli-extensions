@@ -251,7 +251,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -768,6 +768,13 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    least_privilege = False
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
+
     # Check forced delete flag
     if(force_delete):
 
@@ -820,7 +827,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                     _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege, True)
 
         return
 
@@ -831,7 +838,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Loading config map
     api_instance = kube_client.CoreV1Api()
     try:
-        configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', release_namespace)
+        configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in {} namespace: ".format(release_namespace),
@@ -860,7 +867,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                  "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege)
 
 
 def get_release_namespace(kube_config, kube_context, helm_client_location):
@@ -1318,7 +1325,7 @@ def validate_release_namespace(client, cluster_name, resource_group_name, kube_c
         # Loading config map
         api_instance = kube_client.CoreV1Api()
         try:
-            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', release_namespace)
+            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",

@@ -272,7 +272,7 @@ def ensure_namespace_cleanup():
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, no_hooks=False):
+def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege=False, no_hooks=False):
     if(no_hooks):
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace, "--no-hooks"]
     else:
@@ -291,7 +291,8 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
         raise CLIInternalError("Error occured while cleaning up arc agents. " +
                                "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
                                " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
-    ensure_namespace_cleanup()
+    if not least_privilege:
+        ensure_namespace_cleanup()  # NS cleanup shouldn't be attempted when least_privilege=True since onboarding persona won't have sufficient access to delete NS. It's an additional admin operation on user end to cleanup NS
 
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
