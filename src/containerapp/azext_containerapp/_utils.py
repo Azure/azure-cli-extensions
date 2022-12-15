@@ -1060,7 +1060,8 @@ def safe_get(model, *keys, default=None):
         return default
     for k in keys[:-1]:
         model = model.get(k, {})
-    return model.get(keys[-1], default)
+    value = model.get(keys[-1], default)
+    return default if not value else value
 
 
 def safe_set(model, *keys, value):

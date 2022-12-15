@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.3.17
+++++++
+* Fix polling logic for long running operations.
 
 0.3.16
 ++++++
