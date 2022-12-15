@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/sites/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/sites/{}", "2022-11-01"],
         ]
     }
 
@@ -134,7 +134,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -181,7 +181,7 @@ class Wait(AAZWaitCommand):
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
@@ -191,6 +191,7 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.network_functions = AAZListType(
                 serialized_name="networkFunctions",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/sites/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/sites/{}", "2022-11-01"],
         ]
     }
 
@@ -83,25 +83,6 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.network_functions = AAZListArg(
-            options=["--network-functions"],
-            arg_group="Properties",
-            help="An array of IDs of the network functions deployed on the site, maintained by the user.",
-        )
-
-        network_functions = cls._args_schema.network_functions
-        network_functions.Element = AAZObjectArg()
-
-        _element = cls._args_schema.network_functions.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
-            required=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -189,7 +170,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -215,20 +196,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("networkFunctions", AAZListType, ".network_functions")
-
-            network_functions = _builder.get(".properties.networkFunctions")
-            if network_functions is not None:
-                network_functions.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.networkFunctions[]")
-            if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -268,7 +236,7 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
@@ -278,6 +246,7 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.network_functions = AAZListType(
                 serialized_name="networkFunctions",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

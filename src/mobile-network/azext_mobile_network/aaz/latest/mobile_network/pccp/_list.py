@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes", "2022-04-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes", "2022-11-01"],
         ]
     }
 
@@ -111,7 +111,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -169,7 +169,7 @@ class List(AAZCommand):
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
@@ -213,20 +213,30 @@ class List(AAZCommand):
             properties.core_network_technology = AAZStrType(
                 serialized_name="coreNetworkTechnology",
             )
+            properties.installation = AAZObjectType()
             properties.local_diagnostics_access = AAZObjectType(
                 serialized_name="localDiagnosticsAccess",
-            )
-            properties.mobile_network = AAZObjectType(
-                serialized_name="mobileNetwork",
                 flags={"required": True},
             )
-            properties.platform = AAZObjectType()
+            properties.platform = AAZObjectType(
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_version = AAZStrType(
+                serialized_name="rollbackVersion",
+                flags={"read_only": True},
+            )
+            properties.sites = AAZListType(
+                flags={"required": True},
+            )
             properties.sku = AAZStrType(
                 flags={"required": True},
+            )
+            properties.ue_mtu = AAZIntType(
+                serialized_name="ueMtu",
             )
             properties.version = AAZStrType()
 
@@ -242,7 +252,20 @@ class List(AAZCommand):
             )
             control_plane_access_interface.name = AAZStrType()
 
+            installation = cls._schema_on_200.value.Element.properties.installation
+            installation.operation = AAZObjectType()
+            installation.state = AAZStrType()
+
+            operation = cls._schema_on_200.value.Element.properties.installation.operation
+            operation.id = AAZStrType(
+                flags={"required": True},
+            )
+
             local_diagnostics_access = cls._schema_on_200.value.Element.properties.local_diagnostics_access
+            local_diagnostics_access.authentication_type = AAZStrType(
+                serialized_name="authenticationType",
+                flags={"required": True},
+            )
             local_diagnostics_access.https_server_certificate = AAZObjectType(
                 serialized_name="httpsServerCertificate",
             )
@@ -250,16 +273,29 @@ class List(AAZCommand):
             https_server_certificate = cls._schema_on_200.value.Element.properties.local_diagnostics_access.https_server_certificate
             https_server_certificate.certificate_url = AAZStrType(
                 serialized_name="certificateUrl",
-            )
-
-            mobile_network = cls._schema_on_200.value.Element.properties.mobile_network
-            mobile_network.id = AAZStrType(
                 flags={"required": True},
+            )
+            https_server_certificate.provisioning = AAZObjectType()
+
+            provisioning = cls._schema_on_200.value.Element.properties.local_diagnostics_access.https_server_certificate.provisioning
+            provisioning.reason = AAZStrType(
+                flags={"read_only": True},
+            )
+            provisioning.state = AAZStrType(
+                flags={"read_only": True},
             )
 
             platform = cls._schema_on_200.value.Element.properties.platform
             platform.azure_stack_edge_device = AAZObjectType(
                 serialized_name="azureStackEdgeDevice",
+            )
+            _ListHelper._build_schema_azure_stack_edge_device_resource_id_read(platform.azure_stack_edge_device)
+            platform.azure_stack_edge_devices = AAZListType(
+                serialized_name="azureStackEdgeDevices",
+                flags={"read_only": True},
+            )
+            platform.azure_stack_hci_cluster = AAZObjectType(
+                serialized_name="azureStackHciCluster",
             )
             platform.connected_cluster = AAZObjectType(
                 serialized_name="connectedCluster",
@@ -271,8 +307,12 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            azure_stack_edge_device = cls._schema_on_200.value.Element.properties.platform.azure_stack_edge_device
-            azure_stack_edge_device.id = AAZStrType(
+            azure_stack_edge_devices = cls._schema_on_200.value.Element.properties.platform.azure_stack_edge_devices
+            azure_stack_edge_devices.Element = AAZObjectType()
+            _ListHelper._build_schema_azure_stack_edge_device_resource_id_read(azure_stack_edge_devices.Element)
+
+            azure_stack_hci_cluster = cls._schema_on_200.value.Element.properties.platform.azure_stack_hci_cluster
+            azure_stack_hci_cluster.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -283,6 +323,14 @@ class List(AAZCommand):
 
             custom_location = cls._schema_on_200.value.Element.properties.platform.custom_location
             custom_location.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            sites = cls._schema_on_200.value.Element.properties.sites
+            sites.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.sites.Element
+            _element.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -351,7 +399,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -409,7 +457,7 @@ class List(AAZCommand):
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
@@ -453,20 +501,30 @@ class List(AAZCommand):
             properties.core_network_technology = AAZStrType(
                 serialized_name="coreNetworkTechnology",
             )
+            properties.installation = AAZObjectType()
             properties.local_diagnostics_access = AAZObjectType(
                 serialized_name="localDiagnosticsAccess",
-            )
-            properties.mobile_network = AAZObjectType(
-                serialized_name="mobileNetwork",
                 flags={"required": True},
             )
-            properties.platform = AAZObjectType()
+            properties.platform = AAZObjectType(
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_version = AAZStrType(
+                serialized_name="rollbackVersion",
+                flags={"read_only": True},
+            )
+            properties.sites = AAZListType(
+                flags={"required": True},
+            )
             properties.sku = AAZStrType(
                 flags={"required": True},
+            )
+            properties.ue_mtu = AAZIntType(
+                serialized_name="ueMtu",
             )
             properties.version = AAZStrType()
 
@@ -482,7 +540,20 @@ class List(AAZCommand):
             )
             control_plane_access_interface.name = AAZStrType()
 
+            installation = cls._schema_on_200.value.Element.properties.installation
+            installation.operation = AAZObjectType()
+            installation.state = AAZStrType()
+
+            operation = cls._schema_on_200.value.Element.properties.installation.operation
+            operation.id = AAZStrType(
+                flags={"required": True},
+            )
+
             local_diagnostics_access = cls._schema_on_200.value.Element.properties.local_diagnostics_access
+            local_diagnostics_access.authentication_type = AAZStrType(
+                serialized_name="authenticationType",
+                flags={"required": True},
+            )
             local_diagnostics_access.https_server_certificate = AAZObjectType(
                 serialized_name="httpsServerCertificate",
             )
@@ -490,16 +561,29 @@ class List(AAZCommand):
             https_server_certificate = cls._schema_on_200.value.Element.properties.local_diagnostics_access.https_server_certificate
             https_server_certificate.certificate_url = AAZStrType(
                 serialized_name="certificateUrl",
-            )
-
-            mobile_network = cls._schema_on_200.value.Element.properties.mobile_network
-            mobile_network.id = AAZStrType(
                 flags={"required": True},
+            )
+            https_server_certificate.provisioning = AAZObjectType()
+
+            provisioning = cls._schema_on_200.value.Element.properties.local_diagnostics_access.https_server_certificate.provisioning
+            provisioning.reason = AAZStrType(
+                flags={"read_only": True},
+            )
+            provisioning.state = AAZStrType(
+                flags={"read_only": True},
             )
 
             platform = cls._schema_on_200.value.Element.properties.platform
             platform.azure_stack_edge_device = AAZObjectType(
                 serialized_name="azureStackEdgeDevice",
+            )
+            _ListHelper._build_schema_azure_stack_edge_device_resource_id_read(platform.azure_stack_edge_device)
+            platform.azure_stack_edge_devices = AAZListType(
+                serialized_name="azureStackEdgeDevices",
+                flags={"read_only": True},
+            )
+            platform.azure_stack_hci_cluster = AAZObjectType(
+                serialized_name="azureStackHciCluster",
             )
             platform.connected_cluster = AAZObjectType(
                 serialized_name="connectedCluster",
@@ -511,8 +595,12 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            azure_stack_edge_device = cls._schema_on_200.value.Element.properties.platform.azure_stack_edge_device
-            azure_stack_edge_device.id = AAZStrType(
+            azure_stack_edge_devices = cls._schema_on_200.value.Element.properties.platform.azure_stack_edge_devices
+            azure_stack_edge_devices.Element = AAZObjectType()
+            _ListHelper._build_schema_azure_stack_edge_device_resource_id_read(azure_stack_edge_devices.Element)
+
+            azure_stack_hci_cluster = cls._schema_on_200.value.Element.properties.platform.azure_stack_hci_cluster
+            azure_stack_hci_cluster.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -523,6 +611,14 @@ class List(AAZCommand):
 
             custom_location = cls._schema_on_200.value.Element.properties.platform.custom_location
             custom_location.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            sites = cls._schema_on_200.value.Element.properties.sites
+            sites.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.sites.Element
+            _element.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -554,6 +650,23 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_azure_stack_edge_device_resource_id_read = None
+
+    @classmethod
+    def _build_schema_azure_stack_edge_device_resource_id_read(cls, _schema):
+        if cls._schema_azure_stack_edge_device_resource_id_read is not None:
+            _schema.id = cls._schema_azure_stack_edge_device_resource_id_read.id
+            return
+
+        cls._schema_azure_stack_edge_device_resource_id_read = _schema_azure_stack_edge_device_resource_id_read = AAZObjectType()
+
+        azure_stack_edge_device_resource_id_read = _schema_azure_stack_edge_device_resource_id_read
+        azure_stack_edge_device_resource_id_read.id = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.id = cls._schema_azure_stack_edge_device_resource_id_read.id
 
 
 __all__ = ["List"]

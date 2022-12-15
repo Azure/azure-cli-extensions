@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/packetcoredataplanes/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/packetcoredataplanes/{}", "2022-11-01"],
         ]
     }
 
@@ -206,7 +206,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -309,7 +309,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -430,7 +430,7 @@ class _UpdateHelper:
         )
         packet_core_data_plane_read.system_data = AAZObjectType(
             serialized_name="systemData",
-            flags={"client_flatten": True, "read_only": True},
+            flags={"read_only": True},
         )
         packet_core_data_plane_read.tags = AAZDictType()
         packet_core_data_plane_read.type = AAZStrType(

@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}", "2022-11-01"],
         ]
     }
 
@@ -110,30 +110,46 @@ class Create(AAZCommand):
             options=["--core-network-tec"],
             arg_group="Properties",
             help="The core network technology generation (5G core or EPC / 4G core).",
+            default="5GC",
             enum={"5GC": "5GC", "EPC": "EPC"},
         )
         _args_schema.local_diagnostics = AAZObjectArg(
             options=["--local-diagnostics"],
             arg_group="Properties",
             help="The kubernetes ingress configuration to control access to packet core diagnostics over local APIs.",
-        )
-        _args_schema.mobile_network = AAZObjectArg(
-            options=["--mobile-network"],
-            arg_group="Properties",
-            help="Mobile network in which this packet core control plane is deployed.",
             required=True,
         )
         _args_schema.platform = AAZObjectArg(
             options=["--platform"],
             arg_group="Properties",
             help="The platform where the packet core is deployed.",
+            required=True,
+        )
+        _args_schema.sites = AAZListArg(
+            options=["--sites"],
+            arg_group="Properties",
+            help="Site(s) under which this packet core control plane should be deployed. The sites must be in the same location as the packet core control plane.",
+            required=True,
+            fmt=AAZListArgFormat(
+                unique=True,
+            ),
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Properties",
             help="The SKU defining the throughput and SIM allowances for this packet core control plane deployment.",
             required=True,
-            enum={"EdgeSite2GBPS": "EdgeSite2GBPS", "EdgeSite3GBPS": "EdgeSite3GBPS", "EdgeSite4GBPS": "EdgeSite4GBPS", "EvaluationPackage": "EvaluationPackage", "FlagshipStarterPackage": "FlagshipStarterPackage", "LargePackage": "LargePackage", "MediumPackage": "MediumPackage"},
+            enum={"G0": "G0", "G1": "G1", "G10": "G10", "G2": "G2", "G3": "G3", "G4": "G4", "G5": "G5"},
+        )
+        _args_schema.ue_mtu = AAZIntArg(
+            options=["--ue-mtu"],
+            arg_group="Properties",
+            help="The MTU (in bytes) signaled to the UE. The same MTU is set on the user plane data links for all data networks. The MTU set on the user plane access link is calculated to be 60 bytes greater than this value to allow for GTP encapsulation.",
+            default=1440,
+            fmt=AAZIntArgFormat(
+                maximum=1930,
+                minimum=1280,
+            ),
         )
         _args_schema.version = AAZStrArg(
             options=["--version"],
@@ -169,6 +185,12 @@ class Create(AAZCommand):
         )
 
         local_diagnostics = cls._args_schema.local_diagnostics
+        local_diagnostics.authentication_type = AAZStrArg(
+            options=["authentication-type"],
+            help="How to authenticate users who access local diagnostics APIs.",
+            required=True,
+            enum={"AAD": "AAD", "Password": "Password"},
+        )
         local_diagnostics.https_server_certificate = AAZObjectArg(
             options=["https-server-certificate"],
             help="The HTTPS server TLS certificate used to secure local access to diagnostics.",
@@ -178,22 +200,17 @@ class Create(AAZCommand):
         https_server_certificate.certificate_url = AAZStrArg(
             options=["certificate-url"],
             help="The certificate URL, unversioned. For example: https://contosovault.vault.azure.net/certificates/ingress.",
-        )
-
-        mobile_network = cls._args_schema.mobile_network
-        mobile_network.id = AAZStrArg(
-            options=["id"],
-            help="Mobile network resource ID.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^/[sS][uU][bB][sS][cC][rR][iI][pP][tT][iI][oO][nN][sS]/[^/?#]+/[rR][eE][sS][oO][uU][rR][cC][eE][gG][rR][oO][uU][pP][sS]/[^/?#]+/[pP][rR][oO][vV][iI][dD][eE][rR][sS]/[mM][iI][cC][rR][oO][sS][oO][fF][tT]\.[mM][oO][bB][iI][lL][eE][nN][eE][tT][wW][oO][rR][kK]/[mM][oO][bB][iI][lL][eE][nN][eE][tT][wW][oO][rR][kK][sS]/[^/?#]+$",
-            ),
         )
 
         platform = cls._args_schema.platform
         platform.azure_stack_edge_device = AAZObjectArg(
             options=["azure-stack-edge-device"],
             help="The Azure Stack Edge device where where the packet core is deployed. If the device is part of a fault tolerant pair, either device in the pair can be specified.",
+        )
+        platform.azure_stack_hci_cluster = AAZObjectArg(
+            options=["azure-stack-hci-cluster"],
+            help="The Azure Stack HCI cluster where the packet core is deployed.",
         )
         platform.connected_cluster = AAZObjectArg(
             options=["connected-cluster"],
@@ -207,7 +224,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The platform type where packet core is deployed.",
             required=True,
-            enum={"AKS-HCI": "AKS-HCI", "BaseVM": "BaseVM"},
+            enum={"3P-AZURE-STACK-HCI": "3P-AZURE-STACK-HCI", "AKS-HCI": "AKS-HCI"},
         )
 
         azure_stack_edge_device = cls._args_schema.platform.azure_stack_edge_device
@@ -217,6 +234,16 @@ class Create(AAZCommand):
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^/[sS][uU][bB][sS][cC][rR][iI][pP][tT][iI][oO][nN][sS]/[^/?#]+/[rR][eE][sS][oO][uU][rR][cC][eE][gG][rR][oO][uU][pP][sS]/[^/?#]+/[pP][rR][oO][vV][iI][dD][eE][rR][sS]/[mM][iI][cC][rR][oO][sS][oO][fF][tT]\.[dD][aA][tT][aA][bB][oO][xX][eE][dD][gG][eE]/[dD][aA][tT][aA][bB][oO][xX][eE][dD][gG][eE][dD][eE][vV][iI][cC][eE][sS]/[^/?#]+$",
+            ),
+        )
+
+        azure_stack_hci_cluster = cls._args_schema.platform.azure_stack_hci_cluster
+        azure_stack_hci_cluster.id = AAZStrArg(
+            options=["id"],
+            help="Azure Stack HCI cluster resource ID.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^/[sS][uU][bB][sS][cC][rR][iI][pP][tT][iI][oO][nN][sS]/[^/?#]+/[rR][eE][sS][oO][uU][rR][cC][eE][gG][rR][oO][uU][pP][sS]/[^/?#]+/[pP][rR][oO][vV][iI][dD][eE][rR][sS]/[mM][iI][cC][rR][oO][sS][oO][fF][tT]\.[aA][zZ][uU][rR][eE][sS][tT][aA][cC][kK][hH][cC][iI]/[cC][lL][uU][sS][tT][eE][rR][sS]/[^/?#]+$",
             ),
         )
 
@@ -237,6 +264,19 @@ class Create(AAZCommand):
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^/[sS][uU][bB][sS][cC][rR][iI][pP][tT][iI][oO][nN][sS]/[^/?#]+/[rR][eE][sS][oO][uU][rR][cC][eE][gG][rR][oO][uU][pP][sS]/[^/?#]+/[pP][rR][oO][vV][iI][dD][eE][rR][sS]/[mM][iI][cC][rR][oO][sS][oO][fF][tT]\.[eE][xX][tT][eE][nN][dD][eE][dD][lL][oO][cC][aA][tT][iI][oO][nN]/[cC][uU][sS][tT][oO][mM][lL][oO][cC][aA][tT][iI][oO][nN][sS]/[^/?#]+$",
+            ),
+        )
+
+        sites = cls._args_schema.sites
+        sites.Element = AAZObjectArg()
+
+        _element = cls._args_schema.sites.Element
+        _element.id = AAZStrArg(
+            options=["id"],
+            help="Site resource ID.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^/[sS][uU][bB][sS][cC][rR][iI][pP][tT][iI][oO][nN][sS]/[^/?#]+/[rR][eE][sS][oO][uU][rR][cC][eE][gG][rR][oO][uU][pP][sS]/[^/?#]+/[pP][rR][oO][vV][iI][dD][eE][rR][sS]/[mM][iI][cC][rR][oO][sS][oO][fF][tT]\.[mM][oO][bB][iI][lL][eE][nN][eE][tT][wW][oO][rR][kK]/[mM][oO][bB][iI][lL][eE][nN][eE][tT][wW][oO][rR][kK][sS]/[^/?#]+/[sS][iI][tT][eE][sS]/[^/?#]+$",
             ),
         )
         return cls._args_schema
@@ -322,7 +362,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -365,10 +405,11 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("controlPlaneAccessInterface", AAZObjectType, ".access_interface", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("coreNetworkTechnology", AAZStrType, ".core_network_tec")
-                properties.set_prop("localDiagnosticsAccess", AAZObjectType, ".local_diagnostics")
-                properties.set_prop("mobileNetwork", AAZObjectType, ".mobile_network", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("platform", AAZObjectType, ".platform")
+                properties.set_prop("localDiagnosticsAccess", AAZObjectType, ".local_diagnostics", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("platform", AAZObjectType, ".platform", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sites", AAZListType, ".sites", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("sku", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("ueMtu", AAZIntType, ".ue_mtu")
                 properties.set_prop("version", AAZStrType, ".version")
 
             control_plane_access_interface = _builder.get(".properties.controlPlaneAccessInterface")
@@ -380,19 +421,17 @@ class Create(AAZCommand):
 
             local_diagnostics_access = _builder.get(".properties.localDiagnosticsAccess")
             if local_diagnostics_access is not None:
+                local_diagnostics_access.set_prop("authenticationType", AAZStrType, ".authentication_type", typ_kwargs={"flags": {"required": True}})
                 local_diagnostics_access.set_prop("httpsServerCertificate", AAZObjectType, ".https_server_certificate")
 
             https_server_certificate = _builder.get(".properties.localDiagnosticsAccess.httpsServerCertificate")
             if https_server_certificate is not None:
-                https_server_certificate.set_prop("certificateUrl", AAZStrType, ".certificate_url")
-
-            mobile_network = _builder.get(".properties.mobileNetwork")
-            if mobile_network is not None:
-                mobile_network.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+                https_server_certificate.set_prop("certificateUrl", AAZStrType, ".certificate_url", typ_kwargs={"flags": {"required": True}})
 
             platform = _builder.get(".properties.platform")
             if platform is not None:
                 platform.set_prop("azureStackEdgeDevice", AAZObjectType, ".azure_stack_edge_device")
+                platform.set_prop("azureStackHciCluster", AAZObjectType, ".azure_stack_hci_cluster")
                 platform.set_prop("connectedCluster", AAZObjectType, ".connected_cluster")
                 platform.set_prop("customLocation", AAZObjectType, ".custom_location")
                 platform.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
@@ -401,6 +440,10 @@ class Create(AAZCommand):
             if azure_stack_edge_device is not None:
                 azure_stack_edge_device.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
+            azure_stack_hci_cluster = _builder.get(".properties.platform.azureStackHciCluster")
+            if azure_stack_hci_cluster is not None:
+                azure_stack_hci_cluster.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+
             connected_cluster = _builder.get(".properties.platform.connectedCluster")
             if connected_cluster is not None:
                 connected_cluster.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
@@ -408,6 +451,14 @@ class Create(AAZCommand):
             custom_location = _builder.get(".properties.platform.customLocation")
             if custom_location is not None:
                 custom_location.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+
+            sites = _builder.get(".properties.sites")
+            if sites is not None:
+                sites.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.sites[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -448,7 +499,7 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
@@ -492,20 +543,30 @@ class Create(AAZCommand):
             properties.core_network_technology = AAZStrType(
                 serialized_name="coreNetworkTechnology",
             )
+            properties.installation = AAZObjectType()
             properties.local_diagnostics_access = AAZObjectType(
                 serialized_name="localDiagnosticsAccess",
-            )
-            properties.mobile_network = AAZObjectType(
-                serialized_name="mobileNetwork",
                 flags={"required": True},
             )
-            properties.platform = AAZObjectType()
+            properties.platform = AAZObjectType(
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_version = AAZStrType(
+                serialized_name="rollbackVersion",
+                flags={"read_only": True},
+            )
+            properties.sites = AAZListType(
+                flags={"required": True},
+            )
             properties.sku = AAZStrType(
                 flags={"required": True},
+            )
+            properties.ue_mtu = AAZIntType(
+                serialized_name="ueMtu",
             )
             properties.version = AAZStrType()
 
@@ -521,7 +582,20 @@ class Create(AAZCommand):
             )
             control_plane_access_interface.name = AAZStrType()
 
+            installation = cls._schema_on_200_201.properties.installation
+            installation.operation = AAZObjectType()
+            installation.state = AAZStrType()
+
+            operation = cls._schema_on_200_201.properties.installation.operation
+            operation.id = AAZStrType(
+                flags={"required": True},
+            )
+
             local_diagnostics_access = cls._schema_on_200_201.properties.local_diagnostics_access
+            local_diagnostics_access.authentication_type = AAZStrType(
+                serialized_name="authenticationType",
+                flags={"required": True},
+            )
             local_diagnostics_access.https_server_certificate = AAZObjectType(
                 serialized_name="httpsServerCertificate",
             )
@@ -529,16 +603,29 @@ class Create(AAZCommand):
             https_server_certificate = cls._schema_on_200_201.properties.local_diagnostics_access.https_server_certificate
             https_server_certificate.certificate_url = AAZStrType(
                 serialized_name="certificateUrl",
-            )
-
-            mobile_network = cls._schema_on_200_201.properties.mobile_network
-            mobile_network.id = AAZStrType(
                 flags={"required": True},
+            )
+            https_server_certificate.provisioning = AAZObjectType()
+
+            provisioning = cls._schema_on_200_201.properties.local_diagnostics_access.https_server_certificate.provisioning
+            provisioning.reason = AAZStrType(
+                flags={"read_only": True},
+            )
+            provisioning.state = AAZStrType(
+                flags={"read_only": True},
             )
 
             platform = cls._schema_on_200_201.properties.platform
             platform.azure_stack_edge_device = AAZObjectType(
                 serialized_name="azureStackEdgeDevice",
+            )
+            _CreateHelper._build_schema_azure_stack_edge_device_resource_id_read(platform.azure_stack_edge_device)
+            platform.azure_stack_edge_devices = AAZListType(
+                serialized_name="azureStackEdgeDevices",
+                flags={"read_only": True},
+            )
+            platform.azure_stack_hci_cluster = AAZObjectType(
+                serialized_name="azureStackHciCluster",
             )
             platform.connected_cluster = AAZObjectType(
                 serialized_name="connectedCluster",
@@ -550,8 +637,12 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            azure_stack_edge_device = cls._schema_on_200_201.properties.platform.azure_stack_edge_device
-            azure_stack_edge_device.id = AAZStrType(
+            azure_stack_edge_devices = cls._schema_on_200_201.properties.platform.azure_stack_edge_devices
+            azure_stack_edge_devices.Element = AAZObjectType()
+            _CreateHelper._build_schema_azure_stack_edge_device_resource_id_read(azure_stack_edge_devices.Element)
+
+            azure_stack_hci_cluster = cls._schema_on_200_201.properties.platform.azure_stack_hci_cluster
+            azure_stack_hci_cluster.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -562,6 +653,14 @@ class Create(AAZCommand):
 
             custom_location = cls._schema_on_200_201.properties.platform.custom_location
             custom_location.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            sites = cls._schema_on_200_201.properties.sites
+            sites.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.sites.Element
+            _element.id = AAZStrType(
                 flags={"required": True},
             )
 
@@ -593,6 +692,23 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_azure_stack_edge_device_resource_id_read = None
+
+    @classmethod
+    def _build_schema_azure_stack_edge_device_resource_id_read(cls, _schema):
+        if cls._schema_azure_stack_edge_device_resource_id_read is not None:
+            _schema.id = cls._schema_azure_stack_edge_device_resource_id_read.id
+            return
+
+        cls._schema_azure_stack_edge_device_resource_id_read = _schema_azure_stack_edge_device_resource_id_read = AAZObjectType()
+
+        azure_stack_edge_device_resource_id_read = _schema_azure_stack_edge_device_resource_id_read
+        azure_stack_edge_device_resource_id_read.id = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.id = cls._schema_azure_stack_edge_device_resource_id_read.id
 
 
 __all__ = ["Create"]

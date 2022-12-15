@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "mobile-network list-sim-id",
+    "mobile-network pccp rollback",
 )
-class ListSimId(AAZCommand):
-    """Lists the IDs of all provisioned SIMs in a mobile network
+class Rollback(AAZCommand):
+    """Roll back the specified packet core control plane to the previous version, "rollbackVersion". Multiple consecutive rollbacks are not possible. This action may cause a service outage.
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/listsimids", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/rollback", "2022-11-01"],
         ]
     }
 
@@ -42,10 +42,11 @@ class ListSimId(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.mobile_network_name = AAZStrArg(
-            options=["--mobile-network-name"],
-            help="The name of the mobile network.",
+        _args_schema.pccp_name = AAZStrArg(
+            options=["--pccp-name"],
+            help="The name of the packet core control plane.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -58,7 +59,7 @@ class ListSimId(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MobileNetworksListSimIds(ctx=self.ctx)()
+        yield self.PacketCoreControlPlaneRollback(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +74,7 @@ class ListSimId(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MobileNetworksListSimIds(AAZHttpOperation):
+    class PacketCoreControlPlaneRollback(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +104,7 @@ class ListSimId(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MobileNetwork/mobileNetworks/{mobileNetworkName}/listSimIds",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/{packetCoreControlPlaneName}/rollback",
                 **self.url_parameters
             )
 
@@ -119,7 +120,7 @@ class ListSimId(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "mobileNetworkName", self.ctx.args.mobile_network_name,
+                    "packetCoreControlPlaneName", self.ctx.args.pccp_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -137,7 +138,7 @@ class ListSimId(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -168,42 +169,83 @@ class ListSimId(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ListSimIdHelper._build_schema_sim_id_list_result_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
+            )
+            _schema_on_200.error = AAZObjectType()
+            _RollbackHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.id = AAZStrType()
+            _schema_on_200.name = AAZStrType()
+            _schema_on_200.percent_complete = AAZFloatType(
+                serialized_name="percentComplete",
+            )
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
+            )
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
+            )
+            _schema_on_200.status = AAZStrType(
+                flags={"required": True},
+            )
 
             return cls._schema_on_200
 
 
-class _ListSimIdHelper:
-    """Helper class for ListSimId"""
+class _RollbackHelper:
+    """Helper class for Rollback"""
 
-    _schema_sim_id_list_result_read = None
+    _schema_error_detail_read = None
 
     @classmethod
-    def _build_schema_sim_id_list_result_read(cls, _schema):
-        if cls._schema_sim_id_list_result_read is not None:
-            _schema.next_link = cls._schema_sim_id_list_result_read.next_link
-            _schema.value = cls._schema_sim_id_list_result_read.value
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_sim_id_list_result_read = _schema_sim_id_list_result_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
 
-        sim_id_list_result_read = _schema_sim_id_list_result_read
-        sim_id_list_result_read.next_link = AAZStrType(
-            serialized_name="nextLink",
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
             flags={"read_only": True},
         )
-        sim_id_list_result_read.value = AAZListType()
-
-        value = _schema_sim_id_list_result_read.value
-        value.Element = AAZObjectType()
-
-        _element = _schema_sim_id_list_result_read.value.Element
-        _element.id = AAZStrType(
-            flags={"required": True},
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
         )
 
-        _schema.next_link = cls._schema_sim_id_list_result_read.next_link
-        _schema.value = cls._schema_sim_id_list_result_read.value
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["ListSimId"]
+__all__ = ["Rollback"]

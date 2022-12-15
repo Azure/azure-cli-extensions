@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims", "2022-11-01"],
         ]
     }
 
@@ -47,6 +47,7 @@ class List(AAZCommand):
             options=["--sim-group-name"],
             help="The name of the SIM Group.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
@@ -56,7 +57,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SimsListBySimGroup(ctx=self.ctx)()
+        self.SimsListByGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SimsListBySimGroup(AAZHttpOperation):
+    class SimsListByGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -174,7 +175,7 @@ class List(AAZCommand):
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -202,13 +203,30 @@ class List(AAZCommand):
                 serialized_name="simState",
                 flags={"read_only": True},
             )
+            properties.site_provisioning_state = AAZDictType(
+                serialized_name="siteProvisioningState",
+                flags={"read_only": True},
+            )
             properties.static_ip_configuration = AAZListType(
                 serialized_name="staticIpConfiguration",
+            )
+            properties.vendor_key_fingerprint = AAZStrType(
+                serialized_name="vendorKeyFingerprint",
+                flags={"read_only": True},
+            )
+            properties.vendor_name = AAZStrType(
+                serialized_name="vendorName",
+                flags={"read_only": True},
             )
 
             sim_policy = cls._schema_on_200.value.Element.properties.sim_policy
             sim_policy.id = AAZStrType(
                 flags={"required": True},
+            )
+
+            site_provisioning_state = cls._schema_on_200.value.Element.properties.site_provisioning_state
+            site_provisioning_state.Element = AAZStrType(
+                flags={"read_only": True},
             )
 
             static_ip_configuration = cls._schema_on_200.value.Element.properties.static_ip_configuration

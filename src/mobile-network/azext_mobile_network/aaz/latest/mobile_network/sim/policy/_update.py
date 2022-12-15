@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/simpolicies/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/simpolicies/{}", "2022-11-01"],
         ]
     }
 
@@ -161,8 +161,8 @@ class Update(AAZCommand):
             help="Default QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
             nullable=True,
             fmt=AAZIntArgFormat(
-                maximum=127,
-                minimum=1,
+                maximum=255,
+                minimum=0,
             ),
         )
         _element.additional_session_type = AAZListArg(
@@ -196,6 +196,14 @@ class Update(AAZCommand):
             help="The default PDU session type, which is used if the UE does not request a specific session type.",
             nullable=True,
             enum={"IPv4": "IPv4", "IPv6": "IPv6"},
+        )
+        _element.maximum_number_of_buffered_packets = AAZIntArg(
+            options=["maximum-number-of-buffered-packets"],
+            help="The maximum number of downlink packets to buffer at the user plane for High Latency Communication - Extended Buffering. See 3GPP TS29.272 v15.10.0 section 7.3.188 for a full description. This maximum is not guaranteed because there is a internal limit on buffered packets across all PDU sessions.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
         )
         _element.preemption_capability = AAZStrArg(
             options=["preemption-capability"],
@@ -390,7 +398,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -493,7 +501,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -584,6 +592,7 @@ class Update(AAZCommand):
                 _elements.set_prop("allowedServices", AAZListType, ".allowed_services", typ_kwargs={"flags": {"required": True}})
                 _UpdateHelper._build_schema_data_network_resource_id_update(_elements.set_prop("dataNetwork", AAZObjectType, ".data_network", typ_kwargs={"flags": {"required": True}}))
                 _elements.set_prop("defaultSessionType", AAZStrType, ".default_session_type")
+                _elements.set_prop("maximumNumberOfBufferedPackets", AAZIntType, ".maximum_number_of_buffered_packets")
                 _elements.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
                 _elements.set_prop("preemptionVulnerability", AAZStrType, ".preemption_vulnerability")
                 _UpdateHelper._build_schema_ambr_update(_elements.set_prop("sessionAmbr", AAZObjectType, ".session_ambr", typ_kwargs={"flags": {"required": True}}))
@@ -707,7 +716,7 @@ class _UpdateHelper:
         )
         sim_policy_read.system_data = AAZObjectType(
             serialized_name="systemData",
-            flags={"client_flatten": True, "read_only": True},
+            flags={"read_only": True},
         )
         sim_policy_read.tags = AAZDictType()
         sim_policy_read.type = AAZStrType(
@@ -730,6 +739,10 @@ class _UpdateHelper:
         properties.rfsp_index = AAZIntType(
             serialized_name="rfspIndex",
         )
+        properties.site_provisioning_state = AAZDictType(
+            serialized_name="siteProvisioningState",
+            flags={"read_only": True},
+        )
         properties.slice_configurations = AAZListType(
             serialized_name="sliceConfigurations",
             flags={"required": True},
@@ -739,6 +752,11 @@ class _UpdateHelper:
             flags={"required": True},
         )
         cls._build_schema_ambr_read(properties.ue_ambr)
+
+        site_provisioning_state = _schema_sim_policy_read.properties.site_provisioning_state
+        site_provisioning_state.Element = AAZStrType(
+            flags={"read_only": True},
+        )
 
         slice_configurations = _schema_sim_policy_read.properties.slice_configurations
         slice_configurations.Element = AAZObjectType()
@@ -780,6 +798,9 @@ class _UpdateHelper:
         cls._build_schema_data_network_resource_id_read(_element.data_network)
         _element.default_session_type = AAZStrType(
             serialized_name="defaultSessionType",
+        )
+        _element.maximum_number_of_buffered_packets = AAZIntType(
+            serialized_name="maximumNumberOfBufferedPackets",
         )
         _element.preemption_capability = AAZStrType(
             serialized_name="preemptionCapability",

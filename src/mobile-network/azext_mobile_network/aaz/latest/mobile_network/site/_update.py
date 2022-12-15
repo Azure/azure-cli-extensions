@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/sites/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/sites/{}", "2022-11-01"],
         ]
     }
 
@@ -81,27 +81,6 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.network_functions = AAZListArg(
-            options=["--network-functions"],
-            arg_group="Properties",
-            help="An array of IDs of the network functions deployed on the site, maintained by the user.",
-            nullable=True,
-        )
-
-        network_functions = cls._args_schema.network_functions
-        network_functions.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.network_functions.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
         )
         return cls._args_schema
 
@@ -187,7 +166,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -290,7 +269,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -348,20 +327,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("networkFunctions", AAZListType, ".network_functions")
-
-            network_functions = _builder.get(".properties.networkFunctions")
-            if network_functions is not None:
-                network_functions.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.networkFunctions[]")
-            if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -412,7 +378,7 @@ class _UpdateHelper:
         )
         site_read.system_data = AAZObjectType(
             serialized_name="systemData",
-            flags={"client_flatten": True, "read_only": True},
+            flags={"read_only": True},
         )
         site_read.tags = AAZDictType()
         site_read.type = AAZStrType(
@@ -422,6 +388,7 @@ class _UpdateHelper:
         properties = _schema_site_read.properties
         properties.network_functions = AAZListType(
             serialized_name="networkFunctions",
+            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",

@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims/{}", "2022-11-01"],
         ]
     }
 
@@ -92,7 +92,7 @@ class Update(AAZCommand):
             help="The integrated circuit card ID (ICCID) for the SIM.",
             nullable=True,
             fmt=AAZStrArgFormat(
-                pattern="^89[0-9]{17,18}$",
+                pattern="^[0-9]{10,20}$",
             ),
         )
         _args_schema.operator_key_code = AAZStrArg(
@@ -262,7 +262,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -365,7 +365,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -500,7 +500,7 @@ class _UpdateHelper:
         )
         sim_read.system_data = AAZObjectType(
             serialized_name="systemData",
-            flags={"client_flatten": True, "read_only": True},
+            flags={"read_only": True},
         )
         sim_read.type = AAZStrType(
             flags={"read_only": True},
@@ -528,13 +528,30 @@ class _UpdateHelper:
             serialized_name="simState",
             flags={"read_only": True},
         )
+        properties.site_provisioning_state = AAZDictType(
+            serialized_name="siteProvisioningState",
+            flags={"read_only": True},
+        )
         properties.static_ip_configuration = AAZListType(
             serialized_name="staticIpConfiguration",
+        )
+        properties.vendor_key_fingerprint = AAZStrType(
+            serialized_name="vendorKeyFingerprint",
+            flags={"read_only": True},
+        )
+        properties.vendor_name = AAZStrType(
+            serialized_name="vendorName",
+            flags={"read_only": True},
         )
 
         sim_policy = _schema_sim_read.properties.sim_policy
         sim_policy.id = AAZStrType(
             flags={"required": True},
+        )
+
+        site_provisioning_state = _schema_sim_read.properties.site_provisioning_state
+        site_provisioning_state.Element = AAZStrType(
+            flags={"read_only": True},
         )
 
         static_ip_configuration = _schema_sim_read.properties.static_ip_configuration

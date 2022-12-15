@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "mobile-network sim create",
+    "mobile-network sim group upload-sim",
 )
-class Create(AAZCommand):
-    """Create a SIM.
+class UploadSim(AAZCommand):
+    """Bulk upload SIMs to a SIM group.
     """
 
     _aaz_info = {
         "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/uploadsims", "2022-11-01"],
         ]
     }
 
@@ -49,77 +49,78 @@ class Create(AAZCommand):
             options=["--sim-group-name"],
             help="The name of the SIM Group.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
-                max_length=64,
-            ),
-        )
-        _args_schema.sim_name = AAZStrArg(
-            options=["-n", "--name", "--sim-name"],
-            help="The name of the SIM.",
-            required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,
             ),
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.authentication_key = AAZStrArg(
-            options=["--authentication-key"],
-            arg_group="Properties",
+        _args_schema.sims = AAZListArg(
+            options=["--sims"],
+            arg_group="Parameters",
+            help="A list of SIMs to upload.",
+            required=True,
+        )
+
+        sims = cls._args_schema.sims
+        sims.Element = AAZObjectArg()
+
+        _element = cls._args_schema.sims.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the SIM.",
+            required=True,
+        )
+        _element.authentication_key = AAZStrArg(
+            options=["authentication-key"],
             help="The Ki value for the SIM.",
             fmt=AAZStrArgFormat(
                 pattern="^[0-9a-fA-F]{32}$",
             ),
         )
-        _args_schema.device_type = AAZStrArg(
-            options=["--device-type"],
-            arg_group="Properties",
+        _element.device_type = AAZStrArg(
+            options=["device-type"],
             help="An optional free-form text field that can be used to record the device type this SIM is associated with, for example 'Video camera'. The Azure portal allows SIMs to be grouped and filtered based on this value.",
         )
-        _args_schema.icc_id = AAZStrArg(
-            options=["--icc-id"],
-            arg_group="Properties",
+        _element.integrated_circuit_card_identifier = AAZStrArg(
+            options=["integrated-circuit-card-identifier"],
             help="The integrated circuit card ID (ICCID) for the SIM.",
             fmt=AAZStrArgFormat(
                 pattern="^[0-9]{10,20}$",
             ),
         )
-        _args_schema.international_msi = AAZStrArg(
-            options=["--international-msi"],
-            arg_group="Properties",
+        _element.international_mobile_subscriber_identity = AAZStrArg(
+            options=["international-mobile-subscriber-identity"],
             help="The international mobile subscriber identity (IMSI) for the SIM.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[0-9]{5,15}$",
             ),
         )
-        _args_schema.operator_key_code = AAZStrArg(
-            options=["--operator-key-code"],
-            arg_group="Properties",
+        _element.operator_key_code = AAZStrArg(
+            options=["operator-key-code"],
             help="The Opc value for the SIM.",
             fmt=AAZStrArgFormat(
                 pattern="^[0-9a-fA-F]{32}$",
             ),
         )
-        _args_schema.sim_policy = AAZObjectArg(
-            options=["--sim-policy"],
-            arg_group="Properties",
-            help="The SIM policy used by this SIM.",
+        _element.sim_policy = AAZObjectArg(
+            options=["sim-policy"],
+            help="The SIM policy used by this SIM. The SIM policy must be in the same location as the SIM.",
         )
-        _args_schema.static_ip_config = AAZListArg(
-            options=["--static-ip-config"],
-            arg_group="Properties",
+        _element.static_ip_configuration = AAZListArg(
+            options=["static-ip-configuration"],
             help="A list of static IP addresses assigned to this SIM. Each address is assigned at a defined network scope, made up of {attached data network, slice}.",
             fmt=AAZListArgFormat(
                 unique=True,
             ),
         )
 
-        sim_policy = cls._args_schema.sim_policy
+        sim_policy = cls._args_schema.sims.Element.sim_policy
         sim_policy.id = AAZStrArg(
             options=["id"],
             help="SIM policy resource ID.",
@@ -129,24 +130,24 @@ class Create(AAZCommand):
             ),
         )
 
-        static_ip_config = cls._args_schema.static_ip_config
-        static_ip_config.Element = AAZObjectArg()
+        static_ip_configuration = cls._args_schema.sims.Element.static_ip_configuration
+        static_ip_configuration.Element = AAZObjectArg()
 
-        _element = cls._args_schema.static_ip_config.Element
+        _element = cls._args_schema.sims.Element.static_ip_configuration.Element
         _element.attached_data_network = AAZObjectArg(
             options=["attached-data-network"],
-            help="The attached data network on which the static IP address will be used. The combination of attached data network and slice defines the network scope of the IP address.",
+            help="The attached data network on which the static IP address will be used. The combination of attached data network and slice defines the network scope of the IP address. The attached data network must be in the same location as the SIM.",
         )
         _element.slice = AAZObjectArg(
             options=["slice"],
-            help="The network slice on which the static IP address will be used. The combination of attached data network and slice defines the network scope of the IP address.",
+            help="The network slice on which the static IP address will be used. The combination of attached data network and slice defines the network scope of the IP address. The slice must be in the same location as the SIM.",
         )
         _element.static_ip = AAZObjectArg(
             options=["static-ip"],
             help="The static IP configuration for the SIM to use at the defined network scope.",
         )
 
-        attached_data_network = cls._args_schema.static_ip_config.Element.attached_data_network
+        attached_data_network = cls._args_schema.sims.Element.static_ip_configuration.Element.attached_data_network
         attached_data_network.id = AAZStrArg(
             options=["id"],
             help="Attached data network resource ID.",
@@ -156,7 +157,7 @@ class Create(AAZCommand):
             ),
         )
 
-        slice = cls._args_schema.static_ip_config.Element.slice
+        slice = cls._args_schema.sims.Element.static_ip_configuration.Element.slice
         slice.id = AAZStrArg(
             options=["id"],
             help="Slice resource ID.",
@@ -166,7 +167,7 @@ class Create(AAZCommand):
             ),
         )
 
-        static_ip = cls._args_schema.static_ip_config.Element.static_ip
+        static_ip = cls._args_schema.sims.Element.static_ip_configuration.Element.static_ip
         static_ip.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address assigned to the SIM at this network scope. This address must be in the userEquipmentStaticAddressPoolPrefix defined in the attached data network.",
@@ -178,7 +179,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SimsCreateOrUpdate(ctx=self.ctx)()
+        yield self.SimBulkUpload(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -193,7 +194,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SimsCreateOrUpdate(AAZHttpOperation):
+    class SimBulkUpload(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -203,18 +204,18 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -223,13 +224,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MobileNetwork/simGroups/{simGroupName}/sims/{simName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.MobileNetwork/simGroups/{simGroupName}/uploadSims",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "POST"
 
         @property
         def error_format(self):
@@ -244,10 +245,6 @@ class Create(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "simGroupName", self.ctx.args.sim_group_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "simName", self.ctx.args.sim_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -286,181 +283,148 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("sims", AAZListType, ".sims", typ_kwargs={"flags": {"required": True}})
 
-            properties = _builder.get(".properties")
+            sims = _builder.get(".sims")
+            if sims is not None:
+                sims.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".sims[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".sims[].properties")
             if properties is not None:
                 properties.set_prop("authenticationKey", AAZStrType, ".authentication_key")
                 properties.set_prop("deviceType", AAZStrType, ".device_type")
-                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".icc_id")
-                properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_msi", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".integrated_circuit_card_identifier")
+                properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_mobile_subscriber_identity", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code")
                 properties.set_prop("simPolicy", AAZObjectType, ".sim_policy")
-                properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_config")
+                properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_configuration")
 
-            sim_policy = _builder.get(".properties.simPolicy")
+            sim_policy = _builder.get(".sims[].properties.simPolicy")
             if sim_policy is not None:
                 sim_policy.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
-            static_ip_configuration = _builder.get(".properties.staticIpConfiguration")
+            static_ip_configuration = _builder.get(".sims[].properties.staticIpConfiguration")
             if static_ip_configuration is not None:
                 static_ip_configuration.set_elements(AAZObjectType, ".")
 
-            _elements = _builder.get(".properties.staticIpConfiguration[]")
+            _elements = _builder.get(".sims[].properties.staticIpConfiguration[]")
             if _elements is not None:
                 _elements.set_prop("attachedDataNetwork", AAZObjectType, ".attached_data_network")
                 _elements.set_prop("slice", AAZObjectType, ".slice")
                 _elements.set_prop("staticIp", AAZObjectType, ".static_ip")
 
-            attached_data_network = _builder.get(".properties.staticIpConfiguration[].attachedDataNetwork")
+            attached_data_network = _builder.get(".sims[].properties.staticIpConfiguration[].attachedDataNetwork")
             if attached_data_network is not None:
                 attached_data_network.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
-            slice = _builder.get(".properties.staticIpConfiguration[].slice")
+            slice = _builder.get(".sims[].properties.staticIpConfiguration[].slice")
             if slice is not None:
                 slice.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
-            static_ip = _builder.get(".properties.staticIpConfiguration[].staticIp")
+            static_ip = _builder.get(".sims[].properties.staticIpConfiguration[].staticIp")
             if static_ip is not None:
                 static_ip.set_prop("ipv4Address", AAZStrType, ".ipv4_address")
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.end_time = AAZStrType(
+                serialized_name="endTime",
             )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.error = AAZObjectType()
+            _UploadSimHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.id = AAZStrType()
+            _schema_on_200.name = AAZStrType()
+            _schema_on_200.percent_complete = AAZFloatType(
+                serialized_name="percentComplete",
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+            _schema_on_200.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
+            _schema_on_200.start_time = AAZStrType(
+                serialized_name="startTime",
             )
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.device_type = AAZStrType(
-                serialized_name="deviceType",
-            )
-            properties.integrated_circuit_card_identifier = AAZStrType(
-                serialized_name="integratedCircuitCardIdentifier",
-            )
-            properties.international_mobile_subscriber_identity = AAZStrType(
-                serialized_name="internationalMobileSubscriberIdentity",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.sim_policy = AAZObjectType(
-                serialized_name="simPolicy",
-            )
-            properties.sim_state = AAZStrType(
-                serialized_name="simState",
-                flags={"read_only": True},
-            )
-            properties.site_provisioning_state = AAZDictType(
-                serialized_name="siteProvisioningState",
-                flags={"read_only": True},
-            )
-            properties.static_ip_configuration = AAZListType(
-                serialized_name="staticIpConfiguration",
-            )
-            properties.vendor_key_fingerprint = AAZStrType(
-                serialized_name="vendorKeyFingerprint",
-                flags={"read_only": True},
-            )
-            properties.vendor_name = AAZStrType(
-                serialized_name="vendorName",
-                flags={"read_only": True},
-            )
-
-            sim_policy = cls._schema_on_200_201.properties.sim_policy
-            sim_policy.id = AAZStrType(
+            _schema_on_200.status = AAZStrType(
                 flags={"required": True},
             )
 
-            site_provisioning_state = cls._schema_on_200_201.properties.site_provisioning_state
-            site_provisioning_state.Element = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            static_ip_configuration = cls._schema_on_200_201.properties.static_ip_configuration
-            static_ip_configuration.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.static_ip_configuration.Element
-            _element.attached_data_network = AAZObjectType(
-                serialized_name="attachedDataNetwork",
-            )
-            _element.slice = AAZObjectType()
-            _element.static_ip = AAZObjectType(
-                serialized_name="staticIp",
-            )
-
-            attached_data_network = cls._schema_on_200_201.properties.static_ip_configuration.Element.attached_data_network
-            attached_data_network.id = AAZStrType(
-                flags={"required": True},
-            )
-
-            slice = cls._schema_on_200_201.properties.static_ip_configuration.Element.slice
-            slice.id = AAZStrType(
-                flags={"required": True},
-            )
-
-            static_ip = cls._schema_on_200_201.properties.static_ip_configuration.Element.static_ip
-            static_ip.ipv4_address = AAZStrType(
-                serialized_name="ipv4Address",
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _UploadSimHelper:
+    """Helper class for UploadSim"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["Create"]
+__all__ = ["UploadSim"]

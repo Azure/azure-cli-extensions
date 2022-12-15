@@ -10,10 +10,11 @@ from azure.cli.testsdk import *
 
 class MobileNetworkScenario(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_mobile_network', location='eastus')
-    def test_mobile_network(self, resource_group):
-        self.kwargs.update({
-            'mobile_network': self.create_random_name('mobile_network_', 20),
-        })
-        self.cmd('mobile-network create -n {mobile_network} -g {rg} --public-land-mobile-network-identifier {{mcc:001,mnc:01}}')
-        self.cmd('mobile-network update -n {mobile_network} -g {rg} --public-land-mobile-network-identifier {{mcc:001,mnc:01}}')
+    pass
+    # @ResourceGroupPreparer(name_prefix='cli_test_mobile_network', location='eastus')
+    # def test_mobile_network(self, resource_group):
+    #     self.kwargs.update({
+    #         'mobile_network': self.create_random_name('mobile_network_', 20),
+    #     })
+    #     self.cmd('mobile-network create -n {mobile_network} -g {rg} --public-land-mobile-network-identifier {{mcc:001,mnc:01}}')
+    #     self.cmd('mobile-network update -n {mobile_network} -g {rg} --public-land-mobile-network-identifier {{mcc:001,mnc:01}}')

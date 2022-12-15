@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/simpolicies/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/mobilenetworks/{}/simpolicies/{}", "2022-11-01"],
         ]
     }
 
@@ -134,7 +134,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -181,7 +181,7 @@ class Wait(AAZWaitCommand):
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
@@ -204,6 +204,10 @@ class Wait(AAZWaitCommand):
             properties.rfsp_index = AAZIntType(
                 serialized_name="rfspIndex",
             )
+            properties.site_provisioning_state = AAZDictType(
+                serialized_name="siteProvisioningState",
+                flags={"read_only": True},
+            )
             properties.slice_configurations = AAZListType(
                 serialized_name="sliceConfigurations",
                 flags={"required": True},
@@ -213,6 +217,11 @@ class Wait(AAZWaitCommand):
                 flags={"required": True},
             )
             _WaitHelper._build_schema_ambr_read(properties.ue_ambr)
+
+            site_provisioning_state = cls._schema_on_200.properties.site_provisioning_state
+            site_provisioning_state.Element = AAZStrType(
+                flags={"read_only": True},
+            )
 
             slice_configurations = cls._schema_on_200.properties.slice_configurations
             slice_configurations.Element = AAZObjectType()
@@ -254,6 +263,9 @@ class Wait(AAZWaitCommand):
             _WaitHelper._build_schema_data_network_resource_id_read(_element.data_network)
             _element.default_session_type = AAZStrType(
                 serialized_name="defaultSessionType",
+            )
+            _element.maximum_number_of_buffered_packets = AAZIntType(
+                serialized_name="maximumNumberOfBufferedPackets",
             )
             _element.preemption_capability = AAZStrType(
                 serialized_name="preemptionCapability",

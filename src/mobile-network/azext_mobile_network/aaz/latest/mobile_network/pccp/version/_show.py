@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.mobilenetwork/packetcorecontrolplaneversions/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.mobilenetwork/packetcorecontrolplaneversions/{}", "2022-11-01"],
         ]
     }
 
@@ -105,7 +105,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -156,14 +156,32 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.platforms = AAZListType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.recommended_version = AAZStrType(
+
+            platforms = cls._schema_on_200.properties.platforms
+            platforms.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.platforms.Element
+            _element.maximum_platform_software_version = AAZStrType(
+                serialized_name="maximumPlatformSoftwareVersion",
+            )
+            _element.minimum_platform_software_version = AAZStrType(
+                serialized_name="minimumPlatformSoftwareVersion",
+            )
+            _element.obsolete_version = AAZStrType(
+                serialized_name="obsoleteVersion",
+            )
+            _element.platform_type = AAZStrType(
+                serialized_name="platformType",
+            )
+            _element.recommended_version = AAZStrType(
                 serialized_name="recommendedVersion",
             )
-            properties.version_state = AAZStrType(
+            _element.version_state = AAZStrType(
                 serialized_name="versionState",
             )
 
