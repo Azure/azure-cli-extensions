@@ -2096,7 +2096,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
     registries_def = None
     registry = None
 
-    if "registries" not in containerapp_def["properties"]["configuration"]:
+    if not containerapp_def["properties"]["configuration"].get("registries"):
         containerapp_def["properties"]["configuration"]["registries"] = []
 
     registries_def = containerapp_def["properties"]["configuration"]["registries"]
