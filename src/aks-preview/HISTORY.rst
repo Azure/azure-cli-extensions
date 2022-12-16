@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Remove check_raw_parameters in update code path, reuse the implementation in azure-cli/acs.
 * Remove defender related code after GA, reuse the implementation in azure-cli/acs.
 
 0.5.120
