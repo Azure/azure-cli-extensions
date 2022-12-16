@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a reservation order alias.
+
+    :example: Create a Reservation
+        az billing-benefits reservation-order-aliases create --reservation-order-alias-name TestRO --location westus --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}" --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --display-name TestRO --quantity 1 --renew false --reserved-resource-type VirtualMachines --sku Standard_B1ls  --term P1Y --instance-flexibility On
     """
 
     _aaz_info = {
@@ -50,6 +53,10 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9_\-\.]+$",
             ),
         )
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
+            help="Name of the SKU to be applied",
+        )
 
         # define Arg Group "Body"
 
@@ -57,18 +64,6 @@ class Create(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
             help="The Azure Region where the reservation benefits are applied to.",
-        )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
-            arg_group="Body",
-            help="Reservation order SKU",
-            required=True,
-        )
-
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the SKU to be applied",
         )
 
         # define Arg Group "Properties"
@@ -115,11 +110,6 @@ class Create(AAZCommand):
             help="Setting this to true will automatically purchase a new benefit on the expiration date time.",
             default=False,
         )
-        _args_schema.reserved_resource_properties = AAZObjectArg(
-            options=["--reserved-resource-properties"],
-            arg_group="Properties",
-            help="Properties specific to each reserved resource type. Not required if not applicable.",
-        )
         _args_schema.reserved_resource_type = AAZStrArg(
             options=["--reserved-resource-type"],
             arg_group="Properties",
@@ -160,9 +150,12 @@ class Create(AAZCommand):
             help="Tenant ID where the benefit is applied.",
         )
 
-        reserved_resource_properties = cls._args_schema.reserved_resource_properties
-        reserved_resource_properties.instance_flexibility = AAZStrArg(
-            options=["instance-flexibility"],
+        # define Arg Group "ReservedResourceProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.instance_flexibility = AAZStrArg(
+            options=["--instance-flexibility"],
+            arg_group="ReservedResourceProperties",
             help="Turning this on will apply the reservation discount to other VMs in the same VM size group.",
             enum={"Off": "Off", "On": "On"},
         )
@@ -268,7 +261,7 @@ class Create(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -279,7 +272,7 @@ class Create(AAZCommand):
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("quantity", AAZIntType, ".quantity")
                 properties.set_prop("renew", AAZBoolType, ".renew")
-                properties.set_prop("reservedResourceProperties", AAZObjectType, ".reserved_resource_properties")
+                properties.set_prop("reservedResourceProperties", AAZObjectType)
                 properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
                 properties.set_prop("reviewDateTime", AAZStrType, ".review_date_time")
                 properties.set_prop("term", AAZStrType, ".term")
@@ -298,7 +291,7 @@ class Create(AAZCommand):
 
             sku = _builder.get(".sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 

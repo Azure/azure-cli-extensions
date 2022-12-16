@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a reservation order alias.
+
+    :example: Show the details of a reservation order alias
+        az billing-benefits reservation-order-aliases show --reservation-order-alias-name TestRO
     """
 
     _aaz_info = {
