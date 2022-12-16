@@ -816,24 +816,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return profile
 
-    def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
-        """Obtain the value of oidc_issuer_profile based on the user input.
-
-        :return: ManagedClusterOIDCIssuerProfile
-        """
-        enable_flag_value = bool(self.raw_param.get("enable_oidc_issuer"))
-        if not enable_flag_value:
-            # enable flag not set, return a None profile, server side will backfill the default/existing value
-            return None
-
-        profile = self.models.ManagedClusterOIDCIssuerProfile()
-        if self.decorator_mode == DecoratorMode.UPDATE:
-            if self.mc.oidc_issuer_profile is not None:
-                profile = self.mc.oidc_issuer_profile
-        profile.enabled = True
-
-        return profile
-
     def get_enable_image_cleaner(self) -> bool:
         """Obtain the value of enable_image_cleaner.
 
@@ -2019,19 +2001,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.pod_identity_profile = pod_identity_profile
         return mc
 
-    def set_up_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up OIDC issuer profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
-        if oidc_issuer_profile is not None:
-            mc.oidc_issuer_profile = oidc_issuer_profile
-
-        return mc
-
     def set_up_workload_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up workload identity for the ManagedCluster object.
 
@@ -2217,8 +2186,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
-        # set up oidc issuer profile, GA in 2.42.0
-        mc = self.set_up_oidc_issuer_profile(mc)
         # set up workload identity profile
         mc = self.set_up_workload_identity_profile(mc)
         # set up node restriction
@@ -2457,18 +2424,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_disable_pod_identity():
             _update_addon_pod_identity(
                 mc, enable=False, models=self.models.pod_identity_models)
-        return mc
-
-    def update_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update OIDC issuer profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
-        if oidc_issuer_profile is not None:
-            mc.oidc_issuer_profile = oidc_issuer_profile
-
         return mc
 
     def update_workload_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2727,8 +2682,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
-        # update oidc issure profile, GA in 2.42.0
-        mc = self.update_oidc_issuer_profile(mc)
         # update workload identity profile
         mc = self.update_workload_identity_profile(mc)
         # update node restriction
