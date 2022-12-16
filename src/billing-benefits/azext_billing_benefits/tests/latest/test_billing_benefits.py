@@ -136,7 +136,7 @@ class BillingBenefitsScenario(ScenarioTest):
         self.assertIsNotNone(response['name'])
 
     @record_only()
-    def test_billing_benefits_elevate_savings_plan_order_list(self):
+    def test_billing_benefits_savings_plan_order_list(self):
         response = self.cmd(
             'az billing-benefits savings-plan-order list').get_output_in_json()
         self.assertIsNotNone(response)
@@ -144,18 +144,18 @@ class BillingBenefitsScenario(ScenarioTest):
             self._validate_savings_plan_order(item)
 
     @record_only()
-    def test_billing_benefits_elevate_savings_plan_order_get(self):
+    def test_billing_benefits_savings_plan_order_get(self):
         self.kwargs.update({
             'order_id': '91636c5c-051b-4c19-afd7-2b774259d49f'
         })
         response = self.cmd(
-            'az billing-benefits savings-plan-order show  --savings-plan-order-id {order_id}').get_output_in_json()
+            'az billing-benefits savings-plan-order show --savings-plan-order-id {order_id}').get_output_in_json()
         self.assertIsNotNone(response)
         self._validate_savings_plan_order(response)
 
         # Test 'expand'
         response1 = self.cmd(
-            'az billing-benefits savings-plan-order show  --savings-plan-order-id {order_id} --expand schedule').get_output_in_json()
+            'az billing-benefits savings-plan-order show --savings-plan-order-id {order_id} --expand schedule').get_output_in_json()
         self.assertIsNotNone(response1)
         self._validate_savings_plan_order(response1)
         self.assertIsNotNone(response1['planInformation'])
@@ -175,3 +175,90 @@ class BillingBenefitsScenario(ScenarioTest):
             self.assertIsNotNone(item['dueDate'])
             self.assertIsNotNone(item['status'])
             self.assertIsNotNone(item['pricingCurrencyTotal'])
+
+    @record_only()
+    def test_billing_benefits_savings_plan_list_items_in_order(self):
+        self.kwargs.update({
+            'order_id': '91636c5c-051b-4c19-afd7-2b774259d49f'
+        })
+        response = self.cmd(
+            'az billing-benefits savings-plan-order savings-plan list --savings-plan-order-id {order_id}').get_output_in_json()
+        self.assertIsNotNone(response)
+        for item in response:
+            self._validate_savings_plan_item(item)
+
+    @record_only()
+    def test_billing_benefits_savings_plan_get_item(self):
+        self.kwargs.update({
+            'order_id': '683ae71d-f43a-4b76-bb26-9a6ffef80030',
+            'item_id': 'ce6eaefe-3abe-4961-8455-1e8b1e041a6f'
+        })
+        response = self.cmd(
+            'az billing-benefits savings-plan-order savings-plan show --savings-plan-order-id {order_id} --savings-plan-id {item_id}').get_output_in_json()
+        self._validate_savings_plan_item(response)
+
+        # Test 'expand'
+        response1 = self.cmd(
+            'az billing-benefits savings-plan-order savings-plan show --savings-plan-order-id {order_id} --savings-plan-id {item_id} --expand renewProperties').get_output_in_json()
+        self._validate_savings_plan_item(response1)
+        self.assertIsNotNone(response1['renewProperties'])
+        self.assertIsNotNone(response1['renewProperties']['purchaseProperties'])
+        self.assertIsNotNone(response1['renewProperties']['purchaseProperties']['sku'])
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['sku']['name'], 'Compute_Savings_Plan')
+        self.assertIsNotNone(response1['renewProperties']['purchaseProperties']['billingScopeId'])
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['term'], 'P1Y')
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['billingPlan'], 'Monthly')
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['displayName'], 'name1')
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['appliedScopeType'], 'Shared')
+        self.assertIsNotNone(response1['renewProperties']['purchaseProperties']['commitment'])
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['commitment']['grain'], 'Hourly')
+        self.assertEqual(response1['renewProperties']['purchaseProperties']['commitment']['currencyCode'], 'USD')
+        self.assertGreater(response1['renewProperties']['purchaseProperties']['commitment']['amount'], 0)
+    
+    @record_only()
+    def test_billing_benefits_savings_plan_item_update(self):
+        self.kwargs.update({
+            'order_id': '683ae71d-f43a-4b76-bb26-9a6ffef80030',
+            'item_id': 'ce6eaefe-3abe-4961-8455-1e8b1e041a6f',
+            'name': 'newName1',
+            'renew': 'true',
+            'renew_properties': '{purchase-properties:{applied-scope-type:Shared,billing-plan:P1M,billing-scope-id:/subscriptions/eef82110-c91b-4395-9420-fcfcbefc5a47,commitment:{amount:10.0,currency-code:USD,grain:Hourly},display-name:name1,renew:true,term:P1Y,sku:Compute_Savings_Plan}}',
+            'scope': 'Single',
+            'scope_properties': '{subscription-id:/subscriptions/eef82110-c91b-4395-9420-fcfcbefc5a47}'
+        })
+        
+        # First get the item for original state
+        response = self.cmd(
+            'az billing-benefits savings-plan-order savings-plan show --savings-plan-order-id {order_id} --savings-plan-id {item_id}').get_output_in_json()
+        self.assertIsNotNone(response)  
+        self.assertNotEqual(response['renew'], True)
+        self.assertNotEqual(response['appliedScopeType'], 'Single')
+        self.assertNotEqual(response['displayName'], 'newName1')
+
+        response1 = self.cmd(
+            'az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id {order_id} --savings-plan-id {item_id} --display-name {name} --renew {renew} --renew-properties {renew_properties} --applied-scope-type {scope} --applied-scope-properties {scope_properties}').get_output_in_json()
+        self.assertIsNotNone(response1)
+
+        # Then get the item after update to verify
+        response2 = self.cmd(
+            'az billing-benefits savings-plan-order savings-plan show --savings-plan-order-id {order_id} --savings-plan-id {item_id} --expand renewProperties').get_output_in_json()
+        self.assertIsNotNone(response2)  
+        self.assertEqual(response2['renew'], True)
+        self.assertEqual(response2['appliedScopeType'], 'Single')
+        self.assertEqual(response2['displayName'], 'newName1')
+        self.assertIsNotNone(response2['appliedScopeProperties']) 
+        self.assertIsNotNone(response2['appliedScopeProperties']['subscriptionId']) 
+        self.assertIsNotNone(response2['appliedScopeProperties']['displayName']) 
+        self.assertIsNotNone(response2['renewProperties'])
+        self.assertIsNotNone(response2['renewProperties']['purchaseProperties'])
+        self.assertIsNotNone(response2['renewProperties']['purchaseProperties']['sku'])
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['sku']['name'], 'Compute_Savings_Plan')
+        self.assertIsNotNone(response2['renewProperties']['purchaseProperties']['billingScopeId'])
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['term'], 'P1Y')
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['billingPlan'], 'Monthly')
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['displayName'], 'name1')
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['appliedScopeType'], 'Shared')
+        self.assertIsNotNone(response2['renewProperties']['purchaseProperties']['commitment'])
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['commitment']['grain'], 'Hourly')
+        self.assertEqual(response2['renewProperties']['purchaseProperties']['commitment']['currencyCode'], 'USD')
+        self.assertGreater(response2['renewProperties']['purchaseProperties']['commitment']['amount'], 0)
