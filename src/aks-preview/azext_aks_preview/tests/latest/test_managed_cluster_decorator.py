@@ -4044,14 +4044,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         # fail on no updated parameter provided
         with patch(
-            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+            "azure.cli.command_modules.acs.managed_cluster_decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(RequiredArgumentMissingError):
             dec_1.check_raw_parameters()
 
         # unless user says they want to reconcile
         with patch(
-            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+            "azure.cli.command_modules.acs.managed_cluster_decorator.prompt_y_n",
             return_value=True,
         ):
             dec_1.check_raw_parameters()
@@ -5637,7 +5637,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with patch(
             "azure.cli.command_modules.acs.managed_cluster_decorator.get_rg_location",
             return_value="test_location",
-        ), patch("azure.cli.command_modules.acs.managed_cluster_decorator.Profile", return_value=mock_profile,), patch(
+        ), patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.Profile",
+            return_value=mock_profile,
+        ), patch(
             "azext_aks_preview.managed_cluster_decorator.AKSPreviewManagedClusterUpdateDecorator.check_raw_parameters",
             return_value=True,
         ), patch.object(
