@@ -2251,7 +2251,22 @@ def get_custom_locations_oid(cmd, cl_oid):
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
+    # Install helm client
+    helm_client_location = install_helm_client()
 
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection()
+    utils.try_list_node_fix()
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        telemetry.set_user_fault()
+        raise ValidationError("Troubleshoot command is currently not available for clusters onboarded with least privileges")
+        
     try:
 
         logger.warning("Diagnoser running. This may take a while ...\n")
@@ -2271,18 +2286,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Loading the kubeconfig file in kubernetes client configuration
         load_kube_config(kube_config, kube_context)
 
-        # Install helm client
-        helm_client_location = install_helm_client()
-
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
-        release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
-
-        # Checking the connection to kubernetes cluster.
-        # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
-        # if the user had not logged in.
-        check_kube_connection()
-        utils.try_list_node_fix()
 
         # Fetch Connected Cluster for agent version
         connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
