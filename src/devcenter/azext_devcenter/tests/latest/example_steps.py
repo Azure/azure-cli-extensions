@@ -106,6 +106,15 @@ def step_attached_network_create(test, checks=None):
              checks=checks)
 
 
+    test.cmd('az devcenter attached-network create '
+             '--attached-network-connection-name "{myNetworkConnection}" '
+             '--network-connection-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCent'
+             'er/NetworkConnections/{myNetworkConnection}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /AttachedNetworks/get/AttachedNetworks_GetByDevCenter
 @try_manual
 def step_attached_network_show(test, checks=None):
@@ -159,6 +168,13 @@ def step_attached_network_delete(test, checks=None):
         checks = []
     test.cmd('az devcenter admin attached-network delete -y '
              '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+    test.cmd('az devcenter attached-network delete -y '
+             '--attached-network-connection-name "{myNetworkConnection}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -262,6 +278,17 @@ def step_catalog_delete(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /CheckNameAvailability/post/NameAvailability
+@try_manual
+def step_check_name_availability_execute(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az devcenter check-name-availability execute '
+             '--name "name1" '
+             '--type "Microsoft.DevCenter/devcenters"',
+             checks=checks)
+
+
 # EXAMPLE: /Galleries/put/Galleries_CreateOrUpdate
 @try_manual
 def step_gallery_create(test, checks=None):
@@ -324,6 +351,7 @@ def step_dev_box_definition_create(test, checks=None):
         checks = []
     test.cmd('az devcenter dev-box-definition create '
              '--location "westus3" '
+             '--hibernate-support "Enabled" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.DevCente'
              'r/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0" '
              '--os-storage-type "SSD_1024" '
@@ -517,7 +545,7 @@ def step_image_version_show(test, checks=None):
              '--gallery-name "{myGallery3}" '
              '--image-name "{myImage2}" '
              '--resource-group "{rg}" '
-             '--version-name "{{versionName}}"',
+             '--version-name "1.0.0"',
              checks=checks)
 
 
@@ -660,8 +688,8 @@ def step_operation_statuses_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az devcenter operation-statuses show '
-             '--operation-id "{{operationId}}" '
-             '--location "{{location}}"',
+             '--operation-id "3fa1a29d-e807-488d-81d1-f1c5456a08cd" '
+             '--location "westus3"',
              checks=checks)
 
 
@@ -685,6 +713,15 @@ def step_project_create(test, checks=None):
              checks=checks)
 
 
+    test.cmd('az devcenter project create '
+             '--location "centralus" '
+             '--description "This is my first project." '
+             '--dev-center-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devce'
+             'nters/{myDevCenter}" '
+             '--tags CostCenter="R&D" '
+             '--name "{myProject}" '
+             '--resource-group "{rg}"',
+             checks=[])
 # EXAMPLE: /Projects/get/Projects_Get
 @try_manual
 def step_project_show(test, checks=None):
@@ -896,6 +933,23 @@ def step_schedule_create(test, checks=None):
              checks=checks)
 
 
+    test.cmd('az devcenter schedule create '
+             '--state "Enabled" '
+             '--time "17:30" '
+             '--time-zone "America/Los_Angeles" '
+             '--pool-name "{myPool}" '
+             '--project-name "{myProject}" '
+             '--resource-group "{rg}" '
+             '--name "{mySchedule}"',
+             checks=[])
+    test.cmd('az devcenter schedule wait --created '
+             '--pool-name "{myPool}" '
+             '--project-name "{myProject}" '
+             '--resource-group "{rg}" '
+             '--name "{mySchedule}"',
+             checks=checks)
+
+
 # EXAMPLE: /Schedules/get/Schedules_GetByPool
 @try_manual
 def step_schedule_show(test, checks=None):
@@ -909,6 +963,14 @@ def step_schedule_show(test, checks=None):
              checks=checks)
 
 
+    test.cmd('az devcenter schedule show '
+             '--pool-name "{myPool}" '
+             '--project-name "{myProject5}" '
+             '--resource-group "{rg}" '
+             '--name "{mySchedule}"',
+             checks=checks)
+
+
 # EXAMPLE: /Schedules/get/Schedules_ListByPool
 @try_manual
 def step_schedule_list(test, checks=None):
@@ -917,6 +979,13 @@ def step_schedule_list(test, checks=None):
     test.cmd('az devcenter admin schedule list '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject4}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+    test.cmd('az devcenter schedule list '
+             '--pool-name "{myPool}" '
+             '--project-name "{myProject5}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -935,6 +1004,15 @@ def step_schedule_update(test, checks=None):
              checks=checks)
 
 
+    test.cmd('az devcenter schedule update '
+             '--time "18:00" '
+             '--pool-name "{myPool}" '
+             '--project-name "{myProject5}" '
+             '--resource-group "{rg}" '
+             '--name "{mySchedule}"',
+             checks=checks)
+
+
 # EXAMPLE: /Schedules/delete/Schedules_Delete
 @try_manual
 def step_schedule_delete(test, checks=None):
@@ -943,6 +1021,14 @@ def step_schedule_delete(test, checks=None):
     test.cmd('az devcenter admin schedule delete -y '
              '--pool-name "{myPool3}" '
              '--project-name "{myProject4}" '
+             '--resource-group "{rg}" '
+             '--name "{mySchedule}"',
+             checks=checks)
+
+
+    test.cmd('az devcenter schedule delete -y '
+             '--pool-name "{myPool}" '
+             '--project-name "{myProject5}" '
              '--resource-group "{rg}" '
              '--name "{mySchedule}"',
              checks=checks)

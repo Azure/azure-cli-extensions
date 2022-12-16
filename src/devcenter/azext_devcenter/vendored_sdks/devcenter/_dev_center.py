@@ -32,6 +32,7 @@ from .operations import DevBoxDefinitionsOperations
 from .operations import Operations
 from .operations import OperationStatusesOperations
 from .operations import UsagesOperations
+from .operations import CheckNameAvailabilityOperations
 from .operations import SkusOperations
 from .operations import PoolsOperations
 from .operations import SchedulesOperations
@@ -70,6 +71,8 @@ class DevCenter(object):
     :vartype operation_statuses: dev_center.operations.OperationStatusesOperations
     :ivar usages: UsagesOperations operations
     :vartype usages: dev_center.operations.UsagesOperations
+    :ivar check_name_availability: CheckNameAvailabilityOperations operations
+    :vartype check_name_availability: dev_center.operations.CheckNameAvailabilityOperations
     :ivar skus: SkusOperations operations
     :vartype skus: dev_center.operations.SkusOperations
     :ivar pools: PoolsOperations operations
@@ -131,6 +134,8 @@ class DevCenter(object):
         self.operation_statuses = OperationStatusesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.usages = UsagesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.check_name_availability = CheckNameAvailabilityOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.skus = SkusOperations(
             self._client, self._config, self._serialize, self._deserialize)
