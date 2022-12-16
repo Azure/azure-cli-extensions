@@ -2278,46 +2278,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self.agentpool_context = self.agentpool_decorator.context
         self.context.attach_agentpool_context(self.agentpool_context)
 
-    def check_raw_parameters(self):
-        """Helper function to check whether any parameters are set.
-
-        Note: Overwritten in aks-preview to use different hard-coded error message.
-
-        If the values of all the parameters are the default values, the command execution will be terminated early and
-        raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
-        sent.
-
-        :return: None
-        """
-        # exclude some irrelevant or mandatory parameters
-        excluded_keys = ("cmd", "client", "resource_group_name", "name")
-        # check whether the remaining parameters are set
-        # the default value None or False (and other empty values, like empty string) will be considered as not set
-        is_changed = any(
-            v for k, v in self.context.raw_param.items() if k not in excluded_keys)
-
-        # special cases
-        # some parameters support the use of empty string or dictionary to update/remove previously set values
-        is_default = (
-            self.context.get_cluster_autoscaler_profile() is None and
-            self.context.get_api_server_authorized_ip_ranges() is None and
-            self.context.get_nodepool_labels() is None
-        )
-
-        if not is_changed and is_default:
-            reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
-            if not prompt_y_n(reconcilePrompt, default="n"):
-                # Note: Uncomment the followings to automatically generate the error message.
-                option_names = [
-                    '"{}"'.format(format_parameter_name_to_option_name(x))
-                    for x in self.context.raw_param.keys()
-                    if x not in excluded_keys
-                ]
-                error_msg = "Please specify one or more of {}.".format(
-                    " or ".join(option_names)
-                )
-                raise RequiredArgumentMissingError(error_msg)
-
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
 
