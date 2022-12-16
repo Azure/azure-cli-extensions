@@ -16,6 +16,18 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a savings plan. Learn more about permissions needed at https://go.microsoft.com/fwlink/?linkid=2215851
+
+    :example: Create a Shared scope savings plan
+        az billing-benefits savings-plan-order-aliases create --savings-plan-order-alias-name "cliTest" --applied-scope-type Shared --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --commitment "{amount:10.0,currency-code:USD,grain:Hourly}" --display-name "cliTest" --term P1Y --sku Compute_Savings_Plan
+
+    :example: Create a Single scope savings plan
+        az billing-benefits savings-plan-order-aliases create --savings-plan-order-alias-name "cliTest" --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}" --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --commitment "{amount:10.0,currency-code:USD,grain:Hourly}" --display-name "cliTest" --term P1Y --sku Compute_Savings_Plan
+
+    :example: Create a Single Resource group scope savings plan
+        az billing-benefits savings-plan-order-aliases create --savings-plan-order-alias-name "cliTest" --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004/resourceGroups/rgName}" --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --commitment "{amount:10.0,currency-code:USD,grain:Hourly}" --display-name "cliTest" --term P1Y --sku Compute_Savings_Plan
+
+    :example: Create a ManagementGroup savings plan
+        az billing-benefits savings-plan-order-aliases create --savings-plan-order-alias-name "cliTest" --applied-scope-type ManagementGroup --applied-scope-properties "{tenantId:10000000-aaaa-bbbb-cccc-20000000006,managementGroupId:/providers/Microsoft.Management/managementGroups/TestRg}" --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --commitment "{amount:10.0,currency-code:USD,grain:Hourly}" --display-name "cliTest" --term P1Y --sku Compute_Savings_Plan
     """
 
     _aaz_info = {
@@ -52,25 +64,6 @@ class Create(AAZCommand):
         )
 
         # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
-            arg_group="Body",
-            help="Resource provider kind",
-        )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
-            arg_group="Body",
-            help="Savings plan SKU",
-            required=True,
-        )
-
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the SKU to be applied",
-        )
 
         # define Arg Group "Properties"
 
@@ -148,6 +141,15 @@ class Create(AAZCommand):
             options=["grain"],
             help="Commitment grain.",
             enum={"Hourly": "Hourly"},
+        )
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
+            arg_group="Sku",
+            help="Name of the SKU to be applied",
         )
         return cls._args_schema
 
@@ -249,9 +251,8 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -279,7 +280,7 @@ class Create(AAZCommand):
 
             sku = _builder.get(".sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 

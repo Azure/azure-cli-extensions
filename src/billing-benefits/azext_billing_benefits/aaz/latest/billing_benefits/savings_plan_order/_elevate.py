@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Elevate(AAZCommand):
     """Elevate as owner on savings plan order based on billing permissions.
+
+    :example: Elevate a savings plan order
+        az billing-benefits savings-plan-order elevate --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017
     """
 
     _aaz_info = {

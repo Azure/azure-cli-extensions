@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "billing-benefits savings-plan-order savings-plan validate",
+    "billing-benefits savings-plan-order savings-plan validate-update",
 )
-class Validate(AAZCommand):
+class ValidateUpdate(AAZCommand):
     """Validate savings plan patch.
+
+    :example: Validate savings plan update request
+        az billing-benefits savings-plan-order savings-plan validate-update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000006 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000004 --benefits "[{applied-scope-type:Shared,display-name:name1}]"
     """
 
     _aaz_info = {
@@ -129,9 +132,9 @@ class Validate(AAZCommand):
             help="Represent benefit term in ISO 8601 format.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
         )
-        purchase_properties.sku = AAZObjectArg(
+        purchase_properties.sku = AAZStrArg(
             options=["sku"],
-            help="The SKU to be applied for this resource",
+            help="Name of the SKU to be applied",
         )
 
         commitment = cls._args_schema.benefits.Element.renew_properties.purchase_properties.commitment
@@ -146,12 +149,6 @@ class Validate(AAZCommand):
             options=["grain"],
             help="Commitment grain.",
             enum={"Hourly": "Hourly"},
-        )
-
-        sku = cls._args_schema.benefits.Element.renew_properties.purchase_properties.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the SKU to be applied",
         )
         return cls._args_schema
 
@@ -291,7 +288,7 @@ class Validate(AAZCommand):
 
             _elements = _builder.get(".benefits[]")
             if _elements is not None:
-                _ValidateHelper._build_schema_applied_scope_properties_create(_elements.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                _ValidateUpdateHelper._build_schema_applied_scope_properties_create(_elements.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
                 _elements.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 _elements.set_prop("displayName", AAZStrType, ".display_name")
                 _elements.set_prop("renew", AAZBoolType, ".renew")
@@ -304,11 +301,11 @@ class Validate(AAZCommand):
             purchase_properties = _builder.get(".benefits[].renewProperties.purchaseProperties")
             if purchase_properties is not None:
                 purchase_properties.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                purchase_properties.set_prop("sku", AAZObjectType, ".sku")
+                purchase_properties.set_prop("sku", AAZObjectType)
 
             properties = _builder.get(".benefits[].renewProperties.purchaseProperties.properties")
             if properties is not None:
-                _ValidateHelper._build_schema_applied_scope_properties_create(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                _ValidateUpdateHelper._build_schema_applied_scope_properties_create(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
                 properties.set_prop("billingScopeId", AAZStrType, ".billing_scope_id")
@@ -325,7 +322,7 @@ class Validate(AAZCommand):
 
             sku = _builder.get(".benefits[].renewProperties.purchaseProperties.sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 
@@ -365,8 +362,8 @@ class Validate(AAZCommand):
             return cls._schema_on_200
 
 
-class _ValidateHelper:
-    """Helper class for Validate"""
+class _ValidateUpdateHelper:
+    """Helper class for ValidateUpdate"""
 
     @classmethod
     def _build_schema_applied_scope_properties_create(cls, _builder):
@@ -379,4 +376,4 @@ class _ValidateHelper:
         _builder.set_prop("tenantId", AAZStrType, ".tenant_id")
 
 
-__all__ = ["Validate"]
+__all__ = ["ValidateUpdate"]

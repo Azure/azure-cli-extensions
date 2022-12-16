@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "billing-benefits validate",
+    "billing-benefits validate-purchase",
 )
-class Validate(AAZCommand):
+class ValidatePurchase(AAZCommand):
     """Validate savings plan purchase.
+
+    :example: Validate savings plan purchase
+        az billing-benefits validate-purchase --benefits "[{applied-scope-type:Shared,billing-plan:P1M,billing-scope-id:50000000-aaaa-bbbb-cccc-200000000012,display-name:name1,sku:Compute_Savings_Plan,term:P1Y,commitment:{amount:10.0,currency-code:USD,grain:Hourly}}]"
     """
 
     _aaz_info = {
@@ -50,10 +53,6 @@ class Validate(AAZCommand):
         benefits.Element = AAZObjectArg()
 
         _element = cls._args_schema.benefits.Element
-        _element.kind = AAZStrArg(
-            options=["kind"],
-            help="Resource provider kind",
-        )
         _element.applied_scope_properties = AAZObjectArg(
             options=["applied-scope-properties"],
             help="Properties specific to applied scope type. Not required if not applicable.",
@@ -85,10 +84,9 @@ class Validate(AAZCommand):
             help="Represent benefit term in ISO 8601 format.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
         )
-        _element.sku = AAZObjectArg(
+        _element.sku = AAZStrArg(
             options=["sku"],
-            help="Savings plan SKU",
-            required=True,
+            help="Name of the SKU to be applied",
         )
 
         applied_scope_properties = cls._args_schema.benefits.Element.applied_scope_properties
@@ -125,12 +123,6 @@ class Validate(AAZCommand):
             options=["grain"],
             help="Commitment grain.",
             enum={"Hourly": "Hourly"},
-        )
-
-        sku = cls._args_schema.benefits.Element.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the SKU to be applied",
         )
         return cls._args_schema
 
@@ -214,9 +206,8 @@ class Validate(AAZCommand):
 
             _elements = _builder.get(".benefits[]")
             if _elements is not None:
-                _elements.set_prop("kind", AAZStrType, ".kind")
                 _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                _elements.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".benefits[].properties")
             if properties is not None:
@@ -244,7 +235,7 @@ class Validate(AAZCommand):
 
             sku = _builder.get(".benefits[].sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 
@@ -284,8 +275,8 @@ class Validate(AAZCommand):
             return cls._schema_on_200
 
 
-class _ValidateHelper:
-    """Helper class for Validate"""
+class _ValidatePurchaseHelper:
+    """Helper class for ValidatePurchase"""
 
 
-__all__ = ["Validate"]
+__all__ = ["ValidatePurchase"]

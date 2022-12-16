@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List savings plans in an order.
+
+    :example: List savings plans in an order
+        az billing-benefits savings-plan-order savings-plan list --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017
     """
 
     _aaz_info = {

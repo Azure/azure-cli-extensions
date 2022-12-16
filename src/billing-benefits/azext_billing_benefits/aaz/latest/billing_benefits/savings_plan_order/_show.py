@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a savings plan order.
+
+    :example: Get the details of a savings plan order
+        az billing-benefits savings-plan-order show --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017
+
+    :example: Get the details of a savings plan order with transaction detail
+        az billing-benefits savings-plan-order show --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --expand schedule
     """
 
     _aaz_info = {

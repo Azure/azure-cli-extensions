@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "billing-benefits savings-plan-order-aliases show",
 )
 class Show(AAZCommand):
-    """Get a savings plan.
+    """Get a savings plan order alias.
+
+    :example: Get a savings plan order alias
+        az billing-benefits savings-plan-order-aliases show --savings-plan-order-alias-name aliasName
     """
 
     _aaz_info = {

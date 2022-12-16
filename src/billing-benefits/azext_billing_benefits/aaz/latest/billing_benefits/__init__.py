@@ -9,4 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._validate import *
+from ._validate_purchase import *

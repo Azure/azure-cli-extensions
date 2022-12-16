@@ -16,6 +16,24 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update savings plan.
+
+    :example: Update display name
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --display-name "cliTest"
+
+    :example: Update savings plan applied scope to "Shared"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Shared
+
+    :example: Update savings plan applied scope to "Single"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}"
+
+    :example: Update savings plan applied scope to "Single" resource group
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004/resourceGroups/rgName}"
+
+    :example: Update savings plan applied scope to "ManagementGroup"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type ManagementGroup --applied-scope-properties "{tenantId:10000000-aaaa-bbbb-cccc-20000000006,managementGroupId:/providers/Microsoft.Management/managementGroups/TestRg}"
+
+    :example: Update savings plan renewal setting
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --renew true --renew-properties "{purchase-properties:{applied-scope-type:Shared,billing-plan:P1M,billing-scope-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000015,commitment:{amount:10.0,currency-code:USD,grain:Hourly},display-name:name1,renew:true,term:P1Y,sku:{name:Compute_Savings_Plan}}}"
     """
 
     _aaz_info = {
@@ -125,9 +143,9 @@ class Update(AAZCommand):
             help="Represent benefit term in ISO 8601 format.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
         )
-        purchase_properties.sku = AAZObjectArg(
+        purchase_properties.sku = AAZStrArg(
             options=["sku"],
-            help="The SKU to be applied for this resource",
+            help="Name of the SKU to be applied",
         )
 
         commitment = cls._args_schema.renew_properties.purchase_properties.commitment
@@ -142,12 +160,6 @@ class Update(AAZCommand):
             options=["grain"],
             help="Commitment grain.",
             enum={"Hourly": "Hourly"},
-        )
-
-        sku = cls._args_schema.renew_properties.purchase_properties.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the SKU to be applied",
         )
         return cls._args_schema
 
@@ -298,7 +310,7 @@ class Update(AAZCommand):
             purchase_properties = _builder.get(".properties.renewProperties.purchaseProperties")
             if purchase_properties is not None:
                 purchase_properties.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                purchase_properties.set_prop("sku", AAZObjectType, ".sku")
+                purchase_properties.set_prop("sku", AAZObjectType)
 
             properties = _builder.get(".properties.renewProperties.purchaseProperties.properties")
             if properties is not None:
@@ -319,7 +331,7 @@ class Update(AAZCommand):
 
             sku = _builder.get(".properties.renewProperties.purchaseProperties.sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 

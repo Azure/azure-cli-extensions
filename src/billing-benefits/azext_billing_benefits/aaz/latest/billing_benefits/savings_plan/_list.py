@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List savings plans.
+
+    :example: List savings plan items with filter and orderby
+        az billing-benefits savings-plan list --filter "properties/userFriendlyAppliedScopeType eq 'Shared'" --orderby "properties/displayName asc"
+
+    :example: List savings plan items
+        az billing-benefits savings-plan list
     """
 
     _aaz_info = {
@@ -47,10 +53,6 @@ class List(AAZCommand):
         _args_schema.orderby = AAZStrArg(
             options=["--orderby"],
             help="May be used to sort order by reservation properties.",
-        )
-        _args_schema.refresh_summary = AAZStrArg(
-            options=["--refresh-summary"],
-            help="To indicate whether to refresh the roll up counts of the savings plans group by provisioning states",
         )
         _args_schema.selected_state = AAZStrArg(
             options=["--selected-state"],
@@ -121,9 +123,6 @@ class List(AAZCommand):
                 ),
                 **self.serialize_query_param(
                     "$skiptoken", self.ctx.args.skiptoken,
-                ),
-                **self.serialize_query_param(
-                    "refreshSummary", self.ctx.args.refresh_summary,
                 ),
                 **self.serialize_query_param(
                     "selectedState", self.ctx.args.selected_state,

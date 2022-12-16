@@ -12,4 +12,4 @@ from .__cmd_group import *
 from ._list import *
 from ._show import *
 from ._update import *
-from ._validate import *
+from ._validate_update import *
