@@ -188,40 +188,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         return addon_consts
 
-    def get_http_proxy_config(self) -> Union[Dict, ManagedClusterHTTPProxyConfig, None]:
-        """Obtain the value of http_proxy_config.
-
-        :return: dictionary, ManagedClusterHTTPProxyConfig or None
-        """
-        # read the original value passed by the command
-        http_proxy_config = None
-        http_proxy_config_file_path = self.raw_param.get("http_proxy_config")
-        # validate user input
-        if http_proxy_config_file_path:
-            if not os.path.isfile(http_proxy_config_file_path):
-                raise InvalidArgumentValueError(
-                    "{} is not valid file, or not accessable.".format(
-                        http_proxy_config_file_path
-                    )
-                )
-            http_proxy_config = get_file_json(http_proxy_config_file_path)
-            if not isinstance(http_proxy_config, dict):
-                raise InvalidArgumentValueError(
-                    "Error reading Http Proxy Config from {}. "
-                    "Please see https://aka.ms/HttpProxyConfig for correct format.".format(
-                        http_proxy_config_file_path
-                    )
-                )
-
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if self.mc and self.mc.http_proxy_config is not None:
-                http_proxy_config = self.mc.http_proxy_config
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return http_proxy_config
-
     def get_pod_cidrs_and_service_cidrs_and_ip_families(self) -> Tuple[
         Union[List[str], None],
         Union[List[str], None],
@@ -1961,16 +1927,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.addon_profiles = addon_profiles
         return mc
 
-    def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up http proxy config for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.http_proxy_config = self.context.get_http_proxy_config()
-        return mc
-
     def set_up_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up pod security policy for the ManagedCluster object.
 
@@ -2180,8 +2136,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # DO NOT MOVE: keep this on top, construct the default ManagedCluster profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
-        # set up http proxy config
-        mc = self.set_up_http_proxy_config(mc)
         # set up pod security policy
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
@@ -2359,16 +2313,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             profile_holder = None
         mc.api_server_access_profile = profile_holder
 
-        return mc
-
-    def update_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up http proxy config for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.http_proxy_config = self.context.get_http_proxy_config()
         return mc
 
     def update_kube_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2676,8 +2620,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # DO NOT MOVE: keep this on top, fetch and update the default ManagedCluster profile
         mc = self.update_mc_profile_default()
 
-        # set up http proxy config
-        mc = self.update_http_proxy_config(mc)
         # update pod security policy
         mc = self.update_pod_security_policy(mc)
         # update pod identity profile
