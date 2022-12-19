@@ -17,6 +17,7 @@ Pending
 * Remove oidc issuer related code after GA, reuse the implementation in azure-cli/acs.
 * Fix monitoring addon option `--enable-syslog` for `aks addon enable`.
 * Remove deprecated option `--node-zones`, use `--zones` instead.
+* Remove gpu instance profile related code after GA, reuse the implementation in azure-cli/acs.
 
 0.5.120
 +++++++
