@@ -32,6 +32,18 @@ from .example_steps import step_catalog_list
 from .example_steps import step_catalog_update
 from .example_steps import step_catalog_sync
 from .example_steps import step_catalog_delete
+from .example_steps import step_check_name_availability_execute
+from .example_steps import step_gallery_create
+from .example_steps import step_image_show
+from .example_steps import step_image_list
+from .example_steps import step_image_list2
+from .example_steps import step_dev_box_definition_create
+from .example_steps import step_dev_box_definition_show
+from .example_steps import step_dev_box_definition_show2
+from .example_steps import step_dev_box_definition_list
+from .example_steps import step_dev_box_definition_list2
+from .example_steps import step_dev_box_definition_update
+from .example_steps import step_dev_box_definition_delete
 from .example_steps import step_environment_type_create
 from .example_steps import step_environment_type_show
 from azure.cli.testsdk import ResourceGroupPreparer
@@ -61,19 +73,8 @@ from .example_steps import step_environment_type_show
 from .example_steps import step_environment_type_list
 from .example_steps import step_environment_type_update
 from .example_steps import step_environment_type_delete
-from .example_steps import step_gallery_create
 from .example_steps import step_gallery_show
 from .example_steps import step_gallery_list
-from .example_steps import step_image_show
-from .example_steps import step_image_list
-from .example_steps import step_image_list2
-from .example_steps import step_dev_box_definition_create
-from .example_steps import step_dev_box_definition_show
-from .example_steps import step_dev_box_definition_show2
-from .example_steps import step_dev_box_definition_list
-from .example_steps import step_dev_box_definition_list2
-from .example_steps import step_dev_box_definition_update
-from .example_steps import step_dev_box_definition_delete
 from .example_steps import step_image_version_list
 from .example_steps import step_image_version_show
 from .example_steps import step_gallery_delete
@@ -86,11 +87,6 @@ from .example_steps import step_network_connection_list2
 from .example_steps import step_network_connection_list_health_detail
 from .example_steps import step_network_connection_update
 from .example_steps import step_network_connection_run_health_check
-from .example_steps import step_pool_create
-from .example_steps import step_pool_show
-from .example_steps import step_pool_list
-from .example_steps import step_pool_update
-from .example_steps import step_pool_delete
 from .example_steps import step_network_connection_delete
 from .example_steps import step_operation_statuses_show
 from .example_steps import step_project_create
@@ -128,6 +124,11 @@ from .example_steps import step_project_update
 from .example_steps import step_pool_create
 from .example_steps import step_project_list2
 from .example_steps import step_project_update
+from .example_steps import step_pool_create
+from .example_steps import step_pool_show
+from .example_steps import step_pool_list
+from .example_steps import step_pool_update
+from .example_steps import step_pool_delete
 from .example_steps import step_project_allowed_environment_type_show
 from .example_steps import step_project_allowed_environment_type_list
 from .example_steps import step_project_environment_type_create
@@ -236,6 +237,56 @@ def call_scenario(test):
     ])
     step_catalog_sync(test, checks=[])
     step_catalog_delete(test, checks=[])
+    step_check_name_availability_execute(test, checks=[])
+    step_gallery_create(test, checks=[])
+    step_image_show(test, checks=[])
+    step_image_list(test, checks=[])
+    step_image_list2(test, checks=[])
+    step_dev_box_definition_create(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("hibernateSupport", "Enabled", case_sensitive=False),
+        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
+                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0",
+                   case_sensitive=False),
+        test.check("osStorageType", "SSD_1024", case_sensitive=False),
+        test.check("sku.name", "Preview", case_sensitive=False),
+        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
+    ])
+    step_dev_box_definition_show(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("hibernateSupport", "Enabled", case_sensitive=False),
+        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
+                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0",
+                   case_sensitive=False),
+        test.check("osStorageType", "SSD_1024", case_sensitive=False),
+        test.check("sku.name", "Preview", case_sensitive=False),
+        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
+    ])
+    step_dev_box_definition_show2(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("hibernateSupport", "Enabled", case_sensitive=False),
+        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
+                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0",
+                   case_sensitive=False),
+        test.check("osStorageType", "SSD_1024", case_sensitive=False),
+        test.check("sku.name", "Preview", case_sensitive=False),
+        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
+    ])
+    step_dev_box_definition_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_dev_box_definition_list2(test, checks=[])
+    step_dev_box_definition_update(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("hibernateSupport", "Enabled", case_sensitive=False),
+        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
+                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/2.0.0",
+                   case_sensitive=False),
+        test.check("osStorageType", "SSD_1024", case_sensitive=False),
+        test.check("sku.name", "Preview", case_sensitive=False),
+        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
+    ])
+    step_dev_box_definition_delete(test, checks=[])
     step_environment_type_create(test, checks=[
         test.check("tags.Owner", "superuser", case_sensitive=False),
         test.check("name", "{myEnvironmentType}", case_sensitive=False),
@@ -251,7 +302,6 @@ def call_scenario(test):
         test.check("name", "{myEnvironmentType}", case_sensitive=False),
     ])
     step_environment_type_delete(test, checks=[])
-    step_gallery_create(test, checks=[])
     step_gallery_show(test, checks=[
         test.check("galleryResourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compu"
                    "te/galleries/{myGallery}", case_sensitive=False),
@@ -260,50 +310,6 @@ def call_scenario(test):
     step_gallery_list(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_image_show(test, checks=[])
-    step_image_list(test, checks=[])
-    step_image_list2(test, checks=[])
-    step_dev_box_definition_create(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
-                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0",
-                   case_sensitive=False),
-        test.check("osStorageType", "SSD_1024", case_sensitive=False),
-        test.check("sku.name", "Preview", case_sensitive=False),
-        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
-    ])
-    step_dev_box_definition_show(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
-                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0",
-                   case_sensitive=False),
-        test.check("osStorageType", "SSD_1024", case_sensitive=False),
-        test.check("sku.name", "Preview", case_sensitive=False),
-        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
-    ])
-    step_dev_box_definition_show2(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
-                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/1.0.0",
-                   case_sensitive=False),
-        test.check("osStorageType", "SSD_1024", case_sensitive=False),
-        test.check("sku.name", "Preview", case_sensitive=False),
-        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
-    ])
-    step_dev_box_definition_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_dev_box_definition_list2(test, checks=[])
-    step_dev_box_definition_update(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Dev"
-                   "Center/devcenters/{myDevCenter}/galleries/{myGallery4}/images/{myImage3}/version/2.0.0",
-                   case_sensitive=False),
-        test.check("osStorageType", "SSD_1024", case_sensitive=False),
-        test.check("sku.name", "Preview", case_sensitive=False),
-        test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
-    ])
-    step_dev_box_definition_delete(test, checks=[])
     step_image_version_list(test, checks=[])
     step_image_version_show(test, checks=[])
     step_gallery_delete(test, checks=[])
@@ -347,6 +353,36 @@ def call_scenario(test):
         test.check("name", "{myNetworkConnection3}", case_sensitive=False),
     ])
     step_network_connection_run_health_check(test, checks=[])
+    step_network_connection_delete(test, checks=[])
+    step_operation_statuses_show(test, checks=[])
+    step_project_create(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("description", "This is my first project.", case_sensitive=False),
+        test.check("devCenterId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/d"
+                   "evcenters/{myDevCenter}", case_sensitive=False),
+        test.check("tags.CostCenter", "R&D", case_sensitive=False),
+        test.check("name", "{myProject}", case_sensitive=False),
+    ])
+    step_project_show(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("description", "This is my first project.", case_sensitive=False),
+        test.check("devCenterId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/d"
+                   "evcenters/{myDevCenter}", case_sensitive=False),
+        test.check("tags.CostCenter", "R&D", case_sensitive=False),
+        test.check("name", "{myProject}", case_sensitive=False),
+    ])
+    step_project_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_project_list2(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_project_update(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
+        test.check("devCenterId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/d"
+                   "evcenters/{myDevCenter}", case_sensitive=False),
+        test.check("tags.CostCenter", "R&D", case_sensitive=False),
+    ])
     step_pool_create(test, checks=[
         test.check("location", "centralus", case_sensitive=False),
         test.check("devBoxDefinitionName", "{myDevBoxDefinition}", case_sensitive=False),
@@ -372,36 +408,6 @@ def call_scenario(test):
         test.check("name", "{myPool}", case_sensitive=False),
     ])
     step_pool_delete(test, checks=[])
-    step_network_connection_delete(test, checks=[])
-    step_operation_statuses_show(test, checks=[])
-    step_project_create(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("description", "This is my first project.", case_sensitive=False),
-        test.check("devCenterId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/d"
-                   "evcenters/{myDevCenter2}", case_sensitive=False),
-        test.check("tags.CostCenter", "R&D", case_sensitive=False),
-        test.check("name", "{myProject}", case_sensitive=False),
-    ])
-    step_project_show(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("description", "This is my first project.", case_sensitive=False),
-        test.check("devCenterId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/d"
-                   "evcenters/{myDevCenter2}", case_sensitive=False),
-        test.check("tags.CostCenter", "R&D", case_sensitive=False),
-        test.check("name", "{myProject}", case_sensitive=False),
-    ])
-    step_project_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_project_list2(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_project_update(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("devCenterId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DevCenter/d"
-                   "evcenters/{myDevCenter2}", case_sensitive=False),
-        test.check("tags.CostCenter", "R&D", case_sensitive=False),
-    ])
     step_project_allowed_environment_type_show(test, checks=[])
     step_project_allowed_environment_type_list(test, checks=[])
     step_project_environment_type_create(test, checks=[])
@@ -410,17 +416,6 @@ def call_scenario(test):
     step_project_environment_type_update(test, checks=[])
     step_project_environment_type_delete(test, checks=[])
     step_schedule_create(test, checks=[])
-    step_schedule_show(test, checks=[
-        test.check("state", "Enabled", case_sensitive=False),
-        test.check("time", "17:30", case_sensitive=False),
-        test.check("timeZone", "America/Los_Angeles", case_sensitive=False),
-        test.check("name", "{mySchedule}", case_sensitive=False),
-    ])
-    step_project_environment_type_create(test, checks=[])
-    step_project_environment_type_show(test, checks=[])
-    step_project_environment_type_list(test, checks=[])
-    step_project_environment_type_update(test, checks=[])
-    step_project_environment_type_delete(test, checks=[])
     step_schedule_create(test, checks=[
         test.check("state", "Enabled", case_sensitive=False),
         test.check("time", "17:30", case_sensitive=False),
@@ -650,6 +645,17 @@ def call_scenario(test):
                    "evcenters/{myDevCenter2}", case_sensitive=False),
         test.check("tags.CostCenter", "R&D", case_sensitive=False),
     ])
+    step_schedule_show(test, checks=[
+        test.check("state", "Enabled", case_sensitive=False),
+        test.check("time", "17:30", case_sensitive=False),
+        test.check("timeZone", "America/Los_Angeles", case_sensitive=False),
+        test.check("name", "{mySchedule}", case_sensitive=False),
+    ])
+    step_project_environment_type_create(test, checks=[])
+    step_project_environment_type_show(test, checks=[])
+    step_project_environment_type_list(test, checks=[])
+    step_project_environment_type_update(test, checks=[])
+    step_project_environment_type_delete(test, checks=[])
     step_schedule_list(test, checks=[])
     step_schedule_update(test, checks=[
         test.check("state", "Enabled", case_sensitive=False),
@@ -678,31 +684,29 @@ class DevcenterScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'myDevCenter2': '{devCenterName}',
             'myDevCenter': 'Contoso',
-            'myProject': '{projectName}',
             'myProject2': 'ContosoProj',
             'myProject3': 'ContosoProject',
             'myProject4': 'TestProject',
             'myProject5': 'DevProject',
-            'myGallery': '{galleryName}',
+            'myProject': 'DevProject',
+            'myGallery': 'StandardGallery',
             'myGallery4': 'contosogallery',
             'myGallery2': 'DevGallery',
             'myGallery3': 'DefaultDevGallery',
             'myImage3': 'exampleImage',
-            'myImage': '{imageName}',
+            'myImage': 'ContosoBaseImage',
             'myImage2': 'Win11',
-            'myCatalog': '{catalogName}',
-            'myEnvironmentType': '{environmentTypeName}',
+            'myCatalog': 'CentralCatalog',
+            'myEnvironmentType': 'DevTest',
             'myDevBoxDefinition': 'WebDevBox',
             'myDevBoxDefinition2': 'WebDevBox2',
             'myNetworkConnection': 'network-uswest3',
             'myNetworkConnection2': 'Network1-westus2',
             'myNetworkConnection3': 'uswest3network',
-            'myNetworkConnection4': '{networkConnectionName}',
-            'myPool': '{poolName}',
+            'myNetworkConnection4': 'eastusnetwork',
+            'myPool': 'DevPool',
             'myPool2': 'poolName',
-            'myPool3': 'DevPool',
             'mySchedule': 'autoShutdown',
         })
 

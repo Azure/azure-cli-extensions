@@ -648,6 +648,7 @@ def devcenter_dev_box_definition_create(client,
                                         image_reference=None,
                                         sku=None,
                                         os_storage_type=None,
+                                        hibernate_support=None,
                                         no_wait=False):
     body = {}
     if tags is not None:
@@ -659,6 +660,8 @@ def devcenter_dev_box_definition_create(client,
         body['sku'] = sku
     if os_storage_type is not None:
         body['os_storage_type'] = os_storage_type
+    if hibernate_support is not None:
+        body['hibernate_support'] = hibernate_support
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -676,6 +679,7 @@ def devcenter_dev_box_definition_update(client,
                                         image_reference=None,
                                         sku=None,
                                         os_storage_type=None,
+                                        hibernate_support=None,
                                         no_wait=False):
     body = {}
     if tags is not None:
@@ -688,6 +692,8 @@ def devcenter_dev_box_definition_update(client,
         body['sku'] = sku
     if os_storage_type is not None:
         body['os_storage_type'] = os_storage_type
+    if hibernate_support is not None:
+        body['hibernate_support'] = hibernate_support
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -718,6 +724,17 @@ def devcenter_operation_statuses_show(client,
 def devcenter_usage_list(client,
                          location):
     return client.list_by_location(location=location)
+
+
+def devcenter_check_name_availability_execute(client,
+                                              name=None,
+                                              type_=None):
+    name_availability_request = {}
+    if name is not None:
+        name_availability_request['name'] = name
+    if type_ is not None:
+        name_availability_request['type'] = type_
+    return client.execute(name_availability_request=name_availability_request)
 
 
 def devcenter_sku_list(client,
@@ -1026,9 +1043,12 @@ def devcenter_network_connection_list_health_detail(client,
 
 def devcenter_network_connection_run_health_check(client,
                                                   resource_group_name,
-                                                  network_connection_name):
-    return client.run_health_checks(resource_group_name=resource_group_name,
-                                    network_connection_name=network_connection_name)
+                                                  network_connection_name,
+                                                  no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_run_health_checks,
+                       resource_group_name=resource_group_name,
+                       network_connection_name=network_connection_name)
 
 
 def devcenter_network_connection_show_health_detail(client,
