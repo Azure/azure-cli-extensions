@@ -2266,7 +2266,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     if helm_values.get('global').get('isLeastPrivilegesMode') is True:
         telemetry.set_user_fault()
         raise ValidationError("Troubleshoot command is currently not available for clusters onboarded with least privileges")
-   
+
     try:
 
         logger.warning("Diagnoser running. This may take a while ...\n")
