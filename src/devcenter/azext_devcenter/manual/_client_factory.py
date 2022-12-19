@@ -8,38 +8,21 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-def cf_devcenter_dataplane(cli_ctx, dev_center, *_):
+def cf_devcenter_dataplane(cli_ctx, endpoint, project_name=None, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
     )
-    from azure.cli.core._profile import Profile
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
-
-    profile = Profile(cli_ctx=cli_ctx)
-    subscription = profile.get_subscription()
-    tenant_id = subscription["tenantId"]
-    cloud = subscription["environmentName"]
-    dev_center_dns_suffix = get_dns_suffix(cloud)
 
     return get_mgmt_service_client(
         cli_ctx,
         DevCenterDataplaneClient,
-        subscription_bound=False,
-        base_url_bound=False,
-        tenant_id=tenant_id,
-        dev_center=dev_center,
-        dev_center_dns_suffix=dev_center_dns_suffix,
+        endpoint=endpoint,
+        project_name=project_name,
     )
-
-
-def get_dns_suffix(cloud):
-    if cloud == "Dogfood":
-        return "devcenter.azure-test.net"
-    return "devcenter.azure.com"
-
 
 def cf_project_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).project
@@ -66,7 +49,7 @@ def cf_artifact_dp(cli_ctx, dev_center, *_):
 
 
 def cf_catalog_item_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item
+    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_items
 
 
 def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
@@ -75,3 +58,6 @@ def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
 
 def cf_environment_type_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type
+
+def cf_notification_setting_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting

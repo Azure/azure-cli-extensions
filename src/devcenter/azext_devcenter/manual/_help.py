@@ -470,6 +470,51 @@ helps[
               --project-name "{projectName}"
 """
 
+helps['devcenter dev notification-setting show'] = """
+    type: command
+    short-summary: "Gets notification settings for user in the project."
+    examples:
+      - name: DevCenter_GetNotificationSettings
+        text: |-
+               az devcenter dev notification-setting show --user-id "me"
+"""
+
+helps['devcenter dev notification-setting create'] = """
+    type: command
+    short-summary: "Creates or updates notification settings."
+    parameters:
+      - name: --email-notification
+        short-summary: "The email notification"
+        long-summary: |
+            Usage: --email-notification enabled=XX recipients=XX cc=XX
+
+            enabled: Required. If email notification is enabled
+            recipients: The recipients of the email notification
+            cc: The cc of the email notification
+      - name: --webhook-notification
+        short-summary: "The webhook notification"
+        long-summary: |
+            Usage: --webhook-notification enabled=XX url=XX
+
+            enabled: Required. If webhook notification is enabled
+            url: The url of the webhook
+    examples:
+      - name: DevCenter_CreateNotificationSettings
+        text: |-
+               az devcenter dev notification-setting create --culture "en-us" --enabled false --boolean-enabled \
+true --email-notification cc="stubcc@domain.com" enabled=true recipients="stubrecipient@domain.com" \
+--webhook-notification enabled=false url="https://fake.domain/url/hook" --user-id "me"
+"""
+
+helps['devcenter dev notification-setting list-allowed-culture'] = """
+    type: command
+    short-summary: "Lists allowed culture codes for notification settings."
+    examples:
+      - name: DevCenter_ListNotificationSettingsAllowedCultures
+        text: |-
+               devcenter dev notification-setting list-allowed-culture --user-id "me"
+"""
+
 # control plane
 helps[
     "devcenter"

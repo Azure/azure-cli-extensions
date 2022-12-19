@@ -42,6 +42,14 @@ class EnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ENABLED = "Enabled"
     DISABLED = "Disabled"
 
+class HibernateSupport(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indicates whether hibernate is supported and enabled or disabled. Unknown hibernate support is
+    represented as null.
+    """
+
+    DISABLED = "Disabled"
+    ENABLED = "Enabled"
+
 class LocalAdminStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     ENABLED = "Enabled"
@@ -92,3 +100,15 @@ class ScheduledType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """
 
     STOP_DEV_BOX = "StopDevBox"
+
+class UpcomingActionReason(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The reason for the upcoming action.
+    """
+
+    SCHEDULE = "Schedule"
+
+class UpcomingActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The upcoming action types.
+    """
+
+    STOP = "Stop"

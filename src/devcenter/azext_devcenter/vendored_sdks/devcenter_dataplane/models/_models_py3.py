@@ -501,6 +501,9 @@ class DevBox(msrest.serialization.Model):
     :vartype project_name: str
     :param pool_name: Required. The name of the Dev Box pool this machine belongs to.
     :type pool_name: str
+    :ivar hibernate_support: Indicates whether hibernate is enabled/disabled or unknown. Possible
+     values include: "Disabled", "Enabled".
+    :vartype hibernate_support: str or ~dev_center_dataplane_client.models.HibernateSupport
     :ivar provisioning_state: The current provisioning state of the Dev Box.
     :vartype provisioning_state: str
     :ivar action_state: The current action state of the Dev Box. This is state is based on previous
@@ -519,7 +522,7 @@ class DevBox(msrest.serialization.Model):
     :vartype location: str
     :ivar os_type: The operating system type of this Dev Box. Possible values include: "Windows".
     :vartype os_type: str or ~dev_center_dataplane_client.models.OsType
-    :ivar user: User identifier of the user this vm is assigned to.
+    :ivar user: The AAD object id of the user this Dev Box is assigned to.
     :vartype user: str
     :ivar hardware_profile: Information about the Dev Box's hardware resources.
     :vartype hardware_profile: ~dev_center_dataplane_client.models.HardwareProfile
@@ -538,6 +541,7 @@ class DevBox(msrest.serialization.Model):
         'name': {'readonly': True},
         'project_name': {'readonly': True},
         'pool_name': {'required': True, 'max_length': 63, 'min_length': 3, 'pattern': r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'},
+        'hibernate_support': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'action_state': {'readonly': True},
         'power_state': {'readonly': True},
@@ -556,6 +560,7 @@ class DevBox(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'project_name': {'key': 'projectName', 'type': 'str'},
         'pool_name': {'key': 'poolName', 'type': 'str'},
+        'hibernate_support': {'key': 'hibernateSupport', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'action_state': {'key': 'actionState', 'type': 'str'},
         'power_state': {'key': 'powerState', 'type': 'str'},
@@ -582,6 +587,7 @@ class DevBox(msrest.serialization.Model):
         self.name = None
         self.project_name = None
         self.pool_name = pool_name
+        self.hibernate_support = None
         self.provisioning_state = None
         self.action_state = None
         self.power_state = None
@@ -627,6 +633,76 @@ class DevBoxListResult(msrest.serialization.Model):
         super(DevBoxListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
+
+
+class DevBoxProvisioningNotification(msrest.serialization.Model):
+    """The notification configured for DevBox provisioning.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param enabled: Required. If notification is enabled for DevBox provisioning.
+    :type enabled: bool
+    :param notification_channel: Required. The channel of the notification.
+    :type notification_channel: ~dev_center_dataplane_client.models.NotificationChannel
+    """
+
+    _validation = {
+        'enabled': {'required': True},
+        'notification_channel': {'required': True},
+    }
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'notification_channel': {'key': 'notificationChannel', 'type': 'NotificationChannel'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled: bool,
+        notification_channel: "NotificationChannel",
+        **kwargs
+    ):
+        super(DevBoxProvisioningNotification, self).__init__(**kwargs)
+        self.enabled = enabled
+        self.notification_channel = notification_channel
+
+
+class EmailNotification(msrest.serialization.Model):
+    """The email notification.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param enabled: Required. If email notification is enabled.
+    :type enabled: bool
+    :param recipients: The recipients of the email notification.
+    :type recipients: str
+    :param cc: The cc of the email notification.
+    :type cc: str
+    """
+
+    _validation = {
+        'enabled': {'required': True},
+    }
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'recipients': {'key': 'recipients', 'type': 'str'},
+        'cc': {'key': 'cc', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled: bool,
+        recipients: Optional[str] = None,
+        cc: Optional[str] = None,
+        **kwargs
+    ):
+        super(EmailNotification, self).__init__(**kwargs)
+        self.enabled = enabled
+        self.recipients = recipients
+        self.cc = cc
 
 
 class EnvironmentUpdateProperties(msrest.serialization.Model):
@@ -700,8 +776,8 @@ class Environment(EnvironmentUpdateProperties):
     :vartype name: str
     :param environment_type: Required. Environment type.
     :type environment_type: str
-    :param owner: Identifier of the owner of this Environment.
-    :type owner: str
+    :param user: The AAD object id of the owner of this Environment.
+    :type user: str
     :ivar provisioning_state: The provisioning state of the environment.
     :vartype provisioning_state: str
     :ivar resource_group_id: The identifier of the resource group containing the environment's
@@ -725,7 +801,7 @@ class Environment(EnvironmentUpdateProperties):
         'tags': {'key': 'tags', 'type': '{str}'},
         'name': {'key': 'name', 'type': 'str'},
         'environment_type': {'key': 'environmentType', 'type': 'str'},
-        'owner': {'key': 'owner', 'type': 'str'},
+        'user': {'key': 'user', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'resource_group_id': {'key': 'resourceGroupId', 'type': 'str'},
     }
@@ -740,13 +816,13 @@ class Environment(EnvironmentUpdateProperties):
         parameters: Optional[object] = None,
         scheduled_tasks: Optional[Dict[str, "ScheduledTask"]] = None,
         tags: Optional[Dict[str, str]] = None,
-        owner: Optional[str] = None,
+        user: Optional[str] = None,
         **kwargs
     ):
         super(Environment, self).__init__(description=description, catalog_name=catalog_name, catalog_item_name=catalog_item_name, parameters=parameters, scheduled_tasks=scheduled_tasks, tags=tags, **kwargs)
         self.name = None
         self.environment_type = environment_type
-        self.owner = owner
+        self.user = user
         self.provisioning_state = None
         self.resource_group_id = None
 
@@ -933,6 +1009,142 @@ class ImageReference(msrest.serialization.Model):
         self.published_date = None
 
 
+class NotificationChannel(msrest.serialization.Model):
+    """The channel of the notification.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param email_notification: Required. The email notification.
+    :type email_notification: ~dev_center_dataplane_client.models.EmailNotification
+    :param webhook_notification: Required. The webhook notification.
+    :type webhook_notification: ~dev_center_dataplane_client.models.WebhookNotification
+    """
+
+    _validation = {
+        'email_notification': {'required': True},
+        'webhook_notification': {'required': True},
+    }
+
+    _attribute_map = {
+        'email_notification': {'key': 'emailNotification', 'type': 'EmailNotification'},
+        'webhook_notification': {'key': 'webhookNotification', 'type': 'WebhookNotification'},
+    }
+
+    def __init__(
+        self,
+        *,
+        email_notification: "EmailNotification",
+        webhook_notification: "WebhookNotification",
+        **kwargs
+    ):
+        super(NotificationChannel, self).__init__(**kwargs)
+        self.email_notification = email_notification
+        self.webhook_notification = webhook_notification
+
+
+class NotificationSettings(msrest.serialization.Model):
+    """The NotificationSettings configured for user.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar name: Required. The name of the notification settings. Default value: "default".
+    :vartype name: str
+    :param enabled: Required. If notification is enabled for the user.
+    :type enabled: bool
+    :param culture: Required. The culture that MEO can accommdate requests to send emails in.
+    :type culture: str
+    :param notification_type: Required. The type of the notification.
+    :type notification_type: ~dev_center_dataplane_client.models.NotificationType
+    """
+
+    _validation = {
+        'name': {'required': True, 'constant': True},
+        'enabled': {'required': True},
+        'culture': {'required': True},
+        'notification_type': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'culture': {'key': 'culture', 'type': 'str'},
+        'notification_type': {'key': 'notificationType', 'type': 'NotificationType'},
+    }
+
+    name = "default"
+
+    def __init__(
+        self,
+        *,
+        enabled: bool,
+        culture: str,
+        notification_type: "NotificationType",
+        **kwargs
+    ):
+        super(NotificationSettings, self).__init__(**kwargs)
+        self.enabled = enabled
+        self.culture = culture
+        self.notification_type = notification_type
+
+
+class NotificationSettingsAllowedCulturesListResult(msrest.serialization.Model):
+    """The allowed cultures list result for NotificationSettings.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. Allowed culture codes for NotificationSettings.
+    :type value: list[str]
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: List[str],
+        **kwargs
+    ):
+        super(NotificationSettingsAllowedCulturesListResult, self).__init__(**kwargs)
+        self.value = value
+
+
+class NotificationType(msrest.serialization.Model):
+    """The type of the notification.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param dev_box_provisioning_notification: Required. The notification configured for DevBox
+     provisioning.
+    :type dev_box_provisioning_notification:
+     ~dev_center_dataplane_client.models.DevBoxProvisioningNotification
+    """
+
+    _validation = {
+        'dev_box_provisioning_notification': {'required': True},
+    }
+
+    _attribute_map = {
+        'dev_box_provisioning_notification': {'key': 'devBoxProvisioningNotification', 'type': 'DevBoxProvisioningNotification'},
+    }
+
+    def __init__(
+        self,
+        *,
+        dev_box_provisioning_notification: "DevBoxProvisioningNotification",
+        **kwargs
+    ):
+        super(NotificationType, self).__init__(**kwargs)
+        self.dev_box_provisioning_notification = dev_box_provisioning_notification
+
+
 class OsDisk(msrest.serialization.Model):
     """Settings for the operating system disk.
 
@@ -972,6 +1184,9 @@ class Pool(msrest.serialization.Model):
     :vartype os_type: str or ~dev_center_dataplane_client.models.OsType
     :ivar hardware_profile: Hardware settings for the Dev Boxes created in this pool.
     :vartype hardware_profile: ~dev_center_dataplane_client.models.HardwareProfile
+    :ivar hibernate_support: Indicates whether hibernate is enabled/disabled or unknown. Possible
+     values include: "Disabled", "Enabled".
+    :vartype hibernate_support: str or ~dev_center_dataplane_client.models.HibernateSupport
     :ivar storage_profile: Storage settings for Dev Box created in this pool.
     :vartype storage_profile: ~dev_center_dataplane_client.models.StorageProfile
     :ivar image_reference: Image settings for Dev Boxes create in this pool.
@@ -986,6 +1201,7 @@ class Pool(msrest.serialization.Model):
         'location': {'readonly': True},
         'os_type': {'readonly': True},
         'hardware_profile': {'readonly': True},
+        'hibernate_support': {'readonly': True},
         'storage_profile': {'readonly': True},
         'image_reference': {'readonly': True},
     }
@@ -995,6 +1211,7 @@ class Pool(msrest.serialization.Model):
         'location': {'key': 'location', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'hardware_profile': {'key': 'hardwareProfile', 'type': 'HardwareProfile'},
+        'hibernate_support': {'key': 'hibernateSupport', 'type': 'str'},
         'storage_profile': {'key': 'storageProfile', 'type': 'StorageProfile'},
         'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
         'local_administrator': {'key': 'localAdministrator', 'type': 'str'},
@@ -1011,6 +1228,7 @@ class Pool(msrest.serialization.Model):
         self.location = None
         self.os_type = None
         self.hardware_profile = None
+        self.hibernate_support = None
         self.storage_profile = None
         self.image_reference = None
         self.local_administrator = local_administrator
@@ -1304,6 +1522,119 @@ class StorageProfile(msrest.serialization.Model):
         super(StorageProfile, self).__init__(**kwargs)
         self.os_disk = os_disk
 
+
+class UpcomingAction(msrest.serialization.Model):
+    """An upcoming Action.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Uniquely identifies the action.
+    :vartype id: str
+    :ivar action_type: The action that will be taken. Possible values include: "Stop".
+    :vartype action_type: str or ~dev_center_dataplane_client.models.UpcomingActionType
+    :ivar reason: The reason for this action. Possible values include: "Schedule".
+    :vartype reason: str or ~dev_center_dataplane_client.models.UpcomingActionReason
+    :ivar scheduled_time: The target time the action will be triggered (UTC).
+    :vartype scheduled_time: ~datetime.datetime
+    :ivar original_scheduled_time: The original scheduled time for the action (UTC).
+    :vartype original_scheduled_time: ~datetime.datetime
+    :ivar source_id: The id of the resource which triggered this action.
+    :vartype source_id: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'action_type': {'readonly': True},
+        'reason': {'readonly': True},
+        'scheduled_time': {'readonly': True},
+        'original_scheduled_time': {'readonly': True},
+        'source_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'action_type': {'key': 'actionType', 'type': 'str'},
+        'reason': {'key': 'reason', 'type': 'str'},
+        'scheduled_time': {'key': 'scheduledTime', 'type': 'iso-8601'},
+        'original_scheduled_time': {'key': 'originalScheduledTime', 'type': 'iso-8601'},
+        'source_id': {'key': 'sourceId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(UpcomingAction, self).__init__(**kwargs)
+        self.id = None
+        self.action_type = None
+        self.reason = None
+        self.scheduled_time = None
+        self.original_scheduled_time = None
+        self.source_id = None
+
+
+class UpcomingActionsListResult(msrest.serialization.Model):
+    """The Upcoming Action list result.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. Current page of results.
+    :type value: list[~dev_center_dataplane_client.models.UpcomingAction]
+    :param next_link: The URL to get the next set of results.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[UpcomingAction]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: List["UpcomingAction"],
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        super(UpcomingActionsListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class WebhookNotification(msrest.serialization.Model):
+    """The webhook notification.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param enabled: Required. If webhook notification is enabled.
+    :type enabled: bool
+    :param url: The url of the webhook.
+    :type url: str
+    """
+
+    _validation = {
+        'enabled': {'required': True},
+    }
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'url': {'key': 'url', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled: bool,
+        url: Optional[str] = None,
+        **kwargs
+    ):
+        super(WebhookNotification, self).__init__(**kwargs)
+        self.enabled = enabled
+        self.url = url
 ##amlim: This is a customization DO NOT DELETE
 class LongRunningOperationErrorDetails(msrest.serialization.Model):
     """Long running operation error details.

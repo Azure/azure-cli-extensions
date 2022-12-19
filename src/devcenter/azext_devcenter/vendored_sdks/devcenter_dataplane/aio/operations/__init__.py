@@ -12,10 +12,10 @@ from ._schedule_operations import ScheduleOperations
 from ._dev_box_operations import DevBoxOperations
 from ._environments_operations import EnvironmentsOperations
 from ._artifacts_operations import ArtifactsOperations
-from ._catalog_item_operations import CatalogItemOperations
 from ._catalog_items_operations import CatalogItemsOperations
 from ._catalog_item_versions_operations import CatalogItemVersionsOperations
 from ._environment_type_operations import EnvironmentTypeOperations
+from ._notification_setting_operations import NotificationSettingOperations
 
 __all__ = [
     'ProjectOperations',
@@ -24,8 +24,8 @@ __all__ = [
     'DevBoxOperations',
     'EnvironmentsOperations',
     'ArtifactsOperations',
-    'CatalogItemOperations',
     'CatalogItemsOperations',
     'CatalogItemVersionsOperations',
     'EnvironmentTypeOperations',
+    'NotificationSettingOperations'
 ]

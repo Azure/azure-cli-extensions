@@ -22,57 +22,40 @@ from .operations import ScheduleOperations
 from .operations import DevBoxOperations
 from .operations import EnvironmentsOperations
 from .operations import ArtifactsOperations
-from .operations import CatalogItemOperations
 from .operations import CatalogItemsOperations
 from .operations import CatalogItemVersionsOperations
 from .operations import EnvironmentTypeOperations
+from .operations import NotificationSettingOperations
 from .. import models
 
 
 class DevCenterDataplaneClient(object):
     """DevBox API.
 
-    :ivar project: ProjectOperations operations
-    :vartype project: dev_center_dataplane_client.aio.operations.ProjectOperations
-    :ivar pool: PoolOperations operations
-    :vartype pool: dev_center_dataplane_client.aio.operations.PoolOperations
-    :ivar schedule: ScheduleOperations operations
-    :vartype schedule: dev_center_dataplane_client.aio.operations.ScheduleOperations
-    :ivar dev_box: DevBoxOperations operations
-    :vartype dev_box: dev_center_dataplane_client.aio.operations.DevBoxOperations
+    :ivar dev_center: DevCenterOperations operations
+    :vartype dev_center: dev_center_dataplane_client.aio.operations.DevCenterOperations
+    :ivar dev_boxes: DevBoxesOperations operations
+    :vartype dev_boxes: dev_center_dataplane_client.aio.operations.DevBoxesOperations
     :ivar environments: EnvironmentsOperations operations
     :vartype environments: dev_center_dataplane_client.aio.operations.EnvironmentsOperations
-    :ivar artifacts: ArtifactsOperations operations
-    :vartype artifacts: dev_center_dataplane_client.aio.operations.ArtifactsOperations
-    :ivar catalog_item: CatalogItemOperations operations
-    :vartype catalog_item: dev_center_dataplane_client.aio.operations.CatalogItemOperations
-    :ivar catalog_items: CatalogItemsOperations operations
-    :vartype catalog_items: dev_center_dataplane_client.aio.operations.CatalogItemsOperations
-    :ivar catalog_item_versions: CatalogItemVersionsOperations operations
-    :vartype catalog_item_versions: dev_center_dataplane_client.aio.operations.CatalogItemVersionsOperations
-    :ivar environment_type: EnvironmentTypeOperations operations
-    :vartype environment_type: dev_center_dataplane_client.aio.operations.EnvironmentTypeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param tenant_id: The tenant to operate on.
-    :type tenant_id: str
-    :param dev_center: The DevCenter to operate on.
-    :type dev_center: str
-    :param dev_center_dns_suffix: The DNS suffix used as the base for all devcenter requests.
-    :type dev_center_dns_suffix: str
+    :param project_name: The DevCenter Project upon which to execute operations.
+    :type project_name: str
+    :param endpoint: The DevCenter-specific URI to operate on.
+    :type endpoint: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
         self,
         credential: "AsyncTokenCredential",
-        tenant_id: str,
-        dev_center: str,
-        dev_center_dns_suffix: str = "devcenter.azure.com",
+        project_name: str,
+        endpoint: str,
         **kwargs: Any
     ) -> None:
-        base_url = 'https://{tenantId}-{devCenter}.{devCenterDnsSuffix}'
-        self._config = DevCenterDataplaneClientConfiguration(credential, tenant_id, dev_center, dev_center_dns_suffix, **kwargs)
+        base_url = '{endpoint}'
+        self._config = DevCenterDataplaneClientConfiguration(credential, project_name, endpoint, **kwargs)
         self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
@@ -92,13 +75,15 @@ class DevCenterDataplaneClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.artifacts = ArtifactsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.catalog_item = CatalogItemOperations(
+        self.catalog_item = CatalogItemsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.catalog_items = CatalogItemsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.catalog_item_versions = CatalogItemVersionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.environment_type = EnvironmentTypeOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.notification_setting = NotificationSettingOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:
