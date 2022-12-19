@@ -362,12 +362,16 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
 
 
 def get_serviceaccount_name_from_configsettings(config_settings):
-    data = json.loads(config_settings)
+    try:
+        data = json.loads(config_settings)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Config_Settings_Load_Fault_Type, summary="Unable to load config settings. Please ensure the settings are passed in the right format")
+
     if not (data.get('service-account-name') is None):
         serviceaccount_name = data['service-account-name']
         return serviceaccount_name
     else:
-        telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type="", summary="Config settings input does not contain service-account-name")
+        telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type=consts.Service_Account_Name_Not_Found_In_Config_Settings_Least_Privileges_Fault_Type, summary="Config settings input does not contain service-account-name")
         raise ArgumentUsageError("Config settings input does not contain service-account-name", "Please ensure you pass the mandatory field- service-account-name in the config settings while onboarding the cluster with leastPrivileges")
 
 
