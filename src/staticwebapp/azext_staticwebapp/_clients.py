@@ -38,7 +38,6 @@ class DbConnectionClient():
                 sub_id,
                 resource_group_name,
                 name,
-                environment,
                 connection_name,
                 api_version)
 
