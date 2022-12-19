@@ -68,19 +68,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
-    def get_zones(self) -> Union[List[str], None]:
-        """Obtain the value of zones.
-
-        Note: Inherited and extended in aks-preview to add support for a different parameter name (node_zones).
-
-        :return: list of strings or None
-        """
-        zones = super().get_zones()
-        if zones is not None:
-            return zones
-        # read the original value passed by the command
-        return self.raw_param.get("node_zones")
-
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.
 
