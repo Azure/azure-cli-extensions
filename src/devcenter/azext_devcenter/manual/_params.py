@@ -940,13 +940,11 @@ def load_arguments(self, _):
         c.argument(
             "user_assigned_identities",
             options_list=["--user-assigned-identities", "-u"],
-            type=str,
-            help="The list of user identities "
-            "associated with the resource. The user identity references will be an ARM resource id "
-            "in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso"
-            "ft.ManagedIdentity/userAssignedIdentities/{identityName}'. ",
-            arg_group="Identity",
-        )
+            type=validate_file_or_dict, help='The set of user assigned identities '
+                   'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
+                   'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
+                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
+                   'objects ({}) in requests. Expected value: json-string/json-file/@json-file.', arg_group='Identity')
 
     with self.argument_context("devcenter admin devcenter update") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -968,7 +966,7 @@ def load_arguments(self, _):
             "type_",
             options_list=["--identity-type"],
             arg_type=get_enum_type(
-                ["SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"]
+                ["None", "SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"]
             ),
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are "
             "allowed).",
@@ -977,14 +975,12 @@ def load_arguments(self, _):
         c.argument(
             "user_assigned_identities",
             options_list=["--user-assigned-identities", "-u"],
-            type=validate_file_or_dict,
-            help="The list of user identities "
-            "associated with the resource. The user identity dictionary key references will be ARM resource ids "
-            "in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso"
-            "ft.ManagedIdentity/userAssignedIdentities/{identityName}'. Expected value: "
-            "json-string/json-file/@json-file.",
-            arg_group="Identity",
-        )
+            type=validate_file_or_dict, help='The set of user assigned identities '
+                   'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
+                   'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
+                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
+                   'objects ({}) in requests. Expected value: json-string/json-file/@json-file. Swagger '
+                   'name=userAssignedIdentities', arg_group='Identity')
 
     with self.argument_context("devcenter admin devcenter delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1905,6 +1901,9 @@ def load_arguments(self, _):
             help="The storage type used for the Operating System disk of Dev Boxes "
             "created using this definition.",
         )
+        c.argument('hibernate_support', arg_type=get_enum_type(['Disabled', 'Enabled']), help='Indicates whether Dev '
+                   'Boxes created with this definition are capable of hibernation. Not all images are capable of '
+                   'supporting hibernation. To find out more see https://aka.ms/devbox/hibernate.')
 
     with self.argument_context("devcenter admin devbox-definition update") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1947,6 +1946,9 @@ def load_arguments(self, _):
             help="The storage type used for the Operating System disk of Dev Boxes "
             "created using this definition.",
         )
+        c.argument('hibernate_support', arg_type=get_enum_type(['Disabled', 'Enabled']), help='Indicates whether Dev '
+                   'Boxes created with this definition are capable of hibernation. Not all images are capable of '
+                   'supporting hibernation. To find out more see https://aka.ms/devbox/hibernate.')
 
     with self.argument_context("devcenter admin devbox-definition delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1987,6 +1989,24 @@ def load_arguments(self, _):
             help="The name of the Dev Box definition.",
             id_part="child_name_1",
         )
+
+    with self.argument_context("devcenter admin operation-statuses show") as c:
+        c.argument("location", arg_type=get_location_type(self.cli_ctx), id_part="name")
+        c.argument(
+            "operation_id",
+            type=str,
+            help="The ID of an ongoing async operation",
+            id_part="child_name_1")
+
+
+    with self.argument_context('devcenter admin usage list') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+
+
+    with self.argument_context('devcenter admin check-name-availability execute') as c:
+        c.argument('name', type=str, help='The name of the resource for which availability needs to be checked.')
+        c.argument('type_', options_list=['--type'], type=str, help='The resource type.')
+
 
     with self.argument_context("devcenter admin pool list") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2053,11 +2073,7 @@ def load_arguments(self, _):
             help="Indicates whether "
             "owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
         )
-        c.argument(
-            "license_type",
-            arg_type=get_enum_type(["Windows_Client"]),
-            help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
-        )
+
 
     with self.argument_context("devcenter admin pool update") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2100,11 +2116,7 @@ def load_arguments(self, _):
             help="Indicates whether "
             "owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
         )
-        c.argument(
-            "license_type",
-            arg_type=get_enum_type(["Windows_Client"]),
-            help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
-        )
+
 
     with self.argument_context("devcenter admin pool delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2432,10 +2444,3 @@ def load_arguments(self, _):
             type=str,
             help="Name of the Network Connection that can be applied to a Pool.")
 
-    with self.argument_context("devcenter admin operation-statuses show") as c:
-        c.argument("location", arg_type=get_location_type(self.cli_ctx), id_part="name")
-        c.argument(
-            "operation_id",
-            type=str,
-            help="The ID of an ongoing async operation",
-            id_part="child_name_1")

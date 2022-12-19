@@ -37,6 +37,7 @@ from azext_devcenter.generated._client_factory import (
     cf_pool,
     cf_schedule,
     cf_network_connection,
+    cf_check_name_availability
 )
 
 
@@ -202,6 +203,12 @@ def load_command_table(self, _):
         client_factory=cf_usage,
     )
 
+    devcenter_check_name_availability = CliCommandType(
+        operations_tmpl='azext_devcenter.vendored_sdks.devcenter.operations._check_name_availability_operations#CheckNameAvailabilityOperations.{}',
+        client_factory=cf_check_name_availability,
+    )
+
+
     with self.command_group("devcenter", is_experimental=True):
         pass
 
@@ -359,6 +366,13 @@ def load_command_table(self, _):
         g.custom_wait_command("wait", "devcenter_catalog_show")
 
     with self.command_group(
+        'devcenter admin check-name-availability',
+        devcenter_check_name_availability,
+        client_factory=cf_check_name_availability,
+    ) as g:
+        g.custom_command('execute', 'devcenter_check_name_availability_execute')
+    
+    with self.command_group(
         "devcenter admin devbox-definition",
         devcenter_dev_box_definition,
         client_factory=cf_dev_box_definition,
@@ -464,9 +478,7 @@ def load_command_table(self, _):
         g.custom_command(
             "list-health-detail", "devcenter_network_connection_list_health_detail"
         )
-        g.custom_command(
-            "run-health-check", "devcenter_network_connection_run_health_check"
-        )
+        g.custom_command('run-health-check', 'devcenter_network_connection_run_health_check', supports_no_wait=True)
         g.custom_command(
             "show-health-detail", "devcenter_network_connection_show_health_detail"
         )

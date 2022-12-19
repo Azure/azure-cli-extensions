@@ -1127,24 +1127,21 @@ helps['devcenter admin devbox-definition show'] = """
 --resource-group "rg1"
 """
 
-helps[
-    "devcenter admin devbox-definition create"
-] = """
+helps['devcenter admin devbox-definition create'] = """
     type: command
     short-summary: "Create a dev box definition."
     parameters:
       - name: --image-reference
-        short-summary: "Image reference information."
+        short-summary: "Image reference information"
         long-summary: |
-            Usage: --image-reference id=XX
+            Usage: --image-reference id=XX publisher=XX offer=XX sku=XX
 
             id: Image ID, or Image version ID. When Image ID is provided, its latest version will be used.
             publisher: The image publisher.
             offer: The image offer.
             sku: The image sku.
-
       - name: --sku
-        short-summary: "Dev box Compute SKU to be used for dev boxes created with this definition."
+        short-summary: "The SKU for Dev Boxes created using this definition"
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -1157,19 +1154,16 @@ standalone code.
 here.
             capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
 is not possible for the resource this may be omitted.
-
     examples:
       - name: DevBoxDefinitions_Create
         text: |-
-               az devcenter admin devbox-definition create --location "eastus" --image-reference \
-id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/galleries/con\
-tosogallery/images/exampleImage/version/1.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" \
---resource-group "rg1" --os-storage-type "ssd_1024gb" --sku name=general_a_8c32gb_v1
+               az devcenter admin devbox-definition create --location "eastus" --hibernate-support "Enabled" \
+--image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.Dev\
+Center/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "SSD_1024" \
+--sku name="Preview" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps[
-    "devcenter admin devbox-definition update"
-] = """
+helps['devcenter admin devbox-definition update'] = """
     type: command
     short-summary: "Partially updates a dev box definition."
     parameters:
@@ -1199,9 +1193,9 @@ is not possible for the resource this may be omitted.
     examples:
       - name: DevBoxDefinitions_Patch
         text: |-
-               az devcenter admin devbox-definition update --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c5\
-8ffff/resourceGroups/Example/providers/Microsoft.DevCenter/galleries/contosogallery/images/exampleImage/version/2.0.0" \
---dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+               az devcenter admin devbox-definition update --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90\
+c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/example\
+Image/version/2.0.0" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
 helps[
@@ -1252,6 +1246,20 @@ helps[
       - name: listUsages
         text: |-
                az devcenter admin usage list --location "westus"
+"""
+
+helps['devcenter admin check-name-availability'] = """
+    type: group
+    short-summary: Manage check name availability with devcenter.
+"""
+
+helps['devcenter admin check-name-availability execute'] = """
+    type: command
+    short-summary: "Check the availability of name for resource."
+    examples:
+      - name: NameAvailability
+        text: |-
+               az devcenter check-name-availability execute --name "name1" --type "Microsoft.DevCenter/devcenters"
 """
 
 helps['devcenter admin operation-statuses'] = """

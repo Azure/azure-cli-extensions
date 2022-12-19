@@ -11,6 +11,7 @@
 |---------|------------|--------|
 |az devcenter attached-network|AttachedNetworks|[commands](#CommandsInAttachedNetworks)|
 |az devcenter catalog|Catalogs|[commands](#CommandsInCatalogs)|
+|az devcenter check-name-availability|CheckNameAvailability|[commands](#CommandsInCheckNameAvailability)|
 |az devcenter dev-box-definition|DevBoxDefinitions|[commands](#CommandsInDevBoxDefinitions)|
 |az devcenter dev-center|DevCenters|[commands](#CommandsInDevCenters)|
 |az devcenter environment-type|EnvironmentTypes|[commands](#CommandsInEnvironmentTypes)|
@@ -48,6 +49,11 @@
 |[az devcenter catalog update](#CatalogsUpdate)|Update|[Parameters](#ParametersCatalogsUpdate)|[Example](#ExamplesCatalogsUpdate)|
 |[az devcenter catalog delete](#CatalogsDelete)|Delete|[Parameters](#ParametersCatalogsDelete)|[Example](#ExamplesCatalogsDelete)|
 |[az devcenter catalog sync](#CatalogsSync)|Sync|[Parameters](#ParametersCatalogsSync)|[Example](#ExamplesCatalogsSync)|
+
+### <a name="CommandsInCheckNameAvailability">Commands in `az devcenter check-name-availability` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az devcenter check-name-availability execute](#CheckNameAvailabilityExecute)|Execute|[Parameters](#ParametersCheckNameAvailabilityExecute)|[Example](#ExamplesCheckNameAvailabilityExecute)|
 
 ### <a name="CommandsInDevBoxDefinitions">Commands in `az devcenter dev-box-definition` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -179,7 +185,7 @@
 
 ##### <a name="ExamplesAttachedNetworksListByProject">Example</a>
 ```
-az devcenter attached-network list --project-name "{projectName}" --resource-group "rg1"
+az devcenter attached-network list --project-name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersAttachedNetworksListByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -205,7 +211,7 @@ az devcenter attached-network list --dev-center-name "Contoso" --resource-group 
 
 ##### <a name="ExamplesAttachedNetworksGetByProject">Example</a>
 ```
-az devcenter attached-network show --attached-network-connection-name "network-uswest3" --project-name "{projectName}" \
+az devcenter attached-network show --attached-network-connection-name "network-uswest3" --project-name "DevProject" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersAttachedNetworksGetByProject">Parameters</a> 
@@ -233,9 +239,9 @@ az devcenter attached-network show --attached-network-connection-name "network-u
 
 ##### <a name="ExamplesAttachedNetworksCreateOrUpdate#Create">Example</a>
 ```
-az devcenter attached-network create --attached-network-connection-name "{attachedNetworkConnectionName}" \
---network-connection-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.DevCenter/NetworkConnec\
-tions/network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
+az devcenter attached-network create --attached-network-connection-name "network-uswest3" --network-connection-id \
+"/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.DevCenter/NetworkConnections\
+/network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersAttachedNetworksCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -260,8 +266,8 @@ tions/network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
 
 ##### <a name="ExamplesAttachedNetworksDelete">Example</a>
 ```
-az devcenter attached-network delete --attached-network-connection-name "{attachedNetworkConnectionName}" \
---dev-center-name "Contoso" --resource-group "rg1"
+az devcenter attached-network delete --attached-network-connection-name "network-uswest3" --dev-center-name "Contoso" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersAttachedNetworksDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -288,7 +294,7 @@ az devcenter catalog list --dev-center-name "Contoso" --resource-group "rg1"
 
 ##### <a name="ExamplesCatalogsGet">Example</a>
 ```
-az devcenter catalog show --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+az devcenter catalog show --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersCatalogsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -303,9 +309,9 @@ az devcenter catalog show --name "{catalogName}" --dev-center-name "Contoso" --r
 ```
 az devcenter catalog create --ado-git path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.\
 net/secrets/CentralRepoPat" uri="https://contoso@dev.azure.com/contoso/contosoOrg/_git/centralrepo-fakecontoso" --name \
-"{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+"CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
 az devcenter catalog create --git-hub path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.\
-net/secrets/CentralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" --name "{catalogName}" \
+net/secrets/CentralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" --name "CentralCatalog" \
 --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersCatalogsCreateOrUpdate#Create">Parameters</a> 
@@ -321,7 +327,7 @@ net/secrets/CentralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git
 
 ##### <a name="ExamplesCatalogsUpdate">Example</a>
 ```
-az devcenter catalog update --git-hub path="/environments" --name "{catalogName}" --dev-center-name "Contoso" \
+az devcenter catalog update --git-hub path="/environments" --name "CentralCatalog" --dev-center-name "Contoso" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersCatalogsUpdate">Parameters</a> 
@@ -338,7 +344,7 @@ az devcenter catalog update --git-hub path="/environments" --name "{catalogName}
 
 ##### <a name="ExamplesCatalogsDelete">Example</a>
 ```
-az devcenter catalog delete --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+az devcenter catalog delete --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersCatalogsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -351,7 +357,7 @@ az devcenter catalog delete --name "{catalogName}" --dev-center-name "Contoso" -
 
 ##### <a name="ExamplesCatalogsSync">Example</a>
 ```
-az devcenter catalog sync --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+az devcenter catalog sync --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersCatalogsSync">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -359,6 +365,19 @@ az devcenter catalog sync --name "{catalogName}" --dev-center-name "Contoso" --r
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--catalog-name**|string|The name of the Catalog.|catalog_name|catalogName|
+
+### group `az devcenter check-name-availability`
+#### <a name="CheckNameAvailabilityExecute">Command `az devcenter check-name-availability execute`</a>
+
+##### <a name="ExamplesCheckNameAvailabilityExecute">Example</a>
+```
+az devcenter check-name-availability execute --name "name1" --type "Microsoft.DevCenter/devcenters"
+```
+##### <a name="ParametersCheckNameAvailabilityExecute">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--name**|string|The name of the resource for which availability needs to be checked.|name|name|
+|**--type**|string|The resource type.|type|type|
 
 ### group `az devcenter dev-box-definition`
 #### <a name="DevBoxDefinitionsListByDevCenter">Command `az devcenter dev-box-definition list`</a>
@@ -417,10 +436,10 @@ az devcenter dev-box-definition show --name "WebDevBox" --project-name "ContosoP
 
 ##### <a name="ExamplesDevBoxDefinitionsCreateOrUpdate#Create">Example</a>
 ```
-az devcenter dev-box-definition create --location "centralus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b\
-6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images\
-/exampleImage/version/1.0.0" --os-storage-type "SSD_1024" --sku name="Preview" --name "WebDevBox" --dev-center-name \
-"Contoso" --resource-group "rg1"
+az devcenter dev-box-definition create --location "centralus" --hibernate-support "Enabled" --image-reference \
+id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/\
+Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "SSD_1024" --sku name="Preview" \
+--name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersDevBoxDefinitionsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -433,6 +452,7 @@ az devcenter dev-box-definition create --location "centralus" --image-reference 
 |**--image-reference**|object|Image reference information.|image_reference|imageReference|
 |**--sku**|object|The SKU for Dev Boxes created using this definition.|sku|sku|
 |**--os-storage-type**|string|The storage type used for the Operating System disk of Dev Boxes created using this definition.|os_storage_type|osStorageType|
+|**--hibernate-support**|choice|Indicates whether Dev Boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate|hibernate_support|hibernateSupport|
 
 #### <a name="DevBoxDefinitionsUpdate">Command `az devcenter dev-box-definition update`</a>
 
@@ -453,6 +473,7 @@ eGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/conto
 |**--image-reference**|object|Image reference information.|image_reference|imageReference|
 |**--sku**|object|The SKU for Dev Boxes created using this definition.|sku|sku|
 |**--os-storage-type**|string|The storage type used for the Operating System disk of Dev Boxes created using this definition.|os_storage_type|osStorageType|
+|**--hibernate-support**|choice|Indicates whether Dev Boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate|hibernate_support|hibernateSupport|
 
 #### <a name="DevBoxDefinitionsDelete">Command `az devcenter dev-box-definition delete`</a>
 
@@ -568,7 +589,7 @@ az devcenter environment-type list --dev-center-name "Contoso" --resource-group 
 
 ##### <a name="ExamplesEnvironmentTypesGet">Example</a>
 ```
-az devcenter environment-type show --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+az devcenter environment-type show --dev-center-name "Contoso" --name "DevTest" --resource-group "rg1"
 ```
 ##### <a name="ParametersEnvironmentTypesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -581,8 +602,8 @@ az devcenter environment-type show --dev-center-name "Contoso" --name "{environm
 
 ##### <a name="ExamplesEnvironmentTypesCreateOrUpdate#Create">Example</a>
 ```
-az devcenter environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name \
-"{environmentTypeName}" --resource-group "rg1"
+az devcenter environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name "DevTest" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersEnvironmentTypesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -596,8 +617,8 @@ az devcenter environment-type create --tags Owner="superuser" --dev-center-name 
 
 ##### <a name="ExamplesEnvironmentTypesUpdate">Example</a>
 ```
-az devcenter environment-type update --tags Owner="superuser" --dev-center-name "Contoso" --name \
-"{environmentTypeName}" --resource-group "rg1"
+az devcenter environment-type update --tags Owner="superuser" --dev-center-name "Contoso" --name "DevTest" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersEnvironmentTypesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -611,7 +632,7 @@ az devcenter environment-type update --tags Owner="superuser" --dev-center-name 
 
 ##### <a name="ExamplesEnvironmentTypesDelete">Example</a>
 ```
-az devcenter environment-type delete --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+az devcenter environment-type delete --dev-center-name "Contoso" --name "DevTest" --resource-group "rg1"
 ```
 ##### <a name="ParametersEnvironmentTypesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -638,7 +659,7 @@ az devcenter gallery list --dev-center-name "Contoso" --resource-group "rg1"
 
 ##### <a name="ExamplesGalleriesGet">Example</a>
 ```
-az devcenter gallery show --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+az devcenter gallery show --dev-center-name "Contoso" --name "StandardGallery" --resource-group "rg1"
 ```
 ##### <a name="ParametersGalleriesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -651,8 +672,9 @@ az devcenter gallery show --dev-center-name "Contoso" --name "{galleryName}" --r
 
 ##### <a name="ExamplesGalleriesCreateOrUpdate#Create">Example</a>
 ```
-az devcenter gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microso\
-ft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+az devcenter gallery create --gallery-resource-id "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg\
+1/providers/Microsoft.Compute/galleries/StandardGallery" --dev-center-name "Contoso" --name "StandardGallery" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersGalleriesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -677,7 +699,7 @@ ft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{gallery
 
 ##### <a name="ExamplesGalleriesDelete">Example</a>
 ```
-az devcenter gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+az devcenter gallery delete --dev-center-name "Contoso" --name "StandardGallery" --resource-group "rg1"
 ```
 ##### <a name="ParametersGalleriesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -718,7 +740,7 @@ az devcenter image list --dev-center-name "Contoso" --resource-group "rg1"
 
 ##### <a name="ExamplesImagesGet">Example</a>
 ```
-az devcenter image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "{imageName}" \
+az devcenter image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "ContosoBaseImage" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersImagesGet">Parameters</a> 
@@ -750,7 +772,7 @@ az devcenter image-version list --dev-center-name "Contoso" --gallery-name "Defa
 ##### <a name="ExamplesImageVersionsGet">Example</a>
 ```
 az devcenter image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" \
---resource-group "rg1" --version-name "{versionName}"
+--resource-group "rg1" --version-name "1.0.0"
 ```
 ##### <a name="ParametersImageVersionsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -846,7 +868,7 @@ az devcenter network-connection update --domain-password "New Password value for
 
 ##### <a name="ExamplesNetworkConnectionsDelete">Example</a>
 ```
-az devcenter network-connection delete --name "{networkConnectionName}" --resource-group "rg1"
+az devcenter network-connection delete --name "eastusnetwork" --resource-group "rg1"
 ```
 ##### <a name="ParametersNetworkConnectionsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -883,7 +905,7 @@ az devcenter network-connection run-health-check --name "uswest3network" --resou
 
 ##### <a name="ExamplesNetworkConnectionsGetHealthDetails">Example</a>
 ```
-az devcenter network-connection show-health-detail --name "{networkConnectionName}" --resource-group "rg1"
+az devcenter network-connection show-health-detail --name "eastusnetwork" --resource-group "rg1"
 ```
 ##### <a name="ParametersNetworkConnectionsGetHealthDetails">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -896,7 +918,7 @@ az devcenter network-connection show-health-detail --name "{networkConnectionNam
 
 ##### <a name="ExamplesOperationStatusesGet">Example</a>
 ```
-az devcenter operation-statuses show --operation-id "{operationId}" --location "{location}"
+az devcenter operation-statuses show --operation-id "3fa1a29d-e807-488d-81d1-f1c5456a08cd" --location "westus3"
 ```
 ##### <a name="ParametersOperationStatusesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -909,7 +931,7 @@ az devcenter operation-statuses show --operation-id "{operationId}" --location "
 
 ##### <a name="ExamplesPoolsListByProject">Example</a>
 ```
-az devcenter pool list --project-name "{projectName}" --resource-group "rg1"
+az devcenter pool list --project-name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsListByProject">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -922,7 +944,7 @@ az devcenter pool list --project-name "{projectName}" --resource-group "rg1"
 
 ##### <a name="ExamplesPoolsGet">Example</a>
 ```
-az devcenter pool show --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+az devcenter pool show --name "DevPool" --project-name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -936,7 +958,7 @@ az devcenter pool show --name "{poolName}" --project-name "{projectName}" --reso
 ##### <a name="ExamplesPoolsCreateOrUpdate#Create">Example</a>
 ```
 az devcenter pool create --location "centralus" --dev-box-definition-name "WebDevBox" --local-administrator "Enabled" \
---network-connection-name "Network1-westus2" --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+--network-connection-name "Network1-westus2" --name "DevPool" --project-name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -954,7 +976,7 @@ az devcenter pool create --location "centralus" --dev-box-definition-name "WebDe
 
 ##### <a name="ExamplesPoolsUpdate">Example</a>
 ```
-az devcenter pool update --dev-box-definition-name "WebDevBox2" --name "{poolName}" --project-name "{projectName}" \
+az devcenter pool update --dev-box-definition-name "WebDevBox2" --name "DevPool" --project-name "DevProject" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsUpdate">Parameters</a> 
@@ -973,7 +995,7 @@ az devcenter pool update --dev-box-definition-name "WebDevBox2" --name "{poolNam
 
 ##### <a name="ExamplesPoolsDelete">Example</a>
 ```
-az devcenter pool delete --name "poolName" --project-name "{projectName}" --resource-group "rg1"
+az devcenter pool delete --name "poolName" --project-name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1010,7 +1032,7 @@ az devcenter project list
 
 ##### <a name="ExamplesProjectsGet">Example</a>
 ```
-az devcenter project show --name "{projectName}" --resource-group "rg1"
+az devcenter project show --name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersProjectsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1023,8 +1045,8 @@ az devcenter project show --name "{projectName}" --resource-group "rg1"
 ##### <a name="ExamplesProjectsCreateOrUpdate#Create">Example</a>
 ```
 az devcenter project create --location "centralus" --description "This is my first project." --dev-center-id \
-"/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/{devCenterName}" --tags \
-CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
+"/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso\
+" --tags CostCenter="R&D" --name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersProjectsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1040,7 +1062,7 @@ CostCenter="R&D" --name "{projectName}" --resource-group "rg1"
 
 ##### <a name="ExamplesProjectsUpdate">Example</a>
 ```
-az devcenter project update --description "This is my first project." --tags CostCenter="R&D" --name "{projectName}" \
+az devcenter project update --description "This is my first project." --tags CostCenter="R&D" --name "DevProject" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersProjectsUpdate">Parameters</a> 
@@ -1057,7 +1079,7 @@ az devcenter project update --description "This is my first project." --tags Cos
 
 ##### <a name="ExamplesProjectsDelete">Example</a>
 ```
-az devcenter project delete --name "{projectName}" --resource-group "rg1"
+az devcenter project delete --name "DevProject" --resource-group "rg1"
 ```
 ##### <a name="ParametersProjectsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1083,8 +1105,8 @@ az devcenter project-allowed-environment-type list --project-name "Contoso" --re
 
 ##### <a name="ExamplesProjectAllowedEnvironmentTypesGet">Example</a>
 ```
-az devcenter project-allowed-environment-type show --environment-type-name "{environmentTypeName}" --project-name \
-"Contoso" --resource-group "rg1"
+az devcenter project-allowed-environment-type show --environment-type-name "DevTest" --project-name "Contoso" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersProjectAllowedEnvironmentTypesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1111,8 +1133,8 @@ az devcenter project-environment-type list --project-name "ContosoProj" --resour
 
 ##### <a name="ExamplesProjectEnvironmentTypesGet">Example</a>
 ```
-az devcenter project-environment-type show --environment-type-name "{environmentTypeName}" --project-name \
-"ContosoProj" --resource-group "rg1"
+az devcenter project-environment-type show --environment-type-name "DevTest" --project-name "ContosoProj" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersProjectEnvironmentTypesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1130,8 +1152,8 @@ az devcenter project-environment-type create --type "UserAssigned" --user-assign
 ty/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\\":{}}" \
 --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" \
 --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c-e750-441c-98a7-10da8387e\
-4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" --project-name "ContosoProj" \
---resource-group "rg1"
+4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "DevTest" --project-name "ContosoProj" --resource-group \
+"rg1"
 ```
 ##### <a name="ParametersProjectEnvironmentTypesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1156,8 +1178,8 @@ az devcenter project-environment-type update --type "UserAssigned" --user-assign
 "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdenti\
 ty/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-00000000\
 0000" --status "Enabled" --user-role-assignments "{\\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\\":{\\"roles\\":{\\"4cbf0b6c\
--e750-441c-98a7-10da8387e4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" \
---project-name "ContosoProj" --resource-group "rg1"
+-e750-441c-98a7-10da8387e4d6\\":{}}}}" --tags CostCenter="RnD" --environment-type-name "DevTest" --project-name \
+"ContosoProj" --resource-group "rg1"
 ```
 ##### <a name="ParametersProjectEnvironmentTypesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1177,8 +1199,8 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscri
 
 ##### <a name="ExamplesProjectEnvironmentTypesDelete">Example</a>
 ```
-az devcenter project-environment-type delete --environment-type-name "{environmentTypeName}" --project-name \
-"ContosoProj" --resource-group "rg1"
+az devcenter project-environment-type delete --environment-type-name "DevTest" --project-name "ContosoProj" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersProjectEnvironmentTypesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|

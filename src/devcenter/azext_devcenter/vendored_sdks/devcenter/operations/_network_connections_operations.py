@@ -67,7 +67,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -142,7 +142,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -218,7 +218,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         # Construct URL
@@ -267,7 +267,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -397,7 +397,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -524,7 +524,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         # Construct URL
@@ -648,7 +648,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -725,7 +725,7 @@ class NetworkConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         # Construct URL
@@ -761,35 +761,23 @@ class NetworkConnectionsOperations(object):
         return deserialized
     get_health_details.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/healthChecks/latest'}  # type: ignore
 
-    def run_health_checks(
+    def _run_health_checks_initial(
         self,
         resource_group_name,  # type: str
         network_connection_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Triggers a new health check run. The execution and health check result can be tracked via the
-        network Connection health check details.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
-        :type network_connection_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None, or the result of cls(response)
-        :rtype: None
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-10-12-preview"
+        api_version = "2022-11-11-preview"
         accept = "application/json"
 
         # Construct URL
-        url = self.run_health_checks.metadata['url']  # type: ignore
+        url = self._run_health_checks_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -809,11 +797,77 @@ class NetworkConnectionsOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    run_health_checks.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/runHealthChecks'}  # type: ignore
+    _run_health_checks_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/runHealthChecks'}  # type: ignore
+
+    def begin_run_health_checks(
+        self,
+        resource_group_name,  # type: str
+        network_connection_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller[None]
+        """Triggers a new health check run. The execution and health check result can be tracked via the
+        network Connection health check details.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param network_connection_name: Name of the Network Connection that can be applied to a Pool.
+        :type network_connection_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._run_health_checks_initial(
+                resource_group_name=resource_group_name,
+                network_connection_name=network_connection_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'networkConnectionName': self._serialize.url("network_connection_name", network_connection_name, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_run_health_checks.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/runHealthChecks'}  # type: ignore

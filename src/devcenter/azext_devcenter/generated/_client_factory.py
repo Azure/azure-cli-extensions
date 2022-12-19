@@ -68,6 +68,10 @@ def cf_usage(cli_ctx, *_):
     return cf_devcenter_cl(cli_ctx).usages
 
 
+def cf_check_name_availability(cli_ctx, *_):
+    return cf_devcenter_cl(cli_ctx).check_name_availability
+
+
 def cf_sku(cli_ctx, *_):
     return cf_devcenter_cl(cli_ctx).skus
 

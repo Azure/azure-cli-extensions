@@ -17,6 +17,8 @@ try:
     from ._models_py3 import CatalogProperties
     from ._models_py3 import CatalogUpdate
     from ._models_py3 import CatalogUpdateProperties
+    from ._models_py3 import CheckNameAvailabilityRequest
+    from ._models_py3 import CheckNameAvailabilityResponse
     from ._models_py3 import CloudErrorBody
     from ._models_py3 import DevBoxDefinition
     from ._models_py3 import DevBoxDefinitionListResult
@@ -33,6 +35,7 @@ try:
     from ._models_py3 import EnvironmentTypeUpdate
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorDetail
+    from ._models_py3 import ErrorResponse
     from ._models_py3 import Gallery
     from ._models_py3 import GalleryListResult
     from ._models_py3 import GitCatalog
@@ -102,6 +105,8 @@ except (SyntaxError, ImportError):
     from ._models import CatalogProperties  # type: ignore
     from ._models import CatalogUpdate  # type: ignore
     from ._models import CatalogUpdateProperties  # type: ignore
+    from ._models import CheckNameAvailabilityRequest  # type: ignore
+    from ._models import CheckNameAvailabilityResponse  # type: ignore
     from ._models import CloudErrorBody  # type: ignore
     from ._models import DevBoxDefinition  # type: ignore
     from ._models import DevBoxDefinitionListResult  # type: ignore
@@ -118,6 +123,7 @@ except (SyntaxError, ImportError):
     from ._models import EnvironmentTypeUpdate  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorDetail  # type: ignore
+    from ._models import ErrorResponse  # type: ignore
     from ._models import Gallery  # type: ignore
     from ._models import GalleryListResult  # type: ignore
     from ._models import GitCatalog  # type: ignore
@@ -180,15 +186,18 @@ except (SyntaxError, ImportError):
 from ._dev_center_enums import (
     ActionType,
     CatalogSyncState,
+    CheckNameAvailabilityReason,
     CreatedByType,
     DomainJoinType,
     EnableStatus,
     HealthCheckStatus,
+    HibernateSupport,
     ImageValidationStatus,
     LicenseType,
     LocalAdminStatus,
     ManagedServiceIdentityType,
     Origin,
+    ProvisioningState,
     ScheduledFrequency,
     ScheduledType,
     SkuTier,
@@ -206,6 +215,8 @@ __all__ = [
     'CatalogProperties',
     'CatalogUpdate',
     'CatalogUpdateProperties',
+    'CheckNameAvailabilityRequest',
+    'CheckNameAvailabilityResponse',
     'CloudErrorBody',
     'DevBoxDefinition',
     'DevBoxDefinitionListResult',
@@ -222,6 +233,7 @@ __all__ = [
     'EnvironmentTypeUpdate',
     'ErrorAdditionalInfo',
     'ErrorDetail',
+    'ErrorResponse',
     'Gallery',
     'GalleryListResult',
     'GitCatalog',
@@ -282,15 +294,18 @@ __all__ = [
     'UserRoleAssignmentValue',
     'ActionType',
     'CatalogSyncState',
+    'CheckNameAvailabilityReason',
     'CreatedByType',
     'DomainJoinType',
     'EnableStatus',
     'HealthCheckStatus',
+    'HibernateSupport',
     'ImageValidationStatus',
     'LicenseType',
     'LocalAdminStatus',
     'ManagedServiceIdentityType',
     'Origin',
+    'ProvisioningState',
     'ScheduledFrequency',
     'ScheduledType',
     'SkuTier',
