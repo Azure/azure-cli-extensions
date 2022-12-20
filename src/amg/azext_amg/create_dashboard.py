@@ -1,0 +1,28 @@
+import json
+from knack.log import get_logger
+from .dashboardApi import get_folder_id, send_grafana_post
+
+logger = get_logger(__name__)
+
+
+def create_dashboard(grafana_url, file_path, http_headers):
+    with open(file_path, 'r', encoding="utf8") as f:
+        data = f.read()
+
+    content = json.loads(data)
+    content['dashboard']['id'] = None
+
+    payload = {
+        'dashboard': content['dashboard'],
+        'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None),
+        'overwrite': True
+    }
+
+    result = _create_dashboard(json.dumps(payload), grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None)
+    dashboard_title = content['dashboard'].get('title', '')
+    logger.info("create dashboard %s response status: %s, msg: %s", dashboard_title, result[0], result[1])
+
+
+def _create_dashboard(payload, grafana_url, http_post_headers, verify_ssl, client_cert, debug):
+    return send_grafana_post('{0}/api/dashboards/db'.format(grafana_url), payload, http_post_headers, verify_ssl,
+                             client_cert, debug)

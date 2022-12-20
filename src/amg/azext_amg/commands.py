@@ -16,6 +16,13 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_grafana')
         g.custom_show_command('show', 'show_grafana')
         g.custom_command('update', 'update_grafana')
+        g.custom_command('backup', 'backup_grafana', is_preview=True)
+        g.custom_command('restore', 'restore_grafana', is_preview=True)
+
+    with self.command_group('grafana annotation') as g:
+        g.custom_command('create', 'create_annotation')
+        g.custom_command('list', 'list_annotations')
+        g.custom_command('delete', 'delete_annotation')
 
     with self.command_group('grafana dashboard') as g:
         g.custom_command('create', 'create_dashboard')
@@ -24,6 +31,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_dashboard')
         g.custom_command('update', 'update_dashboard')
         g.custom_command('import', 'import_dashboard')
+        g.custom_command('sync', 'sync_dashboard', is_preview=True)
 
     with self.command_group('grafana data-source') as g:
         g.custom_command('create', 'create_data_source')

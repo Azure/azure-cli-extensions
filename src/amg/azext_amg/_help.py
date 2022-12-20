@@ -33,6 +33,16 @@ helps['grafana show'] = """
     short-summary: Show details of a Azure Managed Grafana instance.
 """
 
+helps['grafana backup'] = """
+    type: command
+    short-summary: Backup an Azure Managed Grafana instance's content to an achive.
+"""
+
+helps['grafana restore'] = """
+    type: command
+    short-summary: Restore an Azure Managed Grafana instance from an achive.
+"""
+
 helps['grafana update'] = """
     type: command
     short-summary: Update a Azure Managed Grafana instance.
@@ -43,6 +53,24 @@ helps['grafana update'] = """
         - name: enable mail notification through SMTP relay sevice of mailgun
           text: |
            az grafana update -g MyResourceGroup -n MyGrafana --smtp enabled --from-address johndoe@outlook.com --from-name john --host "smtp.mailgun.org:587" --user "postmaster@sandbox12345.mailgun.org" --password "password" --start-tls-policy OpportunisticStartTLS --skip-verify true
+"""
+
+helps['grafana dashboard sync'] = """
+    type: command
+    short-summary: Sync Azure Managed Grafana dashboards from one instance to another instance.
+    examples:
+        - name: Sync with a few folders skipped
+          text: |
+            az grafana dashboard sync
+                --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source
+                --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination
+                --skip-folders "Azure Monitor Container Insights" "Azure Monitor"
+        - name: Preview the sync
+          text: |
+            az grafana sync
+                --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source
+                --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination
+                --dry-run
 """
 
 helps['grafana data-source'] = """

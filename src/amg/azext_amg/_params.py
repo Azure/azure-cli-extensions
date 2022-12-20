@@ -27,6 +27,8 @@ def load_arguments(self, _):
         c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
         c.argument("api_key_or_token", options_list=["--api-key", "--token", '-t'],
                    help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
+        c.argument("components", get_enum_type(["dashboards", "datasources", "folders", "snapshots", "annotations"]), nargs='+', options_list=["-c", "--components"], help="grafana artifact types to backup")
+        c.ignore("subscription")  # a help argument
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
@@ -50,6 +52,23 @@ def load_arguments(self, _):
         c.argument("from_name", arg_group='SMTP', help="Name to be used when sending out emails")
         c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
         c.argument("skip_verify", arg_group='SMTP', arg_type=get_three_state_flag(), help="Skip verifying SSL for SMTP server")
+
+    with self.argument_context("grafana dashboard sync") as c:
+        c.argument("source", options_list=["--source", "-s"], help="resource id of the source workspace")
+        c.argument("destination", options_list=["--destination", "-d"], help="resource id of the destination workspace")
+        c.argument("dry_run", arg_type=get_three_state_flag(), help="preview changes w/o committing")
+        c.argument("skip_folders", nargs="+", help="space separated folder list which sync command shall skip")
+        c.argument("data_source_uid_mappings", options_list=["--data-source-uid-mappings", "-m"], nargs="+",
+                   help="space seperated key vaule pairs that 'sync' command can link to new data sources at destination workspace, e.g. --data-source-uid-mappings datasource-1=datasource-2")
+
+    with self.argument_context("grafana sync") as c:
+        c.argument("sync_data_sources", arg_type=get_three_state_flag(), help="sync up data sources. default: false")
+
+    with self.argument_context("grafana backup") as c:
+        c.argument("directory", options_list=["-d", "--directory"], help="directory to backup Grafana artifacts")
+
+    with self.argument_context("grafana restore") as c:
+        c.argument("archive_file", options_list=["-a", "--archive-file"], help="archive to restore Grafana artifacts from")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
