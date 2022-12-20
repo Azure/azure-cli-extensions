@@ -173,7 +173,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         crb_permission = utils.can_create_clusterrolebindings()
         if not crb_permission:
             telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
-                                summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+                                    summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
             raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
