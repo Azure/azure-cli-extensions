@@ -24,16 +24,16 @@ class Update(AAZCommand):
         az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Shared
 
     :example: Update savings plan applied scope to "Single"
-        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Single --applied-scope-prop "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}"
 
     :example: Update savings plan applied scope to "Single" resource group
-        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004/resourceGroups/rgName}"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type Single --applied-scope-prop "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004/resourceGroups/rgName}"
 
     :example: Update savings plan applied scope to "ManagementGroup"
-        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type ManagementGroup --applied-scope-properties "{tenantId:10000000-aaaa-bbbb-cccc-20000000006,managementGroupId:/providers/Microsoft.Management/managementGroups/TestRg}"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --applied-scope-type ManagementGroup --applied-scope-prop "{tenantId:10000000-aaaa-bbbb-cccc-20000000006,managementGroupId:/providers/Microsoft.Management/managementGroups/TestRg}"
 
     :example: Update savings plan renewal setting
-        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --renew true --renew-properties "{purchase-properties:{applied-scope-type:Shared,billing-plan:P1M,billing-scope-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000015,commitment:{amount:10.0,currency-code:USD,grain:Hourly},display-name:name1,renew:true,term:P1Y,sku:{name:Compute_Savings_Plan}}}"
+        az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id 30000000-aaaa-bbbb-cccc-200000000017 --savings-plan-id 30000000-aaaa-bbbb-cccc-200000000019 --renew true --renew-properties "{purchase-properties:{applied-scope-type:Shared,billing-plan:P1M,billing-scope-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000015,commitment:{amount:10.0,currency-code:USD,grain:Hourly},display-name:name1,renew:true,term:P1Y,sku:Compute_Savings_Plan}}"
     """
 
     _aaz_info = {
@@ -73,12 +73,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.applied_scope_properties = AAZObjectArg(
-            options=["--applied-scope-properties"],
+        _args_schema.applied_scope_prop = AAZObjectArg(
+            options=["--applied-scope-prop"],
             arg_group="Properties",
             help="Properties specific to applied scope type. Not required if not applicable.",
         )
-        cls._build_args_applied_scope_properties_update(_args_schema.applied_scope_properties)
+        cls._build_args_applied_scope_properties_update(_args_schema.applied_scope_prop)
         _args_schema.applied_scope_type = AAZStrArg(
             options=["--applied-scope-type"],
             arg_group="Properties",
@@ -297,7 +297,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_prop"))
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("renew", AAZBoolType, ".renew")

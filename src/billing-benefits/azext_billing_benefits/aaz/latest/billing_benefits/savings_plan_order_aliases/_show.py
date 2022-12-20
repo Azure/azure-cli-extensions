@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a savings plan order alias.
 
     :example: Get a savings plan order alias
-        az billing-benefits savings-plan-order-aliases show --savings-plan-order-alias-name aliasName
+        az billing-benefits savings-plan-order-aliases show --order-alias-name aliasName
     """
 
     _aaz_info = {
@@ -44,8 +44,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.savings_plan_order_alias_name = AAZStrArg(
-            options=["--savings-plan-order-alias-name"],
+        _args_schema.order_alias_name = AAZStrArg(
+            options=["--order-alias-name"],
             help="Name of the savings plan order alias",
             required=True,
             fmt=AAZStrArgFormat(
@@ -101,7 +101,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "savingsPlanOrderAliasName", self.ctx.args.savings_plan_order_alias_name,
+                    "savingsPlanOrderAliasName", self.ctx.args.order_alias_name,
                     required=True,
                 ),
             }

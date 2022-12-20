@@ -125,13 +125,13 @@ class BillingBenefitsScenario(ScenarioTest):
             'sku': "Standard_B1ls",
             'term': "P1Y",
         })
-        response = self.cmd('billing-benefits reservation-order-aliases create --reservation-order-alias-name {reservation_order_alias_name} --location {location} --applied-scope-type {applied_scope_type} '
+        response = self.cmd('billing-benefits reservation-order-aliases create --order-alias-name {reservation_order_alias_name} --location {location} --applied-scope-type {applied_scope_type} '
                             '--billing-plan {billing_plan} --billing-scope-id {billing_scope_id} --display-name {display_name} --quantity {quantity} --renew {renew} --reserved-resource-type {reserved_resource_type} --sku {sku} --term {term}').get_output_in_json()
 
         self._validate_reservation_order_alias(response)
 
         response2 = self.cmd(
-            'billing-benefits reservation-order-aliases show --reservation-order-alias-name {reservation_order_alias_name}').get_output_in_json()
+            'billing-benefits reservation-order-aliases show --order-alias-name {reservation_order_alias_name}').get_output_in_json()
         self._validate_reservation_order_alias(response2)
 
     @record_only()
@@ -268,7 +268,7 @@ class BillingBenefitsScenario(ScenarioTest):
         self.assertNotEqual(response['displayName'], 'newName1')
 
         response1 = self.cmd(
-            'az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id {order_id} --savings-plan-id {item_id} --display-name {name} --renew {renew} --renew-properties {renew_properties} --applied-scope-type {scope} --applied-scope-properties {scope_properties}').get_output_in_json()
+            'az billing-benefits savings-plan-order savings-plan update --savings-plan-order-id {order_id} --savings-plan-id {item_id} --display-name {name} --renew {renew} --renew-properties {renew_properties} --applied-scope-type {scope} --applied-scope-prop {scope_properties}').get_output_in_json()
         self.assertIsNotNone(response1)
 
         # Then get the item after update to verify
@@ -342,10 +342,10 @@ class BillingBenefitsScenario(ScenarioTest):
             'term': "P1Y",
         })
         response = self.cmd(
-            'billing-benefits savings-plan-order-aliases create --savings-plan-order-alias-name {order_alias_name} --applied-scope-type {applied_scope_type} --billing-plan {billing_plan} --billing-scope-id {billing_scope_id} --commitment {commitment} --display-name {display_name} --term {term} --sku {sku}').get_output_in_json()
+            'billing-benefits savings-plan-order-aliases create --order-alias-name {order_alias_name} --applied-scope-type {applied_scope_type} --billing-plan {billing_plan} --billing-scope-id {billing_scope_id} --commitment {commitment} --display-name {display_name} --term {term} --sku {sku}').get_output_in_json()
 
         self._validate_savings_plan_order_alias(response)
 
         response2 = self.cmd(
-            'billing-benefits savings-plan-order-aliases show --savings-plan-order-alias-name {order_alias_name}').get_output_in_json()
+            'billing-benefits savings-plan-order-aliases show --order-alias-name {order_alias_name}').get_output_in_json()
         self._validate_savings_plan_order_alias(response2)

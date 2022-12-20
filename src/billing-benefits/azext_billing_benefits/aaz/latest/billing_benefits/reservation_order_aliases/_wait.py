@@ -40,8 +40,8 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.reservation_order_alias_name = AAZStrArg(
-            options=["--reservation-order-alias-name"],
+        _args_schema.order_alias_name = AAZStrArg(
+            options=["--order-alias-name"],
             help="Name of the reservation order alias",
             required=True,
             fmt=AAZStrArgFormat(
@@ -97,7 +97,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "reservationOrderAliasName", self.ctx.args.reservation_order_alias_name,
+                    "reservationOrderAliasName", self.ctx.args.order_alias_name,
                     required=True,
                 ),
             }

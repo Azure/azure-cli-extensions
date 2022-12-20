@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a reservation order alias.
 
     :example: Create a Reservation
-        az billing-benefits reservation-order-aliases create --reservation-order-alias-name TestRO --location westus --applied-scope-type Single --applied-scope-properties "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}" --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --display-name TestRO --quantity 1 --renew false --reserved-resource-type VirtualMachines --sku Standard_B1ls  --term P1Y --instance-flexibility On
+        az billing-benefits reservation-order-aliases create --order-alias-name TestRO --location westus --applied-scope-type Single --applied-scope-prop "{subscription-id:/subscriptions/30000000-aaaa-bbbb-cccc-200000000004}" --billing-plan P1M --billing-scope-id /subscriptions/30000000-aaaa-bbbb-cccc-200000000004 --display-name TestRO --quantity 1 --renew false --reserved-resource-type VirtualMachines --sku Standard_B1ls  --term P1Y --instance-flexibility On
     """
 
     _aaz_info = {
@@ -45,8 +45,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.reservation_order_alias_name = AAZStrArg(
-            options=["--reservation-order-alias-name"],
+        _args_schema.order_alias_name = AAZStrArg(
+            options=["--order-alias-name"],
             help="Name of the reservation order alias",
             required=True,
             fmt=AAZStrArgFormat(
@@ -69,8 +69,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.applied_scope_properties = AAZObjectArg(
-            options=["--applied-scope-properties"],
+        _args_schema.applied_scope_prop = AAZObjectArg(
+            options=["--applied-scope-prop"],
             arg_group="Properties",
             help="Properties specific to applied scope type. Not required if not applicable.",
         )
@@ -128,24 +128,24 @@ class Create(AAZCommand):
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
         )
 
-        applied_scope_properties = cls._args_schema.applied_scope_properties
-        applied_scope_properties.display_name = AAZStrArg(
+        applied_scope_prop = cls._args_schema.applied_scope_prop
+        applied_scope_prop.display_name = AAZStrArg(
             options=["display-name"],
             help="Display name",
         )
-        applied_scope_properties.management_group_id = AAZStrArg(
+        applied_scope_prop.management_group_id = AAZStrArg(
             options=["management-group-id"],
             help="Fully-qualified identifier of the management group where the benefit must be applied.",
         )
-        applied_scope_properties.resource_group_id = AAZStrArg(
+        applied_scope_prop.resource_group_id = AAZStrArg(
             options=["resource-group-id"],
             help="Fully-qualified identifier of the resource group.",
         )
-        applied_scope_properties.subscription_id = AAZStrArg(
+        applied_scope_prop.subscription_id = AAZStrArg(
             options=["subscription-id"],
             help="Fully-qualified identifier of the subscription.",
         )
-        applied_scope_properties.tenant_id = AAZStrArg(
+        applied_scope_prop.tenant_id = AAZStrArg(
             options=["tenant-id"],
             help="Tenant ID where the benefit is applied.",
         )
@@ -224,7 +224,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "reservationOrderAliasName", self.ctx.args.reservation_order_alias_name,
+                    "reservationOrderAliasName", self.ctx.args.order_alias_name,
                     required=True,
                 ),
             }
@@ -265,7 +265,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties")
+                properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_prop")
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
                 properties.set_prop("billingScopeId", AAZStrType, ".billing_scope_id")

@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a reservation order alias.
 
     :example: Show the details of a reservation order alias
-        az billing-benefits reservation-order-aliases show --reservation-order-alias-name TestRO
+        az billing-benefits order-aliases show --reservation-order-alias-name TestRO
     """
 
     _aaz_info = {
@@ -44,8 +44,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.reservation_order_alias_name = AAZStrArg(
-            options=["--reservation-order-alias-name"],
+        _args_schema.order_alias_name = AAZStrArg(
+            options=["--order-alias-name"],
             help="Name of the reservation order alias",
             required=True,
             fmt=AAZStrArgFormat(
@@ -101,7 +101,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "reservationOrderAliasName", self.ctx.args.reservation_order_alias_name,
+                    "reservationOrderAliasName", self.ctx.args.order_alias_name,
                     required=True,
                 ),
             }
