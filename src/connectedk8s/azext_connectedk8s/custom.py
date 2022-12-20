@@ -86,7 +86,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         if config_settings is None:
             telemetry.set_user_fault()
             telemetry.set_exception(exception="Configuration settings are not passed", fault_type=consts.Config_Settings_Not_Passed_Least_Privileges_Fault_Type, summary="Configuration settings are not passed which are mandatory when onboarding with leastPrivileges")
-            raise ValidationError("Configuration settings are not passed", "Please pass required configuration settings using '--config-settings' flag while onboarding with least-privilege enabled.")
+            raise RequiredArgumentMissingError("Configuration settings are not passed", "Please pass required configuration settings using '--config-settings' flag while onboarding with least-privilege enabled.")
         else:
             logger.warning("You are onboarding your k8s cluster to Azure Arc in least privileges mode. Please ensure you have met all the pre-requisites.")
 
@@ -96,8 +96,14 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             api_instance.read_namespace("azure-arc")
         except Exception as ex:
             if ex.status == 404:
-                telemetry.set_user_fault()
-                telemetry.set_exception(exception="Azure-arc namespace is not found on the cluster", fault_type=consts.Azure_Arc_Namespace_Not_Found_Least_Privileges_Fault_Type, summary="Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges")
+                utils.kubernetes_exception_handler(ex, fault_type=consts.Azure_Arc_Namespace_Not_Found_Least_Privileges_Fault_Type, summary="Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges")
+        # check if azure-arc-release ns is present - pre-req for least privilege
+        try:
+            api_instance = kube_client.CoreV1Api()
+            api_instance.read_namespace("azure-arc-release")
+        except Exception as ex:
+            if ex.status == 404:
+                utils.kubernetes_exception_handler(ex, fault_type=consts.Azure_Arc_Release_Namespace_Not_Found_Least_Privileges_Fault_Type, summary="Azure-arc-release namespace is not found on the cluster while onboarding with leastPrivileges")
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -163,11 +169,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
-    crb_permission = utils.can_create_clusterrolebindings()
-    if not crb_permission:
-        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
+    if not least_privilege:
+        crb_permission = utils.can_create_clusterrolebindings()
+        if not crb_permission:
+            telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
                                 summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
-        raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
+            raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
     if distribution == 'auto':
@@ -973,6 +980,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, distribution, distribution_version, azure_hybrid_benefit)
 
     proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
+
+    # Returning the ARM response if only AHB is being updated
+    arm_properties_only_ahb_set = (tags is None and distribution is None and distribution_version is None and azure_hybrid_benefit is not None)
+    if proxy_params_unset and auto_upgrade is None and container_log_path is None and arm_properties_only_ahb_set:
+        return patch_cc_response
+
     if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
@@ -1007,7 +1020,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     if helm_values.get('global').get('isLeastPrivilegesMode') is True:
         if auto_upgrade is True:
-            raise InvalidArgumentValueError("Your cluster is running in least privileges mode. Autoupdates are not supported in this mode")
+            telemetry.set_exception("Autoupdates are not supported for clusters onboarded with least privileges", fault_type=consts.AutoUpdate_Enable_Attempted_In_Least_Privileges, summary=" Autoupdates are currently not supported for clusters onboarded with least privileges")
+            raise InvalidArgumentValueError("Your cluster is onboarded with least privileges. Autoupdates are not supported for clusters onboarded with least privileges")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)

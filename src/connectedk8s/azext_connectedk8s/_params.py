@@ -9,6 +9,7 @@ from ._validators import override_client_request_id_header
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import get_location_type, get_enum_type, file_type, tags_type, get_three_state_flag
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from .action import AddConfigurationSettings
 from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values, AHB_Enum_Values
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
@@ -47,8 +48,8 @@ def load_arguments(self, _):
         c.argument('correlation_id', options_list=['--correlation-id'], help='A guid that is used to internally track the source of cluster onboarding. Please do not modify it unless advised', validator=override_client_request_id_header)
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
-        c.argument('least_privilege', options_list=['--least-privilege'], help='Flag to onboard kubernetes cluster to Arc with least privileges', arg_type=get_enum_type(["true", "false"]))
-        c.argument('config_settings', options_list=['--config-settings'], help='Configuration settings in json string format to pass service account name that should be associated to Arc agents. These settings are applicable only when onboarding with least privileges')
+        c.argument('least_privilege', help='Flag to onboard kubernetes cluster to Arc with least privileges', arg_type=get_enum_type(["true", "false"]))
+        c.argument('config_settings', action=AddConfigurationSettings, nargs='+', help='Configuration settings in json string format to pass service account name that should be associated to Arc agents. These settings are applicable only when onboarding with least privileges')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)

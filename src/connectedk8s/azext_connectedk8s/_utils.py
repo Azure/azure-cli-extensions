@@ -344,6 +344,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         platformServiceAccountName = get_serviceaccount_name_from_configsettings(config_settings)
         cmd_helm_install.extend(["--set", "global.platformServiceAccountName={}".format(platformServiceAccountName)])
         cmd_helm_install.extend(["--set", "global.isLeastPrivilegesMode={}".format(True)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
         cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace])    # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
 
     if not no_wait:
@@ -362,13 +363,14 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
 
 
 def get_serviceaccount_name_from_configsettings(config_settings):
-    try:
-        data = json.loads(config_settings)
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.Config_Settings_Load_Fault_Type, summary="Unable to load config settings. Please ensure the settings are passed in the right format")
+    least_privilege_settings = {}
 
-    if not (data.get('service-account-name') is None):
-        serviceaccount_name = data['service-account-name']
+    for dicts in config_settings:
+        for key, value in dicts.items():
+            least_privilege_settings[key] = value
+
+    if least_privilege_settings.get('service-account-name') is not None:
+        serviceaccount_name = least_privilege_settings['service-account-name']
         return serviceaccount_name
     else:
         telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type=consts.Service_Account_Name_Not_Found_In_Config_Settings_Least_Privileges_Fault_Type, summary="Config settings input does not contain service-account-name")
