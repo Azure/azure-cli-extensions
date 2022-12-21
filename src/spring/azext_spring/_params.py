@@ -404,7 +404,6 @@ def load_arguments(self, _):
                        arg_type=get_enum_type(BackendProtocol),
                        help='Ingress backend protocol of app.')
             c.argument('client_auth_certs',
-                       type=str,
                        validator=validate_ingress_client_auth_certificates,
                        help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
 
