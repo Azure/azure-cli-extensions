@@ -18,8 +18,8 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-# from azure.quantum.storage import create_container, upload_blob
-from ..storage import create_container, upload_blob
+from azure.quantum.storage import create_container, upload_blob
+
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
@@ -32,7 +32,6 @@ QIO_DEFAULT_TIMEOUT = 100
 ERROR_MSG_MISSING_INPUT_FILE = "The following argument is required: --job-input-file"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
-JOB_TYPE_NOT_VALID_MSG = "Job type not recognized. This is a bug!"
 
 # Job types
 QIO_JOB = 1
@@ -239,10 +238,10 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     else:
         job_type = PASS_THROUGH_JOB
 
-    # If output format is not specified, attempt to supply default        <<<<<<<<<< This section needs validation.  Is this out-of-scope?
+    # If output format is not specified, supply a default for QIR or QIO jobs
     if job_output_format is None:
         if job_type == QIR_JOB:
-            job_output_format = "microsoft.quantum-results.v1"  # <<<<< This works for QCI, but is it OK for Rigetti and Quantinuum QIR? <<<<<
+            job_output_format = "microsoft.quantum-results.v1"      # <<<<< This works for QCI, but is it OK for Rigetti and Quantinuum QIR? <<<<<
         elif job_type == QIO_JOB:
             job_output_format = "microsoft.qio-results.v2"
         else:
@@ -324,13 +323,13 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         from .workspace import get as ws_get
         ws = ws_get(cmd)
         storage = ws.storage_account.split('/')[-1]
-
     job_id = str(uuid.uuid4())
     container_name = container_name_prefix + job_id
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
     connection_string = connection_string_dict["connectionString"]
     container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
+    knack_logger.warning('Uploading input data...')
     blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
     # Remove blob name from container URI
@@ -360,8 +359,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         if "shots" not in job_params:
             job_params["shots"] = DEFAULT_SHOTS
 
+    # For QIO jobs, start inputParams with a "params" key and supply a default timeout
     if job_type == QIO_JOB:
-        # Convert to the QIO inputParams structure
         if job_params is None:
             job_params = {"params": {"timeout": QIO_DEFAULT_TIMEOUT}}
         else:
@@ -369,6 +368,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                 job_params["timeout"] = QIO_DEFAULT_TIMEOUT
             job_params = {"params": job_params}
 
+    # Submit the job
     client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.location)
     job_details = {'name': job_name,
                    'container_uri': container_uri,
@@ -378,7 +378,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                    'provider_id': provider_id,
                    'target': target_info.target_id}
 
-    # Submit the job
+    knack_logger.warning('Submitting job...')
     return client.create(job_id, job_details)
 
 
