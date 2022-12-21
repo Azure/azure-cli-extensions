@@ -169,12 +169,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
-    if not least_privilege:
-        crb_permission = utils.can_create_clusterrolebindings()
-        if not crb_permission:
-            telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
-                                    summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
-            raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
+    crb_permission = utils.can_create_clusterrolebindings()
+    if not crb_permission:
+        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
+                                summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
     if distribution == 'auto':
