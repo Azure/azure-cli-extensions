@@ -7,41 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from azure.cli.core.util import send_raw_request
-import json
-
-original_aad_endpoint = ''
-
-def get_endpoint(cli_ctx, dev_center_name, project_name=None):
-    global original_aad_endpoint
-    if cli_ctx.cloud.endpoints.active_directory_resource_id == "https://devcenter.azure.com":
-        cli_ctx.cloud.endpoints.active_directory_resource_id = original_aad_endpoint
-    management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip('/')
-    api_version = "2021-03-01"
-    query = ""
-    if project_name is None:
-        query = f""" Resources |where type =~'Microsoft.devcenter/projects' 
-        | extend devCenterArr = split(properties.devCenterId, '/') 
-        | extend devCenterName = devCenterArr[array_length(devCenterArr) -1] 
-        | where devCenterName =~ '{dev_center_name}'
-        | top 1 by name
-        | extend devCenterUri = properties.devCenterUri
-        | project name,devCenterUri"""
-    else:
-        query = f""" Resources |where type =~'Microsoft.devcenter/projects'
-        | where name =~ '{project_name}'  
-        | extend devCenterArr = split(properties.devCenterId, '/') 
-        | extend devCenterName = devCenterArr[array_length(devCenterArr) -1 ]
-        | where devCenterName =~ '{dev_center_name}'
-        | top 1 by name
-        | extend devCenterUri = properties.devCenterUri
-        | project name,devCenterUri """ 
-    content = {"query": query}
-    request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
-
-    response = send_raw_request(cli_ctx, "POST", request_url, body=json.dumps(content))
-    return response.json()
-
+from .helper  import get_project_data
 
 def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
 
@@ -49,15 +15,20 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
     )
-    global original_aad_endpoint
-    if len(original_aad_endpoint) == 0:
-        original_aad_endpoint = cli_ctx.cloud.endpoints.active_directory_resource_id
+    # dev_center can be either a dict or str, so we need to check for the type here
     dev_center_name = ''
     if type(dev_center) is dict:
         dev_center_name = dev_center['dev_center']
     else:
         dev_center_name = dev_center
-    get_endpoint(cli_ctx, dev_center_name, project_name)
+
+    project_data = get_project_data(cli_ctx, dev_center_name, project_name)
+    endpoint = project_data.endpoint
+    # We need to set the project name even if we don't need this information
+    # since initializing DevCenterDataplaneClient requires this param
+    if project_name is None:
+        project_name = project_data.project_name
+
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
 
     return get_mgmt_service_client(
@@ -65,8 +36,8 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
         DevCenterDataplaneClient,
         subscription_bound=False,
         base_url_bound=False,
-        endpoint="https://72f988bf-86f1-41af-91ab-2d7cd011db47-amlim.devcenter.azure.com/",
-        project_name="amlim-project"
+        endpoint=endpoint,
+        project_name=project_name
     )
 
 def cf_project_dp(cli_ctx, dev_center, *_):
