@@ -16,7 +16,7 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
         | extend devCenterArr = split(properties.devCenterId, '/') 
         | extend devCenterName = devCenterArr[array_length(devCenterArr) -1] 
         | where devCenterName =~ '{dev_center_name}'
-        | top 1 by name
+        | take 1
         | extend devCenterUri = properties.devCenterUri
         | project name,devCenterUri"""
     else:
@@ -25,7 +25,7 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
         | extend devCenterArr = split(properties.devCenterId, '/') 
         | extend devCenterName = devCenterArr[array_length(devCenterArr) -1 ]
         | where devCenterName =~ '{dev_center_name}'
-        | top 1 by name
+        | take 1
         | extend devCenterUri = properties.devCenterUri
         | project name,devCenterUri """ 
     content = {"query": query}
