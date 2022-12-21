@@ -18,7 +18,7 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
     query = f""" Resources |where type =~'Microsoft.devcenter/projects'
     {project_filter}
     | extend devCenterArr = split(properties.devCenterId, '/') 
-    | extend devCenterName = devCenterArr[array_length(devCenterArr) -1 ]
+    | extend devCenterName = devCenterArr[array_length(devCenterArr) -1]
     | where devCenterName =~ '{dev_center_name}'
     | take 1
     | extend devCenterUri = properties.devCenterUri
