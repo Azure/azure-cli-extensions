@@ -22,12 +22,12 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
     else:
         dev_center_name = dev_center
 
-    project_data = get_project_data(cli_ctx, dev_center_name, project_name)
-    endpoint = project_data.endpoint
+    project = get_project_data(cli_ctx, dev_center_name, project_name)
+    endpoint = project.endpoint
     # We need to set the project name even if we don't need this information
     # since initializing DevCenterDataplaneClient requires this param
     if project_name is None:
-        project_name = project_data.project_name
+        project_name = project.name
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
 

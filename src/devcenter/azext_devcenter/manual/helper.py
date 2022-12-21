@@ -3,9 +3,9 @@ from azure.cli.core.util import send_raw_request
 import json
 
 class ProjectData:            
-    def __init__(self,endpoint,project_name):      
+    def __init__(self,endpoint,name):      
         self.endpoint=endpoint                 
-        self.project_name=project_name
+        self.name=name
 
 def get_project_data(cli_ctx, dev_center_name, project_name=None):
     management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip('/')
@@ -44,4 +44,4 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
     if project_name is None:
         project_name = project['name']
     endpoint = project['devCenterUri']
-    return ProjectData(endpoint, project_name)
+    return ProjectData(endpoint, name=project_name)
