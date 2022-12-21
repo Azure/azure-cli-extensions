@@ -80,16 +80,9 @@ class Update(AAZCommand):
                 minimum=2,
             ),
         )
-        _args_schema.sku = AAZObjectArg(
+        _args_schema.sku = AAZStrArg(
             options=["--sku"],
-            help="The sku of this Bastion Host.",
-            nullable=True,
-        )
-
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="The name of this Bastion Host.",
+            help="SKU of this Bastion Host.",
             nullable=True,
             enum={"Basic": "Basic", "Standard": "Standard"},
         )
@@ -354,7 +347,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".sku")
+            _builder.set_prop("sku", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -365,7 +358,7 @@ class Update(AAZCommand):
 
             sku = _builder.get(".sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return _instance_value
 

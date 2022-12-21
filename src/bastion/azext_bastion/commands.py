@@ -12,4 +12,10 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group("network bastion") as g:
+        from .custom import BastionCreate
+        self.command_table["network bastion create"] = BastionCreate(loader=self)
+
+        g.custom_command("ssh", "ssh_bastion_host")
+        g.custom_command("rdp", "rdp_bastion_host")
+        g.custom_command("tunnel", 'create_bastion_tunnel')

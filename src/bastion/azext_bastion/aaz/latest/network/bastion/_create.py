@@ -86,9 +86,11 @@ class Create(AAZCommand):
                 minimum=2,
             ),
         )
-        _args_schema.sku = AAZObjectArg(
+        _args_schema.sku = AAZStrArg(
             options=["--sku"],
-            help="The sku of this Bastion Host.",
+            help="SKU of this Bastion Host.",
+            default="Standard",
+            enum={"Basic": "Basic", "Standard": "Standard"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -122,14 +124,6 @@ class Create(AAZCommand):
             help="Reference of the subnet resource.",
         )
         cls._build_args_sub_resource_create(_element.subnet)
-
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="The name of this Bastion Host.",
-            default="Standard",
-            enum={"Basic": "Basic", "Standard": "Standard"},
-        )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
@@ -265,7 +259,7 @@ class Create(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".sku")
+            _builder.set_prop("sku", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -294,7 +288,7 @@ class Create(AAZCommand):
 
             sku = _builder.get(".sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             tags = _builder.get(".tags")
             if tags is not None:
