@@ -35,8 +35,6 @@ def load_arguments(self, _):
             required=True,
             help="The DevCenter to operate on.",
         )
-        c.argument('filter_', options_list=['--filter'], type=str, help='An OData filter clause to apply to the '
-                   'operation.')
 
     with self.argument_context("devcenter dev project show") as c:
         c.argument(
@@ -70,8 +68,6 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument('filter_', options_list=['--filter'], type=str, help='An OData filter clause to apply to the '
-                   'operation.')
 
     with self.argument_context("devcenter dev pool show") as c:
         c.argument(
@@ -119,9 +115,7 @@ def load_arguments(self, _):
             options_list=["--pool-name", "--pool"],
             type=str,
             help="The name of a pool of Dev Boxes.",
-        )
-        c.argument('filter_', options_list=['--filter'], type=str, help='An OData filter clause to apply to the '
-                   'operation.')        
+        )     
 
     with self.argument_context("devcenter dev schedule show") as c:
         c.argument(
@@ -162,12 +156,6 @@ def load_arguments(self, _):
             required=True,
             type=str,
             help="The DevCenter to operate on.",
-        )
-        c.argument(
-            "filter_",
-            options_list=["--filter"],
-            type=str,
-            help="An OData $filter clause to apply to the " "operation.",
         )
         c.argument(
             "project_name",

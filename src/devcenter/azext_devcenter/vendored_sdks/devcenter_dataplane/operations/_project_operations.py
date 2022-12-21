@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class ProjectOperations(object):
+class ProjectOperations():
     """ProjectOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
@@ -38,6 +38,12 @@ class ProjectOperations(object):
     """
 
     models = models
+
+    def __init__(self, client, config, serializer, deserializer):
+        self._client = client
+        self._serialize = serializer
+        self._deserialize = deserializer
+        self._config = config
 
     def list(
         self,
