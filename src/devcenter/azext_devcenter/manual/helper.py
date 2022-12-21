@@ -10,24 +10,20 @@ class ProjectData:
 def get_project_data(cli_ctx, dev_center_name, project_name=None):
     management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip('/')
     api_version = "2021-03-01"
-    query = ""
-    if project_name is None:
-        query = f""" Resources |where type =~'Microsoft.devcenter/projects' 
-        | extend devCenterArr = split(properties.devCenterId, '/') 
-        | extend devCenterName = devCenterArr[array_length(devCenterArr) -1] 
-        | where devCenterName =~ '{dev_center_name}'
-        | take 1
-        | extend devCenterUri = properties.devCenterUri
-        | project name,devCenterUri"""
-    else:
-        query = f""" Resources |where type =~'Microsoft.devcenter/projects'
-        | where name =~ '{project_name}'  
-        | extend devCenterArr = split(properties.devCenterId, '/') 
-        | extend devCenterName = devCenterArr[array_length(devCenterArr) -1 ]
-        | where devCenterName =~ '{dev_center_name}'
-        | take 1
-        | extend devCenterUri = properties.devCenterUri
-        | project name,devCenterUri """ 
+
+    project_filter = ""
+    if project_name is not None:
+        project_filter = f"| where name =~ '{project_name}'"
+
+    query = f""" Resources |where type =~'Microsoft.devcenter/projects'
+    {project_filter}
+    | extend devCenterArr = split(properties.devCenterId, '/') 
+    | extend devCenterName = devCenterArr[array_length(devCenterArr) -1 ]
+    | where devCenterName =~ '{dev_center_name}'
+    | take 1
+    | extend devCenterUri = properties.devCenterUri
+    | project name,devCenterUri """
+ 
     content = {"query": query}
     request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
 
