@@ -15,14 +15,8 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
     )
-    # dev_center can be either a dict or str, so we need to check for the type here
-    dev_center_name = ''
-    if type(dev_center) is dict:
-        dev_center_name = dev_center['dev_center']
-    else:
-        dev_center_name = dev_center
 
-    project = get_project_data(cli_ctx, dev_center_name, project_name)
+    project = get_project_data(cli_ctx, dev_center, project_name)
     endpoint = project.endpoint
     # We need to set the project name even if we don't need this information
     # since initializing DevCenterDataplaneClient requires this param
