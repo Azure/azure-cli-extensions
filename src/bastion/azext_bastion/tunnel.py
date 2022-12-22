@@ -88,7 +88,7 @@ class TunnelServer:
         else:
             custom_header = {}
 
-        web_address = 'https://{}/api/tokens'.format(self.bastion["dnsName"])
+        web_address = f"https://{self.bastion['dnsName']}/api/tokens"
         response = requests.post(web_address, data=content, headers=custom_header,
                                  verify=(not should_disable_connection_verify()))
         response_json = None
@@ -115,7 +115,7 @@ class TunnelServer:
             self.client, _address = self.sock.accept()
 
             auth_token = self._get_auth_token()
-            host = 'wss://{}/webtunnel/{}?X-Node-Id={}'.format(self.bastion["dnsName"], auth_token, self.node_id)
+            host = f"wss://{self.bastion['dnsName']}/webtunnel/{auth_token}?X-Node-Id={self.node_id}"
             verify_mode = ssl.CERT_NONE if should_disable_connection_verify() else ssl.CERT_REQUIRED
             self.ws = create_connection(host,
                                         sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
@@ -192,7 +192,7 @@ class TunnelServer:
             else:
                 custom_header = {}
 
-            web_address = 'https://{}/api/tokens/{}'.format(self.bastion["dnsName"], self.last_token)
+            web_address = f"https://{self.bastion['dnsName']}/api/tokens/{self.last_token}"
             response = requests.delete(web_address, headers=custom_header,
                                        verify=(not should_disable_connection_verify()))
             if response.status_code == 404:

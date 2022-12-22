@@ -73,7 +73,7 @@ def launch_and_wait(command):
     """
     try:
         job = kernel32.CreateJobObjectW(None, None)
-        process = subprocess.Popen(command)
+        process = subprocess.Popen(command)  # pylint: disable=consider-using-with
 
         # Terminate and set quota are required to join process to job
         process_handle = kernel32.OpenProcess(

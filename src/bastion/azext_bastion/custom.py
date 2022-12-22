@@ -7,14 +7,15 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=protected-access
 
 import platform
-import requests
 import subprocess
 import tempfile
 import threading
 import time
 
+import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
     UnrecognizedArgumentError, CLIInternalError, ClientRequestError
 from knack.log import get_logger
@@ -73,7 +74,7 @@ def _test_extension(extension_name):
 
     ext = get_extension(extension_name)
     if parse_version(ext.version) < parse_version(SSH_EXTENSION_VERSION):
-        raise ValidationError("SSH Extension (version >= {}) must be installed".format(SSH_EXTENSION_VERSION))
+        raise ValidationError(f"SSH Extension (version >= {SSH_EXTENSION_VERSION}) must be installed")
 
 
 def _get_ssh_path(ssh_command="ssh"):
@@ -119,7 +120,7 @@ def _get_azext_module(extension_name, module_name):
         azext_custom = import_module(module_name)
         return azext_custom
     except ImportError as ie:
-        raise CLIInternalError(ie)
+        raise CLIInternalError(ie) from ie
 
 
 def _build_args(cert_file, private_key_file):
@@ -181,7 +182,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, resource_group_name, ba
     try:
         subprocess.call(command, shell=platform.system() == "Windows")
     except Exception as ex:
-        raise CLIInternalError(ex)
+        raise CLIInternalError(ex) from ex
     finally:
         tunnel_server.cleanup()
 
@@ -226,7 +227,7 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
             t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
             t.daemon = True
             t.start()
-            command = [_get_rdp_path(), "/v:localhost:{0}".format(tunnel_server.local_port)]
+            command = [_get_rdp_path(), f"/v:localhost:{tunnel_server.local_port}"]
             launch_and_wait(command)
             tunnel_server.cleanup()
         else:
@@ -239,11 +240,9 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
                 "resource_group": resource_group_name,
                 "name": bastion_host_name
             })
-            web_address = "https://{}/api/rdpfile?resourceId={}&format=rdp".format(
-                bastion["dnsName"], target_resource_id
-            )
+            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}&format=rdp"
             headers = {
-                "Authorization": "Bearer {}".format(access_token),
+                "Authorization": f"Bearer {access_token}",
                 "Accept": "*/*",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Connection": "keep-alive"
@@ -251,7 +250,7 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
             response = requests.get(web_address, headers=headers)
             if not response.ok:
                 raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
-            with open("conn.rdp", "w") as f:
+            with open("conn.rdp", "w", encoding="utf-8") as f:
                 f.write(response.text)
 
             rdpfilepath = os.getcwd() + "/conn.rdp"
