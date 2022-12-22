@@ -269,7 +269,7 @@ class ReProtect(AAZCommand):
 
             end_group_actions = cls._schema_on_200.properties.groups.Element.end_group_actions
             end_group_actions.Element = AAZObjectType()
-            _build_schema_recovery_plan_action_read(end_group_actions.Element)
+            _ReProtectHelper._build_schema_recovery_plan_action_read(end_group_actions.Element)
 
             replication_protected_items = cls._schema_on_200.properties.groups.Element.replication_protected_items
             replication_protected_items.Element = AAZObjectType()
@@ -282,7 +282,7 @@ class ReProtect(AAZCommand):
 
             start_group_actions = cls._schema_on_200.properties.groups.Element.start_group_actions
             start_group_actions.Element = AAZObjectType()
-            _build_schema_recovery_plan_action_read(start_group_actions.Element)
+            _ReProtectHelper._build_schema_recovery_plan_action_read(start_group_actions.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.Element = AAZObjectType()
@@ -307,77 +307,79 @@ class ReProtect(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_recovery_plan_action_read = None
+class _ReProtectHelper:
+    """Helper class for ReProtect"""
 
+    _schema_recovery_plan_action_read = None
 
-def _build_schema_recovery_plan_action_read(_schema):
-    global _schema_recovery_plan_action_read
-    if _schema_recovery_plan_action_read is not None:
-        _schema.action_name = _schema_recovery_plan_action_read.action_name
-        _schema.custom_details = _schema_recovery_plan_action_read.custom_details
-        _schema.failover_directions = _schema_recovery_plan_action_read.failover_directions
-        _schema.failover_types = _schema_recovery_plan_action_read.failover_types
-        return
+    @classmethod
+    def _build_schema_recovery_plan_action_read(cls, _schema):
+        if cls._schema_recovery_plan_action_read is not None:
+            _schema.action_name = cls._schema_recovery_plan_action_read.action_name
+            _schema.custom_details = cls._schema_recovery_plan_action_read.custom_details
+            _schema.failover_directions = cls._schema_recovery_plan_action_read.failover_directions
+            _schema.failover_types = cls._schema_recovery_plan_action_read.failover_types
+            return
 
-    _schema_recovery_plan_action_read = AAZObjectType()
+        cls._schema_recovery_plan_action_read = _schema_recovery_plan_action_read = AAZObjectType()
 
-    recovery_plan_action_read = _schema_recovery_plan_action_read
-    recovery_plan_action_read.action_name = AAZStrType(
-        serialized_name="actionName",
-        flags={"required": True},
-    )
-    recovery_plan_action_read.custom_details = AAZObjectType(
-        serialized_name="customDetails",
-        flags={"required": True},
-    )
-    recovery_plan_action_read.failover_directions = AAZListType(
-        serialized_name="failoverDirections",
-        flags={"required": True},
-    )
-    recovery_plan_action_read.failover_types = AAZListType(
-        serialized_name="failoverTypes",
-        flags={"required": True},
-    )
+        recovery_plan_action_read = _schema_recovery_plan_action_read
+        recovery_plan_action_read.action_name = AAZStrType(
+            serialized_name="actionName",
+            flags={"required": True},
+        )
+        recovery_plan_action_read.custom_details = AAZObjectType(
+            serialized_name="customDetails",
+            flags={"required": True},
+        )
+        recovery_plan_action_read.failover_directions = AAZListType(
+            serialized_name="failoverDirections",
+            flags={"required": True},
+        )
+        recovery_plan_action_read.failover_types = AAZListType(
+            serialized_name="failoverTypes",
+            flags={"required": True},
+        )
 
-    custom_details = _schema_recovery_plan_action_read.custom_details
-    custom_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        custom_details = _schema_recovery_plan_action_read.custom_details
+        custom_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    disc_automation_runbook_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "AutomationRunbookActionDetails")
-    disc_automation_runbook_action_details.fabric_location = AAZStrType(
-        serialized_name="fabricLocation",
-        flags={"required": True},
-    )
-    disc_automation_runbook_action_details.runbook_id = AAZStrType(
-        serialized_name="runbookId",
-    )
-    disc_automation_runbook_action_details.timeout = AAZStrType()
+        disc_automation_runbook_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "AutomationRunbookActionDetails")
+        disc_automation_runbook_action_details.fabric_location = AAZStrType(
+            serialized_name="fabricLocation",
+            flags={"required": True},
+        )
+        disc_automation_runbook_action_details.runbook_id = AAZStrType(
+            serialized_name="runbookId",
+        )
+        disc_automation_runbook_action_details.timeout = AAZStrType()
 
-    disc_manual_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ManualActionDetails")
-    disc_manual_action_details.description = AAZStrType()
+        disc_manual_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ManualActionDetails")
+        disc_manual_action_details.description = AAZStrType()
 
-    disc_script_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ScriptActionDetails")
-    disc_script_action_details.fabric_location = AAZStrType(
-        serialized_name="fabricLocation",
-        flags={"required": True},
-    )
-    disc_script_action_details.path = AAZStrType(
-        flags={"required": True},
-    )
-    disc_script_action_details.timeout = AAZStrType()
+        disc_script_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ScriptActionDetails")
+        disc_script_action_details.fabric_location = AAZStrType(
+            serialized_name="fabricLocation",
+            flags={"required": True},
+        )
+        disc_script_action_details.path = AAZStrType(
+            flags={"required": True},
+        )
+        disc_script_action_details.timeout = AAZStrType()
 
-    failover_directions = _schema_recovery_plan_action_read.failover_directions
-    failover_directions.Element = AAZStrType()
+        failover_directions = _schema_recovery_plan_action_read.failover_directions
+        failover_directions.Element = AAZStrType()
 
-    failover_types = _schema_recovery_plan_action_read.failover_types
-    failover_types.Element = AAZStrType()
+        failover_types = _schema_recovery_plan_action_read.failover_types
+        failover_types.Element = AAZStrType()
 
-    _schema.action_name = _schema_recovery_plan_action_read.action_name
-    _schema.custom_details = _schema_recovery_plan_action_read.custom_details
-    _schema.failover_directions = _schema_recovery_plan_action_read.failover_directions
-    _schema.failover_types = _schema_recovery_plan_action_read.failover_types
+        _schema.action_name = cls._schema_recovery_plan_action_read.action_name
+        _schema.custom_details = cls._schema_recovery_plan_action_read.custom_details
+        _schema.failover_directions = cls._schema_recovery_plan_action_read.failover_directions
+        _schema.failover_types = cls._schema_recovery_plan_action_read.failover_types
 
 
 __all__ = ["ReProtect"]

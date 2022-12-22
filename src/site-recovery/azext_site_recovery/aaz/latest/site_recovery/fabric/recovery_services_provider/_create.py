@@ -46,13 +46,11 @@ class Create(AAZCommand):
             options=["--fabric-name"],
             help="Fabric name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.provider_name = AAZStrArg(
             options=["-n", "--name", "--provider-name"],
             help="Recovery services provider name.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -61,7 +59,6 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -270,12 +267,12 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                _build_schema_identity_provider_input_create(properties.set_prop("authenticationIdentityInput", AAZObjectType, ".authentication_identity_input", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_identity_provider_input_create(properties.set_prop("authenticationIdentityInput", AAZObjectType, ".authentication_identity_input", typ_kwargs={"flags": {"required": True}}))
                 properties.set_prop("biosId", AAZStrType, ".bios_id")
-                _build_schema_identity_provider_input_create(properties.set_prop("dataPlaneAuthenticationIdentityInput", AAZObjectType, ".data_plane_authentication_identity_input"))
+                _CreateHelper._build_schema_identity_provider_input_create(properties.set_prop("dataPlaneAuthenticationIdentityInput", AAZObjectType, ".data_plane_authentication_identity_input"))
                 properties.set_prop("machineId", AAZStrType, ".machine_id")
                 properties.set_prop("machineName", AAZStrType, ".machine_name", typ_kwargs={"flags": {"required": True}})
-                _build_schema_identity_provider_input_create(properties.set_prop("resourceAccessIdentityInput", AAZObjectType, ".resource_access_identity_input", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_identity_provider_input_create(properties.set_prop("resourceAccessIdentityInput", AAZObjectType, ".resource_access_identity_input", typ_kwargs={"flags": {"required": True}}))
 
             return self.serialize_content(_content_value)
 
@@ -316,7 +313,7 @@ class Create(AAZCommand):
             properties.authentication_identity_details = AAZObjectType(
                 serialized_name="authenticationIdentityDetails",
             )
-            _build_schema_identity_provider_details_read(properties.authentication_identity_details)
+            _CreateHelper._build_schema_identity_provider_details_read(properties.authentication_identity_details)
             properties.bios_id = AAZStrType(
                 serialized_name="biosId",
             )
@@ -326,7 +323,7 @@ class Create(AAZCommand):
             properties.data_plane_authentication_identity_details = AAZObjectType(
                 serialized_name="dataPlaneAuthenticationIdentityDetails",
             )
-            _build_schema_identity_provider_details_read(properties.data_plane_authentication_identity_details)
+            _CreateHelper._build_schema_identity_provider_details_read(properties.data_plane_authentication_identity_details)
             properties.dra_identifier = AAZStrType(
                 serialized_name="draIdentifier",
             )
@@ -369,7 +366,7 @@ class Create(AAZCommand):
             properties.resource_access_identity_details = AAZObjectType(
                 serialized_name="resourceAccessIdentityDetails",
             )
-            _build_schema_identity_provider_details_read(properties.resource_access_identity_details)
+            _CreateHelper._build_schema_identity_provider_details_read(properties.resource_access_identity_details)
             properties.server_version = AAZStrType(
                 serialized_name="serverVersion",
             )
@@ -484,51 +481,53 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-def _build_schema_identity_provider_input_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("aadAuthority", AAZStrType, ".aad_authority", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("applicationId", AAZStrType, ".application_id", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("audience", AAZStrType, ".audience", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_identity_provider_input_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("aadAuthority", AAZStrType, ".aad_authority", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("applicationId", AAZStrType, ".application_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("audience", AAZStrType, ".audience", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
 
-_schema_identity_provider_details_read = None
+    _schema_identity_provider_details_read = None
 
+    @classmethod
+    def _build_schema_identity_provider_details_read(cls, _schema):
+        if cls._schema_identity_provider_details_read is not None:
+            _schema.aad_authority = cls._schema_identity_provider_details_read.aad_authority
+            _schema.application_id = cls._schema_identity_provider_details_read.application_id
+            _schema.audience = cls._schema_identity_provider_details_read.audience
+            _schema.object_id = cls._schema_identity_provider_details_read.object_id
+            _schema.tenant_id = cls._schema_identity_provider_details_read.tenant_id
+            return
 
-def _build_schema_identity_provider_details_read(_schema):
-    global _schema_identity_provider_details_read
-    if _schema_identity_provider_details_read is not None:
-        _schema.aad_authority = _schema_identity_provider_details_read.aad_authority
-        _schema.application_id = _schema_identity_provider_details_read.application_id
-        _schema.audience = _schema_identity_provider_details_read.audience
-        _schema.object_id = _schema_identity_provider_details_read.object_id
-        _schema.tenant_id = _schema_identity_provider_details_read.tenant_id
-        return
+        cls._schema_identity_provider_details_read = _schema_identity_provider_details_read = AAZObjectType()
 
-    _schema_identity_provider_details_read = AAZObjectType()
+        identity_provider_details_read = _schema_identity_provider_details_read
+        identity_provider_details_read.aad_authority = AAZStrType(
+            serialized_name="aadAuthority",
+        )
+        identity_provider_details_read.application_id = AAZStrType(
+            serialized_name="applicationId",
+        )
+        identity_provider_details_read.audience = AAZStrType()
+        identity_provider_details_read.object_id = AAZStrType(
+            serialized_name="objectId",
+        )
+        identity_provider_details_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    identity_provider_details_read = _schema_identity_provider_details_read
-    identity_provider_details_read.aad_authority = AAZStrType(
-        serialized_name="aadAuthority",
-    )
-    identity_provider_details_read.application_id = AAZStrType(
-        serialized_name="applicationId",
-    )
-    identity_provider_details_read.audience = AAZStrType()
-    identity_provider_details_read.object_id = AAZStrType(
-        serialized_name="objectId",
-    )
-    identity_provider_details_read.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-    )
-
-    _schema.aad_authority = _schema_identity_provider_details_read.aad_authority
-    _schema.application_id = _schema_identity_provider_details_read.application_id
-    _schema.audience = _schema_identity_provider_details_read.audience
-    _schema.object_id = _schema_identity_provider_details_read.object_id
-    _schema.tenant_id = _schema_identity_provider_details_read.tenant_id
+        _schema.aad_authority = cls._schema_identity_provider_details_read.aad_authority
+        _schema.application_id = cls._schema_identity_provider_details_read.application_id
+        _schema.audience = cls._schema_identity_provider_details_read.audience
+        _schema.object_id = cls._schema_identity_provider_details_read.object_id
+        _schema.tenant_id = cls._schema_identity_provider_details_read.tenant_id
 
 
 __all__ = ["Create"]

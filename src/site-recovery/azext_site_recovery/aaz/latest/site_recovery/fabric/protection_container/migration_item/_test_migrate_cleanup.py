@@ -716,4 +716,8 @@ class TestMigrateCleanup(AAZCommand):
             return cls._schema_on_200
 
 
+class _TestMigrateCleanupHelper:
+    """Helper class for TestMigrateCleanup"""
+
+
 __all__ = ["TestMigrateCleanup"]

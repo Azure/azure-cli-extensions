@@ -714,4 +714,8 @@ class PauseReplication(AAZCommand):
             return cls._schema_on_200
 
 
+class _PauseReplicationHelper:
+    """Helper class for PauseReplication"""
+
+
 __all__ = ["PauseReplication"]

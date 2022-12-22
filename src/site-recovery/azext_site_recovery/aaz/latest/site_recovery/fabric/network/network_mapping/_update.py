@@ -226,7 +226,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_network_mapping_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_network_mapping_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -349,7 +349,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_network_mapping_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_network_mapping_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -392,80 +392,82 @@ class Update(AAZCommand):
             )
 
 
-_schema_network_mapping_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_network_mapping_read = None
 
-def _build_schema_network_mapping_read(_schema):
-    global _schema_network_mapping_read
-    if _schema_network_mapping_read is not None:
-        _schema.id = _schema_network_mapping_read.id
-        _schema.location = _schema_network_mapping_read.location
-        _schema.name = _schema_network_mapping_read.name
-        _schema.properties = _schema_network_mapping_read.properties
-        _schema.type = _schema_network_mapping_read.type
-        return
+    @classmethod
+    def _build_schema_network_mapping_read(cls, _schema):
+        if cls._schema_network_mapping_read is not None:
+            _schema.id = cls._schema_network_mapping_read.id
+            _schema.location = cls._schema_network_mapping_read.location
+            _schema.name = cls._schema_network_mapping_read.name
+            _schema.properties = cls._schema_network_mapping_read.properties
+            _schema.type = cls._schema_network_mapping_read.type
+            return
 
-    _schema_network_mapping_read = AAZObjectType()
+        cls._schema_network_mapping_read = _schema_network_mapping_read = AAZObjectType()
 
-    network_mapping_read = _schema_network_mapping_read
-    network_mapping_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    network_mapping_read.location = AAZStrType()
-    network_mapping_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    network_mapping_read.properties = AAZObjectType()
-    network_mapping_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        network_mapping_read = _schema_network_mapping_read
+        network_mapping_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_mapping_read.location = AAZStrType()
+        network_mapping_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_mapping_read.properties = AAZObjectType()
+        network_mapping_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_network_mapping_read.properties
-    properties.fabric_specific_settings = AAZObjectType(
-        serialized_name="fabricSpecificSettings",
-    )
-    properties.primary_fabric_friendly_name = AAZStrType(
-        serialized_name="primaryFabricFriendlyName",
-    )
-    properties.primary_network_friendly_name = AAZStrType(
-        serialized_name="primaryNetworkFriendlyName",
-    )
-    properties.primary_network_id = AAZStrType(
-        serialized_name="primaryNetworkId",
-    )
-    properties.recovery_fabric_arm_id = AAZStrType(
-        serialized_name="recoveryFabricArmId",
-    )
-    properties.recovery_fabric_friendly_name = AAZStrType(
-        serialized_name="recoveryFabricFriendlyName",
-    )
-    properties.recovery_network_friendly_name = AAZStrType(
-        serialized_name="recoveryNetworkFriendlyName",
-    )
-    properties.recovery_network_id = AAZStrType(
-        serialized_name="recoveryNetworkId",
-    )
-    properties.state = AAZStrType()
+        properties = _schema_network_mapping_read.properties
+        properties.fabric_specific_settings = AAZObjectType(
+            serialized_name="fabricSpecificSettings",
+        )
+        properties.primary_fabric_friendly_name = AAZStrType(
+            serialized_name="primaryFabricFriendlyName",
+        )
+        properties.primary_network_friendly_name = AAZStrType(
+            serialized_name="primaryNetworkFriendlyName",
+        )
+        properties.primary_network_id = AAZStrType(
+            serialized_name="primaryNetworkId",
+        )
+        properties.recovery_fabric_arm_id = AAZStrType(
+            serialized_name="recoveryFabricArmId",
+        )
+        properties.recovery_fabric_friendly_name = AAZStrType(
+            serialized_name="recoveryFabricFriendlyName",
+        )
+        properties.recovery_network_friendly_name = AAZStrType(
+            serialized_name="recoveryNetworkFriendlyName",
+        )
+        properties.recovery_network_id = AAZStrType(
+            serialized_name="recoveryNetworkId",
+        )
+        properties.state = AAZStrType()
 
-    fabric_specific_settings = _schema_network_mapping_read.properties.fabric_specific_settings
-    fabric_specific_settings.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        fabric_specific_settings = _schema_network_mapping_read.properties.fabric_specific_settings
+        fabric_specific_settings.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    disc_azure_to_azure = _schema_network_mapping_read.properties.fabric_specific_settings.discriminate_by("instance_type", "AzureToAzure")
-    disc_azure_to_azure.primary_fabric_location = AAZStrType(
-        serialized_name="primaryFabricLocation",
-    )
-    disc_azure_to_azure.recovery_fabric_location = AAZStrType(
-        serialized_name="recoveryFabricLocation",
-    )
+        disc_azure_to_azure = _schema_network_mapping_read.properties.fabric_specific_settings.discriminate_by("instance_type", "AzureToAzure")
+        disc_azure_to_azure.primary_fabric_location = AAZStrType(
+            serialized_name="primaryFabricLocation",
+        )
+        disc_azure_to_azure.recovery_fabric_location = AAZStrType(
+            serialized_name="recoveryFabricLocation",
+        )
 
-    _schema.id = _schema_network_mapping_read.id
-    _schema.location = _schema_network_mapping_read.location
-    _schema.name = _schema_network_mapping_read.name
-    _schema.properties = _schema_network_mapping_read.properties
-    _schema.type = _schema_network_mapping_read.type
+        _schema.id = cls._schema_network_mapping_read.id
+        _schema.location = cls._schema_network_mapping_read.location
+        _schema.name = cls._schema_network_mapping_read.name
+        _schema.properties = cls._schema_network_mapping_read.properties
+        _schema.type = cls._schema_network_mapping_read.type
 
 
 __all__ = ["Update"]

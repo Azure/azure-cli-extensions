@@ -379,7 +379,7 @@ class RemoveDisk(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _RemoveDiskHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -407,7 +407,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -419,7 +419,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -470,7 +470,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -511,7 +511,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -741,7 +741,7 @@ class RemoveDisk(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -791,7 +791,7 @@ class RemoveDisk(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -813,17 +813,17 @@ class RemoveDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _build_schema_disk_details_read(v_m_disk_details.Element)
+            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -845,11 +845,11 @@ class RemoveDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _build_schema_disk_details_read(v_m_disk_details.Element)
+            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -862,7 +862,7 @@ class RemoveDisk(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -954,7 +954,7 @@ class RemoveDisk(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _RemoveDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -1007,13 +1007,13 @@ class RemoveDisk(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1035,11 +1035,11 @@ class RemoveDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _build_schema_disk_details_read(v_m_disk_details.Element)
+            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1118,7 +1118,7 @@ class RemoveDisk(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1266,11 +1266,11 @@ class RemoveDisk(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(validation_errors.Element)
+            _RemoveDiskHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1476,7 +1476,7 @@ class RemoveDisk(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _RemoveDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1642,11 +1642,11 @@ class RemoveDisk(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(validation_errors.Element)
+            _RemoveDiskHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2044,7 +2044,7 @@ class RemoveDisk(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2060,7 +2060,7 @@ class RemoveDisk(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2363,7 +2363,7 @@ class RemoveDisk(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2379,7 +2379,7 @@ class RemoveDisk(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2405,573 +2405,561 @@ class RemoveDisk(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_azure_vm_disk_details_read = None
+class _RemoveDiskHelper:
+    """Helper class for RemoveDisk"""
 
+    _schema_azure_vm_disk_details_read = None
 
-def _build_schema_azure_vm_disk_details_read(_schema):
-    global _schema_azure_vm_disk_details_read
-    if _schema_azure_vm_disk_details_read is not None:
-        _schema.custom_target_disk_name = _schema_azure_vm_disk_details_read.custom_target_disk_name
-        _schema.disk_encryption_set_id = _schema_azure_vm_disk_details_read.disk_encryption_set_id
-        _schema.disk_id = _schema_azure_vm_disk_details_read.disk_id
-        _schema.lun_id = _schema_azure_vm_disk_details_read.lun_id
-        _schema.max_size_mb = _schema_azure_vm_disk_details_read.max_size_mb
-        _schema.target_disk_location = _schema_azure_vm_disk_details_read.target_disk_location
-        _schema.target_disk_name = _schema_azure_vm_disk_details_read.target_disk_name
-        _schema.vhd_id = _schema_azure_vm_disk_details_read.vhd_id
-        _schema.vhd_name = _schema_azure_vm_disk_details_read.vhd_name
-        _schema.vhd_type = _schema_azure_vm_disk_details_read.vhd_type
-        return
+    @classmethod
+    def _build_schema_azure_vm_disk_details_read(cls, _schema):
+        if cls._schema_azure_vm_disk_details_read is not None:
+            _schema.custom_target_disk_name = cls._schema_azure_vm_disk_details_read.custom_target_disk_name
+            _schema.disk_encryption_set_id = cls._schema_azure_vm_disk_details_read.disk_encryption_set_id
+            _schema.disk_id = cls._schema_azure_vm_disk_details_read.disk_id
+            _schema.lun_id = cls._schema_azure_vm_disk_details_read.lun_id
+            _schema.max_size_mb = cls._schema_azure_vm_disk_details_read.max_size_mb
+            _schema.target_disk_location = cls._schema_azure_vm_disk_details_read.target_disk_location
+            _schema.target_disk_name = cls._schema_azure_vm_disk_details_read.target_disk_name
+            _schema.vhd_id = cls._schema_azure_vm_disk_details_read.vhd_id
+            _schema.vhd_name = cls._schema_azure_vm_disk_details_read.vhd_name
+            _schema.vhd_type = cls._schema_azure_vm_disk_details_read.vhd_type
+            return
 
-    _schema_azure_vm_disk_details_read = AAZObjectType()
+        cls._schema_azure_vm_disk_details_read = _schema_azure_vm_disk_details_read = AAZObjectType()
 
-    azure_vm_disk_details_read = _schema_azure_vm_disk_details_read
-    azure_vm_disk_details_read.custom_target_disk_name = AAZStrType(
-        serialized_name="customTargetDiskName",
-    )
-    azure_vm_disk_details_read.disk_encryption_set_id = AAZStrType(
-        serialized_name="diskEncryptionSetId",
-    )
-    azure_vm_disk_details_read.disk_id = AAZStrType(
-        serialized_name="diskId",
-    )
-    azure_vm_disk_details_read.lun_id = AAZStrType(
-        serialized_name="lunId",
-    )
-    azure_vm_disk_details_read.max_size_mb = AAZStrType(
-        serialized_name="maxSizeMB",
-    )
-    azure_vm_disk_details_read.target_disk_location = AAZStrType(
-        serialized_name="targetDiskLocation",
-    )
-    azure_vm_disk_details_read.target_disk_name = AAZStrType(
-        serialized_name="targetDiskName",
-    )
-    azure_vm_disk_details_read.vhd_id = AAZStrType(
-        serialized_name="vhdId",
-    )
-    azure_vm_disk_details_read.vhd_name = AAZStrType(
-        serialized_name="vhdName",
-    )
-    azure_vm_disk_details_read.vhd_type = AAZStrType(
-        serialized_name="vhdType",
-    )
+        azure_vm_disk_details_read = _schema_azure_vm_disk_details_read
+        azure_vm_disk_details_read.custom_target_disk_name = AAZStrType(
+            serialized_name="customTargetDiskName",
+        )
+        azure_vm_disk_details_read.disk_encryption_set_id = AAZStrType(
+            serialized_name="diskEncryptionSetId",
+        )
+        azure_vm_disk_details_read.disk_id = AAZStrType(
+            serialized_name="diskId",
+        )
+        azure_vm_disk_details_read.lun_id = AAZStrType(
+            serialized_name="lunId",
+        )
+        azure_vm_disk_details_read.max_size_mb = AAZStrType(
+            serialized_name="maxSizeMB",
+        )
+        azure_vm_disk_details_read.target_disk_location = AAZStrType(
+            serialized_name="targetDiskLocation",
+        )
+        azure_vm_disk_details_read.target_disk_name = AAZStrType(
+            serialized_name="targetDiskName",
+        )
+        azure_vm_disk_details_read.vhd_id = AAZStrType(
+            serialized_name="vhdId",
+        )
+        azure_vm_disk_details_read.vhd_name = AAZStrType(
+            serialized_name="vhdName",
+        )
+        azure_vm_disk_details_read.vhd_type = AAZStrType(
+            serialized_name="vhdType",
+        )
 
-    _schema.custom_target_disk_name = _schema_azure_vm_disk_details_read.custom_target_disk_name
-    _schema.disk_encryption_set_id = _schema_azure_vm_disk_details_read.disk_encryption_set_id
-    _schema.disk_id = _schema_azure_vm_disk_details_read.disk_id
-    _schema.lun_id = _schema_azure_vm_disk_details_read.lun_id
-    _schema.max_size_mb = _schema_azure_vm_disk_details_read.max_size_mb
-    _schema.target_disk_location = _schema_azure_vm_disk_details_read.target_disk_location
-    _schema.target_disk_name = _schema_azure_vm_disk_details_read.target_disk_name
-    _schema.vhd_id = _schema_azure_vm_disk_details_read.vhd_id
-    _schema.vhd_name = _schema_azure_vm_disk_details_read.vhd_name
-    _schema.vhd_type = _schema_azure_vm_disk_details_read.vhd_type
+        _schema.custom_target_disk_name = cls._schema_azure_vm_disk_details_read.custom_target_disk_name
+        _schema.disk_encryption_set_id = cls._schema_azure_vm_disk_details_read.disk_encryption_set_id
+        _schema.disk_id = cls._schema_azure_vm_disk_details_read.disk_id
+        _schema.lun_id = cls._schema_azure_vm_disk_details_read.lun_id
+        _schema.max_size_mb = cls._schema_azure_vm_disk_details_read.max_size_mb
+        _schema.target_disk_location = cls._schema_azure_vm_disk_details_read.target_disk_location
+        _schema.target_disk_name = cls._schema_azure_vm_disk_details_read.target_disk_name
+        _schema.vhd_id = cls._schema_azure_vm_disk_details_read.vhd_id
+        _schema.vhd_name = cls._schema_azure_vm_disk_details_read.vhd_name
+        _schema.vhd_type = cls._schema_azure_vm_disk_details_read.vhd_type
 
+    _schema_disk_details_read = None
 
-_schema_disk_details_read = None
+    @classmethod
+    def _build_schema_disk_details_read(cls, _schema):
+        if cls._schema_disk_details_read is not None:
+            _schema.max_size_mb = cls._schema_disk_details_read.max_size_mb
+            _schema.vhd_id = cls._schema_disk_details_read.vhd_id
+            _schema.vhd_name = cls._schema_disk_details_read.vhd_name
+            _schema.vhd_type = cls._schema_disk_details_read.vhd_type
+            return
 
+        cls._schema_disk_details_read = _schema_disk_details_read = AAZObjectType()
 
-def _build_schema_disk_details_read(_schema):
-    global _schema_disk_details_read
-    if _schema_disk_details_read is not None:
-        _schema.max_size_mb = _schema_disk_details_read.max_size_mb
-        _schema.vhd_id = _schema_disk_details_read.vhd_id
-        _schema.vhd_name = _schema_disk_details_read.vhd_name
-        _schema.vhd_type = _schema_disk_details_read.vhd_type
-        return
+        disk_details_read = _schema_disk_details_read
+        disk_details_read.max_size_mb = AAZIntType(
+            serialized_name="maxSizeMB",
+        )
+        disk_details_read.vhd_id = AAZStrType(
+            serialized_name="vhdId",
+        )
+        disk_details_read.vhd_name = AAZStrType(
+            serialized_name="vhdName",
+        )
+        disk_details_read.vhd_type = AAZStrType(
+            serialized_name="vhdType",
+        )
 
-    _schema_disk_details_read = AAZObjectType()
+        _schema.max_size_mb = cls._schema_disk_details_read.max_size_mb
+        _schema.vhd_id = cls._schema_disk_details_read.vhd_id
+        _schema.vhd_name = cls._schema_disk_details_read.vhd_name
+        _schema.vhd_type = cls._schema_disk_details_read.vhd_type
 
-    disk_details_read = _schema_disk_details_read
-    disk_details_read.max_size_mb = AAZIntType(
-        serialized_name="maxSizeMB",
-    )
-    disk_details_read.vhd_id = AAZStrType(
-        serialized_name="vhdId",
-    )
-    disk_details_read.vhd_name = AAZStrType(
-        serialized_name="vhdName",
-    )
-    disk_details_read.vhd_type = AAZStrType(
-        serialized_name="vhdType",
-    )
+    _schema_extended_location_read = None
 
-    _schema.max_size_mb = _schema_disk_details_read.max_size_mb
-    _schema.vhd_id = _schema_disk_details_read.vhd_id
-    _schema.vhd_name = _schema_disk_details_read.vhd_name
-    _schema.vhd_type = _schema_disk_details_read.vhd_type
+    @classmethod
+    def _build_schema_extended_location_read(cls, _schema):
+        if cls._schema_extended_location_read is not None:
+            _schema.name = cls._schema_extended_location_read.name
+            _schema.type = cls._schema_extended_location_read.type
+            return
 
+        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
 
-_schema_extended_location_read = None
+        extended_location_read = _schema_extended_location_read
+        extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
 
+        _schema.name = cls._schema_extended_location_read.name
+        _schema.type = cls._schema_extended_location_read.type
 
-def _build_schema_extended_location_read(_schema):
-    global _schema_extended_location_read
-    if _schema_extended_location_read is not None:
-        _schema.name = _schema_extended_location_read.name
-        _schema.type = _schema_extended_location_read.type
-        return
+    _schema_health_error_read = None
 
-    _schema_extended_location_read = AAZObjectType()
+    @classmethod
+    def _build_schema_health_error_read(cls, _schema):
+        if cls._schema_health_error_read is not None:
+            _schema.creation_time_utc = cls._schema_health_error_read.creation_time_utc
+            _schema.customer_resolvability = cls._schema_health_error_read.customer_resolvability
+            _schema.entity_id = cls._schema_health_error_read.entity_id
+            _schema.error_category = cls._schema_health_error_read.error_category
+            _schema.error_code = cls._schema_health_error_read.error_code
+            _schema.error_id = cls._schema_health_error_read.error_id
+            _schema.error_level = cls._schema_health_error_read.error_level
+            _schema.error_message = cls._schema_health_error_read.error_message
+            _schema.error_source = cls._schema_health_error_read.error_source
+            _schema.error_type = cls._schema_health_error_read.error_type
+            _schema.inner_health_errors = cls._schema_health_error_read.inner_health_errors
+            _schema.possible_causes = cls._schema_health_error_read.possible_causes
+            _schema.recommended_action = cls._schema_health_error_read.recommended_action
+            _schema.recovery_provider_error_message = cls._schema_health_error_read.recovery_provider_error_message
+            _schema.summary_message = cls._schema_health_error_read.summary_message
+            return
 
-    extended_location_read = _schema_extended_location_read
-    extended_location_read.name = AAZStrType(
-        flags={"required": True},
-    )
-    extended_location_read.type = AAZStrType(
-        flags={"required": True},
-    )
+        cls._schema_health_error_read = _schema_health_error_read = AAZObjectType()
 
-    _schema.name = _schema_extended_location_read.name
-    _schema.type = _schema_extended_location_read.type
+        health_error_read = _schema_health_error_read
+        health_error_read.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        health_error_read.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        health_error_read.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        health_error_read.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        health_error_read.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        health_error_read.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        health_error_read.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        health_error_read.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        health_error_read.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        health_error_read.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        health_error_read.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        health_error_read.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        health_error_read.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        health_error_read.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        health_error_read.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
+        inner_health_errors = _schema_health_error_read.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-_schema_health_error_read = None
+        _element = _schema_health_error_read.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
+        _schema.creation_time_utc = cls._schema_health_error_read.creation_time_utc
+        _schema.customer_resolvability = cls._schema_health_error_read.customer_resolvability
+        _schema.entity_id = cls._schema_health_error_read.entity_id
+        _schema.error_category = cls._schema_health_error_read.error_category
+        _schema.error_code = cls._schema_health_error_read.error_code
+        _schema.error_id = cls._schema_health_error_read.error_id
+        _schema.error_level = cls._schema_health_error_read.error_level
+        _schema.error_message = cls._schema_health_error_read.error_message
+        _schema.error_source = cls._schema_health_error_read.error_source
+        _schema.error_type = cls._schema_health_error_read.error_type
+        _schema.inner_health_errors = cls._schema_health_error_read.inner_health_errors
+        _schema.possible_causes = cls._schema_health_error_read.possible_causes
+        _schema.recommended_action = cls._schema_health_error_read.recommended_action
+        _schema.recovery_provider_error_message = cls._schema_health_error_read.recovery_provider_error_message
+        _schema.summary_message = cls._schema_health_error_read.summary_message
 
-def _build_schema_health_error_read(_schema):
-    global _schema_health_error_read
-    if _schema_health_error_read is not None:
-        _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
-        _schema.customer_resolvability = _schema_health_error_read.customer_resolvability
-        _schema.entity_id = _schema_health_error_read.entity_id
-        _schema.error_category = _schema_health_error_read.error_category
-        _schema.error_code = _schema_health_error_read.error_code
-        _schema.error_id = _schema_health_error_read.error_id
-        _schema.error_level = _schema_health_error_read.error_level
-        _schema.error_message = _schema_health_error_read.error_message
-        _schema.error_source = _schema_health_error_read.error_source
-        _schema.error_type = _schema_health_error_read.error_type
-        _schema.inner_health_errors = _schema_health_error_read.inner_health_errors
-        _schema.possible_causes = _schema_health_error_read.possible_causes
-        _schema.recommended_action = _schema_health_error_read.recommended_action
-        _schema.recovery_provider_error_message = _schema_health_error_read.recovery_provider_error_message
-        _schema.summary_message = _schema_health_error_read.summary_message
-        return
+    _schema_in_mage_rcm_failback_sync_details_read = None
 
-    _schema_health_error_read = AAZObjectType()
+    @classmethod
+    def _build_schema_in_mage_rcm_failback_sync_details_read(cls, _schema):
+        if cls._schema_in_mage_rcm_failback_sync_details_read is not None:
+            _schema.last15_minutes_transferred_bytes = cls._schema_in_mage_rcm_failback_sync_details_read.last15_minutes_transferred_bytes
+            _schema.last_data_transfer_time_utc = cls._schema_in_mage_rcm_failback_sync_details_read.last_data_transfer_time_utc
+            _schema.last_refresh_time = cls._schema_in_mage_rcm_failback_sync_details_read.last_refresh_time
+            _schema.processed_bytes = cls._schema_in_mage_rcm_failback_sync_details_read.processed_bytes
+            _schema.progress_health = cls._schema_in_mage_rcm_failback_sync_details_read.progress_health
+            _schema.progress_percentage = cls._schema_in_mage_rcm_failback_sync_details_read.progress_percentage
+            _schema.start_time = cls._schema_in_mage_rcm_failback_sync_details_read.start_time
+            _schema.transferred_bytes = cls._schema_in_mage_rcm_failback_sync_details_read.transferred_bytes
+            return
 
-    health_error_read = _schema_health_error_read
-    health_error_read.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    health_error_read.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    health_error_read.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    health_error_read.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    health_error_read.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    health_error_read.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    health_error_read.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    health_error_read.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    health_error_read.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    health_error_read.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    health_error_read.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    health_error_read.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    health_error_read.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    health_error_read.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    health_error_read.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        cls._schema_in_mage_rcm_failback_sync_details_read = _schema_in_mage_rcm_failback_sync_details_read = AAZObjectType()
 
-    inner_health_errors = _schema_health_error_read.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
+        in_mage_rcm_failback_sync_details_read = _schema_in_mage_rcm_failback_sync_details_read
+        in_mage_rcm_failback_sync_details_read.last15_minutes_transferred_bytes = AAZIntType(
+            serialized_name="last15MinutesTransferredBytes",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.last_data_transfer_time_utc = AAZStrType(
+            serialized_name="lastDataTransferTimeUtc",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.last_refresh_time = AAZStrType(
+            serialized_name="lastRefreshTime",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.processed_bytes = AAZIntType(
+            serialized_name="processedBytes",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.progress_health = AAZStrType(
+            serialized_name="progressHealth",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.progress_percentage = AAZIntType(
+            serialized_name="progressPercentage",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_failback_sync_details_read.transferred_bytes = AAZIntType(
+            serialized_name="transferredBytes",
+            flags={"read_only": True},
+        )
 
-    _element = _schema_health_error_read.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _schema.last15_minutes_transferred_bytes = cls._schema_in_mage_rcm_failback_sync_details_read.last15_minutes_transferred_bytes
+        _schema.last_data_transfer_time_utc = cls._schema_in_mage_rcm_failback_sync_details_read.last_data_transfer_time_utc
+        _schema.last_refresh_time = cls._schema_in_mage_rcm_failback_sync_details_read.last_refresh_time
+        _schema.processed_bytes = cls._schema_in_mage_rcm_failback_sync_details_read.processed_bytes
+        _schema.progress_health = cls._schema_in_mage_rcm_failback_sync_details_read.progress_health
+        _schema.progress_percentage = cls._schema_in_mage_rcm_failback_sync_details_read.progress_percentage
+        _schema.start_time = cls._schema_in_mage_rcm_failback_sync_details_read.start_time
+        _schema.transferred_bytes = cls._schema_in_mage_rcm_failback_sync_details_read.transferred_bytes
 
-    _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
-    _schema.customer_resolvability = _schema_health_error_read.customer_resolvability
-    _schema.entity_id = _schema_health_error_read.entity_id
-    _schema.error_category = _schema_health_error_read.error_category
-    _schema.error_code = _schema_health_error_read.error_code
-    _schema.error_id = _schema_health_error_read.error_id
-    _schema.error_level = _schema_health_error_read.error_level
-    _schema.error_message = _schema_health_error_read.error_message
-    _schema.error_source = _schema_health_error_read.error_source
-    _schema.error_type = _schema_health_error_read.error_type
-    _schema.inner_health_errors = _schema_health_error_read.inner_health_errors
-    _schema.possible_causes = _schema_health_error_read.possible_causes
-    _schema.recommended_action = _schema_health_error_read.recommended_action
-    _schema.recovery_provider_error_message = _schema_health_error_read.recovery_provider_error_message
-    _schema.summary_message = _schema_health_error_read.summary_message
+    _schema_in_mage_rcm_sync_details_read = None
 
+    @classmethod
+    def _build_schema_in_mage_rcm_sync_details_read(cls, _schema):
+        if cls._schema_in_mage_rcm_sync_details_read is not None:
+            _schema.last15_minutes_transferred_bytes = cls._schema_in_mage_rcm_sync_details_read.last15_minutes_transferred_bytes
+            _schema.last_data_transfer_time_utc = cls._schema_in_mage_rcm_sync_details_read.last_data_transfer_time_utc
+            _schema.last_refresh_time = cls._schema_in_mage_rcm_sync_details_read.last_refresh_time
+            _schema.processed_bytes = cls._schema_in_mage_rcm_sync_details_read.processed_bytes
+            _schema.progress_health = cls._schema_in_mage_rcm_sync_details_read.progress_health
+            _schema.progress_percentage = cls._schema_in_mage_rcm_sync_details_read.progress_percentage
+            _schema.start_time = cls._schema_in_mage_rcm_sync_details_read.start_time
+            _schema.transferred_bytes = cls._schema_in_mage_rcm_sync_details_read.transferred_bytes
+            return
 
-_schema_in_mage_rcm_failback_sync_details_read = None
+        cls._schema_in_mage_rcm_sync_details_read = _schema_in_mage_rcm_sync_details_read = AAZObjectType()
 
+        in_mage_rcm_sync_details_read = _schema_in_mage_rcm_sync_details_read
+        in_mage_rcm_sync_details_read.last15_minutes_transferred_bytes = AAZIntType(
+            serialized_name="last15MinutesTransferredBytes",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.last_data_transfer_time_utc = AAZStrType(
+            serialized_name="lastDataTransferTimeUtc",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.last_refresh_time = AAZStrType(
+            serialized_name="lastRefreshTime",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.processed_bytes = AAZIntType(
+            serialized_name="processedBytes",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.progress_health = AAZStrType(
+            serialized_name="progressHealth",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.progress_percentage = AAZIntType(
+            serialized_name="progressPercentage",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+        in_mage_rcm_sync_details_read.transferred_bytes = AAZIntType(
+            serialized_name="transferredBytes",
+            flags={"read_only": True},
+        )
 
-def _build_schema_in_mage_rcm_failback_sync_details_read(_schema):
-    global _schema_in_mage_rcm_failback_sync_details_read
-    if _schema_in_mage_rcm_failback_sync_details_read is not None:
-        _schema.last15_minutes_transferred_bytes = _schema_in_mage_rcm_failback_sync_details_read.last15_minutes_transferred_bytes
-        _schema.last_data_transfer_time_utc = _schema_in_mage_rcm_failback_sync_details_read.last_data_transfer_time_utc
-        _schema.last_refresh_time = _schema_in_mage_rcm_failback_sync_details_read.last_refresh_time
-        _schema.processed_bytes = _schema_in_mage_rcm_failback_sync_details_read.processed_bytes
-        _schema.progress_health = _schema_in_mage_rcm_failback_sync_details_read.progress_health
-        _schema.progress_percentage = _schema_in_mage_rcm_failback_sync_details_read.progress_percentage
-        _schema.start_time = _schema_in_mage_rcm_failback_sync_details_read.start_time
-        _schema.transferred_bytes = _schema_in_mage_rcm_failback_sync_details_read.transferred_bytes
-        return
+        _schema.last15_minutes_transferred_bytes = cls._schema_in_mage_rcm_sync_details_read.last15_minutes_transferred_bytes
+        _schema.last_data_transfer_time_utc = cls._schema_in_mage_rcm_sync_details_read.last_data_transfer_time_utc
+        _schema.last_refresh_time = cls._schema_in_mage_rcm_sync_details_read.last_refresh_time
+        _schema.processed_bytes = cls._schema_in_mage_rcm_sync_details_read.processed_bytes
+        _schema.progress_health = cls._schema_in_mage_rcm_sync_details_read.progress_health
+        _schema.progress_percentage = cls._schema_in_mage_rcm_sync_details_read.progress_percentage
+        _schema.start_time = cls._schema_in_mage_rcm_sync_details_read.start_time
+        _schema.transferred_bytes = cls._schema_in_mage_rcm_sync_details_read.transferred_bytes
 
-    _schema_in_mage_rcm_failback_sync_details_read = AAZObjectType()
+    _schema_initial_replication_details_read = None
 
-    in_mage_rcm_failback_sync_details_read = _schema_in_mage_rcm_failback_sync_details_read
-    in_mage_rcm_failback_sync_details_read.last15_minutes_transferred_bytes = AAZIntType(
-        serialized_name="last15MinutesTransferredBytes",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.last_data_transfer_time_utc = AAZStrType(
-        serialized_name="lastDataTransferTimeUtc",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.last_refresh_time = AAZStrType(
-        serialized_name="lastRefreshTime",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.processed_bytes = AAZIntType(
-        serialized_name="processedBytes",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.progress_health = AAZStrType(
-        serialized_name="progressHealth",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.progress_percentage = AAZIntType(
-        serialized_name="progressPercentage",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.start_time = AAZStrType(
-        serialized_name="startTime",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_failback_sync_details_read.transferred_bytes = AAZIntType(
-        serialized_name="transferredBytes",
-        flags={"read_only": True},
-    )
+    @classmethod
+    def _build_schema_initial_replication_details_read(cls, _schema):
+        if cls._schema_initial_replication_details_read is not None:
+            _schema.initial_replication_progress_percentage = cls._schema_initial_replication_details_read.initial_replication_progress_percentage
+            _schema.initial_replication_type = cls._schema_initial_replication_details_read.initial_replication_type
+            return
 
-    _schema.last15_minutes_transferred_bytes = _schema_in_mage_rcm_failback_sync_details_read.last15_minutes_transferred_bytes
-    _schema.last_data_transfer_time_utc = _schema_in_mage_rcm_failback_sync_details_read.last_data_transfer_time_utc
-    _schema.last_refresh_time = _schema_in_mage_rcm_failback_sync_details_read.last_refresh_time
-    _schema.processed_bytes = _schema_in_mage_rcm_failback_sync_details_read.processed_bytes
-    _schema.progress_health = _schema_in_mage_rcm_failback_sync_details_read.progress_health
-    _schema.progress_percentage = _schema_in_mage_rcm_failback_sync_details_read.progress_percentage
-    _schema.start_time = _schema_in_mage_rcm_failback_sync_details_read.start_time
-    _schema.transferred_bytes = _schema_in_mage_rcm_failback_sync_details_read.transferred_bytes
+        cls._schema_initial_replication_details_read = _schema_initial_replication_details_read = AAZObjectType()
 
+        initial_replication_details_read = _schema_initial_replication_details_read
+        initial_replication_details_read.initial_replication_progress_percentage = AAZStrType(
+            serialized_name="initialReplicationProgressPercentage",
+        )
+        initial_replication_details_read.initial_replication_type = AAZStrType(
+            serialized_name="initialReplicationType",
+        )
 
-_schema_in_mage_rcm_sync_details_read = None
+        _schema.initial_replication_progress_percentage = cls._schema_initial_replication_details_read.initial_replication_progress_percentage
+        _schema.initial_replication_type = cls._schema_initial_replication_details_read.initial_replication_type
 
+    _schema_vm_nic_details_read = None
 
-def _build_schema_in_mage_rcm_sync_details_read(_schema):
-    global _schema_in_mage_rcm_sync_details_read
-    if _schema_in_mage_rcm_sync_details_read is not None:
-        _schema.last15_minutes_transferred_bytes = _schema_in_mage_rcm_sync_details_read.last15_minutes_transferred_bytes
-        _schema.last_data_transfer_time_utc = _schema_in_mage_rcm_sync_details_read.last_data_transfer_time_utc
-        _schema.last_refresh_time = _schema_in_mage_rcm_sync_details_read.last_refresh_time
-        _schema.processed_bytes = _schema_in_mage_rcm_sync_details_read.processed_bytes
-        _schema.progress_health = _schema_in_mage_rcm_sync_details_read.progress_health
-        _schema.progress_percentage = _schema_in_mage_rcm_sync_details_read.progress_percentage
-        _schema.start_time = _schema_in_mage_rcm_sync_details_read.start_time
-        _schema.transferred_bytes = _schema_in_mage_rcm_sync_details_read.transferred_bytes
-        return
+    @classmethod
+    def _build_schema_vm_nic_details_read(cls, _schema):
+        if cls._schema_vm_nic_details_read is not None:
+            _schema.enable_accelerated_networking_on_recovery = cls._schema_vm_nic_details_read.enable_accelerated_networking_on_recovery
+            _schema.enable_accelerated_networking_on_tfo = cls._schema_vm_nic_details_read.enable_accelerated_networking_on_tfo
+            _schema.ip_configs = cls._schema_vm_nic_details_read.ip_configs
+            _schema.nic_id = cls._schema_vm_nic_details_read.nic_id
+            _schema.recovery_network_security_group_id = cls._schema_vm_nic_details_read.recovery_network_security_group_id
+            _schema.recovery_nic_name = cls._schema_vm_nic_details_read.recovery_nic_name
+            _schema.recovery_nic_resource_group_name = cls._schema_vm_nic_details_read.recovery_nic_resource_group_name
+            _schema.recovery_vm_network_id = cls._schema_vm_nic_details_read.recovery_vm_network_id
+            _schema.replica_nic_id = cls._schema_vm_nic_details_read.replica_nic_id
+            _schema.reuse_existing_nic = cls._schema_vm_nic_details_read.reuse_existing_nic
+            _schema.selection_type = cls._schema_vm_nic_details_read.selection_type
+            _schema.source_nic_arm_id = cls._schema_vm_nic_details_read.source_nic_arm_id
+            _schema.target_nic_name = cls._schema_vm_nic_details_read.target_nic_name
+            _schema.tfo_network_security_group_id = cls._schema_vm_nic_details_read.tfo_network_security_group_id
+            _schema.tfo_recovery_nic_name = cls._schema_vm_nic_details_read.tfo_recovery_nic_name
+            _schema.tfo_recovery_nic_resource_group_name = cls._schema_vm_nic_details_read.tfo_recovery_nic_resource_group_name
+            _schema.tfo_reuse_existing_nic = cls._schema_vm_nic_details_read.tfo_reuse_existing_nic
+            _schema.tfo_vm_network_id = cls._schema_vm_nic_details_read.tfo_vm_network_id
+            _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
+            return
 
-    _schema_in_mage_rcm_sync_details_read = AAZObjectType()
+        cls._schema_vm_nic_details_read = _schema_vm_nic_details_read = AAZObjectType()
 
-    in_mage_rcm_sync_details_read = _schema_in_mage_rcm_sync_details_read
-    in_mage_rcm_sync_details_read.last15_minutes_transferred_bytes = AAZIntType(
-        serialized_name="last15MinutesTransferredBytes",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.last_data_transfer_time_utc = AAZStrType(
-        serialized_name="lastDataTransferTimeUtc",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.last_refresh_time = AAZStrType(
-        serialized_name="lastRefreshTime",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.processed_bytes = AAZIntType(
-        serialized_name="processedBytes",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.progress_health = AAZStrType(
-        serialized_name="progressHealth",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.progress_percentage = AAZIntType(
-        serialized_name="progressPercentage",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.start_time = AAZStrType(
-        serialized_name="startTime",
-        flags={"read_only": True},
-    )
-    in_mage_rcm_sync_details_read.transferred_bytes = AAZIntType(
-        serialized_name="transferredBytes",
-        flags={"read_only": True},
-    )
+        vm_nic_details_read = _schema_vm_nic_details_read
+        vm_nic_details_read.enable_accelerated_networking_on_recovery = AAZBoolType(
+            serialized_name="enableAcceleratedNetworkingOnRecovery",
+        )
+        vm_nic_details_read.enable_accelerated_networking_on_tfo = AAZBoolType(
+            serialized_name="enableAcceleratedNetworkingOnTfo",
+        )
+        vm_nic_details_read.ip_configs = AAZListType(
+            serialized_name="ipConfigs",
+        )
+        vm_nic_details_read.nic_id = AAZStrType(
+            serialized_name="nicId",
+        )
+        vm_nic_details_read.recovery_network_security_group_id = AAZStrType(
+            serialized_name="recoveryNetworkSecurityGroupId",
+        )
+        vm_nic_details_read.recovery_nic_name = AAZStrType(
+            serialized_name="recoveryNicName",
+        )
+        vm_nic_details_read.recovery_nic_resource_group_name = AAZStrType(
+            serialized_name="recoveryNicResourceGroupName",
+        )
+        vm_nic_details_read.recovery_vm_network_id = AAZStrType(
+            serialized_name="recoveryVMNetworkId",
+        )
+        vm_nic_details_read.replica_nic_id = AAZStrType(
+            serialized_name="replicaNicId",
+        )
+        vm_nic_details_read.reuse_existing_nic = AAZBoolType(
+            serialized_name="reuseExistingNic",
+        )
+        vm_nic_details_read.selection_type = AAZStrType(
+            serialized_name="selectionType",
+        )
+        vm_nic_details_read.source_nic_arm_id = AAZStrType(
+            serialized_name="sourceNicArmId",
+        )
+        vm_nic_details_read.target_nic_name = AAZStrType(
+            serialized_name="targetNicName",
+        )
+        vm_nic_details_read.tfo_network_security_group_id = AAZStrType(
+            serialized_name="tfoNetworkSecurityGroupId",
+        )
+        vm_nic_details_read.tfo_recovery_nic_name = AAZStrType(
+            serialized_name="tfoRecoveryNicName",
+        )
+        vm_nic_details_read.tfo_recovery_nic_resource_group_name = AAZStrType(
+            serialized_name="tfoRecoveryNicResourceGroupName",
+        )
+        vm_nic_details_read.tfo_reuse_existing_nic = AAZBoolType(
+            serialized_name="tfoReuseExistingNic",
+        )
+        vm_nic_details_read.tfo_vm_network_id = AAZStrType(
+            serialized_name="tfoVMNetworkId",
+        )
+        vm_nic_details_read.v_m_network_name = AAZStrType(
+            serialized_name="vMNetworkName",
+        )
 
-    _schema.last15_minutes_transferred_bytes = _schema_in_mage_rcm_sync_details_read.last15_minutes_transferred_bytes
-    _schema.last_data_transfer_time_utc = _schema_in_mage_rcm_sync_details_read.last_data_transfer_time_utc
-    _schema.last_refresh_time = _schema_in_mage_rcm_sync_details_read.last_refresh_time
-    _schema.processed_bytes = _schema_in_mage_rcm_sync_details_read.processed_bytes
-    _schema.progress_health = _schema_in_mage_rcm_sync_details_read.progress_health
-    _schema.progress_percentage = _schema_in_mage_rcm_sync_details_read.progress_percentage
-    _schema.start_time = _schema_in_mage_rcm_sync_details_read.start_time
-    _schema.transferred_bytes = _schema_in_mage_rcm_sync_details_read.transferred_bytes
+        ip_configs = _schema_vm_nic_details_read.ip_configs
+        ip_configs.Element = AAZObjectType()
 
+        _element = _schema_vm_nic_details_read.ip_configs.Element
+        _element.ip_address_type = AAZStrType(
+            serialized_name="ipAddressType",
+        )
+        _element.is_primary = AAZBoolType(
+            serialized_name="isPrimary",
+        )
+        _element.is_seleted_for_failover = AAZBoolType(
+            serialized_name="isSeletedForFailover",
+        )
+        _element.name = AAZStrType()
+        _element.recovery_ip_address_type = AAZStrType(
+            serialized_name="recoveryIPAddressType",
+        )
+        _element.recovery_lb_backend_address_pool_ids = AAZListType(
+            serialized_name="recoveryLBBackendAddressPoolIds",
+        )
+        _element.recovery_public_ip_address_id = AAZStrType(
+            serialized_name="recoveryPublicIPAddressId",
+        )
+        _element.recovery_static_ip_address = AAZStrType(
+            serialized_name="recoveryStaticIPAddress",
+        )
+        _element.recovery_subnet_name = AAZStrType(
+            serialized_name="recoverySubnetName",
+        )
+        _element.static_ip_address = AAZStrType(
+            serialized_name="staticIPAddress",
+        )
+        _element.subnet_name = AAZStrType(
+            serialized_name="subnetName",
+        )
+        _element.tfo_lb_backend_address_pool_ids = AAZListType(
+            serialized_name="tfoLBBackendAddressPoolIds",
+        )
+        _element.tfo_public_ip_address_id = AAZStrType(
+            serialized_name="tfoPublicIPAddressId",
+        )
+        _element.tfo_static_ip_address = AAZStrType(
+            serialized_name="tfoStaticIPAddress",
+        )
+        _element.tfo_subnet_name = AAZStrType(
+            serialized_name="tfoSubnetName",
+        )
 
-_schema_initial_replication_details_read = None
+        recovery_lb_backend_address_pool_ids = _schema_vm_nic_details_read.ip_configs.Element.recovery_lb_backend_address_pool_ids
+        recovery_lb_backend_address_pool_ids.Element = AAZStrType()
 
+        tfo_lb_backend_address_pool_ids = _schema_vm_nic_details_read.ip_configs.Element.tfo_lb_backend_address_pool_ids
+        tfo_lb_backend_address_pool_ids.Element = AAZStrType()
 
-def _build_schema_initial_replication_details_read(_schema):
-    global _schema_initial_replication_details_read
-    if _schema_initial_replication_details_read is not None:
-        _schema.initial_replication_progress_percentage = _schema_initial_replication_details_read.initial_replication_progress_percentage
-        _schema.initial_replication_type = _schema_initial_replication_details_read.initial_replication_type
-        return
-
-    _schema_initial_replication_details_read = AAZObjectType()
-
-    initial_replication_details_read = _schema_initial_replication_details_read
-    initial_replication_details_read.initial_replication_progress_percentage = AAZStrType(
-        serialized_name="initialReplicationProgressPercentage",
-    )
-    initial_replication_details_read.initial_replication_type = AAZStrType(
-        serialized_name="initialReplicationType",
-    )
-
-    _schema.initial_replication_progress_percentage = _schema_initial_replication_details_read.initial_replication_progress_percentage
-    _schema.initial_replication_type = _schema_initial_replication_details_read.initial_replication_type
-
-
-_schema_vm_nic_details_read = None
-
-
-def _build_schema_vm_nic_details_read(_schema):
-    global _schema_vm_nic_details_read
-    if _schema_vm_nic_details_read is not None:
-        _schema.enable_accelerated_networking_on_recovery = _schema_vm_nic_details_read.enable_accelerated_networking_on_recovery
-        _schema.enable_accelerated_networking_on_tfo = _schema_vm_nic_details_read.enable_accelerated_networking_on_tfo
-        _schema.ip_configs = _schema_vm_nic_details_read.ip_configs
-        _schema.nic_id = _schema_vm_nic_details_read.nic_id
-        _schema.recovery_network_security_group_id = _schema_vm_nic_details_read.recovery_network_security_group_id
-        _schema.recovery_nic_name = _schema_vm_nic_details_read.recovery_nic_name
-        _schema.recovery_nic_resource_group_name = _schema_vm_nic_details_read.recovery_nic_resource_group_name
-        _schema.recovery_vm_network_id = _schema_vm_nic_details_read.recovery_vm_network_id
-        _schema.replica_nic_id = _schema_vm_nic_details_read.replica_nic_id
-        _schema.reuse_existing_nic = _schema_vm_nic_details_read.reuse_existing_nic
-        _schema.selection_type = _schema_vm_nic_details_read.selection_type
-        _schema.source_nic_arm_id = _schema_vm_nic_details_read.source_nic_arm_id
-        _schema.target_nic_name = _schema_vm_nic_details_read.target_nic_name
-        _schema.tfo_network_security_group_id = _schema_vm_nic_details_read.tfo_network_security_group_id
-        _schema.tfo_recovery_nic_name = _schema_vm_nic_details_read.tfo_recovery_nic_name
-        _schema.tfo_recovery_nic_resource_group_name = _schema_vm_nic_details_read.tfo_recovery_nic_resource_group_name
-        _schema.tfo_reuse_existing_nic = _schema_vm_nic_details_read.tfo_reuse_existing_nic
-        _schema.tfo_vm_network_id = _schema_vm_nic_details_read.tfo_vm_network_id
-        _schema.v_m_network_name = _schema_vm_nic_details_read.v_m_network_name
-        return
-
-    _schema_vm_nic_details_read = AAZObjectType()
-
-    vm_nic_details_read = _schema_vm_nic_details_read
-    vm_nic_details_read.enable_accelerated_networking_on_recovery = AAZBoolType(
-        serialized_name="enableAcceleratedNetworkingOnRecovery",
-    )
-    vm_nic_details_read.enable_accelerated_networking_on_tfo = AAZBoolType(
-        serialized_name="enableAcceleratedNetworkingOnTfo",
-    )
-    vm_nic_details_read.ip_configs = AAZListType(
-        serialized_name="ipConfigs",
-    )
-    vm_nic_details_read.nic_id = AAZStrType(
-        serialized_name="nicId",
-    )
-    vm_nic_details_read.recovery_network_security_group_id = AAZStrType(
-        serialized_name="recoveryNetworkSecurityGroupId",
-    )
-    vm_nic_details_read.recovery_nic_name = AAZStrType(
-        serialized_name="recoveryNicName",
-    )
-    vm_nic_details_read.recovery_nic_resource_group_name = AAZStrType(
-        serialized_name="recoveryNicResourceGroupName",
-    )
-    vm_nic_details_read.recovery_vm_network_id = AAZStrType(
-        serialized_name="recoveryVMNetworkId",
-    )
-    vm_nic_details_read.replica_nic_id = AAZStrType(
-        serialized_name="replicaNicId",
-    )
-    vm_nic_details_read.reuse_existing_nic = AAZBoolType(
-        serialized_name="reuseExistingNic",
-    )
-    vm_nic_details_read.selection_type = AAZStrType(
-        serialized_name="selectionType",
-    )
-    vm_nic_details_read.source_nic_arm_id = AAZStrType(
-        serialized_name="sourceNicArmId",
-    )
-    vm_nic_details_read.target_nic_name = AAZStrType(
-        serialized_name="targetNicName",
-    )
-    vm_nic_details_read.tfo_network_security_group_id = AAZStrType(
-        serialized_name="tfoNetworkSecurityGroupId",
-    )
-    vm_nic_details_read.tfo_recovery_nic_name = AAZStrType(
-        serialized_name="tfoRecoveryNicName",
-    )
-    vm_nic_details_read.tfo_recovery_nic_resource_group_name = AAZStrType(
-        serialized_name="tfoRecoveryNicResourceGroupName",
-    )
-    vm_nic_details_read.tfo_reuse_existing_nic = AAZBoolType(
-        serialized_name="tfoReuseExistingNic",
-    )
-    vm_nic_details_read.tfo_vm_network_id = AAZStrType(
-        serialized_name="tfoVMNetworkId",
-    )
-    vm_nic_details_read.v_m_network_name = AAZStrType(
-        serialized_name="vMNetworkName",
-    )
-
-    ip_configs = _schema_vm_nic_details_read.ip_configs
-    ip_configs.Element = AAZObjectType()
-
-    _element = _schema_vm_nic_details_read.ip_configs.Element
-    _element.ip_address_type = AAZStrType(
-        serialized_name="ipAddressType",
-    )
-    _element.is_primary = AAZBoolType(
-        serialized_name="isPrimary",
-    )
-    _element.is_seleted_for_failover = AAZBoolType(
-        serialized_name="isSeletedForFailover",
-    )
-    _element.name = AAZStrType()
-    _element.recovery_ip_address_type = AAZStrType(
-        serialized_name="recoveryIPAddressType",
-    )
-    _element.recovery_lb_backend_address_pool_ids = AAZListType(
-        serialized_name="recoveryLBBackendAddressPoolIds",
-    )
-    _element.recovery_public_ip_address_id = AAZStrType(
-        serialized_name="recoveryPublicIPAddressId",
-    )
-    _element.recovery_static_ip_address = AAZStrType(
-        serialized_name="recoveryStaticIPAddress",
-    )
-    _element.recovery_subnet_name = AAZStrType(
-        serialized_name="recoverySubnetName",
-    )
-    _element.static_ip_address = AAZStrType(
-        serialized_name="staticIPAddress",
-    )
-    _element.subnet_name = AAZStrType(
-        serialized_name="subnetName",
-    )
-    _element.tfo_lb_backend_address_pool_ids = AAZListType(
-        serialized_name="tfoLBBackendAddressPoolIds",
-    )
-    _element.tfo_public_ip_address_id = AAZStrType(
-        serialized_name="tfoPublicIPAddressId",
-    )
-    _element.tfo_static_ip_address = AAZStrType(
-        serialized_name="tfoStaticIPAddress",
-    )
-    _element.tfo_subnet_name = AAZStrType(
-        serialized_name="tfoSubnetName",
-    )
-
-    recovery_lb_backend_address_pool_ids = _schema_vm_nic_details_read.ip_configs.Element.recovery_lb_backend_address_pool_ids
-    recovery_lb_backend_address_pool_ids.Element = AAZStrType()
-
-    tfo_lb_backend_address_pool_ids = _schema_vm_nic_details_read.ip_configs.Element.tfo_lb_backend_address_pool_ids
-    tfo_lb_backend_address_pool_ids.Element = AAZStrType()
-
-    _schema.enable_accelerated_networking_on_recovery = _schema_vm_nic_details_read.enable_accelerated_networking_on_recovery
-    _schema.enable_accelerated_networking_on_tfo = _schema_vm_nic_details_read.enable_accelerated_networking_on_tfo
-    _schema.ip_configs = _schema_vm_nic_details_read.ip_configs
-    _schema.nic_id = _schema_vm_nic_details_read.nic_id
-    _schema.recovery_network_security_group_id = _schema_vm_nic_details_read.recovery_network_security_group_id
-    _schema.recovery_nic_name = _schema_vm_nic_details_read.recovery_nic_name
-    _schema.recovery_nic_resource_group_name = _schema_vm_nic_details_read.recovery_nic_resource_group_name
-    _schema.recovery_vm_network_id = _schema_vm_nic_details_read.recovery_vm_network_id
-    _schema.replica_nic_id = _schema_vm_nic_details_read.replica_nic_id
-    _schema.reuse_existing_nic = _schema_vm_nic_details_read.reuse_existing_nic
-    _schema.selection_type = _schema_vm_nic_details_read.selection_type
-    _schema.source_nic_arm_id = _schema_vm_nic_details_read.source_nic_arm_id
-    _schema.target_nic_name = _schema_vm_nic_details_read.target_nic_name
-    _schema.tfo_network_security_group_id = _schema_vm_nic_details_read.tfo_network_security_group_id
-    _schema.tfo_recovery_nic_name = _schema_vm_nic_details_read.tfo_recovery_nic_name
-    _schema.tfo_recovery_nic_resource_group_name = _schema_vm_nic_details_read.tfo_recovery_nic_resource_group_name
-    _schema.tfo_reuse_existing_nic = _schema_vm_nic_details_read.tfo_reuse_existing_nic
-    _schema.tfo_vm_network_id = _schema_vm_nic_details_read.tfo_vm_network_id
-    _schema.v_m_network_name = _schema_vm_nic_details_read.v_m_network_name
+        _schema.enable_accelerated_networking_on_recovery = cls._schema_vm_nic_details_read.enable_accelerated_networking_on_recovery
+        _schema.enable_accelerated_networking_on_tfo = cls._schema_vm_nic_details_read.enable_accelerated_networking_on_tfo
+        _schema.ip_configs = cls._schema_vm_nic_details_read.ip_configs
+        _schema.nic_id = cls._schema_vm_nic_details_read.nic_id
+        _schema.recovery_network_security_group_id = cls._schema_vm_nic_details_read.recovery_network_security_group_id
+        _schema.recovery_nic_name = cls._schema_vm_nic_details_read.recovery_nic_name
+        _schema.recovery_nic_resource_group_name = cls._schema_vm_nic_details_read.recovery_nic_resource_group_name
+        _schema.recovery_vm_network_id = cls._schema_vm_nic_details_read.recovery_vm_network_id
+        _schema.replica_nic_id = cls._schema_vm_nic_details_read.replica_nic_id
+        _schema.reuse_existing_nic = cls._schema_vm_nic_details_read.reuse_existing_nic
+        _schema.selection_type = cls._schema_vm_nic_details_read.selection_type
+        _schema.source_nic_arm_id = cls._schema_vm_nic_details_read.source_nic_arm_id
+        _schema.target_nic_name = cls._schema_vm_nic_details_read.target_nic_name
+        _schema.tfo_network_security_group_id = cls._schema_vm_nic_details_read.tfo_network_security_group_id
+        _schema.tfo_recovery_nic_name = cls._schema_vm_nic_details_read.tfo_recovery_nic_name
+        _schema.tfo_recovery_nic_resource_group_name = cls._schema_vm_nic_details_read.tfo_recovery_nic_resource_group_name
+        _schema.tfo_reuse_existing_nic = cls._schema_vm_nic_details_read.tfo_reuse_existing_nic
+        _schema.tfo_vm_network_id = cls._schema_vm_nic_details_read.tfo_vm_network_id
+        _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
 __all__ = ["RemoveDisk"]

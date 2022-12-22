@@ -49,13 +49,11 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
         _args_schema.vault_setting_name = AAZStrArg(
             options=["-n", "--name", "--vault-setting-name"],
             help="Vault setting name.",
             required=True,
-            id_part="child_name_1",
         )
 
         # define Arg Group "Properties"
@@ -231,6 +229,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

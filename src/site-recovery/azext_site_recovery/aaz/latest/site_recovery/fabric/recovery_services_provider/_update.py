@@ -265,7 +265,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_recovery_services_provider_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_recovery_services_provider_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -384,7 +384,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_recovery_services_provider_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_recovery_services_provider_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -403,12 +403,12 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                _build_schema_identity_provider_input_update(properties.set_prop("authenticationIdentityInput", AAZObjectType, ".authentication_identity_input", typ_kwargs={"flags": {"required": True}}))
+                _UpdateHelper._build_schema_identity_provider_input_update(properties.set_prop("authenticationIdentityInput", AAZObjectType, ".authentication_identity_input", typ_kwargs={"flags": {"required": True}}))
                 properties.set_prop("biosId", AAZStrType, ".bios_id")
-                _build_schema_identity_provider_input_update(properties.set_prop("dataPlaneAuthenticationIdentityInput", AAZObjectType, ".data_plane_authentication_identity_input"))
+                _UpdateHelper._build_schema_identity_provider_input_update(properties.set_prop("dataPlaneAuthenticationIdentityInput", AAZObjectType, ".data_plane_authentication_identity_input"))
                 properties.set_prop("machineId", AAZStrType, ".machine_id")
                 properties.set_prop("machineName", AAZStrType, ".machine_name", typ_kwargs={"flags": {"required": True}})
-                _build_schema_identity_provider_input_update(properties.set_prop("resourceAccessIdentityInput", AAZObjectType, ".resource_access_identity_input", typ_kwargs={"flags": {"required": True}}))
+                _UpdateHelper._build_schema_identity_provider_input_update(properties.set_prop("resourceAccessIdentityInput", AAZObjectType, ".resource_access_identity_input", typ_kwargs={"flags": {"required": True}}))
 
             return _instance_value
 
@@ -421,258 +421,258 @@ class Update(AAZCommand):
             )
 
 
-def _build_schema_identity_provider_input_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("aadAuthority", AAZStrType, ".aad_authority", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("applicationId", AAZStrType, ".application_id", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("audience", AAZStrType, ".audience", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    @classmethod
+    def _build_schema_identity_provider_input_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("aadAuthority", AAZStrType, ".aad_authority", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("applicationId", AAZStrType, ".application_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("audience", AAZStrType, ".audience", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
 
-_schema_identity_provider_details_read = None
+    _schema_identity_provider_details_read = None
 
+    @classmethod
+    def _build_schema_identity_provider_details_read(cls, _schema):
+        if cls._schema_identity_provider_details_read is not None:
+            _schema.aad_authority = cls._schema_identity_provider_details_read.aad_authority
+            _schema.application_id = cls._schema_identity_provider_details_read.application_id
+            _schema.audience = cls._schema_identity_provider_details_read.audience
+            _schema.object_id = cls._schema_identity_provider_details_read.object_id
+            _schema.tenant_id = cls._schema_identity_provider_details_read.tenant_id
+            return
 
-def _build_schema_identity_provider_details_read(_schema):
-    global _schema_identity_provider_details_read
-    if _schema_identity_provider_details_read is not None:
-        _schema.aad_authority = _schema_identity_provider_details_read.aad_authority
-        _schema.application_id = _schema_identity_provider_details_read.application_id
-        _schema.audience = _schema_identity_provider_details_read.audience
-        _schema.object_id = _schema_identity_provider_details_read.object_id
-        _schema.tenant_id = _schema_identity_provider_details_read.tenant_id
-        return
+        cls._schema_identity_provider_details_read = _schema_identity_provider_details_read = AAZObjectType()
 
-    _schema_identity_provider_details_read = AAZObjectType()
+        identity_provider_details_read = _schema_identity_provider_details_read
+        identity_provider_details_read.aad_authority = AAZStrType(
+            serialized_name="aadAuthority",
+        )
+        identity_provider_details_read.application_id = AAZStrType(
+            serialized_name="applicationId",
+        )
+        identity_provider_details_read.audience = AAZStrType()
+        identity_provider_details_read.object_id = AAZStrType(
+            serialized_name="objectId",
+        )
+        identity_provider_details_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    identity_provider_details_read = _schema_identity_provider_details_read
-    identity_provider_details_read.aad_authority = AAZStrType(
-        serialized_name="aadAuthority",
-    )
-    identity_provider_details_read.application_id = AAZStrType(
-        serialized_name="applicationId",
-    )
-    identity_provider_details_read.audience = AAZStrType()
-    identity_provider_details_read.object_id = AAZStrType(
-        serialized_name="objectId",
-    )
-    identity_provider_details_read.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-    )
+        _schema.aad_authority = cls._schema_identity_provider_details_read.aad_authority
+        _schema.application_id = cls._schema_identity_provider_details_read.application_id
+        _schema.audience = cls._schema_identity_provider_details_read.audience
+        _schema.object_id = cls._schema_identity_provider_details_read.object_id
+        _schema.tenant_id = cls._schema_identity_provider_details_read.tenant_id
 
-    _schema.aad_authority = _schema_identity_provider_details_read.aad_authority
-    _schema.application_id = _schema_identity_provider_details_read.application_id
-    _schema.audience = _schema_identity_provider_details_read.audience
-    _schema.object_id = _schema_identity_provider_details_read.object_id
-    _schema.tenant_id = _schema_identity_provider_details_read.tenant_id
+    _schema_recovery_services_provider_read = None
 
+    @classmethod
+    def _build_schema_recovery_services_provider_read(cls, _schema):
+        if cls._schema_recovery_services_provider_read is not None:
+            _schema.id = cls._schema_recovery_services_provider_read.id
+            _schema.location = cls._schema_recovery_services_provider_read.location
+            _schema.name = cls._schema_recovery_services_provider_read.name
+            _schema.properties = cls._schema_recovery_services_provider_read.properties
+            _schema.type = cls._schema_recovery_services_provider_read.type
+            return
 
-_schema_recovery_services_provider_read = None
+        cls._schema_recovery_services_provider_read = _schema_recovery_services_provider_read = AAZObjectType()
 
+        recovery_services_provider_read = _schema_recovery_services_provider_read
+        recovery_services_provider_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        recovery_services_provider_read.location = AAZStrType()
+        recovery_services_provider_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        recovery_services_provider_read.properties = AAZObjectType()
+        recovery_services_provider_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-def _build_schema_recovery_services_provider_read(_schema):
-    global _schema_recovery_services_provider_read
-    if _schema_recovery_services_provider_read is not None:
-        _schema.id = _schema_recovery_services_provider_read.id
-        _schema.location = _schema_recovery_services_provider_read.location
-        _schema.name = _schema_recovery_services_provider_read.name
-        _schema.properties = _schema_recovery_services_provider_read.properties
-        _schema.type = _schema_recovery_services_provider_read.type
-        return
+        properties = _schema_recovery_services_provider_read.properties
+        properties.allowed_scenarios = AAZListType(
+            serialized_name="allowedScenarios",
+        )
+        properties.authentication_identity_details = AAZObjectType(
+            serialized_name="authenticationIdentityDetails",
+        )
+        cls._build_schema_identity_provider_details_read(properties.authentication_identity_details)
+        properties.bios_id = AAZStrType(
+            serialized_name="biosId",
+        )
+        properties.connection_status = AAZStrType(
+            serialized_name="connectionStatus",
+        )
+        properties.data_plane_authentication_identity_details = AAZObjectType(
+            serialized_name="dataPlaneAuthenticationIdentityDetails",
+        )
+        cls._build_schema_identity_provider_details_read(properties.data_plane_authentication_identity_details)
+        properties.dra_identifier = AAZStrType(
+            serialized_name="draIdentifier",
+        )
+        properties.fabric_friendly_name = AAZStrType(
+            serialized_name="fabricFriendlyName",
+        )
+        properties.fabric_type = AAZStrType(
+            serialized_name="fabricType",
+        )
+        properties.friendly_name = AAZStrType(
+            serialized_name="friendlyName",
+        )
+        properties.health_error_details = AAZListType(
+            serialized_name="healthErrorDetails",
+        )
+        properties.last_heart_beat = AAZStrType(
+            serialized_name="lastHeartBeat",
+        )
+        properties.machine_id = AAZStrType(
+            serialized_name="machineId",
+        )
+        properties.machine_name = AAZStrType(
+            serialized_name="machineName",
+        )
+        properties.protected_item_count = AAZIntType(
+            serialized_name="protectedItemCount",
+        )
+        properties.provider_version = AAZStrType(
+            serialized_name="providerVersion",
+        )
+        properties.provider_version_details = AAZObjectType(
+            serialized_name="providerVersionDetails",
+        )
+        properties.provider_version_expiry_date = AAZStrType(
+            serialized_name="providerVersionExpiryDate",
+        )
+        properties.provider_version_state = AAZStrType(
+            serialized_name="providerVersionState",
+        )
+        properties.resource_access_identity_details = AAZObjectType(
+            serialized_name="resourceAccessIdentityDetails",
+        )
+        cls._build_schema_identity_provider_details_read(properties.resource_access_identity_details)
+        properties.server_version = AAZStrType(
+            serialized_name="serverVersion",
+        )
 
-    _schema_recovery_services_provider_read = AAZObjectType()
+        allowed_scenarios = _schema_recovery_services_provider_read.properties.allowed_scenarios
+        allowed_scenarios.Element = AAZStrType()
 
-    recovery_services_provider_read = _schema_recovery_services_provider_read
-    recovery_services_provider_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    recovery_services_provider_read.location = AAZStrType()
-    recovery_services_provider_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    recovery_services_provider_read.properties = AAZObjectType()
-    recovery_services_provider_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        health_error_details = _schema_recovery_services_provider_read.properties.health_error_details
+        health_error_details.Element = AAZObjectType()
 
-    properties = _schema_recovery_services_provider_read.properties
-    properties.allowed_scenarios = AAZListType(
-        serialized_name="allowedScenarios",
-    )
-    properties.authentication_identity_details = AAZObjectType(
-        serialized_name="authenticationIdentityDetails",
-    )
-    _build_schema_identity_provider_details_read(properties.authentication_identity_details)
-    properties.bios_id = AAZStrType(
-        serialized_name="biosId",
-    )
-    properties.connection_status = AAZStrType(
-        serialized_name="connectionStatus",
-    )
-    properties.data_plane_authentication_identity_details = AAZObjectType(
-        serialized_name="dataPlaneAuthenticationIdentityDetails",
-    )
-    _build_schema_identity_provider_details_read(properties.data_plane_authentication_identity_details)
-    properties.dra_identifier = AAZStrType(
-        serialized_name="draIdentifier",
-    )
-    properties.fabric_friendly_name = AAZStrType(
-        serialized_name="fabricFriendlyName",
-    )
-    properties.fabric_type = AAZStrType(
-        serialized_name="fabricType",
-    )
-    properties.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-    )
-    properties.health_error_details = AAZListType(
-        serialized_name="healthErrorDetails",
-    )
-    properties.last_heart_beat = AAZStrType(
-        serialized_name="lastHeartBeat",
-    )
-    properties.machine_id = AAZStrType(
-        serialized_name="machineId",
-    )
-    properties.machine_name = AAZStrType(
-        serialized_name="machineName",
-    )
-    properties.protected_item_count = AAZIntType(
-        serialized_name="protectedItemCount",
-    )
-    properties.provider_version = AAZStrType(
-        serialized_name="providerVersion",
-    )
-    properties.provider_version_details = AAZObjectType(
-        serialized_name="providerVersionDetails",
-    )
-    properties.provider_version_expiry_date = AAZStrType(
-        serialized_name="providerVersionExpiryDate",
-    )
-    properties.provider_version_state = AAZStrType(
-        serialized_name="providerVersionState",
-    )
-    properties.resource_access_identity_details = AAZObjectType(
-        serialized_name="resourceAccessIdentityDetails",
-    )
-    _build_schema_identity_provider_details_read(properties.resource_access_identity_details)
-    properties.server_version = AAZStrType(
-        serialized_name="serverVersion",
-    )
+        _element = _schema_recovery_services_provider_read.properties.health_error_details.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    allowed_scenarios = _schema_recovery_services_provider_read.properties.allowed_scenarios
-    allowed_scenarios.Element = AAZStrType()
+        inner_health_errors = _schema_recovery_services_provider_read.properties.health_error_details.Element.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-    health_error_details = _schema_recovery_services_provider_read.properties.health_error_details
-    health_error_details.Element = AAZObjectType()
+        _element = _schema_recovery_services_provider_read.properties.health_error_details.Element.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    _element = _schema_recovery_services_provider_read.properties.health_error_details.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        provider_version_details = _schema_recovery_services_provider_read.properties.provider_version_details
+        provider_version_details.expiry_date = AAZStrType(
+            serialized_name="expiryDate",
+        )
+        provider_version_details.status = AAZStrType()
+        provider_version_details.version = AAZStrType()
 
-    inner_health_errors = _schema_recovery_services_provider_read.properties.health_error_details.Element.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
-
-    _element = _schema_recovery_services_provider_read.properties.health_error_details.Element.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
-
-    provider_version_details = _schema_recovery_services_provider_read.properties.provider_version_details
-    provider_version_details.expiry_date = AAZStrType(
-        serialized_name="expiryDate",
-    )
-    provider_version_details.status = AAZStrType()
-    provider_version_details.version = AAZStrType()
-
-    _schema.id = _schema_recovery_services_provider_read.id
-    _schema.location = _schema_recovery_services_provider_read.location
-    _schema.name = _schema_recovery_services_provider_read.name
-    _schema.properties = _schema_recovery_services_provider_read.properties
-    _schema.type = _schema_recovery_services_provider_read.type
+        _schema.id = cls._schema_recovery_services_provider_read.id
+        _schema.location = cls._schema_recovery_services_provider_read.location
+        _schema.name = cls._schema_recovery_services_provider_read.name
+        _schema.properties = cls._schema_recovery_services_provider_read.properties
+        _schema.type = cls._schema_recovery_services_provider_read.type
 
 
 __all__ = ["Update"]

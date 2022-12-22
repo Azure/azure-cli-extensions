@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListAppliance(AAZCommand):
     """List the list of Azure Site Recovery appliances for the vault.
+
+    :example: list-appliance for vault
+        az site-recovery vault list-appliance -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -257,7 +260,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.dra.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             mars_agent = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.mars_agent
             mars_agent.bios_id = AAZStrType(
@@ -294,7 +297,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.mars_agent.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             process_server = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.process_server
             process_server.available_memory_in_bytes = AAZIntType(
@@ -411,7 +414,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.process_server.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             ip_addresses = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.process_server.ip_addresses
             ip_addresses.Element = AAZStrType()
@@ -451,7 +454,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.push_installer.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             rcm_proxy = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.rcm_proxy
             rcm_proxy.bios_id = AAZStrType(
@@ -492,7 +495,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.rcm_proxy.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             replication_agent = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.replication_agent
             replication_agent.bios_id = AAZStrType(
@@ -529,7 +532,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.replication_agent.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             reprotect_agent = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.reprotect_agent
             reprotect_agent.accessible_datastores = AAZListType(
@@ -585,7 +588,7 @@ class ListAppliance(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.reprotect_agent.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             switch_provider_blocking_error_details = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm").appliances.Element.switch_provider_blocking_error_details
             switch_provider_blocking_error_details.Element = AAZObjectType()
@@ -625,140 +628,142 @@ class ListAppliance(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_health_error_read = None
+class _ListApplianceHelper:
+    """Helper class for ListAppliance"""
 
+    _schema_health_error_read = None
 
-def _build_schema_health_error_read(_schema):
-    global _schema_health_error_read
-    if _schema_health_error_read is not None:
-        _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
-        _schema.customer_resolvability = _schema_health_error_read.customer_resolvability
-        _schema.entity_id = _schema_health_error_read.entity_id
-        _schema.error_category = _schema_health_error_read.error_category
-        _schema.error_code = _schema_health_error_read.error_code
-        _schema.error_id = _schema_health_error_read.error_id
-        _schema.error_level = _schema_health_error_read.error_level
-        _schema.error_message = _schema_health_error_read.error_message
-        _schema.error_source = _schema_health_error_read.error_source
-        _schema.error_type = _schema_health_error_read.error_type
-        _schema.inner_health_errors = _schema_health_error_read.inner_health_errors
-        _schema.possible_causes = _schema_health_error_read.possible_causes
-        _schema.recommended_action = _schema_health_error_read.recommended_action
-        _schema.recovery_provider_error_message = _schema_health_error_read.recovery_provider_error_message
-        _schema.summary_message = _schema_health_error_read.summary_message
-        return
+    @classmethod
+    def _build_schema_health_error_read(cls, _schema):
+        if cls._schema_health_error_read is not None:
+            _schema.creation_time_utc = cls._schema_health_error_read.creation_time_utc
+            _schema.customer_resolvability = cls._schema_health_error_read.customer_resolvability
+            _schema.entity_id = cls._schema_health_error_read.entity_id
+            _schema.error_category = cls._schema_health_error_read.error_category
+            _schema.error_code = cls._schema_health_error_read.error_code
+            _schema.error_id = cls._schema_health_error_read.error_id
+            _schema.error_level = cls._schema_health_error_read.error_level
+            _schema.error_message = cls._schema_health_error_read.error_message
+            _schema.error_source = cls._schema_health_error_read.error_source
+            _schema.error_type = cls._schema_health_error_read.error_type
+            _schema.inner_health_errors = cls._schema_health_error_read.inner_health_errors
+            _schema.possible_causes = cls._schema_health_error_read.possible_causes
+            _schema.recommended_action = cls._schema_health_error_read.recommended_action
+            _schema.recovery_provider_error_message = cls._schema_health_error_read.recovery_provider_error_message
+            _schema.summary_message = cls._schema_health_error_read.summary_message
+            return
 
-    _schema_health_error_read = AAZObjectType()
+        cls._schema_health_error_read = _schema_health_error_read = AAZObjectType()
 
-    health_error_read = _schema_health_error_read
-    health_error_read.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    health_error_read.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    health_error_read.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    health_error_read.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    health_error_read.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    health_error_read.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    health_error_read.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    health_error_read.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    health_error_read.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    health_error_read.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    health_error_read.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    health_error_read.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    health_error_read.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    health_error_read.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    health_error_read.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        health_error_read = _schema_health_error_read
+        health_error_read.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        health_error_read.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        health_error_read.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        health_error_read.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        health_error_read.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        health_error_read.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        health_error_read.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        health_error_read.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        health_error_read.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        health_error_read.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        health_error_read.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        health_error_read.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        health_error_read.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        health_error_read.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        health_error_read.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    inner_health_errors = _schema_health_error_read.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
+        inner_health_errors = _schema_health_error_read.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-    _element = _schema_health_error_read.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_health_error_read.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
-    _schema.customer_resolvability = _schema_health_error_read.customer_resolvability
-    _schema.entity_id = _schema_health_error_read.entity_id
-    _schema.error_category = _schema_health_error_read.error_category
-    _schema.error_code = _schema_health_error_read.error_code
-    _schema.error_id = _schema_health_error_read.error_id
-    _schema.error_level = _schema_health_error_read.error_level
-    _schema.error_message = _schema_health_error_read.error_message
-    _schema.error_source = _schema_health_error_read.error_source
-    _schema.error_type = _schema_health_error_read.error_type
-    _schema.inner_health_errors = _schema_health_error_read.inner_health_errors
-    _schema.possible_causes = _schema_health_error_read.possible_causes
-    _schema.recommended_action = _schema_health_error_read.recommended_action
-    _schema.recovery_provider_error_message = _schema_health_error_read.recovery_provider_error_message
-    _schema.summary_message = _schema_health_error_read.summary_message
+        _schema.creation_time_utc = cls._schema_health_error_read.creation_time_utc
+        _schema.customer_resolvability = cls._schema_health_error_read.customer_resolvability
+        _schema.entity_id = cls._schema_health_error_read.entity_id
+        _schema.error_category = cls._schema_health_error_read.error_category
+        _schema.error_code = cls._schema_health_error_read.error_code
+        _schema.error_id = cls._schema_health_error_read.error_id
+        _schema.error_level = cls._schema_health_error_read.error_level
+        _schema.error_message = cls._schema_health_error_read.error_message
+        _schema.error_source = cls._schema_health_error_read.error_source
+        _schema.error_type = cls._schema_health_error_read.error_type
+        _schema.inner_health_errors = cls._schema_health_error_read.inner_health_errors
+        _schema.possible_causes = cls._schema_health_error_read.possible_causes
+        _schema.recommended_action = cls._schema_health_error_read.recommended_action
+        _schema.recovery_provider_error_message = cls._schema_health_error_read.recovery_provider_error_message
+        _schema.summary_message = cls._schema_health_error_read.summary_message
 
 
 __all__ = ["ListAppliance"]

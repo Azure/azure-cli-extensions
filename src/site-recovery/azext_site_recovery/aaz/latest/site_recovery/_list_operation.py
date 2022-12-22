@@ -162,4 +162,8 @@ class ListOperation(AAZCommand):
             return cls._schema_on_200
 
 
+class _ListOperationHelper:
+    """Helper class for ListOperation"""
+
+
 __all__ = ["ListOperation"]

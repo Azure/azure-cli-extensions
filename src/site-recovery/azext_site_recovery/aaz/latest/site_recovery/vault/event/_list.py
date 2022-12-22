@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of Azure Site Recovery events for the vault.
+
+    :example: event list
+        az site-recovery vault event list -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -482,6 +485,10 @@ class List(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

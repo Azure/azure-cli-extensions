@@ -148,4 +148,8 @@ class MigrateToAad(AAZCommand):
             pass
 
 
+class _MigrateToAadHelper:
+    """Helper class for MigrateToAad"""
+
+
 __all__ = ["MigrateToAad"]

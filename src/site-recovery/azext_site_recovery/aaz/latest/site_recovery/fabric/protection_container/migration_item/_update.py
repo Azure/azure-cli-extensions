@@ -378,7 +378,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_migration_item_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_migration_item_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -501,7 +501,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_migration_item_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_migration_item_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -593,517 +593,519 @@ class Update(AAZCommand):
             )
 
 
-_schema_migration_item_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_migration_item_read = None
 
-def _build_schema_migration_item_read(_schema):
-    global _schema_migration_item_read
-    if _schema_migration_item_read is not None:
-        _schema.id = _schema_migration_item_read.id
-        _schema.location = _schema_migration_item_read.location
-        _schema.name = _schema_migration_item_read.name
-        _schema.properties = _schema_migration_item_read.properties
-        _schema.type = _schema_migration_item_read.type
-        return
+    @classmethod
+    def _build_schema_migration_item_read(cls, _schema):
+        if cls._schema_migration_item_read is not None:
+            _schema.id = cls._schema_migration_item_read.id
+            _schema.location = cls._schema_migration_item_read.location
+            _schema.name = cls._schema_migration_item_read.name
+            _schema.properties = cls._schema_migration_item_read.properties
+            _schema.type = cls._schema_migration_item_read.type
+            return
 
-    _schema_migration_item_read = AAZObjectType()
+        cls._schema_migration_item_read = _schema_migration_item_read = AAZObjectType()
 
-    migration_item_read = _schema_migration_item_read
-    migration_item_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    migration_item_read.location = AAZStrType()
-    migration_item_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    migration_item_read.properties = AAZObjectType()
-    migration_item_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        migration_item_read = _schema_migration_item_read
+        migration_item_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        migration_item_read.location = AAZStrType()
+        migration_item_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        migration_item_read.properties = AAZObjectType()
+        migration_item_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_migration_item_read.properties
-    properties.allowed_operations = AAZListType(
-        serialized_name="allowedOperations",
-        flags={"read_only": True},
-    )
-    properties.critical_job_history = AAZListType(
-        serialized_name="criticalJobHistory",
-        flags={"read_only": True},
-    )
-    properties.current_job = AAZObjectType(
-        serialized_name="currentJob",
-    )
-    properties.event_correlation_id = AAZStrType(
-        serialized_name="eventCorrelationId",
-        flags={"read_only": True},
-    )
-    properties.health = AAZStrType(
-        flags={"read_only": True},
-    )
-    properties.health_errors = AAZListType(
-        serialized_name="healthErrors",
-        flags={"read_only": True},
-    )
-    properties.last_migration_status = AAZStrType(
-        serialized_name="lastMigrationStatus",
-        flags={"read_only": True},
-    )
-    properties.last_migration_time = AAZStrType(
-        serialized_name="lastMigrationTime",
-        flags={"read_only": True},
-    )
-    properties.last_test_migration_status = AAZStrType(
-        serialized_name="lastTestMigrationStatus",
-        flags={"read_only": True},
-    )
-    properties.last_test_migration_time = AAZStrType(
-        serialized_name="lastTestMigrationTime",
-        flags={"read_only": True},
-    )
-    properties.machine_name = AAZStrType(
-        serialized_name="machineName",
-        flags={"read_only": True},
-    )
-    properties.migration_state = AAZStrType(
-        serialized_name="migrationState",
-        flags={"read_only": True},
-    )
-    properties.migration_state_description = AAZStrType(
-        serialized_name="migrationStateDescription",
-        flags={"read_only": True},
-    )
-    properties.policy_friendly_name = AAZStrType(
-        serialized_name="policyFriendlyName",
-        flags={"read_only": True},
-    )
-    properties.policy_id = AAZStrType(
-        serialized_name="policyId",
-        flags={"read_only": True},
-    )
-    properties.provider_specific_details = AAZObjectType(
-        serialized_name="providerSpecificDetails",
-    )
-    properties.recovery_services_provider_id = AAZStrType(
-        serialized_name="recoveryServicesProviderId",
-        flags={"read_only": True},
-    )
-    properties.replication_status = AAZStrType(
-        serialized_name="replicationStatus",
-        flags={"read_only": True},
-    )
-    properties.test_migrate_state = AAZStrType(
-        serialized_name="testMigrateState",
-        flags={"read_only": True},
-    )
-    properties.test_migrate_state_description = AAZStrType(
-        serialized_name="testMigrateStateDescription",
-        flags={"read_only": True},
-    )
+        properties = _schema_migration_item_read.properties
+        properties.allowed_operations = AAZListType(
+            serialized_name="allowedOperations",
+            flags={"read_only": True},
+        )
+        properties.critical_job_history = AAZListType(
+            serialized_name="criticalJobHistory",
+            flags={"read_only": True},
+        )
+        properties.current_job = AAZObjectType(
+            serialized_name="currentJob",
+        )
+        properties.event_correlation_id = AAZStrType(
+            serialized_name="eventCorrelationId",
+            flags={"read_only": True},
+        )
+        properties.health = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.health_errors = AAZListType(
+            serialized_name="healthErrors",
+            flags={"read_only": True},
+        )
+        properties.last_migration_status = AAZStrType(
+            serialized_name="lastMigrationStatus",
+            flags={"read_only": True},
+        )
+        properties.last_migration_time = AAZStrType(
+            serialized_name="lastMigrationTime",
+            flags={"read_only": True},
+        )
+        properties.last_test_migration_status = AAZStrType(
+            serialized_name="lastTestMigrationStatus",
+            flags={"read_only": True},
+        )
+        properties.last_test_migration_time = AAZStrType(
+            serialized_name="lastTestMigrationTime",
+            flags={"read_only": True},
+        )
+        properties.machine_name = AAZStrType(
+            serialized_name="machineName",
+            flags={"read_only": True},
+        )
+        properties.migration_state = AAZStrType(
+            serialized_name="migrationState",
+            flags={"read_only": True},
+        )
+        properties.migration_state_description = AAZStrType(
+            serialized_name="migrationStateDescription",
+            flags={"read_only": True},
+        )
+        properties.policy_friendly_name = AAZStrType(
+            serialized_name="policyFriendlyName",
+            flags={"read_only": True},
+        )
+        properties.policy_id = AAZStrType(
+            serialized_name="policyId",
+            flags={"read_only": True},
+        )
+        properties.provider_specific_details = AAZObjectType(
+            serialized_name="providerSpecificDetails",
+        )
+        properties.recovery_services_provider_id = AAZStrType(
+            serialized_name="recoveryServicesProviderId",
+            flags={"read_only": True},
+        )
+        properties.replication_status = AAZStrType(
+            serialized_name="replicationStatus",
+            flags={"read_only": True},
+        )
+        properties.test_migrate_state = AAZStrType(
+            serialized_name="testMigrateState",
+            flags={"read_only": True},
+        )
+        properties.test_migrate_state_description = AAZStrType(
+            serialized_name="testMigrateStateDescription",
+            flags={"read_only": True},
+        )
 
-    allowed_operations = _schema_migration_item_read.properties.allowed_operations
-    allowed_operations.Element = AAZStrType()
+        allowed_operations = _schema_migration_item_read.properties.allowed_operations
+        allowed_operations.Element = AAZStrType()
 
-    critical_job_history = _schema_migration_item_read.properties.critical_job_history
-    critical_job_history.Element = AAZObjectType()
+        critical_job_history = _schema_migration_item_read.properties.critical_job_history
+        critical_job_history.Element = AAZObjectType()
 
-    _element = _schema_migration_item_read.properties.critical_job_history.Element
-    _element.job_id = AAZStrType(
-        serialized_name="jobId",
-        flags={"read_only": True},
-    )
-    _element.job_name = AAZStrType(
-        serialized_name="jobName",
-        flags={"read_only": True},
-    )
-    _element.job_status = AAZStrType(
-        serialized_name="jobStatus",
-        flags={"read_only": True},
-    )
-    _element.start_time = AAZStrType(
-        serialized_name="startTime",
-        flags={"read_only": True},
-    )
+        _element = _schema_migration_item_read.properties.critical_job_history.Element
+        _element.job_id = AAZStrType(
+            serialized_name="jobId",
+            flags={"read_only": True},
+        )
+        _element.job_name = AAZStrType(
+            serialized_name="jobName",
+            flags={"read_only": True},
+        )
+        _element.job_status = AAZStrType(
+            serialized_name="jobStatus",
+            flags={"read_only": True},
+        )
+        _element.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
 
-    current_job = _schema_migration_item_read.properties.current_job
-    current_job.job_id = AAZStrType(
-        serialized_name="jobId",
-        flags={"read_only": True},
-    )
-    current_job.job_name = AAZStrType(
-        serialized_name="jobName",
-        flags={"read_only": True},
-    )
-    current_job.start_time = AAZStrType(
-        serialized_name="startTime",
-        flags={"read_only": True},
-    )
+        current_job = _schema_migration_item_read.properties.current_job
+        current_job.job_id = AAZStrType(
+            serialized_name="jobId",
+            flags={"read_only": True},
+        )
+        current_job.job_name = AAZStrType(
+            serialized_name="jobName",
+            flags={"read_only": True},
+        )
+        current_job.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
 
-    health_errors = _schema_migration_item_read.properties.health_errors
-    health_errors.Element = AAZObjectType()
+        health_errors = _schema_migration_item_read.properties.health_errors
+        health_errors.Element = AAZObjectType()
 
-    _element = _schema_migration_item_read.properties.health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_migration_item_read.properties.health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    inner_health_errors = _schema_migration_item_read.properties.health_errors.Element.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
+        inner_health_errors = _schema_migration_item_read.properties.health_errors.Element.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-    _element = _schema_migration_item_read.properties.health_errors.Element.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_migration_item_read.properties.health_errors.Element.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    provider_specific_details = _schema_migration_item_read.properties.provider_specific_details
-    provider_specific_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        provider_specific_details = _schema_migration_item_read.properties.provider_specific_details
+        provider_specific_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    disc_v_mware_cbt = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
-    disc_v_mware_cbt.data_mover_run_as_account_id = AAZStrType(
-        serialized_name="dataMoverRunAsAccountId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.firmware_type = AAZStrType(
-        serialized_name="firmwareType",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.initial_seeding_progress_percentage = AAZIntType(
-        serialized_name="initialSeedingProgressPercentage",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.initial_seeding_retry_count = AAZIntType(
-        serialized_name="initialSeedingRetryCount",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.last_recovery_point_id = AAZStrType(
-        serialized_name="lastRecoveryPointId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.last_recovery_point_received = AAZStrType(
-        serialized_name="lastRecoveryPointReceived",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.license_type = AAZStrType(
-        serialized_name="licenseType",
-    )
-    disc_v_mware_cbt.migration_progress_percentage = AAZIntType(
-        serialized_name="migrationProgressPercentage",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.migration_recovery_point_id = AAZStrType(
-        serialized_name="migrationRecoveryPointId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.os_type = AAZStrType(
-        serialized_name="osType",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.perform_auto_resync = AAZStrType(
-        serialized_name="performAutoResync",
-    )
-    disc_v_mware_cbt.protected_disks = AAZListType(
-        serialized_name="protectedDisks",
-    )
-    disc_v_mware_cbt.resume_progress_percentage = AAZIntType(
-        serialized_name="resumeProgressPercentage",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.resume_retry_count = AAZIntType(
-        serialized_name="resumeRetryCount",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.resync_progress_percentage = AAZIntType(
-        serialized_name="resyncProgressPercentage",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.resync_required = AAZStrType(
-        serialized_name="resyncRequired",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.resync_retry_count = AAZIntType(
-        serialized_name="resyncRetryCount",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.resync_state = AAZStrType(
-        serialized_name="resyncState",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.seed_disk_tags = AAZDictType(
-        serialized_name="seedDiskTags",
-    )
-    disc_v_mware_cbt.snapshot_run_as_account_id = AAZStrType(
-        serialized_name="snapshotRunAsAccountId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.sql_server_license_type = AAZStrType(
-        serialized_name="sqlServerLicenseType",
-    )
-    disc_v_mware_cbt.storage_account_id = AAZStrType(
-        serialized_name="storageAccountId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.target_availability_set_id = AAZStrType(
-        serialized_name="targetAvailabilitySetId",
-    )
-    disc_v_mware_cbt.target_availability_zone = AAZStrType(
-        serialized_name="targetAvailabilityZone",
-    )
-    disc_v_mware_cbt.target_boot_diagnostics_storage_account_id = AAZStrType(
-        serialized_name="targetBootDiagnosticsStorageAccountId",
-    )
-    disc_v_mware_cbt.target_disk_tags = AAZDictType(
-        serialized_name="targetDiskTags",
-    )
-    disc_v_mware_cbt.target_generation = AAZStrType(
-        serialized_name="targetGeneration",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.target_location = AAZStrType(
-        serialized_name="targetLocation",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.target_network_id = AAZStrType(
-        serialized_name="targetNetworkId",
-    )
-    disc_v_mware_cbt.target_nic_tags = AAZDictType(
-        serialized_name="targetNicTags",
-    )
-    disc_v_mware_cbt.target_proximity_placement_group_id = AAZStrType(
-        serialized_name="targetProximityPlacementGroupId",
-    )
-    disc_v_mware_cbt.target_resource_group_id = AAZStrType(
-        serialized_name="targetResourceGroupId",
-    )
-    disc_v_mware_cbt.target_vm_name = AAZStrType(
-        serialized_name="targetVmName",
-    )
-    disc_v_mware_cbt.target_vm_size = AAZStrType(
-        serialized_name="targetVmSize",
-    )
-    disc_v_mware_cbt.target_vm_tags = AAZDictType(
-        serialized_name="targetVmTags",
-    )
-    disc_v_mware_cbt.test_network_id = AAZStrType(
-        serialized_name="testNetworkId",
-    )
-    disc_v_mware_cbt.vm_nics = AAZListType(
-        serialized_name="vmNics",
-    )
-    disc_v_mware_cbt.vmware_machine_id = AAZStrType(
-        serialized_name="vmwareMachineId",
-        flags={"read_only": True},
-    )
+        disc_v_mware_cbt = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
+        disc_v_mware_cbt.data_mover_run_as_account_id = AAZStrType(
+            serialized_name="dataMoverRunAsAccountId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.firmware_type = AAZStrType(
+            serialized_name="firmwareType",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.initial_seeding_progress_percentage = AAZIntType(
+            serialized_name="initialSeedingProgressPercentage",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.initial_seeding_retry_count = AAZIntType(
+            serialized_name="initialSeedingRetryCount",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.last_recovery_point_id = AAZStrType(
+            serialized_name="lastRecoveryPointId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.last_recovery_point_received = AAZStrType(
+            serialized_name="lastRecoveryPointReceived",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.license_type = AAZStrType(
+            serialized_name="licenseType",
+        )
+        disc_v_mware_cbt.migration_progress_percentage = AAZIntType(
+            serialized_name="migrationProgressPercentage",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.migration_recovery_point_id = AAZStrType(
+            serialized_name="migrationRecoveryPointId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.os_type = AAZStrType(
+            serialized_name="osType",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.perform_auto_resync = AAZStrType(
+            serialized_name="performAutoResync",
+        )
+        disc_v_mware_cbt.protected_disks = AAZListType(
+            serialized_name="protectedDisks",
+        )
+        disc_v_mware_cbt.resume_progress_percentage = AAZIntType(
+            serialized_name="resumeProgressPercentage",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.resume_retry_count = AAZIntType(
+            serialized_name="resumeRetryCount",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.resync_progress_percentage = AAZIntType(
+            serialized_name="resyncProgressPercentage",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.resync_required = AAZStrType(
+            serialized_name="resyncRequired",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.resync_retry_count = AAZIntType(
+            serialized_name="resyncRetryCount",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.resync_state = AAZStrType(
+            serialized_name="resyncState",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.seed_disk_tags = AAZDictType(
+            serialized_name="seedDiskTags",
+        )
+        disc_v_mware_cbt.snapshot_run_as_account_id = AAZStrType(
+            serialized_name="snapshotRunAsAccountId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.sql_server_license_type = AAZStrType(
+            serialized_name="sqlServerLicenseType",
+        )
+        disc_v_mware_cbt.storage_account_id = AAZStrType(
+            serialized_name="storageAccountId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.target_availability_set_id = AAZStrType(
+            serialized_name="targetAvailabilitySetId",
+        )
+        disc_v_mware_cbt.target_availability_zone = AAZStrType(
+            serialized_name="targetAvailabilityZone",
+        )
+        disc_v_mware_cbt.target_boot_diagnostics_storage_account_id = AAZStrType(
+            serialized_name="targetBootDiagnosticsStorageAccountId",
+        )
+        disc_v_mware_cbt.target_disk_tags = AAZDictType(
+            serialized_name="targetDiskTags",
+        )
+        disc_v_mware_cbt.target_generation = AAZStrType(
+            serialized_name="targetGeneration",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.target_location = AAZStrType(
+            serialized_name="targetLocation",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.target_network_id = AAZStrType(
+            serialized_name="targetNetworkId",
+        )
+        disc_v_mware_cbt.target_nic_tags = AAZDictType(
+            serialized_name="targetNicTags",
+        )
+        disc_v_mware_cbt.target_proximity_placement_group_id = AAZStrType(
+            serialized_name="targetProximityPlacementGroupId",
+        )
+        disc_v_mware_cbt.target_resource_group_id = AAZStrType(
+            serialized_name="targetResourceGroupId",
+        )
+        disc_v_mware_cbt.target_vm_name = AAZStrType(
+            serialized_name="targetVmName",
+        )
+        disc_v_mware_cbt.target_vm_size = AAZStrType(
+            serialized_name="targetVmSize",
+        )
+        disc_v_mware_cbt.target_vm_tags = AAZDictType(
+            serialized_name="targetVmTags",
+        )
+        disc_v_mware_cbt.test_network_id = AAZStrType(
+            serialized_name="testNetworkId",
+        )
+        disc_v_mware_cbt.vm_nics = AAZListType(
+            serialized_name="vmNics",
+        )
+        disc_v_mware_cbt.vmware_machine_id = AAZStrType(
+            serialized_name="vmwareMachineId",
+            flags={"read_only": True},
+        )
 
-    protected_disks = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").protected_disks
-    protected_disks.Element = AAZObjectType()
+        protected_disks = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").protected_disks
+        protected_disks.Element = AAZObjectType()
 
-    _element = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").protected_disks.Element
-    _element.capacity_in_bytes = AAZIntType(
-        serialized_name="capacityInBytes",
-        flags={"read_only": True},
-    )
-    _element.disk_encryption_set_id = AAZStrType(
-        serialized_name="diskEncryptionSetId",
-        flags={"read_only": True},
-    )
-    _element.disk_id = AAZStrType(
-        serialized_name="diskId",
-        flags={"read_only": True},
-    )
-    _element.disk_name = AAZStrType(
-        serialized_name="diskName",
-        flags={"read_only": True},
-    )
-    _element.disk_path = AAZStrType(
-        serialized_name="diskPath",
-        flags={"read_only": True},
-    )
-    _element.disk_type = AAZStrType(
-        serialized_name="diskType",
-    )
-    _element.is_os_disk = AAZStrType(
-        serialized_name="isOSDisk",
-        flags={"read_only": True},
-    )
-    _element.log_storage_account_id = AAZStrType(
-        serialized_name="logStorageAccountId",
-        flags={"read_only": True},
-    )
-    _element.log_storage_account_sas_secret_name = AAZStrType(
-        serialized_name="logStorageAccountSasSecretName",
-        flags={"read_only": True},
-    )
-    _element.seed_blob_uri = AAZStrType(
-        serialized_name="seedBlobUri",
-        flags={"read_only": True},
-    )
-    _element.seed_managed_disk_id = AAZStrType(
-        serialized_name="seedManagedDiskId",
-        flags={"read_only": True},
-    )
-    _element.target_blob_uri = AAZStrType(
-        serialized_name="targetBlobUri",
-        flags={"read_only": True},
-    )
-    _element.target_disk_name = AAZStrType(
-        serialized_name="targetDiskName",
-    )
-    _element.target_managed_disk_id = AAZStrType(
-        serialized_name="targetManagedDiskId",
-        flags={"read_only": True},
-    )
+        _element = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").protected_disks.Element
+        _element.capacity_in_bytes = AAZIntType(
+            serialized_name="capacityInBytes",
+            flags={"read_only": True},
+        )
+        _element.disk_encryption_set_id = AAZStrType(
+            serialized_name="diskEncryptionSetId",
+            flags={"read_only": True},
+        )
+        _element.disk_id = AAZStrType(
+            serialized_name="diskId",
+            flags={"read_only": True},
+        )
+        _element.disk_name = AAZStrType(
+            serialized_name="diskName",
+            flags={"read_only": True},
+        )
+        _element.disk_path = AAZStrType(
+            serialized_name="diskPath",
+            flags={"read_only": True},
+        )
+        _element.disk_type = AAZStrType(
+            serialized_name="diskType",
+        )
+        _element.is_os_disk = AAZStrType(
+            serialized_name="isOSDisk",
+            flags={"read_only": True},
+        )
+        _element.log_storage_account_id = AAZStrType(
+            serialized_name="logStorageAccountId",
+            flags={"read_only": True},
+        )
+        _element.log_storage_account_sas_secret_name = AAZStrType(
+            serialized_name="logStorageAccountSasSecretName",
+            flags={"read_only": True},
+        )
+        _element.seed_blob_uri = AAZStrType(
+            serialized_name="seedBlobUri",
+            flags={"read_only": True},
+        )
+        _element.seed_managed_disk_id = AAZStrType(
+            serialized_name="seedManagedDiskId",
+            flags={"read_only": True},
+        )
+        _element.target_blob_uri = AAZStrType(
+            serialized_name="targetBlobUri",
+            flags={"read_only": True},
+        )
+        _element.target_disk_name = AAZStrType(
+            serialized_name="targetDiskName",
+        )
+        _element.target_managed_disk_id = AAZStrType(
+            serialized_name="targetManagedDiskId",
+            flags={"read_only": True},
+        )
 
-    seed_disk_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").seed_disk_tags
-    seed_disk_tags.Element = AAZStrType()
+        seed_disk_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").seed_disk_tags
+        seed_disk_tags.Element = AAZStrType()
 
-    target_disk_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").target_disk_tags
-    target_disk_tags.Element = AAZStrType()
+        target_disk_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").target_disk_tags
+        target_disk_tags.Element = AAZStrType()
 
-    target_nic_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").target_nic_tags
-    target_nic_tags.Element = AAZStrType()
+        target_nic_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").target_nic_tags
+        target_nic_tags.Element = AAZStrType()
 
-    target_vm_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").target_vm_tags
-    target_vm_tags.Element = AAZStrType()
+        target_vm_tags = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").target_vm_tags
+        target_vm_tags.Element = AAZStrType()
 
-    vm_nics = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").vm_nics
-    vm_nics.Element = AAZObjectType()
+        vm_nics = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").vm_nics
+        vm_nics.Element = AAZObjectType()
 
-    _element = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").vm_nics.Element
-    _element.is_primary_nic = AAZStrType(
-        serialized_name="isPrimaryNic",
-    )
-    _element.is_selected_for_migration = AAZStrType(
-        serialized_name="isSelectedForMigration",
-    )
-    _element.nic_id = AAZStrType(
-        serialized_name="nicId",
-        flags={"read_only": True},
-    )
-    _element.source_ip_address = AAZStrType(
-        serialized_name="sourceIPAddress",
-        flags={"read_only": True},
-    )
-    _element.source_ip_address_type = AAZStrType(
-        serialized_name="sourceIPAddressType",
-        flags={"read_only": True},
-    )
-    _element.source_network_id = AAZStrType(
-        serialized_name="sourceNetworkId",
-        flags={"read_only": True},
-    )
-    _element.target_ip_address = AAZStrType(
-        serialized_name="targetIPAddress",
-    )
-    _element.target_ip_address_type = AAZStrType(
-        serialized_name="targetIPAddressType",
-    )
-    _element.target_nic_name = AAZStrType(
-        serialized_name="targetNicName",
-    )
-    _element.target_subnet_name = AAZStrType(
-        serialized_name="targetSubnetName",
-    )
-    _element.test_ip_address = AAZStrType(
-        serialized_name="testIPAddress",
-    )
-    _element.test_ip_address_type = AAZStrType(
-        serialized_name="testIPAddressType",
-    )
-    _element.test_network_id = AAZStrType(
-        serialized_name="testNetworkId",
-    )
-    _element.test_subnet_name = AAZStrType(
-        serialized_name="testSubnetName",
-    )
+        _element = _schema_migration_item_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").vm_nics.Element
+        _element.is_primary_nic = AAZStrType(
+            serialized_name="isPrimaryNic",
+        )
+        _element.is_selected_for_migration = AAZStrType(
+            serialized_name="isSelectedForMigration",
+        )
+        _element.nic_id = AAZStrType(
+            serialized_name="nicId",
+            flags={"read_only": True},
+        )
+        _element.source_ip_address = AAZStrType(
+            serialized_name="sourceIPAddress",
+            flags={"read_only": True},
+        )
+        _element.source_ip_address_type = AAZStrType(
+            serialized_name="sourceIPAddressType",
+            flags={"read_only": True},
+        )
+        _element.source_network_id = AAZStrType(
+            serialized_name="sourceNetworkId",
+            flags={"read_only": True},
+        )
+        _element.target_ip_address = AAZStrType(
+            serialized_name="targetIPAddress",
+        )
+        _element.target_ip_address_type = AAZStrType(
+            serialized_name="targetIPAddressType",
+        )
+        _element.target_nic_name = AAZStrType(
+            serialized_name="targetNicName",
+        )
+        _element.target_subnet_name = AAZStrType(
+            serialized_name="targetSubnetName",
+        )
+        _element.test_ip_address = AAZStrType(
+            serialized_name="testIPAddress",
+        )
+        _element.test_ip_address_type = AAZStrType(
+            serialized_name="testIPAddressType",
+        )
+        _element.test_network_id = AAZStrType(
+            serialized_name="testNetworkId",
+        )
+        _element.test_subnet_name = AAZStrType(
+            serialized_name="testSubnetName",
+        )
 
-    _schema.id = _schema_migration_item_read.id
-    _schema.location = _schema_migration_item_read.location
-    _schema.name = _schema_migration_item_read.name
-    _schema.properties = _schema_migration_item_read.properties
-    _schema.type = _schema_migration_item_read.type
+        _schema.id = cls._schema_migration_item_read.id
+        _schema.location = cls._schema_migration_item_read.location
+        _schema.name = cls._schema_migration_item_read.name
+        _schema.properties = cls._schema_migration_item_read.properties
+        _schema.type = cls._schema_migration_item_read.type
 
 
 __all__ = ["Update"]

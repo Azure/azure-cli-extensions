@@ -148,4 +148,8 @@ class Remove(AAZCommand):
             pass
 
 
+class _RemoveHelper:
+    """Helper class for Remove"""
+
+
 __all__ = ["Remove"]

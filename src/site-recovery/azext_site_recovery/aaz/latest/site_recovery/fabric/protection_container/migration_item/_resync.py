@@ -735,4 +735,8 @@ class Resync(AAZCommand):
             return cls._schema_on_200
 
 
+class _ResyncHelper:
+    """Helper class for Resync"""
+
+
 __all__ = ["Resync"]

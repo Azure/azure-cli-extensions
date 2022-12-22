@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListNetworkMapping(AAZCommand):
     """List all ASR network mappings in the vault.
+
+    :example: list-network-mapping
+        az site-recovery vault list-network-mapping -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -212,6 +215,10 @@ class ListNetworkMapping(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListNetworkMappingHelper:
+    """Helper class for ListNetworkMapping"""
 
 
 __all__ = ["ListNetworkMapping"]

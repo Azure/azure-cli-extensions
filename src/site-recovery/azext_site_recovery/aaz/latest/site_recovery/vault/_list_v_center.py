@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListVCenter(AAZCommand):
     """List the vCenter servers registered in the vault.
+
+    :example: list-v-center
+        az site-recovery vault list-v-center -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -301,6 +304,10 @@ class ListVCenter(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListVCenterHelper:
+    """Helper class for ListVCenter"""
 
 
 __all__ = ["ListVCenter"]

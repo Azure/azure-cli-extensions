@@ -273,7 +273,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_protection_container_mapping_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_protection_container_mapping_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -396,7 +396,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_protection_container_mapping_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_protection_container_mapping_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -452,229 +452,231 @@ class Update(AAZCommand):
             )
 
 
-_schema_protection_container_mapping_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_protection_container_mapping_read = None
 
-def _build_schema_protection_container_mapping_read(_schema):
-    global _schema_protection_container_mapping_read
-    if _schema_protection_container_mapping_read is not None:
-        _schema.id = _schema_protection_container_mapping_read.id
-        _schema.location = _schema_protection_container_mapping_read.location
-        _schema.name = _schema_protection_container_mapping_read.name
-        _schema.properties = _schema_protection_container_mapping_read.properties
-        _schema.type = _schema_protection_container_mapping_read.type
-        return
+    @classmethod
+    def _build_schema_protection_container_mapping_read(cls, _schema):
+        if cls._schema_protection_container_mapping_read is not None:
+            _schema.id = cls._schema_protection_container_mapping_read.id
+            _schema.location = cls._schema_protection_container_mapping_read.location
+            _schema.name = cls._schema_protection_container_mapping_read.name
+            _schema.properties = cls._schema_protection_container_mapping_read.properties
+            _schema.type = cls._schema_protection_container_mapping_read.type
+            return
 
-    _schema_protection_container_mapping_read = AAZObjectType()
+        cls._schema_protection_container_mapping_read = _schema_protection_container_mapping_read = AAZObjectType()
 
-    protection_container_mapping_read = _schema_protection_container_mapping_read
-    protection_container_mapping_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    protection_container_mapping_read.location = AAZStrType()
-    protection_container_mapping_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    protection_container_mapping_read.properties = AAZObjectType()
-    protection_container_mapping_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        protection_container_mapping_read = _schema_protection_container_mapping_read
+        protection_container_mapping_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        protection_container_mapping_read.location = AAZStrType()
+        protection_container_mapping_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        protection_container_mapping_read.properties = AAZObjectType()
+        protection_container_mapping_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_protection_container_mapping_read.properties
-    properties.health = AAZStrType()
-    properties.health_error_details = AAZListType(
-        serialized_name="healthErrorDetails",
-    )
-    properties.policy_friendly_name = AAZStrType(
-        serialized_name="policyFriendlyName",
-    )
-    properties.policy_id = AAZStrType(
-        serialized_name="policyId",
-    )
-    properties.provider_specific_details = AAZObjectType(
-        serialized_name="providerSpecificDetails",
-    )
-    properties.source_fabric_friendly_name = AAZStrType(
-        serialized_name="sourceFabricFriendlyName",
-    )
-    properties.source_protection_container_friendly_name = AAZStrType(
-        serialized_name="sourceProtectionContainerFriendlyName",
-    )
-    properties.state = AAZStrType()
-    properties.target_fabric_friendly_name = AAZStrType(
-        serialized_name="targetFabricFriendlyName",
-    )
-    properties.target_protection_container_friendly_name = AAZStrType(
-        serialized_name="targetProtectionContainerFriendlyName",
-    )
-    properties.target_protection_container_id = AAZStrType(
-        serialized_name="targetProtectionContainerId",
-    )
+        properties = _schema_protection_container_mapping_read.properties
+        properties.health = AAZStrType()
+        properties.health_error_details = AAZListType(
+            serialized_name="healthErrorDetails",
+        )
+        properties.policy_friendly_name = AAZStrType(
+            serialized_name="policyFriendlyName",
+        )
+        properties.policy_id = AAZStrType(
+            serialized_name="policyId",
+        )
+        properties.provider_specific_details = AAZObjectType(
+            serialized_name="providerSpecificDetails",
+        )
+        properties.source_fabric_friendly_name = AAZStrType(
+            serialized_name="sourceFabricFriendlyName",
+        )
+        properties.source_protection_container_friendly_name = AAZStrType(
+            serialized_name="sourceProtectionContainerFriendlyName",
+        )
+        properties.state = AAZStrType()
+        properties.target_fabric_friendly_name = AAZStrType(
+            serialized_name="targetFabricFriendlyName",
+        )
+        properties.target_protection_container_friendly_name = AAZStrType(
+            serialized_name="targetProtectionContainerFriendlyName",
+        )
+        properties.target_protection_container_id = AAZStrType(
+            serialized_name="targetProtectionContainerId",
+        )
 
-    health_error_details = _schema_protection_container_mapping_read.properties.health_error_details
-    health_error_details.Element = AAZObjectType()
+        health_error_details = _schema_protection_container_mapping_read.properties.health_error_details
+        health_error_details.Element = AAZObjectType()
 
-    _element = _schema_protection_container_mapping_read.properties.health_error_details.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_protection_container_mapping_read.properties.health_error_details.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    inner_health_errors = _schema_protection_container_mapping_read.properties.health_error_details.Element.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
+        inner_health_errors = _schema_protection_container_mapping_read.properties.health_error_details.Element.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-    _element = _schema_protection_container_mapping_read.properties.health_error_details.Element.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_protection_container_mapping_read.properties.health_error_details.Element.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    provider_specific_details = _schema_protection_container_mapping_read.properties.provider_specific_details
-    provider_specific_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        provider_specific_details = _schema_protection_container_mapping_read.properties.provider_specific_details
+        provider_specific_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    disc_a2_a = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
-    disc_a2_a.agent_auto_update_status = AAZStrType(
-        serialized_name="agentAutoUpdateStatus",
-    )
-    disc_a2_a.automation_account_arm_id = AAZStrType(
-        serialized_name="automationAccountArmId",
-    )
-    disc_a2_a.automation_account_authentication_type = AAZStrType(
-        serialized_name="automationAccountAuthenticationType",
-    )
-    disc_a2_a.job_schedule_name = AAZStrType(
-        serialized_name="jobScheduleName",
-    )
-    disc_a2_a.schedule_name = AAZStrType(
-        serialized_name="scheduleName",
-    )
+        disc_a2_a = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
+        disc_a2_a.agent_auto_update_status = AAZStrType(
+            serialized_name="agentAutoUpdateStatus",
+        )
+        disc_a2_a.automation_account_arm_id = AAZStrType(
+            serialized_name="automationAccountArmId",
+        )
+        disc_a2_a.automation_account_authentication_type = AAZStrType(
+            serialized_name="automationAccountAuthenticationType",
+        )
+        disc_a2_a.job_schedule_name = AAZStrType(
+            serialized_name="jobScheduleName",
+        )
+        disc_a2_a.schedule_name = AAZStrType(
+            serialized_name="scheduleName",
+        )
 
-    disc_in_mage_rcm = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
-    disc_in_mage_rcm.enable_agent_auto_upgrade = AAZStrType(
-        serialized_name="enableAgentAutoUpgrade",
-        flags={"read_only": True},
-    )
+        disc_in_mage_rcm = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
+        disc_in_mage_rcm.enable_agent_auto_upgrade = AAZStrType(
+            serialized_name="enableAgentAutoUpgrade",
+            flags={"read_only": True},
+        )
 
-    disc_v_mware_cbt = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
-    disc_v_mware_cbt.key_vault_id = AAZStrType(
-        serialized_name="keyVaultId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.key_vault_uri = AAZStrType(
-        serialized_name="keyVaultUri",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.role_size_to_nic_count_map = AAZDictType(
-        serialized_name="roleSizeToNicCountMap",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.service_bus_connection_string_secret_name = AAZStrType(
-        serialized_name="serviceBusConnectionStringSecretName",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.storage_account_id = AAZStrType(
-        serialized_name="storageAccountId",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.storage_account_sas_secret_name = AAZStrType(
-        serialized_name="storageAccountSasSecretName",
-        flags={"read_only": True},
-    )
-    disc_v_mware_cbt.target_location = AAZStrType(
-        serialized_name="targetLocation",
-        flags={"read_only": True},
-    )
+        disc_v_mware_cbt = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
+        disc_v_mware_cbt.key_vault_id = AAZStrType(
+            serialized_name="keyVaultId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.key_vault_uri = AAZStrType(
+            serialized_name="keyVaultUri",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.role_size_to_nic_count_map = AAZDictType(
+            serialized_name="roleSizeToNicCountMap",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.service_bus_connection_string_secret_name = AAZStrType(
+            serialized_name="serviceBusConnectionStringSecretName",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.storage_account_id = AAZStrType(
+            serialized_name="storageAccountId",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.storage_account_sas_secret_name = AAZStrType(
+            serialized_name="storageAccountSasSecretName",
+            flags={"read_only": True},
+        )
+        disc_v_mware_cbt.target_location = AAZStrType(
+            serialized_name="targetLocation",
+            flags={"read_only": True},
+        )
 
-    role_size_to_nic_count_map = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").role_size_to_nic_count_map
-    role_size_to_nic_count_map.Element = AAZIntType()
+        role_size_to_nic_count_map = _schema_protection_container_mapping_read.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").role_size_to_nic_count_map
+        role_size_to_nic_count_map.Element = AAZIntType()
 
-    _schema.id = _schema_protection_container_mapping_read.id
-    _schema.location = _schema_protection_container_mapping_read.location
-    _schema.name = _schema_protection_container_mapping_read.name
-    _schema.properties = _schema_protection_container_mapping_read.properties
-    _schema.type = _schema_protection_container_mapping_read.type
+        _schema.id = cls._schema_protection_container_mapping_read.id
+        _schema.location = cls._schema_protection_container_mapping_read.location
+        _schema.name = cls._schema_protection_container_mapping_read.name
+        _schema.properties = cls._schema_protection_container_mapping_read.properties
+        _schema.type = cls._schema_protection_container_mapping_read.type
 
 
 __all__ = ["Update"]

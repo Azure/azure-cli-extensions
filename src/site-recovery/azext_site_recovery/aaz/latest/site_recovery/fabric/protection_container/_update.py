@@ -206,7 +206,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_protection_container_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_protection_container_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -325,7 +325,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_protection_container_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_protection_container_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -365,66 +365,68 @@ class Update(AAZCommand):
             )
 
 
-_schema_protection_container_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_protection_container_read = None
 
-def _build_schema_protection_container_read(_schema):
-    global _schema_protection_container_read
-    if _schema_protection_container_read is not None:
-        _schema.id = _schema_protection_container_read.id
-        _schema.location = _schema_protection_container_read.location
-        _schema.name = _schema_protection_container_read.name
-        _schema.properties = _schema_protection_container_read.properties
-        _schema.type = _schema_protection_container_read.type
-        return
+    @classmethod
+    def _build_schema_protection_container_read(cls, _schema):
+        if cls._schema_protection_container_read is not None:
+            _schema.id = cls._schema_protection_container_read.id
+            _schema.location = cls._schema_protection_container_read.location
+            _schema.name = cls._schema_protection_container_read.name
+            _schema.properties = cls._schema_protection_container_read.properties
+            _schema.type = cls._schema_protection_container_read.type
+            return
 
-    _schema_protection_container_read = AAZObjectType()
+        cls._schema_protection_container_read = _schema_protection_container_read = AAZObjectType()
 
-    protection_container_read = _schema_protection_container_read
-    protection_container_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    protection_container_read.location = AAZStrType()
-    protection_container_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    protection_container_read.properties = AAZObjectType()
-    protection_container_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        protection_container_read = _schema_protection_container_read
+        protection_container_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        protection_container_read.location = AAZStrType()
+        protection_container_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        protection_container_read.properties = AAZObjectType()
+        protection_container_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_protection_container_read.properties
-    properties.fabric_friendly_name = AAZStrType(
-        serialized_name="fabricFriendlyName",
-    )
-    properties.fabric_specific_details = AAZObjectType(
-        serialized_name="fabricSpecificDetails",
-    )
-    properties.fabric_type = AAZStrType(
-        serialized_name="fabricType",
-    )
-    properties.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-    )
-    properties.pairing_status = AAZStrType(
-        serialized_name="pairingStatus",
-    )
-    properties.protected_item_count = AAZIntType(
-        serialized_name="protectedItemCount",
-    )
-    properties.role = AAZStrType()
+        properties = _schema_protection_container_read.properties
+        properties.fabric_friendly_name = AAZStrType(
+            serialized_name="fabricFriendlyName",
+        )
+        properties.fabric_specific_details = AAZObjectType(
+            serialized_name="fabricSpecificDetails",
+        )
+        properties.fabric_type = AAZStrType(
+            serialized_name="fabricType",
+        )
+        properties.friendly_name = AAZStrType(
+            serialized_name="friendlyName",
+        )
+        properties.pairing_status = AAZStrType(
+            serialized_name="pairingStatus",
+        )
+        properties.protected_item_count = AAZIntType(
+            serialized_name="protectedItemCount",
+        )
+        properties.role = AAZStrType()
 
-    fabric_specific_details = _schema_protection_container_read.properties.fabric_specific_details
-    fabric_specific_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"read_only": True},
-    )
+        fabric_specific_details = _schema_protection_container_read.properties.fabric_specific_details
+        fabric_specific_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"read_only": True},
+        )
 
-    _schema.id = _schema_protection_container_read.id
-    _schema.location = _schema_protection_container_read.location
-    _schema.name = _schema_protection_container_read.name
-    _schema.properties = _schema_protection_container_read.properties
-    _schema.type = _schema_protection_container_read.type
+        _schema.id = cls._schema_protection_container_read.id
+        _schema.location = cls._schema_protection_container_read.location
+        _schema.name = cls._schema_protection_container_read.name
+        _schema.properties = cls._schema_protection_container_read.properties
+        _schema.type = cls._schema_protection_container_read.type
 
 
 __all__ = ["Update"]

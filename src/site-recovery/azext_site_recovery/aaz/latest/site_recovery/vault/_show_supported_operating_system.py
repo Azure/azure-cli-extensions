@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ShowSupportedOperatingSystem(AAZCommand):
     """Show the supported operating system for the vault.
+
+    :example: show-supported-operating-system
+        az site-recovery vault show-supported-operating-system -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -208,6 +211,10 @@ class ShowSupportedOperatingSystem(AAZCommand):
             _element.version = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ShowSupportedOperatingSystemHelper:
+    """Helper class for ShowSupportedOperatingSystem"""
 
 
 __all__ = ["ShowSupportedOperatingSystem"]

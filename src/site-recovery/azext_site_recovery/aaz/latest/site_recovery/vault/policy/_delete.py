@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete operation to delete a replication policy.
+
+    :example: policy delete
+        az site-recovery vault policy delete -g {rg} --resource-name {vault_name} -n {policy_name_rcm}
     """
 
     _aaz_info = {
@@ -161,6 +164,10 @@ class Delete(AAZCommand):
 
         def on_204(self, session):
             pass
+
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
 __all__ = ["Delete"]

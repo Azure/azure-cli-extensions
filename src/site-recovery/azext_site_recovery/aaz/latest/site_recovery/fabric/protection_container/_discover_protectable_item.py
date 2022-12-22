@@ -265,4 +265,8 @@ class DiscoverProtectableItem(AAZCommand):
             return cls._schema_on_200
 
 
+class _DiscoverProtectableItemHelper:
+    """Helper class for DiscoverProtectableItem"""
+
+
 __all__ = ["DiscoverProtectableItem"]

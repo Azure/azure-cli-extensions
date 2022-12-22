@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListNetwork(AAZCommand):
     """List the networks available in a vault.
+
+    :example: list-network
+        az site-recovery vault list-network -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -198,6 +201,10 @@ class ListNetwork(AAZCommand):
             address_list.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListNetworkHelper:
+    """Helper class for ListNetwork"""
 
 
 __all__ = ["ListNetwork"]

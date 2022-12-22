@@ -735,4 +735,8 @@ class Migrate(AAZCommand):
             return cls._schema_on_200
 
 
+class _MigrateHelper:
+    """Helper class for Migrate"""
+
+
 __all__ = ["Migrate"]

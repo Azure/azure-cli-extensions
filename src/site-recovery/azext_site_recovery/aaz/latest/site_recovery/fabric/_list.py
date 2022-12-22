@@ -180,7 +180,7 @@ class List(AAZCommand):
             properties.encryption_details = AAZObjectType(
                 serialized_name="encryptionDetails",
             )
-            _build_schema_encryption_details_read(properties.encryption_details)
+            _ListHelper._build_schema_encryption_details_read(properties.encryption_details)
             properties.friendly_name = AAZStrType(
                 serialized_name="friendlyName",
             )
@@ -194,7 +194,7 @@ class List(AAZCommand):
             properties.rollover_encryption_details = AAZObjectType(
                 serialized_name="rolloverEncryptionDetails",
             )
-            _build_schema_encryption_details_read(properties.rollover_encryption_details)
+            _ListHelper._build_schema_encryption_details_read(properties.rollover_encryption_details)
 
             custom_details = cls._schema_on_200.value.Element.properties.custom_details
             custom_details.instance_type = AAZStrType(
@@ -390,7 +390,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").dras.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             mars_agents = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").mars_agents
             mars_agents.Element = AAZObjectType()
@@ -430,11 +430,11 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").mars_agents.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             process_servers = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").process_servers
             process_servers.Element = AAZObjectType()
-            _build_schema_process_server_details_read(process_servers.Element)
+            _ListHelper._build_schema_process_server_details_read(process_servers.Element)
 
             push_installers = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").push_installers
             push_installers.Element = AAZObjectType()
@@ -474,7 +474,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").push_installers.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             rcm_proxies = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").rcm_proxies
             rcm_proxies.Element = AAZObjectType()
@@ -518,7 +518,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").rcm_proxies.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             replication_agents = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").replication_agents
             replication_agents.Element = AAZObjectType()
@@ -558,7 +558,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").replication_agents.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             reprotect_agents = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").reprotect_agents
             reprotect_agents.Element = AAZObjectType()
@@ -617,7 +617,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").reprotect_agents.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             source_agent_identity_details = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "InMageRcm").source_agent_identity_details
             source_agent_identity_details.aad_authority = AAZStrType(
@@ -647,7 +647,7 @@ class List(AAZCommand):
             disc_v_mware.agent_version_details = AAZObjectType(
                 serialized_name="agentVersionDetails",
             )
-            _build_schema_version_details_read(disc_v_mware.agent_version_details)
+            _ListHelper._build_schema_version_details_read(disc_v_mware.agent_version_details)
             disc_v_mware.available_memory_in_bytes = AAZIntType(
                 serialized_name="availableMemoryInBytes",
             )
@@ -749,7 +749,7 @@ class List(AAZCommand):
             _element.agent_version_details = AAZObjectType(
                 serialized_name="agentVersionDetails",
             )
-            _build_schema_version_details_read(_element.agent_version_details)
+            _ListHelper._build_schema_version_details_read(_element.agent_version_details)
             _element.data_stores = AAZListType(
                 serialized_name="dataStores",
             )
@@ -775,7 +775,7 @@ class List(AAZCommand):
             _element.mars_agent_version_details = AAZObjectType(
                 serialized_name="marsAgentVersionDetails",
             )
-            _build_schema_version_details_read(_element.mars_agent_version_details)
+            _ListHelper._build_schema_version_details_read(_element.mars_agent_version_details)
             _element.name = AAZStrType()
             _element.os_type = AAZStrType(
                 serialized_name="osType",
@@ -809,7 +809,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMware").master_target_servers.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             retention_volumes = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMware").master_target_servers.Element.retention_volumes
             retention_volumes.Element = AAZObjectType()
@@ -830,7 +830,7 @@ class List(AAZCommand):
 
             validation_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMware").master_target_servers.Element.validation_errors
             validation_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(validation_errors.Element)
+            _ListHelper._build_schema_health_error_read(validation_errors.Element)
 
             process_servers = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMware").process_servers
             process_servers.Element = AAZObjectType()
@@ -845,7 +845,7 @@ class List(AAZCommand):
             _element.agent_version_details = AAZObjectType(
                 serialized_name="agentVersionDetails",
             )
-            _build_schema_version_details_read(_element.agent_version_details)
+            _ListHelper._build_schema_version_details_read(_element.agent_version_details)
             _element.available_memory_in_bytes = AAZIntType(
                 serialized_name="availableMemoryInBytes",
             )
@@ -953,7 +953,7 @@ class List(AAZCommand):
 
             health_errors = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMware").process_servers.Element.health_errors
             health_errors.Element = AAZObjectType()
-            _build_schema_health_error_read(health_errors.Element)
+            _ListHelper._build_schema_health_error_read(health_errors.Element)
 
             mobility_service_updates = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMware").process_servers.Element.mobility_service_updates
             mobility_service_updates.Element = AAZObjectType()
@@ -1045,393 +1045,389 @@ class List(AAZCommand):
 
             process_servers = cls._schema_on_200.value.Element.properties.custom_details.discriminate_by("instance_type", "VMwareV2").process_servers
             process_servers.Element = AAZObjectType()
-            _build_schema_process_server_details_read(process_servers.Element)
+            _ListHelper._build_schema_process_server_details_read(process_servers.Element)
 
             health_error_details = cls._schema_on_200.value.Element.properties.health_error_details
             health_error_details.Element = AAZObjectType()
-            _build_schema_health_error_read(health_error_details.Element)
+            _ListHelper._build_schema_health_error_read(health_error_details.Element)
 
             return cls._schema_on_200
 
 
-_schema_encryption_details_read = None
+class _ListHelper:
+    """Helper class for List"""
 
+    _schema_encryption_details_read = None
 
-def _build_schema_encryption_details_read(_schema):
-    global _schema_encryption_details_read
-    if _schema_encryption_details_read is not None:
-        _schema.kek_cert_expiry_date = _schema_encryption_details_read.kek_cert_expiry_date
-        _schema.kek_cert_thumbprint = _schema_encryption_details_read.kek_cert_thumbprint
-        _schema.kek_state = _schema_encryption_details_read.kek_state
-        return
+    @classmethod
+    def _build_schema_encryption_details_read(cls, _schema):
+        if cls._schema_encryption_details_read is not None:
+            _schema.kek_cert_expiry_date = cls._schema_encryption_details_read.kek_cert_expiry_date
+            _schema.kek_cert_thumbprint = cls._schema_encryption_details_read.kek_cert_thumbprint
+            _schema.kek_state = cls._schema_encryption_details_read.kek_state
+            return
 
-    _schema_encryption_details_read = AAZObjectType()
+        cls._schema_encryption_details_read = _schema_encryption_details_read = AAZObjectType()
 
-    encryption_details_read = _schema_encryption_details_read
-    encryption_details_read.kek_cert_expiry_date = AAZStrType(
-        serialized_name="kekCertExpiryDate",
-    )
-    encryption_details_read.kek_cert_thumbprint = AAZStrType(
-        serialized_name="kekCertThumbprint",
-    )
-    encryption_details_read.kek_state = AAZStrType(
-        serialized_name="kekState",
-    )
+        encryption_details_read = _schema_encryption_details_read
+        encryption_details_read.kek_cert_expiry_date = AAZStrType(
+            serialized_name="kekCertExpiryDate",
+        )
+        encryption_details_read.kek_cert_thumbprint = AAZStrType(
+            serialized_name="kekCertThumbprint",
+        )
+        encryption_details_read.kek_state = AAZStrType(
+            serialized_name="kekState",
+        )
 
-    _schema.kek_cert_expiry_date = _schema_encryption_details_read.kek_cert_expiry_date
-    _schema.kek_cert_thumbprint = _schema_encryption_details_read.kek_cert_thumbprint
-    _schema.kek_state = _schema_encryption_details_read.kek_state
+        _schema.kek_cert_expiry_date = cls._schema_encryption_details_read.kek_cert_expiry_date
+        _schema.kek_cert_thumbprint = cls._schema_encryption_details_read.kek_cert_thumbprint
+        _schema.kek_state = cls._schema_encryption_details_read.kek_state
 
+    _schema_health_error_read = None
 
-_schema_health_error_read = None
+    @classmethod
+    def _build_schema_health_error_read(cls, _schema):
+        if cls._schema_health_error_read is not None:
+            _schema.creation_time_utc = cls._schema_health_error_read.creation_time_utc
+            _schema.customer_resolvability = cls._schema_health_error_read.customer_resolvability
+            _schema.entity_id = cls._schema_health_error_read.entity_id
+            _schema.error_category = cls._schema_health_error_read.error_category
+            _schema.error_code = cls._schema_health_error_read.error_code
+            _schema.error_id = cls._schema_health_error_read.error_id
+            _schema.error_level = cls._schema_health_error_read.error_level
+            _schema.error_message = cls._schema_health_error_read.error_message
+            _schema.error_source = cls._schema_health_error_read.error_source
+            _schema.error_type = cls._schema_health_error_read.error_type
+            _schema.inner_health_errors = cls._schema_health_error_read.inner_health_errors
+            _schema.possible_causes = cls._schema_health_error_read.possible_causes
+            _schema.recommended_action = cls._schema_health_error_read.recommended_action
+            _schema.recovery_provider_error_message = cls._schema_health_error_read.recovery_provider_error_message
+            _schema.summary_message = cls._schema_health_error_read.summary_message
+            return
 
+        cls._schema_health_error_read = _schema_health_error_read = AAZObjectType()
 
-def _build_schema_health_error_read(_schema):
-    global _schema_health_error_read
-    if _schema_health_error_read is not None:
-        _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
-        _schema.customer_resolvability = _schema_health_error_read.customer_resolvability
-        _schema.entity_id = _schema_health_error_read.entity_id
-        _schema.error_category = _schema_health_error_read.error_category
-        _schema.error_code = _schema_health_error_read.error_code
-        _schema.error_id = _schema_health_error_read.error_id
-        _schema.error_level = _schema_health_error_read.error_level
-        _schema.error_message = _schema_health_error_read.error_message
-        _schema.error_source = _schema_health_error_read.error_source
-        _schema.error_type = _schema_health_error_read.error_type
-        _schema.inner_health_errors = _schema_health_error_read.inner_health_errors
-        _schema.possible_causes = _schema_health_error_read.possible_causes
-        _schema.recommended_action = _schema_health_error_read.recommended_action
-        _schema.recovery_provider_error_message = _schema_health_error_read.recovery_provider_error_message
-        _schema.summary_message = _schema_health_error_read.summary_message
-        return
+        health_error_read = _schema_health_error_read
+        health_error_read.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        health_error_read.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        health_error_read.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        health_error_read.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        health_error_read.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        health_error_read.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        health_error_read.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        health_error_read.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        health_error_read.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        health_error_read.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        health_error_read.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        health_error_read.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        health_error_read.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        health_error_read.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        health_error_read.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    _schema_health_error_read = AAZObjectType()
+        inner_health_errors = _schema_health_error_read.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-    health_error_read = _schema_health_error_read
-    health_error_read.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    health_error_read.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    health_error_read.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    health_error_read.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    health_error_read.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    health_error_read.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    health_error_read.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    health_error_read.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    health_error_read.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    health_error_read.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    health_error_read.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    health_error_read.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    health_error_read.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    health_error_read.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    health_error_read.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_health_error_read.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    inner_health_errors = _schema_health_error_read.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
+        _schema.creation_time_utc = cls._schema_health_error_read.creation_time_utc
+        _schema.customer_resolvability = cls._schema_health_error_read.customer_resolvability
+        _schema.entity_id = cls._schema_health_error_read.entity_id
+        _schema.error_category = cls._schema_health_error_read.error_category
+        _schema.error_code = cls._schema_health_error_read.error_code
+        _schema.error_id = cls._schema_health_error_read.error_id
+        _schema.error_level = cls._schema_health_error_read.error_level
+        _schema.error_message = cls._schema_health_error_read.error_message
+        _schema.error_source = cls._schema_health_error_read.error_source
+        _schema.error_type = cls._schema_health_error_read.error_type
+        _schema.inner_health_errors = cls._schema_health_error_read.inner_health_errors
+        _schema.possible_causes = cls._schema_health_error_read.possible_causes
+        _schema.recommended_action = cls._schema_health_error_read.recommended_action
+        _schema.recovery_provider_error_message = cls._schema_health_error_read.recovery_provider_error_message
+        _schema.summary_message = cls._schema_health_error_read.summary_message
 
-    _element = _schema_health_error_read.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+    _schema_process_server_details_read = None
 
-    _schema.creation_time_utc = _schema_health_error_read.creation_time_utc
-    _schema.customer_resolvability = _schema_health_error_read.customer_resolvability
-    _schema.entity_id = _schema_health_error_read.entity_id
-    _schema.error_category = _schema_health_error_read.error_category
-    _schema.error_code = _schema_health_error_read.error_code
-    _schema.error_id = _schema_health_error_read.error_id
-    _schema.error_level = _schema_health_error_read.error_level
-    _schema.error_message = _schema_health_error_read.error_message
-    _schema.error_source = _schema_health_error_read.error_source
-    _schema.error_type = _schema_health_error_read.error_type
-    _schema.inner_health_errors = _schema_health_error_read.inner_health_errors
-    _schema.possible_causes = _schema_health_error_read.possible_causes
-    _schema.recommended_action = _schema_health_error_read.recommended_action
-    _schema.recovery_provider_error_message = _schema_health_error_read.recovery_provider_error_message
-    _schema.summary_message = _schema_health_error_read.summary_message
+    @classmethod
+    def _build_schema_process_server_details_read(cls, _schema):
+        if cls._schema_process_server_details_read is not None:
+            _schema.available_memory_in_bytes = cls._schema_process_server_details_read.available_memory_in_bytes
+            _schema.available_space_in_bytes = cls._schema_process_server_details_read.available_space_in_bytes
+            _schema.bios_id = cls._schema_process_server_details_read.bios_id
+            _schema.disk_usage_status = cls._schema_process_server_details_read.disk_usage_status
+            _schema.fabric_object_id = cls._schema_process_server_details_read.fabric_object_id
+            _schema.fqdn = cls._schema_process_server_details_read.fqdn
+            _schema.free_space_percentage = cls._schema_process_server_details_read.free_space_percentage
+            _schema.health = cls._schema_process_server_details_read.health
+            _schema.health_errors = cls._schema_process_server_details_read.health_errors
+            _schema.historic_health = cls._schema_process_server_details_read.historic_health
+            _schema.id = cls._schema_process_server_details_read.id
+            _schema.ip_addresses = cls._schema_process_server_details_read.ip_addresses
+            _schema.last_heartbeat_utc = cls._schema_process_server_details_read.last_heartbeat_utc
+            _schema.memory_usage_percentage = cls._schema_process_server_details_read.memory_usage_percentage
+            _schema.memory_usage_status = cls._schema_process_server_details_read.memory_usage_status
+            _schema.name = cls._schema_process_server_details_read.name
+            _schema.processor_usage_percentage = cls._schema_process_server_details_read.processor_usage_percentage
+            _schema.processor_usage_status = cls._schema_process_server_details_read.processor_usage_status
+            _schema.protected_item_count = cls._schema_process_server_details_read.protected_item_count
+            _schema.system_load = cls._schema_process_server_details_read.system_load
+            _schema.system_load_status = cls._schema_process_server_details_read.system_load_status
+            _schema.throughput_in_bytes = cls._schema_process_server_details_read.throughput_in_bytes
+            _schema.throughput_status = cls._schema_process_server_details_read.throughput_status
+            _schema.throughput_upload_pending_data_in_bytes = cls._schema_process_server_details_read.throughput_upload_pending_data_in_bytes
+            _schema.total_memory_in_bytes = cls._schema_process_server_details_read.total_memory_in_bytes
+            _schema.total_space_in_bytes = cls._schema_process_server_details_read.total_space_in_bytes
+            _schema.used_memory_in_bytes = cls._schema_process_server_details_read.used_memory_in_bytes
+            _schema.used_space_in_bytes = cls._schema_process_server_details_read.used_space_in_bytes
+            _schema.version = cls._schema_process_server_details_read.version
+            return
 
+        cls._schema_process_server_details_read = _schema_process_server_details_read = AAZObjectType()
 
-_schema_process_server_details_read = None
+        process_server_details_read = _schema_process_server_details_read
+        process_server_details_read.available_memory_in_bytes = AAZIntType(
+            serialized_name="availableMemoryInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.available_space_in_bytes = AAZIntType(
+            serialized_name="availableSpaceInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.bios_id = AAZStrType(
+            serialized_name="biosId",
+            flags={"read_only": True},
+        )
+        process_server_details_read.disk_usage_status = AAZStrType(
+            serialized_name="diskUsageStatus",
+            flags={"read_only": True},
+        )
+        process_server_details_read.fabric_object_id = AAZStrType(
+            serialized_name="fabricObjectId",
+            flags={"read_only": True},
+        )
+        process_server_details_read.fqdn = AAZStrType(
+            flags={"read_only": True},
+        )
+        process_server_details_read.free_space_percentage = AAZFloatType(
+            serialized_name="freeSpacePercentage",
+            flags={"read_only": True},
+        )
+        process_server_details_read.health = AAZStrType(
+            flags={"read_only": True},
+        )
+        process_server_details_read.health_errors = AAZListType(
+            serialized_name="healthErrors",
+            flags={"read_only": True},
+        )
+        process_server_details_read.historic_health = AAZStrType(
+            serialized_name="historicHealth",
+            flags={"read_only": True},
+        )
+        process_server_details_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        process_server_details_read.ip_addresses = AAZListType(
+            serialized_name="ipAddresses",
+            flags={"read_only": True},
+        )
+        process_server_details_read.last_heartbeat_utc = AAZStrType(
+            serialized_name="lastHeartbeatUtc",
+            flags={"read_only": True},
+        )
+        process_server_details_read.memory_usage_percentage = AAZFloatType(
+            serialized_name="memoryUsagePercentage",
+            flags={"read_only": True},
+        )
+        process_server_details_read.memory_usage_status = AAZStrType(
+            serialized_name="memoryUsageStatus",
+            flags={"read_only": True},
+        )
+        process_server_details_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        process_server_details_read.processor_usage_percentage = AAZFloatType(
+            serialized_name="processorUsagePercentage",
+            flags={"read_only": True},
+        )
+        process_server_details_read.processor_usage_status = AAZStrType(
+            serialized_name="processorUsageStatus",
+            flags={"read_only": True},
+        )
+        process_server_details_read.protected_item_count = AAZIntType(
+            serialized_name="protectedItemCount",
+            flags={"read_only": True},
+        )
+        process_server_details_read.system_load = AAZIntType(
+            serialized_name="systemLoad",
+            flags={"read_only": True},
+        )
+        process_server_details_read.system_load_status = AAZStrType(
+            serialized_name="systemLoadStatus",
+            flags={"read_only": True},
+        )
+        process_server_details_read.throughput_in_bytes = AAZIntType(
+            serialized_name="throughputInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.throughput_status = AAZStrType(
+            serialized_name="throughputStatus",
+            flags={"read_only": True},
+        )
+        process_server_details_read.throughput_upload_pending_data_in_bytes = AAZIntType(
+            serialized_name="throughputUploadPendingDataInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.total_memory_in_bytes = AAZIntType(
+            serialized_name="totalMemoryInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.total_space_in_bytes = AAZIntType(
+            serialized_name="totalSpaceInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.used_memory_in_bytes = AAZIntType(
+            serialized_name="usedMemoryInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.used_space_in_bytes = AAZIntType(
+            serialized_name="usedSpaceInBytes",
+            flags={"read_only": True},
+        )
+        process_server_details_read.version = AAZStrType(
+            flags={"read_only": True},
+        )
 
+        health_errors = _schema_process_server_details_read.health_errors
+        health_errors.Element = AAZObjectType()
+        cls._build_schema_health_error_read(health_errors.Element)
 
-def _build_schema_process_server_details_read(_schema):
-    global _schema_process_server_details_read
-    if _schema_process_server_details_read is not None:
-        _schema.available_memory_in_bytes = _schema_process_server_details_read.available_memory_in_bytes
-        _schema.available_space_in_bytes = _schema_process_server_details_read.available_space_in_bytes
-        _schema.bios_id = _schema_process_server_details_read.bios_id
-        _schema.disk_usage_status = _schema_process_server_details_read.disk_usage_status
-        _schema.fabric_object_id = _schema_process_server_details_read.fabric_object_id
-        _schema.fqdn = _schema_process_server_details_read.fqdn
-        _schema.free_space_percentage = _schema_process_server_details_read.free_space_percentage
-        _schema.health = _schema_process_server_details_read.health
-        _schema.health_errors = _schema_process_server_details_read.health_errors
-        _schema.historic_health = _schema_process_server_details_read.historic_health
-        _schema.id = _schema_process_server_details_read.id
-        _schema.ip_addresses = _schema_process_server_details_read.ip_addresses
-        _schema.last_heartbeat_utc = _schema_process_server_details_read.last_heartbeat_utc
-        _schema.memory_usage_percentage = _schema_process_server_details_read.memory_usage_percentage
-        _schema.memory_usage_status = _schema_process_server_details_read.memory_usage_status
-        _schema.name = _schema_process_server_details_read.name
-        _schema.processor_usage_percentage = _schema_process_server_details_read.processor_usage_percentage
-        _schema.processor_usage_status = _schema_process_server_details_read.processor_usage_status
-        _schema.protected_item_count = _schema_process_server_details_read.protected_item_count
-        _schema.system_load = _schema_process_server_details_read.system_load
-        _schema.system_load_status = _schema_process_server_details_read.system_load_status
-        _schema.throughput_in_bytes = _schema_process_server_details_read.throughput_in_bytes
-        _schema.throughput_status = _schema_process_server_details_read.throughput_status
-        _schema.throughput_upload_pending_data_in_bytes = _schema_process_server_details_read.throughput_upload_pending_data_in_bytes
-        _schema.total_memory_in_bytes = _schema_process_server_details_read.total_memory_in_bytes
-        _schema.total_space_in_bytes = _schema_process_server_details_read.total_space_in_bytes
-        _schema.used_memory_in_bytes = _schema_process_server_details_read.used_memory_in_bytes
-        _schema.used_space_in_bytes = _schema_process_server_details_read.used_space_in_bytes
-        _schema.version = _schema_process_server_details_read.version
-        return
+        ip_addresses = _schema_process_server_details_read.ip_addresses
+        ip_addresses.Element = AAZStrType()
 
-    _schema_process_server_details_read = AAZObjectType()
+        _schema.available_memory_in_bytes = cls._schema_process_server_details_read.available_memory_in_bytes
+        _schema.available_space_in_bytes = cls._schema_process_server_details_read.available_space_in_bytes
+        _schema.bios_id = cls._schema_process_server_details_read.bios_id
+        _schema.disk_usage_status = cls._schema_process_server_details_read.disk_usage_status
+        _schema.fabric_object_id = cls._schema_process_server_details_read.fabric_object_id
+        _schema.fqdn = cls._schema_process_server_details_read.fqdn
+        _schema.free_space_percentage = cls._schema_process_server_details_read.free_space_percentage
+        _schema.health = cls._schema_process_server_details_read.health
+        _schema.health_errors = cls._schema_process_server_details_read.health_errors
+        _schema.historic_health = cls._schema_process_server_details_read.historic_health
+        _schema.id = cls._schema_process_server_details_read.id
+        _schema.ip_addresses = cls._schema_process_server_details_read.ip_addresses
+        _schema.last_heartbeat_utc = cls._schema_process_server_details_read.last_heartbeat_utc
+        _schema.memory_usage_percentage = cls._schema_process_server_details_read.memory_usage_percentage
+        _schema.memory_usage_status = cls._schema_process_server_details_read.memory_usage_status
+        _schema.name = cls._schema_process_server_details_read.name
+        _schema.processor_usage_percentage = cls._schema_process_server_details_read.processor_usage_percentage
+        _schema.processor_usage_status = cls._schema_process_server_details_read.processor_usage_status
+        _schema.protected_item_count = cls._schema_process_server_details_read.protected_item_count
+        _schema.system_load = cls._schema_process_server_details_read.system_load
+        _schema.system_load_status = cls._schema_process_server_details_read.system_load_status
+        _schema.throughput_in_bytes = cls._schema_process_server_details_read.throughput_in_bytes
+        _schema.throughput_status = cls._schema_process_server_details_read.throughput_status
+        _schema.throughput_upload_pending_data_in_bytes = cls._schema_process_server_details_read.throughput_upload_pending_data_in_bytes
+        _schema.total_memory_in_bytes = cls._schema_process_server_details_read.total_memory_in_bytes
+        _schema.total_space_in_bytes = cls._schema_process_server_details_read.total_space_in_bytes
+        _schema.used_memory_in_bytes = cls._schema_process_server_details_read.used_memory_in_bytes
+        _schema.used_space_in_bytes = cls._schema_process_server_details_read.used_space_in_bytes
+        _schema.version = cls._schema_process_server_details_read.version
 
-    process_server_details_read = _schema_process_server_details_read
-    process_server_details_read.available_memory_in_bytes = AAZIntType(
-        serialized_name="availableMemoryInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.available_space_in_bytes = AAZIntType(
-        serialized_name="availableSpaceInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.bios_id = AAZStrType(
-        serialized_name="biosId",
-        flags={"read_only": True},
-    )
-    process_server_details_read.disk_usage_status = AAZStrType(
-        serialized_name="diskUsageStatus",
-        flags={"read_only": True},
-    )
-    process_server_details_read.fabric_object_id = AAZStrType(
-        serialized_name="fabricObjectId",
-        flags={"read_only": True},
-    )
-    process_server_details_read.fqdn = AAZStrType(
-        flags={"read_only": True},
-    )
-    process_server_details_read.free_space_percentage = AAZFloatType(
-        serialized_name="freeSpacePercentage",
-        flags={"read_only": True},
-    )
-    process_server_details_read.health = AAZStrType(
-        flags={"read_only": True},
-    )
-    process_server_details_read.health_errors = AAZListType(
-        serialized_name="healthErrors",
-        flags={"read_only": True},
-    )
-    process_server_details_read.historic_health = AAZStrType(
-        serialized_name="historicHealth",
-        flags={"read_only": True},
-    )
-    process_server_details_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    process_server_details_read.ip_addresses = AAZListType(
-        serialized_name="ipAddresses",
-        flags={"read_only": True},
-    )
-    process_server_details_read.last_heartbeat_utc = AAZStrType(
-        serialized_name="lastHeartbeatUtc",
-        flags={"read_only": True},
-    )
-    process_server_details_read.memory_usage_percentage = AAZFloatType(
-        serialized_name="memoryUsagePercentage",
-        flags={"read_only": True},
-    )
-    process_server_details_read.memory_usage_status = AAZStrType(
-        serialized_name="memoryUsageStatus",
-        flags={"read_only": True},
-    )
-    process_server_details_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    process_server_details_read.processor_usage_percentage = AAZFloatType(
-        serialized_name="processorUsagePercentage",
-        flags={"read_only": True},
-    )
-    process_server_details_read.processor_usage_status = AAZStrType(
-        serialized_name="processorUsageStatus",
-        flags={"read_only": True},
-    )
-    process_server_details_read.protected_item_count = AAZIntType(
-        serialized_name="protectedItemCount",
-        flags={"read_only": True},
-    )
-    process_server_details_read.system_load = AAZIntType(
-        serialized_name="systemLoad",
-        flags={"read_only": True},
-    )
-    process_server_details_read.system_load_status = AAZStrType(
-        serialized_name="systemLoadStatus",
-        flags={"read_only": True},
-    )
-    process_server_details_read.throughput_in_bytes = AAZIntType(
-        serialized_name="throughputInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.throughput_status = AAZStrType(
-        serialized_name="throughputStatus",
-        flags={"read_only": True},
-    )
-    process_server_details_read.throughput_upload_pending_data_in_bytes = AAZIntType(
-        serialized_name="throughputUploadPendingDataInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.total_memory_in_bytes = AAZIntType(
-        serialized_name="totalMemoryInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.total_space_in_bytes = AAZIntType(
-        serialized_name="totalSpaceInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.used_memory_in_bytes = AAZIntType(
-        serialized_name="usedMemoryInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.used_space_in_bytes = AAZIntType(
-        serialized_name="usedSpaceInBytes",
-        flags={"read_only": True},
-    )
-    process_server_details_read.version = AAZStrType(
-        flags={"read_only": True},
-    )
+    _schema_version_details_read = None
 
-    health_errors = _schema_process_server_details_read.health_errors
-    health_errors.Element = AAZObjectType()
-    _build_schema_health_error_read(health_errors.Element)
+    @classmethod
+    def _build_schema_version_details_read(cls, _schema):
+        if cls._schema_version_details_read is not None:
+            _schema.expiry_date = cls._schema_version_details_read.expiry_date
+            _schema.status = cls._schema_version_details_read.status
+            _schema.version = cls._schema_version_details_read.version
+            return
 
-    ip_addresses = _schema_process_server_details_read.ip_addresses
-    ip_addresses.Element = AAZStrType()
+        cls._schema_version_details_read = _schema_version_details_read = AAZObjectType()
 
-    _schema.available_memory_in_bytes = _schema_process_server_details_read.available_memory_in_bytes
-    _schema.available_space_in_bytes = _schema_process_server_details_read.available_space_in_bytes
-    _schema.bios_id = _schema_process_server_details_read.bios_id
-    _schema.disk_usage_status = _schema_process_server_details_read.disk_usage_status
-    _schema.fabric_object_id = _schema_process_server_details_read.fabric_object_id
-    _schema.fqdn = _schema_process_server_details_read.fqdn
-    _schema.free_space_percentage = _schema_process_server_details_read.free_space_percentage
-    _schema.health = _schema_process_server_details_read.health
-    _schema.health_errors = _schema_process_server_details_read.health_errors
-    _schema.historic_health = _schema_process_server_details_read.historic_health
-    _schema.id = _schema_process_server_details_read.id
-    _schema.ip_addresses = _schema_process_server_details_read.ip_addresses
-    _schema.last_heartbeat_utc = _schema_process_server_details_read.last_heartbeat_utc
-    _schema.memory_usage_percentage = _schema_process_server_details_read.memory_usage_percentage
-    _schema.memory_usage_status = _schema_process_server_details_read.memory_usage_status
-    _schema.name = _schema_process_server_details_read.name
-    _schema.processor_usage_percentage = _schema_process_server_details_read.processor_usage_percentage
-    _schema.processor_usage_status = _schema_process_server_details_read.processor_usage_status
-    _schema.protected_item_count = _schema_process_server_details_read.protected_item_count
-    _schema.system_load = _schema_process_server_details_read.system_load
-    _schema.system_load_status = _schema_process_server_details_read.system_load_status
-    _schema.throughput_in_bytes = _schema_process_server_details_read.throughput_in_bytes
-    _schema.throughput_status = _schema_process_server_details_read.throughput_status
-    _schema.throughput_upload_pending_data_in_bytes = _schema_process_server_details_read.throughput_upload_pending_data_in_bytes
-    _schema.total_memory_in_bytes = _schema_process_server_details_read.total_memory_in_bytes
-    _schema.total_space_in_bytes = _schema_process_server_details_read.total_space_in_bytes
-    _schema.used_memory_in_bytes = _schema_process_server_details_read.used_memory_in_bytes
-    _schema.used_space_in_bytes = _schema_process_server_details_read.used_space_in_bytes
-    _schema.version = _schema_process_server_details_read.version
+        version_details_read = _schema_version_details_read
+        version_details_read.expiry_date = AAZStrType(
+            serialized_name="expiryDate",
+        )
+        version_details_read.status = AAZStrType()
+        version_details_read.version = AAZStrType()
 
-
-_schema_version_details_read = None
-
-
-def _build_schema_version_details_read(_schema):
-    global _schema_version_details_read
-    if _schema_version_details_read is not None:
-        _schema.expiry_date = _schema_version_details_read.expiry_date
-        _schema.status = _schema_version_details_read.status
-        _schema.version = _schema_version_details_read.version
-        return
-
-    _schema_version_details_read = AAZObjectType()
-
-    version_details_read = _schema_version_details_read
-    version_details_read.expiry_date = AAZStrType(
-        serialized_name="expiryDate",
-    )
-    version_details_read.status = AAZStrType()
-    version_details_read.version = AAZStrType()
-
-    _schema.expiry_date = _schema_version_details_read.expiry_date
-    _schema.status = _schema_version_details_read.status
-    _schema.version = _schema_version_details_read.version
+        _schema.expiry_date = cls._schema_version_details_read.expiry_date
+        _schema.status = cls._schema_version_details_read.status
+        _schema.version = cls._schema_version_details_read.version
 
 
 __all__ = ["List"]

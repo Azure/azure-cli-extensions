@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListProtectionContainerMapping(AAZCommand):
     """List the protection container mappings in the vault.
+
+    :example: list-protection-container-mapping
+        az site-recovery vault list-protection-container-mapping -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -361,6 +364,10 @@ class ListProtectionContainerMapping(AAZCommand):
             role_size_to_nic_count_map.Element = AAZIntType()
 
             return cls._schema_on_200
+
+
+class _ListProtectionContainerMappingHelper:
+    """Helper class for ListProtectionContainerMapping"""
 
 
 __all__ = ["ListProtectionContainerMapping"]

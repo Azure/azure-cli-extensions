@@ -46,7 +46,6 @@ class Create(AAZCommand):
             options=["--fabric-name"],
             help="Fabric name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -55,19 +54,16 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
         _args_schema.storage_classification_mapping_name = AAZStrArg(
             options=["-n", "--name", "--storage-classification-mapping-name"],
             help="Storage classification mapping name.",
             required=True,
-            id_part="child_name_3",
         )
         _args_schema.storage_classification_name = AAZStrArg(
             options=["--storage-classification", "--storage-classification-name"],
             help="Storage classification name.",
             required=True,
-            id_part="child_name_2",
         )
 
         # define Arg Group "Properties"
@@ -242,6 +238,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

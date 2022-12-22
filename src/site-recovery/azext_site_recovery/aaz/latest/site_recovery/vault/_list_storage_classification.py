@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListStorageClassification(AAZCommand):
     """List the storage classifications in the vault.
+
+    :example: list-storage-classification
+        az site-recovery vault list-storage-classification -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -176,6 +179,10 @@ class ListStorageClassification(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListStorageClassificationHelper:
+    """Helper class for ListStorageClassification"""
 
 
 __all__ = ["ListStorageClassification"]

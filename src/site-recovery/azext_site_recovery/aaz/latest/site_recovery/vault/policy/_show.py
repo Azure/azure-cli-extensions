@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the details of a replication policy.
+
+    :example: policy show
+        az site-recovery vault policy show -g {rg} --resource-name {vault_name} -n {policy_name_rcm}
     """
 
     _aaz_info = {
@@ -393,6 +396,10 @@ class Show(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

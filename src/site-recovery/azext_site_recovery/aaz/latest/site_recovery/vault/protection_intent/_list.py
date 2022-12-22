@@ -230,7 +230,7 @@ class List(AAZCommand):
             disc_a2_a.disk_encryption_info = AAZObjectType(
                 serialized_name="diskEncryptionInfo",
             )
-            _build_schema_disk_encryption_info_read(disc_a2_a.disk_encryption_info)
+            _ListHelper._build_schema_disk_encryption_info_read(disc_a2_a.disk_encryption_info)
             disc_a2_a.fabric_object_id = AAZStrType(
                 serialized_name="fabricObjectId",
             )
@@ -246,7 +246,7 @@ class List(AAZCommand):
             disc_a2_a.primary_staging_storage_account = AAZObjectType(
                 serialized_name="primaryStagingStorageAccount",
             )
-            _build_schema_storage_account_custom_details_read(disc_a2_a.primary_staging_storage_account)
+            _ListHelper._build_schema_storage_account_custom_details_read(disc_a2_a.primary_staging_storage_account)
             disc_a2_a.protection_profile = AAZObjectType(
                 serialized_name="protectionProfile",
             )
@@ -263,7 +263,7 @@ class List(AAZCommand):
             disc_a2_a.recovery_boot_diag_storage_account = AAZObjectType(
                 serialized_name="recoveryBootDiagStorageAccount",
             )
-            _build_schema_storage_account_custom_details_read(disc_a2_a.recovery_boot_diag_storage_account)
+            _ListHelper._build_schema_storage_account_custom_details_read(disc_a2_a.recovery_boot_diag_storage_account)
             disc_a2_a.recovery_location = AAZStrType(
                 serialized_name="recoveryLocation",
             )
@@ -373,11 +373,11 @@ class List(AAZCommand):
             _element.primary_staging_storage_account_custom_input = AAZObjectType(
                 serialized_name="primaryStagingStorageAccountCustomInput",
             )
-            _build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
+            _ListHelper._build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
             _element.recovery_azure_storage_account_custom_input = AAZObjectType(
                 serialized_name="recoveryAzureStorageAccountCustomInput",
             )
-            _build_schema_storage_account_custom_details_read(_element.recovery_azure_storage_account_custom_input)
+            _ListHelper._build_schema_storage_account_custom_details_read(_element.recovery_azure_storage_account_custom_input)
 
             vm_managed_disks = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks
             vm_managed_disks.Element = AAZObjectType()
@@ -386,7 +386,7 @@ class List(AAZCommand):
             _element.disk_encryption_info = AAZObjectType(
                 serialized_name="diskEncryptionInfo",
             )
-            _build_schema_disk_encryption_info_read(_element.disk_encryption_info)
+            _ListHelper._build_schema_disk_encryption_info_read(_element.disk_encryption_info)
             _element.disk_id = AAZStrType(
                 serialized_name="diskId",
                 flags={"required": True},
@@ -394,7 +394,7 @@ class List(AAZCommand):
             _element.primary_staging_storage_account_custom_input = AAZObjectType(
                 serialized_name="primaryStagingStorageAccountCustomInput",
             )
-            _build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
+            _ListHelper._build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
             _element.recovery_disk_encryption_set_id = AAZStrType(
                 serialized_name="recoveryDiskEncryptionSetId",
             )
@@ -422,86 +422,86 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_disk_encryption_info_read = None
+class _ListHelper:
+    """Helper class for List"""
 
+    _schema_disk_encryption_info_read = None
 
-def _build_schema_disk_encryption_info_read(_schema):
-    global _schema_disk_encryption_info_read
-    if _schema_disk_encryption_info_read is not None:
-        _schema.disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
-        _schema.key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
-        return
+    @classmethod
+    def _build_schema_disk_encryption_info_read(cls, _schema):
+        if cls._schema_disk_encryption_info_read is not None:
+            _schema.disk_encryption_key_info = cls._schema_disk_encryption_info_read.disk_encryption_key_info
+            _schema.key_encryption_key_info = cls._schema_disk_encryption_info_read.key_encryption_key_info
+            return
 
-    _schema_disk_encryption_info_read = AAZObjectType()
+        cls._schema_disk_encryption_info_read = _schema_disk_encryption_info_read = AAZObjectType()
 
-    disk_encryption_info_read = _schema_disk_encryption_info_read
-    disk_encryption_info_read.disk_encryption_key_info = AAZObjectType(
-        serialized_name="diskEncryptionKeyInfo",
-    )
-    disk_encryption_info_read.key_encryption_key_info = AAZObjectType(
-        serialized_name="keyEncryptionKeyInfo",
-    )
+        disk_encryption_info_read = _schema_disk_encryption_info_read
+        disk_encryption_info_read.disk_encryption_key_info = AAZObjectType(
+            serialized_name="diskEncryptionKeyInfo",
+        )
+        disk_encryption_info_read.key_encryption_key_info = AAZObjectType(
+            serialized_name="keyEncryptionKeyInfo",
+        )
 
-    disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
-    disk_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
-        serialized_name="keyVaultResourceArmId",
-    )
-    disk_encryption_key_info.secret_identifier = AAZStrType(
-        serialized_name="secretIdentifier",
-    )
+        disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
+        disk_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
+            serialized_name="keyVaultResourceArmId",
+        )
+        disk_encryption_key_info.secret_identifier = AAZStrType(
+            serialized_name="secretIdentifier",
+        )
 
-    key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
-    key_encryption_key_info.key_identifier = AAZStrType(
-        serialized_name="keyIdentifier",
-    )
-    key_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
-        serialized_name="keyVaultResourceArmId",
-    )
+        key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
+        key_encryption_key_info.key_identifier = AAZStrType(
+            serialized_name="keyIdentifier",
+        )
+        key_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
+            serialized_name="keyVaultResourceArmId",
+        )
 
-    _schema.disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
-    _schema.key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
+        _schema.disk_encryption_key_info = cls._schema_disk_encryption_info_read.disk_encryption_key_info
+        _schema.key_encryption_key_info = cls._schema_disk_encryption_info_read.key_encryption_key_info
 
+    _schema_storage_account_custom_details_read = None
 
-_schema_storage_account_custom_details_read = None
+    @classmethod
+    def _build_schema_storage_account_custom_details_read(cls, _schema):
+        if cls._schema_storage_account_custom_details_read is not None:
+            _schema.resource_type = cls._schema_storage_account_custom_details_read.resource_type
+            _schema.discriminate_by(
+                "resource_type",
+                "Existing",
+                cls._schema_storage_account_custom_details_read.discriminate_by(
+                    "resource_type",
+                    "Existing",
+                )
+            )
+            return
 
+        cls._schema_storage_account_custom_details_read = _schema_storage_account_custom_details_read = AAZObjectType()
 
-def _build_schema_storage_account_custom_details_read(_schema):
-    global _schema_storage_account_custom_details_read
-    if _schema_storage_account_custom_details_read is not None:
-        _schema.resource_type = _schema_storage_account_custom_details_read.resource_type
+        storage_account_custom_details_read = _schema_storage_account_custom_details_read
+        storage_account_custom_details_read.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
+
+        disc_existing = _schema_storage_account_custom_details_read.discriminate_by("resource_type", "Existing")
+        disc_existing.azure_storage_account_id = AAZStrType(
+            serialized_name="azureStorageAccountId",
+            flags={"required": True},
+        )
+
+        _schema.resource_type = cls._schema_storage_account_custom_details_read.resource_type
         _schema.discriminate_by(
-            "resource_type",
-            "Existing",
-            _schema_storage_account_custom_details_read.discriminate_by(
                 "resource_type",
                 "Existing",
+                cls._schema_storage_account_custom_details_read.discriminate_by(
+                    "resource_type",
+                    "Existing",
+                )
             )
-        )
-        return
-
-    _schema_storage_account_custom_details_read = AAZObjectType()
-
-    storage_account_custom_details_read = _schema_storage_account_custom_details_read
-    storage_account_custom_details_read.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
-
-    disc_existing = _schema_storage_account_custom_details_read.discriminate_by("resource_type", "Existing")
-    disc_existing.azure_storage_account_id = AAZStrType(
-        serialized_name="azureStorageAccountId",
-        flags={"required": True},
-    )
-
-    _schema.resource_type = _schema_storage_account_custom_details_read.resource_type
-    _schema.discriminate_by(
-            "resource_type",
-            "Existing",
-            _schema_storage_account_custom_details_read.discriminate_by(
-                "resource_type",
-                "Existing",
-            )
-        )
 
 
 __all__ = ["List"]

@@ -800,4 +800,8 @@ class TestMigrate(AAZCommand):
             return cls._schema_on_200
 
 
+class _TestMigrateHelper:
+    """Helper class for TestMigrate"""
+
+
 __all__ = ["TestMigrate"]

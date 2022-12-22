@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListMigrationItem(AAZCommand):
     """Get the list of ASR replication migration items in the vault.
+
+    :example: list-migration-item
+        az site-recovery vault list-migration-item -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -670,6 +673,10 @@ class ListMigrationItem(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListMigrationItemHelper:
+    """Helper class for ListMigrationItem"""
 
 
 __all__ = ["ListMigrationItem"]

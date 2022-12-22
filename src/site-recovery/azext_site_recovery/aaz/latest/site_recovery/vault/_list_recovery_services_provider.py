@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListRecoveryServicesProvider(AAZCommand):
     """List the registered recovery services providers in the vault.
+
+    :example: list-recovery-services-provider
+        az site-recovery vault list-recovery-services-provider -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -177,7 +180,7 @@ class ListRecoveryServicesProvider(AAZCommand):
             properties.authentication_identity_details = AAZObjectType(
                 serialized_name="authenticationIdentityDetails",
             )
-            _build_schema_identity_provider_details_read(properties.authentication_identity_details)
+            _ListRecoveryServicesProviderHelper._build_schema_identity_provider_details_read(properties.authentication_identity_details)
             properties.bios_id = AAZStrType(
                 serialized_name="biosId",
             )
@@ -187,7 +190,7 @@ class ListRecoveryServicesProvider(AAZCommand):
             properties.data_plane_authentication_identity_details = AAZObjectType(
                 serialized_name="dataPlaneAuthenticationIdentityDetails",
             )
-            _build_schema_identity_provider_details_read(properties.data_plane_authentication_identity_details)
+            _ListRecoveryServicesProviderHelper._build_schema_identity_provider_details_read(properties.data_plane_authentication_identity_details)
             properties.dra_identifier = AAZStrType(
                 serialized_name="draIdentifier",
             )
@@ -230,7 +233,7 @@ class ListRecoveryServicesProvider(AAZCommand):
             properties.resource_access_identity_details = AAZObjectType(
                 serialized_name="resourceAccessIdentityDetails",
             )
-            _build_schema_identity_provider_details_read(properties.resource_access_identity_details)
+            _ListRecoveryServicesProviderHelper._build_schema_identity_provider_details_read(properties.resource_access_identity_details)
             properties.server_version = AAZStrType(
                 serialized_name="serverVersion",
             )
@@ -345,41 +348,43 @@ class ListRecoveryServicesProvider(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_identity_provider_details_read = None
+class _ListRecoveryServicesProviderHelper:
+    """Helper class for ListRecoveryServicesProvider"""
 
+    _schema_identity_provider_details_read = None
 
-def _build_schema_identity_provider_details_read(_schema):
-    global _schema_identity_provider_details_read
-    if _schema_identity_provider_details_read is not None:
-        _schema.aad_authority = _schema_identity_provider_details_read.aad_authority
-        _schema.application_id = _schema_identity_provider_details_read.application_id
-        _schema.audience = _schema_identity_provider_details_read.audience
-        _schema.object_id = _schema_identity_provider_details_read.object_id
-        _schema.tenant_id = _schema_identity_provider_details_read.tenant_id
-        return
+    @classmethod
+    def _build_schema_identity_provider_details_read(cls, _schema):
+        if cls._schema_identity_provider_details_read is not None:
+            _schema.aad_authority = cls._schema_identity_provider_details_read.aad_authority
+            _schema.application_id = cls._schema_identity_provider_details_read.application_id
+            _schema.audience = cls._schema_identity_provider_details_read.audience
+            _schema.object_id = cls._schema_identity_provider_details_read.object_id
+            _schema.tenant_id = cls._schema_identity_provider_details_read.tenant_id
+            return
 
-    _schema_identity_provider_details_read = AAZObjectType()
+        cls._schema_identity_provider_details_read = _schema_identity_provider_details_read = AAZObjectType()
 
-    identity_provider_details_read = _schema_identity_provider_details_read
-    identity_provider_details_read.aad_authority = AAZStrType(
-        serialized_name="aadAuthority",
-    )
-    identity_provider_details_read.application_id = AAZStrType(
-        serialized_name="applicationId",
-    )
-    identity_provider_details_read.audience = AAZStrType()
-    identity_provider_details_read.object_id = AAZStrType(
-        serialized_name="objectId",
-    )
-    identity_provider_details_read.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-    )
+        identity_provider_details_read = _schema_identity_provider_details_read
+        identity_provider_details_read.aad_authority = AAZStrType(
+            serialized_name="aadAuthority",
+        )
+        identity_provider_details_read.application_id = AAZStrType(
+            serialized_name="applicationId",
+        )
+        identity_provider_details_read.audience = AAZStrType()
+        identity_provider_details_read.object_id = AAZStrType(
+            serialized_name="objectId",
+        )
+        identity_provider_details_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    _schema.aad_authority = _schema_identity_provider_details_read.aad_authority
-    _schema.application_id = _schema_identity_provider_details_read.application_id
-    _schema.audience = _schema_identity_provider_details_read.audience
-    _schema.object_id = _schema_identity_provider_details_read.object_id
-    _schema.tenant_id = _schema_identity_provider_details_read.tenant_id
+        _schema.aad_authority = cls._schema_identity_provider_details_read.aad_authority
+        _schema.application_id = cls._schema_identity_provider_details_read.application_id
+        _schema.audience = cls._schema_identity_provider_details_read.audience
+        _schema.object_id = cls._schema_identity_provider_details_read.object_id
+        _schema.tenant_id = cls._schema_identity_provider_details_read.tenant_id
 
 
 __all__ = ["ListRecoveryServicesProvider"]

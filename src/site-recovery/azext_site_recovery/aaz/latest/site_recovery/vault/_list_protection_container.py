@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListProtectionContainer(AAZCommand):
     """List the protection containers in a vault.
+
+    :example: list-protection-container
+        az site-recovery vault list-protection-container -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -198,6 +201,10 @@ class ListProtectionContainer(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListProtectionContainerHelper:
+    """Helper class for ListProtectionContainer"""
 
 
 __all__ = ["ListProtectionContainer"]

@@ -46,19 +46,16 @@ class Create(AAZCommand):
             options=["--fabric-name"],
             help="Fabric name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.mapping_name = AAZStrArg(
             options=["-n", "--name", "--mapping-name"],
             help="Protection container mapping name.",
             required=True,
-            id_part="child_name_3",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -67,7 +64,6 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -514,6 +510,10 @@ class Create(AAZCommand):
             role_size_to_nic_count_map.Element = AAZIntType()
 
             return cls._schema_on_200
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

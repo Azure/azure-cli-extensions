@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an email notification(alert) configuration.
+
+    :example: alert-setting create
+        az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} --resource-name {vault_name} --custom-email-addresses email@address.com --locale en_US --send-to-owners Send
     """
 
     _aaz_info = {
@@ -45,7 +48,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--alert-setting-name"],
             help="The name of the email notification(alert) configuration.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,7 +56,6 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -231,6 +232,10 @@ class Create(AAZCommand):
             custom_email_addresses.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

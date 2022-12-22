@@ -551,7 +551,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_replication_protection_intent_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_replication_protection_intent_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -650,7 +650,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_replication_protection_intent_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_replication_protection_intent_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -682,17 +682,17 @@ class Update(AAZCommand):
                 disc_a2_a.set_prop("autoProtectionOfDataDisk", AAZStrType, ".a2_a.auto_protection_of_data_disk")
                 disc_a2_a.set_prop("automationAccountArmId", AAZStrType, ".a2_a.automation_account_arm_id")
                 disc_a2_a.set_prop("automationAccountAuthenticationType", AAZStrType, ".a2_a.automation_account_authentication_type")
-                _build_schema_disk_encryption_info_update(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2_a.disk_encryption_info"))
+                _UpdateHelper._build_schema_disk_encryption_info_update(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2_a.disk_encryption_info"))
                 disc_a2_a.set_prop("fabricObjectId", AAZStrType, ".a2_a.fabric_object_id", typ_kwargs={"flags": {"required": True}})
                 disc_a2_a.set_prop("multiVmGroupId", AAZStrType, ".a2_a.multi_vm_group_id")
                 disc_a2_a.set_prop("multiVmGroupName", AAZStrType, ".a2_a.multi_vm_group_name")
                 disc_a2_a.set_prop("primaryLocation", AAZStrType, ".a2_a.primary_location", typ_kwargs={"flags": {"required": True}})
-                _build_schema_storage_account_custom_details_update(disc_a2_a.set_prop("primaryStagingStorageAccountCustomInput", AAZObjectType, ".a2_a.primary_staging_storage_account_custom_input"))
+                _UpdateHelper._build_schema_storage_account_custom_details_update(disc_a2_a.set_prop("primaryStagingStorageAccountCustomInput", AAZObjectType, ".a2_a.primary_staging_storage_account_custom_input"))
                 disc_a2_a.set_prop("protectionProfileCustomInput", AAZObjectType, ".a2_a.protection_profile_custom_input")
                 disc_a2_a.set_prop("recoveryAvailabilitySetCustomInput", AAZObjectType, ".a2_a.recovery_availability_set_custom_input")
                 disc_a2_a.set_prop("recoveryAvailabilityType", AAZStrType, ".a2_a.recovery_availability_type", typ_kwargs={"flags": {"required": True}})
                 disc_a2_a.set_prop("recoveryAvailabilityZone", AAZStrType, ".a2_a.recovery_availability_zone")
-                _build_schema_storage_account_custom_details_update(disc_a2_a.set_prop("recoveryBootDiagStorageAccount", AAZObjectType, ".a2_a.recovery_boot_diag_storage_account"))
+                _UpdateHelper._build_schema_storage_account_custom_details_update(disc_a2_a.set_prop("recoveryBootDiagStorageAccount", AAZObjectType, ".a2_a.recovery_boot_diag_storage_account"))
                 disc_a2_a.set_prop("recoveryLocation", AAZStrType, ".a2_a.recovery_location", typ_kwargs={"flags": {"required": True}})
                 disc_a2_a.set_prop("recoveryProximityPlacementGroupCustomInput", AAZObjectType, ".a2_a.recovery_proximity_placement_group_custom_input")
                 disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2_a.recovery_resource_group_id", typ_kwargs={"flags": {"required": True}})
@@ -762,8 +762,8 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks[]")
             if _elements is not None:
                 _elements.set_prop("diskUri", AAZStrType, ".disk_uri", typ_kwargs={"flags": {"required": True}})
-                _build_schema_storage_account_custom_details_update(_elements.set_prop("primaryStagingStorageAccountCustomInput", AAZObjectType, ".primary_staging_storage_account_custom_input"))
-                _build_schema_storage_account_custom_details_update(_elements.set_prop("recoveryAzureStorageAccountCustomInput", AAZObjectType, ".recovery_azure_storage_account_custom_input"))
+                _UpdateHelper._build_schema_storage_account_custom_details_update(_elements.set_prop("primaryStagingStorageAccountCustomInput", AAZObjectType, ".primary_staging_storage_account_custom_input"))
+                _UpdateHelper._build_schema_storage_account_custom_details_update(_elements.set_prop("recoveryAzureStorageAccountCustomInput", AAZObjectType, ".recovery_azure_storage_account_custom_input"))
 
             vm_managed_disks = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks")
             if vm_managed_disks is not None:
@@ -771,9 +771,9 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[]")
             if _elements is not None:
-                _build_schema_disk_encryption_info_update(_elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info"))
+                _UpdateHelper._build_schema_disk_encryption_info_update(_elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info"))
                 _elements.set_prop("diskId", AAZStrType, ".disk_id", typ_kwargs={"flags": {"required": True}})
-                _build_schema_storage_account_custom_details_update(_elements.set_prop("primaryStagingStorageAccountCustomInput", AAZObjectType, ".primary_staging_storage_account_custom_input"))
+                _UpdateHelper._build_schema_storage_account_custom_details_update(_elements.set_prop("primaryStagingStorageAccountCustomInput", AAZObjectType, ".primary_staging_storage_account_custom_input"))
                 _elements.set_prop("recoveryDiskEncryptionSetId", AAZStrType, ".recovery_disk_encryption_set_id")
                 _elements.set_prop("recoveryReplicaDiskAccountType", AAZStrType, ".recovery_replica_disk_account_type")
                 _elements.set_prop("recoveryResourceGroupCustomInput", AAZObjectType, ".recovery_resource_group_custom_input")
@@ -799,384 +799,382 @@ class Update(AAZCommand):
             )
 
 
-def _build_schema_disk_encryption_info_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
-    _builder.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
+class _UpdateHelper:
+    """Helper class for Update"""
 
-    disk_encryption_key_info = _builder.get(".diskEncryptionKeyInfo")
-    if disk_encryption_key_info is not None:
-        disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
-        disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
+    @classmethod
+    def _build_schema_disk_encryption_info_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
+        _builder.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
 
-    key_encryption_key_info = _builder.get(".keyEncryptionKeyInfo")
-    if key_encryption_key_info is not None:
-        key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
-        key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+        disk_encryption_key_info = _builder.get(".diskEncryptionKeyInfo")
+        if disk_encryption_key_info is not None:
+            disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+            disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
 
+        key_encryption_key_info = _builder.get(".keyEncryptionKeyInfo")
+        if key_encryption_key_info is not None:
+            key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
+            key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
 
-def _build_schema_storage_account_custom_details_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_const("resourceType", "Existing", AAZStrType, ".existing", typ_kwargs={"flags": {"required": True}})
-    _builder.discriminate_by("resourceType", "Existing")
+    @classmethod
+    def _build_schema_storage_account_custom_details_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_const("resourceType", "Existing", AAZStrType, ".existing", typ_kwargs={"flags": {"required": True}})
+        _builder.discriminate_by("resourceType", "Existing")
 
-    disc_existing = _builder.get("{resourceType:Existing}")
-    if disc_existing is not None:
-        disc_existing.set_prop("azureStorageAccountId", AAZStrType, ".existing.azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
+        disc_existing = _builder.get("{resourceType:Existing}")
+        if disc_existing is not None:
+            disc_existing.set_prop("azureStorageAccountId", AAZStrType, ".existing.azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
 
+    _schema_disk_encryption_info_read = None
 
-_schema_disk_encryption_info_read = None
+    @classmethod
+    def _build_schema_disk_encryption_info_read(cls, _schema):
+        if cls._schema_disk_encryption_info_read is not None:
+            _schema.disk_encryption_key_info = cls._schema_disk_encryption_info_read.disk_encryption_key_info
+            _schema.key_encryption_key_info = cls._schema_disk_encryption_info_read.key_encryption_key_info
+            return
 
+        cls._schema_disk_encryption_info_read = _schema_disk_encryption_info_read = AAZObjectType()
 
-def _build_schema_disk_encryption_info_read(_schema):
-    global _schema_disk_encryption_info_read
-    if _schema_disk_encryption_info_read is not None:
-        _schema.disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
-        _schema.key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
-        return
+        disk_encryption_info_read = _schema_disk_encryption_info_read
+        disk_encryption_info_read.disk_encryption_key_info = AAZObjectType(
+            serialized_name="diskEncryptionKeyInfo",
+        )
+        disk_encryption_info_read.key_encryption_key_info = AAZObjectType(
+            serialized_name="keyEncryptionKeyInfo",
+        )
 
-    _schema_disk_encryption_info_read = AAZObjectType()
+        disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
+        disk_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
+            serialized_name="keyVaultResourceArmId",
+        )
+        disk_encryption_key_info.secret_identifier = AAZStrType(
+            serialized_name="secretIdentifier",
+        )
 
-    disk_encryption_info_read = _schema_disk_encryption_info_read
-    disk_encryption_info_read.disk_encryption_key_info = AAZObjectType(
-        serialized_name="diskEncryptionKeyInfo",
-    )
-    disk_encryption_info_read.key_encryption_key_info = AAZObjectType(
-        serialized_name="keyEncryptionKeyInfo",
-    )
+        key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
+        key_encryption_key_info.key_identifier = AAZStrType(
+            serialized_name="keyIdentifier",
+        )
+        key_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
+            serialized_name="keyVaultResourceArmId",
+        )
 
-    disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
-    disk_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
-        serialized_name="keyVaultResourceArmId",
-    )
-    disk_encryption_key_info.secret_identifier = AAZStrType(
-        serialized_name="secretIdentifier",
-    )
+        _schema.disk_encryption_key_info = cls._schema_disk_encryption_info_read.disk_encryption_key_info
+        _schema.key_encryption_key_info = cls._schema_disk_encryption_info_read.key_encryption_key_info
 
-    key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
-    key_encryption_key_info.key_identifier = AAZStrType(
-        serialized_name="keyIdentifier",
-    )
-    key_encryption_key_info.key_vault_resource_arm_id = AAZStrType(
-        serialized_name="keyVaultResourceArmId",
-    )
+    _schema_replication_protection_intent_read = None
 
-    _schema.disk_encryption_key_info = _schema_disk_encryption_info_read.disk_encryption_key_info
-    _schema.key_encryption_key_info = _schema_disk_encryption_info_read.key_encryption_key_info
+    @classmethod
+    def _build_schema_replication_protection_intent_read(cls, _schema):
+        if cls._schema_replication_protection_intent_read is not None:
+            _schema.id = cls._schema_replication_protection_intent_read.id
+            _schema.location = cls._schema_replication_protection_intent_read.location
+            _schema.name = cls._schema_replication_protection_intent_read.name
+            _schema.properties = cls._schema_replication_protection_intent_read.properties
+            _schema.type = cls._schema_replication_protection_intent_read.type
+            return
 
+        cls._schema_replication_protection_intent_read = _schema_replication_protection_intent_read = AAZObjectType()
 
-_schema_replication_protection_intent_read = None
+        replication_protection_intent_read = _schema_replication_protection_intent_read
+        replication_protection_intent_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        replication_protection_intent_read.location = AAZStrType()
+        replication_protection_intent_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        replication_protection_intent_read.properties = AAZObjectType()
+        replication_protection_intent_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
+        properties = _schema_replication_protection_intent_read.properties
+        properties.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUTC",
+            flags={"read_only": True},
+        )
+        properties.friendly_name = AAZStrType(
+            serialized_name="friendlyName",
+        )
+        properties.is_active = AAZBoolType(
+            serialized_name="isActive",
+            flags={"read_only": True},
+        )
+        properties.job_id = AAZStrType(
+            serialized_name="jobId",
+            flags={"read_only": True},
+        )
+        properties.job_state = AAZStrType(
+            serialized_name="jobState",
+            flags={"read_only": True},
+        )
+        properties.provider_specific_details = AAZObjectType(
+            serialized_name="providerSpecificDetails",
+        )
 
-def _build_schema_replication_protection_intent_read(_schema):
-    global _schema_replication_protection_intent_read
-    if _schema_replication_protection_intent_read is not None:
-        _schema.id = _schema_replication_protection_intent_read.id
-        _schema.location = _schema_replication_protection_intent_read.location
-        _schema.name = _schema_replication_protection_intent_read.name
-        _schema.properties = _schema_replication_protection_intent_read.properties
-        _schema.type = _schema_replication_protection_intent_read.type
-        return
+        provider_specific_details = _schema_replication_protection_intent_read.properties.provider_specific_details
+        provider_specific_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    _schema_replication_protection_intent_read = AAZObjectType()
+        disc_a2_a = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
+        disc_a2_a.agent_auto_update_status = AAZStrType(
+            serialized_name="agentAutoUpdateStatus",
+        )
+        disc_a2_a.auto_protection_of_data_disk = AAZStrType(
+            serialized_name="autoProtectionOfDataDisk",
+        )
+        disc_a2_a.automation_account_arm_id = AAZStrType(
+            serialized_name="automationAccountArmId",
+        )
+        disc_a2_a.automation_account_authentication_type = AAZStrType(
+            serialized_name="automationAccountAuthenticationType",
+        )
+        disc_a2_a.disk_encryption_info = AAZObjectType(
+            serialized_name="diskEncryptionInfo",
+        )
+        cls._build_schema_disk_encryption_info_read(disc_a2_a.disk_encryption_info)
+        disc_a2_a.fabric_object_id = AAZStrType(
+            serialized_name="fabricObjectId",
+        )
+        disc_a2_a.multi_vm_group_id = AAZStrType(
+            serialized_name="multiVmGroupId",
+        )
+        disc_a2_a.multi_vm_group_name = AAZStrType(
+            serialized_name="multiVmGroupName",
+        )
+        disc_a2_a.primary_location = AAZStrType(
+            serialized_name="primaryLocation",
+        )
+        disc_a2_a.primary_staging_storage_account = AAZObjectType(
+            serialized_name="primaryStagingStorageAccount",
+        )
+        cls._build_schema_storage_account_custom_details_read(disc_a2_a.primary_staging_storage_account)
+        disc_a2_a.protection_profile = AAZObjectType(
+            serialized_name="protectionProfile",
+        )
+        disc_a2_a.recovery_availability_set = AAZObjectType(
+            serialized_name="recoveryAvailabilitySet",
+        )
+        disc_a2_a.recovery_availability_type = AAZStrType(
+            serialized_name="recoveryAvailabilityType",
+            flags={"required": True},
+        )
+        disc_a2_a.recovery_availability_zone = AAZStrType(
+            serialized_name="recoveryAvailabilityZone",
+        )
+        disc_a2_a.recovery_boot_diag_storage_account = AAZObjectType(
+            serialized_name="recoveryBootDiagStorageAccount",
+        )
+        cls._build_schema_storage_account_custom_details_read(disc_a2_a.recovery_boot_diag_storage_account)
+        disc_a2_a.recovery_location = AAZStrType(
+            serialized_name="recoveryLocation",
+        )
+        disc_a2_a.recovery_proximity_placement_group = AAZObjectType(
+            serialized_name="recoveryProximityPlacementGroup",
+        )
+        disc_a2_a.recovery_resource_group_id = AAZStrType(
+            serialized_name="recoveryResourceGroupId",
+        )
+        disc_a2_a.recovery_subscription_id = AAZStrType(
+            serialized_name="recoverySubscriptionId",
+        )
+        disc_a2_a.recovery_virtual_network = AAZObjectType(
+            serialized_name="recoveryVirtualNetwork",
+        )
+        disc_a2_a.vm_disks = AAZListType(
+            serialized_name="vmDisks",
+        )
+        disc_a2_a.vm_managed_disks = AAZListType(
+            serialized_name="vmManagedDisks",
+        )
 
-    replication_protection_intent_read = _schema_replication_protection_intent_read
-    replication_protection_intent_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    replication_protection_intent_read.location = AAZStrType()
-    replication_protection_intent_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    replication_protection_intent_read.properties = AAZObjectType()
-    replication_protection_intent_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        protection_profile = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").protection_profile
+        protection_profile.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
 
-    properties = _schema_replication_protection_intent_read.properties
-    properties.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUTC",
-        flags={"read_only": True},
-    )
-    properties.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-    )
-    properties.is_active = AAZBoolType(
-        serialized_name="isActive",
-        flags={"read_only": True},
-    )
-    properties.job_id = AAZStrType(
-        serialized_name="jobId",
-        flags={"read_only": True},
-    )
-    properties.job_state = AAZStrType(
-        serialized_name="jobState",
-        flags={"read_only": True},
-    )
-    properties.provider_specific_details = AAZObjectType(
-        serialized_name="providerSpecificDetails",
-    )
+        disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").protection_profile.discriminate_by("resource_type", "Existing")
+        disc_existing.protection_profile_id = AAZStrType(
+            serialized_name="protectionProfileId",
+            flags={"required": True},
+        )
 
-    provider_specific_details = _schema_replication_protection_intent_read.properties.provider_specific_details
-    provider_specific_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        disc_new = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").protection_profile.discriminate_by("resource_type", "New")
+        disc_new.app_consistent_frequency_in_minutes = AAZIntType(
+            serialized_name="appConsistentFrequencyInMinutes",
+        )
+        disc_new.crash_consistent_frequency_in_minutes = AAZIntType(
+            serialized_name="crashConsistentFrequencyInMinutes",
+        )
+        disc_new.multi_vm_sync_status = AAZStrType(
+            serialized_name="multiVmSyncStatus",
+            flags={"required": True},
+        )
+        disc_new.policy_name = AAZStrType(
+            serialized_name="policyName",
+            flags={"required": True},
+        )
+        disc_new.recovery_point_history = AAZIntType(
+            serialized_name="recoveryPointHistory",
+        )
 
-    disc_a2_a = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
-    disc_a2_a.agent_auto_update_status = AAZStrType(
-        serialized_name="agentAutoUpdateStatus",
-    )
-    disc_a2_a.auto_protection_of_data_disk = AAZStrType(
-        serialized_name="autoProtectionOfDataDisk",
-    )
-    disc_a2_a.automation_account_arm_id = AAZStrType(
-        serialized_name="automationAccountArmId",
-    )
-    disc_a2_a.automation_account_authentication_type = AAZStrType(
-        serialized_name="automationAccountAuthenticationType",
-    )
-    disc_a2_a.disk_encryption_info = AAZObjectType(
-        serialized_name="diskEncryptionInfo",
-    )
-    _build_schema_disk_encryption_info_read(disc_a2_a.disk_encryption_info)
-    disc_a2_a.fabric_object_id = AAZStrType(
-        serialized_name="fabricObjectId",
-    )
-    disc_a2_a.multi_vm_group_id = AAZStrType(
-        serialized_name="multiVmGroupId",
-    )
-    disc_a2_a.multi_vm_group_name = AAZStrType(
-        serialized_name="multiVmGroupName",
-    )
-    disc_a2_a.primary_location = AAZStrType(
-        serialized_name="primaryLocation",
-    )
-    disc_a2_a.primary_staging_storage_account = AAZObjectType(
-        serialized_name="primaryStagingStorageAccount",
-    )
-    _build_schema_storage_account_custom_details_read(disc_a2_a.primary_staging_storage_account)
-    disc_a2_a.protection_profile = AAZObjectType(
-        serialized_name="protectionProfile",
-    )
-    disc_a2_a.recovery_availability_set = AAZObjectType(
-        serialized_name="recoveryAvailabilitySet",
-    )
-    disc_a2_a.recovery_availability_type = AAZStrType(
-        serialized_name="recoveryAvailabilityType",
-        flags={"required": True},
-    )
-    disc_a2_a.recovery_availability_zone = AAZStrType(
-        serialized_name="recoveryAvailabilityZone",
-    )
-    disc_a2_a.recovery_boot_diag_storage_account = AAZObjectType(
-        serialized_name="recoveryBootDiagStorageAccount",
-    )
-    _build_schema_storage_account_custom_details_read(disc_a2_a.recovery_boot_diag_storage_account)
-    disc_a2_a.recovery_location = AAZStrType(
-        serialized_name="recoveryLocation",
-    )
-    disc_a2_a.recovery_proximity_placement_group = AAZObjectType(
-        serialized_name="recoveryProximityPlacementGroup",
-    )
-    disc_a2_a.recovery_resource_group_id = AAZStrType(
-        serialized_name="recoveryResourceGroupId",
-    )
-    disc_a2_a.recovery_subscription_id = AAZStrType(
-        serialized_name="recoverySubscriptionId",
-    )
-    disc_a2_a.recovery_virtual_network = AAZObjectType(
-        serialized_name="recoveryVirtualNetwork",
-    )
-    disc_a2_a.vm_disks = AAZListType(
-        serialized_name="vmDisks",
-    )
-    disc_a2_a.vm_managed_disks = AAZListType(
-        serialized_name="vmManagedDisks",
-    )
+        recovery_availability_set = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_availability_set
+        recovery_availability_set.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
 
-    protection_profile = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").protection_profile
-    protection_profile.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
+        disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_availability_set.discriminate_by("resource_type", "Existing")
+        disc_existing.recovery_availability_set_id = AAZStrType(
+            serialized_name="recoveryAvailabilitySetId",
+        )
 
-    disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").protection_profile.discriminate_by("resource_type", "Existing")
-    disc_existing.protection_profile_id = AAZStrType(
-        serialized_name="protectionProfileId",
-        flags={"required": True},
-    )
+        recovery_proximity_placement_group = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_proximity_placement_group
+        recovery_proximity_placement_group.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
 
-    disc_new = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").protection_profile.discriminate_by("resource_type", "New")
-    disc_new.app_consistent_frequency_in_minutes = AAZIntType(
-        serialized_name="appConsistentFrequencyInMinutes",
-    )
-    disc_new.crash_consistent_frequency_in_minutes = AAZIntType(
-        serialized_name="crashConsistentFrequencyInMinutes",
-    )
-    disc_new.multi_vm_sync_status = AAZStrType(
-        serialized_name="multiVmSyncStatus",
-        flags={"required": True},
-    )
-    disc_new.policy_name = AAZStrType(
-        serialized_name="policyName",
-        flags={"required": True},
-    )
-    disc_new.recovery_point_history = AAZIntType(
-        serialized_name="recoveryPointHistory",
-    )
+        disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_proximity_placement_group.discriminate_by("resource_type", "Existing")
+        disc_existing.recovery_proximity_placement_group_id = AAZStrType(
+            serialized_name="recoveryProximityPlacementGroupId",
+        )
 
-    recovery_availability_set = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_availability_set
-    recovery_availability_set.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
+        recovery_virtual_network = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_virtual_network
+        recovery_virtual_network.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
 
-    disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_availability_set.discriminate_by("resource_type", "Existing")
-    disc_existing.recovery_availability_set_id = AAZStrType(
-        serialized_name="recoveryAvailabilitySetId",
-    )
+        disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_virtual_network.discriminate_by("resource_type", "Existing")
+        disc_existing.recovery_subnet_name = AAZStrType(
+            serialized_name="recoverySubnetName",
+        )
+        disc_existing.recovery_virtual_network_id = AAZStrType(
+            serialized_name="recoveryVirtualNetworkId",
+            flags={"required": True},
+        )
 
-    recovery_proximity_placement_group = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_proximity_placement_group
-    recovery_proximity_placement_group.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
+        disc_new = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_virtual_network.discriminate_by("resource_type", "New")
+        disc_new.recovery_virtual_network_name = AAZStrType(
+            serialized_name="recoveryVirtualNetworkName",
+        )
+        disc_new.recovery_virtual_network_resource_group_name = AAZStrType(
+            serialized_name="recoveryVirtualNetworkResourceGroupName",
+        )
 
-    disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_proximity_placement_group.discriminate_by("resource_type", "Existing")
-    disc_existing.recovery_proximity_placement_group_id = AAZStrType(
-        serialized_name="recoveryProximityPlacementGroupId",
-    )
+        vm_disks = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_disks
+        vm_disks.Element = AAZObjectType()
 
-    recovery_virtual_network = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_virtual_network
-    recovery_virtual_network.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
+        _element = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_disks.Element
+        _element.disk_uri = AAZStrType(
+            serialized_name="diskUri",
+            flags={"required": True},
+        )
+        _element.primary_staging_storage_account_custom_input = AAZObjectType(
+            serialized_name="primaryStagingStorageAccountCustomInput",
+        )
+        cls._build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
+        _element.recovery_azure_storage_account_custom_input = AAZObjectType(
+            serialized_name="recoveryAzureStorageAccountCustomInput",
+        )
+        cls._build_schema_storage_account_custom_details_read(_element.recovery_azure_storage_account_custom_input)
 
-    disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_virtual_network.discriminate_by("resource_type", "Existing")
-    disc_existing.recovery_subnet_name = AAZStrType(
-        serialized_name="recoverySubnetName",
-    )
-    disc_existing.recovery_virtual_network_id = AAZStrType(
-        serialized_name="recoveryVirtualNetworkId",
-        flags={"required": True},
-    )
+        vm_managed_disks = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks
+        vm_managed_disks.Element = AAZObjectType()
 
-    disc_new = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").recovery_virtual_network.discriminate_by("resource_type", "New")
-    disc_new.recovery_virtual_network_name = AAZStrType(
-        serialized_name="recoveryVirtualNetworkName",
-    )
-    disc_new.recovery_virtual_network_resource_group_name = AAZStrType(
-        serialized_name="recoveryVirtualNetworkResourceGroupName",
-    )
+        _element = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks.Element
+        _element.disk_encryption_info = AAZObjectType(
+            serialized_name="diskEncryptionInfo",
+        )
+        cls._build_schema_disk_encryption_info_read(_element.disk_encryption_info)
+        _element.disk_id = AAZStrType(
+            serialized_name="diskId",
+            flags={"required": True},
+        )
+        _element.primary_staging_storage_account_custom_input = AAZObjectType(
+            serialized_name="primaryStagingStorageAccountCustomInput",
+        )
+        cls._build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
+        _element.recovery_disk_encryption_set_id = AAZStrType(
+            serialized_name="recoveryDiskEncryptionSetId",
+        )
+        _element.recovery_replica_disk_account_type = AAZStrType(
+            serialized_name="recoveryReplicaDiskAccountType",
+        )
+        _element.recovery_resource_group_custom_input = AAZObjectType(
+            serialized_name="recoveryResourceGroupCustomInput",
+        )
+        _element.recovery_target_disk_account_type = AAZStrType(
+            serialized_name="recoveryTargetDiskAccountType",
+        )
 
-    vm_disks = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_disks
-    vm_disks.Element = AAZObjectType()
+        recovery_resource_group_custom_input = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks.Element.recovery_resource_group_custom_input
+        recovery_resource_group_custom_input.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
 
-    _element = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_disks.Element
-    _element.disk_uri = AAZStrType(
-        serialized_name="diskUri",
-        flags={"required": True},
-    )
-    _element.primary_staging_storage_account_custom_input = AAZObjectType(
-        serialized_name="primaryStagingStorageAccountCustomInput",
-    )
-    _build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
-    _element.recovery_azure_storage_account_custom_input = AAZObjectType(
-        serialized_name="recoveryAzureStorageAccountCustomInput",
-    )
-    _build_schema_storage_account_custom_details_read(_element.recovery_azure_storage_account_custom_input)
+        disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks.Element.recovery_resource_group_custom_input.discriminate_by("resource_type", "Existing")
+        disc_existing.recovery_resource_group_id = AAZStrType(
+            serialized_name="recoveryResourceGroupId",
+        )
 
-    vm_managed_disks = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks
-    vm_managed_disks.Element = AAZObjectType()
+        _schema.id = cls._schema_replication_protection_intent_read.id
+        _schema.location = cls._schema_replication_protection_intent_read.location
+        _schema.name = cls._schema_replication_protection_intent_read.name
+        _schema.properties = cls._schema_replication_protection_intent_read.properties
+        _schema.type = cls._schema_replication_protection_intent_read.type
 
-    _element = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks.Element
-    _element.disk_encryption_info = AAZObjectType(
-        serialized_name="diskEncryptionInfo",
-    )
-    _build_schema_disk_encryption_info_read(_element.disk_encryption_info)
-    _element.disk_id = AAZStrType(
-        serialized_name="diskId",
-        flags={"required": True},
-    )
-    _element.primary_staging_storage_account_custom_input = AAZObjectType(
-        serialized_name="primaryStagingStorageAccountCustomInput",
-    )
-    _build_schema_storage_account_custom_details_read(_element.primary_staging_storage_account_custom_input)
-    _element.recovery_disk_encryption_set_id = AAZStrType(
-        serialized_name="recoveryDiskEncryptionSetId",
-    )
-    _element.recovery_replica_disk_account_type = AAZStrType(
-        serialized_name="recoveryReplicaDiskAccountType",
-    )
-    _element.recovery_resource_group_custom_input = AAZObjectType(
-        serialized_name="recoveryResourceGroupCustomInput",
-    )
-    _element.recovery_target_disk_account_type = AAZStrType(
-        serialized_name="recoveryTargetDiskAccountType",
-    )
+    _schema_storage_account_custom_details_read = None
 
-    recovery_resource_group_custom_input = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks.Element.recovery_resource_group_custom_input
-    recovery_resource_group_custom_input.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
+    @classmethod
+    def _build_schema_storage_account_custom_details_read(cls, _schema):
+        if cls._schema_storage_account_custom_details_read is not None:
+            _schema.resource_type = cls._schema_storage_account_custom_details_read.resource_type
+            _schema.discriminate_by(
+                "resource_type",
+                "Existing",
+                cls._schema_storage_account_custom_details_read.discriminate_by(
+                    "resource_type",
+                    "Existing",
+                )
+            )
+            return
 
-    disc_existing = _schema_replication_protection_intent_read.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_managed_disks.Element.recovery_resource_group_custom_input.discriminate_by("resource_type", "Existing")
-    disc_existing.recovery_resource_group_id = AAZStrType(
-        serialized_name="recoveryResourceGroupId",
-    )
+        cls._schema_storage_account_custom_details_read = _schema_storage_account_custom_details_read = AAZObjectType()
 
-    _schema.id = _schema_replication_protection_intent_read.id
-    _schema.location = _schema_replication_protection_intent_read.location
-    _schema.name = _schema_replication_protection_intent_read.name
-    _schema.properties = _schema_replication_protection_intent_read.properties
-    _schema.type = _schema_replication_protection_intent_read.type
+        storage_account_custom_details_read = _schema_storage_account_custom_details_read
+        storage_account_custom_details_read.resource_type = AAZStrType(
+            serialized_name="resourceType",
+            flags={"required": True},
+        )
 
+        disc_existing = _schema_storage_account_custom_details_read.discriminate_by("resource_type", "Existing")
+        disc_existing.azure_storage_account_id = AAZStrType(
+            serialized_name="azureStorageAccountId",
+            flags={"required": True},
+        )
 
-_schema_storage_account_custom_details_read = None
-
-
-def _build_schema_storage_account_custom_details_read(_schema):
-    global _schema_storage_account_custom_details_read
-    if _schema_storage_account_custom_details_read is not None:
-        _schema.resource_type = _schema_storage_account_custom_details_read.resource_type
+        _schema.resource_type = cls._schema_storage_account_custom_details_read.resource_type
         _schema.discriminate_by(
-            "resource_type",
-            "Existing",
-            _schema_storage_account_custom_details_read.discriminate_by(
                 "resource_type",
                 "Existing",
+                cls._schema_storage_account_custom_details_read.discriminate_by(
+                    "resource_type",
+                    "Existing",
+                )
             )
-        )
-        return
-
-    _schema_storage_account_custom_details_read = AAZObjectType()
-
-    storage_account_custom_details_read = _schema_storage_account_custom_details_read
-    storage_account_custom_details_read.resource_type = AAZStrType(
-        serialized_name="resourceType",
-        flags={"required": True},
-    )
-
-    disc_existing = _schema_storage_account_custom_details_read.discriminate_by("resource_type", "Existing")
-    disc_existing.azure_storage_account_id = AAZStrType(
-        serialized_name="azureStorageAccountId",
-        flags={"required": True},
-    )
-
-    _schema.resource_type = _schema_storage_account_custom_details_read.resource_type
-    _schema.discriminate_by(
-            "resource_type",
-            "Existing",
-            _schema_storage_account_custom_details_read.discriminate_by(
-                "resource_type",
-                "Existing",
-            )
-        )
 
 
 __all__ = ["Update"]

@@ -734,4 +734,8 @@ class ResumeReplication(AAZCommand):
             return cls._schema_on_200
 
 
+class _ResumeReplicationHelper:
+    """Helper class for ResumeReplication"""
+
+
 __all__ = ["ResumeReplication"]

@@ -365,7 +365,7 @@ class SwitchProtection(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
             if disc_a2_a is not None:
-                _build_schema_disk_encryption_info_create(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2_a.disk_encryption_info"))
+                _SwitchProtectionHelper._build_schema_disk_encryption_info_create(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2_a.disk_encryption_info"))
                 disc_a2_a.set_prop("policyId", AAZStrType, ".a2_a.policy_id")
                 disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2_a.recovery_availability_set_id")
                 disc_a2_a.set_prop("recoveryAvailabilityZone", AAZStrType, ".a2_a.recovery_availability_zone")
@@ -395,7 +395,7 @@ class SwitchProtection(AAZCommand):
 
             _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[]")
             if _elements is not None:
-                _build_schema_disk_encryption_info_create(_elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info"))
+                _SwitchProtectionHelper._build_schema_disk_encryption_info_create(_elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info"))
                 _elements.set_prop("diskId", AAZStrType, ".disk_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("primaryStagingAzureStorageAccountId", AAZStrType, ".primary_staging_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("recoveryDiskEncryptionSetId", AAZStrType, ".recovery_disk_encryption_set_id")
@@ -465,21 +465,25 @@ class SwitchProtection(AAZCommand):
             return cls._schema_on_200
 
 
-def _build_schema_disk_encryption_info_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
-    _builder.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
+class _SwitchProtectionHelper:
+    """Helper class for SwitchProtection"""
 
-    disk_encryption_key_info = _builder.get(".diskEncryptionKeyInfo")
-    if disk_encryption_key_info is not None:
-        disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
-        disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
+    @classmethod
+    def _build_schema_disk_encryption_info_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
+        _builder.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
 
-    key_encryption_key_info = _builder.get(".keyEncryptionKeyInfo")
-    if key_encryption_key_info is not None:
-        key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
-        key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+        disk_encryption_key_info = _builder.get(".diskEncryptionKeyInfo")
+        if disk_encryption_key_info is not None:
+            disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+            disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
+
+        key_encryption_key_info = _builder.get(".keyEncryptionKeyInfo")
+        if key_encryption_key_info is not None:
+            key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
+            key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
 
 
 __all__ = ["SwitchProtection"]

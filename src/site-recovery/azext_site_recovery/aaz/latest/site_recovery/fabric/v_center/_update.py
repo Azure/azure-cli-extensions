@@ -218,7 +218,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_v_center_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_v_center_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -337,7 +337,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_v_center_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_v_center_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -373,169 +373,171 @@ class Update(AAZCommand):
             )
 
 
-_schema_v_center_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_v_center_read = None
 
-def _build_schema_v_center_read(_schema):
-    global _schema_v_center_read
-    if _schema_v_center_read is not None:
-        _schema.id = _schema_v_center_read.id
-        _schema.location = _schema_v_center_read.location
-        _schema.name = _schema_v_center_read.name
-        _schema.properties = _schema_v_center_read.properties
-        _schema.type = _schema_v_center_read.type
-        return
+    @classmethod
+    def _build_schema_v_center_read(cls, _schema):
+        if cls._schema_v_center_read is not None:
+            _schema.id = cls._schema_v_center_read.id
+            _schema.location = cls._schema_v_center_read.location
+            _schema.name = cls._schema_v_center_read.name
+            _schema.properties = cls._schema_v_center_read.properties
+            _schema.type = cls._schema_v_center_read.type
+            return
 
-    _schema_v_center_read = AAZObjectType()
+        cls._schema_v_center_read = _schema_v_center_read = AAZObjectType()
 
-    v_center_read = _schema_v_center_read
-    v_center_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    v_center_read.location = AAZStrType()
-    v_center_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    v_center_read.properties = AAZObjectType()
-    v_center_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        v_center_read = _schema_v_center_read
+        v_center_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        v_center_read.location = AAZStrType()
+        v_center_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        v_center_read.properties = AAZObjectType()
+        v_center_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_v_center_read.properties
-    properties.discovery_status = AAZStrType(
-        serialized_name="discoveryStatus",
-    )
-    properties.fabric_arm_resource_name = AAZStrType(
-        serialized_name="fabricArmResourceName",
-    )
-    properties.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-    )
-    properties.health_errors = AAZListType(
-        serialized_name="healthErrors",
-    )
-    properties.infrastructure_id = AAZStrType(
-        serialized_name="infrastructureId",
-    )
-    properties.internal_id = AAZStrType(
-        serialized_name="internalId",
-    )
-    properties.ip_address = AAZStrType(
-        serialized_name="ipAddress",
-    )
-    properties.last_heartbeat = AAZStrType(
-        serialized_name="lastHeartbeat",
-    )
-    properties.port = AAZStrType()
-    properties.process_server_id = AAZStrType(
-        serialized_name="processServerId",
-    )
-    properties.run_as_account_id = AAZStrType(
-        serialized_name="runAsAccountId",
-    )
+        properties = _schema_v_center_read.properties
+        properties.discovery_status = AAZStrType(
+            serialized_name="discoveryStatus",
+        )
+        properties.fabric_arm_resource_name = AAZStrType(
+            serialized_name="fabricArmResourceName",
+        )
+        properties.friendly_name = AAZStrType(
+            serialized_name="friendlyName",
+        )
+        properties.health_errors = AAZListType(
+            serialized_name="healthErrors",
+        )
+        properties.infrastructure_id = AAZStrType(
+            serialized_name="infrastructureId",
+        )
+        properties.internal_id = AAZStrType(
+            serialized_name="internalId",
+        )
+        properties.ip_address = AAZStrType(
+            serialized_name="ipAddress",
+        )
+        properties.last_heartbeat = AAZStrType(
+            serialized_name="lastHeartbeat",
+        )
+        properties.port = AAZStrType()
+        properties.process_server_id = AAZStrType(
+            serialized_name="processServerId",
+        )
+        properties.run_as_account_id = AAZStrType(
+            serialized_name="runAsAccountId",
+        )
 
-    health_errors = _schema_v_center_read.properties.health_errors
-    health_errors.Element = AAZObjectType()
+        health_errors = _schema_v_center_read.properties.health_errors
+        health_errors.Element = AAZObjectType()
 
-    _element = _schema_v_center_read.properties.health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.inner_health_errors = AAZListType(
-        serialized_name="innerHealthErrors",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_v_center_read.properties.health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.inner_health_errors = AAZListType(
+            serialized_name="innerHealthErrors",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    inner_health_errors = _schema_v_center_read.properties.health_errors.Element.inner_health_errors
-    inner_health_errors.Element = AAZObjectType()
+        inner_health_errors = _schema_v_center_read.properties.health_errors.Element.inner_health_errors
+        inner_health_errors.Element = AAZObjectType()
 
-    _element = _schema_v_center_read.properties.health_errors.Element.inner_health_errors.Element
-    _element.creation_time_utc = AAZStrType(
-        serialized_name="creationTimeUtc",
-    )
-    _element.customer_resolvability = AAZStrType(
-        serialized_name="customerResolvability",
-    )
-    _element.entity_id = AAZStrType(
-        serialized_name="entityId",
-    )
-    _element.error_category = AAZStrType(
-        serialized_name="errorCategory",
-    )
-    _element.error_code = AAZStrType(
-        serialized_name="errorCode",
-    )
-    _element.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    _element.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    _element.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    _element.error_source = AAZStrType(
-        serialized_name="errorSource",
-    )
-    _element.error_type = AAZStrType(
-        serialized_name="errorType",
-    )
-    _element.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    _element.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-    _element.recovery_provider_error_message = AAZStrType(
-        serialized_name="recoveryProviderErrorMessage",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_v_center_read.properties.health_errors.Element.inner_health_errors.Element
+        _element.creation_time_utc = AAZStrType(
+            serialized_name="creationTimeUtc",
+        )
+        _element.customer_resolvability = AAZStrType(
+            serialized_name="customerResolvability",
+        )
+        _element.entity_id = AAZStrType(
+            serialized_name="entityId",
+        )
+        _element.error_category = AAZStrType(
+            serialized_name="errorCategory",
+        )
+        _element.error_code = AAZStrType(
+            serialized_name="errorCode",
+        )
+        _element.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        _element.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        _element.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        _element.error_source = AAZStrType(
+            serialized_name="errorSource",
+        )
+        _element.error_type = AAZStrType(
+            serialized_name="errorType",
+        )
+        _element.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        _element.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
+        _element.recovery_provider_error_message = AAZStrType(
+            serialized_name="recoveryProviderErrorMessage",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    _schema.id = _schema_v_center_read.id
-    _schema.location = _schema_v_center_read.location
-    _schema.name = _schema_v_center_read.name
-    _schema.properties = _schema_v_center_read.properties
-    _schema.type = _schema_v_center_read.type
+        _schema.id = cls._schema_v_center_read.id
+        _schema.location = cls._schema_v_center_read.location
+        _schema.name = cls._schema_v_center_read.name
+        _schema.properties = cls._schema_v_center_read.properties
+        _schema.type = cls._schema_v_center_read.type
 
 
 __all__ = ["Update"]

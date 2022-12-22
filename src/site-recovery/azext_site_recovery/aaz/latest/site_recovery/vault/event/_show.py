@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get operation to get the details of an Azure Site recovery event.
+
+    :example: event show
+        az site-recovery vault event show -g {rg} --resource-name {vault_name} -n {event_name}
     """
 
     _aaz_info = {
@@ -477,6 +480,10 @@ class Show(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

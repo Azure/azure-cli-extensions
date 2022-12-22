@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an email notification(alert) configuration.
+
+    :example: alert-setting update
+        az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} --resource-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR --send-to-owners DoNotSend
     """
 
     _aaz_info = {
@@ -200,7 +203,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_alert_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_alert_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -299,7 +302,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_alert_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_alert_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -337,51 +340,53 @@ class Update(AAZCommand):
             )
 
 
-_schema_alert_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_alert_read = None
 
-def _build_schema_alert_read(_schema):
-    global _schema_alert_read
-    if _schema_alert_read is not None:
-        _schema.id = _schema_alert_read.id
-        _schema.location = _schema_alert_read.location
-        _schema.name = _schema_alert_read.name
-        _schema.properties = _schema_alert_read.properties
-        _schema.type = _schema_alert_read.type
-        return
+    @classmethod
+    def _build_schema_alert_read(cls, _schema):
+        if cls._schema_alert_read is not None:
+            _schema.id = cls._schema_alert_read.id
+            _schema.location = cls._schema_alert_read.location
+            _schema.name = cls._schema_alert_read.name
+            _schema.properties = cls._schema_alert_read.properties
+            _schema.type = cls._schema_alert_read.type
+            return
 
-    _schema_alert_read = AAZObjectType()
+        cls._schema_alert_read = _schema_alert_read = AAZObjectType()
 
-    alert_read = _schema_alert_read
-    alert_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    alert_read.location = AAZStrType()
-    alert_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    alert_read.properties = AAZObjectType()
-    alert_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        alert_read = _schema_alert_read
+        alert_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        alert_read.location = AAZStrType()
+        alert_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        alert_read.properties = AAZObjectType()
+        alert_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_alert_read.properties
-    properties.custom_email_addresses = AAZListType(
-        serialized_name="customEmailAddresses",
-    )
-    properties.locale = AAZStrType()
-    properties.send_to_owners = AAZStrType(
-        serialized_name="sendToOwners",
-    )
+        properties = _schema_alert_read.properties
+        properties.custom_email_addresses = AAZListType(
+            serialized_name="customEmailAddresses",
+        )
+        properties.locale = AAZStrType()
+        properties.send_to_owners = AAZStrType(
+            serialized_name="sendToOwners",
+        )
 
-    custom_email_addresses = _schema_alert_read.properties.custom_email_addresses
-    custom_email_addresses.Element = AAZStrType()
+        custom_email_addresses = _schema_alert_read.properties.custom_email_addresses
+        custom_email_addresses.Element = AAZStrType()
 
-    _schema.id = _schema_alert_read.id
-    _schema.location = _schema_alert_read.location
-    _schema.name = _schema_alert_read.name
-    _schema.properties = _schema_alert_read.properties
-    _schema.type = _schema_alert_read.type
+        _schema.id = cls._schema_alert_read.id
+        _schema.location = cls._schema_alert_read.location
+        _schema.name = cls._schema_alert_read.name
+        _schema.properties = cls._schema_alert_read.properties
+        _schema.type = cls._schema_alert_read.type
 
 
 __all__ = ["Update"]

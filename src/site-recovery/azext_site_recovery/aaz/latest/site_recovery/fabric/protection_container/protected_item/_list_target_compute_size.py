@@ -232,4 +232,8 @@ class ListTargetComputeSize(AAZCommand):
             return cls._schema_on_200
 
 
+class _ListTargetComputeSizeHelper:
+    """Helper class for ListTargetComputeSize"""
+
+
 __all__ = ["ListTargetComputeSize"]

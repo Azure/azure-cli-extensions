@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List whether a given VM can be protected or not in which case returns list of errors.
+
+    :example: List replication eligibility
+        az site-recovery replication-eligibility list -g {rg} --virtual-machine-name {vm_name}
     """
 
     _aaz_info = {
@@ -190,6 +193,10 @@ class List(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

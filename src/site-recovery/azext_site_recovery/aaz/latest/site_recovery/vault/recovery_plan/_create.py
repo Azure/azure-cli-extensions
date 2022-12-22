@@ -46,7 +46,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--recovery-plan-name"],
             help="Recovery plan name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -55,7 +54,6 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -424,7 +422,7 @@ class Create(AAZCommand):
 
             end_group_actions = _builder.get(".properties.groups[].endGroupActions")
             if end_group_actions is not None:
-                _build_schema_recovery_plan_action_create(end_group_actions.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_recovery_plan_action_create(end_group_actions.set_elements(AAZObjectType, "."))
 
             replication_protected_items = _builder.get(".properties.groups[].replicationProtectedItems")
             if replication_protected_items is not None:
@@ -437,7 +435,7 @@ class Create(AAZCommand):
 
             start_group_actions = _builder.get(".properties.groups[].startGroupActions")
             if start_group_actions is not None:
-                _build_schema_recovery_plan_action_create(start_group_actions.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_recovery_plan_action_create(start_group_actions.set_elements(AAZObjectType, "."))
 
             provider_specific_input = _builder.get(".properties.providerSpecificInput")
             if provider_specific_input is not None:
@@ -450,9 +448,9 @@ class Create(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificInput[]{instanceType:A2A}")
             if disc_a2_a is not None:
-                _build_schema_extended_location_create(disc_a2_a.set_prop("primaryExtendedLocation", AAZObjectType, ".a2_a.primary_extended_location"))
+                _CreateHelper._build_schema_extended_location_create(disc_a2_a.set_prop("primaryExtendedLocation", AAZObjectType, ".a2_a.primary_extended_location"))
                 disc_a2_a.set_prop("primaryZone", AAZStrType, ".a2_a.primary_zone")
-                _build_schema_extended_location_create(disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2_a.recovery_extended_location"))
+                _CreateHelper._build_schema_extended_location_create(disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2_a.recovery_extended_location"))
                 disc_a2_a.set_prop("recoveryZone", AAZStrType, ".a2_a.recovery_zone")
 
             return self.serialize_content(_content_value)
@@ -569,7 +567,7 @@ class Create(AAZCommand):
 
             end_group_actions = cls._schema_on_200.properties.groups.Element.end_group_actions
             end_group_actions.Element = AAZObjectType()
-            _build_schema_recovery_plan_action_read(end_group_actions.Element)
+            _CreateHelper._build_schema_recovery_plan_action_read(end_group_actions.Element)
 
             replication_protected_items = cls._schema_on_200.properties.groups.Element.replication_protected_items
             replication_protected_items.Element = AAZObjectType()
@@ -582,7 +580,7 @@ class Create(AAZCommand):
 
             start_group_actions = cls._schema_on_200.properties.groups.Element.start_group_actions
             start_group_actions.Element = AAZObjectType()
-            _build_schema_recovery_plan_action_read(start_group_actions.Element)
+            _CreateHelper._build_schema_recovery_plan_action_read(start_group_actions.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.Element = AAZObjectType()
@@ -607,126 +605,128 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-def _build_schema_extended_location_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_extended_location_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
-def _build_schema_recovery_plan_action_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("actionName", AAZStrType, ".action_name", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("customDetails", AAZObjectType, ".custom_details", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("failoverDirections", AAZListType, ".failover_directions", typ_kwargs={"flags": {"required": True}})
-    _builder.set_prop("failoverTypes", AAZListType, ".failover_types", typ_kwargs={"flags": {"required": True}})
+    @classmethod
+    def _build_schema_recovery_plan_action_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("actionName", AAZStrType, ".action_name", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("customDetails", AAZObjectType, ".custom_details", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("failoverDirections", AAZListType, ".failover_directions", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("failoverTypes", AAZListType, ".failover_types", typ_kwargs={"flags": {"required": True}})
 
-    custom_details = _builder.get(".customDetails")
-    if custom_details is not None:
-        custom_details.set_const("instanceType", "AutomationRunbookActionDetails", AAZStrType, ".automation_runbook_action_details", typ_kwargs={"flags": {"required": True}})
-        custom_details.set_const("instanceType", "ManualActionDetails", AAZStrType, ".manual_action_details", typ_kwargs={"flags": {"required": True}})
-        custom_details.set_const("instanceType", "ScriptActionDetails", AAZStrType, ".script_action_details", typ_kwargs={"flags": {"required": True}})
-        custom_details.discriminate_by("instanceType", "AutomationRunbookActionDetails")
-        custom_details.discriminate_by("instanceType", "ManualActionDetails")
-        custom_details.discriminate_by("instanceType", "ScriptActionDetails")
+        custom_details = _builder.get(".customDetails")
+        if custom_details is not None:
+            custom_details.set_const("instanceType", "AutomationRunbookActionDetails", AAZStrType, ".automation_runbook_action_details", typ_kwargs={"flags": {"required": True}})
+            custom_details.set_const("instanceType", "ManualActionDetails", AAZStrType, ".manual_action_details", typ_kwargs={"flags": {"required": True}})
+            custom_details.set_const("instanceType", "ScriptActionDetails", AAZStrType, ".script_action_details", typ_kwargs={"flags": {"required": True}})
+            custom_details.discriminate_by("instanceType", "AutomationRunbookActionDetails")
+            custom_details.discriminate_by("instanceType", "ManualActionDetails")
+            custom_details.discriminate_by("instanceType", "ScriptActionDetails")
 
-    disc_automation_runbook_action_details = _builder.get(".customDetails{instanceType:AutomationRunbookActionDetails}")
-    if disc_automation_runbook_action_details is not None:
-        disc_automation_runbook_action_details.set_prop("fabricLocation", AAZStrType, ".automation_runbook_action_details.fabric_location", typ_kwargs={"flags": {"required": True}})
-        disc_automation_runbook_action_details.set_prop("runbookId", AAZStrType, ".automation_runbook_action_details.runbook_id")
-        disc_automation_runbook_action_details.set_prop("timeout", AAZStrType, ".automation_runbook_action_details.timeout")
+        disc_automation_runbook_action_details = _builder.get(".customDetails{instanceType:AutomationRunbookActionDetails}")
+        if disc_automation_runbook_action_details is not None:
+            disc_automation_runbook_action_details.set_prop("fabricLocation", AAZStrType, ".automation_runbook_action_details.fabric_location", typ_kwargs={"flags": {"required": True}})
+            disc_automation_runbook_action_details.set_prop("runbookId", AAZStrType, ".automation_runbook_action_details.runbook_id")
+            disc_automation_runbook_action_details.set_prop("timeout", AAZStrType, ".automation_runbook_action_details.timeout")
 
-    disc_manual_action_details = _builder.get(".customDetails{instanceType:ManualActionDetails}")
-    if disc_manual_action_details is not None:
-        disc_manual_action_details.set_prop("description", AAZStrType, ".manual_action_details.description")
+        disc_manual_action_details = _builder.get(".customDetails{instanceType:ManualActionDetails}")
+        if disc_manual_action_details is not None:
+            disc_manual_action_details.set_prop("description", AAZStrType, ".manual_action_details.description")
 
-    disc_script_action_details = _builder.get(".customDetails{instanceType:ScriptActionDetails}")
-    if disc_script_action_details is not None:
-        disc_script_action_details.set_prop("fabricLocation", AAZStrType, ".script_action_details.fabric_location", typ_kwargs={"flags": {"required": True}})
-        disc_script_action_details.set_prop("path", AAZStrType, ".script_action_details.path", typ_kwargs={"flags": {"required": True}})
-        disc_script_action_details.set_prop("timeout", AAZStrType, ".script_action_details.timeout")
+        disc_script_action_details = _builder.get(".customDetails{instanceType:ScriptActionDetails}")
+        if disc_script_action_details is not None:
+            disc_script_action_details.set_prop("fabricLocation", AAZStrType, ".script_action_details.fabric_location", typ_kwargs={"flags": {"required": True}})
+            disc_script_action_details.set_prop("path", AAZStrType, ".script_action_details.path", typ_kwargs={"flags": {"required": True}})
+            disc_script_action_details.set_prop("timeout", AAZStrType, ".script_action_details.timeout")
 
-    failover_directions = _builder.get(".failoverDirections")
-    if failover_directions is not None:
-        failover_directions.set_elements(AAZStrType, ".")
+        failover_directions = _builder.get(".failoverDirections")
+        if failover_directions is not None:
+            failover_directions.set_elements(AAZStrType, ".")
 
-    failover_types = _builder.get(".failoverTypes")
-    if failover_types is not None:
-        failover_types.set_elements(AAZStrType, ".")
+        failover_types = _builder.get(".failoverTypes")
+        if failover_types is not None:
+            failover_types.set_elements(AAZStrType, ".")
 
+    _schema_recovery_plan_action_read = None
 
-_schema_recovery_plan_action_read = None
+    @classmethod
+    def _build_schema_recovery_plan_action_read(cls, _schema):
+        if cls._schema_recovery_plan_action_read is not None:
+            _schema.action_name = cls._schema_recovery_plan_action_read.action_name
+            _schema.custom_details = cls._schema_recovery_plan_action_read.custom_details
+            _schema.failover_directions = cls._schema_recovery_plan_action_read.failover_directions
+            _schema.failover_types = cls._schema_recovery_plan_action_read.failover_types
+            return
 
+        cls._schema_recovery_plan_action_read = _schema_recovery_plan_action_read = AAZObjectType()
 
-def _build_schema_recovery_plan_action_read(_schema):
-    global _schema_recovery_plan_action_read
-    if _schema_recovery_plan_action_read is not None:
-        _schema.action_name = _schema_recovery_plan_action_read.action_name
-        _schema.custom_details = _schema_recovery_plan_action_read.custom_details
-        _schema.failover_directions = _schema_recovery_plan_action_read.failover_directions
-        _schema.failover_types = _schema_recovery_plan_action_read.failover_types
-        return
+        recovery_plan_action_read = _schema_recovery_plan_action_read
+        recovery_plan_action_read.action_name = AAZStrType(
+            serialized_name="actionName",
+            flags={"required": True},
+        )
+        recovery_plan_action_read.custom_details = AAZObjectType(
+            serialized_name="customDetails",
+            flags={"required": True},
+        )
+        recovery_plan_action_read.failover_directions = AAZListType(
+            serialized_name="failoverDirections",
+            flags={"required": True},
+        )
+        recovery_plan_action_read.failover_types = AAZListType(
+            serialized_name="failoverTypes",
+            flags={"required": True},
+        )
 
-    _schema_recovery_plan_action_read = AAZObjectType()
+        custom_details = _schema_recovery_plan_action_read.custom_details
+        custom_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    recovery_plan_action_read = _schema_recovery_plan_action_read
-    recovery_plan_action_read.action_name = AAZStrType(
-        serialized_name="actionName",
-        flags={"required": True},
-    )
-    recovery_plan_action_read.custom_details = AAZObjectType(
-        serialized_name="customDetails",
-        flags={"required": True},
-    )
-    recovery_plan_action_read.failover_directions = AAZListType(
-        serialized_name="failoverDirections",
-        flags={"required": True},
-    )
-    recovery_plan_action_read.failover_types = AAZListType(
-        serialized_name="failoverTypes",
-        flags={"required": True},
-    )
+        disc_automation_runbook_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "AutomationRunbookActionDetails")
+        disc_automation_runbook_action_details.fabric_location = AAZStrType(
+            serialized_name="fabricLocation",
+            flags={"required": True},
+        )
+        disc_automation_runbook_action_details.runbook_id = AAZStrType(
+            serialized_name="runbookId",
+        )
+        disc_automation_runbook_action_details.timeout = AAZStrType()
 
-    custom_details = _schema_recovery_plan_action_read.custom_details
-    custom_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        disc_manual_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ManualActionDetails")
+        disc_manual_action_details.description = AAZStrType()
 
-    disc_automation_runbook_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "AutomationRunbookActionDetails")
-    disc_automation_runbook_action_details.fabric_location = AAZStrType(
-        serialized_name="fabricLocation",
-        flags={"required": True},
-    )
-    disc_automation_runbook_action_details.runbook_id = AAZStrType(
-        serialized_name="runbookId",
-    )
-    disc_automation_runbook_action_details.timeout = AAZStrType()
+        disc_script_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ScriptActionDetails")
+        disc_script_action_details.fabric_location = AAZStrType(
+            serialized_name="fabricLocation",
+            flags={"required": True},
+        )
+        disc_script_action_details.path = AAZStrType(
+            flags={"required": True},
+        )
+        disc_script_action_details.timeout = AAZStrType()
 
-    disc_manual_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ManualActionDetails")
-    disc_manual_action_details.description = AAZStrType()
+        failover_directions = _schema_recovery_plan_action_read.failover_directions
+        failover_directions.Element = AAZStrType()
 
-    disc_script_action_details = _schema_recovery_plan_action_read.custom_details.discriminate_by("instance_type", "ScriptActionDetails")
-    disc_script_action_details.fabric_location = AAZStrType(
-        serialized_name="fabricLocation",
-        flags={"required": True},
-    )
-    disc_script_action_details.path = AAZStrType(
-        flags={"required": True},
-    )
-    disc_script_action_details.timeout = AAZStrType()
+        failover_types = _schema_recovery_plan_action_read.failover_types
+        failover_types.Element = AAZStrType()
 
-    failover_directions = _schema_recovery_plan_action_read.failover_directions
-    failover_directions.Element = AAZStrType()
-
-    failover_types = _schema_recovery_plan_action_read.failover_types
-    failover_types.Element = AAZStrType()
-
-    _schema.action_name = _schema_recovery_plan_action_read.action_name
-    _schema.custom_details = _schema_recovery_plan_action_read.custom_details
-    _schema.failover_directions = _schema_recovery_plan_action_read.failover_directions
-    _schema.failover_types = _schema_recovery_plan_action_read.failover_types
+        _schema.action_name = cls._schema_recovery_plan_action_read.action_name
+        _schema.custom_details = cls._schema_recovery_plan_action_read.custom_details
+        _schema.failover_directions = cls._schema_recovery_plan_action_read.failover_directions
+        _schema.failover_types = cls._schema_recovery_plan_action_read.failover_types
 
 
 __all__ = ["Create"]

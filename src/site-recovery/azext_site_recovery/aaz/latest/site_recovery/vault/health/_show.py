@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the health details of the vault.
+
+    :example: health show
+        az site-recovery vault health show -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -165,15 +168,15 @@ class Show(AAZCommand):
             properties.containers_health = AAZObjectType(
                 serialized_name="containersHealth",
             )
-            _build_schema_resource_health_summary_read(properties.containers_health)
+            _ShowHelper._build_schema_resource_health_summary_read(properties.containers_health)
             properties.fabrics_health = AAZObjectType(
                 serialized_name="fabricsHealth",
             )
-            _build_schema_resource_health_summary_read(properties.fabrics_health)
+            _ShowHelper._build_schema_resource_health_summary_read(properties.fabrics_health)
             properties.protected_items_health = AAZObjectType(
                 serialized_name="protectedItemsHealth",
             )
-            _build_schema_resource_health_summary_read(properties.protected_items_health)
+            _ShowHelper._build_schema_resource_health_summary_read(properties.protected_items_health)
             properties.vault_errors = AAZListType(
                 serialized_name="vaultErrors",
             )
@@ -278,59 +281,61 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_resource_health_summary_read = None
+class _ShowHelper:
+    """Helper class for Show"""
 
+    _schema_resource_health_summary_read = None
 
-def _build_schema_resource_health_summary_read(_schema):
-    global _schema_resource_health_summary_read
-    if _schema_resource_health_summary_read is not None:
-        _schema.categorized_resource_counts = _schema_resource_health_summary_read.categorized_resource_counts
-        _schema.issues = _schema_resource_health_summary_read.issues
-        _schema.resource_count = _schema_resource_health_summary_read.resource_count
-        return
+    @classmethod
+    def _build_schema_resource_health_summary_read(cls, _schema):
+        if cls._schema_resource_health_summary_read is not None:
+            _schema.categorized_resource_counts = cls._schema_resource_health_summary_read.categorized_resource_counts
+            _schema.issues = cls._schema_resource_health_summary_read.issues
+            _schema.resource_count = cls._schema_resource_health_summary_read.resource_count
+            return
 
-    _schema_resource_health_summary_read = AAZObjectType()
+        cls._schema_resource_health_summary_read = _schema_resource_health_summary_read = AAZObjectType()
 
-    resource_health_summary_read = _schema_resource_health_summary_read
-    resource_health_summary_read.categorized_resource_counts = AAZDictType(
-        serialized_name="categorizedResourceCounts",
-    )
-    resource_health_summary_read.issues = AAZListType()
-    resource_health_summary_read.resource_count = AAZIntType(
-        serialized_name="resourceCount",
-    )
+        resource_health_summary_read = _schema_resource_health_summary_read
+        resource_health_summary_read.categorized_resource_counts = AAZDictType(
+            serialized_name="categorizedResourceCounts",
+        )
+        resource_health_summary_read.issues = AAZListType()
+        resource_health_summary_read.resource_count = AAZIntType(
+            serialized_name="resourceCount",
+        )
 
-    categorized_resource_counts = _schema_resource_health_summary_read.categorized_resource_counts
-    categorized_resource_counts.Element = AAZIntType()
+        categorized_resource_counts = _schema_resource_health_summary_read.categorized_resource_counts
+        categorized_resource_counts.Element = AAZIntType()
 
-    issues = _schema_resource_health_summary_read.issues
-    issues.Element = AAZObjectType()
+        issues = _schema_resource_health_summary_read.issues
+        issues.Element = AAZObjectType()
 
-    _element = _schema_resource_health_summary_read.issues.Element
-    _element.affected_resource_correlation_ids = AAZListType(
-        serialized_name="affectedResourceCorrelationIds",
-    )
-    _element.affected_resource_subtype = AAZStrType(
-        serialized_name="affectedResourceSubtype",
-    )
-    _element.affected_resource_type = AAZStrType(
-        serialized_name="affectedResourceType",
-    )
-    _element.category = AAZStrType()
-    _element.severity = AAZStrType()
-    _element.summary_code = AAZStrType(
-        serialized_name="summaryCode",
-    )
-    _element.summary_message = AAZStrType(
-        serialized_name="summaryMessage",
-    )
+        _element = _schema_resource_health_summary_read.issues.Element
+        _element.affected_resource_correlation_ids = AAZListType(
+            serialized_name="affectedResourceCorrelationIds",
+        )
+        _element.affected_resource_subtype = AAZStrType(
+            serialized_name="affectedResourceSubtype",
+        )
+        _element.affected_resource_type = AAZStrType(
+            serialized_name="affectedResourceType",
+        )
+        _element.category = AAZStrType()
+        _element.severity = AAZStrType()
+        _element.summary_code = AAZStrType(
+            serialized_name="summaryCode",
+        )
+        _element.summary_message = AAZStrType(
+            serialized_name="summaryMessage",
+        )
 
-    affected_resource_correlation_ids = _schema_resource_health_summary_read.issues.Element.affected_resource_correlation_ids
-    affected_resource_correlation_ids.Element = AAZStrType()
+        affected_resource_correlation_ids = _schema_resource_health_summary_read.issues.Element.affected_resource_correlation_ids
+        affected_resource_correlation_ids.Element = AAZStrType()
 
-    _schema.categorized_resource_counts = _schema_resource_health_summary_read.categorized_resource_counts
-    _schema.issues = _schema_resource_health_summary_read.issues
-    _schema.resource_count = _schema_resource_health_summary_read.resource_count
+        _schema.categorized_resource_counts = cls._schema_resource_health_summary_read.categorized_resource_counts
+        _schema.issues = cls._schema_resource_health_summary_read.issues
+        _schema.resource_count = cls._schema_resource_health_summary_read.resource_count
 
 
 __all__ = ["Show"]

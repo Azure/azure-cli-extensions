@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of email notification(alert) configurations for the vault.
+
+    :example: alert-setting list
+        az site-recovery vault alert-setting list -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {
@@ -183,6 +186,10 @@ class List(AAZCommand):
             custom_email_addresses.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

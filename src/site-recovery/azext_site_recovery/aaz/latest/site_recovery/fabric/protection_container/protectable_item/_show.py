@@ -241,14 +241,14 @@ class Show(AAZCommand):
             disc_hyper_v_virtual_machine.os_details = AAZObjectType(
                 serialized_name="osDetails",
             )
-            _build_schema_os_details_read(disc_hyper_v_virtual_machine.os_details)
+            _ShowHelper._build_schema_os_details_read(disc_hyper_v_virtual_machine.os_details)
             disc_hyper_v_virtual_machine.source_item_id = AAZStrType(
                 serialized_name="sourceItemId",
             )
 
             disk_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "HyperVVirtualMachine").disk_details
             disk_details.Element = AAZObjectType()
-            _build_schema_disk_details_read(disk_details.Element)
+            _ShowHelper._build_schema_disk_details_read(disk_details.Element)
 
             disc_v_mware_virtual_machine = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VMwareVirtualMachine")
             disc_v_mware_virtual_machine.agent_generated_id = AAZStrType(
@@ -429,14 +429,14 @@ class Show(AAZCommand):
             disc_vmm_virtual_machine.os_details = AAZObjectType(
                 serialized_name="osDetails",
             )
-            _build_schema_os_details_read(disc_vmm_virtual_machine.os_details)
+            _ShowHelper._build_schema_os_details_read(disc_vmm_virtual_machine.os_details)
             disc_vmm_virtual_machine.source_item_id = AAZStrType(
                 serialized_name="sourceItemId",
             )
 
             disk_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "VmmVirtualMachine").disk_details
             disk_details.Element = AAZObjectType()
-            _build_schema_disk_details_read(disk_details.Element)
+            _ShowHelper._build_schema_disk_details_read(disk_details.Element)
 
             protection_readiness_errors = cls._schema_on_200.properties.protection_readiness_errors
             protection_readiness_errors.Element = AAZStrType()
@@ -447,82 +447,82 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_disk_details_read = None
+class _ShowHelper:
+    """Helper class for Show"""
 
+    _schema_disk_details_read = None
 
-def _build_schema_disk_details_read(_schema):
-    global _schema_disk_details_read
-    if _schema_disk_details_read is not None:
-        _schema.max_size_mb = _schema_disk_details_read.max_size_mb
-        _schema.vhd_id = _schema_disk_details_read.vhd_id
-        _schema.vhd_name = _schema_disk_details_read.vhd_name
-        _schema.vhd_type = _schema_disk_details_read.vhd_type
-        return
+    @classmethod
+    def _build_schema_disk_details_read(cls, _schema):
+        if cls._schema_disk_details_read is not None:
+            _schema.max_size_mb = cls._schema_disk_details_read.max_size_mb
+            _schema.vhd_id = cls._schema_disk_details_read.vhd_id
+            _schema.vhd_name = cls._schema_disk_details_read.vhd_name
+            _schema.vhd_type = cls._schema_disk_details_read.vhd_type
+            return
 
-    _schema_disk_details_read = AAZObjectType()
+        cls._schema_disk_details_read = _schema_disk_details_read = AAZObjectType()
 
-    disk_details_read = _schema_disk_details_read
-    disk_details_read.max_size_mb = AAZIntType(
-        serialized_name="maxSizeMB",
-    )
-    disk_details_read.vhd_id = AAZStrType(
-        serialized_name="vhdId",
-    )
-    disk_details_read.vhd_name = AAZStrType(
-        serialized_name="vhdName",
-    )
-    disk_details_read.vhd_type = AAZStrType(
-        serialized_name="vhdType",
-    )
+        disk_details_read = _schema_disk_details_read
+        disk_details_read.max_size_mb = AAZIntType(
+            serialized_name="maxSizeMB",
+        )
+        disk_details_read.vhd_id = AAZStrType(
+            serialized_name="vhdId",
+        )
+        disk_details_read.vhd_name = AAZStrType(
+            serialized_name="vhdName",
+        )
+        disk_details_read.vhd_type = AAZStrType(
+            serialized_name="vhdType",
+        )
 
-    _schema.max_size_mb = _schema_disk_details_read.max_size_mb
-    _schema.vhd_id = _schema_disk_details_read.vhd_id
-    _schema.vhd_name = _schema_disk_details_read.vhd_name
-    _schema.vhd_type = _schema_disk_details_read.vhd_type
+        _schema.max_size_mb = cls._schema_disk_details_read.max_size_mb
+        _schema.vhd_id = cls._schema_disk_details_read.vhd_id
+        _schema.vhd_name = cls._schema_disk_details_read.vhd_name
+        _schema.vhd_type = cls._schema_disk_details_read.vhd_type
 
+    _schema_os_details_read = None
 
-_schema_os_details_read = None
+    @classmethod
+    def _build_schema_os_details_read(cls, _schema):
+        if cls._schema_os_details_read is not None:
+            _schema.o_s_major_version = cls._schema_os_details_read.o_s_major_version
+            _schema.o_s_minor_version = cls._schema_os_details_read.o_s_minor_version
+            _schema.o_s_version = cls._schema_os_details_read.o_s_version
+            _schema.os_edition = cls._schema_os_details_read.os_edition
+            _schema.os_type = cls._schema_os_details_read.os_type
+            _schema.product_type = cls._schema_os_details_read.product_type
+            return
 
+        cls._schema_os_details_read = _schema_os_details_read = AAZObjectType()
 
-def _build_schema_os_details_read(_schema):
-    global _schema_os_details_read
-    if _schema_os_details_read is not None:
-        _schema.o_s_major_version = _schema_os_details_read.o_s_major_version
-        _schema.o_s_minor_version = _schema_os_details_read.o_s_minor_version
-        _schema.o_s_version = _schema_os_details_read.o_s_version
-        _schema.os_edition = _schema_os_details_read.os_edition
-        _schema.os_type = _schema_os_details_read.os_type
-        _schema.product_type = _schema_os_details_read.product_type
-        return
+        os_details_read = _schema_os_details_read
+        os_details_read.o_s_major_version = AAZStrType(
+            serialized_name="oSMajorVersion",
+        )
+        os_details_read.o_s_minor_version = AAZStrType(
+            serialized_name="oSMinorVersion",
+        )
+        os_details_read.o_s_version = AAZStrType(
+            serialized_name="oSVersion",
+        )
+        os_details_read.os_edition = AAZStrType(
+            serialized_name="osEdition",
+        )
+        os_details_read.os_type = AAZStrType(
+            serialized_name="osType",
+        )
+        os_details_read.product_type = AAZStrType(
+            serialized_name="productType",
+        )
 
-    _schema_os_details_read = AAZObjectType()
-
-    os_details_read = _schema_os_details_read
-    os_details_read.o_s_major_version = AAZStrType(
-        serialized_name="oSMajorVersion",
-    )
-    os_details_read.o_s_minor_version = AAZStrType(
-        serialized_name="oSMinorVersion",
-    )
-    os_details_read.o_s_version = AAZStrType(
-        serialized_name="oSVersion",
-    )
-    os_details_read.os_edition = AAZStrType(
-        serialized_name="osEdition",
-    )
-    os_details_read.os_type = AAZStrType(
-        serialized_name="osType",
-    )
-    os_details_read.product_type = AAZStrType(
-        serialized_name="productType",
-    )
-
-    _schema.o_s_major_version = _schema_os_details_read.o_s_major_version
-    _schema.o_s_minor_version = _schema_os_details_read.o_s_minor_version
-    _schema.o_s_version = _schema_os_details_read.o_s_version
-    _schema.os_edition = _schema_os_details_read.os_edition
-    _schema.os_type = _schema_os_details_read.os_type
-    _schema.product_type = _schema_os_details_read.product_type
+        _schema.o_s_major_version = cls._schema_os_details_read.o_s_major_version
+        _schema.o_s_minor_version = cls._schema_os_details_read.o_s_minor_version
+        _schema.o_s_version = cls._schema_os_details_read.o_s_version
+        _schema.os_edition = cls._schema_os_details_read.os_edition
+        _schema.os_type = cls._schema_os_details_read.os_type
+        _schema.product_type = cls._schema_os_details_read.product_type
 
 
 __all__ = ["Show"]

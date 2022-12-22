@@ -282,7 +282,7 @@ class Resume(AAZCommand):
 
             protected_item_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "FailoverJobDetails").protected_item_details
             protected_item_details.Element = AAZObjectType()
-            _build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
+            _ResumeHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
 
             disc_switch_protection_job_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "SwitchProtectionJobDetails")
             disc_switch_protection_job_details.new_replication_protected_item_id = AAZStrType(
@@ -309,410 +309,406 @@ class Resume(AAZCommand):
 
             protected_item_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "TestFailoverJobDetails").protected_item_details
             protected_item_details.Element = AAZObjectType()
-            _build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
+            _ResumeHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
 
             errors = cls._schema_on_200.properties.errors
             errors.Element = AAZObjectType()
-            _build_schema_job_error_details_read(errors.Element)
+            _ResumeHelper._build_schema_job_error_details_read(errors.Element)
 
             tasks = cls._schema_on_200.properties.tasks
             tasks.Element = AAZObjectType()
-            _build_schema_asr_task_read(tasks.Element)
+            _ResumeHelper._build_schema_asr_task_read(tasks.Element)
 
             return cls._schema_on_200
 
 
-_schema_asr_task_read = None
+class _ResumeHelper:
+    """Helper class for Resume"""
 
+    _schema_asr_task_read = None
 
-def _build_schema_asr_task_read(_schema):
-    global _schema_asr_task_read
-    if _schema_asr_task_read is not None:
-        _schema.allowed_actions = _schema_asr_task_read.allowed_actions
-        _schema.custom_details = _schema_asr_task_read.custom_details
-        _schema.end_time = _schema_asr_task_read.end_time
-        _schema.errors = _schema_asr_task_read.errors
-        _schema.friendly_name = _schema_asr_task_read.friendly_name
-        _schema.group_task_custom_details = _schema_asr_task_read.group_task_custom_details
-        _schema.name = _schema_asr_task_read.name
-        _schema.start_time = _schema_asr_task_read.start_time
-        _schema.state = _schema_asr_task_read.state
-        _schema.state_description = _schema_asr_task_read.state_description
-        _schema.task_id = _schema_asr_task_read.task_id
-        _schema.task_type = _schema_asr_task_read.task_type
-        return
+    @classmethod
+    def _build_schema_asr_task_read(cls, _schema):
+        if cls._schema_asr_task_read is not None:
+            _schema.allowed_actions = cls._schema_asr_task_read.allowed_actions
+            _schema.custom_details = cls._schema_asr_task_read.custom_details
+            _schema.end_time = cls._schema_asr_task_read.end_time
+            _schema.errors = cls._schema_asr_task_read.errors
+            _schema.friendly_name = cls._schema_asr_task_read.friendly_name
+            _schema.group_task_custom_details = cls._schema_asr_task_read.group_task_custom_details
+            _schema.name = cls._schema_asr_task_read.name
+            _schema.start_time = cls._schema_asr_task_read.start_time
+            _schema.state = cls._schema_asr_task_read.state
+            _schema.state_description = cls._schema_asr_task_read.state_description
+            _schema.task_id = cls._schema_asr_task_read.task_id
+            _schema.task_type = cls._schema_asr_task_read.task_type
+            return
 
-    _schema_asr_task_read = AAZObjectType()
+        cls._schema_asr_task_read = _schema_asr_task_read = AAZObjectType()
 
-    asr_task_read = _schema_asr_task_read
-    asr_task_read.allowed_actions = AAZListType(
-        serialized_name="allowedActions",
-    )
-    asr_task_read.custom_details = AAZObjectType(
-        serialized_name="customDetails",
-    )
-    asr_task_read.end_time = AAZStrType(
-        serialized_name="endTime",
-    )
-    asr_task_read.errors = AAZListType()
-    asr_task_read.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-    )
-    asr_task_read.group_task_custom_details = AAZObjectType(
-        serialized_name="groupTaskCustomDetails",
-    )
-    asr_task_read.name = AAZStrType()
-    asr_task_read.start_time = AAZStrType(
-        serialized_name="startTime",
-    )
-    asr_task_read.state = AAZStrType()
-    asr_task_read.state_description = AAZStrType(
-        serialized_name="stateDescription",
-    )
-    asr_task_read.task_id = AAZStrType(
-        serialized_name="taskId",
-    )
-    asr_task_read.task_type = AAZStrType(
-        serialized_name="taskType",
-    )
+        asr_task_read = _schema_asr_task_read
+        asr_task_read.allowed_actions = AAZListType(
+            serialized_name="allowedActions",
+        )
+        asr_task_read.custom_details = AAZObjectType(
+            serialized_name="customDetails",
+        )
+        asr_task_read.end_time = AAZStrType(
+            serialized_name="endTime",
+        )
+        asr_task_read.errors = AAZListType()
+        asr_task_read.friendly_name = AAZStrType(
+            serialized_name="friendlyName",
+        )
+        asr_task_read.group_task_custom_details = AAZObjectType(
+            serialized_name="groupTaskCustomDetails",
+        )
+        asr_task_read.name = AAZStrType()
+        asr_task_read.start_time = AAZStrType(
+            serialized_name="startTime",
+        )
+        asr_task_read.state = AAZStrType()
+        asr_task_read.state_description = AAZStrType(
+            serialized_name="stateDescription",
+        )
+        asr_task_read.task_id = AAZStrType(
+            serialized_name="taskId",
+        )
+        asr_task_read.task_type = AAZStrType(
+            serialized_name="taskType",
+        )
 
-    allowed_actions = _schema_asr_task_read.allowed_actions
-    allowed_actions.Element = AAZStrType()
+        allowed_actions = _schema_asr_task_read.allowed_actions
+        allowed_actions.Element = AAZStrType()
 
-    custom_details = _schema_asr_task_read.custom_details
-    custom_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        custom_details = _schema_asr_task_read.custom_details
+        custom_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    disc_automation_runbook_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "AutomationRunbookTaskDetails")
-    disc_automation_runbook_task_details.account_name = AAZStrType(
-        serialized_name="accountName",
-    )
-    disc_automation_runbook_task_details.cloud_service_name = AAZStrType(
-        serialized_name="cloudServiceName",
-    )
-    disc_automation_runbook_task_details.is_primary_side_script = AAZBoolType(
-        serialized_name="isPrimarySideScript",
-    )
-    disc_automation_runbook_task_details.job_id = AAZStrType(
-        serialized_name="jobId",
-    )
-    disc_automation_runbook_task_details.job_output = AAZStrType(
-        serialized_name="jobOutput",
-    )
-    disc_automation_runbook_task_details.name = AAZStrType()
-    disc_automation_runbook_task_details.runbook_id = AAZStrType(
-        serialized_name="runbookId",
-    )
-    disc_automation_runbook_task_details.runbook_name = AAZStrType(
-        serialized_name="runbookName",
-    )
-    disc_automation_runbook_task_details.subscription_id = AAZStrType(
-        serialized_name="subscriptionId",
-    )
+        disc_automation_runbook_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "AutomationRunbookTaskDetails")
+        disc_automation_runbook_task_details.account_name = AAZStrType(
+            serialized_name="accountName",
+        )
+        disc_automation_runbook_task_details.cloud_service_name = AAZStrType(
+            serialized_name="cloudServiceName",
+        )
+        disc_automation_runbook_task_details.is_primary_side_script = AAZBoolType(
+            serialized_name="isPrimarySideScript",
+        )
+        disc_automation_runbook_task_details.job_id = AAZStrType(
+            serialized_name="jobId",
+        )
+        disc_automation_runbook_task_details.job_output = AAZStrType(
+            serialized_name="jobOutput",
+        )
+        disc_automation_runbook_task_details.name = AAZStrType()
+        disc_automation_runbook_task_details.runbook_id = AAZStrType(
+            serialized_name="runbookId",
+        )
+        disc_automation_runbook_task_details.runbook_name = AAZStrType(
+            serialized_name="runbookName",
+        )
+        disc_automation_runbook_task_details.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
 
-    disc_consistency_check_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails")
-    disc_consistency_check_task_details.vm_details = AAZListType(
-        serialized_name="vmDetails",
-    )
+        disc_consistency_check_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails")
+        disc_consistency_check_task_details.vm_details = AAZListType(
+            serialized_name="vmDetails",
+        )
 
-    vm_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details
-    vm_details.Element = AAZObjectType()
+        vm_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details
+        vm_details.Element = AAZObjectType()
 
-    _element = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details.Element
-    _element.cloud_name = AAZStrType(
-        serialized_name="cloudName",
-    )
-    _element.details = AAZListType()
-    _element.error_ids = AAZListType(
-        serialized_name="errorIds",
-    )
-    _element.vm_name = AAZStrType(
-        serialized_name="vmName",
-    )
+        _element = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details.Element
+        _element.cloud_name = AAZStrType(
+            serialized_name="cloudName",
+        )
+        _element.details = AAZListType()
+        _element.error_ids = AAZListType(
+            serialized_name="errorIds",
+        )
+        _element.vm_name = AAZStrType(
+            serialized_name="vmName",
+        )
 
-    details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details.Element.details
-    details.Element = AAZStrType()
+        details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details.Element.details
+        details.Element = AAZStrType()
 
-    error_ids = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details.Element.error_ids
-    error_ids.Element = AAZStrType()
+        error_ids = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ConsistencyCheckTaskDetails").vm_details.Element.error_ids
+        error_ids.Element = AAZStrType()
 
-    disc_fabric_replication_group_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "FabricReplicationGroupTaskDetails")
-    disc_fabric_replication_group_task_details.job_task = AAZObjectType(
-        serialized_name="jobTask",
-    )
-    _build_schema_job_entity_read(disc_fabric_replication_group_task_details.job_task)
-    disc_fabric_replication_group_task_details.skipped_reason = AAZStrType(
-        serialized_name="skippedReason",
-    )
-    disc_fabric_replication_group_task_details.skipped_reason_string = AAZStrType(
-        serialized_name="skippedReasonString",
-    )
+        disc_fabric_replication_group_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "FabricReplicationGroupTaskDetails")
+        disc_fabric_replication_group_task_details.job_task = AAZObjectType(
+            serialized_name="jobTask",
+        )
+        cls._build_schema_job_entity_read(disc_fabric_replication_group_task_details.job_task)
+        disc_fabric_replication_group_task_details.skipped_reason = AAZStrType(
+            serialized_name="skippedReason",
+        )
+        disc_fabric_replication_group_task_details.skipped_reason_string = AAZStrType(
+            serialized_name="skippedReasonString",
+        )
 
-    disc_job_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "JobTaskDetails")
-    disc_job_task_details.job_task = AAZObjectType(
-        serialized_name="jobTask",
-    )
-    _build_schema_job_entity_read(disc_job_task_details.job_task)
+        disc_job_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "JobTaskDetails")
+        disc_job_task_details.job_task = AAZObjectType(
+            serialized_name="jobTask",
+        )
+        cls._build_schema_job_entity_read(disc_job_task_details.job_task)
 
-    disc_manual_action_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ManualActionTaskDetails")
-    disc_manual_action_task_details.instructions = AAZStrType()
-    disc_manual_action_task_details.name = AAZStrType()
-    disc_manual_action_task_details.observation = AAZStrType()
+        disc_manual_action_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ManualActionTaskDetails")
+        disc_manual_action_task_details.instructions = AAZStrType()
+        disc_manual_action_task_details.name = AAZStrType()
+        disc_manual_action_task_details.observation = AAZStrType()
 
-    disc_script_action_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ScriptActionTaskDetails")
-    disc_script_action_task_details.is_primary_side_script = AAZBoolType(
-        serialized_name="isPrimarySideScript",
-    )
-    disc_script_action_task_details.name = AAZStrType()
-    disc_script_action_task_details.output = AAZStrType()
-    disc_script_action_task_details.path = AAZStrType()
+        disc_script_action_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "ScriptActionTaskDetails")
+        disc_script_action_task_details.is_primary_side_script = AAZBoolType(
+            serialized_name="isPrimarySideScript",
+        )
+        disc_script_action_task_details.name = AAZStrType()
+        disc_script_action_task_details.output = AAZStrType()
+        disc_script_action_task_details.path = AAZStrType()
 
-    disc_virtual_machine_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "VirtualMachineTaskDetails")
-    disc_virtual_machine_task_details.job_task = AAZObjectType(
-        serialized_name="jobTask",
-    )
-    _build_schema_job_entity_read(disc_virtual_machine_task_details.job_task)
-    disc_virtual_machine_task_details.skipped_reason = AAZStrType(
-        serialized_name="skippedReason",
-    )
-    disc_virtual_machine_task_details.skipped_reason_string = AAZStrType(
-        serialized_name="skippedReasonString",
-    )
+        disc_virtual_machine_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "VirtualMachineTaskDetails")
+        disc_virtual_machine_task_details.job_task = AAZObjectType(
+            serialized_name="jobTask",
+        )
+        cls._build_schema_job_entity_read(disc_virtual_machine_task_details.job_task)
+        disc_virtual_machine_task_details.skipped_reason = AAZStrType(
+            serialized_name="skippedReason",
+        )
+        disc_virtual_machine_task_details.skipped_reason_string = AAZStrType(
+            serialized_name="skippedReasonString",
+        )
 
-    disc_vm_nic_updates_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "VmNicUpdatesTaskDetails")
-    disc_vm_nic_updates_task_details.name = AAZStrType()
-    disc_vm_nic_updates_task_details.nic_id = AAZStrType(
-        serialized_name="nicId",
-    )
-    disc_vm_nic_updates_task_details.vm_id = AAZStrType(
-        serialized_name="vmId",
-    )
+        disc_vm_nic_updates_task_details = _schema_asr_task_read.custom_details.discriminate_by("instance_type", "VmNicUpdatesTaskDetails")
+        disc_vm_nic_updates_task_details.name = AAZStrType()
+        disc_vm_nic_updates_task_details.nic_id = AAZStrType(
+            serialized_name="nicId",
+        )
+        disc_vm_nic_updates_task_details.vm_id = AAZStrType(
+            serialized_name="vmId",
+        )
 
-    errors = _schema_asr_task_read.errors
-    errors.Element = AAZObjectType()
-    _build_schema_job_error_details_read(errors.Element)
+        errors = _schema_asr_task_read.errors
+        errors.Element = AAZObjectType()
+        cls._build_schema_job_error_details_read(errors.Element)
 
-    group_task_custom_details = _schema_asr_task_read.group_task_custom_details
-    group_task_custom_details.child_tasks = AAZListType(
-        serialized_name="childTasks",
-    )
-    group_task_custom_details.instance_type = AAZStrType(
-        serialized_name="instanceType",
-        flags={"required": True},
-    )
+        group_task_custom_details = _schema_asr_task_read.group_task_custom_details
+        group_task_custom_details.child_tasks = AAZListType(
+            serialized_name="childTasks",
+        )
+        group_task_custom_details.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
 
-    child_tasks = _schema_asr_task_read.group_task_custom_details.child_tasks
-    child_tasks.Element = AAZObjectType()
-    _build_schema_asr_task_read(child_tasks.Element)
+        child_tasks = _schema_asr_task_read.group_task_custom_details.child_tasks
+        child_tasks.Element = AAZObjectType()
+        cls._build_schema_asr_task_read(child_tasks.Element)
 
-    disc_inline_workflow_task_details = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "InlineWorkflowTaskDetails")
-    disc_inline_workflow_task_details.workflow_ids = AAZListType(
-        serialized_name="workflowIds",
-    )
+        disc_inline_workflow_task_details = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "InlineWorkflowTaskDetails")
+        disc_inline_workflow_task_details.workflow_ids = AAZListType(
+            serialized_name="workflowIds",
+        )
 
-    workflow_ids = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "InlineWorkflowTaskDetails").workflow_ids
-    workflow_ids.Element = AAZStrType()
+        workflow_ids = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "InlineWorkflowTaskDetails").workflow_ids
+        workflow_ids.Element = AAZStrType()
 
-    disc_recovery_plan_group_task_details = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "RecoveryPlanGroupTaskDetails")
-    disc_recovery_plan_group_task_details.group_id = AAZStrType(
-        serialized_name="groupId",
-    )
-    disc_recovery_plan_group_task_details.name = AAZStrType()
-    disc_recovery_plan_group_task_details.rp_group_type = AAZStrType(
-        serialized_name="rpGroupType",
-    )
+        disc_recovery_plan_group_task_details = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "RecoveryPlanGroupTaskDetails")
+        disc_recovery_plan_group_task_details.group_id = AAZStrType(
+            serialized_name="groupId",
+        )
+        disc_recovery_plan_group_task_details.name = AAZStrType()
+        disc_recovery_plan_group_task_details.rp_group_type = AAZStrType(
+            serialized_name="rpGroupType",
+        )
 
-    disc_recovery_plan_shutdown_group_task_details = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "RecoveryPlanShutdownGroupTaskDetails")
-    disc_recovery_plan_shutdown_group_task_details.group_id = AAZStrType(
-        serialized_name="groupId",
-    )
-    disc_recovery_plan_shutdown_group_task_details.name = AAZStrType()
-    disc_recovery_plan_shutdown_group_task_details.rp_group_type = AAZStrType(
-        serialized_name="rpGroupType",
-    )
+        disc_recovery_plan_shutdown_group_task_details = _schema_asr_task_read.group_task_custom_details.discriminate_by("instance_type", "RecoveryPlanShutdownGroupTaskDetails")
+        disc_recovery_plan_shutdown_group_task_details.group_id = AAZStrType(
+            serialized_name="groupId",
+        )
+        disc_recovery_plan_shutdown_group_task_details.name = AAZStrType()
+        disc_recovery_plan_shutdown_group_task_details.rp_group_type = AAZStrType(
+            serialized_name="rpGroupType",
+        )
 
-    _schema.allowed_actions = _schema_asr_task_read.allowed_actions
-    _schema.custom_details = _schema_asr_task_read.custom_details
-    _schema.end_time = _schema_asr_task_read.end_time
-    _schema.errors = _schema_asr_task_read.errors
-    _schema.friendly_name = _schema_asr_task_read.friendly_name
-    _schema.group_task_custom_details = _schema_asr_task_read.group_task_custom_details
-    _schema.name = _schema_asr_task_read.name
-    _schema.start_time = _schema_asr_task_read.start_time
-    _schema.state = _schema_asr_task_read.state
-    _schema.state_description = _schema_asr_task_read.state_description
-    _schema.task_id = _schema_asr_task_read.task_id
-    _schema.task_type = _schema_asr_task_read.task_type
+        _schema.allowed_actions = cls._schema_asr_task_read.allowed_actions
+        _schema.custom_details = cls._schema_asr_task_read.custom_details
+        _schema.end_time = cls._schema_asr_task_read.end_time
+        _schema.errors = cls._schema_asr_task_read.errors
+        _schema.friendly_name = cls._schema_asr_task_read.friendly_name
+        _schema.group_task_custom_details = cls._schema_asr_task_read.group_task_custom_details
+        _schema.name = cls._schema_asr_task_read.name
+        _schema.start_time = cls._schema_asr_task_read.start_time
+        _schema.state = cls._schema_asr_task_read.state
+        _schema.state_description = cls._schema_asr_task_read.state_description
+        _schema.task_id = cls._schema_asr_task_read.task_id
+        _schema.task_type = cls._schema_asr_task_read.task_type
 
+    _schema_failover_replication_protected_item_details_read = None
 
-_schema_failover_replication_protected_item_details_read = None
+    @classmethod
+    def _build_schema_failover_replication_protected_item_details_read(cls, _schema):
+        if cls._schema_failover_replication_protected_item_details_read is not None:
+            _schema.friendly_name = cls._schema_failover_replication_protected_item_details_read.friendly_name
+            _schema.name = cls._schema_failover_replication_protected_item_details_read.name
+            _schema.network_connection_status = cls._schema_failover_replication_protected_item_details_read.network_connection_status
+            _schema.network_friendly_name = cls._schema_failover_replication_protected_item_details_read.network_friendly_name
+            _schema.recovery_point_id = cls._schema_failover_replication_protected_item_details_read.recovery_point_id
+            _schema.recovery_point_time = cls._schema_failover_replication_protected_item_details_read.recovery_point_time
+            _schema.subnet = cls._schema_failover_replication_protected_item_details_read.subnet
+            _schema.test_vm_friendly_name = cls._schema_failover_replication_protected_item_details_read.test_vm_friendly_name
+            _schema.test_vm_name = cls._schema_failover_replication_protected_item_details_read.test_vm_name
+            return
 
+        cls._schema_failover_replication_protected_item_details_read = _schema_failover_replication_protected_item_details_read = AAZObjectType()
 
-def _build_schema_failover_replication_protected_item_details_read(_schema):
-    global _schema_failover_replication_protected_item_details_read
-    if _schema_failover_replication_protected_item_details_read is not None:
-        _schema.friendly_name = _schema_failover_replication_protected_item_details_read.friendly_name
-        _schema.name = _schema_failover_replication_protected_item_details_read.name
-        _schema.network_connection_status = _schema_failover_replication_protected_item_details_read.network_connection_status
-        _schema.network_friendly_name = _schema_failover_replication_protected_item_details_read.network_friendly_name
-        _schema.recovery_point_id = _schema_failover_replication_protected_item_details_read.recovery_point_id
-        _schema.recovery_point_time = _schema_failover_replication_protected_item_details_read.recovery_point_time
-        _schema.subnet = _schema_failover_replication_protected_item_details_read.subnet
-        _schema.test_vm_friendly_name = _schema_failover_replication_protected_item_details_read.test_vm_friendly_name
-        _schema.test_vm_name = _schema_failover_replication_protected_item_details_read.test_vm_name
-        return
+        failover_replication_protected_item_details_read = _schema_failover_replication_protected_item_details_read
+        failover_replication_protected_item_details_read.friendly_name = AAZStrType(
+            serialized_name="friendlyName",
+        )
+        failover_replication_protected_item_details_read.name = AAZStrType()
+        failover_replication_protected_item_details_read.network_connection_status = AAZStrType(
+            serialized_name="networkConnectionStatus",
+        )
+        failover_replication_protected_item_details_read.network_friendly_name = AAZStrType(
+            serialized_name="networkFriendlyName",
+        )
+        failover_replication_protected_item_details_read.recovery_point_id = AAZStrType(
+            serialized_name="recoveryPointId",
+        )
+        failover_replication_protected_item_details_read.recovery_point_time = AAZStrType(
+            serialized_name="recoveryPointTime",
+        )
+        failover_replication_protected_item_details_read.subnet = AAZStrType()
+        failover_replication_protected_item_details_read.test_vm_friendly_name = AAZStrType(
+            serialized_name="testVmFriendlyName",
+        )
+        failover_replication_protected_item_details_read.test_vm_name = AAZStrType(
+            serialized_name="testVmName",
+        )
 
-    _schema_failover_replication_protected_item_details_read = AAZObjectType()
+        _schema.friendly_name = cls._schema_failover_replication_protected_item_details_read.friendly_name
+        _schema.name = cls._schema_failover_replication_protected_item_details_read.name
+        _schema.network_connection_status = cls._schema_failover_replication_protected_item_details_read.network_connection_status
+        _schema.network_friendly_name = cls._schema_failover_replication_protected_item_details_read.network_friendly_name
+        _schema.recovery_point_id = cls._schema_failover_replication_protected_item_details_read.recovery_point_id
+        _schema.recovery_point_time = cls._schema_failover_replication_protected_item_details_read.recovery_point_time
+        _schema.subnet = cls._schema_failover_replication_protected_item_details_read.subnet
+        _schema.test_vm_friendly_name = cls._schema_failover_replication_protected_item_details_read.test_vm_friendly_name
+        _schema.test_vm_name = cls._schema_failover_replication_protected_item_details_read.test_vm_name
 
-    failover_replication_protected_item_details_read = _schema_failover_replication_protected_item_details_read
-    failover_replication_protected_item_details_read.friendly_name = AAZStrType(
-        serialized_name="friendlyName",
-    )
-    failover_replication_protected_item_details_read.name = AAZStrType()
-    failover_replication_protected_item_details_read.network_connection_status = AAZStrType(
-        serialized_name="networkConnectionStatus",
-    )
-    failover_replication_protected_item_details_read.network_friendly_name = AAZStrType(
-        serialized_name="networkFriendlyName",
-    )
-    failover_replication_protected_item_details_read.recovery_point_id = AAZStrType(
-        serialized_name="recoveryPointId",
-    )
-    failover_replication_protected_item_details_read.recovery_point_time = AAZStrType(
-        serialized_name="recoveryPointTime",
-    )
-    failover_replication_protected_item_details_read.subnet = AAZStrType()
-    failover_replication_protected_item_details_read.test_vm_friendly_name = AAZStrType(
-        serialized_name="testVmFriendlyName",
-    )
-    failover_replication_protected_item_details_read.test_vm_name = AAZStrType(
-        serialized_name="testVmName",
-    )
+    _schema_job_entity_read = None
 
-    _schema.friendly_name = _schema_failover_replication_protected_item_details_read.friendly_name
-    _schema.name = _schema_failover_replication_protected_item_details_read.name
-    _schema.network_connection_status = _schema_failover_replication_protected_item_details_read.network_connection_status
-    _schema.network_friendly_name = _schema_failover_replication_protected_item_details_read.network_friendly_name
-    _schema.recovery_point_id = _schema_failover_replication_protected_item_details_read.recovery_point_id
-    _schema.recovery_point_time = _schema_failover_replication_protected_item_details_read.recovery_point_time
-    _schema.subnet = _schema_failover_replication_protected_item_details_read.subnet
-    _schema.test_vm_friendly_name = _schema_failover_replication_protected_item_details_read.test_vm_friendly_name
-    _schema.test_vm_name = _schema_failover_replication_protected_item_details_read.test_vm_name
+    @classmethod
+    def _build_schema_job_entity_read(cls, _schema):
+        if cls._schema_job_entity_read is not None:
+            _schema.job_friendly_name = cls._schema_job_entity_read.job_friendly_name
+            _schema.job_id = cls._schema_job_entity_read.job_id
+            _schema.job_scenario_name = cls._schema_job_entity_read.job_scenario_name
+            _schema.target_instance_type = cls._schema_job_entity_read.target_instance_type
+            _schema.target_object_id = cls._schema_job_entity_read.target_object_id
+            _schema.target_object_name = cls._schema_job_entity_read.target_object_name
+            return
 
+        cls._schema_job_entity_read = _schema_job_entity_read = AAZObjectType()
 
-_schema_job_entity_read = None
+        job_entity_read = _schema_job_entity_read
+        job_entity_read.job_friendly_name = AAZStrType(
+            serialized_name="jobFriendlyName",
+        )
+        job_entity_read.job_id = AAZStrType(
+            serialized_name="jobId",
+        )
+        job_entity_read.job_scenario_name = AAZStrType(
+            serialized_name="jobScenarioName",
+        )
+        job_entity_read.target_instance_type = AAZStrType(
+            serialized_name="targetInstanceType",
+        )
+        job_entity_read.target_object_id = AAZStrType(
+            serialized_name="targetObjectId",
+        )
+        job_entity_read.target_object_name = AAZStrType(
+            serialized_name="targetObjectName",
+        )
 
+        _schema.job_friendly_name = cls._schema_job_entity_read.job_friendly_name
+        _schema.job_id = cls._schema_job_entity_read.job_id
+        _schema.job_scenario_name = cls._schema_job_entity_read.job_scenario_name
+        _schema.target_instance_type = cls._schema_job_entity_read.target_instance_type
+        _schema.target_object_id = cls._schema_job_entity_read.target_object_id
+        _schema.target_object_name = cls._schema_job_entity_read.target_object_name
 
-def _build_schema_job_entity_read(_schema):
-    global _schema_job_entity_read
-    if _schema_job_entity_read is not None:
-        _schema.job_friendly_name = _schema_job_entity_read.job_friendly_name
-        _schema.job_id = _schema_job_entity_read.job_id
-        _schema.job_scenario_name = _schema_job_entity_read.job_scenario_name
-        _schema.target_instance_type = _schema_job_entity_read.target_instance_type
-        _schema.target_object_id = _schema_job_entity_read.target_object_id
-        _schema.target_object_name = _schema_job_entity_read.target_object_name
-        return
+    _schema_job_error_details_read = None
 
-    _schema_job_entity_read = AAZObjectType()
+    @classmethod
+    def _build_schema_job_error_details_read(cls, _schema):
+        if cls._schema_job_error_details_read is not None:
+            _schema.creation_time = cls._schema_job_error_details_read.creation_time
+            _schema.error_level = cls._schema_job_error_details_read.error_level
+            _schema.provider_error_details = cls._schema_job_error_details_read.provider_error_details
+            _schema.service_error_details = cls._schema_job_error_details_read.service_error_details
+            _schema.task_id = cls._schema_job_error_details_read.task_id
+            return
 
-    job_entity_read = _schema_job_entity_read
-    job_entity_read.job_friendly_name = AAZStrType(
-        serialized_name="jobFriendlyName",
-    )
-    job_entity_read.job_id = AAZStrType(
-        serialized_name="jobId",
-    )
-    job_entity_read.job_scenario_name = AAZStrType(
-        serialized_name="jobScenarioName",
-    )
-    job_entity_read.target_instance_type = AAZStrType(
-        serialized_name="targetInstanceType",
-    )
-    job_entity_read.target_object_id = AAZStrType(
-        serialized_name="targetObjectId",
-    )
-    job_entity_read.target_object_name = AAZStrType(
-        serialized_name="targetObjectName",
-    )
+        cls._schema_job_error_details_read = _schema_job_error_details_read = AAZObjectType()
 
-    _schema.job_friendly_name = _schema_job_entity_read.job_friendly_name
-    _schema.job_id = _schema_job_entity_read.job_id
-    _schema.job_scenario_name = _schema_job_entity_read.job_scenario_name
-    _schema.target_instance_type = _schema_job_entity_read.target_instance_type
-    _schema.target_object_id = _schema_job_entity_read.target_object_id
-    _schema.target_object_name = _schema_job_entity_read.target_object_name
+        job_error_details_read = _schema_job_error_details_read
+        job_error_details_read.creation_time = AAZStrType(
+            serialized_name="creationTime",
+        )
+        job_error_details_read.error_level = AAZStrType(
+            serialized_name="errorLevel",
+        )
+        job_error_details_read.provider_error_details = AAZObjectType(
+            serialized_name="providerErrorDetails",
+        )
+        job_error_details_read.service_error_details = AAZObjectType(
+            serialized_name="serviceErrorDetails",
+        )
+        job_error_details_read.task_id = AAZStrType(
+            serialized_name="taskId",
+        )
 
+        provider_error_details = _schema_job_error_details_read.provider_error_details
+        provider_error_details.error_code = AAZIntType(
+            serialized_name="errorCode",
+        )
+        provider_error_details.error_id = AAZStrType(
+            serialized_name="errorId",
+        )
+        provider_error_details.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        provider_error_details.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        provider_error_details.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
 
-_schema_job_error_details_read = None
+        service_error_details = _schema_job_error_details_read.service_error_details
+        service_error_details.activity_id = AAZStrType(
+            serialized_name="activityId",
+        )
+        service_error_details.code = AAZStrType()
+        service_error_details.message = AAZStrType()
+        service_error_details.possible_causes = AAZStrType(
+            serialized_name="possibleCauses",
+        )
+        service_error_details.recommended_action = AAZStrType(
+            serialized_name="recommendedAction",
+        )
 
-
-def _build_schema_job_error_details_read(_schema):
-    global _schema_job_error_details_read
-    if _schema_job_error_details_read is not None:
-        _schema.creation_time = _schema_job_error_details_read.creation_time
-        _schema.error_level = _schema_job_error_details_read.error_level
-        _schema.provider_error_details = _schema_job_error_details_read.provider_error_details
-        _schema.service_error_details = _schema_job_error_details_read.service_error_details
-        _schema.task_id = _schema_job_error_details_read.task_id
-        return
-
-    _schema_job_error_details_read = AAZObjectType()
-
-    job_error_details_read = _schema_job_error_details_read
-    job_error_details_read.creation_time = AAZStrType(
-        serialized_name="creationTime",
-    )
-    job_error_details_read.error_level = AAZStrType(
-        serialized_name="errorLevel",
-    )
-    job_error_details_read.provider_error_details = AAZObjectType(
-        serialized_name="providerErrorDetails",
-    )
-    job_error_details_read.service_error_details = AAZObjectType(
-        serialized_name="serviceErrorDetails",
-    )
-    job_error_details_read.task_id = AAZStrType(
-        serialized_name="taskId",
-    )
-
-    provider_error_details = _schema_job_error_details_read.provider_error_details
-    provider_error_details.error_code = AAZIntType(
-        serialized_name="errorCode",
-    )
-    provider_error_details.error_id = AAZStrType(
-        serialized_name="errorId",
-    )
-    provider_error_details.error_message = AAZStrType(
-        serialized_name="errorMessage",
-    )
-    provider_error_details.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    provider_error_details.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-
-    service_error_details = _schema_job_error_details_read.service_error_details
-    service_error_details.activity_id = AAZStrType(
-        serialized_name="activityId",
-    )
-    service_error_details.code = AAZStrType()
-    service_error_details.message = AAZStrType()
-    service_error_details.possible_causes = AAZStrType(
-        serialized_name="possibleCauses",
-    )
-    service_error_details.recommended_action = AAZStrType(
-        serialized_name="recommendedAction",
-    )
-
-    _schema.creation_time = _schema_job_error_details_read.creation_time
-    _schema.error_level = _schema_job_error_details_read.error_level
-    _schema.provider_error_details = _schema_job_error_details_read.provider_error_details
-    _schema.service_error_details = _schema_job_error_details_read.service_error_details
-    _schema.task_id = _schema_job_error_details_read.task_id
+        _schema.creation_time = cls._schema_job_error_details_read.creation_time
+        _schema.error_level = cls._schema_job_error_details_read.error_level
+        _schema.provider_error_details = cls._schema_job_error_details_read.provider_error_details
+        _schema.service_error_details = cls._schema_job_error_details_read.service_error_details
+        _schema.task_id = cls._schema_job_error_details_read.task_id
 
 
 __all__ = ["Resume"]
