@@ -150,6 +150,13 @@ class AzCompleter(Completer):
         if self.validate_completion(completion):
             yield Completion(completion, -len(self.unfinished_word))
 
+    def reset(self):
+        self.unfinished_word = ''
+        self.complete_command = ''
+        self.leftover_args = ''
+        self.current_command = ''
+        self.subtree = None
+
     def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
         if not self.started:
             return
@@ -176,6 +183,9 @@ class AzCompleter(Completer):
             yield comp
 
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
+            yield comp
+
+        for comp in self.gen_recommended_scenario(text):
             yield comp
 
         for comp in sort_completions(self.gen_global_params_and_arg_completions()):
@@ -281,6 +291,13 @@ class AzCompleter(Completer):
                 formatted_text = re.sub(r'\s+', ' ', text).strip()
                 if rec['command'].startswith(formatted_text) and rec['command'] != formatted_text:
                     yield Completion(rec['command'], -len(text.lstrip()), display_meta=description)
+
+    def gen_recommended_scenario(self, text):
+        if '-' in text or not re.fullmatch(r'[a-zA-Z\s]+', text):
+            return
+        recommend_result = self.shell_ctx.recommender.get_scenarios() or []
+        for idx, rec in enumerate(recommend_result):
+            yield Completion('::'+str(idx+1), -len(text), display_meta=rec['scenario'], display='# Scenario::'+str(idx+1))
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """

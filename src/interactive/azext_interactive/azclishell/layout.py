@@ -30,8 +30,10 @@ MAX_COMPLETION = 16
 class LayoutManager(object):
     """ store information and conditions for the layout """
 
-    def __init__(self, shell_ctx):
+    def __init__(self, shell_ctx, prompt_prefix='', toolbar_tokens=''):
         self.shell_ctx = shell_ctx
+        self.prompt_prefix = prompt_prefix
+        self.toolbar_tokens = toolbar_tokens
 
         @Condition
         def show_default(_):
@@ -76,11 +78,15 @@ class LayoutManager(object):
             prompt = 'az {}>> '.format(self.shell_ctx.default_command)
         else:
             prompt = 'az>> '
-        return [(Token.Az, prompt)]
+        return [(Token.Az, self.prompt_prefix+prompt)]
 
     def create_tutorial_layout(self):
         """ layout for example tutorial """
         lexer, _, _, _ = get_lexers(self.shell_ctx.lexer, None, None, None)
+
+        if not any(isinstance(processor, DefaultPrompt) for processor in self.input_processors):
+            self.input_processors.append(DefaultPrompt(self.get_prompt_tokens))
+
         layout_full = HSplit([
             FloatContainer(
                 Window(
@@ -109,7 +115,7 @@ class LayoutManager(object):
                     ),
                     Window(
                         TokenListControl(
-                            get_tutorial_tokens,
+                            lambda _: [(Token.Toolbar, self.toolbar_tokens)],
                             default_char=Char(' ', Token.Toolbar)),
                         height=LayoutDimension.exact(1)),
                 ]),

@@ -11,6 +11,7 @@ import threading
 from azure.cli.core.azclierror import RecommendationError
 from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
+from azure.cli.core.style import print_styled_text, Style
 
 
 class RecommendType(int, Enum):
@@ -227,3 +228,96 @@ def send_feedback(option_idx, latest_commands, recommends=None, rec=None):
     telemetry.set_command_details('next')
     telemetry.set_feedback("#".join(feedback_data))
     telemetry.flush()
+
+
+def _show_details_for_e2e_scenario(scenario, file=None):
+    print_styled_text([(Style.PRIMARY, scenario['scenario']),
+                       (Style.ACTION, " contains the following commands:\n")],
+                      file=file)
+    nx_cmd_set = scenario["nextCommandSet"]
+    exec_idx = scenario.get("executeIndex", [])
+    for idx, nx_cmd in enumerate(nx_cmd_set):
+        styled_command = [(Style.ACTION, ' > '), (Style.PRIMARY, "az " + nx_cmd['command'])]
+        if idx not in exec_idx:
+            styled_command.append((Style.WARNING, " (executed)"))
+        print_styled_text(styled_command, file=file)
+        if nx_cmd['reason']:
+            print_styled_text([(Style.SECONDARY, '  ' + nx_cmd['reason'])], file=file)
+        else:
+            print()
+
+
+def gen_command_in_scenario(scenario, file=None):
+    exec_idx = scenario.get("executeIndex", [])
+    for idx, nx_cmd in enumerate(scenario["nextCommandSet"]):
+        cmd_active = idx in exec_idx
+        if not cmd_active:
+            continue
+        print()
+        command_sample = _get_command_sample(nx_cmd)
+        print_styled_text([(Style.ACTION, "Running: ")] + command_sample,
+                          file=file)
+        yield nx_cmd, ''.join([part[1] for part in command_sample])
+
+
+def _get_command_sample(command):
+    """Try getting example from command. Or load the example from `--help` if not found."""
+    if "example" in command and command["example"]:
+        command_sample, _ = _format_command_sample(command["example"].replace(" $", " "))
+        return command_sample
+
+    from knack import help_files
+    parameter = []
+    if "arguments" in command and command["arguments"]:
+        parameter = command["arguments"]
+        sorted_param = sorted(parameter)
+        cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
+        if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
+            for cmd_example in cmd_help['examples']:
+                command_sample, example_arguments = _format_command_sample(cmd_example['text'])
+                if sorted(example_arguments) == sorted_param:
+                    return command_sample
+
+    command = command["command"] if command["command"].startswith("az ") else "az " + command["command"]
+    command_sample = f"{command} {' '.join(parameter) if parameter else ''}"
+    return [(Style.PRIMARY, command_sample)]
+
+
+def _format_command_sample(command_sample):
+    """
+    Format command sample in the style of `az xxx --name <appServicePlan>`.
+    Also return the arguments used in the sample.
+    """
+    if not command_sample:
+        return [], []
+
+    cmd_items = command_sample.split()
+    arguments_start = False
+    example_arguments = []
+    command_item = []
+    argument_values = {}
+    values = []
+    for item in cmd_items:
+        if item.startswith('-'):
+            arguments_start = True
+            if values and example_arguments:
+                argument_values[example_arguments[-1]] = values
+                values = []
+            example_arguments.append(item)
+        elif not arguments_start:
+            command_item.append(item)
+        else:
+            values.append(item)
+    if values and example_arguments:
+        argument_values[example_arguments[-1]] = values
+
+    formatted_example = [(Style.PRIMARY, ' '.join(command_item))]
+    for argument in example_arguments:
+        formatted_example.append((Style.PRIMARY, " " + argument))
+        if argument in argument_values and argument_values[argument]:
+            argument_value = ' '.join(argument_values[argument])
+            if not (argument_value.startswith('<') and argument_value.endswith('>')):
+                argument_value = '<' + argument_value + '>'
+            formatted_example.append((Style.WARNING, ' ' + argument_value))
+
+    return formatted_example, example_arguments

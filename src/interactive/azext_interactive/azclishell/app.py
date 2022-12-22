@@ -44,7 +44,8 @@ from .key_bindings import InteractiveKeyBindings
 from .layout import LayoutManager
 from .progress import progress_view
 from . import telemetry
-from .recommendation import Recommender
+from .recommendation import Recommender, _show_details_for_e2e_scenario, gen_command_in_scenario
+from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word
 
@@ -351,9 +352,9 @@ class AzInteractiveShell(object):
         except configparser.NoSectionError:
             self.config_default = ""
 
-    def create_application(self, full_layout=True):
+    def create_application(self, full_layout=True, auto_suggest=None, prompt_prefix='', toolbar_tokens=''):
         """ makes the application object and the buffers """
-        layout_manager = LayoutManager(self)
+        layout_manager = LayoutManager(self, prompt_prefix, toolbar_tokens)
         if full_layout:
             layout = layout_manager.create_layout(ExampleLexer, ToolbarLexer, ScenarioLexer)
         else:
@@ -374,7 +375,7 @@ class AzInteractiveShell(object):
 
         writing_buffer = Buffer(
             history=self.history,
-            auto_suggest=AutoSuggestFromHistory(),
+            auto_suggest=auto_suggest or AutoSuggestFromHistory(),
             enable_history_search=True,
             completer=self.completer,
             complete_while_typing=Always()
@@ -456,7 +457,10 @@ class AzInteractiveShell(object):
             cmd = ' '.join(text.split()[:start_index])
             example_cli = CommandLineInterface(
                 application=self.create_application(
-                    full_layout=False),
+                    full_layout=False,
+                    prompt_prefix='(tutorial) ',
+                    toolbar_tokens='In Tutorial Mode: Press [Enter] after typing each part'
+                ),
                 eventloop=create_eventloop())
             example_cli.buffers['example_line'].reset(
                 initial_document=Document(u'{}\n'.format(
@@ -487,6 +491,73 @@ class AzInteractiveShell(object):
             cmd = text
 
         return cmd, continue_flag
+
+    def handle_scenario(self, text):
+        num = text.partition(SELECT_SYMBOL['example'])[2].strip()
+        try:
+            num = int(num) - 1
+        except ValueError:
+            print("An Integer should follow the colon", file=self.output)
+            return
+        if 0 <= num < len(self.recommender.get_scenarios() or []):
+            scenario = self.recommender.get_scenarios()[num]
+        else:
+            print('Invalid example number', file=self.output)
+            return
+        self.scenario_repl(scenario)
+
+    def scenario_repl(self, scenario):
+        auto_suggest = ScenarioAutoSuggest()
+        example_cli = CommandLineInterface(
+            application=self.create_application(
+                full_layout=False,
+                auto_suggest=auto_suggest,
+                prompt_prefix='(scenario) ',
+                toolbar_tokens='In Scenario Mode: Press [Enter] to execute commands'
+            ),
+            eventloop=create_eventloop())
+
+        _show_details_for_e2e_scenario(scenario, file=self.output)
+
+        example_cli.buffers['example_line'].reset(
+            initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
+        )
+        quit_scenario = False
+        for nx_cmd, sample in gen_command_in_scenario(scenario, file=self.output):
+            auto_suggest.update(sample)
+            retry = True
+            while retry:
+                example_cli.buffers[DEFAULT_BUFFER].reset(
+                    initial_document=Document(
+                        u'{}'.format(nx_cmd['command']),
+                        cursor_position=len(nx_cmd['command'])))
+                example_cli.request_redraw()
+                try:
+                    document = example_cli.run()
+                except (KeyboardInterrupt, ValueError):
+                    # CTRL C
+                    break
+                if not document:
+                    # CTRL D
+                    quit_scenario = True
+                    break
+                if not document.text:
+                    continue
+                answer = document.text
+                self.history.append(answer)
+                self.recommender.update()
+                telemetry.start()
+                self.cli_execute(answer)
+                if self.last_exit and self.last_exit != 0:
+                    telemetry.set_failure()
+                else:
+                    retry = False
+                    telemetry.set_success()
+                telemetry.flush()
+            if quit_scenario:
+                break
+        example_cli.exit()
+        del example_cli
 
     # pylint: disable=too-many-statements
     def _special_cases(self, cmd, outside):
@@ -531,6 +602,9 @@ class AzInteractiveShell(object):
                 self.cli_ctx.show_version()
             except SystemExit:
                 pass
+        elif cmd.startswith(SELECT_SYMBOL['example']):
+            self.handle_scenario(cmd)
+            continue_flag = True
         elif SELECT_SYMBOL['example'] in cmd:
             cmd, continue_flag = self.handle_example(cmd, continue_flag)
             telemetry.track_ran_tutorial()
@@ -717,6 +791,7 @@ class AzInteractiveShell(object):
         telemetry.flush()
         while True:
             try:
+                self.completer.reset()
                 document = self.cli.run(reset_current_buffer=True)
                 text = document.text
                 if not text:
