@@ -47,7 +47,6 @@ class List(AAZCommand):
             options=["--sim-group-name"],
             help="The name of the SIM Group.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,

@@ -44,7 +44,6 @@ class List(AAZCommand):
             options=["--mobile-network-name"],
             help="The name of the mobile network.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
                 max_length=64,

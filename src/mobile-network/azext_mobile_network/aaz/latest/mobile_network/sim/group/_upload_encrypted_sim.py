@@ -59,8 +59,8 @@ class UploadEncryptedSim(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_key_id = AAZIntArg(
-            options=["--azure-key-id"],
+        _args_schema.azure_key = AAZIntArg(
+            options=["--azure-key"],
             arg_group="Parameters",
             help="An identifier for the Azure SIM onboarding public key used for encrypted upload.",
             required=True,
@@ -68,8 +68,8 @@ class UploadEncryptedSim(AAZCommand):
                 minimum=1,
             ),
         )
-        _args_schema.encrypted_key = AAZStrArg(
-            options=["--encrypted-key"],
+        _args_schema.encryption_key = AAZStrArg(
+            options=["--encryption-key"],
             arg_group="Parameters",
             help="The transport key used for encrypting SIM credentials, encrypted using the SIM onboarding public key.",
             required=True,
@@ -321,8 +321,8 @@ class UploadEncryptedSim(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("azureKeyIdentifier", AAZIntType, ".azure_key_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("encryptedTransportKey", AAZStrType, ".encrypted_key", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("azureKeyIdentifier", AAZIntType, ".azure_key", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("encryptedTransportKey", AAZStrType, ".encryption_key", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("signedTransportKey", AAZStrType, ".signed_key", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("sims", AAZListType, ".sims", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("vendorKeyFingerprint", AAZStrType, ".vendor_key", typ_kwargs={"flags": {"required": True}})
