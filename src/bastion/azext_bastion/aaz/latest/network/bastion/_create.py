@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Azure Bastion host machine.
@@ -54,7 +55,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.location = AAZResourceLocationArg(
-            help="Resource location.",
+            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),

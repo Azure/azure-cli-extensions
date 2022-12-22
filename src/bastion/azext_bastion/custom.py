@@ -52,7 +52,7 @@ class BastionCreate(_BastionCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        subnet_id = f"/subscriptions/{args.subscription}/resourceGroups/{args.resource_group}" \
+        subnet_id = f"/subscriptions/{self.ctx.subscription_id}/resourceGroups/{args.resource_group}" \
                     f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}/subnets/AzureBastionSubnet"
         args.ip_configurations = [{
             "name": "bastion_ip_config",

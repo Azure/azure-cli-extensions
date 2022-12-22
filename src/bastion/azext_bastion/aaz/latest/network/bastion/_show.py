@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show a Azure Bastion host machine.

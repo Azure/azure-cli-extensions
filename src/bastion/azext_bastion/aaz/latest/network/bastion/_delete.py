@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion delete",
+    is_preview=True,
 )
 class Delete(AAZCommand):
     """Delete a Azure Bastion host machine.

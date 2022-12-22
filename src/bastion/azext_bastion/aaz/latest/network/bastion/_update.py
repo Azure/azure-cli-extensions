@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Azure Bastion host machine.

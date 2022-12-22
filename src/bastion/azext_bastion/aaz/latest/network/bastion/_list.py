@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all Azure Bastion host machines.
