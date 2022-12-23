@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container-mapping create",
+    "site-recovery protection-container-mapping create",
 )
 class Create(AAZCommand):
     """Create operation to create a protection container mapping.

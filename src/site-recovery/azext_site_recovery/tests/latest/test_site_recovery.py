@@ -152,26 +152,28 @@ class SiteRecoveryScenario(ScenarioTest):
             'container1_name': 'cli-test-container-A2A-1',
             'container2_name': 'cli-test-container-A2A-2',
             'mapping_name': 'cli-test-mapping-A2A-1',
-            'service_provider': '241641e6-ee7b-4ee4-8141-821fadda43fa',
         })
         self.cmd('az site-recovery fabric create --subscription {subscription} -n {fabric1_name} -g {rg} '
                  '--vault-name {vault_name} --custom-details {{azure:{{location:eastus}}}}')
         self.cmd('az site-recovery fabric create --subscription {subscription} -n {fabric2_name} -g {rg} '
                  '--vault-name {vault_name} --custom-details {{azure:{{location:eastus2}}}}')
-        policy_id = self.cmd('az site-recovery vault policy create --subscription {subscription} -g {rg} '
-                             '--vault-name {vault_name} -n {policy_name} '
-                             '--provider-specific-input {{a2-a:{{multi-vm-sync-status:Enable}}}}'
-                             '').get_output_in_json()["id"]
+        self.cmd('az site-recovery vault policy create --subscription {subscription} -g {rg} '
+                 '--vault-name {vault_name} -n {policy_name} '
+                 '--provider-specific-input {{a2-a:{{multi-vm-sync-status:Enable}}}}')
+        policy_id = self.cmd('az site-recovery vault policy show --subscription {subscription} -g {rg} '
+                             '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
         self.cmd('az site-recovery fabric protection-container create --subscription {subscription} -g {rg} '
                  '--fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2A}}]')
-        container2_id = self.cmd('az site-recovery fabric protection-container create --subscription {subscription} '
+        self.cmd('az site-recovery fabric protection-container create --subscription {subscription} -g {rg} '
+                 '--fabric-name {fabric2_name} -n {container2_name} --vault-name {vault_name} '
+                 '--provider-input [{{instance-type:A2A}}]')
+        container2_id = self.cmd('az site-recovery fabric protection-container show --subscription {subscription} '
                                  '-g {rg} --fabric-name {fabric2_name} -n {container2_name} '
-                                 '--vault-name {vault_name} '
-                                 '--provider-input [{{instance-type:A2A}}]').get_output_in_json()["id"]
+                                 '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"container2_id": container2_id})
-        self.cmd('az site-recovery fabric protection-container-mapping create --subscription {subscription} -g {rg} '
+        self.cmd('az site-recovery protection-container-mapping create --subscription {subscription} -g {rg} '
                  '--fabric-name {fabric1_name} -n {mapping_name} --protection-container {container1_name} '
                  '--vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2-a:{{agent-auto-update-status:Disabled}}}} '

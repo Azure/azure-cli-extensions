@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container-mapping remove",
+    "site-recovery protection-container-mapping remove",
 )
 class Remove(AAZCommand):
     """The operation to delete or remove a protection container mapping.
