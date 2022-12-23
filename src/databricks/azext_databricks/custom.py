@@ -7,10 +7,12 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-from azext_databricks.aaz.latest.databricks.workspace import Create as _DatabricksWorkspaceCreate
+from .aaz.latest.databricks.workspace import Create as _DatabricksWorkspaceCreate
 
 import random
 import string
+
+from azure.cli.core.aaz import has_value
 
 
 def id_generator(size=13, chars=string.ascii_lowercase + string.digits):
@@ -25,10 +27,10 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
         args = self.ctx.args
         subscription_id = self.ctx.subscription_id
         workspace_name = args.name.to_serialized_data()
-        if args.managed_resource_group:
+        if has_value(args.managed_resource_group):
             managed_resource_group = args.managed_resource_group.to_serialized_data()
 
-        if not args.managed_resource_group:
+        if not has_value(args.managed_resource_group):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group='databricks-rg-' + workspace_name + '-' + id_generator())
