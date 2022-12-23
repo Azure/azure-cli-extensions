@@ -12,22 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protection-container-mapping list",
+    "site-recovery fabric protection-container-mapping create",
 )
-class List(AAZCommand):
-    """List the protection container mappings for a protection container.
+class Create(AAZCommand):
+    """Create operation to create a protection container mapping.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotectioncontainermappings", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotectioncontainermappings/{}", "2022-08-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,6 +47,11 @@ class List(AAZCommand):
             help="Fabric name.",
             required=True,
         )
+        _args_schema.mapping_name = AAZStrArg(
+            options=["-n", "--name", "--mapping-name"],
+            help="Protection container mapping name.",
+            required=True,
+        )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
@@ -58,11 +65,83 @@ class List(AAZCommand):
             help="The name of the recovery services vault.",
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.policy_id = AAZStrArg(
+            options=["--policy-id"],
+            arg_group="Properties",
+            help="Applicable policy.",
+        )
+        _args_schema.provider_specific_input = AAZObjectArg(
+            options=["--provider-input", "--provider-specific-input"],
+            arg_group="Properties",
+            help="Provider specific input for pairing.",
+        )
+        _args_schema.target_protection_container_id = AAZStrArg(
+            options=["--target-container", "--target-protection-container-id"],
+            arg_group="Properties",
+            help="The target unique protection container name.",
+        )
+
+        provider_specific_input = cls._args_schema.provider_specific_input
+        provider_specific_input.a2_a = AAZObjectArg(
+            options=["a2-a"],
+        )
+        provider_specific_input.v_mware_cbt = AAZObjectArg(
+            options=["v-mware-cbt"],
+        )
+
+        a2_a = cls._args_schema.provider_specific_input.a2_a
+        a2_a.agent_auto_update_status = AAZStrArg(
+            options=["agent-auto-update-status"],
+            help="A value indicating whether the auto update is enabled.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        a2_a.automation_account_arm_id = AAZStrArg(
+            options=["automation-account-arm-id"],
+            help="The automation account arm id.",
+        )
+        a2_a.automation_account_authentication_type = AAZStrArg(
+            options=["automation-account-authentication-type"],
+            help="A value indicating the type authentication to use for automation Account.",
+            default="RunAsAccount",
+            enum={"RunAsAccount": "RunAsAccount", "SystemAssignedIdentity": "SystemAssignedIdentity"},
+        )
+
+        v_mware_cbt = cls._args_schema.provider_specific_input.v_mware_cbt
+        v_mware_cbt.key_vault_id = AAZStrArg(
+            options=["key-vault-id"],
+            help="The target key vault ARM Id.",
+        )
+        v_mware_cbt.key_vault_uri = AAZStrArg(
+            options=["key-vault-uri"],
+            help="The target key vault URL.",
+        )
+        v_mware_cbt.service_bus_connection_string_secret_name = AAZStrArg(
+            options=["service-bus-connection-string-secret-name"],
+            help="The secret name of the service bus connection string.",
+        )
+        v_mware_cbt.storage_account_id = AAZStrArg(
+            options=["storage-account-id"],
+            help="The storage account ARM Id.",
+            required=True,
+        )
+        v_mware_cbt.storage_account_sas_secret_name = AAZStrArg(
+            options=["storage-account-sas-secret-name"],
+            help="The secret name of the storage account.",
+        )
+        v_mware_cbt.target_location = AAZStrArg(
+            options=["target-location"],
+            help="The target location.",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationProtectionContainerMappingsListByReplicationProtectionContainers(ctx=self.ctx)()
+        yield self.ReplicationProtectionContainerMappingsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,31 +153,46 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ReplicationProtectionContainerMappingsListByReplicationProtectionContainers(AAZHttpOperation):
+    class ReplicationProtectionContainerMappingsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectionContainerMappings",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectionContainerMappings/{mappingName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -109,6 +203,10 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "fabricName", self.ctx.args.fabric_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "mappingName", self.ctx.args.mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -144,10 +242,52 @@ class List(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("policyId", AAZStrType, ".policy_id")
+                properties.set_prop("providerSpecificInput", AAZObjectType, ".provider_specific_input")
+                properties.set_prop("targetProtectionContainerId", AAZStrType, ".target_protection_container_id")
+
+            provider_specific_input = _builder.get(".properties.providerSpecificInput")
+            if provider_specific_input is not None:
+                provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".v_mware_cbt", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.discriminate_by("instanceType", "A2A")
+                provider_specific_input.discriminate_by("instanceType", "VMwareCbt")
+
+            disc_a2_a = _builder.get(".properties.providerSpecificInput{instanceType:A2A}")
+            if disc_a2_a is not None:
+                disc_a2_a.set_prop("agentAutoUpdateStatus", AAZStrType, ".a2_a.agent_auto_update_status")
+                disc_a2_a.set_prop("automationAccountArmId", AAZStrType, ".a2_a.automation_account_arm_id")
+                disc_a2_a.set_prop("automationAccountAuthenticationType", AAZStrType, ".a2_a.automation_account_authentication_type")
+
+            disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
+            if disc_v_mware_cbt is not None:
+                disc_v_mware_cbt.set_prop("keyVaultId", AAZStrType, ".v_mware_cbt.key_vault_id")
+                disc_v_mware_cbt.set_prop("keyVaultUri", AAZStrType, ".v_mware_cbt.key_vault_uri")
+                disc_v_mware_cbt.set_prop("serviceBusConnectionStringSecretName", AAZStrType, ".v_mware_cbt.service_bus_connection_string_secret_name")
+                disc_v_mware_cbt.set_prop("storageAccountId", AAZStrType, ".v_mware_cbt.storage_account_id", typ_kwargs={"flags": {"required": True}})
+                disc_v_mware_cbt.set_prop("storageAccountSasSecretName", AAZStrType, ".v_mware_cbt.storage_account_sas_secret_name")
+                disc_v_mware_cbt.set_prop("targetLocation", AAZStrType, ".v_mware_cbt.target_location", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -167,28 +307,19 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.health = AAZStrType()
             properties.health_error_details = AAZListType(
                 serialized_name="healthErrorDetails",
@@ -219,10 +350,10 @@ class List(AAZCommand):
                 serialized_name="targetProtectionContainerId",
             )
 
-            health_error_details = cls._schema_on_200.value.Element.properties.health_error_details
+            health_error_details = cls._schema_on_200.properties.health_error_details
             health_error_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.health_error_details.Element
+            _element = cls._schema_on_200.properties.health_error_details.Element
             _element.creation_time_utc = AAZStrType(
                 serialized_name="creationTimeUtc",
             )
@@ -269,10 +400,10 @@ class List(AAZCommand):
                 serialized_name="summaryMessage",
             )
 
-            inner_health_errors = cls._schema_on_200.value.Element.properties.health_error_details.Element.inner_health_errors
+            inner_health_errors = cls._schema_on_200.properties.health_error_details.Element.inner_health_errors
             inner_health_errors.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.health_error_details.Element.inner_health_errors.Element
+            _element = cls._schema_on_200.properties.health_error_details.Element.inner_health_errors.Element
             _element.creation_time_utc = AAZStrType(
                 serialized_name="creationTimeUtc",
             )
@@ -316,13 +447,13 @@ class List(AAZCommand):
                 serialized_name="summaryMessage",
             )
 
-            provider_specific_details = cls._schema_on_200.value.Element.properties.provider_specific_details
+            provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
                 serialized_name="instanceType",
                 flags={"required": True},
             )
 
-            disc_a2_a = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
+            disc_a2_a = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
             disc_a2_a.agent_auto_update_status = AAZStrType(
                 serialized_name="agentAutoUpdateStatus",
             )
@@ -339,13 +470,13 @@ class List(AAZCommand):
                 serialized_name="scheduleName",
             )
 
-            disc_in_mage_rcm = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
+            disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.enable_agent_auto_upgrade = AAZStrType(
                 serialized_name="enableAgentAutoUpgrade",
                 flags={"read_only": True},
             )
 
-            disc_v_mware_cbt = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
+            disc_v_mware_cbt = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
             disc_v_mware_cbt.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
                 flags={"read_only": True},
@@ -375,14 +506,14 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            role_size_to_nic_count_map = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").role_size_to_nic_count_map
+            role_size_to_nic_count_map = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt").role_size_to_nic_count_map
             role_size_to_nic_count_map.Element = AAZIntType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-__all__ = ["List"]
+__all__ = ["Create"]
