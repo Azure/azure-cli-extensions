@@ -351,6 +351,10 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if entry_point is not None:
         job_params["entryPoint"] = entry_point
 
+    # Convert "count" to an integer
+    if "count" in job_params.keys():
+        job_params["count"] = int(job_params["count"])
+
     # Make sure QIR jobs have an "arguments" parameter, even if it's empty
     if job_type == QIR_JOB:
         if "arguments" not in job_params:
