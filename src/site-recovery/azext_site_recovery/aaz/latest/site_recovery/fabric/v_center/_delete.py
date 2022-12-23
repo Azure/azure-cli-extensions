@@ -52,8 +52,8 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+        _args_schema.vault_name = AAZStrArg(
+            options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
             id_part="name",
@@ -133,7 +133,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceName", self.ctx.args.resource_name,
+                    "resourceName", self.ctx.args.vault_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

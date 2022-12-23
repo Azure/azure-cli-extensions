@@ -30,76 +30,76 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az backup vault create -n {vault_name} -g {rg} -l eastus2euap')
 
         # vault top-level commands
-        self.cmd('az site-recovery vault list-appliance -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-migration-item -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-network -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-network-mapping -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-protected-item -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-protection-container -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-protection-container-mapping -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-recovery-services-provider -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-storage-classification -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-storage-classification-mapping -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault list-v-center -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault show-supported-operating-system -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault list-appliance -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-migration-item -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-network -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-network-mapping -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-protected-item -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-protection-container -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-protection-container-mapping -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-recovery-services-provider -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-storage-classification -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-storage-classification-mapping -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault list-v-center -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault show-supported-operating-system -g {rg} --vault-name {vault_name}')
 
         # alert setting
         self.cmd('az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} '
-                 '--resource-name {vault_name} --custom-email-addresses email@address.com --locale en_US '
+                 '--vault-name {vault_name} --custom-email-addresses email@address.com --locale en_US '
                  '--send-to-owners Send')
         self.cmd('az site-recovery vault alert-setting show -n defaultAlertSetting -g {rg} '
-                 '--resource-name {vault_name}',
+                 '--vault-name {vault_name}',
                  checks=[
                      self.check('name', 'defaultAlertSetting'),
                      self.check('properties.locale', 'en_US'),
                      self.check('properties.customEmailAddresses', ['email@address.com']),
                      self.check('properties.sendToOwners', 'Send')])
         self.cmd('az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} '
-                 '--resource-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR '
+                 '--vault-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR '
                  '--send-to-owners DoNotSend',
                  checks=[
                      self.check('properties.locale', 'fr_FR'),
                      self.check('properties.customEmailAddresses', ['email2@address.com']),
                      self.check('properties.sendToOwners', 'DoNotSend')])
-        self.cmd('az site-recovery vault alert-setting list -g {rg} --resource-name {vault_name}',
+        self.cmd('az site-recovery vault alert-setting list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
 
         # event
-        events = self.cmd('az site-recovery vault event list -g {rg} --resource-name {vault_name}').\
+        events = self.cmd('az site-recovery vault event list -g {rg} --vault-name {vault_name}').\
             get_output_in_json()
         if events is not None and len(events) > 0:
-            self.cmd('az site-recovery vault event show -g {rg} --resource-name {vault_name} -n '+events[0]["name"])
+            self.cmd('az site-recovery vault event show -g {rg} --vault-name {vault_name} -n '+events[0]["name"])
 
         # health
-        self.cmd('az site-recovery vault health refresh-default -g {rg} --resource-name {vault_name}')
-        self.cmd('az site-recovery vault health show -g {rg} --resource-name {vault_name}')
+        self.cmd('az site-recovery vault health refresh-default -g {rg} --vault-name {vault_name}')
+        self.cmd('az site-recovery vault health show -g {rg} --vault-name {vault_name}')
 
         # job
-        jobs = self.cmd('az site-recovery vault job list -g {rg} --resource-name {vault_name}').get_output_in_json()
+        jobs = self.cmd('az site-recovery vault job list -g {rg} --vault-name {vault_name}').get_output_in_json()
         if jobs is not None and len(jobs) > 0:
-            self.cmd('az site-recovery vault job show -g {rg} --resource-name {vault_name} --job-name '+jobs[0]["name"])
+            self.cmd('az site-recovery vault job show -g {rg} --vault-name {vault_name} --job-name '+jobs[0]["name"])
             # TODO need to test with actual jobs
-            # self.cmd('az site-recovery vault job restart -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
-            # self.cmd('az site-recovery vault job cancel -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
-            # self.cmd('az site-recovery vault job resume -g {rg} --resource-name {vault_name} --job-name ' + jobs[0]["name"])
-        self.cmd('az site-recovery vault job export -g {rg} --resource-name {vault_name}')
+            # self.cmd('az site-recovery vault job restart -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
+            # self.cmd('az site-recovery vault job cancel -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
+            # self.cmd('az site-recovery vault job resume -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
+        self.cmd('az site-recovery vault job export -g {rg} --vault-name {vault_name}')
 
         # policy
         # in-mage-rcm
-        self.cmd('az site-recovery vault policy create -g {rg} --resource-name {vault_name} -n {policy_name_rcm} '
+        self.cmd('az site-recovery vault policy create -g {rg} --vault-name {vault_name} -n {policy_name_rcm} '
                  '--provider-specific-input {{in-mage-rcm:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
                  'enable-multi-vm-sync:true,recovery-point-history-in-minutes:2880}}}}')
-        self.cmd('az site-recovery vault policy show -g {rg} --resource-name {vault_name} -n {policy_name_rcm}',
+        self.cmd('az site-recovery vault policy show -g {rg} --vault-name {vault_name} -n {policy_name_rcm}',
                  checks=[self.check('properties.providerSpecificDetails.instanceType', 'InMageRcm'),
                          self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
                          self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
                          self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 2880)
                          ])
-        self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
+        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery vault policy update --debug -g {rg} --resource-name {vault_name} '
+        self.cmd('az site-recovery vault policy update --debug -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm} '
                  '--provider-specific-input {{in-mage-rcm:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
@@ -108,37 +108,82 @@ class SiteRecoveryScenario(ScenarioTest):
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
                          self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
                          self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 1440)])
-        self.cmd('az site-recovery vault policy delete -g {rg} --resource-name {vault_name} '
+        self.cmd('az site-recovery vault policy delete -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm} -y')
-        self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
+        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
         # in-mage-rcm-failback
-        self.cmd('az site-recovery vault policy create -g {rg} --resource-name {vault_name} '
+        self.cmd('az site-recovery vault policy create -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback} '
                  '--provider-specific-input {{in-mage-rcm-failback:{{'
                  'app-consistent-frequency-in-minutes:60,crash-consistent-frequency-in-minutes:5}}}}')
-        self.cmd('az site-recovery vault policy show -g {rg} --resource-name {vault_name} '
+        self.cmd('az site-recovery vault policy show -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback}',
                  checks=[self.check('properties.providerSpecificDetails.instanceType', 'InMageRcmFailback'),
                          self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 60),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5)])
-        self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
+        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery vault policy update -g {rg} --resource-name {vault_name} '
+        self.cmd('az site-recovery vault policy update -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback} '
                  '--provider-specific-input {{in-mage-rcm-failback:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:10}}}}',
                  checks=[self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 10)])
-        self.cmd('az site-recovery vault policy delete -g {rg} --resource-name {vault_name} '
+        self.cmd('az site-recovery vault policy delete -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback} -y')
-        self.cmd('az site-recovery vault policy list -g {rg} --resource-name {vault_name}',
+        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
         # protection-intent
         # recovery-plan
         # vault-setting
+
+    # @record_only()
+    def test_siterecovery_A2A_scenarios(self):
+        self.kwargs.update({
+            'rg': 'CliTeraformVaultRG',
+            'subscription': '7c943c1b-5122-4097-90c8-861411bdd574',
+            'vault_name': 'CliTerraformVault',
+            'fabric1_name': 'cli-test-fabric-A2A-1',
+            'fabric2_name': 'cli-test-fabric-A2A-2',
+            'policy_name': 'cli-test-vault-policy-A2A-1',
+            'container1_name': 'cli-test-container-A2A-1',
+            'container2_name': 'cli-test-container-A2A-2',
+            'mapping_name': 'cli-test-mapping-A2A-1',
+            'service_provider': '241641e6-ee7b-4ee4-8141-821fadda43fa',
+        })
+        self.cmd('az site-recovery fabric create --subscription {subscription} -n {fabric1_name} -g {rg} '
+                 '--vault-name {vault_name} --custom-details {{azure:{{location:eastus}}}}')
+        self.cmd('az site-recovery fabric create --subscription {subscription} -n {fabric2_name} -g {rg} '
+                 '--vault-name {vault_name} --custom-details {{azure:{{location:eastus2}}}}')
+        policy_id = self.cmd('az site-recovery vault policy create --subscription {subscription} -g {rg} '
+                             '--vault-name {vault_name} -n {policy_name} '
+                             '--provider-specific-input {{a2-a:{{multi-vm-sync-status:Enable}}}}'
+                             '').get_output_in_json()["id"]
+        self.kwargs.update({"policy_id": policy_id})
+        self.cmd('az site-recovery fabric protection-container create --subscription {subscription} -g {rg} '
+                 '--fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name} '
+                 '--provider-input [{{instance-type:A2A}}]')
+        container2_id = self.cmd('az site-recovery fabric protection-container create --subscription {subscription} '
+                                 '-g {rg} --fabric-name {fabric2_name} -n {container2_name} '
+                                 '--vault-name {vault_name} '
+                                 '--provider-input [{{instance-type:A2A}}]').get_output_in_json()["id"]
+        self.kwargs.update({"container2_id": container2_id})
+        self.cmd('az site-recovery fabric protection-container-mapping create --subscription {subscription} -g {rg} '
+                 '--fabric-name {fabric1_name} -n {mapping_name} --protection-container {container1_name} '
+                 '--vault-name {vault_name} '
+                 '--policy-id {policy_id} --provider-input {{a2-a:{{agent-auto-update-status:Disabled}}}} '
+                 '--target-container {container2_id}')
+
+        # refresh
+        # self.cmd('az site-recovery fabric recovery-services-provider refresh --subscription {subscription} -g {rg} '
+        #          '--fabric-name {fabric_name} --provider-name {service_provider} --vault-name {vault_name} ')
+
+
+
+
 
     # @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.siterecovery.fabric.')
     # def test_siterecovery_fabric_scenarios(self):
@@ -150,11 +195,11 @@ class SiteRecoveryScenario(ScenarioTest):
     #     self.cmd('az backup vault create -n {vault_name} -g {rg} -l eastus2euap')
     #
     #     # fabric
-    #     # self.cmd('az site-recovery fabric create -n {fabric_name} -g {rg} --resource-name {vault_name} '
+    #     # self.cmd('az site-recovery fabric create -n {fabric_name} -g {rg} --vault-name {vault_name} '
     #     #          '--custom-details {{in-mage-rcm:')
-    #     self.cmd('az site-recovery fabric list -g {rg} --resource-name {vault_name')
+    #     self.cmd('az site-recovery fabric list -g {rg} --vault-name {vault_name')
     #
     #
     #     # protection intent
-    #     # self.cmd('az site-recovery vault protection-intent create -g {rg} --resource-name {vault_name} '
+    #     # self.cmd('az site-recovery vault protection-intent create -g {rg} --vault-name {vault_name} '
     #     #          '-n {intent_name} --provider-specific-details {{a2-a:{{fabric-object-id')
