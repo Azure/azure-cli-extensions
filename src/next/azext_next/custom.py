@@ -190,15 +190,26 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
         if param in store_true_params:
             args.append(param)
         else:
-            print("Please input " + Fore.LIGHTBLUE_EX + param + Fore.RESET + ":", end='')
-            value = input()
+            print("Please input " + Fore.LIGHTBLUE_EX + param + Fore.RESET + ": ", end='')
+            value_str = input()
+            if value_str:
+                if value_str.startswith('"') and value_str.endswith('"'):
+                    value_array = [value_str.strip('"')]
+                elif value_str.startswith("'") and value_str.endswith("'"):
+                    value_array = [value_str.strip("'")]
+                else:
+                    value_array = value_str.split()
+            else:
+                value_array = None
             if param == '<positional argument>':
-                if value:
-                    args.append(value)
+                if value_array:
+                    for value in value_array:
+                        args.append(value)
             else:
                 args.append(param)
-                if value:
-                    args.append(value)
+                if value_array:
+                    for value in value_array:
+                        args.append(value)
                 else:
                     args.pop()
 
@@ -229,6 +240,8 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
         except Exception:
             return -1
         except SystemExit:
+            if '-h' in args:
+                return 0
             return -1
 
     if 'status' == output_format and exit_code == 0:
@@ -289,7 +302,7 @@ def _execute_recommend_commands(cmd, rec):
     if "arguments" in rec:
         nx_param = rec["arguments"]
     print("\nRunning: " + _get_command_item_sample(rec))
-    print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
+    print_styled_text([(Style.SECONDARY, "Press Enter to skip unnecessary parameters")])
     execute_result = _execute_nx_cmd(cmd, rec["command"], nx_param, catch_exception=True)
     is_help_printed = False
     while execute_result != 0:
@@ -320,7 +333,7 @@ def _execute_recommend_scenarios(cmd, rec):
                    + "(Enter is to Run)" + Fore.RESET + ": "
         run_option = get_int_option(step_msg, 1, 3, 1)
         if run_option == 1:
-            print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
+            print_styled_text([(Style.SECONDARY, "Press Enter to skip unnecessary parameters")])
             execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
             is_help_printed = False
             while execute_result != 0:
