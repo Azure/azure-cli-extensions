@@ -320,7 +320,7 @@ helps['monitor app-insights component continues-export create'] = """
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --record-types Requests Event Exceptions Metrics PageViews \\
             --dest-account account --dest-container container --dest-sub-id sub-id \\
-            --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
+            --dest-sas "se=2020-10-27&sp=w&sv=2018-11-09&sr=c"
 """
 
 helps['monitor app-insights component continues-export update'] = """
@@ -339,7 +339,7 @@ helps['monitor app-insights component continues-export update'] = """
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid \\
             --dest-account account --dest-container container --dest-sub-id sub-id \\
-            --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
+            --dest-sas "se=2020-10-27&sp=w&sv=2018-11-09&sr=c"
 """
 
 helps['monitor app-insights component continues-export show'] = """
