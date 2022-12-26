@@ -3,6 +3,11 @@
 Release History
 ===============
 
+
+0.1.10
+++++++
+* Bug Fix: Wait for SystemAssigned Identity PATCH to complete before enabling Guest management on VM.
+
 0.1.9
 ++++++
 * Update API Version from 2020-10-01-preview to 2022-01-10-preview.

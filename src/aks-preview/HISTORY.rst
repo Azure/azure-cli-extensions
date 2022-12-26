@@ -12,6 +12,35 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.121
++++++++
+* Remove defender related code after GA, reuse the implementation in azure-cli/acs.
+* Remove check_raw_parameters in update code path, reuse the implementation in azure-cli/acs.
+* Remove oidc issuer related code after GA, reuse the implementation in azure-cli/acs.
+* Fix monitoring addon option `--enable-syslog` for `aks addon enable`.
+* Remove deprecated option `--node-zones`, use `--zones` instead.
+* Remove gpu instance profile related code after GA, reuse the implementation in azure-cli/acs.
+* Remove http proxy config related code after GA, reuse the implementation in azure-cli/acs.
+
+0.5.120
++++++++
+
+* Remove file, blob csi driver and snapshot controller related CSI driver code after GA, reuse the implementation in azure-cli/acs.
+* Remove Azure Dedicated Host related code after GA, reuse the implementation in azure-cli/acs.
+* Remove KMS related code after GA, reuse the implementation in azure-cli/acs.
+
+0.5.119
++++++++
+
+* Add `--custom-ca-trust-certificates` option for custom CA in aks create and aks update
+* Update the minimum required cli core version to `2.43.0`.
+
+0.5.118
++++++++
+
+* Support enabling syslog collection in monitoring on AKS clusters with msi auth
+* Add `--enable-syslog` option in aks create and aks enable-addons
+
 0.5.117
 +++++++
 

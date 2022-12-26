@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.15
+++++++
+* Deprecate route table v2 parameters.
+
 0.2.14
 ++++++
 * `az network vhub create`: Add new parameter `--asn`.

@@ -12,6 +12,7 @@ def load_arguments(self, _):
     _load_sms_arguments(self)
     _load_phonenumber_arguments(self)
     _load_chat_arguments(self)
+    _load_rooms_arguments(self)
 
 
 def _load_identity_arguments(self):
@@ -167,3 +168,77 @@ def _load_chat_message_management(self):
                    type=str, help='Thread id')
         c.argument('message_id', options_list=['--message-id'],
                    type=str, help='Message id')
+
+
+def _load_rooms_arguments(self):
+    with self.argument_context('communication rooms get') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+
+    with self.argument_context('communication rooms create') as c:
+        c.argument('valid_from',
+                   help='The timestamp from when the room is open for joining, '
+                   'in in ISO8601 format, ex: 2022-07-14T10:21. Optional.')
+        c.argument('valid_until',
+                   help='The timestamp from when the room can no longer be joined,'
+                   ' in ISO8601 format, ex: 2022-07-14T10:21. Optional.')
+        c.argument('join_policy',
+                   help='The join policy of the room. '
+                   'Can be InviteOnly or CommunicationServiceUsers. Optional.')
+        c.argument('presenters', options_list=['--presenter-participants'],
+                   nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
+        c.argument('attendees', options_list=['--attendee-participants'],
+                   nargs='+', help='Collection of identities to be invited to the room as attendee. Optional.')
+        c.argument('consumers', options_list=['--consumer-participants'],
+                   nargs='+', help='Collection of identities to be invited to the room as consumer. Optional.')
+
+    with self.argument_context('communication rooms delete') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+
+    with self.argument_context('communication rooms update') as c:
+        c.argument('room_id', options_list=['--room'], type=str, help='Room Id')
+        c.argument('valid_from',
+                   help='The timestamp from when the room is open for joining, in in ISO8601 format, '
+                   'ex: 2022-07-14T10:21. Should be used together with --valid-until. Optional.')
+        c.argument('valid_until',
+                   help='The timestamp from when the room can no longer be joined, in ISO8601 format, '
+                   'ex: 2022-07-14T10:21. Should be used together with --valid-from. Optional.')
+        c.argument('join_policy',
+                   help='The join policy of the room. Can be InviteOnly or CommunicationServiceUsers. Optional.')
+        c.argument('presenters', options_list=['--presenter-participants'],
+                   nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
+        c.argument('attendees', options_list=['--attendee-participants'],
+                   nargs='+', help='Collection of identities to be invited to the room as attendee. Optional.')
+        c.argument('consumers', options_list=['--consumer-participants'],
+                   nargs='+', help='Collection of identities to be invited to the room as consumer. Optional.')
+
+    with self.argument_context('communication rooms participant get') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+
+    with self.argument_context('communication rooms participant add') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+        c.argument('presenters', options_list=['--presenter-participants'],
+                   nargs='+', help='Collection of identities to be added to the room as presenter. Optional.')
+        c.argument('attendees', options_list=['--attendee-participants'],
+                   nargs='+', help='Collection of identities to be added to the room as attendee. Optional.')
+        c.argument('consumers', options_list=['--consumer-participants'],
+                   nargs='+', help='Collection of identities to be added to the room as consumer. Optional.')
+
+    with self.argument_context('communication rooms participant update') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+        c.argument('presenters', options_list=['--presenter-participants'],
+                   nargs='+', help='Collection of identities to be added to the room as presenter. Optional.')
+        c.argument('attendees', options_list=['--attendee-participants'],
+                   nargs='+', help='Collection of identities to be added to the room as attendee. Optional.')
+        c.argument('consumers', options_list=['--consumer-participants'],
+                   nargs='+', help='Collection of identities to be added to the room as consumer. Optional.')
+
+    with self.argument_context('communication rooms participant remove') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+        c.argument('participants', options_list=['--participants'],
+                   nargs='+', help='Collection of identities that will be removed from the room.')
