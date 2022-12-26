@@ -52,7 +52,6 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
-        
         outbound_connectivity_check = "Starting"
         # Executing the Diagnoser job and fetching diagnoser logs obtained
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
@@ -103,13 +102,13 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Container_Check_Failed_Fault_Type, summary="Error occured while performing the diagnoser container checks")
 
     return consts.Diagnostic_Check_Incomplete
-		
+
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
     job_name = "connect-precheck-diagnoser-job"
     # yaml_file_path = os.path.join(absolute_path, "connect-precheck-diagnoser-file.yaml")
     # Setting the log output as Empty
     diagnoser_container_log = ""
-	
+
     # cmd_delete_job = [kubectl_client_location, "delete", "-f", ""]
     # if kube_config:
     #     cmd_delete_job.extend(["--kubeconfig", kube_config])
@@ -121,7 +120,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_delete.extend(["--context", kube_context])
-	
+
     # print("deleteing connect-precheck helm release if present")
     # To handle the user keyboard Interrupt
     try:
@@ -183,14 +182,13 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
                     is_job_complete = True
                     w.stop()
             except Exception as e:
-               
                 # print("exception")
                 # print(e)
                 continue
             else:
                 # print("passed")
                 continue
-				
+
         if (is_job_scheduled is False):
             logger.warning("Unable to schedule the connect precheck diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
@@ -214,16 +212,16 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
                     print(diagnoser_container_log)
         # Clearing all the resources after fetching the diagnoser container logs
         # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-		
+
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
         return
-		
+
     return diagnoser_container_log
-		
+
 def check_cluster_DNS(dns_check_log):
 
     try:
@@ -249,7 +247,6 @@ def check_cluster_DNS(dns_check_log):
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
 
     return consts.Diagnostic_Check_Incomplete
-
 
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
 
@@ -316,7 +313,6 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
                                 summary='Unable to pull helm chart from the registry')
         raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
-
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
     # print("export chart ")
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
@@ -330,7 +326,6 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
                                 summary='Unable to export helm chart from the registry')
         raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
-
 
 def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert,
                          kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
