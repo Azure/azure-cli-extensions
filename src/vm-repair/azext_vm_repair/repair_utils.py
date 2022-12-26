@@ -200,6 +200,20 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
+def _check_existing_rg(rg_name):
+    # Check for existing dup name
+    try:
+        exists_rg_command = 'az group exists -n {resource_group_name} -o json'.format(resource_group_name=rg_name)
+        logger.info('Checking for existing resource groups with identical name within subscription...')
+        group_exists = loads(_call_az_command(exists_rg_command))
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        raise Exception('Unexpected error occured while fetching existing resource groups.')
+
+    logger.info('Resource group exists is \'%s\'', group_exists)
+    return group_exists
+
+
 def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
     """
     Checks if the VM is running and prompts to auto-start it.
