@@ -49,7 +49,7 @@ def load_arguments(self, _):
         c.argument('enable_snapshot_debugger', options_list=['--enable-snapshot-debugger', '--enable-debugger'], help='Enable snapshot debugger when an exception is thrown. Currently it is only supported for .NET/.NET Core Web Apps.', arg_type=get_three_state_flag())
 
     with self.argument_context('monitor app-insights component connect-function') as c:
-        c.argument('app_service', options_list=['--function'], help="Name or resource id of the Azure function.")
+        c.argument('app_service', options_list=['--function'], help="Name or resource id of the Azure function.", id_part=None)
 
     with self.argument_context('monitor app-insights component billing') as c:
         c.argument('stop_sending_notification_when_hitting_cap', options_list=['-s', '--stop'], arg_type=get_three_state_flag(),
