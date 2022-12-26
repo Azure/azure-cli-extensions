@@ -328,8 +328,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert,
-kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
+def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
     # print("installing release")
     # print(chart_path)
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "connect-precheck-diagnoser", chart_path, "--debug"]
