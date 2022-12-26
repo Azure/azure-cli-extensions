@@ -1059,7 +1059,9 @@ def safe_get(model, *keys, default=None):
     if not model:
         return default
     for k in keys[:-1]:
-        model = model.get(k, {})
+        model = model.get(k)
+        if model is None:
+            return default
     value = model.get(keys[-1], default)
     return default if not value else value
 

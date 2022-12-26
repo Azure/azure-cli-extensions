@@ -2093,13 +2093,10 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    registries_def = None
     registry = None
 
-    if "registries" not in containerapp_def["properties"]["configuration"]:
-        containerapp_def["properties"]["configuration"]["registries"] = []
-
-    registries_def = containerapp_def["properties"]["configuration"]["registries"]
+    registries_def = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
+    containerapp_def["properties"]["configuration"]["registries"] = registries_def
 
     if (not username or not password) and not identity:
         # If registry is Azure Container Registry, we can try inferring credentials
