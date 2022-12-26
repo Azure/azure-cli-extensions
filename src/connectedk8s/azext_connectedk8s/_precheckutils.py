@@ -3,21 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
-from argparse import Namespace
-from pydoc import cli
-from kubernetes import client, config, watch, utils
-from logging import exception
-import yaml
-import json
-import datetime
-from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
-import shutil
-from knack.log import get_logger
-from azure.cli.core import telemetry
-import azext_connectedk8s._constants as consts
-logger = get_logger(__name__)
-# pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 import os
 import shutil
 import subprocess
@@ -43,11 +28,24 @@ import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
-
+from argparse import Namespace
+from pydoc import cli
+from kubernetes import client, config, watch, utils
+from logging import exception
+import yaml
+import json
+import datetime
+from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
+import shutil
+from knack.log import get_logger
+from azure.cli.core import telemetry
+import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
-
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 # pylint: disable
+logger = get_logger(__name__)
+
+
 def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
     try:
         # Setting DNS and Outbound Check as working
@@ -75,7 +73,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
             dns_check = check_cluster_DNS(dns_check_log)
             # print("after dns")
             # print(diagnoser_container_log_list[-1])
-            outbound_connectivity_check= check_cluster_outbound_connectivity(diagnoser_container_log_list[-1])
+            outbound_connectivity_check = check_cluster_outbound_connectivity(diagnoser_container_log_list[-1])
         else:
             # print("if test cannot start")
             return consts.Diagnostic_Check_Incomplete
@@ -87,9 +85,9 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
         # If any of the check remain Incomplete than we will return Incomplete
         elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
             # print("if 2")
-            if dns_check == consts.Diagnostic_Check_Incomplete :
+            if dns_check == consts.Diagnostic_Check_Incomplete:
                 print("DNS DIDNT WORK")
-            if outbound_connectivity_check == consts.Diagnostic_Check_Incomplete :
+            if outbound_connectivity_check == consts.Diagnostic_Check_Incomplete:
                 print("DNS DIDNT WORK")
             return consts.Diagnostic_Check_Incomplete
         else:
@@ -102,6 +100,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
         telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Container_Check_Failed_Fault_Type, summary="Error occured while performing the diagnoser container checks")
 
     return consts.Diagnostic_Check_Incomplete
+
 
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
     job_name = "connect-precheck-diagnoser-job"
@@ -126,7 +125,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
     try:
         # Executing the diagnoser_job.yaml
         config.load_kube_config(kube_config, kube_context)
-        k8s_client = client.ApiClient()
         # Attempting deletion of diagnoser resources to handle the scenario if any stale resources are present
         response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
         output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
@@ -154,8 +152,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
         try:
             chart_path = get_chart_path(consts.Connect_Precheck_Job_Registry_Path, kube_config, kube_context, helm_client_location)
 
-            helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config,
-                               kube_context, helm_client_location)
+            helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
         except Exception as e:
             # print("helm not installed and job not applied")
@@ -223,7 +220,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
     return diagnoser_container_log
 
 def check_cluster_DNS(dns_check_log):
-
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
             # print("dns prob")
@@ -248,8 +244,8 @@ def check_cluster_DNS(dns_check_log):
 
     return consts.Diagnostic_Check_Incomplete
 
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
 
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
     global diagnoser_output
     try:
         outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
@@ -275,6 +271,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
         telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
 
     return consts.Diagnostic_Check_Incomplete
+
 
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
     # print("getting chart path")
@@ -313,6 +310,7 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
                                 summary='Unable to pull helm chart from the registry')
         raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
+
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
     # print("export chart ")
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
@@ -326,6 +324,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
                                 summary='Unable to export helm chart from the registry')
         raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+
 
 def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert,
                          kube_config, kube_context, helm_client_location, onboarding_timeout="200"):

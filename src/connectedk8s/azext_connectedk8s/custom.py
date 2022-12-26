@@ -141,10 +141,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     try:
         absolute_path = os.path.abspath(os.path.dirname(__file__))
         kubectl_client_location = install_kubectl_client()
-        helm_client_location=install_helm_client()
+        helm_client_location = install_helm_client()
         release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
         diagnostic_checks = "Failed"
-		
         batchv1_api_instance = kube_client.BatchV1Api()
         corev1_api_instance = kube_client.CoreV1Api()
         # Performing diagnoser container check
@@ -155,7 +154,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         # for checks in diagnostic_checks:
         if diagnostic_checks != consts.Diagnostic_Check_Passed:
                 all_checks_passed = False
-        
 
     # Handling the user manual interrupt
     except KeyboardInterrupt:
@@ -163,7 +161,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         #     logger.warning("An exception has occured")
         raise ManualInterrupt('Process terminated .')
 
-    if(all_checks_passed == False):
+    if all_checks_passed == False:
         logger.warning("connect prechecks failed (dns or outbound)")
         return
 
