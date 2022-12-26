@@ -219,11 +219,11 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
+            raise ValidationError(error_message + summary + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise ValidationError(error_message + "\nError: " + str(ex))
+            raise ValidationError(error_message + summary + "\nError: " + str(ex))
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
 
