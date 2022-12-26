@@ -1018,7 +1018,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
 
     if helm_values.get('global').get('isLeastPrivilegesMode') is True:
-        if auto_upgrade is True:
+        if auto_upgrade is not None:
             telemetry.set_exception("Autoupdates are not supported for clusters onboarded with least privileges", fault_type=consts.AutoUpdate_Enable_Attempted_In_Least_Privileges, summary=" Autoupdates are currently not supported for clusters onboarded with least privileges")
             raise InvalidArgumentValueError("Your cluster is onboarded with least privileges. Autoupdates are not supported for clusters onboarded with least privileges")
 
