@@ -48,6 +48,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
+import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
@@ -136,6 +137,35 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
+
+    try:
+        absolute_path = os.path.abspath(os.path.dirname(__file__))
+        kubectl_client_location = install_kubectl_client()
+        helm_client_location=install_helm_client()
+        release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+        diagnostic_checks = "Failed"
+		
+        batchv1_api_instance = kube_client.BatchV1Api()
+        corev1_api_instance = kube_client.CoreV1Api()
+        # Performing diagnoser container check
+        diagnostic_checks = precheckutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
+        # print(diagnostic_checks)
+        # If all the checks passed then display no error found
+        all_checks_passed = True
+        # for checks in diagnostic_checks:
+        if diagnostic_checks != consts.Diagnostic_Check_Passed:
+                all_checks_passed = False
+        
+
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        # except Exception as e: # pylint: disable=broad-except
+        #     logger.warning("An exception has occured")
+        raise ManualInterrupt('Process terminated .')
+
+    if(all_checks_passed == False):
+        logger.warning("connect prechecks failed (dns or outbound)")
+        return
 
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:

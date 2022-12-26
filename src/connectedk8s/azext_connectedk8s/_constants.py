@@ -176,6 +176,8 @@ DNS_Check = "dns_check.txt"
 K8s_Cluster_Info = "k8s_cluster_info.txt"
 Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
+Connect_Precheck_Job_Registry_Path = "connectprecheck.azurecr.io/helm/connect-precheck-diagnoser:0.1.0"
+Connect_Precheck_Job_Version= "0.1.0"
 
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
