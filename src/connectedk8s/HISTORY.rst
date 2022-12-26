@@ -5,7 +5,7 @@ Release History
 1.3.7
 ++++++
 
-* Removing detection of infrasturcture and distribution in connectedk8s connect
+* Added DNS and outbound connectivity prechecks in connect command
 
 1.3.6
 ++++++
