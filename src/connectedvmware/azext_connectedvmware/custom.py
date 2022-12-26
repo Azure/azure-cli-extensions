@@ -95,8 +95,6 @@ from ._client_factory import (
     cf_virtual_machine,
 )
 
-# endregion
-
 # region VCenters
 
 
@@ -1611,7 +1609,7 @@ def enable_guest_agent(
     vm_client = cf_virtual_machine(cmd.cli_ctx)
 
     if is_system_identity_enabled(vm_client, resource_group_name, vm_name) is False:
-        enable_system_identity(vm_client, resource_group_name, vm_name, no_wait)
+        enable_system_identity(vm_client, resource_group_name, vm_name, False).result()
 
     vm_creds = GuestCredential(username=username, password=password)
 

@@ -663,6 +663,14 @@ def validate_enable_custom_ca_trust(namespace):
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
 
 
+def validate_custom_ca_trust_certificates(namespace):
+    """Validates Custom CA Trust Certificates can only be used on Linux."""
+    if namespace.custom_ca_trust_certificates is not None and namespace.custom_ca_trust_certificates != "":
+        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
+            raise ArgumentUsageError(
+                '--custom-ca-trust-certificates can only be set for linux nodepools')
+
+
 def validate_disable_windows_outbound_nat(namespace):
     """Validates disable_windows_outbound_nat can only be used on Windows."""
     if namespace.disable_windows_outbound_nat:
