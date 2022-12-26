@@ -33,6 +33,7 @@ Azure_Arc_Release_Namespace_Not_Found_Least_Privileges_Fault_Type = "least-privi
 Service_Account_Name_Not_Found_In_Config_Settings_Least_Privileges_Fault_Type = "least-privilege-service-account-name-not-found-in-config-settings"
 Config_Settings_Load_Failed_Least_Privileges_Fault_Type = "least-privilege-config-settings-load-failed"
 AutoUpdate_Enable_Attempted_In_Least_Privileges = "least-privilege-auto-update-enable-attempted"
+Azure_Agent_Service_Account_Not_Found_Least_Privileges_Fault_Type = "least-privilege-platform-service-account-not-found"
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
 Pls_Location_Mismatch_Fault_Type = 'pls-location-mismatch-error'

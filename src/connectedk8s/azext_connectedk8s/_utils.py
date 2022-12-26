@@ -371,6 +371,13 @@ def get_serviceaccount_name_from_configsettings(config_settings):
 
     if least_privilege_settings.get('service-account-name') is not None:
         serviceaccount_name = least_privilege_settings['service-account-name']
+        # check if the inputted service account exists in azure-arc ns
+        try:
+            api_instance = kube_client.CoreV1Api()
+            api_instance.read_namespaced_service_account(serviceaccount_name, "azure-arc")
+        except Exception as ex:
+            if ex.status == 404:
+                kubernetes_exception_handler(ex, fault_type=consts.Azure_Agent_Service_Account_Not_Found_Least_Privileges_Fault_Type, summary="Service account provided in config settings is not found in azure-arc namespace on the cluster.")
         return serviceaccount_name
     else:
         telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type=consts.Service_Account_Name_Not_Found_In_Config_Settings_Least_Privileges_Fault_Type, summary="Config settings input does not contain service-account-name")
