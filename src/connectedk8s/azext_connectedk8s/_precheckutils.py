@@ -352,7 +352,7 @@ kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
     # if not no_wait:
     #     # Change --timeout format for helm client to understand
     #     onboarding_timeout = onboarding_timeout + "s"
-    #     cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)]) 
+    #     cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
 
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
@@ -363,4 +363,3 @@ kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
-        
