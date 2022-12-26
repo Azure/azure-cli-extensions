@@ -680,6 +680,19 @@ class TestAppCreate(BasicTest):
         self.assertEqual(1000, resource.properties.ingress_settings.session_cookie_max_age)
         self.assertEqual('Default', resource.properties.ingress_settings.backend_protocol)
 
+    def test_app_with_client_auth(self):
+        self._execute('rg', 'asc', 'app', instance_count=1, client_auth_certs=[])
+        resource = self.put_app_resource
+        self.assertIsNotNone(resource.properties.ingress_settings.client_auth.certificates)
+        self.assertEqual(0, len(resource.properties.ingress_settings.client_auth.certificates))
+        self._execute('rg', 'asc', 'app', instance_count=1, client_auth_certs=['cert1', 'cert2'])
+        resource = self.patch_app_resource
+        self.assertIsNotNone(resource.properties.ingress_settings.client_auth.certificates)
+        self.assertEqual(2, len(resource.properties.ingress_settings.client_auth.certificates))
+        self._execute('rg', 'asc', 'app', instance_count=1)
+        resource = self.patch_app_resource
+        self.assertIsNone(resource.properties.ingress_settings)
+
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
