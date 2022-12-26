@@ -219,6 +219,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
 
     return diagnoser_container_log
 
+
 def check_cluster_DNS(dns_check_log):
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
@@ -294,6 +295,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
     return chart_path
 
+
 def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location):
     # print("pulling helm chart")
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
@@ -327,10 +329,10 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
 
 
 def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert,
-                         kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
+kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
     # print("installing release")
     # print(chart_path)
-    cmd_helm_install = [helm_client_location, "upgrade", "--install", "connect-precheck-diagnoser", chart_path , "--debug"]
+    cmd_helm_install = [helm_client_location, "upgrade", "--install", "connect-precheck-diagnoser", chart_path, "--debug"]
     # print("before cmd helm install")
     # To set some other helm parameters through file
     if https_proxy:
@@ -346,12 +348,12 @@ def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_ce
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
-    
+
     # if not no_wait:
     #     # Change --timeout format for helm client to understand
     #     onboarding_timeout = onboarding_timeout + "s"
-    #     cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])    
-    
+    #     cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)]) 
+
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
@@ -361,3 +363,4 @@ def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_ce
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+        

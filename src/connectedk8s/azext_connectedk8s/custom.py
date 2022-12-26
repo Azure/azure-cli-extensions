@@ -161,7 +161,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         #     logger.warning("An exception has occured")
         raise ManualInterrupt('Process terminated .')
 
-    if all_checks_passed == False:
+    if all_checks_passed is False:
         logger.warning("connect prechecks failed (dns or outbound)")
         return
 
