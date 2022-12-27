@@ -23,7 +23,7 @@ class ContainerappIdentityTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, "eastus2")
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
 
@@ -67,7 +67,7 @@ class ContainerappIdentityTests(ScenarioTest):
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -l canadacentral'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -101,7 +101,7 @@ class ContainerappIdentityTests(ScenarioTest):
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, "westeurope")
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
 
@@ -343,6 +343,7 @@ class ContainerappIngressTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live) and vnet command error in cli pipeline
     def test_containerapp_tcp_ingress(self, resource_group):
         env_name = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
@@ -395,6 +396,144 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('exposedPort', 3020),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_ip_restrictions(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group, "northeurope")
+
+        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Allow'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Allow'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_ip_restrictions_deny(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Deny'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Deny'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
 
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -403,7 +542,7 @@ class ContainerappDaprTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, "eastus2")
 
         self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('properties.configuration.dapr.appId', "containerapp"),

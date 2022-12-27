@@ -124,6 +124,64 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
+    @ResourceGroupPreparer(name_prefix="webapp_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
+    @ResourceGroupPreparer(name_prefix="webapp_cross_rg2", parameter_name="resource_group2", parameter_name_for_location="location2")
+    def test_connect_webapp_cross_resource_group(self, resource_group, resource_group2, location, location2):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'resource_group2': resource_group2,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web'
+        })
+
+        self.cmd(
+            'az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}',
+            checks=[
+                self.check('location', '{loc}'),
+                self.check('kind', '{kind}'),
+                self.check('applicationType', '{application_type}'),
+                self.check('applicationId', '{ai_name}'),
+                self.check('provisioningState', 'Succeeded')
+            ])
+
+        app_insights_instrumentation_key = \
+        self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()[
+            'instrumentationKey']
+
+        # Create web app.
+        webapp_name = self.create_random_name('clitestwebapp', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'webapp_name': webapp_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
+        self.kwargs["webapp_id"] = self.cmd('az webapp create -g {resource_group2} -n {webapp_name} --plan {plan}', checks=[
+            self.check('state', 'Running'),
+            self.check('name', webapp_name)
+        ]).get_output_in_json()['id']
+
+        # Connect AI to web app and update settings for web app.
+        self.cmd(
+            'az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_id} --enable-profiler --enable-snapshot-debugger',
+            checks=[
+                self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
+                self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+                self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+            ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group2} -n {webapp_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
     @ResourceGroupPreparer(parameter_name_for_location='location')
     @StorageAccountPreparer()
     def test_connect_function(self, resource_group, storage_account, location):
@@ -157,7 +215,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group} -n {plan}')
-        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa}', checks=[
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ])
@@ -169,6 +227,56 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+    @ResourceGroupPreparer(name_prefix="connect_function_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
+    @ResourceGroupPreparer(name_prefix="connect_function_cross_rg2", parameter_name="resource_group2", parameter_name_for_location="location2")
+    @StorageAccountPreparer(resource_group_parameter_name='resource_group2')
+    def test_connect_function_cross_resource_groups(self, resource_group, resource_group2, location, location2, storage_account):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'resource_group2': resource_group2,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web',
+            'sa': storage_account
+        })
+
+        self.cmd('az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+            self.check('location', '{loc}'),
+            self.check('kind', '{kind}'),
+            self.check('applicationType', '{application_type}'),
+            self.check('applicationId', '{ai_name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+
+        # Create Azure function.
+        function_name = self.create_random_name('clitestfunction', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'function_name': function_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
+        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+            self.check('state', 'Running'),
+            self.check('name', function_name)
+        ]).get_output_in_json()['id']
+
+        # Connect AI to function and update settings for function.
+        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {functionapp_id}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group2} -n {function_name}', checks=[
             self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 

@@ -289,3 +289,25 @@ class VnetPublicEndpointTest(ScenarioTest):
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
             self.check('properties.vnetAddons.publicEndpoint', True)
         ])
+
+
+@record_only()
+class ClientAuthTest(ScenarioTest):
+    def test_client_auth(self):
+        self.kwargs.update({
+            'cert': 'test-cert',
+            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
+            'kvCertName': 'cli-unittest',
+            'app': 'test-client-auth',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli',
+            'location': 'eastus'
+        })
+
+        cert_id = self.cmd(
+            'spring certificate add --name {cert} --vault-uri {keyVaultUri} --only-public-cert '
+            '--vault-certificate-name {kvCertName} -g {rg} -s {serviceName} --query "id" -o tsv').output.strip()
+        app_create_cmd_template = 'spring app update -n {{app}} -s {{serviceName}} -g {{rg}} --client-auth-certs {}'
+        self.cmd(app_create_cmd_template.format(cert_id), checks=[
+            self.check('properties.ingressSettings.clientAuth.certificates[0]', cert_id)
+        ])

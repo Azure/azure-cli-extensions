@@ -249,6 +249,15 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
         c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
 
+    with self.argument_context('containerapp ingress access-restriction') as c:
+        c.argument('action', arg_type=get_enum_type(['Allow', 'Deny']), help='Whether the IP security restriction allows or denies access. All restrictions must be use the same action. If no restrictions are set, all traffic is allowed.')
+        c.argument('rule_name', help="The IP security restriction name.")
+        c.argument('description', help="The description of the IP security restriction.")
+        c.argument('ip_address', help="The address range of the IP security restriction in IPv4 CIDR notation. (for example, '198.51.100.14/24')")
+
+    with self.argument_context('containerapp ingress access-restriction list') as c:
+        c.argument('name', id_part=None)
+
     with self.argument_context('containerapp ingress traffic') as c:
         c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")

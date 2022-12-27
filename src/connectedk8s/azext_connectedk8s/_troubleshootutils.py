@@ -65,7 +65,7 @@ def create_folder_diagnosticlogs(time_stamp):
         return "", False
 
 
-def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location):
+def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location, kube_config, kube_context):
 
     global diagnoser_output
     try:
@@ -73,6 +73,10 @@ def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available,
         if storage_space_available:
             # CMD command to get events using kubectl and converting it to json format
             kubect_cluster_info_command = [kubectl_client_location, "cluster-info"]
+            if kube_config:
+                kubect_cluster_info_command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                kubect_cluster_info_command.extend(["--context", kube_context])
             # Using Popen to execute the command and fetching the output
             response_cluster_info = Popen(kubect_cluster_info_command, stdout=PIPE, stderr=PIPE)
             output_cluster_info, error_cluster_info = response_cluster_info.communicate()
@@ -210,7 +214,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
     return consts.Diagnostic_Check_Failed, storage_space_available
 
 
-def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location):
+def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available, kubectl_client_location, kube_config, kube_context):
 
     global diagnoser_output
     try:
@@ -218,6 +222,10 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
         if storage_space_available:
             # CMD command to get events using kubectl and converting it to json format
             command = [kubectl_client_location, "get", "events", "-n", "azure-arc", "--output", "json"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--context", kube_context])
             # Using Popen to execute the command and fetching the output
             response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
             output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
@@ -455,7 +463,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     return consts.Diagnostic_Check_Incomplete
 
 
-def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence):
+def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence, kube_config, kube_context):
 
     global diagnoser_output
     try:
@@ -469,7 +477,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
         # Executing the Diagnoser job and fetching diagnoser logs obtained
-        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence)
+        diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence, kube_config, kube_context)
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log is not None and diagnoser_container_log != ""):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
@@ -508,12 +516,16 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence):
+def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence, kube_config, kube_context):
 
     global diagnoser_output
     job_name = "azure-arc-diagnoser-job"
     # CMD command to get helm values in azure arc and converting it to json format
     command = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace, "-o", "json"]
+    if kube_config:
+        command.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        command.extend(["--kube-context", kube_context])
     # Using Popen to execute the helm get values command and fetching the output
     response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
     output_helm_values_get, error_helm_get_values = response_helm_values_get.communicate()
@@ -565,6 +577,10 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     # Setting the log output as Empty
     diagnoser_container_log = ""
     cmd_delete_job = [kubectl_client_location, "delete", "-f", ""]
+    if kube_config:
+        cmd_delete_job.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_delete_job.extend(["--context", kube_context])
     cmd_delete_job[3] = str(yaml_file_path)
     # Editing the yaml file based on the release namespace
     new_yaml = []
@@ -592,7 +608,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     # To handle the user keyboard Interrupt
     try:
         # Executing the diagnoser_job.yaml
-        config.load_kube_config()
+        config.load_kube_config(kube_config, kube_context)
         k8s_client = client.ApiClient()
         # Attempting deletion of diagnoser resources to handle the scenario if any stale resources are present
         response_kubectl_delete_job = Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
@@ -669,6 +685,10 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 # Creating folder with name 'describe_non_ready_agent' in the given path
                 unfinished_diagnoser_job_path = os.path.join(filepath_with_timestamp, consts.Events_of_Incomplete_Diagnoser_Job)
                 cmd_get_diagnoser_job_events = [kubectl_client_location, "get", "events", "--field-selector", "", "-n", "azure-arc", "--output", "json"]
+                if kube_config:
+                    cmd_get_diagnoser_job_events.extend(["--kubeconfig", kube_config])
+                if kube_context:
+                    cmd_get_diagnoser_job_events.extend(["--context", kube_context])
                 # To describe the diagnoser pod which did not reach completed stage
                 arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
                 for each_pod in arc_agents_pod_list.items:
@@ -834,7 +854,7 @@ def check_msi_certificate_presence(corev1_api_instance):
     return consts.Diagnostic_Check_Incomplete
 
 
-def check_probable_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace):
+def check_probable_cluster_security_policy(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context):
 
     global diagnoser_output
     try:
@@ -843,6 +863,10 @@ def check_probable_cluster_security_policy(corev1_api_instance, helm_client_loca
         cluster_connect_feature = False
         # CMD command to get helm values in azure arc and converting it to json format
         command = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace, "-o", "json"]
+        if kube_config:
+            command.extend(["--kubeconfig", kube_config])
+        if kube_context:
+            command.extend(["--kube-context", kube_context])
         # Using Popen to execute the helm get values command and fetching the output
         response_helm_values_get = Popen(command, stdout=PIPE, stderr=PIPE)
         output_helm_values_get, error_helm_get_values = response_helm_values_get.communicate()
