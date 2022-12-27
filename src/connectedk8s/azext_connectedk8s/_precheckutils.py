@@ -84,8 +84,8 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to perform diagnoser container check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Container_Check_Failed_Fault_Type, summary="Error occured while performing the diagnoser container checks")
+        logger.warning("An exception has occured while trying to perform prechecks diagnoser container on the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Precheck_Diagnoser_Container_Check_Failed_Fault_Type, summary="Error occured while performing the prechecks diagnoser container")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -105,7 +105,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
     try:
         # Executing the diagnoser_job.yaml
         config.load_kube_config(kube_config, kube_context)
-        # Attempting deletion of diagnoser resources to handle the scenario if any stale resources are present
+        # Attempting deletion of precheck diagnoser resources to handle the scenario if any stale resources are present
         response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
         output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
         # If any error occured while execution of delete command
@@ -125,7 +125,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
             # If any exception occured we will print the exception and return
             if exception_occured_counter == 1:
                 logger.warning("An error occured while installing the connect precheck helm release in the cluster. Exception:")
-                # telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
+                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Precheck_Diagnoser_Failed_Fault_Type, summary="Error while executing connect precheck Diagnoser Job")
                 return
         try:
             chart_path = get_chart_path(consts.Connect_Precheck_Job_Registry_Path, kube_config, kube_context, helm_client_location)
@@ -133,9 +133,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
             helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
         except Exception as e:
-            logger.warning("An error occured while deploying the connect precheck diagnoser job in the cluster. Exception:")
+            logger.warning("An error occured while installing helm release of connect precheck diagnoser in the cluster. Exception:")
             logger.warning(str(e))
-            # telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
+            telemetry.set_exception(exception=e, fault_type=consts.Precheck_Diagnoser_Helm_Release_Failed_Fault_Type, summary="Error while installing Precheck Diagnoser helm release")
             # Deleting all the stale resources that got created
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
@@ -144,7 +144,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
         is_job_complete = False
         is_job_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 180 seconds
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='default', label_selector="", timeout_seconds=90):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='default', label_selector="", timeout_seconds=60):
             try:
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "connect-precheck-diagnoser-job":
@@ -180,9 +180,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to execute the diagnoser job in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to execute the connect precheck diagnoser in the cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
+        telemetry.set_exception(exception=e, fault_type=consts.Precheck_Diagnoser_Failed_Fault_Type, summary="Error while executing Precheck Diagnoser Job")
         return
 
     return diagnoser_container_log
@@ -203,12 +203,14 @@ def check_cluster_DNS(dns_check_log):
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
             logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing Precheck - cluster DNS")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing Precheck - cluster DNS")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -229,12 +231,14 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
             logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing Precheck - outbound connectivity in the cluster")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing Precheck - outbound connectivity in the cluster")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -269,9 +273,9 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
-                                summary='Unable to pull helm chart from the registry')
-        raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+        telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Precheck_Diagnoser_Pull_HelmChart_Fault_Type,
+                                summary='Unable to pull connect precheck helm chart from the registry')
+        raise CLIInternalError("Unable to pull connect precheck helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
@@ -283,12 +287,12 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export helm chart from the registry')
-        raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Precheck_Diagnoser_Export_HelmChart_Fault_Type,
+                                summary='Unable to export connect precheck helm chart from the registry')
+        raise CLIInternalError("Unable to export connect precheck helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="120"):
+def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "connect-precheck-diagnoser", chart_path, "--debug"]
     # To set some other helm parameters through file
     if https_proxy:
@@ -314,7 +318,6 @@ def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_ce
     if response_helm_install.returncode != 0:
         if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
-                                summary='Unable to install helm release')
-        logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
-        raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Precheck_Diagnoser_Install_HelmRelease_Fault_Type,
+                                summary='Unable to install connect precheck helm release')
+        raise CLIInternalError("Unable to install connect precheck helm release: " + error_helm_install.decode("ascii"))
