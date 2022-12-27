@@ -148,21 +148,20 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         corev1_api_instance = kube_client.CoreV1Api()
         # Performing diagnoser container check
         diagnostic_checks = precheckutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
-        # print(diagnostic_checks)
         # If all the checks passed then display no error found
         all_checks_passed = True
         # for checks in diagnostic_checks:
         if diagnostic_checks != consts.Diagnostic_Check_Passed:
                 all_checks_passed = False
 
+    except Exception as e:
+        logger.warning("Exception occured : {}".format(str(e)))
+
     # Handling the user manual interrupt
     except KeyboardInterrupt:
-        # except Exception as e: # pylint: disable=broad-except
-        #     logger.warning("An exception has occured")
-        raise ManualInterrupt('Process terminated .')
+        raise ManualInterrupt('Process terminated externally.')
 
     if all_checks_passed is False:
-        logger.warning("connect prechecks failed (dns or outbound)")
         return
 
     required_node_exists = check_linux_amd64_node(node_api_response)

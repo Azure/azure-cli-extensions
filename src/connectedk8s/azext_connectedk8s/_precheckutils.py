@@ -53,7 +53,6 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
         outbound_connectivity_check = "Starting"
         # Executing the Diagnoser job and fetching diagnoser logs obtained
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
-        # print(diagnoser_container_log)
         # If diagnoser_container_log is not empty then only we will check for the results
         if(diagnoser_container_log is not None and diagnoser_container_log != ""):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
@@ -69,29 +68,18 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
                     counter_container_logs = 0
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
-            # print(dns_check_log)
             dns_check = check_cluster_DNS(dns_check_log)
-            # print("after dns")
-            # print(diagnoser_container_log_list[-1])
             outbound_connectivity_check = check_cluster_outbound_connectivity(diagnoser_container_log_list[-1])
         else:
-            # print("if test cannot start")
             return consts.Diagnostic_Check_Incomplete
 
         # If both the check passed then we will return Diagnoser checks Passed
         if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
-            # print("if 1")
             return consts.Diagnostic_Check_Passed
         # If any of the check remain Incomplete than we will return Incomplete
         elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
-            # print("if 2")
-            if dns_check == consts.Diagnostic_Check_Incomplete:
-                print("DNS DIDNT WORK")
-            if outbound_connectivity_check == consts.Diagnostic_Check_Incomplete:
-                print("DNS DIDNT WORK")
             return consts.Diagnostic_Check_Incomplete
         else:
-            # print("if 3")
             return consts.Diagnostic_Check_Failed
 
     # To handle any exception that may occur during the execution
@@ -104,15 +92,8 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolut
 
 def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
     job_name = "connect-precheck-diagnoser-job"
-    # yaml_file_path = os.path.join(absolute_path, "connect-precheck-diagnoser-file.yaml")
     # Setting the log output as Empty
     diagnoser_container_log = ""
-
-    # cmd_delete_job = [kubectl_client_location, "delete", "-f", ""]
-    # if kube_config:
-    #     cmd_delete_job.extend(["--kubeconfig", kube_config])
-    # if kube_context:
-    #     cmd_delete_job.extend(["--context", kube_context])
 
     cmd_helm_delete = [helm_client_location, "uninstall", "connect-precheck-diagnoser"]
     if kube_config:
@@ -120,7 +101,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
     if kube_context:
         cmd_helm_delete.extend(["--context", kube_context])
 
-    # print("deleteing connect-precheck helm release if present")
     # To handle the user keyboard Interrupt
     try:
         # Executing the diagnoser_job.yaml
@@ -144,18 +124,15 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
                     exception_occured_counter = 1
             # If any exception occured we will print the exception and return
             if exception_occured_counter == 1:
-                # print(valid_exception_list)
                 logger.warning("An error occured while installing the connect precheck helm release in the cluster. Exception:")
                 # telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
                 return
-        # print("installing connect-precheck helm release")
         try:
             chart_path = get_chart_path(consts.Connect_Precheck_Job_Registry_Path, kube_config, kube_context, helm_client_location)
 
             helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
         except Exception as e:
-            # print("helm not installed and job not applied")
             logger.warning("An error occured while deploying the connect precheck diagnoser job in the cluster. Exception:")
             logger.warning(str(e))
             # telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Diagnoser_Job_Failed_Fault_Type, summary="Error while executing Diagnoser Job")
@@ -171,19 +148,14 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
             try:
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "connect-precheck-diagnoser-job":
-                    # print("job scheduled")
                     is_job_scheduled = True
                 # Checking if job reached completed stage or not
                 if event["object"].metadata.name == "connect-precheck-diagnoser-job" and event["object"].status.conditions[0].type == "Complete":
-                    # print("job complete")
                     is_job_complete = True
                     w.stop()
             except Exception as e:
-                # print("exception")
-                # print(e)
                 continue
             else:
-                # print("passed")
                 continue
 
         if (is_job_scheduled is False):
@@ -191,11 +163,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
-            # print("scheduled not completed")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:
-            # print("Scheduled and finished job")
             # Fetching the Diagnoser Container logs
             all_pods = corev1_api_instance.list_namespaced_pod('default')
             # Traversing through all agents
@@ -203,12 +173,10 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
                 if(pod_name.startswith(job_name)):
-                    # print("inside making diagnoser container log")
                     # Creating a text file with the name of the container and adding that containers logs in it
                     diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="connect-precheck-diagnoser-container", namespace='default')
-                    print(diagnoser_container_log)
         # Clearing all the resources after fetching the diagnoser container logs
-        # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+        Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -223,7 +191,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
 def check_cluster_DNS(dns_check_log):
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
-            # print("dns prob")
             return consts.Diagnostic_Check_Incomplete
         formatted_dns_log = dns_check_log.replace('\t', '')
         # Validating if DNS is working or not and displaying proper result
@@ -247,12 +214,10 @@ def check_cluster_DNS(dns_check_log):
 
 
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
-    global diagnoser_output
     try:
         outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
         outbound_connectivity_response = outbound_connectivity_response[::-1]
         if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
-            # print("outbound prob")
             return consts.Diagnostic_Check_Incomplete
         # Validating if outbound connectiivty is working or not and displaying proper result
         if(outbound_connectivity_response != "000"):
@@ -275,7 +240,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log):
 
 
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
-    # print("getting chart path")
+
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
     pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location)
@@ -284,7 +249,6 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'ConnectPrecheckCharts')
     try:
         if os.path.isdir(chart_export_path):
-            # print("found the chart")
             shutil.rmtree(chart_export_path)
     except:
         logger.warning("Unable to cleanup the connect-precheck helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
@@ -297,10 +261,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
 
 
 def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location):
-    # print("pulling helm chart")
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
-    # cmd_helm_chart_pull = [helm_client_location, "fetch", registry_path]
-    # cmd_helm_chart_pull.extend(["--version", consts.Connect_Precheck_Job_Version])
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -314,7 +275,6 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
 
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
-    # print("export chart ")
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
@@ -328,11 +288,8 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="200"):
-    # print("installing release")
-    # print(chart_path)
+def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="120"):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "connect-precheck-diagnoser", chart_path, "--debug"]
-    # print("before cmd helm install")
     # To set some other helm parameters through file
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
@@ -348,10 +305,9 @@ def helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_ce
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
 
-    # if not no_wait:
-    #     # Change --timeout format for helm client to understand
-    #     onboarding_timeout = onboarding_timeout + "s"
-    #     cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
+    # Change --timeout format for helm client to understand
+    onboarding_timeout = onboarding_timeout + "s"
+    cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
 
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
