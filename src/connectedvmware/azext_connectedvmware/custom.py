@@ -5,9 +5,9 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from pwinput import pwinput
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
+from azext_connectedvmware.pwinput import pwinput
 from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
     VMWARE_NAMESPACE,

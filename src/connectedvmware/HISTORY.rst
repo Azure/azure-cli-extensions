@@ -4,6 +4,11 @@ Release History
 ===============
 
 
+0.1.11
+++++++
+Including pwinput in code to workarount the issue with azure cli version >= 2.42.0 in windows installed using MSI.
+Issue link: https://github.com/Azure/azure-cli/issues/24781
+
 0.1.10
 ++++++
 * Bug Fix: Wait for SystemAssigned Identity PATCH to complete before enabling Guest management on VM.
