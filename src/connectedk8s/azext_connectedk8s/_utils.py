@@ -219,11 +219,11 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise ValidationError(error_message + summary + "\nError Response: " + str(ex.body))
+            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise ValidationError(error_message + summary + "\nError: " + str(ex))
+            raise ValidationError(error_message + "\nError: " + str(ex))
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
 
@@ -295,7 +295,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, least_privilege, config_settings, onboarding_timeout="600",
+                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, least_privilege, platform_serviceaccount_name=None, onboarding_timeout="600",
                          container_log_path=None):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
@@ -341,8 +341,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--kube-context", kube_context])
 
     if least_privilege:
-        platformServiceAccountName = get_serviceaccount_name_from_configsettings(config_settings)
-        cmd_helm_install.extend(["--set", "global.platformServiceAccountName={}".format(platformServiceAccountName)])
+        cmd_helm_install.extend(["--set", "global.platformServiceAccountName={}".format(platform_serviceaccount_name)])
         cmd_helm_install.extend(["--set", "global.isLeastPrivilegesMode={}".format(True)])
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
         cmd_helm_install.extend(["--namespace", consts.Release_Install_Namespace])    # Installing the release in fresh namespace (non-default) which will get created during the same step of helm installation
@@ -377,11 +376,11 @@ def get_serviceaccount_name_from_configsettings(config_settings):
             api_instance.read_namespaced_service_account(serviceaccount_name, "azure-arc")
         except Exception as ex:
             if ex.status == 404:
-                kubernetes_exception_handler(ex, fault_type=consts.Azure_Agent_Service_Account_Not_Found_Least_Privileges_Fault_Type, summary="Service account provided in config settings is not found in azure-arc namespace on the cluster.")
+                kubernetes_exception_handler(ex, fault_type=consts.Azure_Agent_Service_Account_Not_Found_Least_Privileges_Fault_Type, summary="Service account provided in config settings is not found in azure-arc namespace on the cluster.", error_message="Service account provided in config settings is not found in azure-arc namespace on the cluster.", message_for_not_found="Service account provided in config settings is not found in azure-arc namespace on the cluster.Please ensure you pass the correct service account name which exists")
         return serviceaccount_name
     else:
         telemetry.set_exception(exception="Config settings input does not contain service-account-name", fault_type=consts.Service_Account_Name_Not_Found_In_Config_Settings_Least_Privileges_Fault_Type, summary="Config settings input does not contain service-account-name")
-        raise ArgumentUsageError("Config settings input does not contain service-account-name", "Please ensure you pass the mandatory field- service-account-name in the config settings while onboarding the cluster with leastPrivileges")
+        raise ArgumentUsageError("Config settings input does not contain service-account-name", "Please ensure you pass the mandatory field: service-account-name in the config settings while onboarding the cluster with leastPrivileges")
 
 
 def flatten(dd, separator='.', prefix=''):

@@ -70,6 +70,14 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None, least_privilege=False, config_settings=None):
     logger.warning("This operation might take a while...\n")
 
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    kubernetes_version = check_kube_connection()
+
     # Prompt for confirmation for few parameters
     if enable_private_link is True:
         confirmation_message = "The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"
@@ -96,14 +104,17 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             api_instance.read_namespace("azure-arc")
         except Exception as ex:
             if ex.status == 404:
-                utils.kubernetes_exception_handler(ex, fault_type=consts.Azure_Arc_Namespace_Not_Found_Least_Privileges_Fault_Type, summary="Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges")
+                utils.kubernetes_exception_handler(ex, consts.Azure_Arc_Namespace_Not_Found_Least_Privileges_Fault_Type, "Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges", error_message="Azure-arc namespace is not found on the cluster.", message_for_not_found="Azure-arc namespace is not found on the cluster. Please ensure you have met all the pre-requisites before onboarding the cluster with leastPrivileges")
         # check if azure-arc-release ns is present - pre-req for least privilege
         try:
             api_instance = kube_client.CoreV1Api()
             api_instance.read_namespace("azure-arc-release")
         except Exception as ex:
             if ex.status == 404:
-                utils.kubernetes_exception_handler(ex, fault_type=consts.Azure_Arc_Release_Namespace_Not_Found_Least_Privileges_Fault_Type, summary="Azure-arc-release namespace is not found on the cluster while onboarding with leastPrivileges")
+                utils.kubernetes_exception_handler(ex, consts.Azure_Arc_Release_Namespace_Not_Found_Least_Privileges_Fault_Type, "Azure-arc-release namespace is not found on the cluster while onboarding with leastPrivileges", error_message="Azure-arc namespace is not found on the cluster.", message_for_not_found="Azure-arc-release namespace is not found on the cluster. Please ensure you have met all the pre-requisites before onboarding the cluster with leastPrivileges")
+
+        # Fetch service account name from config settings
+        platform_serviceaccount_name = utils.get_serviceaccount_name_from_configsettings(config_settings)
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -150,13 +161,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         azure_cloud = consts.Azure_DogfoodCloudName
         dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
-    # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
-
-    # Checking the connection to kubernetes cluster.
-    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
-    # if the user had not logged in.
-    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
@@ -356,7 +360,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, helm_client_location, enable_private_link, least_privilege, config_settings, onboarding_timeout, container_log_path)
+                               custom_locations_oid, helm_client_location, enable_private_link, least_privilege, platform_serviceaccount_name, onboarding_timeout, container_log_path)
 
     return put_cc_response
 
