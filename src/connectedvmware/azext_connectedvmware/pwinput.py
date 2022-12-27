@@ -1,6 +1,9 @@
 # pylint: disable-all
 # flake8: noqa
 
+# Reference file:
+# https://github.com/asweigart/pwinput/blob/48c7e04c1152e2090ff95d8483cbe4faf970e15d/src/pwinput/__init__.py
+
 """PWInput
 By Al Sweigart al@inventwithpython.com
 
