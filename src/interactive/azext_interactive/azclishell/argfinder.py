@@ -6,6 +6,7 @@
 import argparse
 
 from argcomplete import CompletionFinder
+
 from .compat import USING_PYTHON2, ensure_bytes
 
 
