@@ -54,19 +54,18 @@ class Recommender:
         Send User Feedback to telemetry.
         This should only be called between command execution and recommendation update.
         """
-        pass
-        # if self.cur_thread and not self.cur_thread.is_alive() and self.history.strings:
-        #     latest_command = self.history.strings[-1]
-        #     recommendations = self.cur_thread.result
-        #     if not recommendations:
-        #         send_feedback(-1, [latest_command], recommendations, None)
-        #         return
-        #     for idx, rec in enumerate(recommendations):
-        #         if rec['type'] != RecommendType.Command:
-        #             continue
-        #         if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
-        #             send_feedback(idx, [latest_command], recommendations, rec)
-        #             return
+        if self.cur_thread and not self.cur_thread.is_alive() and self.rec_path.commands:
+            latest_command = self.rec_path.commands[-1]["command"]
+            recommendations = self.cur_thread.result
+            if not recommendations:
+                send_feedback(-1, [latest_command], recommendations, None)
+                return
+            for idx, rec in enumerate(recommendations):
+                if rec['type'] != RecommendType.Command:
+                    continue
+                if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
+                    send_feedback(idx, [latest_command], recommendations, rec)
+                    return
 
     def set_executing(self, cmd: str):
         command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
