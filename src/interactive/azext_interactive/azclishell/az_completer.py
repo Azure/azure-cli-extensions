@@ -57,6 +57,8 @@ class AzCompleter(Completer):
         self.shell_ctx = shell_ctx
         self.started = False
 
+        self.scenario_enabled = True
+
         # dictionary of command to descriptions
         self.command_description = {}
         # a list of all the possible parameters
@@ -157,6 +159,9 @@ class AzCompleter(Completer):
         self.current_command = ''
         self.subtree = None
 
+    def set_scenario_enabled(self, enable):
+        self.scenario_enabled = enable
+
     def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
         if not self.started:
             return
@@ -185,8 +190,9 @@ class AzCompleter(Completer):
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
             yield comp
 
-        for comp in self.gen_recommended_scenario(text):
-            yield comp
+        if self.scenario_enabled:
+            for comp in self.gen_recommended_scenario(text):
+                yield comp
 
         for comp in sort_completions(self.gen_global_params_and_arg_completions()):
             yield comp

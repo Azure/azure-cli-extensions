@@ -463,6 +463,7 @@ class AzInteractiveShell(object):
                     toolbar_tokens='In Tutorial Mode: Press [Enter] after typing each part'
                 ),
                 eventloop=create_eventloop())
+            self.completer.set_scenario_enabled(False)
             example_cli.buffers['example_line'].reset(
                 initial_document=Document(u'{}\n'.format(
                     add_new_lines(example)))
@@ -486,6 +487,7 @@ class AzInteractiveShell(object):
                         start_index += 1
                         cmd += " " + answer.split()[-1] + " " +\
                                u' '.join(text.split()[start_index:start_index + 1])
+            self.completer.set_scenario_enabled(True)
             example_cli.exit()
             del example_cli
         else:
@@ -517,6 +519,7 @@ class AzInteractiveShell(object):
                 toolbar_tokens='In Scenario Mode: Press [Enter] to execute commands'
             ),
             eventloop=create_eventloop())
+        self.completer.set_scenario_enabled(False)
 
         _show_details_for_e2e_scenario(scenario, file=self.output)
 
@@ -559,6 +562,7 @@ class AzInteractiveShell(object):
                 telemetry.flush()
             if quit_scenario:
                 break
+        self.completer.set_scenario_enabled(True)
         example_cli.exit()
         del example_cli
 
