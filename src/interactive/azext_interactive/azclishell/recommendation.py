@@ -12,6 +12,7 @@ from azure.cli.core.azclierror import RecommendationError
 from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
 from azure.cli.core.style import print_styled_text, Style
+from prompt_toolkit.history import FileHistory
 
 
 class RecommendType(int, Enum):
@@ -22,22 +23,23 @@ class RecommendType(int, Enum):
 
 
 class RecommendThread(threading.Thread):
-    def __init__(self, cli_ctx, history, on_prepared):
+    def __init__(self, cli_ctx, rec_path, last_exec, on_prepared):
         super().__init__()
         self.cli_ctx = cli_ctx
-        self.history = history
+        self.rec_path = rec_path
         self.on_prepared = on_prepared
+        self.last_exec = last_exec
         self.result = None
 
     def run(self) -> None:
-        self.result = get_recommend(self.cli_ctx, self.history)
+        self.result = get_recommend(self.cli_ctx, self.rec_path, self.last_exec)
         self.on_prepared()
 
 
 class Recommender:
-    def __init__(self, cli_ctx, history):
+    def __init__(self, cli_ctx, filename):
         self.cli_ctx = cli_ctx
-        self.history = history
+        self.rec_path = RecommendPath(filename)
         self.cur_thread = None
         self.on_recommendation_prepared = lambda: None
         self.default_recommendations = {
@@ -45,28 +47,46 @@ class Recommender:
             'init': 'Set Azure CLI global configurations interactively',
             'next': 'Recommend the possible next set of commands to take'
         }
+        self.executing_command = None
 
     def feedback(self):
         """
         Send User Feedback to telemetry.
         This should only be called between command execution and recommendation update.
         """
-        if self.cur_thread and not self.cur_thread.is_alive() and self.history.strings:
-            latest_command = self.history.strings[-1]
-            recommendations = self.cur_thread.result
-            if not recommendations:
-                send_feedback(-1, [latest_command], recommendations, None)
-                return
-            for idx, rec in enumerate(recommendations):
-                if rec['type'] != RecommendType.Command:
-                    continue
-                if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
-                    send_feedback(idx, [latest_command], recommendations, rec)
-                    return
+        pass
+        # if self.cur_thread and not self.cur_thread.is_alive() and self.history.strings:
+        #     latest_command = self.history.strings[-1]
+        #     recommendations = self.cur_thread.result
+        #     if not recommendations:
+        #         send_feedback(-1, [latest_command], recommendations, None)
+        #         return
+        #     for idx, rec in enumerate(recommendations):
+        #         if rec['type'] != RecommendType.Command:
+        #             continue
+        #         if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
+        #             send_feedback(idx, [latest_command], recommendations, rec)
+        #             return
 
-    def update(self):
+    def set_executing(self, cmd: str):
+        command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
+        param = sorted([p for p in cmd.split() if p.startswith('-')])
+        self.executing_command = {'command': command, 'arguments': param}
+        self._update()
+
+    def set_exec_result(self, exit_code, result_summary=''):
+        if not self.executing_command:
+            return
+        self.rec_path.append_result(self.executing_command['command'], self.executing_command['arguments'],
+                                    exit_code, result_summary)
+        self.executing_command = None
+        if exit_code != 0:
+            self._update()
+
+    def _update(self):
         """Update recommendation in new thread"""
-        self.cur_thread = RecommendThread(self.cli_ctx, self.history, self.on_recommendation_prepared)
+        self.cur_thread = RecommendThread(self.cli_ctx, self.rec_path, self.executing_command,
+                                          self.on_recommendation_prepared)
         self.cur_thread.start()
 
     def _get_result(self, non_block=True, timeout=3.0, rec_type=RecommendType.Command):
@@ -74,7 +94,7 @@ class Recommender:
             if non_block:
                 return None
             else:
-                self.update()
+                self._update()
         if not non_block:
             self.cur_thread.join(timeout)
         if not self.cur_thread.result:
@@ -103,11 +123,39 @@ class Recommender:
         self.on_recommendation_prepared = cb
 
 
-def get_recommend(cli_ctx, history):
-    # Upload all execution commands of local record for personalized analysis
-    command_history = get_command_list_from_history(history)
+class RecommendPath:
 
-    processed_exception = None
+    def __init__(self, filename):
+        self.history = FileHistory(filename)
+        self.commands = [json.loads(line) for line in self.history.strings[-30:]]
+        self.last_result_summary = ''
+
+    def append_result(self, command, param, exit_code, result_summary=''):
+        if not command:
+            return
+        execution_info = {
+            'command': command,
+            'arguments': param,
+            'exit_code': exit_code,
+        }
+        self.last_result_summary = result_summary if exit_code != 0 else ''
+        self.commands.append(execution_info)
+        self.history.append(json.dumps(execution_info))
+
+    def get_result_summary(self):
+        return self.last_result_summary
+
+    def get_cmd_history(self, top_num):
+        return self.commands[-top_num:]
+
+
+def get_recommend(cli_ctx, rec_path, last_exec=None, top_num=5):
+    # Upload all execution commands of local record for personalized analysis
+    command_history = get_command_list_from_path(rec_path, top_num)
+    if last_exec:
+        command_history.append(json.dumps(last_exec))
+
+    processed_exception = rec_path.get_result_summary() if not last_exec else None
 
     try:
         recommends = get_recommend_from_api(command_history[-5:], 1,
@@ -135,6 +183,12 @@ def get_command_list_from_history(history):
     commands = [re.sub(r"^az ", "", command).strip() for command in commands if valid_command(command)]
     commands = [command.split(' -')[0] for command in commands]
     commands = [json.dumps({"command": command}) for command in commands]
+    return commands
+
+
+def get_command_list_from_path(rec_path, top_num):
+    commands = rec_path.get_cmd_history(top_num)
+    commands = [json.dumps(command) for command in commands]
     return commands
 
 

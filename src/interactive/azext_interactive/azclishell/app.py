@@ -126,7 +126,8 @@ class AzInteractiveShell(object):
         self.intermediate_sleep = intermediate_sleep
         self.final_sleep = final_sleep
         self.command_table_thread = None
-        self.recommender = Recommender(self.cli_ctx, self.history)
+        self.recommender = Recommender(
+            self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()))
         self.recommender.set_on_recommendation_prepared(self.on_recommendation_prepared)
 
         # try to consolidate state information here...
@@ -212,7 +213,7 @@ class AzInteractiveShell(object):
         self._cli = None
 
     def on_recommendation_prepared(self):
-        scenarios = self.recommender.get_scenarios()
+        scenarios = self.recommender.get_scenarios() or []
         scenarios_rec_info = "\n\n".join([f'[{idx+1}] {s["scenario"]}' for idx, s in enumerate(scenarios)])
         self.cli.buffers['scenarios'].reset(
             initial_document=Document(u'{}'.format(scenarios_rec_info)))
@@ -543,16 +544,18 @@ class AzInteractiveShell(object):
                     break
                 if not document.text:
                     continue
-                answer = document.text
-                self.history.append(answer)
-                self.recommender.update()
+                cmd = document.text
+                self.history.append(cmd)
                 telemetry.start()
-                self.cli_execute(answer)
+                self.recommender.feedback()
+                self.recommender.set_executing(cmd)
+                self.cli_execute(cmd)
                 if self.last_exit and self.last_exit != 0:
                     telemetry.set_failure()
                 else:
                     retry = False
                     telemetry.set_success()
+                self.recommender.set_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
                 telemetry.flush()
             if quit_scenario:
                 break
@@ -819,17 +822,18 @@ class AzInteractiveShell(object):
                     continue
 
                 self.set_prompt()
-                self.recommender.feedback()
-                self.recommender.update()
 
                 if outside:
                     subprocess.Popen(cmd, shell=True).communicate()
                 else:
                     telemetry.start()
+                    self.recommender.feedback()
+                    self.recommender.set_executing(cmd)
                     self.cli_execute(cmd)
                     if self.last_exit and self.last_exit != 0:
                         telemetry.set_failure()
                     else:
                         telemetry.set_success()
+                    self.recommender.set_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()

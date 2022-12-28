@@ -67,6 +67,7 @@ class Configuration(object):
         self.config.add_section('Layout')
         self.config.set('Help Files', 'command', 'help_dump.json')
         self.config.set('Help Files', 'history', 'history.txt')
+        self.config.set('Help Files', 'recommend_path', 'recommend_path.txt')
         self.config.set('Help Files', 'frequency', 'frequency.json')
         self.config.set('Layout', 'command_description', 'yes')
         self.config.set('Layout', 'param_description', 'yes')
@@ -90,6 +91,10 @@ class Configuration(object):
     def get_history(self):
         """ returns the history """
         return self.config.get('Help Files', 'history')
+
+    def get_recommend_path(self):
+        """ returns the history """
+        return self.config.get('Help Files', 'recommend_path')
 
     def get_help_files(self):
         """ returns where the command table is cached """
