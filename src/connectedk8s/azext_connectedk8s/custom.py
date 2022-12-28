@@ -161,7 +161,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         azure_cloud = consts.Azure_DogfoodCloudName
         dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
 
-
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
