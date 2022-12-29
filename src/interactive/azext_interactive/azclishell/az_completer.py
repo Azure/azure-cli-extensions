@@ -303,7 +303,9 @@ class AzCompleter(Completer):
             return
         recommend_result = self.shell_ctx.recommender.get_scenarios() or []
         for idx, rec in enumerate(recommend_result):
-            yield Completion('::'+str(idx+1), -len(text), display_meta=rec['scenario'], display='# Scenario::'+str(idx+1))
+            yield Completion(
+                '::'+str(idx+1), -len(text), display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',
+                display=f'[Scenario {str(idx+1)}]')
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """

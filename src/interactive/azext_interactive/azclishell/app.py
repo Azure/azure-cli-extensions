@@ -214,7 +214,8 @@ class AzInteractiveShell(object):
 
     def on_recommendation_prepared(self):
         scenarios = self.recommender.get_scenarios() or []
-        scenarios_rec_info = "\n\n".join([f'[{idx+1}] {s["scenario"]}' for idx, s in enumerate(scenarios)])
+        scenarios_rec_info = "Scenario Recommendation: "
+        scenarios_rec_info += "".join([f'\n [{idx+1}] {s["scenario"]} ({len(s["nextCommandSet"])} Commands)' for idx, s in enumerate(scenarios)])
         self.cli.buffers['scenarios'].reset(
             initial_document=Document(u'{}'.format(scenarios_rec_info)))
         self.cli.request_redraw()
@@ -516,7 +517,7 @@ class AzInteractiveShell(object):
                 full_layout=False,
                 auto_suggest=auto_suggest,
                 prompt_prefix='(scenario) ',
-                toolbar_tokens='In Scenario Mode: Press [Enter] to execute commands'
+                toolbar_tokens='In Scenario Mode: Press [Enter] to execute commands   [Ctrl+C]Skip  [Ctrl+D]Quit'
             ),
             eventloop=create_eventloop())
         self.completer.set_scenario_enabled(False)
