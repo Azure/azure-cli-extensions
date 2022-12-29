@@ -1,6 +1,11 @@
 Release History
 ===============
 
+0.1.4
+++++++
+* Fix repeating loading message
+* Bump websocket-client version
+
 0.1.3
 ++++++
 * Change to use different region for url calls when custom storage account firewalls are enabled
