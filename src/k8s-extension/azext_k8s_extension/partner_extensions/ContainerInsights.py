@@ -520,6 +520,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
 
     # workspace key not used in case of AAD MSI auth
     configuration_protected_settings['omsagent.secret.key'] = "<not_used>"
+    configuration_protected_settings['amalogs.secret.key'] = "<not_used>"
     if not useAADAuth:
         shared_keys = log_analytics_client.shared_keys.get_shared_keys(
             workspace_rg_name, workspace_name)
