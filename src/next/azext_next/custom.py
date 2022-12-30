@@ -366,7 +366,7 @@ def _execute_recommend_commands(cmd, rec):
 def _execute_recommend_scenarios(cmd, rec):
     exec_idx = rec.get("executeIndex")
     for idx in exec_idx:
-         nx_cmd = rec["nextCommandSet"][idx]
+        nx_cmd = rec["nextCommandSet"][idx]
         nx_param = []
         if "arguments" in nx_cmd:
             nx_param = nx_cmd["arguments"]
