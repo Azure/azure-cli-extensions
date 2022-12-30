@@ -126,8 +126,10 @@ class AzInteractiveShell(object):
         self.intermediate_sleep = intermediate_sleep
         self.final_sleep = final_sleep
         self.command_table_thread = None
+        enable_recommender = self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True)
         self.recommender = Recommender(
-            self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()))
+            self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()),
+            enabled=enable_recommender)
         self.recommender.set_on_recommendation_prepared(self.on_recommendation_prepared)
 
         # try to consolidate state information here...
@@ -551,15 +553,14 @@ class AzInteractiveShell(object):
                 cmd = document.text
                 self.history.append(cmd)
                 telemetry.start()
-                self.recommender.feedback()
-                self.recommender.set_executing(cmd)
+                self.recommender.update_executing(cmd)
                 self.cli_execute(cmd)
                 if self.last_exit and self.last_exit != 0:
                     telemetry.set_failure()
                 else:
                     retry = False
                     telemetry.set_success()
-                self.recommender.set_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
+                self.recommender.update_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
                 telemetry.flush()
             if quit_scenario:
                 break
@@ -832,13 +833,12 @@ class AzInteractiveShell(object):
                     subprocess.Popen(cmd, shell=True).communicate()
                 else:
                     telemetry.start()
-                    self.recommender.feedback()
-                    self.recommender.set_executing(cmd)
+                    self.recommender.update_executing(cmd)
                     self.cli_execute(cmd)
                     if self.last_exit and self.last_exit != 0:
                         telemetry.set_failure()
                     else:
                         telemetry.set_success()
-                    self.recommender.set_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
+                    self.recommender.update_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()

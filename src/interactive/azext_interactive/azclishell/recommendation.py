@@ -37,8 +37,9 @@ class RecommendThread(threading.Thread):
 
 
 class Recommender:
-    def __init__(self, cli_ctx, filename):
+    def __init__(self, cli_ctx, filename, enabled=True):
         self.cli_ctx = cli_ctx
+        self.enabled = enabled
         self.rec_path = RecommendPath(filename)
         self.cur_thread = None
         self.on_recommendation_prepared = lambda: None
@@ -67,14 +68,16 @@ class Recommender:
                     send_feedback(idx, [latest_command], recommendations, rec)
                     return
 
-    def set_executing(self, cmd: str):
+    def update_executing(self, cmd: str):
+        if not self.enabled:
+            return
         command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
         param = sorted([p for p in cmd.split() if p.startswith('-')])
         self.executing_command = {'command': command, 'arguments': param}
         self._update()
 
-    def set_exec_result(self, exit_code, result_summary=''):
-        if not self.executing_command:
+    def update_exec_result(self, exit_code, result_summary=''):
+        if not self.enabled or not self.executing_command:
             return
         self.rec_path.append_result(self.executing_command['command'], self.executing_command['arguments'],
                                     exit_code, result_summary)
@@ -107,6 +110,8 @@ class Recommender:
         :param timeout: block timeout
         :return: recommendation or None if the result is not prepared
         """
+        if not self.enabled:
+            return []
         return self._get_result(non_block, timeout, RecommendType.Command)
 
     def get_scenarios(self, non_block=True, timeout=3.0):
@@ -116,6 +121,8 @@ class Recommender:
         :param timeout: block timeout
         :return: recommendation or None if the result is not prepared
         """
+        if not self.enabled:
+            return []
         return self._get_result(non_block, timeout, RecommendType.Scenario)
 
     def set_on_recommendation_prepared(self, cb):
