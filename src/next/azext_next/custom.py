@@ -85,10 +85,10 @@ def handle_next(cmd, command_only=False, scenario_only=False):
             (None, -1))
         if group == 'a':
             rec = command_recommendations[option - 1]
-            send_feedback(request_type, group+str(option), command_history, processed_exception, recommends, rec)
+            send_feedback(request_type, group + str(option), command_history, processed_exception, recommends, rec)
         elif group == 'b':
             rec = scenario_recommendations[option - 1]
-            send_feedback(request_type, group+str(option), command_history, processed_exception, recommends, rec)
+            send_feedback(request_type, group + str(option), command_history, processed_exception, recommends, rec)
         else:
             send_feedback(request_type, 0, command_history, processed_exception, recommends)
             print(
