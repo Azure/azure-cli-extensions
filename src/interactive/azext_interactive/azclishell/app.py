@@ -151,6 +151,9 @@ class AzInteractiveShell(object):
             print("\n\nAny comments or concerns? You can use the \'feedback\' command!" +
                   " We would greatly appreciate it.\n")
 
+        print("\nA new Recommender is added to interactive mode! We hope you could enjoy it.\n"
+              "You can use 'config set interactive.enable_recommender=False' to disable Recommender.\n")
+
         self.cli_ctx.data["az_interactive_active"] = True
         self.run()
         self.cli_ctx.data["az_interactive_active"] = False
@@ -316,7 +319,7 @@ class AzInteractiveShell(object):
 
         # get command/group help
         if not command:
-            self.description_docs = u'Try [Space] or `az next` to get Command Recommendation'
+            self.description_docs = u'Try [Space] or `next` to get Command Recommendation'
         elif self.completer and command in self.completer.command_description:
             self.description_docs = u'{}'.format(self.completer.command_description[command])
 
