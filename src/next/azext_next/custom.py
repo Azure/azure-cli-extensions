@@ -381,7 +381,7 @@ def _execute_recommend_scenarios(cmd, rec):
         print_styled_text(_get_command_sample(nx_cmd))
         option_msg = [(Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
                       (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-        run_option = select_option(option_msg, 1, 3, 1)
+        run_option = select_option(option_msg, min_option=1, max_option=3, default_option=1)
         if run_option == 1:
             print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
             execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
