@@ -22,7 +22,7 @@ def input_int(default_value=0):
 
 def input_combined_option(group_range, default_value=(None, 0)):
     """
-    Read combined option from stdin, ensure the group_name is in range or be None and option is a ledge number
+    Read combined option from stdin, ensure the group_name is in range or be None and option is a valid number
     :param group_range: the range a valid group name should be in
     :param default_value:
     :return: the combined option read from stdin
@@ -39,7 +39,7 @@ def input_combined_option(group_range, default_value=(None, 0)):
         if group not in group_range:
             ret = input("The option should start with " + " or ".join(group_range) + ":")
         elif not option.isnumeric():
-            ret = input("The option should end with a ledge number: ")
+            ret = input("The option should end with a valid number: ")
         else:
             return group, int(option)
 
