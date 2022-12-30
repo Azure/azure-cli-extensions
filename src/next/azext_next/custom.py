@@ -201,6 +201,7 @@ def _give_recommend_scenarios(idx, rec):
     num_notice = f" ({len(rec['nextCommandSet'])} Commands)"
     print_styled_text([(Style.ACTION, index_str), (Style.PRIMARY, rec['scenario']), (Style.SECONDARY, num_notice)])
     if 'reason' in rec:
+        # Use the first sentence as reason to keep the reason short
         reason = rec['reason'].split('.')[0]
     else:
         reason = "This is a set of commands that may help you complete this scenario."
