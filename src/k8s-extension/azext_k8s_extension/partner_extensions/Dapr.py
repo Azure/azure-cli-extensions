@@ -161,15 +161,25 @@ class Dapr(DefaultExtension):
             configuration_settings = {}
 
         # If we are downgrading the extension, then we need to disable the apply-CRDs hook.
+        # Additionally, if we are disabling auto-upgrades, we need to disable the apply-CRDs hook (as auto-upgrade is always on the latest version).
         # This is because CRD updates while downgrading can cause issues.
         # As CRDs are additive, skipping their removal while downgrading is safe.
         original_version = original_extension.version
+        original_auto_upgrade = original_extension.auto_upgrade_minor_version
         if self.APPLY_CRDS_HOOK_ENABLED_KEY in configuration_settings:
             logger.debug("'%s' is set to '%s' in --configuration-settings, not overriding it.",
                          self.APPLY_CRDS_HOOK_ENABLED_KEY, configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY])
+        elif original_auto_upgrade and not auto_upgrade_minor_version:
+            logger.debug("Auto-upgrade is disabled and version is pinned to %s. Setting '%s' to false.",
+                         version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
         elif original_version and version and version < original_version:
             logger.debug("Downgrade detected from %s to %s. Setting %s to false.",
                          original_version, version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
+        elif original_version and version and version == original_version:
+            logger.debug("Version unchanged at %s. Setting %s to false.",
+                         version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
             configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
         else:
             # If we are not downgrading, enable the apply-CRDs hook explicitly.
