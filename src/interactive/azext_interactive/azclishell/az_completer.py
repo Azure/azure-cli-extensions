@@ -282,8 +282,9 @@ class AzCompleter(Completer):
     def gen_recommend_completion(self, text):
         recommend_result = self.shell_ctx.recommender.get_commands() or []
         if not recommend_result:
-            for rec in self.shell_ctx.recommender.default_recommendations:
-                description = self.shell_ctx.recommender.default_recommendations[rec]
+            default_recommendations = self.shell_ctx.recommender.get_default_recommendations()
+            for rec in default_recommendations:
+                description = default_recommendations[rec]
                 description = description or self.command_description.get(rec, '')
                 if text.strip() == '':
                     yield Completion(rec, 0, display_meta=description)
@@ -314,7 +315,7 @@ class AzCompleter(Completer):
 
     def gen_cmd_and_param_completions(self):
         """ generates command and parameter completions """
-        if not self.current_command and not self.unfinished_word.strip():
+        if not self.current_command and not self.unfinished_word.strip() and self.shell_ctx.recommender.enabled:
             return
         if self.complete_command:
             for param in self.command_param_info.get(self.current_command, []):

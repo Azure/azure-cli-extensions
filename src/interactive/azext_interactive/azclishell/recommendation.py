@@ -37,9 +37,8 @@ class RecommendThread(threading.Thread):
 
 
 class Recommender:
-    def __init__(self, cli_ctx, filename, enabled=True):
+    def __init__(self, cli_ctx, filename):
         self.cli_ctx = cli_ctx
-        self.enabled = enabled
         self.rec_path = RecommendPath(filename)
         self.cur_thread = None
         self.on_recommendation_prepared = lambda: None
@@ -49,6 +48,10 @@ class Recommender:
             'next': 'Recommend the possible next set of commands to take'
         }
         self.executing_command = None
+
+    @property
+    def enabled(self):
+        return self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True)
 
     def feedback(self):
         """
@@ -113,6 +116,11 @@ class Recommender:
         if not self.enabled:
             return []
         return self._get_result(non_block, timeout, RecommendType.Command)
+
+    def get_default_recommendations(self):
+        if not self.enabled:
+            return []
+        return self.default_recommendations
 
     def get_scenarios(self, non_block=True, timeout=3.0):
         """

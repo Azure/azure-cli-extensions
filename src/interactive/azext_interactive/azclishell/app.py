@@ -126,10 +126,8 @@ class AzInteractiveShell(object):
         self.intermediate_sleep = intermediate_sleep
         self.final_sleep = final_sleep
         self.command_table_thread = None
-        enable_recommender = self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True)
         self.recommender = Recommender(
-            self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()),
-            enabled=enable_recommender)
+            self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()))
         self.recommender.set_on_recommendation_prepared(self.on_recommendation_prepared)
 
         # try to consolidate state information here...
