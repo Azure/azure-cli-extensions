@@ -28,6 +28,12 @@ Pending
 * Vendor new SDK and bump API version to 2022-11-02-preview.
 * Remove the error prompt about "no argument specified" when `--enable-workload-identity=False` is specified.
 
+0.5.122
++++++++
+
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
+
 0.5.121
 +++++++
 * Remove defender related code after GA, reuse the implementation in azure-cli/acs.
