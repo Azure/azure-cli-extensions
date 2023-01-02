@@ -1791,6 +1791,9 @@ parameters:
   - name: --enable-syslog
     type: bool
     short-summary: Enable syslog data collection for Monitoring addon
+  - name: --data-collection-settings
+    type: string
+    short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1866,6 +1869,9 @@ parameters:
   - name: --enable-syslog
     type: bool
     short-summary: Enable syslog data collection for Monitoring addon
+  - name: --data-collection-settings
+    type: string
+    short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
