@@ -1794,7 +1794,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    no_wait=False,  # pylint: disable=unused-argument
-                   enable_syslog=False):
+                   enable_syslog=False,
+                   data_collection_settings=None):
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
