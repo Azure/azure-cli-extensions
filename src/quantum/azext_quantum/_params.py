@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
-# import json
 from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.util import shell_safe_json_parse
@@ -53,7 +52,6 @@ def load_arguments(self, _):
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
     auto_accept_type = CLIArgumentType(help='If specified, provider terms are accepted without an interactive Y/N prompt.')
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
-    # job_input_source_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension is based on --job-input-type')
     job_input_file_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension is based on --job-input-type')
     job_input_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to Q# project.')
     job_output_format_type = CLIArgumentType(help='The expected job output format.')
@@ -89,7 +87,6 @@ def load_arguments(self, _):
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # c.argument('job_input_source', job_input_source_type)
         c.argument('job_input_file', job_input_file_type)
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
@@ -106,7 +103,6 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # c.argument('job_input_source', job_input_source_type)
         c.argument('job_input_file', job_input_file_type)
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)

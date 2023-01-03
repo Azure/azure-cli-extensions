@@ -224,7 +224,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         raise AzureInternalError("Failed to get target information.")
     provider_id = target_info.target_id.split('.')[0]                   # <<<<< Is provider_id case sensitive? <<<<<
 
-    # Microsoft provider_id values don't follow the same pattern as all the other companies' provider_id: There might be a dot included
+    # Microsoft provider_id values don't follow the same pattern as all the other companies' provider_id values:
+    # A first-party provider ID might might have a dot in it.
     if provider_id.lower() == "microsoft":
         after_the_dot = target_info.target_id.split('.')[1]
         if after_the_dot.lower() == "simulator" or after_the_dot.lower() == "fleetmanagement":  # <<<<< Are there more names like these?
@@ -239,7 +240,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     else:
         job_type = PASS_THROUGH_JOB
 
-    # If output format is not specified, supply a default for QIR or QIO jobs
+    # If output format is not specified, supply a default for QIR or QIO jobs   # <<<<< Is this out-of-scope?
     if job_output_format is None:
         if job_type == QIR_JOB:
             job_output_format = "microsoft.quantum-results.v1"      # <<<<< This works for QCI, but is it OK for Rigetti and Quantinuum QIR? <<<<<
@@ -351,7 +352,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if entry_point is not None:
         job_params["entryPoint"] = entry_point
 
-    # Convert "count" to an integer
+    # Convert "count" to an integer     # <<<<< What about other numeric or Boolean values? Convert them too?
     if "count" in job_params.keys():
         job_params["count"] = int(job_params["count"])
 
