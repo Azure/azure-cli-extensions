@@ -5,7 +5,7 @@ Release History
 
 0.2.12
 ++++++
-* Fix the issue that subscription id input by user is ignored.
+* Fix the issue that the "--target-subscription" input by user is ignored.
 
 0.2.11
 ++++++
