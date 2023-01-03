@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.6.0
++++++
+* `az network manager security-admin-config`: Upgrade API version from 2022-01-01 to 2022-05-01.
+
 0.5.3
 +++++
 * Fix force delete behavior.
