@@ -138,35 +138,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
-    try:
-        absolute_path = os.path.abspath(os.path.dirname(__file__))
-        kubectl_client_location = install_kubectl_client()
-        helm_client_location=install_helm_client()
-        release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
-        diagnostic_checks = "Failed"
-		
-        batchv1_api_instance = kube_client.BatchV1Api()
-        corev1_api_instance = kube_client.CoreV1Api()
-        # Performing diagnoser container check
-        diagnostic_checks = precheckutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
-        # print(diagnostic_checks)
-        # If all the checks passed then display no error found
-        all_checks_passed = True
-        # for checks in diagnostic_checks:
-        if diagnostic_checks != consts.Diagnostic_Check_Passed:
-                all_checks_passed = False
-        
-
-    # Handling the user manual interrupt
-    except KeyboardInterrupt:
-        # except Exception as e: # pylint: disable=broad-except
-        #     logger.warning("An exception has occured")
-        raise ManualInterrupt('Process terminated .')
-
-    if(all_checks_passed == False):
-        logger.warning("connect prechecks failed (dns or outbound)")
-        return
-
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -545,64 +516,6 @@ def load_kube_config(kube_config, kube_context):
 def get_private_key(key_pair):
     privKey_DER = key_pair.exportKey(format='DER')
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
-
-
-def get_kubernetes_distro(api_response):  # Heuristic
-    if api_response is None:
-        return "generic"
-    try:
-        for node in api_response.items:
-            labels = node.metadata.labels
-            provider_id = str(node.spec.provider_id)
-            annotations = node.metadata.annotations
-            if labels.get("node.openshift.io/os_id"):
-                return "openshift"
-            if labels.get("kubernetes.azure.com/node-image-version"):
-                return "aks"
-            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
-                return "gke"
-            if labels.get("eks.amazonaws.com/nodegroup"):
-                return "eks"
-            if labels.get("minikube.k8s.io/version"):
-                return "minikube"
-            if provider_id.startswith("kind://"):
-                return "kind"
-            if provider_id.startswith("k3s://"):
-                return "k3s"
-            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
-                return "rancher_rke"
-        return "generic"
-    except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
-                                           raise_error=False)
-        return "generic"
-
-
-def get_kubernetes_infra(api_response):  # Heuristic
-    if api_response is None:
-        return "generic"
-    try:
-        for node in api_response.items:
-            provider_id = str(node.spec.provider_id)
-            infra = provider_id.split(':')[0]
-            if infra == "k3s" or infra == "kind":
-                return "generic"
-            if infra == "azure":
-                return "azure"
-            if infra == "gce":
-                return "gcp"
-            if infra == "aws":
-                return "aws"
-            k8s_infra = utils.validate_infrastructure_type(infra)
-            if k8s_infra is not None:
-                return k8s_infra
-        return "generic"
-    except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
-                                           raise_error=False)
-        return "generic"
 
 
 def check_linux_amd64_node(api_response):
@@ -1012,22 +925,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     api_instance = kube_client.CoreV1Api()
     node_api_response = None
 
-    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
-        kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
-
-    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
-        kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
-
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
@@ -1195,22 +1094,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
-        kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
-
-    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
-        kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
-
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
@@ -1438,22 +1323,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
-        kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
-
-    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
-        kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
-
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
@@ -1557,22 +1428,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
-        kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
-
-    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
-        kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
-
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
