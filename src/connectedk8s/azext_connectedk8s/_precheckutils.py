@@ -159,10 +159,11 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, absolute_
                 continue
 
         if (is_job_scheduled is False):
-            logger.warning("Unable to schedule the connect precheck diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
+            logger.warning("Unable to schedule the cluster precheck diagnoser job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
+            logger.warning("Unable to finish the cluster precheck diagnoser job in the kubernetes cluster. The possible reasons can be presence of lack of Resources on the cluster.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:
