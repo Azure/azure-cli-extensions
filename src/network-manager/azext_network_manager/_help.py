@@ -346,8 +346,7 @@ helps['network manager group delete'] = """
 #       - name: Create network manager security user Configuration
 #         text: |-
 #                az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
-# --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
-# --delete-existing-ns-gs true
+# --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy"
 # """
 #
 # helps['network manager security-user-config update'] = """
@@ -398,8 +397,7 @@ helps['network manager security-admin-config create'] = """
       - name: Create network manager security admin Configuration
         text: |-
                az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --apply-on None
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
 """
 
 helps['network manager security-admin-config update'] = """
