@@ -39,6 +39,12 @@ class ProjectOperations(object):
 
     models = models
 
+    def __init__(self, client, config, serializer, deserializer):
+        self._client = client
+        self._serialize = serializer
+        self._deserialize = deserializer
+        self._config = config
+
     def list(
         self,
         filter=None,  # type: Optional[str]

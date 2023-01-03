@@ -220,19 +220,19 @@ def load_command_table(self, _):
 
     # data plane
     with self.command_group(
-        "devcenter dev project", devcenter_project_dp, client_factory=cf_project_dp
+        "devcenter dev project", devcenter_project_dp
     ) as g:
         g.custom_command("list", "devcenter_project_list_dp")
         g.custom_show_command("show", "devcenter_project_show_dp")
 
     with self.command_group(
-        "devcenter dev pool", devcenter_pool_dp, client_factory=cf_pool_dp
+        "devcenter dev pool", devcenter_pool_dp
     ) as g:
         g.custom_command("list", "devcenter_pool_list_dp")
         g.custom_show_command("show", "devcenter_pool_show_dp")
 
     with self.command_group(
-        "devcenter dev dev-box", devcenter_dev_box_dp, client_factory=cf_dev_box_dp
+        "devcenter dev dev-box", devcenter_dev_box_dp
     ) as g:
         g.custom_command("list", "devcenter_dev_box_list")
         g.custom_show_command("show", "devcenter_dev_box_show")
@@ -254,30 +254,27 @@ def load_command_table(self, _):
         g.custom_command('skip-upcoming-action', 'devcenter_dev_box_skip_upcoming_action')
 
     with self.command_group(
-        "devcenter dev artifact", devcenter_artifact_dp, client_factory=cf_artifact_dp
+        "devcenter dev artifact", devcenter_artifact_dp
     ) as g:
         g.custom_command("list", "devcenter_artifact_list")
 
     with self.command_group(
         "devcenter dev catalog-item",
-        devcenter_catalog_item_dp,
-        client_factory=cf_catalog_item_dp,
+        devcenter_catalog_item_dp
     ) as g:
         g.custom_command("list", "devcenter_catalog_item_list")
         g.custom_show_command("show", "devcenter_catalog_item_show")
 
     with self.command_group(
         "devcenter dev catalog-item-version",
-        devcenter_catalog_item_version_dp,
-        client_factory=cf_catalog_item_version_dp,
+        devcenter_catalog_item_version_dp
     ) as g:
         g.custom_command("list", "devcenter_catalog_item_version_list")
         g.custom_show_command("show", "devcenter_catalog_item_version_show")
 
     with self.command_group(
         "devcenter dev environment",
-        devcenter_environment_dp,
-        client_factory=cf_environment_dp,
+        devcenter_environment_dp
     ) as g:
         g.custom_command("list", "devcenter_environment_list")
         g.custom_show_command("show", "devcenter_environment_show")
@@ -307,19 +304,18 @@ def load_command_table(self, _):
 
     with self.command_group(
         "devcenter dev environment-type",
-        devcenter_environment_type_dp,
-        client_factory=cf_environment_type_dp,
+        devcenter_environment_type_dp
     ) as g:
         g.custom_command("list", "devcenter_environment_type_list_dp")
 
     with self.command_group(
-        "devcenter dev schedule", devcenter_schedule_dp, client_factory=cf_schedule_dp
+        "devcenter dev schedule", devcenter_schedule_dp
     ) as g:
         g.custom_command("list", "devcenter_schedule_list_dp")
         g.custom_show_command("show", "devcenter_schedule_show_dp")
 
     with self.command_group(
-        "devcenter dev notification setting", devcenter_notification_setting_dp, client_factory=cf_notification_setting_dp
+        "devcenter dev notification setting", devcenter_notification_setting_dp
     ) as g:
         g.custom_command("list-allowed-culture", "devcenter_notification_setting_list_allowed_culture_dp")
         g.custom_show_command("show", "devcenter_notification_setting_show_dp")
