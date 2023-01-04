@@ -26,13 +26,22 @@ class RecommendThread(threading.Thread):
     def __init__(self, cli_ctx, rec_path, last_exec, on_prepared):
         super().__init__()
         self.cli_ctx = cli_ctx
-        self.rec_path = rec_path
         self.on_prepared = on_prepared
-        self.last_exec = last_exec
+        self.command_history = rec_path.get_cmd_history(25)
+        if last_exec:
+            self.command_history.append(last_exec)
+        self.processed_exception = rec_path.get_result_summary() if not last_exec else None
         self.result = None
 
     def run(self) -> None:
-        self.result = get_recommend(self.cli_ctx, self.rec_path, self.last_exec)
+        try:
+            recommends = get_recommend_from_api([json.dumps(cmd) for cmd in self.command_history], 1,
+                                                self.cli_ctx.config.getint('next', 'num_limit', fallback=5),
+                                                error_info=self.processed_exception)
+        except RecommendationError:
+            self.result = []
+        else:
+            self.result = [rec for rec in recommends]
         self.on_prepared()
 
 
@@ -53,29 +62,43 @@ class Recommender:
     def enabled(self):
         return self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True)
 
-    def feedback(self):
+    def _feedback_command(self, command):
         """
         Send User Feedback to telemetry.
         This should only be called between command execution and recommendation update.
         """
-        if self.cur_thread and not self.cur_thread.is_alive() and self.rec_path.commands:
-            latest_command = self.rec_path.commands[-1]["command"]
+        if self.cur_thread and not self.cur_thread.is_alive():
             recommendations = self.cur_thread.result
-            if not recommendations:
-                send_feedback(-1, [latest_command], recommendations, None)
+            trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
+            processed_exception = self.cur_thread.processed_exception
+            if not recommendations or not command:
+                send_feedback(-1, trigger_commands, processed_exception, recommendations, rec=None)
                 return
             for idx, rec in enumerate(recommendations):
                 if rec['type'] != RecommendType.Command:
                     continue
-                if re.sub(r'^az ', '', re.sub(r'\s+', ' ', latest_command)).strip().startswith(rec['command']):
-                    send_feedback(idx, [latest_command], recommendations, rec)
+                if re.sub(r'^az ', '', re.sub(r'\s+', ' ', command)).strip().startswith(rec['command']):
+                    send_feedback(f'a{idx+1}', trigger_commands, processed_exception, recommendations, rec)
                     return
+            send_feedback(0, trigger_commands, processed_exception, recommendations, rec=None)
 
-    def update_executing(self, cmd: str):
+    def feedback_scenario(self, scenario_idx, scenario=None):
+        if self.cur_thread and not self.cur_thread.is_alive():
+            recommendations = self.cur_thread.result
+            trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
+            processed_exception = self.cur_thread.processed_exception
+            if not recommendations or not scenario:
+                send_feedback(-1, trigger_commands, processed_exception, recommendations, rec=None)
+            else:
+                send_feedback(f'b{scenario_idx+1}', trigger_commands, processed_exception, recommendations, rec=scenario)
+
+    def update_executing(self, cmd: str, feedback=True):
         if not self.enabled:
             return
         command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
         param = sorted([p for p in cmd.split() if p.startswith('-')])
+        if feedback:
+            self._feedback_command(command)
         self.executing_command = {'command': command, 'arguments': param}
         self._update()
 
@@ -163,24 +186,6 @@ class RecommendPath:
         return self.commands[-top_num:]
 
 
-def get_recommend(cli_ctx, rec_path, last_exec=None, top_num=5):
-    # Upload all execution commands of local record for personalized analysis
-    command_history = get_command_list_from_path(rec_path, top_num)
-    if last_exec:
-        command_history.append(json.dumps(last_exec))
-
-    processed_exception = rec_path.get_result_summary() if not last_exec else None
-
-    try:
-        recommends = get_recommend_from_api(command_history[-5:], 1,
-                                            cli_ctx.config.getint('next', 'num_limit', fallback=5),
-                                            error_info=processed_exception)
-    except RecommendationError:
-        return []
-
-    return [rec for rec in recommends]
-
-
 def get_command_list_from_history(history):
     commands = history.strings
 
@@ -197,12 +202,6 @@ def get_command_list_from_history(history):
     commands = [re.sub(r"^az ", "", command).strip() for command in commands if valid_command(command)]
     commands = [command.split(' -')[0] for command in commands]
     commands = [json.dumps({"command": command}) for command in commands]
-    return commands
-
-
-def get_command_list_from_path(rec_path, top_num):
-    commands = rec_path.get_cmd_history(top_num)
-    commands = [json.dumps(command) for command in commands]
     return commands
 
 
@@ -247,15 +246,17 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
     return recommends
 
 
-def send_feedback(option_idx, latest_commands, recommends=None, rec=None):
+def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, rec=None):
     feedback_data = ['1', str(option_idx)]
 
     trigger_commands = latest_commands[-1]
     if len(latest_commands) > 1:
         trigger_commands = latest_commands[-2] + "," + trigger_commands
     feedback_data.append(trigger_commands)
-    # processed_exception
-    feedback_data.append(' ')
+    if processed_exception and processed_exception != '':
+        feedback_data.append(processed_exception)
+    else:
+        feedback_data.append(' ')
 
     has_personalized_rec = False
     if recommends:

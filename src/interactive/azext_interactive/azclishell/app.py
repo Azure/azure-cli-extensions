@@ -508,6 +508,7 @@ class AzInteractiveShell(object):
             return
         if 0 <= num < len(self.recommender.get_scenarios() or []):
             scenario = self.recommender.get_scenarios()[num]
+            self.recommender.feedback_scenario(num, scenario)
         else:
             print('Invalid example number', file=self.output)
             return
@@ -554,7 +555,7 @@ class AzInteractiveShell(object):
                 cmd = document.text
                 self.history.append(cmd)
                 telemetry.start()
-                self.recommender.update_executing(cmd)
+                self.recommender.update_executing(cmd, feedback=False)
                 self.cli_execute(cmd)
                 if self.last_exit and self.last_exit != 0:
                     telemetry.set_failure()
