@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item recovery-point list",
+    "site-recovery protected-item list-target-compute-size",
 )
-class List(AAZCommand):
-    """List the available recovery points for a replication protected item.
+class ListTargetComputeSize(AAZCommand):
+    """List the available target compute sizes for a replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/recoverypoints", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/targetcomputesizes", "2022-08-01"],
         ]
     }
 
@@ -42,7 +42,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The fabric name.",
+            help="Fabric name.",
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
@@ -51,8 +51,8 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["--protected-item", "--replicated-protected-item-name"],
-            help="The replication protected item name.",
+            options=["-n", "--replicated-protected-item-name"],
+            help="Replication protected item name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -67,7 +67,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RecoveryPointsListByReplicationProtectedItems(ctx=self.ctx)()
+        self.TargetComputeSizesListByReplicationProtectedItems(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +83,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class RecoveryPointsListByReplicationProtectedItems(AAZHttpOperation):
+    class TargetComputeSizesListByReplicationProtectedItems(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,7 +97,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/recoveryPoints",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/targetComputeSizes",
                 **self.url_parameters
             )
 
@@ -185,60 +185,55 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element.id = AAZStrType()
+            _element.name = AAZStrType()
             _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element.type = AAZStrType()
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.provider_specific_details = AAZObjectType(
-                serialized_name="providerSpecificDetails",
+            properties.cpu_cores_count = AAZIntType(
+                serialized_name="cpuCoresCount",
             )
-            properties.recovery_point_time = AAZStrType(
-                serialized_name="recoveryPointTime",
+            properties.errors = AAZListType()
+            properties.friendly_name = AAZStrType(
+                serialized_name="friendlyName",
             )
-            properties.recovery_point_type = AAZStrType(
-                serialized_name="recoveryPointType",
+            properties.high_iops_supported = AAZStrType(
+                serialized_name="highIopsSupported",
             )
-
-            provider_specific_details = cls._schema_on_200.value.Element.properties.provider_specific_details
-            provider_specific_details.instance_type = AAZStrType(
-                serialized_name="instanceType",
-                flags={"required": True},
+            properties.hyper_v_generations = AAZListType(
+                serialized_name="hyperVGenerations",
             )
-
-            disc_a2_a = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
-            disc_a2_a.disks = AAZListType()
-            disc_a2_a.recovery_point_sync_type = AAZStrType(
-                serialized_name="recoveryPointSyncType",
+            properties.max_data_disk_count = AAZIntType(
+                serialized_name="maxDataDiskCount",
             )
-
-            disks = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A").disks
-            disks.Element = AAZStrType()
-
-            disc_in_mage_azure_v2 = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
-            disc_in_mage_azure_v2.is_multi_vm_sync_point = AAZStrType(
-                serialized_name="isMultiVmSyncPoint",
+            properties.max_nics_count = AAZIntType(
+                serialized_name="maxNicsCount",
             )
-
-            disc_in_mage_rcm = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
-            disc_in_mage_rcm.is_multi_vm_sync_point = AAZStrType(
-                serialized_name="isMultiVmSyncPoint",
+            properties.memory_in_gb = AAZFloatType(
+                serialized_name="memoryInGB",
+            )
+            properties.name = AAZStrType()
+            properties.v_cp_us_available = AAZIntType(
+                serialized_name="vCPUsAvailable",
                 flags={"read_only": True},
             )
+
+            errors = cls._schema_on_200.value.Element.properties.errors
+            errors.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.errors.Element
+            _element.message = AAZStrType()
+            _element.severity = AAZStrType()
+
+            hyper_v_generations = cls._schema_on_200.value.Element.properties.hyper_v_generations
+            hyper_v_generations.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ListTargetComputeSizeHelper:
+    """Helper class for ListTargetComputeSize"""
 
 
-__all__ = ["List"]
+__all__ = ["ListTargetComputeSize"]

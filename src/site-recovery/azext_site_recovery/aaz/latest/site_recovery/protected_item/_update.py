@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item update",
+    "site-recovery protected-item update",
 )
 class Update(AAZCommand):
     """Update operation to create an ASR replication protected item (Enable replication).

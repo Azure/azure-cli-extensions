@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item remove-disk",
+    "site-recovery protected-item repair-replication",
 )
-class RemoveDisk(AAZCommand):
-    """Operation to remove disk(s) from the replication protected item.
+class RepairReplication(AAZCommand):
+    """The operation to start resynchronize/repair replication for a replication protected item requiring resynchronization.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/removedisks", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/repairreplication", "2022-08-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class RemoveDisk(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Unique fabric name.",
+            help="The name of the fabric.",
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
@@ -65,41 +65,11 @@ class RemoveDisk(AAZCommand):
             help="The name of the recovery services vault.",
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-details", "--provider-specific-details"],
-            arg_group="Properties",
-            help="The ReplicationProviderInput. For HyperVReplicaAzure provider, it will be AzureEnableProtectionInput object. For San provider, it will be SanEnableProtectionInput object. For HyperVReplicaAzure provider, it can be null.",
-        )
-
-        provider_specific_details = cls._args_schema.provider_specific_details
-        provider_specific_details.a2_a = AAZObjectArg(
-            options=["a2-a"],
-        )
-
-        a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.vm_disks_uris = AAZListArg(
-            options=["vm-disks-uris"],
-            help="The list of vm disk vhd URIs.",
-        )
-        a2_a.vm_managed_disks_ids = AAZListArg(
-            options=["vm-managed-disks-ids"],
-            help="The list of vm managed disk Ids.",
-        )
-
-        vm_disks_uris = cls._args_schema.provider_specific_details.a2_a.vm_disks_uris
-        vm_disks_uris.Element = AAZStrArg()
-
-        vm_managed_disks_ids = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks_ids
-        vm_managed_disks_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsRemoveDisks(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsRepairReplication(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -114,7 +84,7 @@ class RemoveDisk(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsRemoveDisks(AAZHttpOperation):
+    class ReplicationProtectedItemsRepairReplication(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -144,7 +114,7 @@ class RemoveDisk(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/removeDisks",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/repairReplication",
                 **self.url_parameters
             )
 
@@ -200,46 +170,10 @@ class RemoveDisk(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details")
-
-            provider_specific_details = _builder.get(".properties.providerSpecificDetails")
-            if provider_specific_details is not None:
-                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.discriminate_by("instanceType", "A2A")
-
-            disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
-            if disc_a2_a is not None:
-                disc_a2_a.set_prop("vmDisksUris", AAZListType, ".a2_a.vm_disks_uris")
-                disc_a2_a.set_prop("vmManagedDisksIds", AAZListType, ".a2_a.vm_managed_disks_ids")
-
-            vm_disks_uris = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisksUris")
-            if vm_disks_uris is not None:
-                vm_disks_uris.set_elements(AAZStrType, ".")
-
-            vm_managed_disks_ids = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisksIds")
-            if vm_managed_disks_ids is not None:
-                vm_managed_disks_ids.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -379,7 +313,7 @@ class RemoveDisk(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_health_error_read(health_errors.Element)
+            _RepairReplicationHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -407,7 +341,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _RepairReplicationHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -419,7 +353,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _RepairReplicationHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -470,7 +404,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _RepairReplicationHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -511,7 +445,7 @@ class RemoveDisk(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _RepairReplicationHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -741,7 +675,7 @@ class RemoveDisk(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -791,7 +725,7 @@ class RemoveDisk(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _RepairReplicationHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -813,17 +747,17 @@ class RemoveDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _RepairReplicationHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _RepairReplicationHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -845,11 +779,11 @@ class RemoveDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _RepairReplicationHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -862,7 +796,7 @@ class RemoveDisk(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _RepairReplicationHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -954,7 +888,7 @@ class RemoveDisk(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _RepairReplicationHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -1007,13 +941,13 @@ class RemoveDisk(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _RepairReplicationHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1035,11 +969,11 @@ class RemoveDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _RepairReplicationHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1118,7 +1052,7 @@ class RemoveDisk(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _RepairReplicationHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1266,11 +1200,11 @@ class RemoveDisk(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_health_error_read(validation_errors.Element)
+            _RepairReplicationHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1476,7 +1410,7 @@ class RemoveDisk(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _RepairReplicationHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1642,11 +1576,11 @@ class RemoveDisk(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_health_error_read(validation_errors.Element)
+            _RepairReplicationHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RepairReplicationHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2044,7 +1978,7 @@ class RemoveDisk(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _RemoveDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _RepairReplicationHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2060,7 +1994,7 @@ class RemoveDisk(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _RemoveDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _RepairReplicationHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2363,7 +2297,7 @@ class RemoveDisk(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _RemoveDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _RepairReplicationHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2379,7 +2313,7 @@ class RemoveDisk(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _RemoveDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _RepairReplicationHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2405,8 +2339,8 @@ class RemoveDisk(AAZCommand):
             return cls._schema_on_200
 
 
-class _RemoveDiskHelper:
-    """Helper class for RemoveDisk"""
+class _RepairReplicationHelper:
+    """Helper class for RepairReplication"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -2962,4 +2896,4 @@ class _RemoveDiskHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["RemoveDisk"]
+__all__ = ["RepairReplication"]

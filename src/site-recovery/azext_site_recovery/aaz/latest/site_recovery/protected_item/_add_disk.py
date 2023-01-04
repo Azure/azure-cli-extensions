@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item create",
+    "site-recovery protected-item add-disk",
 )
-class Create(AAZCommand):
-    """Create operation to create an ASR replication protected item (Enable replication).
+class AddDisk(AAZCommand):
+    """Operation to add disks(s) to the replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/adddisks", "2022-08-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Name of the fabric.",
+            help="Unique fabric name.",
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
@@ -53,8 +53,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["-n", "--name", "--replicated-protected-item-name"],
-            help="A name for the replication protected item.",
+            options=["-n", "--replicated-protected-item-name"],
+            help="Replication protected item name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -69,16 +69,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.policy_id = AAZStrArg(
-            options=["--policy-id"],
-            arg_group="Properties",
-            help="The Policy Id.",
-        )
-        _args_schema.protectable_item_id = AAZStrArg(
-            options=["--protectable-item-id"],
-            arg_group="Properties",
-            help="The protectable item Id.",
-        )
         _args_schema.provider_specific_details = AAZObjectArg(
             options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
@@ -89,89 +79,8 @@ class Create(AAZCommand):
         provider_specific_details.a2_a = AAZObjectArg(
             options=["a2-a"],
         )
-        provider_specific_details.a2_a_cross_cluster_migration = AAZObjectArg(
-            options=["a2-a-cross-cluster-migration"],
-        )
-        provider_specific_details.hyper_v_replica_azure = AAZObjectArg(
-            options=["hyper-v-replica-azure"],
-        )
-        provider_specific_details.in_mage = AAZObjectArg(
-            options=["in-mage"],
-        )
-        provider_specific_details.in_mage_azure_v2 = AAZObjectArg(
-            options=["in-mage-azure-v2"],
-        )
-        provider_specific_details.in_mage_rcm = AAZObjectArg(
-            options=["in-mage-rcm"],
-        )
 
         a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.disk_encryption_info = AAZObjectArg(
-            options=["disk-encryption-info"],
-            help="The recovery disk encryption information (for two pass flows).",
-        )
-        cls._build_args_disk_encryption_info_create(a2_a.disk_encryption_info)
-        a2_a.fabric_object_id = AAZStrArg(
-            options=["fabric-object-id"],
-            help="The fabric specific object Id of the virtual machine.",
-            required=True,
-        )
-        a2_a.multi_vm_group_id = AAZStrArg(
-            options=["multi-vm-group-id"],
-            help="The multi vm group id.",
-        )
-        a2_a.multi_vm_group_name = AAZStrArg(
-            options=["multi-vm-group-name"],
-            help="The multi vm group name.",
-        )
-        a2_a.recovery_availability_set_id = AAZStrArg(
-            options=["recovery-availability-set-id"],
-            help="The recovery availability set Id.",
-        )
-        a2_a.recovery_availability_zone = AAZStrArg(
-            options=["recovery-availability-zone"],
-            help="The recovery availability zone.",
-        )
-        a2_a.recovery_azure_network_id = AAZStrArg(
-            options=["recovery-azure-network-id"],
-            help="The recovery Azure virtual network ARM id.",
-        )
-        a2_a.recovery_boot_diag_storage_account_id = AAZStrArg(
-            options=["recovery-boot-diag-storage-account-id"],
-            help="The boot diagnostic storage account.",
-        )
-        a2_a.recovery_capacity_reservation_group_id = AAZStrArg(
-            options=["recovery-capacity-reservation-group-id"],
-            help="The recovery capacity reservation group Id.",
-        )
-        a2_a.recovery_cloud_service_id = AAZStrArg(
-            options=["recovery-cloud-service-id"],
-            help="The recovery cloud service Id. Valid for V1 scenarios.",
-        )
-        a2_a.recovery_container_id = AAZStrArg(
-            options=["recovery-container-id"],
-            help="The recovery container Id.",
-        )
-        a2_a.recovery_extended_location = AAZObjectArg(
-            options=["recovery-extended-location"],
-            help="The recovery extended location.",
-        )
-        a2_a.recovery_proximity_placement_group_id = AAZStrArg(
-            options=["recovery-proximity-placement-group-id"],
-            help="The recovery proximity placement group Id.",
-        )
-        a2_a.recovery_resource_group_id = AAZStrArg(
-            options=["recovery-resource-group-id"],
-            help="The recovery resource group Id. Valid for V2 scenarios.",
-        )
-        a2_a.recovery_subnet_name = AAZStrArg(
-            options=["recovery-subnet-name"],
-            help="The recovery subnet name.",
-        )
-        a2_a.recovery_virtual_machine_scale_set_id = AAZStrArg(
-            options=["recovery-virtual-machine-scale-set-id"],
-            help="The virtual machine scale set Id.",
-        )
         a2_a.vm_disks = AAZListArg(
             options=["vm-disks"],
             help="The list of vm disk details.",
@@ -179,19 +88,6 @@ class Create(AAZCommand):
         a2_a.vm_managed_disks = AAZListArg(
             options=["vm-managed-disks"],
             help="The list of vm managed disk details.",
-        )
-
-        recovery_extended_location = cls._args_schema.provider_specific_details.a2_a.recovery_extended_location
-        recovery_extended_location.name = AAZStrArg(
-            options=["name"],
-            help="The name of the extended location.",
-            required=True,
-        )
-        recovery_extended_location.type = AAZStrArg(
-            options=["type"],
-            help="The extended location type.",
-            required=True,
-            enum={"EdgeZone": "EdgeZone"},
         )
 
         vm_disks = cls._args_schema.provider_specific_details.a2_a.vm_disks
@@ -222,7 +118,6 @@ class Create(AAZCommand):
             options=["disk-encryption-info"],
             help="The recovery disk encryption information (for one / single pass flows).",
         )
-        cls._build_args_disk_encryption_info_create(_element.disk_encryption_info)
         _element.disk_id = AAZStrArg(
             options=["disk-id"],
             help="The disk Id.",
@@ -251,541 +146,17 @@ class Create(AAZCommand):
             help="The target disk type after failover. Its an optional value and will be same as source disk type if not user provided.",
         )
 
-        a2_a_cross_cluster_migration = cls._args_schema.provider_specific_details.a2_a_cross_cluster_migration
-        a2_a_cross_cluster_migration.fabric_object_id = AAZStrArg(
-            options=["fabric-object-id"],
-            help="The fabric specific object Id of the virtual machine.",
-        )
-        a2_a_cross_cluster_migration.recovery_container_id = AAZStrArg(
-            options=["recovery-container-id"],
-            help="The recovery container Id.",
-        )
-
-        hyper_v_replica_azure = cls._args_schema.provider_specific_details.hyper_v_replica_azure
-        hyper_v_replica_azure.disk_encryption_set_id = AAZStrArg(
-            options=["disk-encryption-set-id"],
-            help="The DiskEncryptionSet ARM Id.",
-        )
-        hyper_v_replica_azure.disk_type = AAZStrArg(
-            options=["disk-type"],
-            help="The DiskType.",
-            enum={"Premium_LRS": "Premium_LRS", "StandardSSD_LRS": "StandardSSD_LRS", "Standard_LRS": "Standard_LRS"},
-        )
-        hyper_v_replica_azure.disks_to_include = AAZListArg(
-            options=["disks-to-include"],
-            help="The list of VHD Ids of disks to be protected.",
-        )
-        hyper_v_replica_azure.disks_to_include_for_managed_disks = AAZListArg(
-            options=["disks-to-include-for-managed-disks"],
-            help="The disks to include list for managed disks.",
-        )
-        hyper_v_replica_azure.enable_rdp_on_target_option = AAZStrArg(
-            options=["enable-rdp-on-target-option"],
-            help="The selected option to enable RDP\SSH on target vm after failover. String value of SrsDataContract.EnableRDPOnTargetOption enum.",
-        )
-        hyper_v_replica_azure.hv_host_vm_id = AAZStrArg(
-            options=["hv-host-vm-id"],
-            help="The Hyper-V host VM Id.",
-        )
-        hyper_v_replica_azure.license_type = AAZStrArg(
-            options=["license-type"],
-            help="License type.",
-            enum={"NoLicenseType": "NoLicenseType", "NotSpecified": "NotSpecified", "WindowsServer": "WindowsServer"},
-        )
-        hyper_v_replica_azure.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The storage account to be used for logging during replication.",
-        )
-        hyper_v_replica_azure.os_type = AAZStrArg(
-            options=["os-type"],
-            help="The OS type associated with VM.",
-        )
-        hyper_v_replica_azure.seed_managed_disk_tags = AAZDictArg(
-            options=["seed-managed-disk-tags"],
-            help="The tags for the seed managed disks.",
-        )
-        hyper_v_replica_azure.sql_server_license_type = AAZStrArg(
-            options=["sql-server-license-type"],
-            help="The SQL Server license type.",
-            enum={"AHUB": "AHUB", "NoLicenseType": "NoLicenseType", "NotSpecified": "NotSpecified", "PAYG": "PAYG"},
-        )
-        hyper_v_replica_azure.target_availability_set_id = AAZStrArg(
-            options=["target-availability-set-id"],
-            help="The target availability set ARM Id for resource manager deployment.",
-        )
-        hyper_v_replica_azure.target_availability_zone = AAZStrArg(
-            options=["target-availability-zone"],
-            help="The target availability zone.",
-        )
-        hyper_v_replica_azure.target_azure_network_id = AAZStrArg(
-            options=["target-azure-network-id"],
-            help="The selected target Azure network Id.",
-        )
-        hyper_v_replica_azure.target_azure_subnet_id = AAZStrArg(
-            options=["target-azure-subnet-id"],
-            help="The selected target Azure subnet Id.",
-        )
-        hyper_v_replica_azure.target_azure_v1_resource_group_id = AAZStrArg(
-            options=["target-azure-v1-resource-group-id"],
-            help="The Id of the target resource group (for classic deployment) in which the failover VM is to be created.",
-        )
-        hyper_v_replica_azure.target_azure_v2_resource_group_id = AAZStrArg(
-            options=["target-azure-v2-resource-group-id"],
-            help="The Id of the target resource group (for resource manager deployment) in which the failover VM is to be created.",
-        )
-        hyper_v_replica_azure.target_azure_vm_name = AAZStrArg(
-            options=["target-azure-vm-name"],
-            help="The target azure VM Name.",
-        )
-        hyper_v_replica_azure.target_managed_disk_tags = AAZDictArg(
-            options=["target-managed-disk-tags"],
-            help="The tags for the target managed disks.",
-        )
-        hyper_v_replica_azure.target_nic_tags = AAZDictArg(
-            options=["target-nic-tags"],
-            help="The tags for the target NICs.",
-        )
-        hyper_v_replica_azure.target_proximity_placement_group_id = AAZStrArg(
-            options=["target-proximity-placement-group-id"],
-            help="The proximity placement group ARM Id.",
-        )
-        hyper_v_replica_azure.target_storage_account_id = AAZStrArg(
-            options=["target-storage-account-id"],
-            help="The storage account Id.",
-        )
-        hyper_v_replica_azure.target_vm_size = AAZStrArg(
-            options=["target-vm-size"],
-            help="The target VM size.",
-        )
-        hyper_v_replica_azure.target_vm_tags = AAZDictArg(
-            options=["target-vm-tags"],
-            help="The target VM tags.",
-        )
-        hyper_v_replica_azure.use_managed_disks = AAZStrArg(
-            options=["use-managed-disks"],
-            help="A value indicating whether managed disks should be used during failover.",
-        )
-        hyper_v_replica_azure.use_managed_disks_for_replication = AAZStrArg(
-            options=["use-managed-disks-for-replication"],
-            help="A value indicating whether managed disks should be used during replication.",
-        )
-        hyper_v_replica_azure.vhd_id = AAZStrArg(
-            options=["vhd-id"],
-            help="The OS disk VHD id associated with VM.",
-        )
-        hyper_v_replica_azure.vm_name = AAZStrArg(
-            options=["vm-name"],
-            help="The VM Name.",
-        )
-
-        disks_to_include = cls._args_schema.provider_specific_details.hyper_v_replica_azure.disks_to_include
-        disks_to_include.Element = AAZStrArg()
-
-        disks_to_include_for_managed_disks = cls._args_schema.provider_specific_details.hyper_v_replica_azure.disks_to_include_for_managed_disks
-        disks_to_include_for_managed_disks.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.hyper_v_replica_azure.disks_to_include_for_managed_disks.Element
-        _element.disk_encryption_set_id = AAZStrArg(
-            options=["disk-encryption-set-id"],
-            help="The DiskEncryptionSet ARM ID.",
-        )
-        _element.disk_id = AAZStrArg(
-            options=["disk-id"],
-            help="The DiskId.",
-        )
-        _element.disk_type = AAZStrArg(
-            options=["disk-type"],
-            help="The DiskType.",
-            enum={"Premium_LRS": "Premium_LRS", "StandardSSD_LRS": "StandardSSD_LRS", "Standard_LRS": "Standard_LRS"},
-        )
-        _element.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The LogStorageAccountId.",
-        )
-
-        seed_managed_disk_tags = cls._args_schema.provider_specific_details.hyper_v_replica_azure.seed_managed_disk_tags
-        seed_managed_disk_tags.Element = AAZStrArg()
-
-        target_managed_disk_tags = cls._args_schema.provider_specific_details.hyper_v_replica_azure.target_managed_disk_tags
-        target_managed_disk_tags.Element = AAZStrArg()
-
-        target_nic_tags = cls._args_schema.provider_specific_details.hyper_v_replica_azure.target_nic_tags
-        target_nic_tags.Element = AAZStrArg()
-
-        target_vm_tags = cls._args_schema.provider_specific_details.hyper_v_replica_azure.target_vm_tags
-        target_vm_tags.Element = AAZStrArg()
-
-        in_mage = cls._args_schema.provider_specific_details.in_mage
-        in_mage.datastore_name = AAZStrArg(
-            options=["datastore-name"],
-            help="The target datastore name.",
-        )
-        in_mage.disk_exclusion_input = AAZObjectArg(
-            options=["disk-exclusion-input"],
-            help="The enable disk exclusion input.",
-        )
-        in_mage.disks_to_include = AAZListArg(
-            options=["disks-to-include"],
-            help="The disks to include list.",
-        )
-        in_mage.master_target_id = AAZStrArg(
-            options=["master-target-id"],
-            help="The Master Target Id.",
-            required=True,
-        )
-        in_mage.multi_vm_group_id = AAZStrArg(
-            options=["multi-vm-group-id"],
-            help="The multi VM group Id.",
-            required=True,
-        )
-        in_mage.multi_vm_group_name = AAZStrArg(
-            options=["multi-vm-group-name"],
-            help="The multi VM group name.",
-            required=True,
-        )
-        in_mage.process_server_id = AAZStrArg(
-            options=["process-server-id"],
-            help="The Process Server Id.",
-            required=True,
-        )
-        in_mage.retention_drive = AAZStrArg(
-            options=["retention-drive"],
-            help="The retention drive to use on the MT.",
-            required=True,
-        )
-        in_mage.run_as_account_id = AAZStrArg(
-            options=["run-as-account-id"],
-            help="The CS account Id.",
-        )
-        in_mage.vm_friendly_name = AAZStrArg(
-            options=["vm-friendly-name"],
-            help="The VM Name.",
-        )
-
-        disk_exclusion_input = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input
-        disk_exclusion_input.disk_signature_options = AAZListArg(
-            options=["disk-signature-options"],
-            help="The guest disk signature based option for disk exclusion.",
-        )
-        disk_exclusion_input.volume_options = AAZListArg(
-            options=["volume-options"],
-            help="The volume label based option for disk exclusion.",
-        )
-
-        disk_signature_options = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.disk_signature_options
-        disk_signature_options.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.disk_signature_options.Element
-        _element.disk_signature = AAZStrArg(
-            options=["disk-signature"],
-            help="The guest signature of disk to be excluded from replication.",
-        )
-
-        volume_options = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.volume_options
-        volume_options.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.volume_options.Element
-        _element.only_exclude_if_single_volume = AAZStrArg(
-            options=["only-exclude-if-single-volume"],
-            help="The value indicating whether to exclude multi volume disk or not. If a disk has multiple volumes and one of the volume has label matching with VolumeLabel this disk will be excluded from replication if OnlyExcludeIfSingleVolume is false.",
-        )
-        _element.volume_label = AAZStrArg(
-            options=["volume-label"],
-            help="The volume label. The disk having any volume with this label will be excluded from replication.",
-        )
-
-        disks_to_include = cls._args_schema.provider_specific_details.in_mage.disks_to_include
-        disks_to_include.Element = AAZStrArg()
-
-        in_mage_azure_v2 = cls._args_schema.provider_specific_details.in_mage_azure_v2
-        in_mage_azure_v2.disk_encryption_set_id = AAZStrArg(
-            options=["disk-encryption-set-id"],
-            help="The DiskEncryptionSet ARM Id.",
-        )
-        in_mage_azure_v2.disk_type = AAZStrArg(
-            options=["disk-type"],
-            help="The DiskType.",
-            enum={"Premium_LRS": "Premium_LRS", "StandardSSD_LRS": "StandardSSD_LRS", "Standard_LRS": "Standard_LRS"},
-        )
-        in_mage_azure_v2.disks_to_include = AAZListArg(
-            options=["disks-to-include"],
-            help="The disks to include list.",
-        )
-        in_mage_azure_v2.enable_rdp_on_target_option = AAZStrArg(
-            options=["enable-rdp-on-target-option"],
-            help="The selected option to enable RDP\SSH on target VM after failover. String value of SrsDataContract.EnableRDPOnTargetOption enum.",
-        )
-        in_mage_azure_v2.license_type = AAZStrArg(
-            options=["license-type"],
-            help="License type.",
-            enum={"NoLicenseType": "NoLicenseType", "NotSpecified": "NotSpecified", "WindowsServer": "WindowsServer"},
-        )
-        in_mage_azure_v2.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The storage account to be used for logging during replication.",
-        )
-        in_mage_azure_v2.master_target_id = AAZStrArg(
-            options=["master-target-id"],
-            help="The Master target Id.",
-        )
-        in_mage_azure_v2.multi_vm_group_id = AAZStrArg(
-            options=["multi-vm-group-id"],
-            help="The multi VM group Id.",
-        )
-        in_mage_azure_v2.multi_vm_group_name = AAZStrArg(
-            options=["multi-vm-group-name"],
-            help="The multi VM group name.",
-        )
-        in_mage_azure_v2.process_server_id = AAZStrArg(
-            options=["process-server-id"],
-            help="The Process Server Id.",
-        )
-        in_mage_azure_v2.run_as_account_id = AAZStrArg(
-            options=["run-as-account-id"],
-            help="The CS account Id.",
-        )
-        in_mage_azure_v2.seed_managed_disk_tags = AAZDictArg(
-            options=["seed-managed-disk-tags"],
-            help="The tags for the seed managed disks.",
-        )
-        in_mage_azure_v2.sql_server_license_type = AAZStrArg(
-            options=["sql-server-license-type"],
-            help="The SQL Server license type.",
-            enum={"AHUB": "AHUB", "NoLicenseType": "NoLicenseType", "NotSpecified": "NotSpecified", "PAYG": "PAYG"},
-        )
-        in_mage_azure_v2.storage_account_id = AAZStrArg(
-            options=["storage-account-id"],
-            help="The storage account Id.",
-        )
-        in_mage_azure_v2.target_availability_set_id = AAZStrArg(
-            options=["target-availability-set-id"],
-            help="The target availability set ARM Id for resource manager deployment.",
-        )
-        in_mage_azure_v2.target_availability_zone = AAZStrArg(
-            options=["target-availability-zone"],
-            help="The target availability zone.",
-        )
-        in_mage_azure_v2.target_azure_network_id = AAZStrArg(
-            options=["target-azure-network-id"],
-            help="The selected target Azure network Id.",
-        )
-        in_mage_azure_v2.target_azure_subnet_id = AAZStrArg(
-            options=["target-azure-subnet-id"],
-            help="The selected target Azure subnet Id.",
-        )
-        in_mage_azure_v2.target_azure_v1_resource_group_id = AAZStrArg(
-            options=["target-azure-v1-resource-group-id"],
-            help="The Id of the target resource group (for classic deployment) in which the failover VM is to be created.",
-        )
-        in_mage_azure_v2.target_azure_v2_resource_group_id = AAZStrArg(
-            options=["target-azure-v2-resource-group-id"],
-            help="The Id of the target resource group (for resource manager deployment) in which the failover VM is to be created.",
-        )
-        in_mage_azure_v2.target_azure_vm_name = AAZStrArg(
-            options=["target-azure-vm-name"],
-            help="The target azure VM Name.",
-        )
-        in_mage_azure_v2.target_managed_disk_tags = AAZDictArg(
-            options=["target-managed-disk-tags"],
-            help="The tags for the target managed disks.",
-        )
-        in_mage_azure_v2.target_nic_tags = AAZDictArg(
-            options=["target-nic-tags"],
-            help="The tags for the target NICs.",
-        )
-        in_mage_azure_v2.target_proximity_placement_group_id = AAZStrArg(
-            options=["target-proximity-placement-group-id"],
-            help="The proximity placement group ARM Id.",
-        )
-        in_mage_azure_v2.target_vm_size = AAZStrArg(
-            options=["target-vm-size"],
-            help="The target VM size.",
-        )
-        in_mage_azure_v2.target_vm_tags = AAZDictArg(
-            options=["target-vm-tags"],
-            help="The target VM tags.",
-        )
-
-        disks_to_include = cls._args_schema.provider_specific_details.in_mage_azure_v2.disks_to_include
-        disks_to_include.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.in_mage_azure_v2.disks_to_include.Element
-        _element.disk_encryption_set_id = AAZStrArg(
-            options=["disk-encryption-set-id"],
-            help="The DiskEncryptionSet ARM ID.",
-        )
-        _element.disk_id = AAZStrArg(
-            options=["disk-id"],
-            help="The DiskId.",
-        )
-        _element.disk_type = AAZStrArg(
-            options=["disk-type"],
-            help="The DiskType.",
-            enum={"Premium_LRS": "Premium_LRS", "StandardSSD_LRS": "StandardSSD_LRS", "Standard_LRS": "Standard_LRS"},
-        )
-        _element.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The LogStorageAccountId.",
-        )
-
-        seed_managed_disk_tags = cls._args_schema.provider_specific_details.in_mage_azure_v2.seed_managed_disk_tags
-        seed_managed_disk_tags.Element = AAZStrArg()
-
-        target_managed_disk_tags = cls._args_schema.provider_specific_details.in_mage_azure_v2.target_managed_disk_tags
-        target_managed_disk_tags.Element = AAZStrArg()
-
-        target_nic_tags = cls._args_schema.provider_specific_details.in_mage_azure_v2.target_nic_tags
-        target_nic_tags.Element = AAZStrArg()
-
-        target_vm_tags = cls._args_schema.provider_specific_details.in_mage_azure_v2.target_vm_tags
-        target_vm_tags.Element = AAZStrArg()
-
-        in_mage_rcm = cls._args_schema.provider_specific_details.in_mage_rcm
-        in_mage_rcm.disks_default = AAZObjectArg(
-            options=["disks-default"],
-            help="The default disk input.",
-        )
-        in_mage_rcm.disks_to_include = AAZListArg(
-            options=["disks-to-include"],
-            help="The disks to include list.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
-        )
-        in_mage_rcm.fabric_discovery_machine_id = AAZStrArg(
-            options=["fabric-discovery-machine-id"],
-            help="The ARM Id of discovered machine.",
-            required=True,
-        )
-        in_mage_rcm.license_type = AAZStrArg(
-            options=["license-type"],
-            help="The license type.",
-            enum={"NoLicenseType": "NoLicenseType", "NotSpecified": "NotSpecified", "WindowsServer": "WindowsServer"},
-        )
-        in_mage_rcm.multi_vm_group_name = AAZStrArg(
-            options=["multi-vm-group-name"],
-            help="The multi VM group name.",
-        )
-        in_mage_rcm.process_server_id = AAZStrArg(
-            options=["process-server-id"],
-            help="The process server Id.",
-            required=True,
-        )
-        in_mage_rcm.run_as_account_id = AAZStrArg(
-            options=["run-as-account-id"],
-            help="The run-as account Id.",
-        )
-        in_mage_rcm.target_availability_set_id = AAZStrArg(
-            options=["target-availability-set-id"],
-            help="The target availability set ARM Id.",
-        )
-        in_mage_rcm.target_availability_zone = AAZStrArg(
-            options=["target-availability-zone"],
-            help="The target availability zone.",
-        )
-        in_mage_rcm.target_boot_diagnostics_storage_account_id = AAZStrArg(
-            options=["target-boot-diagnostics-storage-account-id"],
-            help="The target boot diagnostics storage account ARM Id.",
-        )
-        in_mage_rcm.target_network_id = AAZStrArg(
-            options=["target-network-id"],
-            help="The selected target network ARM Id.",
-        )
-        in_mage_rcm.target_proximity_placement_group_id = AAZStrArg(
-            options=["target-proximity-placement-group-id"],
-            help="The target proximity placement group Id.",
-        )
-        in_mage_rcm.target_resource_group_id = AAZStrArg(
-            options=["target-resource-group-id"],
-            help="The target resource group ARM Id.",
-            required=True,
-        )
-        in_mage_rcm.target_subnet_name = AAZStrArg(
-            options=["target-subnet-name"],
-            help="The selected target subnet name.",
-        )
-        in_mage_rcm.target_vm_name = AAZStrArg(
-            options=["target-vm-name"],
-            help="The target VM name.",
-        )
-        in_mage_rcm.target_vm_size = AAZStrArg(
-            options=["target-vm-size"],
-            help="The target VM size.",
-        )
-        in_mage_rcm.test_network_id = AAZStrArg(
-            options=["test-network-id"],
-            help="The selected test network ARM Id.",
-        )
-        in_mage_rcm.test_subnet_name = AAZStrArg(
-            options=["test-subnet-name"],
-            help="The selected test subnet name.",
-        )
-
-        disks_default = cls._args_schema.provider_specific_details.in_mage_rcm.disks_default
-        disks_default.disk_encryption_set_id = AAZStrArg(
-            options=["disk-encryption-set-id"],
-            help="The DiskEncryptionSet ARM Id.",
-        )
-        disks_default.disk_type = AAZStrArg(
-            options=["disk-type"],
-            help="The disk type.",
-            required=True,
-            enum={"Premium_LRS": "Premium_LRS", "StandardSSD_LRS": "StandardSSD_LRS", "Standard_LRS": "Standard_LRS"},
-        )
-        disks_default.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The log storage account ARM Id.",
-            required=True,
-        )
-
-        disks_to_include = cls._args_schema.provider_specific_details.in_mage_rcm.disks_to_include
-        disks_to_include.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.in_mage_rcm.disks_to_include.Element
-        _element.disk_encryption_set_id = AAZStrArg(
-            options=["disk-encryption-set-id"],
-            help="The DiskEncryptionSet ARM Id.",
-        )
-        _element.disk_id = AAZStrArg(
-            options=["disk-id"],
-            help="The disk Id.",
-            required=True,
-        )
-        _element.disk_type = AAZStrArg(
-            options=["disk-type"],
-            help="The disk type.",
-            required=True,
-            enum={"Premium_LRS": "Premium_LRS", "StandardSSD_LRS": "StandardSSD_LRS", "Standard_LRS": "Standard_LRS"},
-        )
-        _element.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The log storage account ARM Id.",
-            required=True,
-        )
-        return cls._args_schema
-
-    _args_disk_encryption_info_create = None
-
-    @classmethod
-    def _build_args_disk_encryption_info_create(cls, _schema):
-        if cls._args_disk_encryption_info_create is not None:
-            _schema.disk_encryption_key_info = cls._args_disk_encryption_info_create.disk_encryption_key_info
-            _schema.key_encryption_key_info = cls._args_disk_encryption_info_create.key_encryption_key_info
-            return
-
-        cls._args_disk_encryption_info_create = AAZObjectArg()
-
-        disk_encryption_info_create = cls._args_disk_encryption_info_create
-        disk_encryption_info_create.disk_encryption_key_info = AAZObjectArg(
+        disk_encryption_info = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element.disk_encryption_info
+        disk_encryption_info.disk_encryption_key_info = AAZObjectArg(
             options=["disk-encryption-key-info"],
             help="The recovery KeyVault reference for secret.",
         )
-        disk_encryption_info_create.key_encryption_key_info = AAZObjectArg(
+        disk_encryption_info.key_encryption_key_info = AAZObjectArg(
             options=["key-encryption-key-info"],
             help="The recovery KeyVault reference for key.",
         )
 
-        disk_encryption_key_info = cls._args_disk_encryption_info_create.disk_encryption_key_info
+        disk_encryption_key_info = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element.disk_encryption_info.disk_encryption_key_info
         disk_encryption_key_info.key_vault_resource_arm_id = AAZStrArg(
             options=["key-vault-resource-arm-id"],
             help="The KeyVault resource ARM id for secret.",
@@ -795,7 +166,7 @@ class Create(AAZCommand):
             help="The secret url / identifier.",
         )
 
-        key_encryption_key_info = cls._args_disk_encryption_info_create.key_encryption_key_info
+        key_encryption_key_info = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element.disk_encryption_info.key_encryption_key_info
         key_encryption_key_info.key_identifier = AAZStrArg(
             options=["key-identifier"],
             help="The key URL / identifier.",
@@ -804,13 +175,11 @@ class Create(AAZCommand):
             options=["key-vault-resource-arm-id"],
             help="The KeyVault resource ARM Id for key.",
         )
-
-        _schema.disk_encryption_key_info = cls._args_disk_encryption_info_create.disk_encryption_key_info
-        _schema.key_encryption_key_info = cls._args_disk_encryption_info_create.key_encryption_key_info
+        return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsCreate(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsAddDisks(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -825,7 +194,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsCreate(AAZHttpOperation):
+    class ReplicationProtectedItemsAddDisks(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -855,13 +224,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/addDisks",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "POST"
 
         @property
         def error_format(self):
@@ -930,50 +299,17 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("policyId", AAZStrType, ".policy_id")
-                properties.set_prop("protectableItemId", AAZStrType, ".protectable_item_id")
-                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details")
+                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details", typ_kwargs={"flags": {"required": True}})
 
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
                 provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "A2ACrossClusterMigration", AAZStrType, ".a2_a_cross_cluster_migration", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.discriminate_by("instanceType", "A2A")
-                provider_specific_details.discriminate_by("instanceType", "A2ACrossClusterMigration")
-                provider_specific_details.discriminate_by("instanceType", "HyperVReplicaAzure")
-                provider_specific_details.discriminate_by("instanceType", "InMage")
-                provider_specific_details.discriminate_by("instanceType", "InMageAzureV2")
-                provider_specific_details.discriminate_by("instanceType", "InMageRcm")
 
             disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
             if disc_a2_a is not None:
-                _CreateHelper._build_schema_disk_encryption_info_create(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2_a.disk_encryption_info"))
-                disc_a2_a.set_prop("fabricObjectId", AAZStrType, ".a2_a.fabric_object_id", typ_kwargs={"flags": {"required": True}})
-                disc_a2_a.set_prop("multiVmGroupId", AAZStrType, ".a2_a.multi_vm_group_id")
-                disc_a2_a.set_prop("multiVmGroupName", AAZStrType, ".a2_a.multi_vm_group_name")
-                disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2_a.recovery_availability_set_id")
-                disc_a2_a.set_prop("recoveryAvailabilityZone", AAZStrType, ".a2_a.recovery_availability_zone")
-                disc_a2_a.set_prop("recoveryAzureNetworkId", AAZStrType, ".a2_a.recovery_azure_network_id")
-                disc_a2_a.set_prop("recoveryBootDiagStorageAccountId", AAZStrType, ".a2_a.recovery_boot_diag_storage_account_id")
-                disc_a2_a.set_prop("recoveryCapacityReservationGroupId", AAZStrType, ".a2_a.recovery_capacity_reservation_group_id")
-                disc_a2_a.set_prop("recoveryCloudServiceId", AAZStrType, ".a2_a.recovery_cloud_service_id")
-                disc_a2_a.set_prop("recoveryContainerId", AAZStrType, ".a2_a.recovery_container_id")
-                disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2_a.recovery_extended_location")
-                disc_a2_a.set_prop("recoveryProximityPlacementGroupId", AAZStrType, ".a2_a.recovery_proximity_placement_group_id")
-                disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2_a.recovery_resource_group_id")
-                disc_a2_a.set_prop("recoverySubnetName", AAZStrType, ".a2_a.recovery_subnet_name")
-                disc_a2_a.set_prop("recoveryVirtualMachineScaleSetId", AAZStrType, ".a2_a.recovery_virtual_machine_scale_set_id")
                 disc_a2_a.set_prop("vmDisks", AAZListType, ".a2_a.vm_disks")
                 disc_a2_a.set_prop("vmManagedDisks", AAZListType, ".a2_a.vm_managed_disks")
-
-            recovery_extended_location = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.recoveryExtendedLocation")
-            if recovery_extended_location is not None:
-                recovery_extended_location.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                recovery_extended_location.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             vm_disks = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks")
             if vm_disks is not None:
@@ -991,7 +327,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[]")
             if _elements is not None:
-                _CreateHelper._build_schema_disk_encryption_info_create(_elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info"))
+                _elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info")
                 _elements.set_prop("diskId", AAZStrType, ".disk_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("primaryStagingAzureStorageAccountId", AAZStrType, ".primary_staging_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("recoveryDiskEncryptionSetId", AAZStrType, ".recovery_disk_encryption_set_id")
@@ -999,205 +335,20 @@ class Create(AAZCommand):
                 _elements.set_prop("recoveryResourceGroupId", AAZStrType, ".recovery_resource_group_id", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("recoveryTargetDiskAccountType", AAZStrType, ".recovery_target_disk_account_type")
 
-            disc_a2_a_cross_cluster_migration = _builder.get(".properties.providerSpecificDetails{instanceType:A2ACrossClusterMigration}")
-            if disc_a2_a_cross_cluster_migration is not None:
-                disc_a2_a_cross_cluster_migration.set_prop("fabricObjectId", AAZStrType, ".a2_a_cross_cluster_migration.fabric_object_id")
-                disc_a2_a_cross_cluster_migration.set_prop("recoveryContainerId", AAZStrType, ".a2_a_cross_cluster_migration.recovery_container_id")
+            disk_encryption_info = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[].diskEncryptionInfo")
+            if disk_encryption_info is not None:
+                disk_encryption_info.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
+                disk_encryption_info.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
 
-            disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}")
-            if disc_hyper_v_replica_azure is not None:
-                disc_hyper_v_replica_azure.set_prop("diskEncryptionSetId", AAZStrType, ".hyper_v_replica_azure.disk_encryption_set_id")
-                disc_hyper_v_replica_azure.set_prop("diskType", AAZStrType, ".hyper_v_replica_azure.disk_type")
-                disc_hyper_v_replica_azure.set_prop("disksToInclude", AAZListType, ".hyper_v_replica_azure.disks_to_include")
-                disc_hyper_v_replica_azure.set_prop("disksToIncludeForManagedDisks", AAZListType, ".hyper_v_replica_azure.disks_to_include_for_managed_disks")
-                disc_hyper_v_replica_azure.set_prop("enableRdpOnTargetOption", AAZStrType, ".hyper_v_replica_azure.enable_rdp_on_target_option")
-                disc_hyper_v_replica_azure.set_prop("hvHostVmId", AAZStrType, ".hyper_v_replica_azure.hv_host_vm_id")
-                disc_hyper_v_replica_azure.set_prop("licenseType", AAZStrType, ".hyper_v_replica_azure.license_type")
-                disc_hyper_v_replica_azure.set_prop("logStorageAccountId", AAZStrType, ".hyper_v_replica_azure.log_storage_account_id")
-                disc_hyper_v_replica_azure.set_prop("osType", AAZStrType, ".hyper_v_replica_azure.os_type")
-                disc_hyper_v_replica_azure.set_prop("seedManagedDiskTags", AAZDictType, ".hyper_v_replica_azure.seed_managed_disk_tags")
-                disc_hyper_v_replica_azure.set_prop("sqlServerLicenseType", AAZStrType, ".hyper_v_replica_azure.sql_server_license_type")
-                disc_hyper_v_replica_azure.set_prop("targetAvailabilitySetId", AAZStrType, ".hyper_v_replica_azure.target_availability_set_id")
-                disc_hyper_v_replica_azure.set_prop("targetAvailabilityZone", AAZStrType, ".hyper_v_replica_azure.target_availability_zone")
-                disc_hyper_v_replica_azure.set_prop("targetAzureNetworkId", AAZStrType, ".hyper_v_replica_azure.target_azure_network_id")
-                disc_hyper_v_replica_azure.set_prop("targetAzureSubnetId", AAZStrType, ".hyper_v_replica_azure.target_azure_subnet_id")
-                disc_hyper_v_replica_azure.set_prop("targetAzureV1ResourceGroupId", AAZStrType, ".hyper_v_replica_azure.target_azure_v1_resource_group_id")
-                disc_hyper_v_replica_azure.set_prop("targetAzureV2ResourceGroupId", AAZStrType, ".hyper_v_replica_azure.target_azure_v2_resource_group_id")
-                disc_hyper_v_replica_azure.set_prop("targetAzureVmName", AAZStrType, ".hyper_v_replica_azure.target_azure_vm_name")
-                disc_hyper_v_replica_azure.set_prop("targetManagedDiskTags", AAZDictType, ".hyper_v_replica_azure.target_managed_disk_tags")
-                disc_hyper_v_replica_azure.set_prop("targetNicTags", AAZDictType, ".hyper_v_replica_azure.target_nic_tags")
-                disc_hyper_v_replica_azure.set_prop("targetProximityPlacementGroupId", AAZStrType, ".hyper_v_replica_azure.target_proximity_placement_group_id")
-                disc_hyper_v_replica_azure.set_prop("targetStorageAccountId", AAZStrType, ".hyper_v_replica_azure.target_storage_account_id")
-                disc_hyper_v_replica_azure.set_prop("targetVmSize", AAZStrType, ".hyper_v_replica_azure.target_vm_size")
-                disc_hyper_v_replica_azure.set_prop("targetVmTags", AAZDictType, ".hyper_v_replica_azure.target_vm_tags")
-                disc_hyper_v_replica_azure.set_prop("useManagedDisks", AAZStrType, ".hyper_v_replica_azure.use_managed_disks")
-                disc_hyper_v_replica_azure.set_prop("useManagedDisksForReplication", AAZStrType, ".hyper_v_replica_azure.use_managed_disks_for_replication")
-                disc_hyper_v_replica_azure.set_prop("vhdId", AAZStrType, ".hyper_v_replica_azure.vhd_id")
-                disc_hyper_v_replica_azure.set_prop("vmName", AAZStrType, ".hyper_v_replica_azure.vm_name")
+            disk_encryption_key_info = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[].diskEncryptionInfo.diskEncryptionKeyInfo")
+            if disk_encryption_key_info is not None:
+                disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+                disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
 
-            disks_to_include = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.disksToInclude")
-            if disks_to_include is not None:
-                disks_to_include.set_elements(AAZStrType, ".")
-
-            disks_to_include_for_managed_disks = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.disksToIncludeForManagedDisks")
-            if disks_to_include_for_managed_disks is not None:
-                disks_to_include_for_managed_disks.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.disksToIncludeForManagedDisks[]")
-            if _elements is not None:
-                _elements.set_prop("diskEncryptionSetId", AAZStrType, ".disk_encryption_set_id")
-                _elements.set_prop("diskId", AAZStrType, ".disk_id")
-                _elements.set_prop("diskType", AAZStrType, ".disk_type")
-                _elements.set_prop("logStorageAccountId", AAZStrType, ".log_storage_account_id")
-
-            seed_managed_disk_tags = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.seedManagedDiskTags")
-            if seed_managed_disk_tags is not None:
-                seed_managed_disk_tags.set_elements(AAZStrType, ".")
-
-            target_managed_disk_tags = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.targetManagedDiskTags")
-            if target_managed_disk_tags is not None:
-                target_managed_disk_tags.set_elements(AAZStrType, ".")
-
-            target_nic_tags = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.targetNicTags")
-            if target_nic_tags is not None:
-                target_nic_tags.set_elements(AAZStrType, ".")
-
-            target_vm_tags = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}.targetVmTags")
-            if target_vm_tags is not None:
-                target_vm_tags.set_elements(AAZStrType, ".")
-
-            disc_in_mage = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}")
-            if disc_in_mage is not None:
-                disc_in_mage.set_prop("datastoreName", AAZStrType, ".in_mage.datastore_name")
-                disc_in_mage.set_prop("diskExclusionInput", AAZObjectType, ".in_mage.disk_exclusion_input")
-                disc_in_mage.set_prop("disksToInclude", AAZListType, ".in_mage.disks_to_include")
-                disc_in_mage.set_prop("masterTargetId", AAZStrType, ".in_mage.master_target_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("multiVmGroupId", AAZStrType, ".in_mage.multi_vm_group_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("multiVmGroupName", AAZStrType, ".in_mage.multi_vm_group_name", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("processServerId", AAZStrType, ".in_mage.process_server_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("retentionDrive", AAZStrType, ".in_mage.retention_drive", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("runAsAccountId", AAZStrType, ".in_mage.run_as_account_id")
-                disc_in_mage.set_prop("vmFriendlyName", AAZStrType, ".in_mage.vm_friendly_name")
-
-            disk_exclusion_input = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput")
-            if disk_exclusion_input is not None:
-                disk_exclusion_input.set_prop("diskSignatureOptions", AAZListType, ".disk_signature_options")
-                disk_exclusion_input.set_prop("volumeOptions", AAZListType, ".volume_options")
-
-            disk_signature_options = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.diskSignatureOptions")
-            if disk_signature_options is not None:
-                disk_signature_options.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.diskSignatureOptions[]")
-            if _elements is not None:
-                _elements.set_prop("diskSignature", AAZStrType, ".disk_signature")
-
-            volume_options = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.volumeOptions")
-            if volume_options is not None:
-                volume_options.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.volumeOptions[]")
-            if _elements is not None:
-                _elements.set_prop("onlyExcludeIfSingleVolume", AAZStrType, ".only_exclude_if_single_volume")
-                _elements.set_prop("volumeLabel", AAZStrType, ".volume_label")
-
-            disks_to_include = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.disksToInclude")
-            if disks_to_include is not None:
-                disks_to_include.set_elements(AAZStrType, ".")
-
-            disc_in_mage_azure_v2 = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}")
-            if disc_in_mage_azure_v2 is not None:
-                disc_in_mage_azure_v2.set_prop("diskEncryptionSetId", AAZStrType, ".in_mage_azure_v2.disk_encryption_set_id")
-                disc_in_mage_azure_v2.set_prop("diskType", AAZStrType, ".in_mage_azure_v2.disk_type")
-                disc_in_mage_azure_v2.set_prop("disksToInclude", AAZListType, ".in_mage_azure_v2.disks_to_include")
-                disc_in_mage_azure_v2.set_prop("enableRdpOnTargetOption", AAZStrType, ".in_mage_azure_v2.enable_rdp_on_target_option")
-                disc_in_mage_azure_v2.set_prop("licenseType", AAZStrType, ".in_mage_azure_v2.license_type")
-                disc_in_mage_azure_v2.set_prop("logStorageAccountId", AAZStrType, ".in_mage_azure_v2.log_storage_account_id")
-                disc_in_mage_azure_v2.set_prop("masterTargetId", AAZStrType, ".in_mage_azure_v2.master_target_id")
-                disc_in_mage_azure_v2.set_prop("multiVmGroupId", AAZStrType, ".in_mage_azure_v2.multi_vm_group_id")
-                disc_in_mage_azure_v2.set_prop("multiVmGroupName", AAZStrType, ".in_mage_azure_v2.multi_vm_group_name")
-                disc_in_mage_azure_v2.set_prop("processServerId", AAZStrType, ".in_mage_azure_v2.process_server_id")
-                disc_in_mage_azure_v2.set_prop("runAsAccountId", AAZStrType, ".in_mage_azure_v2.run_as_account_id")
-                disc_in_mage_azure_v2.set_prop("seedManagedDiskTags", AAZDictType, ".in_mage_azure_v2.seed_managed_disk_tags")
-                disc_in_mage_azure_v2.set_prop("sqlServerLicenseType", AAZStrType, ".in_mage_azure_v2.sql_server_license_type")
-                disc_in_mage_azure_v2.set_prop("storageAccountId", AAZStrType, ".in_mage_azure_v2.storage_account_id")
-                disc_in_mage_azure_v2.set_prop("targetAvailabilitySetId", AAZStrType, ".in_mage_azure_v2.target_availability_set_id")
-                disc_in_mage_azure_v2.set_prop("targetAvailabilityZone", AAZStrType, ".in_mage_azure_v2.target_availability_zone")
-                disc_in_mage_azure_v2.set_prop("targetAzureNetworkId", AAZStrType, ".in_mage_azure_v2.target_azure_network_id")
-                disc_in_mage_azure_v2.set_prop("targetAzureSubnetId", AAZStrType, ".in_mage_azure_v2.target_azure_subnet_id")
-                disc_in_mage_azure_v2.set_prop("targetAzureV1ResourceGroupId", AAZStrType, ".in_mage_azure_v2.target_azure_v1_resource_group_id")
-                disc_in_mage_azure_v2.set_prop("targetAzureV2ResourceGroupId", AAZStrType, ".in_mage_azure_v2.target_azure_v2_resource_group_id")
-                disc_in_mage_azure_v2.set_prop("targetAzureVmName", AAZStrType, ".in_mage_azure_v2.target_azure_vm_name")
-                disc_in_mage_azure_v2.set_prop("targetManagedDiskTags", AAZDictType, ".in_mage_azure_v2.target_managed_disk_tags")
-                disc_in_mage_azure_v2.set_prop("targetNicTags", AAZDictType, ".in_mage_azure_v2.target_nic_tags")
-                disc_in_mage_azure_v2.set_prop("targetProximityPlacementGroupId", AAZStrType, ".in_mage_azure_v2.target_proximity_placement_group_id")
-                disc_in_mage_azure_v2.set_prop("targetVmSize", AAZStrType, ".in_mage_azure_v2.target_vm_size")
-                disc_in_mage_azure_v2.set_prop("targetVmTags", AAZDictType, ".in_mage_azure_v2.target_vm_tags")
-
-            disks_to_include = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.disksToInclude")
-            if disks_to_include is not None:
-                disks_to_include.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.disksToInclude[]")
-            if _elements is not None:
-                _elements.set_prop("diskEncryptionSetId", AAZStrType, ".disk_encryption_set_id")
-                _elements.set_prop("diskId", AAZStrType, ".disk_id")
-                _elements.set_prop("diskType", AAZStrType, ".disk_type")
-                _elements.set_prop("logStorageAccountId", AAZStrType, ".log_storage_account_id")
-
-            seed_managed_disk_tags = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.seedManagedDiskTags")
-            if seed_managed_disk_tags is not None:
-                seed_managed_disk_tags.set_elements(AAZStrType, ".")
-
-            target_managed_disk_tags = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.targetManagedDiskTags")
-            if target_managed_disk_tags is not None:
-                target_managed_disk_tags.set_elements(AAZStrType, ".")
-
-            target_nic_tags = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.targetNicTags")
-            if target_nic_tags is not None:
-                target_nic_tags.set_elements(AAZStrType, ".")
-
-            target_vm_tags = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.targetVmTags")
-            if target_vm_tags is not None:
-                target_vm_tags.set_elements(AAZStrType, ".")
-
-            disc_in_mage_rcm = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcm}")
-            if disc_in_mage_rcm is not None:
-                disc_in_mage_rcm.set_prop("disksDefault", AAZObjectType, ".in_mage_rcm.disks_default")
-                disc_in_mage_rcm.set_prop("disksToInclude", AAZListType, ".in_mage_rcm.disks_to_include")
-                disc_in_mage_rcm.set_prop("fabricDiscoveryMachineId", AAZStrType, ".in_mage_rcm.fabric_discovery_machine_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm.set_prop("licenseType", AAZStrType, ".in_mage_rcm.license_type")
-                disc_in_mage_rcm.set_prop("multiVmGroupName", AAZStrType, ".in_mage_rcm.multi_vm_group_name")
-                disc_in_mage_rcm.set_prop("processServerId", AAZStrType, ".in_mage_rcm.process_server_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm.set_prop("runAsAccountId", AAZStrType, ".in_mage_rcm.run_as_account_id")
-                disc_in_mage_rcm.set_prop("targetAvailabilitySetId", AAZStrType, ".in_mage_rcm.target_availability_set_id")
-                disc_in_mage_rcm.set_prop("targetAvailabilityZone", AAZStrType, ".in_mage_rcm.target_availability_zone")
-                disc_in_mage_rcm.set_prop("targetBootDiagnosticsStorageAccountId", AAZStrType, ".in_mage_rcm.target_boot_diagnostics_storage_account_id")
-                disc_in_mage_rcm.set_prop("targetNetworkId", AAZStrType, ".in_mage_rcm.target_network_id")
-                disc_in_mage_rcm.set_prop("targetProximityPlacementGroupId", AAZStrType, ".in_mage_rcm.target_proximity_placement_group_id")
-                disc_in_mage_rcm.set_prop("targetResourceGroupId", AAZStrType, ".in_mage_rcm.target_resource_group_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm.set_prop("targetSubnetName", AAZStrType, ".in_mage_rcm.target_subnet_name")
-                disc_in_mage_rcm.set_prop("targetVmName", AAZStrType, ".in_mage_rcm.target_vm_name")
-                disc_in_mage_rcm.set_prop("targetVmSize", AAZStrType, ".in_mage_rcm.target_vm_size")
-                disc_in_mage_rcm.set_prop("testNetworkId", AAZStrType, ".in_mage_rcm.test_network_id")
-                disc_in_mage_rcm.set_prop("testSubnetName", AAZStrType, ".in_mage_rcm.test_subnet_name")
-
-            disks_default = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcm}.disksDefault")
-            if disks_default is not None:
-                disks_default.set_prop("diskEncryptionSetId", AAZStrType, ".disk_encryption_set_id")
-                disks_default.set_prop("diskType", AAZStrType, ".disk_type", typ_kwargs={"flags": {"required": True}})
-                disks_default.set_prop("logStorageAccountId", AAZStrType, ".log_storage_account_id", typ_kwargs={"flags": {"required": True}})
-
-            disks_to_include = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcm}.disksToInclude")
-            if disks_to_include is not None:
-                disks_to_include.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcm}.disksToInclude[]")
-            if _elements is not None:
-                _elements.set_prop("diskEncryptionSetId", AAZStrType, ".disk_encryption_set_id")
-                _elements.set_prop("diskId", AAZStrType, ".disk_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("diskType", AAZStrType, ".disk_type", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("logStorageAccountId", AAZStrType, ".log_storage_account_id", typ_kwargs={"flags": {"required": True}})
+            key_encryption_key_info = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[].diskEncryptionInfo.keyEncryptionKeyInfo")
+            if key_encryption_key_info is not None:
+                key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
+                key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
 
             return self.serialize_content(_content_value)
 
@@ -1339,7 +490,7 @@ class Create(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _CreateHelper._build_schema_health_error_read(health_errors.Element)
+            _AddDiskHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -1367,7 +518,7 @@ class Create(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _CreateHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -1379,7 +530,7 @@ class Create(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _CreateHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -1430,7 +581,7 @@ class Create(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _CreateHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -1471,7 +622,7 @@ class Create(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _CreateHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -1701,7 +852,7 @@ class Create(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -1751,7 +902,7 @@ class Create(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _CreateHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1773,17 +924,17 @@ class Create(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _CreateHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _AddDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _CreateHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1805,11 +956,11 @@ class Create(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _CreateHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _AddDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -1822,7 +973,7 @@ class Create(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _CreateHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -1914,7 +1065,7 @@ class Create(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _CreateHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _AddDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -1967,13 +1118,13 @@ class Create(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _CreateHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1995,11 +1146,11 @@ class Create(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _CreateHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _AddDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -2078,7 +1229,7 @@ class Create(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _CreateHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _AddDiskHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -2226,11 +1377,11 @@ class Create(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _CreateHelper._build_schema_health_error_read(validation_errors.Element)
+            _AddDiskHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -2436,7 +1587,7 @@ class Create(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _CreateHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _AddDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -2602,11 +1753,11 @@ class Create(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _CreateHelper._build_schema_health_error_read(validation_errors.Element)
+            _AddDiskHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _CreateHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -3004,7 +2155,7 @@ class Create(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _CreateHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _AddDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -3020,7 +2171,7 @@ class Create(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _CreateHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _AddDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -3323,7 +2474,7 @@ class Create(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _CreateHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _AddDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -3339,7 +2490,7 @@ class Create(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _CreateHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _AddDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -3365,25 +2516,8 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
-
-    @classmethod
-    def _build_schema_disk_encryption_info_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
-        _builder.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
-
-        disk_encryption_key_info = _builder.get(".diskEncryptionKeyInfo")
-        if disk_encryption_key_info is not None:
-            disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
-            disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
-
-        key_encryption_key_info = _builder.get(".keyEncryptionKeyInfo")
-        if key_encryption_key_info is not None:
-            key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
-            key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+class _AddDiskHelper:
+    """Helper class for AddDisk"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -3939,4 +3073,4 @@ class _CreateHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["Create"]
+__all__ = ["AddDisk"]

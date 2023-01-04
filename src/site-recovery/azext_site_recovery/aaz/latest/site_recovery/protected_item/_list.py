@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item list",
+    "site-recovery protected-item list",
 )
 class List(AAZCommand):
     """List the list of ASR replication protected items in the protection container.

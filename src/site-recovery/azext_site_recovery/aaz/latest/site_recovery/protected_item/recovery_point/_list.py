@@ -12,23 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item recovery-point show",
+    "site-recovery protected-item recovery-point list",
 )
-class Show(AAZCommand):
-    """Get the details of specified recovery point.
+class List(AAZCommand):
+    """List the available recovery points for a replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/recoverypoints/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/recoverypoints", "2022-08-01"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,25 +44,16 @@ class Show(AAZCommand):
             options=["--fabric-name"],
             help="The fabric name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
-            id_part="child_name_2",
-        )
-        _args_schema.recovery_point_name = AAZStrArg(
-            options=["-n", "--name", "--recovery-point-name"],
-            help="The recovery point name.",
-            required=True,
-            id_part="child_name_4",
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
             options=["--protected-item", "--replicated-protected-item-name"],
             help="The replication protected item name.",
             required=True,
-            id_part="child_name_3",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -72,13 +62,12 @@ class Show(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RecoveryPointsGet(ctx=self.ctx)()
+        self.RecoveryPointsListByReplicationProtectedItems(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,10 +79,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class RecoveryPointsGet(AAZHttpOperation):
+    class RecoveryPointsListByReplicationProtectedItems(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -107,7 +97,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/recoveryPoints/{recoveryPointName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/recoveryPoints",
                 **self.url_parameters
             )
 
@@ -128,10 +118,6 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "protectionContainerName", self.ctx.args.protection_container_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "recoveryPointName", self.ctx.args.recovery_point_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -190,19 +176,28 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType(
+            _element.location = AAZStrType()
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.type = AAZStrType(
+            _element.properties = AAZObjectType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.provider_specific_details = AAZObjectType(
                 serialized_name="providerSpecificDetails",
             )
@@ -213,27 +208,27 @@ class Show(AAZCommand):
                 serialized_name="recoveryPointType",
             )
 
-            provider_specific_details = cls._schema_on_200.properties.provider_specific_details
+            provider_specific_details = cls._schema_on_200.value.Element.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
                 serialized_name="instanceType",
                 flags={"required": True},
             )
 
-            disc_a2_a = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
+            disc_a2_a = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
             disc_a2_a.disks = AAZListType()
             disc_a2_a.recovery_point_sync_type = AAZStrType(
                 serialized_name="recoveryPointSyncType",
             )
 
-            disks = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").disks
+            disks = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A").disks
             disks.Element = AAZStrType()
 
-            disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
+            disc_in_mage_azure_v2 = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.is_multi_vm_sync_point = AAZStrType(
                 serialized_name="isMultiVmSyncPoint",
             )
 
-            disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
+            disc_in_mage_rcm = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.is_multi_vm_sync_point = AAZStrType(
                 serialized_name="isMultiVmSyncPoint",
                 flags={"read_only": True},
@@ -242,8 +237,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

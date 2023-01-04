@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item test-failover-cleanup",
+    "site-recovery protected-item resolve-health-error",
 )
-class TestFailoverCleanup(AAZCommand):
-    """Operation to clean up the test failover of a replication protected item.
+class ResolveHealthError(AAZCommand):
+    """Operation to resolve health issues of the replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/testfailovercleanup", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/resolvehealtherrors", "2022-08-01"],
         ]
     }
 
@@ -69,19 +69,25 @@ class TestFailoverCleanup(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.comments = AAZStrArg(
-            options=["--comments"],
+        _args_schema.health_errors = AAZListArg(
+            options=["--health-errors"],
             arg_group="Properties",
-            help="Test failover cleanup comments.",
-            fmt=AAZStrArgFormat(
-                max_length=1024,
-            ),
+            help="Health errors.",
+        )
+
+        health_errors = cls._args_schema.health_errors
+        health_errors.Element = AAZObjectArg()
+
+        _element = cls._args_schema.health_errors.Element
+        _element.health_error_id = AAZStrArg(
+            options=["health-error-id"],
+            help="Health error id.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsTestFailoverCleanup(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsResolveHealthErrors(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -96,7 +102,7 @@ class TestFailoverCleanup(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsTestFailoverCleanup(AAZHttpOperation):
+    class ReplicationProtectedItemsResolveHealthErrors(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -126,7 +132,7 @@ class TestFailoverCleanup(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/testFailoverCleanup",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/resolveHealthErrors",
                 **self.url_parameters
             )
 
@@ -197,11 +203,19 @@ class TestFailoverCleanup(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("comments", AAZStrType, ".comments")
+                properties.set_prop("healthErrors", AAZListType, ".health_errors")
+
+            health_errors = _builder.get(".properties.healthErrors")
+            if health_errors is not None:
+                health_errors.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.healthErrors[]")
+            if _elements is not None:
+                _elements.set_prop("healthErrorId", AAZStrType, ".health_error_id")
 
             return self.serialize_content(_content_value)
 
@@ -343,7 +357,7 @@ class TestFailoverCleanup(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_health_error_read(health_errors.Element)
+            _ResolveHealthErrorHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -371,7 +385,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _ResolveHealthErrorHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -383,7 +397,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _ResolveHealthErrorHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -434,7 +448,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _ResolveHealthErrorHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -475,7 +489,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _ResolveHealthErrorHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -705,7 +719,7 @@ class TestFailoverCleanup(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -755,7 +769,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _ResolveHealthErrorHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -777,17 +791,17 @@ class TestFailoverCleanup(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _ResolveHealthErrorHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _ResolveHealthErrorHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -809,11 +823,11 @@ class TestFailoverCleanup(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _ResolveHealthErrorHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -826,7 +840,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _ResolveHealthErrorHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -918,7 +932,7 @@ class TestFailoverCleanup(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _ResolveHealthErrorHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -971,13 +985,13 @@ class TestFailoverCleanup(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _ResolveHealthErrorHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -999,11 +1013,11 @@ class TestFailoverCleanup(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _ResolveHealthErrorHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1082,7 +1096,7 @@ class TestFailoverCleanup(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _ResolveHealthErrorHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1230,11 +1244,11 @@ class TestFailoverCleanup(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_health_error_read(validation_errors.Element)
+            _ResolveHealthErrorHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1440,7 +1454,7 @@ class TestFailoverCleanup(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _ResolveHealthErrorHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1606,11 +1620,11 @@ class TestFailoverCleanup(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_health_error_read(validation_errors.Element)
+            _ResolveHealthErrorHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ResolveHealthErrorHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2008,7 +2022,7 @@ class TestFailoverCleanup(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _ResolveHealthErrorHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2024,7 +2038,7 @@ class TestFailoverCleanup(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _ResolveHealthErrorHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2327,7 +2341,7 @@ class TestFailoverCleanup(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _ResolveHealthErrorHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2343,7 +2357,7 @@ class TestFailoverCleanup(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _ResolveHealthErrorHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2369,8 +2383,8 @@ class TestFailoverCleanup(AAZCommand):
             return cls._schema_on_200
 
 
-class _TestFailoverCleanupHelper:
-    """Helper class for TestFailoverCleanup"""
+class _ResolveHealthErrorHelper:
+    """Helper class for ResolveHealthError"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -2926,4 +2940,4 @@ class _TestFailoverCleanupHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["TestFailoverCleanup"]
+__all__ = ["ResolveHealthError"]

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item delete",
+    "site-recovery protected-item delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):

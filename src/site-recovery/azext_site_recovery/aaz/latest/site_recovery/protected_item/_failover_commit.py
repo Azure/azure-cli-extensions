@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item failover-commit",
+    "site-recovery protected-item failover-commit",
 )
 class FailoverCommit(AAZCommand):
     """Operation to commit the failover of the replication protected item.

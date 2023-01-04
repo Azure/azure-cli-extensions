@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item update-mobility-service",
+    "site-recovery protected-item test-failover-cleanup",
 )
-class UpdateMobilityService(AAZCommand):
-    """The operation to update(push update) the installed mobility service software on a replication protected item to the latest available version.
+class TestFailoverCleanup(AAZCommand):
+    """Operation to clean up the test failover of a replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/updatemobilityservice", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/testfailovercleanup", "2022-08-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class UpdateMobilityService(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the fabric containing the protected item.",
+            help="Unique fabric name.",
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
@@ -52,9 +52,9 @@ class UpdateMobilityService(AAZCommand):
             help="Protection container name.",
             required=True,
         )
-        _args_schema.replication_protected_item_name = AAZStrArg(
-            options=["--protected-item", "--replication-protected-item-name"],
-            help="The name of the protected item on which the agent is to be updated.",
+        _args_schema.replicated_protected_item_name = AAZStrArg(
+            options=["-n", "--replicated-protected-item-name"],
+            help="Replication protected item name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -69,16 +69,19 @@ class UpdateMobilityService(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.run_as_account_id = AAZStrArg(
-            options=["--run-as-account-id"],
+        _args_schema.comments = AAZStrArg(
+            options=["--comments"],
             arg_group="Properties",
-            help="The CS run as account Id.",
+            help="Test failover cleanup comments.",
+            fmt=AAZStrArgFormat(
+                max_length=1024,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsUpdateMobilityService(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsTestFailoverCleanup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -93,7 +96,7 @@ class UpdateMobilityService(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsUpdateMobilityService(AAZHttpOperation):
+    class ReplicationProtectedItemsTestFailoverCleanup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -123,7 +126,7 @@ class UpdateMobilityService(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicationProtectedItemName}/updateMobilityService",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/testFailoverCleanup",
                 **self.url_parameters
             )
 
@@ -147,7 +150,7 @@ class UpdateMobilityService(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "replicationProtectedItemName", self.ctx.args.replication_protected_item_name,
+                    "replicatedProtectedItemName", self.ctx.args.replicated_protected_item_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -194,11 +197,11 @@ class UpdateMobilityService(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("runAsAccountId", AAZStrType, ".run_as_account_id")
+                properties.set_prop("comments", AAZStrType, ".comments")
 
             return self.serialize_content(_content_value)
 
@@ -340,7 +343,7 @@ class UpdateMobilityService(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_health_error_read(health_errors.Element)
+            _TestFailoverCleanupHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -368,7 +371,7 @@ class UpdateMobilityService(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -380,7 +383,7 @@ class UpdateMobilityService(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -431,7 +434,7 @@ class UpdateMobilityService(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -472,7 +475,7 @@ class UpdateMobilityService(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _TestFailoverCleanupHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -702,7 +705,7 @@ class UpdateMobilityService(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -752,7 +755,7 @@ class UpdateMobilityService(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -774,17 +777,17 @@ class UpdateMobilityService(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _TestFailoverCleanupHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -806,11 +809,11 @@ class UpdateMobilityService(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _TestFailoverCleanupHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -823,7 +826,7 @@ class UpdateMobilityService(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -915,7 +918,7 @@ class UpdateMobilityService(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _TestFailoverCleanupHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -968,13 +971,13 @@ class UpdateMobilityService(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -996,11 +999,11 @@ class UpdateMobilityService(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _TestFailoverCleanupHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1079,7 +1082,7 @@ class UpdateMobilityService(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _TestFailoverCleanupHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1227,11 +1230,11 @@ class UpdateMobilityService(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_health_error_read(validation_errors.Element)
+            _TestFailoverCleanupHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1437,7 +1440,7 @@ class UpdateMobilityService(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _TestFailoverCleanupHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1603,11 +1606,11 @@ class UpdateMobilityService(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_health_error_read(validation_errors.Element)
+            _TestFailoverCleanupHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _TestFailoverCleanupHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2005,7 +2008,7 @@ class UpdateMobilityService(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2021,7 +2024,7 @@ class UpdateMobilityService(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2324,7 +2327,7 @@ class UpdateMobilityService(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2340,7 +2343,7 @@ class UpdateMobilityService(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _TestFailoverCleanupHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2366,8 +2369,8 @@ class UpdateMobilityService(AAZCommand):
             return cls._schema_on_200
 
 
-class _UpdateMobilityServiceHelper:
-    """Helper class for UpdateMobilityService"""
+class _TestFailoverCleanupHelper:
+    """Helper class for TestFailoverCleanup"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -2923,4 +2926,4 @@ class _UpdateMobilityServiceHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["UpdateMobilityService"]
+__all__ = ["TestFailoverCleanup"]

@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item add-disk",
+    "site-recovery protected-item remove-disk",
 )
-class AddDisk(AAZCommand):
-    """Operation to add disks(s) to the replication protected item.
+class RemoveDisk(AAZCommand):
+    """Operation to remove disk(s) from the replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/adddisks", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/removedisks", "2022-08-01"],
         ]
     }
 
@@ -81,105 +81,25 @@ class AddDisk(AAZCommand):
         )
 
         a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.vm_disks = AAZListArg(
-            options=["vm-disks"],
-            help="The list of vm disk details.",
+        a2_a.vm_disks_uris = AAZListArg(
+            options=["vm-disks-uris"],
+            help="The list of vm disk vhd URIs.",
         )
-        a2_a.vm_managed_disks = AAZListArg(
-            options=["vm-managed-disks"],
-            help="The list of vm managed disk details.",
-        )
-
-        vm_disks = cls._args_schema.provider_specific_details.a2_a.vm_disks
-        vm_disks.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.a2_a.vm_disks.Element
-        _element.disk_uri = AAZStrArg(
-            options=["disk-uri"],
-            help="The disk Uri.",
-            required=True,
-        )
-        _element.primary_staging_azure_storage_account_id = AAZStrArg(
-            options=["primary-staging-azure-storage-account-id"],
-            help="The primary staging storage account Id.",
-            required=True,
-        )
-        _element.recovery_azure_storage_account_id = AAZStrArg(
-            options=["recovery-azure-storage-account-id"],
-            help="The recovery VHD storage account Id.",
-            required=True,
+        a2_a.vm_managed_disks_ids = AAZListArg(
+            options=["vm-managed-disks-ids"],
+            help="The list of vm managed disk Ids.",
         )
 
-        vm_managed_disks = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks
-        vm_managed_disks.Element = AAZObjectArg()
+        vm_disks_uris = cls._args_schema.provider_specific_details.a2_a.vm_disks_uris
+        vm_disks_uris.Element = AAZStrArg()
 
-        _element = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element
-        _element.disk_encryption_info = AAZObjectArg(
-            options=["disk-encryption-info"],
-            help="The recovery disk encryption information (for one / single pass flows).",
-        )
-        _element.disk_id = AAZStrArg(
-            options=["disk-id"],
-            help="The disk Id.",
-            required=True,
-        )
-        _element.primary_staging_azure_storage_account_id = AAZStrArg(
-            options=["primary-staging-azure-storage-account-id"],
-            help="The primary staging storage account Arm Id.",
-            required=True,
-        )
-        _element.recovery_disk_encryption_set_id = AAZStrArg(
-            options=["recovery-disk-encryption-set-id"],
-            help="The recovery disk encryption set Id.",
-        )
-        _element.recovery_replica_disk_account_type = AAZStrArg(
-            options=["recovery-replica-disk-account-type"],
-            help="The replica disk type. Its an optional value and will be same as source disk type if not user provided.",
-        )
-        _element.recovery_resource_group_id = AAZStrArg(
-            options=["recovery-resource-group-id"],
-            help="The target resource group Arm Id.",
-            required=True,
-        )
-        _element.recovery_target_disk_account_type = AAZStrArg(
-            options=["recovery-target-disk-account-type"],
-            help="The target disk type after failover. Its an optional value and will be same as source disk type if not user provided.",
-        )
-
-        disk_encryption_info = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element.disk_encryption_info
-        disk_encryption_info.disk_encryption_key_info = AAZObjectArg(
-            options=["disk-encryption-key-info"],
-            help="The recovery KeyVault reference for secret.",
-        )
-        disk_encryption_info.key_encryption_key_info = AAZObjectArg(
-            options=["key-encryption-key-info"],
-            help="The recovery KeyVault reference for key.",
-        )
-
-        disk_encryption_key_info = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element.disk_encryption_info.disk_encryption_key_info
-        disk_encryption_key_info.key_vault_resource_arm_id = AAZStrArg(
-            options=["key-vault-resource-arm-id"],
-            help="The KeyVault resource ARM id for secret.",
-        )
-        disk_encryption_key_info.secret_identifier = AAZStrArg(
-            options=["secret-identifier"],
-            help="The secret url / identifier.",
-        )
-
-        key_encryption_key_info = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element.disk_encryption_info.key_encryption_key_info
-        key_encryption_key_info.key_identifier = AAZStrArg(
-            options=["key-identifier"],
-            help="The key URL / identifier.",
-        )
-        key_encryption_key_info.key_vault_resource_arm_id = AAZStrArg(
-            options=["key-vault-resource-arm-id"],
-            help="The KeyVault resource ARM Id for key.",
-        )
+        vm_managed_disks_ids = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks_ids
+        vm_managed_disks_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsAddDisks(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsRemoveDisks(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -194,7 +114,7 @@ class AddDisk(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsAddDisks(AAZHttpOperation):
+    class ReplicationProtectedItemsRemoveDisks(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -224,7 +144,7 @@ class AddDisk(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/addDisks",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/removeDisks",
                 **self.url_parameters
             )
 
@@ -299,7 +219,7 @@ class AddDisk(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details")
 
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
@@ -308,47 +228,16 @@ class AddDisk(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
             if disc_a2_a is not None:
-                disc_a2_a.set_prop("vmDisks", AAZListType, ".a2_a.vm_disks")
-                disc_a2_a.set_prop("vmManagedDisks", AAZListType, ".a2_a.vm_managed_disks")
+                disc_a2_a.set_prop("vmDisksUris", AAZListType, ".a2_a.vm_disks_uris")
+                disc_a2_a.set_prop("vmManagedDisksIds", AAZListType, ".a2_a.vm_managed_disks_ids")
 
-            vm_disks = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks")
-            if vm_disks is not None:
-                vm_disks.set_elements(AAZObjectType, ".")
+            vm_disks_uris = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisksUris")
+            if vm_disks_uris is not None:
+                vm_disks_uris.set_elements(AAZStrType, ".")
 
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks[]")
-            if _elements is not None:
-                _elements.set_prop("diskUri", AAZStrType, ".disk_uri", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("primaryStagingAzureStorageAccountId", AAZStrType, ".primary_staging_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("recoveryAzureStorageAccountId", AAZStrType, ".recovery_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
-
-            vm_managed_disks = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks")
-            if vm_managed_disks is not None:
-                vm_managed_disks.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[]")
-            if _elements is not None:
-                _elements.set_prop("diskEncryptionInfo", AAZObjectType, ".disk_encryption_info")
-                _elements.set_prop("diskId", AAZStrType, ".disk_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("primaryStagingAzureStorageAccountId", AAZStrType, ".primary_staging_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("recoveryDiskEncryptionSetId", AAZStrType, ".recovery_disk_encryption_set_id")
-                _elements.set_prop("recoveryReplicaDiskAccountType", AAZStrType, ".recovery_replica_disk_account_type")
-                _elements.set_prop("recoveryResourceGroupId", AAZStrType, ".recovery_resource_group_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("recoveryTargetDiskAccountType", AAZStrType, ".recovery_target_disk_account_type")
-
-            disk_encryption_info = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[].diskEncryptionInfo")
-            if disk_encryption_info is not None:
-                disk_encryption_info.set_prop("diskEncryptionKeyInfo", AAZObjectType, ".disk_encryption_key_info")
-                disk_encryption_info.set_prop("keyEncryptionKeyInfo", AAZObjectType, ".key_encryption_key_info")
-
-            disk_encryption_key_info = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[].diskEncryptionInfo.diskEncryptionKeyInfo")
-            if disk_encryption_key_info is not None:
-                disk_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
-                disk_encryption_key_info.set_prop("secretIdentifier", AAZStrType, ".secret_identifier")
-
-            key_encryption_key_info = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisks[].diskEncryptionInfo.keyEncryptionKeyInfo")
-            if key_encryption_key_info is not None:
-                key_encryption_key_info.set_prop("keyIdentifier", AAZStrType, ".key_identifier")
-                key_encryption_key_info.set_prop("keyVaultResourceArmId", AAZStrType, ".key_vault_resource_arm_id")
+            vm_managed_disks_ids = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmManagedDisksIds")
+            if vm_managed_disks_ids is not None:
+                vm_managed_disks_ids.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -490,7 +379,7 @@ class AddDisk(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_health_error_read(health_errors.Element)
+            _RemoveDiskHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -518,7 +407,7 @@ class AddDisk(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -530,7 +419,7 @@ class AddDisk(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -581,7 +470,7 @@ class AddDisk(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -622,7 +511,7 @@ class AddDisk(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _AddDiskHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _RemoveDiskHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -852,7 +741,7 @@ class AddDisk(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -902,7 +791,7 @@ class AddDisk(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -924,17 +813,17 @@ class AddDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -956,11 +845,11 @@ class AddDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -973,7 +862,7 @@ class AddDisk(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -1065,7 +954,7 @@ class AddDisk(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _RemoveDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -1118,13 +1007,13 @@ class AddDisk(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _AddDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1146,11 +1035,11 @@ class AddDisk(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _RemoveDiskHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1229,7 +1118,7 @@ class AddDisk(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _AddDiskHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _RemoveDiskHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1377,11 +1266,11 @@ class AddDisk(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_health_error_read(validation_errors.Element)
+            _RemoveDiskHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1587,7 +1476,7 @@ class AddDisk(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _RemoveDiskHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1753,11 +1642,11 @@ class AddDisk(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_health_error_read(validation_errors.Element)
+            _RemoveDiskHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _AddDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _RemoveDiskHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2155,7 +2044,7 @@ class AddDisk(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _AddDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2171,7 +2060,7 @@ class AddDisk(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _AddDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2474,7 +2363,7 @@ class AddDisk(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _AddDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2490,7 +2379,7 @@ class AddDisk(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _AddDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _RemoveDiskHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2516,8 +2405,8 @@ class AddDisk(AAZCommand):
             return cls._schema_on_200
 
 
-class _AddDiskHelper:
-    """Helper class for AddDisk"""
+class _RemoveDiskHelper:
+    """Helper class for RemoveDisk"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -3073,4 +2962,4 @@ class _AddDiskHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["AddDisk"]
+__all__ = ["RemoveDisk"]

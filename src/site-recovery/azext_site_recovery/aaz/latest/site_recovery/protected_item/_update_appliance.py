@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item unplanned-failover",
+    "site-recovery protected-item update-appliance",
 )
-class UnplannedFailover(AAZCommand):
-    """Operation to initiate a failover of the replication protected item.
+class UpdateAppliance(AAZCommand):
+    """The operation to update appliance of an ASR replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/unplannedfailover", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/updateappliance", "2022-08-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class UnplannedFailover(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Unique fabric name.",
+            help="Fabric name.",
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
@@ -69,95 +69,34 @@ class UnplannedFailover(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.failover_direction = AAZStrArg(
-            options=["--failover-direction"],
-            arg_group="Properties",
-            help="Failover direction.",
-        )
         _args_schema.provider_specific_details = AAZObjectArg(
             options=["--provider-details", "--provider-specific-details"],
             arg_group="Properties",
-            help="Provider specific settings.",
+            help="The provider specific input to update replication protected item.",
+            required=True,
         )
-        _args_schema.source_site_operations = AAZStrArg(
-            options=["--source-site-operations"],
+        _args_schema.target_appliance_id = AAZStrArg(
+            options=["--target-appliance-id"],
             arg_group="Properties",
-            help="Source site operations status.",
+            help="The target appliance Id.",
+            required=True,
         )
 
         provider_specific_details = cls._args_schema.provider_specific_details
-        provider_specific_details.a2_a = AAZObjectArg(
-            options=["a2-a"],
-        )
-        provider_specific_details.hyper_v_replica_azure = AAZObjectArg(
-            options=["hyper-v-replica-azure"],
-        )
-        provider_specific_details.in_mage = AAZObjectArg(
-            options=["in-mage"],
-        )
-        provider_specific_details.in_mage_azure_v2 = AAZObjectArg(
-            options=["in-mage-azure-v2"],
-        )
         provider_specific_details.in_mage_rcm = AAZObjectArg(
             options=["in-mage-rcm"],
         )
 
-        a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.cloud_service_creation_option = AAZStrArg(
-            options=["cloud-service-creation-option"],
-            help="A value indicating whether to use recovery cloud service for failover or not.",
-        )
-        a2_a.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            help="The recovery point id to be passed to failover to a particular recovery point. In case of latest recovery point, null should be passed.",
-        )
-
-        hyper_v_replica_azure = cls._args_schema.provider_specific_details.hyper_v_replica_azure
-        hyper_v_replica_azure.primary_kek_certificate_pfx = AAZStrArg(
-            options=["primary-kek-certificate-pfx"],
-            help="Primary kek certificate pfx.",
-        )
-        hyper_v_replica_azure.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            help="The recovery point id to be passed to failover to a particular recovery point. In case of latest recovery point, null should be passed.",
-        )
-        hyper_v_replica_azure.secondary_kek_certificate_pfx = AAZStrArg(
-            options=["secondary-kek-certificate-pfx"],
-            help="Secondary kek certificate pfx.",
-        )
-
-        in_mage = cls._args_schema.provider_specific_details.in_mage
-        in_mage.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            help="The recovery point id to be passed to failover to a particular recovery point. In case of latest recovery point, null should be passed.",
-        )
-        in_mage.recovery_point_type = AAZStrArg(
-            options=["recovery-point-type"],
-            help="The recovery point type. Values from LatestTime, LatestTag or Custom. In the case of custom, the recovery point provided by RecoveryPointId will be used. In the other two cases, recovery point id will be ignored.",
-            enum={"Custom": "Custom", "LatestTag": "LatestTag", "LatestTime": "LatestTime"},
-        )
-
-        in_mage_azure_v2 = cls._args_schema.provider_specific_details.in_mage_azure_v2
-        in_mage_azure_v2.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            help="The recovery point id to be passed to failover to a particular recovery point. In case of latest recovery point, null should be passed.",
-        )
-
         in_mage_rcm = cls._args_schema.provider_specific_details.in_mage_rcm
-        in_mage_rcm.perform_shutdown = AAZStrArg(
-            options=["perform-shutdown"],
-            help="A value indicating whether VM is to be shutdown.",
-            required=True,
-        )
-        in_mage_rcm.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            help="The recovery point id to be passed to failover to a particular recovery point. In case of latest recovery point, null should be passed.",
+        in_mage_rcm.run_as_account_id = AAZStrArg(
+            options=["run-as-account-id"],
+            help="The run as account Id.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsUnplannedFailover(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsUpdateAppliance(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -172,7 +111,7 @@ class UnplannedFailover(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsUnplannedFailover(AAZHttpOperation):
+    class ReplicationProtectedItemsUpdateAppliance(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -202,7 +141,7 @@ class UnplannedFailover(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/unplannedFailover",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/updateAppliance",
                 **self.url_parameters
             )
 
@@ -277,47 +216,17 @@ class UnplannedFailover(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("failoverDirection", AAZStrType, ".failover_direction")
-                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details")
-                properties.set_prop("sourceSiteOperations", AAZStrType, ".source_site_operations")
+                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("targetApplianceId", AAZStrType, ".target_appliance_id", typ_kwargs={"flags": {"required": True}})
 
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
-                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.discriminate_by("instanceType", "A2A")
-                provider_specific_details.discriminate_by("instanceType", "HyperVReplicaAzure")
-                provider_specific_details.discriminate_by("instanceType", "InMage")
-                provider_specific_details.discriminate_by("instanceType", "InMageAzureV2")
                 provider_specific_details.discriminate_by("instanceType", "InMageRcm")
-
-            disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
-            if disc_a2_a is not None:
-                disc_a2_a.set_prop("cloudServiceCreationOption", AAZStrType, ".a2_a.cloud_service_creation_option")
-                disc_a2_a.set_prop("recoveryPointId", AAZStrType, ".a2_a.recovery_point_id")
-
-            disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}")
-            if disc_hyper_v_replica_azure is not None:
-                disc_hyper_v_replica_azure.set_prop("primaryKekCertificatePfx", AAZStrType, ".hyper_v_replica_azure.primary_kek_certificate_pfx")
-                disc_hyper_v_replica_azure.set_prop("recoveryPointId", AAZStrType, ".hyper_v_replica_azure.recovery_point_id")
-                disc_hyper_v_replica_azure.set_prop("secondaryKekCertificatePfx", AAZStrType, ".hyper_v_replica_azure.secondary_kek_certificate_pfx")
-
-            disc_in_mage = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}")
-            if disc_in_mage is not None:
-                disc_in_mage.set_prop("recoveryPointId", AAZStrType, ".in_mage.recovery_point_id")
-                disc_in_mage.set_prop("recoveryPointType", AAZStrType, ".in_mage.recovery_point_type")
-
-            disc_in_mage_azure_v2 = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}")
-            if disc_in_mage_azure_v2 is not None:
-                disc_in_mage_azure_v2.set_prop("recoveryPointId", AAZStrType, ".in_mage_azure_v2.recovery_point_id")
 
             disc_in_mage_rcm = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcm}")
             if disc_in_mage_rcm is not None:
-                disc_in_mage_rcm.set_prop("performShutdown", AAZStrType, ".in_mage_rcm.perform_shutdown", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm.set_prop("recoveryPointId", AAZStrType, ".in_mage_rcm.recovery_point_id")
+                disc_in_mage_rcm.set_prop("runAsAccountId", AAZStrType, ".in_mage_rcm.run_as_account_id")
 
             return self.serialize_content(_content_value)
 
@@ -459,7 +368,7 @@ class UnplannedFailover(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_health_error_read(health_errors.Element)
+            _UpdateApplianceHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -487,7 +396,7 @@ class UnplannedFailover(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _UnplannedFailoverHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _UpdateApplianceHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -499,7 +408,7 @@ class UnplannedFailover(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _UnplannedFailoverHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _UpdateApplianceHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -550,7 +459,7 @@ class UnplannedFailover(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _UnplannedFailoverHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _UpdateApplianceHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -591,7 +500,7 @@ class UnplannedFailover(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _UnplannedFailoverHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _UpdateApplianceHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -821,7 +730,7 @@ class UnplannedFailover(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -871,7 +780,7 @@ class UnplannedFailover(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UnplannedFailoverHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _UpdateApplianceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -893,17 +802,17 @@ class UnplannedFailover(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _UpdateApplianceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UnplannedFailoverHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _UpdateApplianceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -925,11 +834,11 @@ class UnplannedFailover(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _UpdateApplianceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -942,7 +851,7 @@ class UnplannedFailover(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UnplannedFailoverHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _UpdateApplianceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -1034,7 +943,7 @@ class UnplannedFailover(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _UpdateApplianceHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -1087,13 +996,13 @@ class UnplannedFailover(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _UnplannedFailoverHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _UpdateApplianceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1115,11 +1024,11 @@ class UnplannedFailover(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _UpdateApplianceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1198,7 +1107,7 @@ class UnplannedFailover(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _UnplannedFailoverHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _UpdateApplianceHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1346,11 +1255,11 @@ class UnplannedFailover(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_health_error_read(validation_errors.Element)
+            _UpdateApplianceHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1556,7 +1465,7 @@ class UnplannedFailover(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _UpdateApplianceHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1722,11 +1631,11 @@ class UnplannedFailover(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_health_error_read(validation_errors.Element)
+            _UpdateApplianceHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _UnplannedFailoverHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateApplianceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2124,7 +2033,7 @@ class UnplannedFailover(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _UnplannedFailoverHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _UpdateApplianceHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2140,7 +2049,7 @@ class UnplannedFailover(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _UnplannedFailoverHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _UpdateApplianceHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2443,7 +2352,7 @@ class UnplannedFailover(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _UnplannedFailoverHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _UpdateApplianceHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2459,7 +2368,7 @@ class UnplannedFailover(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _UnplannedFailoverHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _UpdateApplianceHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2485,8 +2394,8 @@ class UnplannedFailover(AAZCommand):
             return cls._schema_on_200
 
 
-class _UnplannedFailoverHelper:
-    """Helper class for UnplannedFailover"""
+class _UpdateApplianceHelper:
+    """Helper class for UpdateAppliance"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -3042,4 +2951,4 @@ class _UnplannedFailoverHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["UnplannedFailover"]
+__all__ = ["UpdateAppliance"]

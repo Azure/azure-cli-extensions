@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item remove",
+    "site-recovery protected-item remove",
 )
 class Remove(AAZCommand):
     """The operation to disable replication on a replication protected item. This will also remove the item.

@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item failover-cancel",
+    "site-recovery protected-item update-mobility-service",
 )
-class FailoverCancel(AAZCommand):
-    """Operation to cancel the failover of the replication protected item.
+class UpdateMobilityService(AAZCommand):
+    """The operation to update(push update) the installed mobility service software on a replication protected item to the latest available version.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/failovercancel", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/updatemobilityservice", "2022-08-01"],
         ]
     }
 
@@ -44,7 +44,7 @@ class FailoverCancel(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Unique fabric name.",
+            help="The name of the fabric containing the protected item.",
             required=True,
         )
         _args_schema.protection_container_name = AAZStrArg(
@@ -52,9 +52,9 @@ class FailoverCancel(AAZCommand):
             help="Protection container name.",
             required=True,
         )
-        _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["-n", "--replicated-protected-item-name"],
-            help="Replication protected item name.",
+        _args_schema.replication_protected_item_name = AAZStrArg(
+            options=["--protected-item", "--replication-protected-item-name"],
+            help="The name of the protected item on which the agent is to be updated.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -65,11 +65,20 @@ class FailoverCancel(AAZCommand):
             help="The name of the recovery services vault.",
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.run_as_account_id = AAZStrArg(
+            options=["--run-as-account-id"],
+            arg_group="Properties",
+            help="The CS run as account Id.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsFailoverCancel(ctx=self.ctx)()
+        yield self.ReplicationProtectedItemsUpdateMobilityService(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,7 +93,7 @@ class FailoverCancel(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsFailoverCancel(AAZHttpOperation):
+    class ReplicationProtectedItemsUpdateMobilityService(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -114,7 +123,7 @@ class FailoverCancel(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/failoverCancel",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicationProtectedItemName}/updateMobilityService",
                 **self.url_parameters
             )
 
@@ -138,7 +147,7 @@ class FailoverCancel(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "replicatedProtectedItemName", self.ctx.args.replicated_protected_item_name,
+                    "replicationProtectedItemName", self.ctx.args.replication_protected_item_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -170,10 +179,28 @@ class FailoverCancel(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("runAsAccountId", AAZStrType, ".run_as_account_id")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -313,7 +340,7 @@ class FailoverCancel(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_health_error_read(health_errors.Element)
+            _UpdateMobilityServiceHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -341,7 +368,7 @@ class FailoverCancel(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _FailoverCancelHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -353,7 +380,7 @@ class FailoverCancel(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _FailoverCancelHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -404,7 +431,7 @@ class FailoverCancel(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _FailoverCancelHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -445,7 +472,7 @@ class FailoverCancel(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _FailoverCancelHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _UpdateMobilityServiceHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -675,7 +702,7 @@ class FailoverCancel(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -725,7 +752,7 @@ class FailoverCancel(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _FailoverCancelHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -747,17 +774,17 @@ class FailoverCancel(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _UpdateMobilityServiceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _FailoverCancelHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -779,11 +806,11 @@ class FailoverCancel(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _UpdateMobilityServiceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -796,7 +823,7 @@ class FailoverCancel(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _FailoverCancelHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -888,7 +915,7 @@ class FailoverCancel(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _UpdateMobilityServiceHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -941,13 +968,13 @@ class FailoverCancel(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _FailoverCancelHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -969,11 +996,11 @@ class FailoverCancel(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _UpdateMobilityServiceHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1052,7 +1079,7 @@ class FailoverCancel(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _FailoverCancelHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _UpdateMobilityServiceHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1200,11 +1227,11 @@ class FailoverCancel(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_health_error_read(validation_errors.Element)
+            _UpdateMobilityServiceHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1410,7 +1437,7 @@ class FailoverCancel(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _UpdateMobilityServiceHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1576,11 +1603,11 @@ class FailoverCancel(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_health_error_read(validation_errors.Element)
+            _UpdateMobilityServiceHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _FailoverCancelHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _UpdateMobilityServiceHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -1978,7 +2005,7 @@ class FailoverCancel(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _FailoverCancelHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -1994,7 +2021,7 @@ class FailoverCancel(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _FailoverCancelHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2297,7 +2324,7 @@ class FailoverCancel(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _FailoverCancelHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2313,7 +2340,7 @@ class FailoverCancel(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _FailoverCancelHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _UpdateMobilityServiceHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2339,8 +2366,8 @@ class FailoverCancel(AAZCommand):
             return cls._schema_on_200
 
 
-class _FailoverCancelHelper:
-    """Helper class for FailoverCancel"""
+class _UpdateMobilityServiceHelper:
+    """Helper class for UpdateMobilityService"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -2896,4 +2923,4 @@ class _FailoverCancelHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["FailoverCancel"]
+__all__ = ["UpdateMobilityService"]

@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery fabric protection-container protected-item",
+    "site-recovery protected-item recovery-point",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Vault Fabric Protection Container Protected Item
+    """Manage the recovery points for a replication protected item.
     """
     pass
 

@@ -12,24 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protected-item re-protect",
+    "site-recovery protected-item show",
 )
-class ReProtect(AAZCommand):
-    """Operation to reprotect or reverse replicate a failed over replication protected item.
+class Show(AAZCommand):
+    """Get the details of an ASR replication protected item.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/reprotect", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -44,18 +43,21 @@ class ReProtect(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Unique fabric name.",
+            help="Fabric unique name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["-n", "--replicated-protected-item-name"],
+            options=["-n", "--name", "--replicated-protected-item-name"],
             help="Replication protected item name.",
             required=True,
+            id_part="child_name_3",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,261 +66,13 @@ class ReProtect(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.failover_direction = AAZStrArg(
-            options=["--failover-direction"],
-            arg_group="Properties",
-            help="Failover direction.",
-        )
-        _args_schema.provider_specific_details = AAZObjectArg(
-            options=["--provider-details", "--provider-specific-details"],
-            arg_group="Properties",
-            help="Provider specific reverse replication input.",
-        )
-
-        provider_specific_details = cls._args_schema.provider_specific_details
-        provider_specific_details.a2_a = AAZObjectArg(
-            options=["a2-a"],
-        )
-        provider_specific_details.hyper_v_replica_azure = AAZObjectArg(
-            options=["hyper-v-replica-azure"],
-        )
-        provider_specific_details.in_mage = AAZObjectArg(
-            options=["in-mage"],
-        )
-        provider_specific_details.in_mage_azure_v2 = AAZObjectArg(
-            options=["in-mage-azure-v2"],
-        )
-        provider_specific_details.in_mage_rcm = AAZObjectArg(
-            options=["in-mage-rcm"],
-        )
-        provider_specific_details.in_mage_rcm_failback = AAZObjectArg(
-            options=["in-mage-rcm-failback"],
-        )
-
-        a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.policy_id = AAZStrArg(
-            options=["policy-id"],
-            help="The Policy Id.",
-        )
-        a2_a.recovery_availability_set_id = AAZStrArg(
-            options=["recovery-availability-set-id"],
-            help="The recovery availability set.",
-        )
-        a2_a.recovery_cloud_service_id = AAZStrArg(
-            options=["recovery-cloud-service-id"],
-            help="The recovery cloud service Id. Valid for V1 scenarios.",
-        )
-        a2_a.recovery_container_id = AAZStrArg(
-            options=["recovery-container-id"],
-            help="The recovery container Id.",
-        )
-        a2_a.recovery_resource_group_id = AAZStrArg(
-            options=["recovery-resource-group-id"],
-            help="The recovery resource group Id. Valid for V2 scenarios.",
-        )
-        a2_a.vm_disks = AAZListArg(
-            options=["vm-disks"],
-            help="The list of vm disk details.",
-        )
-
-        vm_disks = cls._args_schema.provider_specific_details.a2_a.vm_disks
-        vm_disks.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.a2_a.vm_disks.Element
-        _element.disk_uri = AAZStrArg(
-            options=["disk-uri"],
-            help="The disk Uri.",
-            required=True,
-        )
-        _element.primary_staging_azure_storage_account_id = AAZStrArg(
-            options=["primary-staging-azure-storage-account-id"],
-            help="The primary staging storage account Id.",
-            required=True,
-        )
-        _element.recovery_azure_storage_account_id = AAZStrArg(
-            options=["recovery-azure-storage-account-id"],
-            help="The recovery VHD storage account Id.",
-            required=True,
-        )
-
-        hyper_v_replica_azure = cls._args_schema.provider_specific_details.hyper_v_replica_azure
-        hyper_v_replica_azure.hv_host_vm_id = AAZStrArg(
-            options=["hv-host-vm-id"],
-            help="The Hyper-V host Vm Id.",
-        )
-        hyper_v_replica_azure.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The storage account to be used for logging during replication.",
-        )
-        hyper_v_replica_azure.os_type = AAZStrArg(
-            options=["os-type"],
-            help="The OS type associated with vm.",
-        )
-        hyper_v_replica_azure.storage_account_id = AAZStrArg(
-            options=["storage-account-id"],
-            help="The storage account name.",
-        )
-        hyper_v_replica_azure.v_hd_id = AAZStrArg(
-            options=["v-hd-id"],
-            help="The OS disk VHD id associated with vm.",
-        )
-        hyper_v_replica_azure.vm_name = AAZStrArg(
-            options=["vm-name"],
-            help="The Vm Name.",
-        )
-
-        in_mage = cls._args_schema.provider_specific_details.in_mage
-        in_mage.datastore_name = AAZStrArg(
-            options=["datastore-name"],
-            help="The target datastore name.",
-        )
-        in_mage.disk_exclusion_input = AAZObjectArg(
-            options=["disk-exclusion-input"],
-            help="The enable disk exclusion input.",
-        )
-        in_mage.disks_to_include = AAZListArg(
-            options=["disks-to-include"],
-            help="The disks to include list.",
-        )
-        in_mage.master_target_id = AAZStrArg(
-            options=["master-target-id"],
-            help="The Master Target Id.",
-            required=True,
-        )
-        in_mage.process_server_id = AAZStrArg(
-            options=["process-server-id"],
-            help="The Process Server Id.",
-            required=True,
-        )
-        in_mage.profile_id = AAZStrArg(
-            options=["profile-id"],
-            help="The Policy Id.",
-            required=True,
-        )
-        in_mage.retention_drive = AAZStrArg(
-            options=["retention-drive"],
-            help="The retention drive to use on the MT.",
-            required=True,
-        )
-        in_mage.run_as_account_id = AAZStrArg(
-            options=["run-as-account-id"],
-            help="The CS account Id.",
-        )
-
-        disk_exclusion_input = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input
-        disk_exclusion_input.disk_signature_options = AAZListArg(
-            options=["disk-signature-options"],
-            help="The guest disk signature based option for disk exclusion.",
-        )
-        disk_exclusion_input.volume_options = AAZListArg(
-            options=["volume-options"],
-            help="The volume label based option for disk exclusion.",
-        )
-
-        disk_signature_options = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.disk_signature_options
-        disk_signature_options.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.disk_signature_options.Element
-        _element.disk_signature = AAZStrArg(
-            options=["disk-signature"],
-            help="The guest signature of disk to be excluded from replication.",
-        )
-
-        volume_options = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.volume_options
-        volume_options.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_details.in_mage.disk_exclusion_input.volume_options.Element
-        _element.only_exclude_if_single_volume = AAZStrArg(
-            options=["only-exclude-if-single-volume"],
-            help="The value indicating whether to exclude multi volume disk or not. If a disk has multiple volumes and one of the volume has label matching with VolumeLabel this disk will be excluded from replication if OnlyExcludeIfSingleVolume is false.",
-        )
-        _element.volume_label = AAZStrArg(
-            options=["volume-label"],
-            help="The volume label. The disk having any volume with this label will be excluded from replication.",
-        )
-
-        disks_to_include = cls._args_schema.provider_specific_details.in_mage.disks_to_include
-        disks_to_include.Element = AAZStrArg()
-
-        in_mage_azure_v2 = cls._args_schema.provider_specific_details.in_mage_azure_v2
-        in_mage_azure_v2.disks_to_include = AAZListArg(
-            options=["disks-to-include"],
-            help="The disks to include list.",
-        )
-        in_mage_azure_v2.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The storage account to be used for logging during replication.",
-        )
-        in_mage_azure_v2.master_target_id = AAZStrArg(
-            options=["master-target-id"],
-            help="The Master target Id.",
-        )
-        in_mage_azure_v2.policy_id = AAZStrArg(
-            options=["policy-id"],
-            help="The Policy Id.",
-        )
-        in_mage_azure_v2.process_server_id = AAZStrArg(
-            options=["process-server-id"],
-            help="The Process Server Id.",
-        )
-        in_mage_azure_v2.run_as_account_id = AAZStrArg(
-            options=["run-as-account-id"],
-            help="The CS account Id.",
-        )
-        in_mage_azure_v2.storage_account_id = AAZStrArg(
-            options=["storage-account-id"],
-            help="The storage account id.",
-        )
-
-        disks_to_include = cls._args_schema.provider_specific_details.in_mage_azure_v2.disks_to_include
-        disks_to_include.Element = AAZStrArg()
-
-        in_mage_rcm = cls._args_schema.provider_specific_details.in_mage_rcm
-        in_mage_rcm.datastore_name = AAZStrArg(
-            options=["datastore-name"],
-            help="The target datastore name.",
-            required=True,
-        )
-        in_mage_rcm.log_storage_account_id = AAZStrArg(
-            options=["log-storage-account-id"],
-            help="The log storage account ARM Id.",
-            required=True,
-        )
-        in_mage_rcm.policy_id = AAZStrArg(
-            options=["policy-id"],
-            help="The Policy Id.",
-        )
-        in_mage_rcm.reprotect_agent_id = AAZStrArg(
-            options=["reprotect-agent-id"],
-            help="The reprotect agent Id.",
-            required=True,
-        )
-
-        in_mage_rcm_failback = cls._args_schema.provider_specific_details.in_mage_rcm_failback
-        in_mage_rcm_failback.policy_id = AAZStrArg(
-            options=["policy-id"],
-            help="The Policy Id.",
-            required=True,
-        )
-        in_mage_rcm_failback.process_server_id = AAZStrArg(
-            options=["process-server-id"],
-            help="The process server Id.",
-            required=True,
-        )
-        in_mage_rcm_failback.run_as_account_id = AAZStrArg(
-            options=["run-as-account-id"],
-            help="The run as account Id.",
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsReprotect(ctx=self.ctx)()
+        self.ReplicationProtectedItemsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -333,43 +87,27 @@ class ReProtect(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectedItemsReprotect(AAZHttpOperation):
+    class ReplicationProtectedItemsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/reProtect",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -419,136 +157,10 @@ class ReProtect(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("failoverDirection", AAZStrType, ".failover_direction")
-                properties.set_prop("providerSpecificDetails", AAZObjectType, ".provider_specific_details")
-
-            provider_specific_details = _builder.get(".properties.providerSpecificDetails")
-            if provider_specific_details is not None:
-                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "InMageRcmFailback", AAZStrType, ".in_mage_rcm_failback", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.discriminate_by("instanceType", "A2A")
-                provider_specific_details.discriminate_by("instanceType", "HyperVReplicaAzure")
-                provider_specific_details.discriminate_by("instanceType", "InMage")
-                provider_specific_details.discriminate_by("instanceType", "InMageAzureV2")
-                provider_specific_details.discriminate_by("instanceType", "InMageRcm")
-                provider_specific_details.discriminate_by("instanceType", "InMageRcmFailback")
-
-            disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
-            if disc_a2_a is not None:
-                disc_a2_a.set_prop("policyId", AAZStrType, ".a2_a.policy_id")
-                disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2_a.recovery_availability_set_id")
-                disc_a2_a.set_prop("recoveryCloudServiceId", AAZStrType, ".a2_a.recovery_cloud_service_id")
-                disc_a2_a.set_prop("recoveryContainerId", AAZStrType, ".a2_a.recovery_container_id")
-                disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2_a.recovery_resource_group_id")
-                disc_a2_a.set_prop("vmDisks", AAZListType, ".a2_a.vm_disks")
-
-            vm_disks = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks")
-            if vm_disks is not None:
-                vm_disks.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks[]")
-            if _elements is not None:
-                _elements.set_prop("diskUri", AAZStrType, ".disk_uri", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("primaryStagingAzureStorageAccountId", AAZStrType, ".primary_staging_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("recoveryAzureStorageAccountId", AAZStrType, ".recovery_azure_storage_account_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}")
-            if disc_hyper_v_replica_azure is not None:
-                disc_hyper_v_replica_azure.set_prop("hvHostVmId", AAZStrType, ".hyper_v_replica_azure.hv_host_vm_id")
-                disc_hyper_v_replica_azure.set_prop("logStorageAccountId", AAZStrType, ".hyper_v_replica_azure.log_storage_account_id")
-                disc_hyper_v_replica_azure.set_prop("osType", AAZStrType, ".hyper_v_replica_azure.os_type")
-                disc_hyper_v_replica_azure.set_prop("storageAccountId", AAZStrType, ".hyper_v_replica_azure.storage_account_id")
-                disc_hyper_v_replica_azure.set_prop("vHDId", AAZStrType, ".hyper_v_replica_azure.v_hd_id")
-                disc_hyper_v_replica_azure.set_prop("vmName", AAZStrType, ".hyper_v_replica_azure.vm_name")
-
-            disc_in_mage = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}")
-            if disc_in_mage is not None:
-                disc_in_mage.set_prop("datastoreName", AAZStrType, ".in_mage.datastore_name")
-                disc_in_mage.set_prop("diskExclusionInput", AAZObjectType, ".in_mage.disk_exclusion_input")
-                disc_in_mage.set_prop("disksToInclude", AAZListType, ".in_mage.disks_to_include")
-                disc_in_mage.set_prop("masterTargetId", AAZStrType, ".in_mage.master_target_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("processServerId", AAZStrType, ".in_mage.process_server_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("profileId", AAZStrType, ".in_mage.profile_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("retentionDrive", AAZStrType, ".in_mage.retention_drive", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage.set_prop("runAsAccountId", AAZStrType, ".in_mage.run_as_account_id")
-
-            disk_exclusion_input = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput")
-            if disk_exclusion_input is not None:
-                disk_exclusion_input.set_prop("diskSignatureOptions", AAZListType, ".disk_signature_options")
-                disk_exclusion_input.set_prop("volumeOptions", AAZListType, ".volume_options")
-
-            disk_signature_options = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.diskSignatureOptions")
-            if disk_signature_options is not None:
-                disk_signature_options.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.diskSignatureOptions[]")
-            if _elements is not None:
-                _elements.set_prop("diskSignature", AAZStrType, ".disk_signature")
-
-            volume_options = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.volumeOptions")
-            if volume_options is not None:
-                volume_options.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.diskExclusionInput.volumeOptions[]")
-            if _elements is not None:
-                _elements.set_prop("onlyExcludeIfSingleVolume", AAZStrType, ".only_exclude_if_single_volume")
-                _elements.set_prop("volumeLabel", AAZStrType, ".volume_label")
-
-            disks_to_include = _builder.get(".properties.providerSpecificDetails{instanceType:InMage}.disksToInclude")
-            if disks_to_include is not None:
-                disks_to_include.set_elements(AAZStrType, ".")
-
-            disc_in_mage_azure_v2 = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}")
-            if disc_in_mage_azure_v2 is not None:
-                disc_in_mage_azure_v2.set_prop("disksToInclude", AAZListType, ".in_mage_azure_v2.disks_to_include")
-                disc_in_mage_azure_v2.set_prop("logStorageAccountId", AAZStrType, ".in_mage_azure_v2.log_storage_account_id")
-                disc_in_mage_azure_v2.set_prop("masterTargetId", AAZStrType, ".in_mage_azure_v2.master_target_id")
-                disc_in_mage_azure_v2.set_prop("policyId", AAZStrType, ".in_mage_azure_v2.policy_id")
-                disc_in_mage_azure_v2.set_prop("processServerId", AAZStrType, ".in_mage_azure_v2.process_server_id")
-                disc_in_mage_azure_v2.set_prop("runAsAccountId", AAZStrType, ".in_mage_azure_v2.run_as_account_id")
-                disc_in_mage_azure_v2.set_prop("storageAccountId", AAZStrType, ".in_mage_azure_v2.storage_account_id")
-
-            disks_to_include = _builder.get(".properties.providerSpecificDetails{instanceType:InMageAzureV2}.disksToInclude")
-            if disks_to_include is not None:
-                disks_to_include.set_elements(AAZStrType, ".")
-
-            disc_in_mage_rcm = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcm}")
-            if disc_in_mage_rcm is not None:
-                disc_in_mage_rcm.set_prop("datastoreName", AAZStrType, ".in_mage_rcm.datastore_name", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm.set_prop("logStorageAccountId", AAZStrType, ".in_mage_rcm.log_storage_account_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm.set_prop("policyId", AAZStrType, ".in_mage_rcm.policy_id")
-                disc_in_mage_rcm.set_prop("reprotectAgentId", AAZStrType, ".in_mage_rcm.reprotect_agent_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_in_mage_rcm_failback = _builder.get(".properties.providerSpecificDetails{instanceType:InMageRcmFailback}")
-            if disc_in_mage_rcm_failback is not None:
-                disc_in_mage_rcm_failback.set_prop("policyId", AAZStrType, ".in_mage_rcm_failback.policy_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm_failback.set_prop("processServerId", AAZStrType, ".in_mage_rcm_failback.process_server_id", typ_kwargs={"flags": {"required": True}})
-                disc_in_mage_rcm_failback.set_prop("runAsAccountId", AAZStrType, ".in_mage_rcm_failback.run_as_account_id")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -688,7 +300,7 @@ class ReProtect(AAZCommand):
 
             health_errors = cls._schema_on_200.properties.health_errors
             health_errors.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_health_error_read(health_errors.Element)
+            _ShowHelper._build_schema_health_error_read(health_errors.Element)
 
             provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
@@ -716,7 +328,7 @@ class ReProtect(AAZCommand):
             disc_a2_a.initial_primary_extended_location = AAZObjectType(
                 serialized_name="initialPrimaryExtendedLocation",
             )
-            _ReProtectHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
+            _ShowHelper._build_schema_extended_location_read(disc_a2_a.initial_primary_extended_location)
             disc_a2_a.initial_primary_fabric_location = AAZStrType(
                 serialized_name="initialPrimaryFabricLocation",
                 flags={"read_only": True},
@@ -728,7 +340,7 @@ class ReProtect(AAZCommand):
             disc_a2_a.initial_recovery_extended_location = AAZObjectType(
                 serialized_name="initialRecoveryExtendedLocation",
             )
-            _ReProtectHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
+            _ShowHelper._build_schema_extended_location_read(disc_a2_a.initial_recovery_extended_location)
             disc_a2_a.initial_recovery_fabric_location = AAZStrType(
                 serialized_name="initialRecoveryFabricLocation",
                 flags={"read_only": True},
@@ -779,7 +391,7 @@ class ReProtect(AAZCommand):
             disc_a2_a.primary_extended_location = AAZObjectType(
                 serialized_name="primaryExtendedLocation",
             )
-            _ReProtectHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
+            _ShowHelper._build_schema_extended_location_read(disc_a2_a.primary_extended_location)
             disc_a2_a.primary_fabric_location = AAZStrType(
                 serialized_name="primaryFabricLocation",
             )
@@ -820,7 +432,7 @@ class ReProtect(AAZCommand):
             disc_a2_a.recovery_extended_location = AAZObjectType(
                 serialized_name="recoveryExtendedLocation",
             )
-            _ReProtectHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
+            _ShowHelper._build_schema_extended_location_read(disc_a2_a.recovery_extended_location)
             disc_a2_a.recovery_fabric_location = AAZStrType(
                 serialized_name="recoveryFabricLocation",
             )
@@ -1050,7 +662,7 @@ class ReProtect(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             vm_synced_config_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A").vm_synced_config_details
             vm_synced_config_details.input_endpoints = AAZListType(
@@ -1100,7 +712,7 @@ class ReProtect(AAZCommand):
             disc_hyper_v_replica2012.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _ReProtectHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
+            _ShowHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012.initial_replication_details)
             disc_hyper_v_replica2012.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1122,17 +734,17 @@ class ReProtect(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _ShowHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _ReProtectHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
+            _ShowHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica2012_r2.initial_replication_details)
             disc_hyper_v_replica2012_r2.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1154,11 +766,11 @@ class ReProtect(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _ShowHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.azure_vm_disk_details = AAZListType(
@@ -1171,7 +783,7 @@ class ReProtect(AAZCommand):
             disc_hyper_v_replica_azure.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _ReProtectHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
+            _ShowHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_azure.initial_replication_details)
             disc_hyper_v_replica_azure.last_recovery_point_received = AAZStrType(
                 serialized_name="lastRecoveryPointReceived",
                 flags={"read_only": True},
@@ -1263,7 +875,7 @@ class ReProtect(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _ShowHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             o_s_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").o_s_details
             o_s_details.o_s_major_version = AAZStrType(
@@ -1316,13 +928,13 @@ class ReProtect(AAZCommand):
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_hyper_v_replica_base_replication_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails")
             disc_hyper_v_replica_base_replication_details.initial_replication_details = AAZObjectType(
                 serialized_name="initialReplicationDetails",
             )
-            _ReProtectHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
+            _ShowHelper._build_schema_initial_replication_details_read(disc_hyper_v_replica_base_replication_details.initial_replication_details)
             disc_hyper_v_replica_base_replication_details.last_replicated_time = AAZStrType(
                 serialized_name="lastReplicatedTime",
             )
@@ -1344,11 +956,11 @@ class ReProtect(AAZCommand):
 
             v_m_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").v_m_disk_details
             v_m_disk_details.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_disk_details_read(v_m_disk_details.Element)
+            _ShowHelper._build_schema_disk_details_read(v_m_disk_details.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBaseReplicationDetails").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.active_site_type = AAZStrType(
@@ -1427,7 +1039,7 @@ class ReProtect(AAZCommand):
             disc_in_mage.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _ReProtectHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
+            _ShowHelper._build_schema_initial_replication_details_read(disc_in_mage.resync_details)
             disc_in_mage.retention_window_end = AAZStrType(
                 serialized_name="retentionWindowEnd",
             )
@@ -1575,11 +1187,11 @@ class ReProtect(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").validation_errors
             validation_errors.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_health_error_read(validation_errors.Element)
+            _ShowHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.agent_expiry_date = AAZStrType(
@@ -1785,7 +1397,7 @@ class ReProtect(AAZCommand):
 
             azure_vm_disk_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").azure_vm_disk_details
             azure_vm_disk_details.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
+            _ShowHelper._build_schema_azure_vm_disk_details_read(azure_vm_disk_details.Element)
 
             datastores = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").datastores
             datastores.Element = AAZStrType()
@@ -1951,11 +1563,11 @@ class ReProtect(AAZCommand):
 
             validation_errors = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").validation_errors
             validation_errors.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_health_error_read(validation_errors.Element)
+            _ShowHelper._build_schema_health_error_read(validation_errors.Element)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2").vm_nics
             vm_nics.Element = AAZObjectType()
-            _ReProtectHelper._build_schema_vm_nic_details_read(vm_nics.Element)
+            _ShowHelper._build_schema_vm_nic_details_read(vm_nics.Element)
 
             disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.agent_upgrade_attempt_to_version = AAZStrType(
@@ -2353,7 +1965,7 @@ class ReProtect(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _ReProtectHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
+            _ShowHelper._build_schema_in_mage_rcm_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2369,7 +1981,7 @@ class ReProtect(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _ReProtectHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
+            _ShowHelper._build_schema_in_mage_rcm_sync_details_read(_element.resync_details)
             _element.seed_blob_uri = AAZStrType(
                 serialized_name="seedBlobUri",
                 flags={"read_only": True},
@@ -2672,7 +2284,7 @@ class ReProtect(AAZCommand):
             _element.ir_details = AAZObjectType(
                 serialized_name="irDetails",
             )
-            _ReProtectHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
+            _ShowHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.ir_details)
             _element.is_initial_replication_complete = AAZStrType(
                 serialized_name="isInitialReplicationComplete",
                 flags={"read_only": True},
@@ -2688,7 +2300,7 @@ class ReProtect(AAZCommand):
             _element.resync_details = AAZObjectType(
                 serialized_name="resyncDetails",
             )
-            _ReProtectHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
+            _ShowHelper._build_schema_in_mage_rcm_failback_sync_details_read(_element.resync_details)
 
             vm_nics = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback").vm_nics
             vm_nics.Element = AAZObjectType()
@@ -2714,8 +2326,8 @@ class ReProtect(AAZCommand):
             return cls._schema_on_200
 
 
-class _ReProtectHelper:
-    """Helper class for ReProtect"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_azure_vm_disk_details_read = None
 
@@ -3271,4 +2883,4 @@ class _ReProtectHelper:
         _schema.v_m_network_name = cls._schema_vm_nic_details_read.v_m_network_name
 
 
-__all__ = ["ReProtect"]
+__all__ = ["Show"]
