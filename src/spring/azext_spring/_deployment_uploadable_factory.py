@@ -35,7 +35,7 @@ class FileUpload:
         if not artifact_path:
             raise InvalidArgumentValueError('--artifact-path is not set.')
         artifact_type_list = {'.zip', '.tar.gz', '.tar', '.jar'}
-        if os.path.splittext(artifact_path)[1] in artifact_type_list:
+        if os.path.splitext(artifact_path)[-1] in artifact_type_list:
             self._upload(artifact_path)
         else:
             raise InvalidArgumentValueError('Unexpected artifact file type, must be one of .zip, .tar.gz, .tar, .jar.')
