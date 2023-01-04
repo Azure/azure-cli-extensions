@@ -146,42 +146,85 @@ class SiteRecoveryScenario(ScenarioTest):
             'rg': 'CliTeraformVaultRG',
             'subscription': '7c943c1b-5122-4097-90c8-861411bdd574',
             'vault_name': 'CliTerraformVault',
+            'vm_name': 'CliTerraformVM',
+            'vm_rg': 'CliTerraformVMRG',
             'fabric1_name': 'cli-test-fabric-A2A-1',
             'fabric2_name': 'cli-test-fabric-A2A-2',
             'policy_name': 'cli-test-vault-policy-A2A-1',
             'container1_name': 'cli-test-container-A2A-1',
             'container2_name': 'cli-test-container-A2A-2',
-            'mapping_name': 'cli-test-mapping-A2A-1',
+            'container_mapping_name': 'cli-test-container-mapping-A2A-1',
+            'vnet1_name': 'cli-test-vnet-A2A-1',
+            'vnet2_name': 'cli-test-vnet-A2A-2',
+            'network_mapping_name': 'cli-test-network-mapping-A2A-1',
+            'protected_item_name': 'cli-test-protected-item-A2A-1',
+            'storage1_name': 'cliteststoragea2a1',
+            'storage2_name': 'cliteststoragea2a2',
         })
-        self.cmd('az site-recovery fabric create --subscription {subscription} -n {fabric1_name} -g {rg} '
-                 '--vault-name {vault_name} --custom-details {{azure:{{location:eastus}}}}')
-        self.cmd('az site-recovery fabric create --subscription {subscription} -n {fabric2_name} -g {rg} '
-                 '--vault-name {vault_name} --custom-details {{azure:{{location:eastus2}}}}')
-        self.cmd('az site-recovery vault policy create --subscription {subscription} -g {rg} '
-                 '--vault-name {vault_name} -n {policy_name} '
-                 '--provider-specific-input {{a2-a:{{multi-vm-sync-status:Enable}}}}')
-        policy_id = self.cmd('az site-recovery vault policy show --subscription {subscription} -g {rg} '
+        # create two fabrics and one container in each, create a policy
+        # self.cmd('az account set -n {subscription}')
+        # self.cmd('az site-recovery fabric create -n {fabric1_name} -g {rg} '
+        #          '--vault-name {vault_name} --custom-details {{azure:{{location:eastus}}}}')
+        # self.cmd('az site-recovery fabric create -n {fabric2_name} -g {rg} '
+        #          '--vault-name {vault_name} --custom-details {{azure:{{location:eastus2}}}}')
+        # self.cmd('az site-recovery vault policy create -g {rg} '
+        #          '--vault-name {vault_name} -n {policy_name} '
+        #          '--provider-specific-input {{a2-a:{{multi-vm-sync-status:Enable}}}}')
+        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
-        self.cmd('az site-recovery fabric protection-container create --subscription {subscription} -g {rg} '
-                 '--fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name} '
-                 '--provider-input [{{instance-type:A2A}}]')
-        self.cmd('az site-recovery fabric protection-container create --subscription {subscription} -g {rg} '
-                 '--fabric-name {fabric2_name} -n {container2_name} --vault-name {vault_name} '
-                 '--provider-input [{{instance-type:A2A}}]')
-        container2_id = self.cmd('az site-recovery fabric protection-container show --subscription {subscription} '
+        # self.cmd('az site-recovery fabric protection-container create -g {rg} '
+        #          '--fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name} '
+        #          '--provider-input [{{instance-type:A2A}}]')
+        # self.cmd('az site-recovery fabric protection-container create -g {rg} '
+        #          '--fabric-name {fabric2_name} -n {container2_name} --vault-name {vault_name} '
+        #          '--provider-input [{{instance-type:A2A}}]')
+        container2_id = self.cmd('az site-recovery fabric protection-container show '
                                  '-g {rg} --fabric-name {fabric2_name} -n {container2_name} '
                                  '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"container2_id": container2_id})
-        self.cmd('az site-recovery protection-container-mapping create --subscription {subscription} -g {rg} '
-                 '--fabric-name {fabric1_name} -n {mapping_name} --protection-container {container1_name} '
-                 '--vault-name {vault_name} '
-                 '--policy-id {policy_id} --provider-input {{a2-a:{{agent-auto-update-status:Disabled}}}} '
-                 '--target-container {container2_id}')
 
-        # refresh
-        # self.cmd('az site-recovery fabric recovery-services-provider refresh --subscription {subscription} -g {rg} '
-        #          '--fabric-name {fabric_name} --provider-name {service_provider} --vault-name {vault_name} ')
+        # create container mapping
+        # self.cmd('az site-recovery protection-container-mapping create -g {rg} '
+        #          '--fabric-name {fabric1_name} -n {container_mapping_name} --protection-container {container1_name} '
+        #          '--vault-name {vault_name} '
+        #          '--policy-id {policy_id} --provider-input {{a2-a:{{agent-auto-update-status:Disabled}}}} '
+        #          '--target-container {container2_id}')
+
+        # create two vnets and network mapping
+        # vnet1_id = self.cmd('az network vnet create -g {rg} -n {vnet1_name} '
+        #                     '-l eastus').get_output_in_json()["newVNet"]["id"]
+        # vnet2_id = self.cmd('az network vnet create -g {rg} -n {vnet2_name} '
+        #                     '-l eastus2').get_output_in_json()["newVNet"]["id"]
+        # self.kwargs.update({"vnet1_id": vnet1_id, "vnet2_id": vnet2_id})
+        # self.cmd('az site-recovery fabric network network-mapping create -g {rg} --fabric-name {fabric1_name} '
+        #          '-n {network_mapping_name} --network-name {vnet1_name} --vault-name {vault_name} '
+        #          '--recovery-network-id {vnet2_id} '
+        #          '--fabric-details {{azure-to-azure:{{primary-network-id:{vnet1_id}}}}} '
+        #          '--recovery-fabric-name {fabric2_name}')
+
+        storage1_id = self.cmd('az storage account create -n {storage1_name} -g CliTeraformVaultRG '
+                               '--sku Standard_LRS -l eastus').get_output_in_json()["id"]
+        storage2_id = self.cmd('az storage account create -n {storage2_name} -g CliTeraformVaultRG '
+                               '--sku Standard_LRS -l eastus2').get_output_in_json()["id"]
+        self.kwargs.update({"storage1_id": storage1_id, "storage2_id": storage2_id})
+
+        vm = self.cmd('az vm show -n {vm_name} -g {vm_rg}').get_output_in_json()
+        self.kwargs.update({"vm_id": vm["id"],
+                            "data_disk": vm["storageProfile"]["dataDisks"][0]["managedDisk"]["id"],
+                            "os_disk": vm["storageProfile"]["osDisk"]["managedDisk"]["id"]})
+
+        # enable protection
+        self.cmd('az site-recovery fabric protection-container protected-item create -g {rg} '
+                 '--fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} '
+                 '--vault-name {vault_name} --policy-id {policy_id} --protectable-item-id {vm_id} '
+                 '--provider-details {{a2-a:{{fabric-object-id:{vm_id},'
+                 'vm-disks:[{{disk-uri:{data_disk},'
+                 'primary-staging-azure-storage-account-id:{storage1_id},'
+                 'recovery-azure-storage-account-id:{storage2_id}}},'
+                 '{{disk-uri:{os_disk},'
+                 'primary-staging-azure-storage-account-id:{storage1_id},'
+                 'recovery-azure-storage-account-id:{storage2_id}}}]}}}}')
 
 
 
