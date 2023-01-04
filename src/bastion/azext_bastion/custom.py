@@ -209,7 +209,7 @@ def _get_rdp_path(rdp_command="mstsc"):
 
 
 def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_name,
-                     resource_port=None, disable_gateway=False, configure=False):
+                     resource_port=None, disable_gateway=False, configure=False, web_address = 'https://{}/api/rdpfile?resourceId={}&format=rdp&rdpport={}&enablerdsaad={}'.format(bastion.dns_name, target_resource_id, resource_port, enable_mfa)):
     import os
     from azure.cli.core._profile import Profile
     from ._process_helper import launch_and_wait
@@ -240,7 +240,7 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
                 "resource_group": resource_group_name,
                 "name": bastion_host_name
             })
-            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}&format=rdp"
+            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
             headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Accept": "*/*",
