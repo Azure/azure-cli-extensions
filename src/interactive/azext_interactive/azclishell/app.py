@@ -70,6 +70,7 @@ def space_toolbar(settings_items, empty_space):
     else:
         spacing_len = (len(empty_space) - len(NOTIFICATIONS) - counter) // (len(settings_items) - 1)
         if spacing_len < 0:
+            # Not display the first character of settings if the space is not enough
             return space_toolbar(settings_items[1:], empty_space)
         spacing = empty_space[:spacing_len]
 
