@@ -2202,7 +2202,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def check_raw_parameters(self):
         """Helper function to check whether any parameters are set.
 
-        Note: Inherited and extended in aks-preview to add special handling for extra default values.
+        Note: Overwritten in aks-preview to add special handling for extra default values.
 
         If the values of all the parameters are the default values, the command execution will be terminated early and
         raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
