@@ -23,6 +23,7 @@ class RecommendType(int, Enum):
 
 
 class RecommendThread(threading.Thread):
+    """ Worker Thread to fetch recommendation online based on user's context """
     def __init__(self, cli_ctx, rec_path, last_exec, on_prepared):
         super().__init__()
         self.cli_ctx = cli_ctx
@@ -60,13 +61,11 @@ class Recommender:
 
     @property
     def enabled(self):
+        """Whether recommender is enabled in global config"""
         return self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True)
 
     def _feedback_command(self, command):
-        """
-        Send User Feedback to telemetry.
-        This should only be called between command execution and recommendation update.
-        """
+        """Send user's command choice in recommendations to telemetry."""
         if self.cur_thread and not self.cur_thread.is_alive():
             recommendations = self.cur_thread.result
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
@@ -83,6 +82,11 @@ class Recommender:
             send_feedback(0, trigger_commands, processed_exception, recommendations, rec=None)
 
     def feedback_scenario(self, scenario_idx, scenario=None):
+        """Send user's command choice in recommendations to telemetry.
+
+        :param scenario_idx: idx of the scenario in scenario recommendations list
+        :param scenario: selected scenario item
+        """
         if self.cur_thread and not self.cur_thread.is_alive():
             recommendations = self.cur_thread.result
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
@@ -92,7 +96,13 @@ class Recommender:
             else:
                 send_feedback(f'b{scenario_idx+1}', trigger_commands, processed_exception, recommendations, rec=scenario)
 
-    def update_executing(self, cmd: str, feedback=True):
+    def update_executing(self, cmd, feedback=True):
+        """Update executing command info, and prefetch the recommendation result as if the execution is successful
+
+        :param cmd: The command that would be executed soon
+        :param feedback: whether send feedback to telemetry using this command as actual execution vs
+        previous recommendation
+        """
         if not self.enabled:
             return
         command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
@@ -103,6 +113,11 @@ class Recommender:
         self._update()
 
     def update_exec_result(self, exit_code, result_summary=''):
+        """Update execution result of executing_command set previously, fetch recommendation result if execution fails
+
+        :param exit_code: exit code of previous executing command
+        :param result_summary: Result Summary of previous executing command
+        """
         if not self.enabled or not self.executing_command:
             return
         self.rec_path.append_result(self.executing_command['command'], self.executing_command['arguments'],
@@ -112,7 +127,7 @@ class Recommender:
             self._update()
 
     def _update(self):
-        """Update recommendation in new thread"""
+        """Update recommendation result in new thread"""
         self.cur_thread = RecommendThread(self.cli_ctx, self.rec_path, self.executing_command,
                                           self.on_recommendation_prepared)
         self.cur_thread.start()
@@ -161,6 +176,7 @@ class Recommender:
 
 
 class RecommendPath:
+    """ History recording the commands that affect recommendations """
 
     def __init__(self, filename):
         self.history = FileHistory(filename)
@@ -180,29 +196,14 @@ class RecommendPath:
         self.history.append(json.dumps(execution_info))
 
     def get_result_summary(self):
+        """
+        Get Result Summary of last appended command
+        :return: last result summary
+        """
         return self.last_result_summary
 
     def get_cmd_history(self, top_num):
         return self.commands[-top_num:]
-
-
-def get_command_list_from_history(history):
-    commands = history.strings
-
-    def valid_command(command):
-        command = command.strip()
-        if command == 'az':
-            return False
-        elif command.startswith("az "):
-            command = command[3:].strip()
-        if re.match(r"^[a-z]", command):
-            return True
-        return False
-
-    commands = [re.sub(r"^az ", "", command).strip() for command in commands if valid_command(command)]
-    commands = [command.split(' -')[0] for command in commands]
-    commands = [json.dumps({"command": command}) for command in commands]
-    return commands
 
 
 def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # pylint: disable=unused-argument
