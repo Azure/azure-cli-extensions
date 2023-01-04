@@ -924,7 +924,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # api_instance = kube_client.CoreV1Api()
     # node_api_response = None
 
-    kubernetes_properties = { 'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version }
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
@@ -1052,7 +1052,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
-    node_api_response = None
+    # node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1100,7 +1100,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kubernetes_properties = { 'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version }
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
@@ -1325,8 +1325,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
+    # api_instance = kube_client.CoreV1Api()
+    # node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1336,7 +1336,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kubernetes_properties = { 'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version }
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
@@ -1437,8 +1437,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
+    # api_instance = kube_client.CoreV1Api()
+    # node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1448,7 +1448,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kubernetes_properties = { 'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version }
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
