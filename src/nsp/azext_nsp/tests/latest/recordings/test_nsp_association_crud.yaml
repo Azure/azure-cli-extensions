@@ -1,0 +1,965 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNetworkSecurityPerimeter"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNetworkSecurityPerimeter","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter","location":"eastus2euap","type":"Microsoft.Network/networkSecurityPerimeters","tags":{},"etag":"","properties":{"perimeterGuid":"27e1cf3e-c620-4a77-8e15-c3c712cedf60","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:27:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_association_crud000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-11-17T03:27:17Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:27:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNspProfile"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '53'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspProfile","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile","type":"Microsoft.Network/networkSecurityPerimeters/profiles","properties":{"accessRulesVersion":"0","diagnosticSettingsVersion":"0"},"location":"eastus2euap"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '397'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:27:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5?api-version=2022-07-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.KeyVault/vaults/kvnspclitest5''
+        under resource group ''test_nsp_association_crud000001'' was not found. For
+        more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '242'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:27:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.42.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"Nikhil
+        Saxena","givenName":"Nikhil","jobTitle":"SOFTWARE ENGINEER","mail":"nikhilsaxena@microsoft.com","mobilePhone":null,"officeLocation":"BENGALURU
+        LUXOR-MIRPL/Mobile","preferredLanguage":null,"surname":"Saxena","userPrincipalName":"nikhilsaxena@microsoft.com","id":"d50cfdce-f74f-4b75-9ea4-dd65c07770fd"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '419'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:27:40 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 4bc621ad-27cf-4c03-8d6c-f8d489e89253
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF000012F3"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "sku": {"family": "A", "name": "standard"}, "accessPolicies": [{"tenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "objectId": "d50cfdce-f74f-4b75-9ea4-dd65c07770fd",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}], "enableSoftDelete": true, "softDeleteRetentionInDays":
+      90, "networkAcls": {"bypass": "AzureServices", "defaultAction": "Allow"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '493'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5","name":"kvnspclitest5","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"nikhilsaxena@microsoft.com","createdByType":"User","createdAt":"2022-11-17T03:27:46.183Z","lastModifiedBy":"nikhilsaxena@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-17T03:27:46.183Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"d50cfdce-f74f-4b75-9ea4-dd65c07770fd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"vaultUri":"https://kvnspclitest5.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1005'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:27:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -l --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5","name":"kvnspclitest5","type":"Microsoft.KeyVault/vaults","location":"eastus2euap","tags":{},"systemData":{"createdBy":"nikhilsaxena@microsoft.com","createdByType":"User","createdAt":"2022-11-17T03:27:46.183Z","lastModifiedBy":"nikhilsaxena@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-17T03:27:46.183Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","accessPolicies":[{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","objectId":"d50cfdce-f74f-4b75-9ea4-dd65c07770fd","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":90,"vaultUri":"https://kvnspclitest5.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1001'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_association_crud000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-11-17T03:27:17Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNspAssociation", "properties":
+      {"accessMode": "Learning", "privateLinkResource": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},
+      "profile": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '510'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Accepted","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '836'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '837'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_nsp_association_crud000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001","name":"test_nsp_association_crud000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-11-17T03:27:17Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Learning","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '837'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "name": "TestNspAssociation", "properties":
+      {"accessMode": "Enforced", "privateLinkResource": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},
+      "profile": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '510'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --access-mode --private-link-resource
+        --profile
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Accepted","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '836'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '837'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"nextLink":"","value":[{"name":"TestNspAssociation","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation","type":"Microsoft.Network/networkSecurityPerimeters/resourceAssociations","properties":{"privateLinkResource":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile"},"accessMode":"Enforced","provisioningState":"Succeeded","hasProvisioningIssues":"no"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --perimeter-name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Thu, 17 Nov 2022 03:28:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network perimeter association show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --perimeter-name --resource-group
+      User-Agent:
+      - AZURECLI/2.42.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"error":{"message":"Resource [/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/resourceAssociations/TestNspAssociation]
+        does not exist or has been deleted","code":"NotFound"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '309'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group --no-wait
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5?api-version=2022-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 17 Nov 2022 03:28:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault purge
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -l --no-wait
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvnspclitest5?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvnspclitest5","name":"kvnspclitest5","type":"Microsoft.KeyVault/deletedVaults","properties":{"vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_association_crud000001/providers/Microsoft.KeyVault/vaults/kvnspclitest5","location":"eastus2euap","tags":{},"deletionDate":"2022-11-17T03:28:43Z","scheduledPurgeDate":"2023-02-15T03:28:43Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '497'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Nov 2022 03:28:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault purge
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -l --no-wait
+      User-Agent:
+      - AZURECLI/2.42.0 azsdk-python-azure-mgmt-keyvault/10.1.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/deletedVaults/kvnspclitest5/purge?api-version=2022-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 17 Nov 2022 03:28:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KeyVault/locations/eastus2euap/operationResults/VVR8MDYzODA0MjUyNTM3MDAyNjQ0M3w5NkY1ODU0NTYxREI0NDE3OUNCMkM3ODM5OTA4MTBDMg?api-version=2022-07-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.564.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+version: 1

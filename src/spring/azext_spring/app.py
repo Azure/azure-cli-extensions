@@ -65,7 +65,8 @@ def app_create(cmd, client, resource_group, service, name,
                ingress_send_timeout=None,
                session_affinity=None,
                session_max_age=None,
-               backend_protocol=None):
+               backend_protocol=None,
+               client_auth_certs=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -98,7 +99,8 @@ def app_create(cmd, client, resource_group, service, name,
         'ingress_send_timeout': ingress_send_timeout,
         'session_affinity': session_affinity,
         'session_max_age': session_max_age,
-        'backend_protocol': backend_protocol
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -125,7 +127,8 @@ def app_create(cmd, client, resource_group, service, name,
         'ingress_send_timeout': ingress_send_timeout,
         'session_affinity': session_affinity,
         'session_max_age': session_max_age,
-        'backend_protocol': backend_protocol
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs
     }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
@@ -171,6 +174,7 @@ def app_update(cmd, client, resource_group, service, name,
                session_affinity=None,
                session_max_age=None,
                backend_protocol=None,
+               client_auth_certs=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -234,7 +238,8 @@ def app_update(cmd, client, resource_group, service, name,
         'ingress_send_timeout': ingress_send_timeout,
         'session_affinity': session_affinity,
         'session_max_age': session_max_age,
-        'backend_protocol': backend_protocol
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs,
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}

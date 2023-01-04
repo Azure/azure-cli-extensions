@@ -796,11 +796,12 @@ def cli_cosmosdb_restore(cmd,
     if not is_source_restorable_account_deleted:
         restorable_resources = None
         api_type = target_restorable_account.api_type.lower()
+        arm_location_normalized = target_restorable_account.location.lower().replace(" ", "")
         if api_type == "sql":
             try:
                 restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_sql_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -810,7 +811,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_mongodb_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -820,7 +821,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_gremlin_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -830,7 +831,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_table_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)

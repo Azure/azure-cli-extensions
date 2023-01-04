@@ -102,6 +102,10 @@ def _check_tanzu_components_not_enable(cmd, namespace):
         raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
     if namespace.enable_api_portal:
         raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
+    if namespace.enable_application_live_view:
+        raise ArgumentUsageError('--enable-application-live-view {}'.format(suffix))
+    if namespace.enable_application_accelerator:
+        raise ArgumentUsageError('--enable-application-accelerator {}'.format(suffix))
 
 
 def validate_instance_count(namespace):
@@ -110,11 +114,11 @@ def validate_instance_count(namespace):
             raise InvalidArgumentValueError("--instance-count must be greater than 0")
 
 
-def validate_instance_not_existed(client, resource_group, name, location):
+def validate_instance_not_existed(client, name, location):
     availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
     name_availability = client.services.check_name_availability(location, availability_parameters)
     if not name_availability.name_available and name_availability.reason == "AlreadyExists":
-        raise InvalidArgumentValueError("Service instance '{}' under resource group '{}' is already existed in region '{}', cannot be created again.".format(name, resource_group, location))
+        raise InvalidArgumentValueError("The service name '{}' is already taken.".format(name))
 
 
 def validate_name(namespace):
@@ -241,6 +245,11 @@ def validate_ingress_session_max_age(namespace):
     if namespace.session_max_age is not None \
             and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
         raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
+
+
+def validate_ingress_client_auth_certificates(namespace):
+    if namespace.client_auth_certs is not None:
+        namespace.client_auth_certs = namespace.client_auth_certs.split()
 
 
 def validate_tracing_parameters_asc_create(namespace):

@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,too-many-statements
 
 from ._validators import process_grafana_create_namespace
 
@@ -57,3 +57,15 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_api_key')
         g.custom_command('list', 'list_api_keys')
         g.custom_command('delete', 'delete_api_key')
+
+    with self.command_group('grafana service-account') as g:
+        g.custom_command('create', 'create_service_account')
+        g.custom_command('list', 'list_service_accounts')
+        g.custom_show_command('show', 'show_service_account')
+        g.custom_command('delete', 'delete_service_account')
+        g.custom_command('update', 'update_service_account')
+
+    with self.command_group('grafana service-account token') as g:
+        g.custom_command('create', 'create_service_account_token')
+        g.custom_command('list', 'list_service_account_tokens')
+        g.custom_command('delete', 'delete_service_account_token')

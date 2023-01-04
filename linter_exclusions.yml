@@ -100,6 +100,12 @@ aks create:
     assign_kubelet_identity:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_tags:
+      rule_exclusions:
+        - option_length_too_long
+    custom_ca_trust_certificates:
+      rule_exclusions:
+        - option_length_too_long
 aks addon enable:
   parameters:
     appgw_watch_namespace:
@@ -144,6 +150,9 @@ aks nodepool add:
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_tags:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -212,6 +221,9 @@ aks update:
     ksm_metric_labels_allow_list:
       rule_exclusions:
       - option_length_too_long
+    custom_ca_trust_certificates:
+      rule_exclusions:
+        - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:

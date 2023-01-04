@@ -361,6 +361,15 @@ def validate_nodepool_tags(ns):
         ns.nodepool_tags = tags_dict
 
 
+def validate_node_public_ip_tags(ns):
+    """ Extracts multiple space-separated tags in key[=value] format """
+    if isinstance(ns.node_public_ip_tags, list):
+        tags_dict = {}
+        for item in ns.node_public_ip_tags:
+            tags_dict.update(validate_tag(item))
+        ns.node_public_ip_tags = tags_dict
+
+
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 
@@ -652,6 +661,14 @@ def validate_enable_custom_ca_trust(namespace):
         if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
             raise ArgumentUsageError(
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
+
+
+def validate_custom_ca_trust_certificates(namespace):
+    """Validates Custom CA Trust Certificates can only be used on Linux."""
+    if namespace.custom_ca_trust_certificates is not None and namespace.custom_ca_trust_certificates != "":
+        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
+            raise ArgumentUsageError(
+                '--custom-ca-trust-certificates can only be set for linux nodepools')
 
 
 def validate_disable_windows_outbound_nat(namespace):

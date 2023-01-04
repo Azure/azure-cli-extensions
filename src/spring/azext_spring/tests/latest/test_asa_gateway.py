@@ -17,15 +17,17 @@ class GatewayTest(ScenarioTest):
     def test_gateway(self):
         py_path = os.path.abspath(os.path.dirname(__file__))
         routes_file = os.path.join(py_path, 'files/gateway_routes.json').replace("\\","/")
+        routes_file_v2 = os.path.join(py_path, 'files/gateway_routes_v2.json').replace("\\","/")
         
         self.kwargs.update({
             'serviceName': 'tx-enterprise',
             'rg': 'tx',
             'routeName': 'cli-route',
             'routeFile': routes_file,
+            'routesFileV2': routes_file_v2,
             'cert': 'cli-unittest',
-            'domain': 'gateway-cli.asc-test.net',
-            'thumbprint': 'ef16ce1a35ecd6b7a9d4e546a5b1d480b38f3e5d'
+            'domain': 'gateway-cli.azdmss-test.net',
+            'thumbprint': '6695512ed53e0c46817348b78411876a9a9c3396'
         })
 
         self.cmd('spring gateway update -g {rg} -s {serviceName} '
@@ -73,7 +75,14 @@ class GatewayTest(ScenarioTest):
         ])
 
         self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
-                 '--app-name vets-service', checks=[
+                 '--app-name vets-service --routes-file {routesFileV2}', checks=[
+            self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
+            self.check('properties.provisioningState', "Succeeded"),
+            self.check('properties.ssoEnabled', True)
+        ])
+
+        self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
+                 '--app-name vets-service --routes-file {routesFileV2}', checks=[
             self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
             self.check('properties.provisioningState', "Succeeded")
         ])

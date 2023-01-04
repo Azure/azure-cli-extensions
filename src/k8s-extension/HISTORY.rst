@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.7
+++++++++++++++++++
+* microsoft.dapr: prompt user for existing dapr installation during extension create
+
 1.3.6
 ++++++++++++++++++
 * Update the api version and add tests for extension type calls
