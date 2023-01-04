@@ -233,7 +233,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
 
     # Identify the type of job being submitted
     lc_job_input_format = job_input_format.lower()
-    if "qir.v" in lc_job_input_format:       # QCI uses "qir.v1", but Rigetti uses rigetti.qir.v1  <<<<< What about Quantinuum?
+    if "qir.v" in lc_job_input_format:       # QCI uses "qir.v1", but Rigetti uses "rigetti.qir.v1" and Quantinuum uses "honeywell.qir.v1"
         job_type = QIR_JOB
     elif lc_job_input_format == "microsoft.qio.v2":
         job_type = QIO_JOB
@@ -271,7 +271,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     # from job_params, since they should not be included in the inputParams property of job_details
     content_type = None
     content_encoding = None
-    return_sas_token = None
+    # return_sas_token = None
     if job_params is not None:
         if "content_type" in job_params.keys():
             content_type = job_params["content_type"]
@@ -279,20 +279,20 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         if "content_encoding" in job_params.keys():
             content_encoding = job_params["content_encoding"]
             del job_params["content_encoding"]
-        if "return_sas_token" in job_params.keys():
-            return_sas_token_str = job_params["return_sas_token"]
-            return_sas_token = return_sas_token_str.lower() == "true"
-            del job_params["return_sas_token"]
+        # if "return_sas_token" in job_params.keys():
+        #     return_sas_token_str = job_params["return_sas_token"]
+        #     return_sas_token = return_sas_token_str.lower() == "true"
+        #     del job_params["return_sas_token"]
 
     # Prepare for input file upload according to job type
     if job_type == QIO_JOB:
-        container_name_prefix = "cli-qio-job-"
+        # container_name_prefix = "cli-qio-job-"
         if content_type is None:
             content_type = "application/json"
         if content_encoding is None:
             content_encoding = "gzip"
-        if return_sas_token is None:
-            return_sas_token = True
+        # if return_sas_token is None:
+        #     return_sas_token = True
         with open(job_input_file, encoding="utf-8") as qio_file:
             uncompressed_blob_data = qio_file.read()
 
@@ -307,15 +307,15 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
 
     else:
         if job_type == QIR_JOB:
-            container_name_prefix = "cli-qir-job-"
+            # container_name_prefix = "cli-qir-job-"
             if content_type is None:
                 content_type = "application/x-qir.v1"       # <<<<< Is this a valid default for all QIR jobs?
             content_encoding = None
-        else:
-            container_name_prefix = "cli-pass-through-job-"
+        # else:
+        #     container_name_prefix = "cli-pass-through-job-"
 
-        if return_sas_token is None:
-            return_sas_token = False
+        # if return_sas_token is None:
+        #     return_sas_token = False
 
         with open(job_input_file, "rb") as input_file:
             blob_data = input_file.read()
@@ -326,21 +326,20 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         ws = ws_get(cmd)
         storage = ws.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
-    container_name = container_name_prefix + job_id
+    container_name = "quantum-job-" + job_id
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
     connection_string = connection_string_dict["connectionString"]
     container_client = create_container(connection_string, container_name)
     blob_name = "inputData"
-    knack_logger.warning('Uploading input data...')
-    blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token)
 
-    # Remove blob name from container URI
+    knack_logger.warning("Uploading input data...")
+    try:
+        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, False)
+    except:
+        raise AzureResponseError("Upload failed. Please try submitting the job again.")
+
     start_of_blob_name = blob_uri.find(blob_name)
-    if return_sas_token:
-        end_of_blob_name = blob_uri.find("?")
-        container_uri = blob_uri[0:start_of_blob_name - 1] + blob_uri[end_of_blob_name:]
-    else:
-        container_uri = blob_uri[0:start_of_blob_name - 1]
+    container_uri = blob_uri[0:start_of_blob_name - 1]
 
     # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
     if job_params is None:
@@ -384,7 +383,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                    'provider_id': provider_id,
                    'target': target_info.target_id}
 
-    knack_logger.warning('Submitting job...')
+    knack_logger.warning("Submitting job...")
     return client.create(job_id, job_details)
 
 
