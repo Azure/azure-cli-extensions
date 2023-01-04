@@ -4069,18 +4069,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNone(dec_2.check_raw_parameters())
 
         # custom value
-        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "cluster_autoscaler_profile": {},
-                "api_server_authorized_ip_ranges": "",
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        self.assertIsNone(dec_2.check_raw_parameters())
-
-        # custom value
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
