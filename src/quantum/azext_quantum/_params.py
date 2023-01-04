@@ -119,7 +119,6 @@ def load_arguments(self, _):
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
-        # c.argument('job_input_source', job_input_source_type)
         c.argument('job_input_file', job_input_file_type)
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)

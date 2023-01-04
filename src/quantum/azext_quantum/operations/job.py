@@ -271,7 +271,6 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     # from job_params, since they should not be included in the inputParams property of job_details
     content_type = None
     content_encoding = None
-    # return_sas_token = None
     if job_params is not None:
         if "content_type" in job_params.keys():
             content_type = job_params["content_type"]
@@ -279,20 +278,13 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         if "content_encoding" in job_params.keys():
             content_encoding = job_params["content_encoding"]
             del job_params["content_encoding"]
-        # if "return_sas_token" in job_params.keys():
-        #     return_sas_token_str = job_params["return_sas_token"]
-        #     return_sas_token = return_sas_token_str.lower() == "true"
-        #     del job_params["return_sas_token"]
 
     # Prepare for input file upload according to job type
     if job_type == QIO_JOB:
-        # container_name_prefix = "cli-qio-job-"
         if content_type is None:
             content_type = "application/json"
         if content_encoding is None:
             content_encoding = "gzip"
-        # if return_sas_token is None:
-        #     return_sas_token = True
         with open(job_input_file, encoding="utf-8") as qio_file:
             uncompressed_blob_data = qio_file.read()
 
@@ -307,15 +299,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
 
     else:
         if job_type == QIR_JOB:
-            # container_name_prefix = "cli-qir-job-"
             if content_type is None:
                 content_type = "application/x-qir.v1"       # <<<<< Is this a valid default for all QIR jobs?
             content_encoding = None
-        # else:
-        #     container_name_prefix = "cli-pass-through-job-"
-
-        # if return_sas_token is None:
-        #     return_sas_token = False
 
         with open(job_input_file, "rb") as input_file:
             blob_data = input_file.read()
