@@ -1010,6 +1010,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               kind=None,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1049,6 +1050,9 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
+
+    if kind:
+        managed_env_def["kind"] = kind
 
     if hostname:
         customDomain = CustomDomainConfigurationModel

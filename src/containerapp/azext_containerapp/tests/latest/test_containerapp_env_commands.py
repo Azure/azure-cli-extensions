@@ -48,6 +48,36 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="centralus")
+    def test_containerapp_env_kind_e2e(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet} --delegations Microsoft.App/environments").get_output_in_json()["id"]
+
+        self.cmd('containerapp env create -g {} -n {} --kind serverless -s {}'.format(resource_group, env_name, sub_id))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', env_name),
+        ])
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('kind', "serverless"),
+            JMESPathCheck('properties.vnetConfiguration.infrastructureSubnetId', sub_id)
+        ])
+
+        self.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
+
+    @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="australiaeast")
     @StorageAccountPreparer(location="australiaeast")
     def test_containerapp_env_logs_e2e(self, resource_group, storage_account):

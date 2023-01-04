@@ -15,6 +15,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2022-06-01-preview"
+STABLE_API_VERSION = "2022-10-01"
 CURRENT_API_VERSION = PREVIEW_API_VERSION
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
@@ -436,7 +437,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def create(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -465,7 +466,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def update(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -494,7 +495,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -529,7 +530,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -547,7 +548,7 @@ class ManagedEnvironmentClient():
         env_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/managedEnvironments?api-version={}".format(
             management_hostname.strip('/'),
@@ -575,7 +576,7 @@ class ManagedEnvironmentClient():
         env_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments?api-version={}"
         request_url = url_fmt.format(

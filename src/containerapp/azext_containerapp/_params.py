@@ -165,6 +165,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
+        c.argument('kind', options_list=["--kind", "-k"], help="Kind of environment. If you specify kind with 'serverless', --infrastructure-subnet-resource-id is required to provide.", is_preview=True)
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')

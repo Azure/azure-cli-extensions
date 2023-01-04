@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.21
+++++++
+* Add `--kind` for `containerapp env create`
+
 0.3.20
 ++++++
 * Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
