@@ -52,11 +52,15 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     def test_containerapp_env_kind_e2e(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
         sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet} --delegations Microsoft.App/environments").get_output_in_json()["id"]
 
-        self.cmd('containerapp env create -g {} -n {} --kind serverless -s {}'.format(resource_group, env_name, sub_id))
+        self.cmd('containerapp env create -g {} -n {} --kind serverless -s {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, sub_id, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
