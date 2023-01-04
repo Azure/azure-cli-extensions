@@ -4044,14 +4044,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         # fail on no updated parameter provided
         with patch(
-            "azure.cli.command_modules.acs.managed_cluster_decorator.prompt_y_n",
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(RequiredArgumentMissingError):
             dec_1.check_raw_parameters()
 
         # unless user says they want to reconcile
         with patch(
-            "azure.cli.command_modules.acs.managed_cluster_decorator.prompt_y_n",
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
             return_value=True,
         ):
             dec_1.check_raw_parameters()
@@ -4067,6 +4067,29 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         self.assertIsNone(dec_2.check_raw_parameters())
+
+        # custom value
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "cluster_autoscaler_profile": {},
+                "api_server_authorized_ip_ranges": "",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        self.assertIsNone(dec_2.check_raw_parameters())
+
+        # custom value
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_workload_identity": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        self.assertIsNone(dec_3.check_raw_parameters())
 
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
