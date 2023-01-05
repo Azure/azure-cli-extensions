@@ -13,6 +13,8 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
+from .vendored_sdks.appplatform.v2022_11_01_preview.models \
+    import _app_platform_management_client_enums as v20221101_preview_AppPlatformEnums
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -221,10 +223,14 @@ def _validate_sso(namespace):
 def _validate_gateway_apm_types(namespace):
     if namespace.apm_types is None:
         return
-    allowedApmTypes = ["ApplicationInsights", "AppDynamics", "Dynatrace", "NewRelic", "ElasticAPM"]
+    allowedApmTypes = [v20221101_preview_AppPlatformEnums.GatewayApmType.APPLICATION_INSIGHTS,
+                       v20221101_preview_AppPlatformEnums.GatewayApmType.APP_DYNAMICS,
+                       v20221101_preview_AppPlatformEnums.GatewayApmType.DYNATRACE,
+                       v20221101_preview_AppPlatformEnums.GatewayApmType.NEW_RELIC,
+                       v20221101_preview_AppPlatformEnums.GatewayApmType.ELASTIC_APM]
     for type in namespace.apm_types:
         if (type not in allowedApmTypes):
-            raise InvalidArgumentValueError("Allowed APM types are \"ApplicationInsights\", \"AppDynamics\", \"Dynatrace\", \"NewRelic\", \"ElasticAPM\".")
+            raise InvalidArgumentValueError("Allowed APM types are " + ','.join(allowedApmTypes))
 
 
 def _validate_gateway_envs(namespace):

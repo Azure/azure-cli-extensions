@@ -437,3 +437,13 @@ class Type(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of the underlying resource to mount as a persistent disk."""
 
     AZURE_FILE_VOLUME = "AzureFileVolume"
+
+
+class GatewayApmType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Spring Cloud Gateway APM Type."""
+
+    APPLICATION_INSIGHTS = "ApplicationInsights"
+    APP_DYNAMICS = "AppDynamics"
+    DYNATRACE = "Dynatrace"
+    NEW_RELIC = "NewRelic"
+    ELASTIC_APM = "ElasticAPM"

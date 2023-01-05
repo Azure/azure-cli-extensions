@@ -719,7 +719,7 @@ def load_arguments(self, _):
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
         c.argument('apm_types', nargs='*',
-                   help="Space-separated list of APM integrated with Gateway, Allowed values: [\"ApplicationInsights\", \"AppDynamics\", \"Dynatrace\", \"NewRelic\", \"ElasticAPM\"].")
+                   help="Space-separated list of APM integrated with Gateway.")
         c.argument('properties', nargs='*',
                    help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
         c.argument('secrets', nargs='*',
