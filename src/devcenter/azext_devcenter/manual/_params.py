@@ -953,7 +953,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "project_name",
-            reqiured=True,
+            required=True,
             options_list=["--project-name", "--project"],
             type=str,
             help="The DevCenter Project upon which to execute operations.",

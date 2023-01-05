@@ -555,7 +555,7 @@ def devcenter_environment_update(
     )
 
 
-def devcenter_environment_delete_environment(
+def devcenter_environment_delete(
     cmd, dev_center, project_name, user_id, environment_name, no_wait=False
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
@@ -668,7 +668,7 @@ def devcenter_environment_type_list_dp(cmd, dev_center, project_name):
     return cf_dataplane.environment_type.list()
 
 
-def devcenter_dev_center_show_notification_setting(
+def devcenter_notification_setting_show_dp(
     cmd, dev_center, project_name, user_id
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
