@@ -227,16 +227,14 @@ def devcenter_schedule_create(
     resource_group_name,
     project_name,
     pool_name,
-    schedule_type,
-    frequency,
     time=None,
     time_zone=None,
     state=None,
     no_wait=False,
 ):
     body = {}
-    body["type_properties_type"] = schedule_type  # "StopDevBox"
-    body["frequency"] = frequency  # "Daily"
+    body["type_properties_type"] = "StopDevBox"
+    body["frequency"] = "Daily"
     if time is not None:
         body["time"] = time
     if time_zone is not None:
@@ -259,18 +257,14 @@ def devcenter_schedule_update(
     resource_group_name,
     project_name,
     pool_name,
-    schedule_type=None,
-    frequency=None,
     time=None,
     time_zone=None,
     state=None,
     no_wait=False,
 ):
     body = {}
-    if schedule_type is not None:
-        body["type_properties_type"] = schedule_type  # "StopDevBox"
-    if frequency is not None:
-        body["frequency"] = frequency  # "Daily"
+    body["type_properties_type"] = "StopDevBox"
+    body["frequency"] = "Daily"
     if time is not None:
         body["time"] = time
     if time_zone is not None:

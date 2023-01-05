@@ -2286,18 +2286,6 @@ def load_arguments(self, _):
             help="Name of the pool.",
         )
         c.argument(
-            "schedule_type",
-            required=True,
-            arg_type=get_enum_type(["StopDevBox"]),
-            help="The type of schedule.",
-        )
-        c.argument(
-            "frequency",
-            required=True,
-            arg_type=get_enum_type(["Daily"]),
-            help="The frequency the schedule will execute.",
-        )
-        c.argument(
             "time",
             required=True,
             type=str,
@@ -2330,16 +2318,6 @@ def load_arguments(self, _):
             type=str,
             help="Name of the pool.",
             id_part="child_name_1",
-        )
-        c.argument(
-            "schedule_type",
-            arg_type=get_enum_type(["StopDevBox"]),
-            help="The type of schedule.",
-        )
-        c.argument(
-            "frequency",
-            arg_type=get_enum_type(["Daily"]),
-            help="The frequency the schedule will execute.",
         )
         c.argument(
             "time",

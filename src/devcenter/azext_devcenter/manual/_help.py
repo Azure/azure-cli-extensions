@@ -1439,8 +1439,7 @@ helps[
       - name: Schedules_CreateDailyShutdownPoolSchedule
         text: |-
                az devcenter admin schedule create --state "Enabled" --time "17:30" --time-zone "America/Los_Angeles" \
---pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --frequency Daily \
---schedule-type StopDevBox
+--pool-name "DevPool" --project-name "DevProject" --resource-group "rg1"
 """
 
 helps[
