@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all data networks in the mobile network.
+
+    :example: List data-network by resource group
+        az mobile-network data-network list --mobile-network-name mobile-network-name -g rg
     """
 
     _aaz_info = {

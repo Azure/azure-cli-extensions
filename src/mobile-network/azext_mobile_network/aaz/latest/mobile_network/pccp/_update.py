@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a packet core control plane.
+
+    :example: Update Packet Core Control Plane tags
+        az mobile-network pccp update -n pccp-name -g rg --ue-mtu 1500 --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {

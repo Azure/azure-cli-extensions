@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified network slice.
+
+    :example: Delete slice
+        az mobile-network slice delete --mobile-network-name mobilenetwork-name -n slice-name -g rg -y
     """
 
     _aaz_info = {

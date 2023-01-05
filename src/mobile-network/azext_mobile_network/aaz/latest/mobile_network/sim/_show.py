@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified SIM.
+
+    :example: Show sim
+        az mobile-network sim show -g rg -n sim-name --sim-group-name sim-group-name
     """
 
     _aaz_info = {

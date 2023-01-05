@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified attached data network.
+
+    :example: Delete attached-data-network
+        az mobile-network attached-data-network delete -n data-network-name --pccp-name pccp-name --pcdp-name pcdp-name -g rg -y
     """
 
     _aaz_info = {

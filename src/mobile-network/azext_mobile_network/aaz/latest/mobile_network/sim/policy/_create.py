@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a SIM policy.
+
+    :example: Create sim policy
+        az mobile-network sim policy create -g rg -n sim-policy-name --mobile-network-name mobile-network-name --default-slice '{id:slice-id}' --slice-config "[{slice:{id:slice-id},defaultDataNetwork:{id:data-network-id},dataNetworkConfigurations:[{dataNetwork:{id:data-network-id},allowedServices:[{id:service-id}],sessionAmbr:{uplink:'500 Mbps',downlink:'1 Gbps'}}]}]" --ue-ambr "{uplink:'500 Mbps',downlink:'1 Gbps'}"
     """
 
     _aaz_info = {
@@ -133,8 +136,8 @@ class Create(AAZCommand):
         slice_config.Element = AAZObjectArg()
 
         _element = cls._args_schema.slice_config.Element
-        _element.data_network_config = AAZListArg(
-            options=["data-network-config"],
+        _element.data_network_configurations = AAZListArg(
+            options=["data-network-configurations"],
             help="The allowed data networks and the settings to use for them. The list must not contain duplicate items and must contain at least one item.",
             required=True,
             fmt=AAZListArgFormat(
@@ -154,12 +157,12 @@ class Create(AAZCommand):
         )
         cls._build_args_slice_resource_id_create(_element.slice)
 
-        data_network_config = cls._args_schema.slice_config.Element.data_network_config
-        data_network_config.Element = AAZObjectArg()
+        data_network_configurations = cls._args_schema.slice_config.Element.data_network_configurations
+        data_network_configurations.Element = AAZObjectArg()
 
-        _element = cls._args_schema.slice_config.Element.data_network_config.Element
-        _element.five_qi = AAZIntArg(
-            options=["five-qi"],
+        _element = cls._args_schema.slice_config.Element.data_network_configurations.Element
+        _element.5qi = AAZIntArg(
+            options=["5qi"],
             help="Default QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
             default=9,
             fmt=AAZIntArgFormat(
@@ -227,15 +230,15 @@ class Create(AAZCommand):
         )
         cls._build_args_ambr_create(_element.session_ambr)
 
-        additional_session_type = cls._args_schema.slice_config.Element.data_network_config.Element.additional_session_type
+        additional_session_type = cls._args_schema.slice_config.Element.data_network_configurations.Element.additional_session_type
         additional_session_type.Element = AAZStrArg(
             enum={"IPv4": "IPv4", "IPv6": "IPv6"},
         )
 
-        allowed_services = cls._args_schema.slice_config.Element.data_network_config.Element.allowed_services
+        allowed_services = cls._args_schema.slice_config.Element.data_network_configurations.Element.allowed_services
         allowed_services.Element = AAZObjectArg()
 
-        _element = cls._args_schema.slice_config.Element.data_network_config.Element.allowed_services.Element
+        _element = cls._args_schema.slice_config.Element.data_network_configurations.Element.allowed_services.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="Service resource ID.",
@@ -450,7 +453,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.sliceConfigurations[]")
             if _elements is not None:
-                _elements.set_prop("dataNetworkConfigurations", AAZListType, ".data_network_config", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("dataNetworkConfigurations", AAZListType, ".data_network_configurations", typ_kwargs={"flags": {"required": True}})
                 _CreateHelper._build_schema_data_network_resource_id_create(_elements.set_prop("defaultDataNetwork", AAZObjectType, ".default_data_network", typ_kwargs={"flags": {"required": True}}))
                 _CreateHelper._build_schema_slice_resource_id_create(_elements.set_prop("slice", AAZObjectType, ".slice", typ_kwargs={"flags": {"required": True}}))
 
@@ -460,7 +463,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.sliceConfigurations[].dataNetworkConfigurations[]")
             if _elements is not None:
-                _elements.set_prop("5qi", AAZIntType, ".five_qi")
+                _elements.set_prop("5qi", AAZIntType, ".5qi")
                 _elements.set_prop("additionalAllowedSessionTypes", AAZListType, ".additional_session_type")
                 _elements.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".arp_level")
                 _elements.set_prop("allowedServices", AAZListType, ".allowed_services", typ_kwargs={"flags": {"required": True}})

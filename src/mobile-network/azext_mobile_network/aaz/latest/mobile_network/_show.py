@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified mobile network.
+
+    :example: Show mobile-network
+        az mobile-network show -n mobile-network-name -g rg
     """
 
     _aaz_info = {

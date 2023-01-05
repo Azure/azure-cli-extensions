@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified service.
+
+    :example: Show service
+        az mobile-network service show --mobile-network-name mobile-network-name -n service -g rg
     """
 
     _aaz_info = {

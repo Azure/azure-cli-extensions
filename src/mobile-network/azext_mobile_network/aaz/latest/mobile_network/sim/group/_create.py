@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a SIM group.
+
+    :example: Create sim group
+        az mobile-network sim group create -n sim-group-name -g rg --mobile-network "{id:mobile-network-id}"
     """
 
     _aaz_info = {

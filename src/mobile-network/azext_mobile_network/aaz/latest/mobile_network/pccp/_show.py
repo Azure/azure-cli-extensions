@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified packet core control plane.
+
+    :example: Show Packet Core Control Plane
+        az mobile-network pccp show -n pccp-name -g rg
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an attached data network.
+
+    :example: Update attached-data-network tags
+        az mobile-network attached-data-network update -n data_network-name -g rg --pccp-name pccp-name --pcdp-name pcdp-name --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {

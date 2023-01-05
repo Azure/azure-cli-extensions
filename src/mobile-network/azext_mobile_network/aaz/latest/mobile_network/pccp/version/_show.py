@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified packet core control plane version.
+
+    :example: Show Packet Core Control Plane version
+        az mobile-network pccp version show --version-name pmn-2211-0-80
     """
 
     _aaz_info = {

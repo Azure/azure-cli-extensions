@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a mobile network.
+
+    :example: Create mobile-network
+        az mobile-network create -n mobile-network-name -g rg --identifier "{mcc:001,mnc:01}"
     """
 
     _aaz_info = {

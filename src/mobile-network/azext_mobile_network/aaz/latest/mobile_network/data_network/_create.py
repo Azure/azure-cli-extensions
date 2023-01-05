@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a data network.
+
+    :example: Create data-network
+        az mobile-network data-network create -n data-network-name -g rg --mobile-network-name mobile-network-name
     """
 
     _aaz_info = {

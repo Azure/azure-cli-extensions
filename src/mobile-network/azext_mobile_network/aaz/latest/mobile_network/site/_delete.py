@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified mobile network site.
+
+    :example: Delete site
+        az mobile-network site delete --mobile-network-name mobile-network-name -n site-name -g rg -y'
     """
 
     _aaz_info = {

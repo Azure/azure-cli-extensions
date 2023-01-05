@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the SIM policies in a mobile network.
+
+    :example: List sim policy by resource group
+        az mobile-network sim policy list -g rg --mobile-network-name mobile-network-name
     """
 
     _aaz_info = {

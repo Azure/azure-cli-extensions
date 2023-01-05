@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a SIM.
+
+    :example: Create sim
+        az mobile-network sim create -g rg --sim-group-name sim-group-name -n sim-name --international-msi 0000000000 --operator-key-code 00000000000000000000000000000000 --authentication-key 00000000000000000000000000000000
     """
 
     _aaz_info = {

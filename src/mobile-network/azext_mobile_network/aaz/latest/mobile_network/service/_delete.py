@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified service.
+
+    :example: Delete service
+        az mobile-network service delete --mobile-network-name mobile-network-name -n service -g rg -y
     """
 
     _aaz_info = {

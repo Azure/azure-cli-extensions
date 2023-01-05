@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified attached data network.
+
+    :example: Show attached-data-network
+        az mobile-network attached-data-network show -n data-network-name --pccp-name pccp-name --pcdp-name pcdp-name -g rg
     """
 
     _aaz_info = {

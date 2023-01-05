@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the SIMs in a SIM group.
+
+    :example: List sims by resource group
+        az mobile-network sim list -g rg --sim-group-name sim-group-name
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a packet core control plane.
+
+    :example: Create Packet Core Control Plane
+        az mobile-network pccp create -n pccp-name -g rg --access-interface "{name:N2,ipv4Address:10.28.128.2,ipv4Subnet:10.28.128.0/24,ipv4Gateway:10.28.128.1}" --local-diagnostics "{authentication-type:AAD}" --platform "{type:AKS-HCI}" --sites "[{id:site-id}]" --sku G0
     """
 
     _aaz_info = {

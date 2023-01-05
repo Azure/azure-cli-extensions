@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update mobile network tags.
+
+    :example: Update mobile-network tags
+        az mobile-network update -n mobile-network-name -g rg --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {

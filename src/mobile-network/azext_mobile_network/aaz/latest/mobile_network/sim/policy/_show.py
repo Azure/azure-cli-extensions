@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified SIM policy.
+
+    :example: Show sim policy
+        az mobile-network sim policy show -g rg -n sim-policy-name --mobile-network-name mobile-network-name
     """
 
     _aaz_info = {

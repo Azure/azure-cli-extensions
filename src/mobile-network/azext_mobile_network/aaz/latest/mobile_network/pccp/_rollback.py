@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Rollback(AAZCommand):
     """Roll back the specified packet core control plane to the previous version, "rollbackVersion". Multiple consecutive rollbacks are not possible. This action may cause a service outage.
+
+    :example: Rollback Packet Core Control Plane
+        az mobile-network pccp rollback --pccp-name pccp-name -g rg
     """
 
     _aaz_info = {

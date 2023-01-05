@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a network slice.
+
+    :example: Create slice
+        az mobile-network slice create --mobile-network-name mobile-network-name -n slice-name -g rg --snssai "{sst:1,sd:123abc}"
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified packet core control plane.
+
+    :example: Delete Packet Core Control Plane
+        az mobile-network pccp delete -n pccp-name -g rg -y
     """
 
     _aaz_info = {

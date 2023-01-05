@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update packet core data planes tags.
+
+    :example: Update Packet Core Data Plane
+        az mobile-network pcdp update -n pcdp_name -g rg --pccp-name pccp-name --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {

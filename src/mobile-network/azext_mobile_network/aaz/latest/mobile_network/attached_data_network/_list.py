@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the attached data networks associated with a packet core data plane.
+
+    :example: List attached-data-network by resource group
+        az mobile-network attached-data-network list -g rg --pccp-name pccp-name --pcdp-name pcdp-name
     """
 
     _aaz_info = {

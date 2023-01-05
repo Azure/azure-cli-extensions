@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all supported packet core control planes versions.
+
+    :example: List Packet Core Control Plane version
+        az mobile-network pccp version list
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified SIM.
+
+    :example: Delete sim
+        az mobile-network sim delete -g rg -n sim-name --sim-group-name sim-group-name -y
     """
 
     _aaz_info = {

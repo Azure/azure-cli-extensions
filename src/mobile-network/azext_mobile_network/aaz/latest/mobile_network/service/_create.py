@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a service.
+
+    :example: Create service
+        az mobile-network service create -n service-name -g rg --mobile-network-name mobile-network-name --pcc-rules "[{ruleName:default-rule,rulePrecedence:10,serviceDataFlowTemplates:[{templateName:IP-to-server,direction:Uplink,protocol:[ip],remoteIpList:[10.3.4.0/24]}]}]" --service-precedence 10
     """
 
     _aaz_info = {
@@ -154,8 +157,8 @@ class Create(AAZCommand):
         )
 
         rule_qos_policy = cls._args_schema.pcc_rules.Element.rule_qos_policy
-        rule_qos_policy.five_qi = AAZIntArg(
-            options=["five-qi"],
+        rule_qos_policy.5qi = AAZIntArg(
+            options=["5qi"],
             help="QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
             default=9,
             fmt=AAZIntArgFormat(
@@ -465,7 +468,7 @@ class Create(AAZCommand):
 
             rule_qos_policy = _builder.get(".properties.pccRules[].ruleQosPolicy")
             if rule_qos_policy is not None:
-                rule_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
+                rule_qos_policy.set_prop("5qi", AAZIntType, ".5qi")
                 rule_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
                 _CreateHelper._build_schema_ambr_create(rule_qos_policy.set_prop("guaranteedBitRate", AAZObjectType, ".guaranteed_bit_rate"))
                 _CreateHelper._build_schema_ambr_create(rule_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))

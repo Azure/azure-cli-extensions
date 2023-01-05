@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the packet core control planes in a subscription.
+
+    :example: List Packet Core Control Plane by resource group
+        az mobile-network pccp list -g rg
     """
 
     _aaz_info = {

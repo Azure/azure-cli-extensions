@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Reinstall(AAZCommand):
     """Reinstall the specified packet core control plane. This action will remove any transaction state from the packet core to return it to a known state. This action will cause a service outage.
+
+    :example: Reinstall Packet Core Control Plane
+        az mobile-network pccp reinstall --pccp-name pccp-name -g rg
     """
 
     _aaz_info = {

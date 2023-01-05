@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a SIM group.
+
+    :example: Update sim group tags
+        az mobile-network sim group update -n sim-group-name -g rg --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {

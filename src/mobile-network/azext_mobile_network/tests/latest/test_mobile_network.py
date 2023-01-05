@@ -126,7 +126,7 @@ class MobileNetworkScenario(ScenarioTest):
         self.cmd('mobile-network pccp version show --version-name pmn-2211-0-80', checks=[
             self.check('name', 'pmn-2211-0-80')
         ])
-        self.cmd('mobile-network pccp delete -n {mobile_network} -g {rg} -y')
+        self.cmd('mobile-network pccp delete -n {pccp_name} -g {rg} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_mobile_network', location='eastus')
     def test_mobile_network_pcdp(self, resource_group):

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified network slice.
+
+    :example: Show slice
+        az mobile-network slice show --mobile-network-name mobile=network-name -n slice-name -g rg
     """
 
     _aaz_info = {

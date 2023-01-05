@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all slices in the mobile network.
+
+    :example: List slice by resource group
+        az mobile-network slice list --mobile-network-name mobile-network-name -g rg
     """
 
     _aaz_info = {

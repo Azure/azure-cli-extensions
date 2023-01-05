@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a network slice.
+
+    :example: Update slie tags
+        az mobile-network slice update --mobile-network-name mobile-network-name -n slice-name -g rg --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {
