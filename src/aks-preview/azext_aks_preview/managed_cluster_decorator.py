@@ -2219,16 +2219,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # exclude some irrelevant or mandatory parameters
         excluded_keys = ("cmd", "client", "resource_group_name", "name")
         # check whether the remaining parameters are set
-        # the default value None or False (and other empty values, like empty string) will be considered as not set
+        # the default "falsy" value will be considered as not set (e.g., None, "", [], {}, 0)
         is_changed = any(v for k, v in self.context.raw_param.items() if k not in excluded_keys)
 
         # special cases
-        # some parameters support the use of empty string or dictionary to update/remove previously set values
-        # the default value of a three state flag is None, false is also manually specified by the user
+        # Some parameters support using "falsy" value to update/remove previously set values.
+        # In this case, we need to declare the expected value pair in `get_special_parameter_default_value_pairs_list`.`
         is_different_from_special_default = False
         for pair in self.get_special_parameter_default_value_pairs_list():
             if pair[0] != pair[1]:
                 is_different_from_special_default = True
+                break
 
         if is_changed or is_different_from_special_default:
             return
