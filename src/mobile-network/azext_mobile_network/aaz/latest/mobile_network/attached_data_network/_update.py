@@ -128,8 +128,8 @@ class Update(AAZCommand):
                 unique=True,
             ),
         )
-        _args_schema.plane_data_interface = AAZObjectArg(
-            options=["--plane-data-interface"],
+        _args_schema.data_interface = AAZObjectArg(
+            options=["--data-interface"],
             arg_group="Properties",
             help="The user plane interface on the data network. For 5G networks, this is the N6 interface. For 4G networks, this is the SGi interface.",
         )
@@ -254,8 +254,8 @@ class Update(AAZCommand):
             ),
         )
 
-        plane_data_interface = cls._args_schema.plane_data_interface
-        plane_data_interface.ipv4_address = AAZStrArg(
+        data_interface = cls._args_schema.data_interface
+        data_interface.ipv4_address = AAZStrArg(
             options=["ipv4-address"],
             help="The IPv4 address.",
             nullable=True,
@@ -263,7 +263,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        plane_data_interface.ipv4_gateway = AAZStrArg(
+        data_interface.ipv4_gateway = AAZStrArg(
             options=["ipv4-gateway"],
             help="The default IPv4 gateway (router).",
             nullable=True,
@@ -271,7 +271,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
             ),
         )
-        plane_data_interface.ipv4_subnet = AAZStrArg(
+        data_interface.ipv4_subnet = AAZStrArg(
             options=["ipv4-subnet"],
             help="The IPv4 subnet.",
             nullable=True,
@@ -279,7 +279,7 @@ class Update(AAZCommand):
                 pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
             ),
         )
-        plane_data_interface.name = AAZStrArg(
+        data_interface.name = AAZStrArg(
             options=["name"],
             help="The logical name for this interface. This should match one of the interfaces configured on your Azure Stack Edge device.",
             nullable=True,
@@ -546,7 +546,7 @@ class Update(AAZCommand):
                 properties.set_prop("naptConfiguration", AAZObjectType, ".napt_configuration")
                 properties.set_prop("userEquipmentAddressPoolPrefix", AAZListType, ".address_pool")
                 properties.set_prop("userEquipmentStaticAddressPoolPrefix", AAZListType, ".static_address_pool")
-                properties.set_prop("userPlaneDataInterface", AAZObjectType, ".plane_data_interface", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("userPlaneDataInterface", AAZObjectType, ".data_interface", typ_kwargs={"flags": {"required": True}})
 
             dns_addresses = _builder.get(".properties.dnsAddresses")
             if dns_addresses is not None:

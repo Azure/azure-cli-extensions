@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CollectDiagnosticsPackage(AAZCommand):
     """Collect a diagnostics package for the specified packet core control plane. This action will upload the diagnostics to a storage account.
+
+    :example: Collect diagnostics package
+        az mobile-network pccp collect-diagnostics-package --pccp-name pccp -g rg --blob-url https://contosoaccount.blob.core.windows.net/container/diagnosticsPackage.zip
     """
 
     _aaz_info = {
