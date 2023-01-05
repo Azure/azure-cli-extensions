@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.4.7
++++++
+* Add a recommender that predicts the next command a user might execute.
+* Fix display offset in toolbar.
+
 0.4.6
 +++++
 * Compatible with argcomplete 2.0.0
