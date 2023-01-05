@@ -470,7 +470,9 @@ helps[
               --project-name "{projectName}"
 """
 
-helps['devcenter dev notification-setting show'] = """
+helps[
+    "devcenter dev notification-setting show"
+] = """
     type: command
     short-summary: "Gets notification settings for user in the project."
     examples:
@@ -479,7 +481,9 @@ helps['devcenter dev notification-setting show'] = """
                az devcenter dev notification-setting show --user-id "me"
 """
 
-helps['devcenter dev notification-setting create'] = """
+helps[
+    "devcenter dev notification-setting create"
+] = """
     type: command
     short-summary: "Creates or updates notification settings."
     parameters:
@@ -506,7 +510,9 @@ true --email-notification cc="stubcc@domain.com" enabled=true recipients="stubre
 --webhook-notification enabled=false url="https://fake.domain/url/hook" --user-id "me"
 """
 
-helps['devcenter dev notification-setting list-allowed-culture'] = """
+helps[
+    "devcenter dev notification-setting list-allowed-culture"
+] = """
     type: command
     short-summary: "Lists allowed culture codes for notification settings."
     examples:
@@ -861,7 +867,9 @@ helps[
     short-summary: Manage environment types for a given project
 """
 
-helps['devcenter admin project-environment-type list'] = """
+helps[
+    "devcenter admin project-environment-type list"
+] = """
     type: command
     short-summary: "Lists environment types for a project."
     examples:
@@ -870,7 +878,9 @@ helps['devcenter admin project-environment-type list'] = """
                az devcenter admin project-environment-type list --project-name "ContosoProj" --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type show'] = """
+helps[
+    "devcenter admin project-environment-type show"
+] = """
     type: command
     short-summary: "Gets a project environment type."
     examples:
@@ -880,7 +890,9 @@ helps['devcenter admin project-environment-type show'] = """
 --project-name "ContosoProj" --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type create'] = """
+helps[
+    "devcenter admin project-environment-type create"
+] = """
     type: command
     short-summary: "Create a project environment type."
     examples:
@@ -895,7 +907,9 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --roles "{\\"4cbf0b6c-e750-441c-
 --resource-group "rg1"
 """
 
-helps['devcenter admin project-environment-type update'] = """
+helps[
+    "devcenter admin project-environment-type update"
+] = """
     type: command
     short-summary: "Partially updates a project environment type."
     examples:
@@ -910,7 +924,9 @@ ty/userAssignedIdentities/testidentity1\\":{}}" --deployment-target-id "/subscri
 """
 
 
-helps['devcenter admin project-environment-type delete'] = """
+helps[
+    "devcenter admin project-environment-type delete"
+] = """
     type: command
     short-summary: "Deletes a project environment type."
     examples:
@@ -1101,7 +1117,9 @@ helps[
     short-summary: Manage dev box definition with devcenter
 """
 
-helps['devcenter admin devbox-definition list'] = """
+helps[
+    "devcenter admin devbox-definition list"
+] = """
     type: command
     short-summary: "List dev box definitions for a dev center or for a project."
     examples:
@@ -1113,7 +1131,9 @@ helps['devcenter admin devbox-definition list'] = """
                az devcenter admin devbox-definition list --project-name "ContosoProject" --resource-group "rg1"
 """
 
-helps['devcenter admin devbox-definition show'] = """
+helps[
+    "devcenter admin devbox-definition show"
+] = """
     type: command
     short-summary: "Gets a dev box definition for a dev center or for a project."
     examples:
@@ -1127,7 +1147,9 @@ helps['devcenter admin devbox-definition show'] = """
 --resource-group "rg1"
 """
 
-helps['devcenter admin devbox-definition create'] = """
+helps[
+    "devcenter admin devbox-definition create"
+] = """
     type: command
     short-summary: "Create a dev box definition."
     parameters:
@@ -1163,7 +1185,9 @@ Center/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1
 --sku name="Preview" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
-helps['devcenter admin devbox-definition update'] = """
+helps[
+    "devcenter admin devbox-definition update"
+] = """
     type: command
     short-summary: "Partially updates a dev box definition."
     parameters:
@@ -1248,12 +1272,16 @@ helps[
                az devcenter admin usage list --location "westus"
 """
 
-helps['devcenter admin check-name-availability'] = """
+helps[
+    "devcenter admin check-name-availability"
+] = """
     type: group
     short-summary: Manage check name availability with devcenter.
 """
 
-helps['devcenter admin check-name-availability execute'] = """
+helps[
+    "devcenter admin check-name-availability execute"
+] = """
     type: command
     short-summary: "Check the availability of name for resource."
     examples:
@@ -1262,12 +1290,16 @@ helps['devcenter admin check-name-availability execute'] = """
                az devcenter check-name-availability execute --name "name1" --type "Microsoft.DevCenter/devcenters"
 """
 
-helps['devcenter admin operation-statuses'] = """
+helps[
+    "devcenter admin operation-statuses"
+] = """
     type: group
     short-summary: Manage operation statuses with devcenter
 """
 
-helps['devcenter admin operation-statuses show'] = """
+helps[
+    "devcenter admin operation-statuses show"
+] = """
     type: command
     short-summary: "Gets the current status of an async operation."
     examples:
@@ -1276,12 +1308,16 @@ helps['devcenter admin operation-statuses show'] = """
                az devcenter admin operation-statuses show --operation-id "{operationId}" --location "{location}"
 """
 
-helps['devcenter admin sku'] = """
+helps[
+    "devcenter admin sku"
+] = """
     type: group
     short-summary: Manage sku with devcenter
 """
 
-helps['devcenter admin sku list'] = """
+helps[
+    "devcenter admin sku list"
+] = """
     type: command
     short-summary: "Lists the Microsoft.DevCenter SKUs available in a subscription."
     examples:
@@ -1527,7 +1563,9 @@ helps[
                az devcenter admin network-connection delete --name "{networkConnectionName}" --resource-group "rg1"
 """
 
-helps['devcenter admin network-connection list-health-detail'] = """
+helps[
+    "devcenter admin network-connection list-health-detail"
+] = """
     type: command
     short-summary: "Lists health check status details."
     examples:

@@ -17,7 +17,7 @@ from azext_devcenter.manual._client_factory import (
     cf_catalog_item_dp,
     cf_catalog_item_version_dp,
     cf_environment_type_dp,
-    cf_notification_setting_dp
+    cf_notification_setting_dp,
 )
 from azext_devcenter.generated._client_factory import (
     cf_dev_center,
@@ -37,7 +37,7 @@ from azext_devcenter.generated._client_factory import (
     cf_pool,
     cf_schedule,
     cf_network_connection,
-    cf_check_name_availability
+    cf_check_name_availability,
 )
 
 
@@ -204,10 +204,9 @@ def load_command_table(self, _):
     )
 
     devcenter_check_name_availability = CliCommandType(
-        operations_tmpl='azext_devcenter.vendored_sdks.devcenter.operations._check_name_availability_operations#CheckNameAvailabilityOperations.{}',
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._check_name_availability_operations#CheckNameAvailabilityOperations.{}",
         client_factory=cf_check_name_availability,
     )
-
 
     with self.command_group("devcenter", is_experimental=True):
         pass
@@ -219,21 +218,15 @@ def load_command_table(self, _):
         pass
 
     # data plane
-    with self.command_group(
-        "devcenter dev project", devcenter_project_dp
-    ) as g:
+    with self.command_group("devcenter dev project", devcenter_project_dp) as g:
         g.custom_command("list", "devcenter_project_list_dp")
         g.custom_show_command("show", "devcenter_project_show_dp")
 
-    with self.command_group(
-        "devcenter dev pool", devcenter_pool_dp
-    ) as g:
+    with self.command_group("devcenter dev pool", devcenter_pool_dp) as g:
         g.custom_command("list", "devcenter_pool_list_dp")
         g.custom_show_command("show", "devcenter_pool_show_dp")
 
-    with self.command_group(
-        "devcenter dev dev-box", devcenter_dev_box_dp
-    ) as g:
+    with self.command_group("devcenter dev dev-box", devcenter_dev_box_dp) as g:
         g.custom_command("list", "devcenter_dev_box_list")
         g.custom_show_command("show", "devcenter_dev_box_show")
         g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
@@ -248,34 +241,35 @@ def load_command_table(self, _):
         )
         g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
         g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
-        g.custom_command('delay-upcoming-action', 'devcenter_dev_box_delay_upcoming_action')
-        g.custom_command('list-upcoming-action', 'devcenter_dev_box_list_upcoming_action')
-        g.custom_command('show-upcoming-action', 'devcenter_dev_box_show_upcoming_action')
-        g.custom_command('skip-upcoming-action', 'devcenter_dev_box_skip_upcoming_action')
+        g.custom_command(
+            "delay-upcoming-action", "devcenter_dev_box_delay_upcoming_action"
+        )
+        g.custom_command(
+            "list-upcoming-action", "devcenter_dev_box_list_upcoming_action"
+        )
+        g.custom_command(
+            "show-upcoming-action", "devcenter_dev_box_show_upcoming_action"
+        )
+        g.custom_command(
+            "skip-upcoming-action", "devcenter_dev_box_skip_upcoming_action"
+        )
 
-    with self.command_group(
-        "devcenter dev artifact", devcenter_artifact_dp
-    ) as g:
+    with self.command_group("devcenter dev artifact", devcenter_artifact_dp) as g:
         g.custom_command("list", "devcenter_artifact_list")
 
     with self.command_group(
-        "devcenter dev catalog-item",
-        devcenter_catalog_item_dp
+        "devcenter dev catalog-item", devcenter_catalog_item_dp
     ) as g:
         g.custom_command("list", "devcenter_catalog_item_list")
         g.custom_show_command("show", "devcenter_catalog_item_show")
 
     with self.command_group(
-        "devcenter dev catalog-item-version",
-        devcenter_catalog_item_version_dp
+        "devcenter dev catalog-item-version", devcenter_catalog_item_version_dp
     ) as g:
         g.custom_command("list", "devcenter_catalog_item_version_list")
         g.custom_show_command("show", "devcenter_catalog_item_version_show")
 
-    with self.command_group(
-        "devcenter dev environment",
-        devcenter_environment_dp
-    ) as g:
+    with self.command_group("devcenter dev environment", devcenter_environment_dp) as g:
         g.custom_command("list", "devcenter_environment_list")
         g.custom_show_command("show", "devcenter_environment_show")
         g.custom_command(
@@ -303,21 +297,21 @@ def load_command_table(self, _):
         g.custom_wait_command("wait", "devcenter_environment_show")
 
     with self.command_group(
-        "devcenter dev environment-type",
-        devcenter_environment_type_dp
+        "devcenter dev environment-type", devcenter_environment_type_dp
     ) as g:
         g.custom_command("list", "devcenter_environment_type_list_dp")
 
-    with self.command_group(
-        "devcenter dev schedule", devcenter_schedule_dp
-    ) as g:
+    with self.command_group("devcenter dev schedule", devcenter_schedule_dp) as g:
         g.custom_command("list", "devcenter_schedule_list_dp")
         g.custom_show_command("show", "devcenter_schedule_show_dp")
 
     with self.command_group(
         "devcenter dev notification setting", devcenter_notification_setting_dp
     ) as g:
-        g.custom_command("list-allowed-culture", "devcenter_notification_setting_list_allowed_culture_dp")
+        g.custom_command(
+            "list-allowed-culture",
+            "devcenter_notification_setting_list_allowed_culture_dp",
+        )
         g.custom_show_command("show", "devcenter_notification_setting_show_dp")
         g.custom_command(
             "create", "devcenter_notification_setting_create_dp", supports_no_wait=True
@@ -362,12 +356,12 @@ def load_command_table(self, _):
         g.custom_wait_command("wait", "devcenter_catalog_show")
 
     with self.command_group(
-        'devcenter admin check-name-availability',
+        "devcenter admin check-name-availability",
         devcenter_check_name_availability,
         client_factory=cf_check_name_availability,
     ) as g:
-        g.custom_command('execute', 'devcenter_check_name_availability_execute')
-    
+        g.custom_command("execute", "devcenter_check_name_availability_execute")
+
     with self.command_group(
         "devcenter admin devbox-definition",
         devcenter_dev_box_definition,
@@ -474,7 +468,11 @@ def load_command_table(self, _):
         g.custom_command(
             "list-health-detail", "devcenter_network_connection_list_health_detail"
         )
-        g.custom_command('run-health-check', 'devcenter_network_connection_run_health_check', supports_no_wait=True)
+        g.custom_command(
+            "run-health-check",
+            "devcenter_network_connection_run_health_check",
+            supports_no_wait=True,
+        )
         g.custom_command(
             "show-health-detail", "devcenter_network_connection_show_health_detail"
         )
@@ -549,7 +547,9 @@ def load_command_table(self, _):
         )
         g.custom_wait_command("wait", "devcenter_schedule_show")
 
-    with self.command_group("devcenter admin sku", devcenter_sku, client_factory=cf_sku) as g:
+    with self.command_group(
+        "devcenter admin sku", devcenter_sku, client_factory=cf_sku
+    ) as g:
         g.custom_command("list", "devcenter_sku_list")
 
     with self.command_group(

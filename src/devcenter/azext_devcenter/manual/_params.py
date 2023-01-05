@@ -12,20 +12,24 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type,
     tags_type,
-    get_three_state_flag
+    get_three_state_flag,
 )
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict,
 )
-from azext_devcenter.action import AddRepo, AddImageReference, AddSku, AddEmailNotification, AddWebhookNotification
+from azext_devcenter.action import (
+    AddRepo,
+    AddImageReference,
+    AddSku,
+    AddEmailNotification,
+    AddWebhookNotification,
+)
 
 from ._validators import validate_attached_network_or_dev_box_def, validate_dev_box_list
 
 
 def load_arguments(self, _):
-
-    from azure.cli.core.commands.parameters import tags_type
 
     with self.argument_context("devcenter dev project list") as c:
         c.argument(
@@ -115,7 +119,7 @@ def load_arguments(self, _):
             options_list=["--pool-name", "--pool"],
             type=str,
             help="The name of a pool of Dev Boxes.",
-        )     
+        )
 
     with self.argument_context("devcenter dev schedule show") as c:
         c.argument(
@@ -232,8 +236,12 @@ def load_arguments(self, _):
             type=str,
             help="The name of the Dev Box pool this machine belongs to.",
         )
-        c.argument('local_administrator', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether the '
-                   'owner of the Dev Box is a local administrator.')
+        c.argument(
+            "local_administrator",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            help="Indicates whether the "
+            "owner of the Dev Box is a local administrator.",
+        )
 
     with self.argument_context("devcenter dev dev-box delete") as c:
         c.argument(
@@ -342,9 +350,13 @@ def load_arguments(self, _):
             type=str,
             help="The name of a Dev " "Box.",
         )
-        c.argument('hibernate', arg_type=get_three_state_flag(), help='Optional parameter to hibernate the dev box.')
+        c.argument(
+            "hibernate",
+            arg_type=get_three_state_flag(),
+            help="Optional parameter to hibernate the dev box.",
+        )
 
-    with self.argument_context('devcenter dev dev-box delay-upcoming-action') as c:
+    with self.argument_context("devcenter dev dev-box delay-upcoming-action") as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -358,14 +370,22 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
-        c.argument('dev_box_name', options_list=['--name', '-n', '--dev-box-name'], type=str, help='The name of a Dev '
-                   'Box.')
-        c.argument('upcoming_action_id', type=str, help='The upcoming action id.')
-        c.argument('delay_until', help='The delayed action time (UTC).')
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a Dev " "Box.",
+        )
+        c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
+        c.argument("delay_until", help="The delayed action time (UTC).")
 
-    with self.argument_context('devcenter dev dev-box list-upcoming-action') as c:
+    with self.argument_context("devcenter dev dev-box list-upcoming-action") as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -378,13 +398,21 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The DevCenter Project upon which to execute operations.",
-        )        
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
-        c.argument('dev_box_name', options_list=['--name', '-n', '--dev-box-name'], type=str, help='The name of a Dev '
-                   'Box.')
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a Dev " "Box.",
+        )
 
-    with self.argument_context('devcenter dev dev-box show-upcoming-action') as c:
+    with self.argument_context("devcenter dev dev-box show-upcoming-action") as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -397,14 +425,22 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The DevCenter Project upon which to execute operations.",
-        )        
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
-        c.argument('dev_box_name', options_list=['--name', '-n', '--dev-box-name'], type=str, help='The name of a Dev '
-                   'Box.')
-        c.argument('upcoming_action_id', type=str, help='The upcoming action id.')
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a Dev " "Box.",
+        )
+        c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
 
-    with self.argument_context('devcenter dev dev-box skip-upcoming-action') as c:
+    with self.argument_context("devcenter dev dev-box skip-upcoming-action") as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -417,12 +453,20 @@ def load_arguments(self, _):
             options_list=["--project-name", "--project"],
             type=str,
             help="The DevCenter Project upon which to execute operations.",
-        )        
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
-        c.argument('dev_box_name', options_list=['--name', '-n', '--dev-box-name'], type=str, help='The name of a Dev '
-                   'Box.')
-        c.argument('upcoming_action_id', type=str, help='The upcoming action id.')
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a Dev " "Box.",
+        )
+        c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
 
     with self.argument_context("devcenter dev dev-box wait") as c:
         c.argument(
@@ -465,8 +509,12 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
 
     with self.argument_context("devcenter dev environment show") as c:
         c.argument(
@@ -543,8 +591,9 @@ def load_arguments(self, _):
         )
         c.argument("tags", tags_type)
         c.argument("environment_type", type=str, help="Environment type.")
-        c.argument('user', type=str, help='The AAD object id of the owner of this Environment.')
-
+        c.argument(
+            "user", type=str, help="The AAD object id of the owner of this Environment."
+        )
 
     with self.argument_context("devcenter dev environment update") as c:
         c.argument(
@@ -818,7 +867,7 @@ def load_arguments(self, _):
             help="The DevCenter Project upon which to execute operations.",
         )
 
-    with self.argument_context('devcenter dev notification-setting create') as c:
+    with self.argument_context("devcenter dev notification-setting create") as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -833,18 +882,44 @@ def load_arguments(self, _):
             required=True,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
-        c.argument('enabled', arg_type=get_three_state_flag(), help='If notification is enabled for the user.')
-        c.argument('culture', type=str, help='The culture that MEO can accommdate requests to send emails in.')
-        c.argument('boolean_enabled', arg_type=get_three_state_flag(), help='If notification is enabled for DevBox '
-                   'provisioning.', arg_group='Notification Type Dev Box Provisioning Notification')
-        c.argument('email_notification', action=AddEmailNotification, nargs='+', help='The email notification',
-                   arg_group='Notification Type Dev Box Provisioning Notification Notification Channel')
-        c.argument('webhook_notification', action=AddWebhookNotification, nargs='+', help='The webhook notification',
-                   arg_group='Notification Type Dev Box Provisioning Notification Notification Channel')
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "enabled",
+            arg_type=get_three_state_flag(),
+            help="If notification is enabled for the user.",
+        )
+        c.argument(
+            "culture",
+            type=str,
+            help="The culture that MEO can accommdate requests to send emails in.",
+        )
+        c.argument(
+            "boolean_enabled",
+            arg_type=get_three_state_flag(),
+            help="If notification is enabled for DevBox " "provisioning.",
+            arg_group="Notification Type Dev Box Provisioning Notification",
+        )
+        c.argument(
+            "email_notification",
+            action=AddEmailNotification,
+            nargs="+",
+            help="The email notification",
+            arg_group="Notification Type Dev Box Provisioning Notification Notification Channel",
+        )
+        c.argument(
+            "webhook_notification",
+            action=AddWebhookNotification,
+            nargs="+",
+            help="The webhook notification",
+            arg_group="Notification Type Dev Box Provisioning Notification Notification Channel",
+        )
 
-    with self.argument_context('devcenter dev notification-setting show') as c:
+    with self.argument_context("devcenter dev notification-setting show") as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -859,10 +934,16 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
 
-    with self.argument_context('devcenter dev notification-setting list-allowed-culture') as c:
+    with self.argument_context(
+        "devcenter dev notification-setting list-allowed-culture"
+    ) as c:
         c.argument(
             "dev_center",
             options_list=["--dev-center-name", "--dev-center", "-d"],
@@ -877,8 +958,12 @@ def load_arguments(self, _):
             type=str,
             help="The DevCenter Project upon which to execute operations.",
         )
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
 
     # control plane
     with self.argument_context("devcenter admin devcenter list") as c:
@@ -928,11 +1013,14 @@ def load_arguments(self, _):
         c.argument(
             "user_assigned_identities",
             options_list=["--user-assigned-identities", "-u"],
-            type=validate_file_or_dict, help='The set of user assigned identities '
-                   'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
-                   'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
-                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
-                   'objects ({}) in requests. Expected value: json-string/json-file/@json-file.', arg_group='Identity')
+            type=validate_file_or_dict,
+            help="The set of user assigned identities "
+            "associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids "
+            "in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso"
+            "ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty "
+            "objects ({}) in requests. Expected value: json-string/json-file/@json-file.",
+            arg_group="Identity",
+        )
 
     with self.argument_context("devcenter admin devcenter update") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -954,7 +1042,12 @@ def load_arguments(self, _):
             "type_",
             options_list=["--identity-type"],
             arg_type=get_enum_type(
-                ["None", "SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"]
+                [
+                    "None",
+                    "SystemAssigned",
+                    "UserAssigned",
+                    "SystemAssigned, UserAssigned",
+                ]
             ),
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are "
             "allowed).",
@@ -963,12 +1056,15 @@ def load_arguments(self, _):
         c.argument(
             "user_assigned_identities",
             options_list=["--user-assigned-identities", "-u"],
-            type=validate_file_or_dict, help='The set of user assigned identities '
-                   'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
-                   'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
-                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
-                   'objects ({}) in requests. Expected value: json-string/json-file/@json-file. Swagger '
-                   'name=userAssignedIdentities', arg_group='Identity')
+            type=validate_file_or_dict,
+            help="The set of user assigned identities "
+            "associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids "
+            "in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso"
+            "ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty "
+            "objects ({}) in requests. Expected value: json-string/json-file/@json-file. Swagger "
+            "name=userAssignedIdentities",
+            arg_group="Identity",
+        )
 
     with self.argument_context("devcenter admin devcenter delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1135,8 +1231,13 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("devcenter admin attached-network update") as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument("resource_group_name", resource_group_name_type)
+        c.argument(
+            "dev_center_name",
+            type=str,
+            help="The name of the devcenter.",
+            id_part="name",
+        )
         c.argument(
             "attached_network_connection_name",
             options_list=["--name", "-n", "--attached-network-connection-name"],
@@ -1144,8 +1245,11 @@ def load_arguments(self, _):
             help="The name of the attached network connection.",
             id_part="child_name_1",
         )
-        c.argument('network_connection_id', type=str, help='The resource ID of the NetworkConnection you want to '
-                   'attach.')
+        c.argument(
+            "network_connection_id",
+            type=str,
+            help="The resource ID of the NetworkConnection you want to " "attach.",
+        )
 
     with self.argument_context("devcenter admin attached-network delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1889,9 +1993,13 @@ def load_arguments(self, _):
             help="The storage type used for the Operating System disk of Dev Boxes "
             "created using this definition.",
         )
-        c.argument('hibernate_support', arg_type=get_enum_type(['Disabled', 'Enabled']), help='Indicates whether Dev '
-                   'Boxes created with this definition are capable of hibernation. Not all images are capable of '
-                   'supporting hibernation. To find out more see https://aka.ms/devbox/hibernate.')
+        c.argument(
+            "hibernate_support",
+            arg_type=get_enum_type(["Disabled", "Enabled"]),
+            help="Indicates whether Dev "
+            "Boxes created with this definition are capable of hibernation. Not all images are capable of "
+            "supporting hibernation. To find out more see https://aka.ms/devbox/hibernate.",
+        )
 
     with self.argument_context("devcenter admin devbox-definition update") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1934,9 +2042,13 @@ def load_arguments(self, _):
             help="The storage type used for the Operating System disk of Dev Boxes "
             "created using this definition.",
         )
-        c.argument('hibernate_support', arg_type=get_enum_type(['Disabled', 'Enabled']), help='Indicates whether Dev '
-                   'Boxes created with this definition are capable of hibernation. Not all images are capable of '
-                   'supporting hibernation. To find out more see https://aka.ms/devbox/hibernate.')
+        c.argument(
+            "hibernate_support",
+            arg_type=get_enum_type(["Disabled", "Enabled"]),
+            help="Indicates whether Dev "
+            "Boxes created with this definition are capable of hibernation. Not all images are capable of "
+            "supporting hibernation. To find out more see https://aka.ms/devbox/hibernate.",
+        )
 
     with self.argument_context("devcenter admin devbox-definition delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1984,17 +2096,21 @@ def load_arguments(self, _):
             "operation_id",
             type=str,
             help="The ID of an ongoing async operation",
-            id_part="child_name_1")
+            id_part="child_name_1",
+        )
 
+    with self.argument_context("devcenter admin usage list") as c:
+        c.argument("location", arg_type=get_location_type(self.cli_ctx))
 
-    with self.argument_context('devcenter admin usage list') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
-
-
-    with self.argument_context('devcenter admin check-name-availability execute') as c:
-        c.argument('name', type=str, help='The name of the resource for which availability needs to be checked.')
-        c.argument('type_', options_list=['--type'], type=str, help='The resource type.')
-
+    with self.argument_context("devcenter admin check-name-availability execute") as c:
+        c.argument(
+            "name",
+            type=str,
+            help="The name of the resource for which availability needs to be checked.",
+        )
+        c.argument(
+            "type_", options_list=["--type"], type=str, help="The resource type."
+        )
 
     with self.argument_context("devcenter admin pool list") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2062,7 +2178,6 @@ def load_arguments(self, _):
             "owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
         )
 
-
     with self.argument_context("devcenter admin pool update") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
@@ -2104,7 +2219,6 @@ def load_arguments(self, _):
             help="Indicates whether "
             "owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
         )
-
 
     with self.argument_context("devcenter admin pool delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -2424,11 +2538,13 @@ def load_arguments(self, _):
             help="Name of the Network Connection that can be applied to a Pool.",
             id_part="name",
         )
-    with self.argument_context("devcenter admin network-connection list-health-detail") as c:
+    with self.argument_context(
+        "devcenter admin network-connection list-health-detail"
+    ) as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "network_connection_name",
             options_list=["--name", "-n", "--network-connection-name"],
             type=str,
-            help="Name of the Network Connection that can be applied to a Pool.")
-
+            help="Name of the Network Connection that can be applied to a Pool.",
+        )
