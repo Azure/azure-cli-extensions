@@ -86,24 +86,25 @@ class Create(AAZCommand):
         )
 
         provider_specific_input = cls._args_schema.provider_specific_input
-        provider_specific_input.a2_a = AAZObjectArg(
-            options=["a2-a"],
+        provider_specific_input.a2a = AAZObjectArg(
+            options=["a2a"],
+            help="A2A",
         )
         provider_specific_input.v_mware_cbt = AAZObjectArg(
             options=["v-mware-cbt"],
         )
 
-        a2_a = cls._args_schema.provider_specific_input.a2_a
-        a2_a.agent_auto_update_status = AAZStrArg(
+        a2a = cls._args_schema.provider_specific_input.a2a
+        a2a.agent_auto_update_status = AAZStrArg(
             options=["agent-auto-update-status"],
             help="A value indicating whether the auto update is enabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        a2_a.automation_account_arm_id = AAZStrArg(
+        a2a.automation_account_arm_id = AAZStrArg(
             options=["automation-account-arm-id"],
             help="The automation account arm id.",
         )
-        a2_a.automation_account_authentication_type = AAZStrArg(
+        a2a.automation_account_authentication_type = AAZStrArg(
             options=["automation-account-authentication-type"],
             help="A value indicating the type authentication to use for automation Account.",
             default="RunAsAccount",
@@ -267,16 +268,16 @@ class Create(AAZCommand):
 
             provider_specific_input = _builder.get(".properties.providerSpecificInput")
             if provider_specific_input is not None:
-                provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".v_mware_cbt", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.discriminate_by("instanceType", "A2A")
                 provider_specific_input.discriminate_by("instanceType", "VMwareCbt")
 
             disc_a2_a = _builder.get(".properties.providerSpecificInput{instanceType:A2A}")
             if disc_a2_a is not None:
-                disc_a2_a.set_prop("agentAutoUpdateStatus", AAZStrType, ".a2_a.agent_auto_update_status")
-                disc_a2_a.set_prop("automationAccountArmId", AAZStrType, ".a2_a.automation_account_arm_id")
-                disc_a2_a.set_prop("automationAccountAuthenticationType", AAZStrType, ".a2_a.automation_account_authentication_type")
+                disc_a2_a.set_prop("agentAutoUpdateStatus", AAZStrType, ".a2a.agent_auto_update_status")
+                disc_a2_a.set_prop("automationAccountArmId", AAZStrType, ".a2a.automation_account_arm_id")
+                disc_a2_a.set_prop("automationAccountAuthenticationType", AAZStrType, ".a2a.automation_account_authentication_type")
 
             disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
             if disc_v_mware_cbt is not None:

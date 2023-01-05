@@ -86,8 +86,9 @@ class UnplannedFailover(AAZCommand):
         )
 
         provider_specific_details = cls._args_schema.provider_specific_details
-        provider_specific_details.a2_a = AAZObjectArg(
-            options=["a2-a"],
+        provider_specific_details.a2a = AAZObjectArg(
+            options=["a2a"],
+            help="A2A",
         )
         provider_specific_details.hyper_v_replica_azure = AAZObjectArg(
             options=["hyper-v-replica-azure"],
@@ -102,12 +103,12 @@ class UnplannedFailover(AAZCommand):
             options=["in-mage-rcm"],
         )
 
-        a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.cloud_service_creation_option = AAZStrArg(
+        a2a = cls._args_schema.provider_specific_details.a2a
+        a2a.cloud_service_creation_option = AAZStrArg(
             options=["cloud-service-creation-option"],
             help="A value indicating whether to use recovery cloud service for failover or not.",
         )
-        a2_a.recovery_point_id = AAZStrArg(
+        a2a.recovery_point_id = AAZStrArg(
             options=["recovery-point-id"],
             help="The recovery point id to be passed to failover to a particular recovery point. In case of latest recovery point, null should be passed.",
         )
@@ -283,7 +284,7 @@ class UnplannedFailover(AAZCommand):
 
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
-                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
@@ -296,8 +297,8 @@ class UnplannedFailover(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
             if disc_a2_a is not None:
-                disc_a2_a.set_prop("cloudServiceCreationOption", AAZStrType, ".a2_a.cloud_service_creation_option")
-                disc_a2_a.set_prop("recoveryPointId", AAZStrType, ".a2_a.recovery_point_id")
+                disc_a2_a.set_prop("cloudServiceCreationOption", AAZStrType, ".a2a.cloud_service_creation_option")
+                disc_a2_a.set_prop("recoveryPointId", AAZStrType, ".a2a.recovery_point_id")
 
             disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}")
             if disc_hyper_v_replica_azure is not None:

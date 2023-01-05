@@ -95,8 +95,9 @@ class Update(AAZCommand):
         )
 
         provider_specific_details = cls._args_schema.provider_specific_details
-        provider_specific_details.a2_a = AAZObjectArg(
-            options=["a2-a"],
+        provider_specific_details.a2a = AAZObjectArg(
+            options=["a2a"],
+            help="A2A",
         )
         provider_specific_details.a2_a_cross_cluster_migration = AAZObjectArg(
             options=["a2-a-cross-cluster-migration"],
@@ -114,99 +115,99 @@ class Update(AAZCommand):
             options=["in-mage-rcm"],
         )
 
-        a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.disk_encryption_info = AAZObjectArg(
+        a2a = cls._args_schema.provider_specific_details.a2a
+        a2a.disk_encryption_info = AAZObjectArg(
             options=["disk-encryption-info"],
             help="The recovery disk encryption information (for two pass flows).",
             nullable=True,
         )
-        cls._build_args_disk_encryption_info_update(a2_a.disk_encryption_info)
-        a2_a.fabric_object_id = AAZStrArg(
+        cls._build_args_disk_encryption_info_update(a2a.disk_encryption_info)
+        a2a.fabric_object_id = AAZStrArg(
             options=["fabric-object-id"],
             help="The fabric specific object Id of the virtual machine.",
         )
-        a2_a.multi_vm_group_id = AAZStrArg(
+        a2a.multi_vm_group_id = AAZStrArg(
             options=["multi-vm-group-id"],
             help="The multi vm group id.",
             nullable=True,
         )
-        a2_a.multi_vm_group_name = AAZStrArg(
+        a2a.multi_vm_group_name = AAZStrArg(
             options=["multi-vm-group-name"],
             help="The multi vm group name.",
             nullable=True,
         )
-        a2_a.recovery_availability_set_id = AAZStrArg(
+        a2a.recovery_availability_set_id = AAZStrArg(
             options=["recovery-availability-set-id"],
             help="The recovery availability set Id.",
             nullable=True,
         )
-        a2_a.recovery_availability_zone = AAZStrArg(
+        a2a.recovery_availability_zone = AAZStrArg(
             options=["recovery-availability-zone"],
             help="The recovery availability zone.",
             nullable=True,
         )
-        a2_a.recovery_azure_network_id = AAZStrArg(
+        a2a.recovery_azure_network_id = AAZStrArg(
             options=["recovery-azure-network-id"],
             help="The recovery Azure virtual network ARM id.",
             nullable=True,
         )
-        a2_a.recovery_boot_diag_storage_account_id = AAZStrArg(
+        a2a.recovery_boot_diag_storage_account_id = AAZStrArg(
             options=["recovery-boot-diag-storage-account-id"],
             help="The boot diagnostic storage account.",
             nullable=True,
         )
-        a2_a.recovery_capacity_reservation_group_id = AAZStrArg(
+        a2a.recovery_capacity_reservation_group_id = AAZStrArg(
             options=["recovery-capacity-reservation-group-id"],
             help="The recovery capacity reservation group Id.",
             nullable=True,
         )
-        a2_a.recovery_cloud_service_id = AAZStrArg(
+        a2a.recovery_cloud_service_id = AAZStrArg(
             options=["recovery-cloud-service-id"],
             help="The recovery cloud service Id. Valid for V1 scenarios.",
             nullable=True,
         )
-        a2_a.recovery_container_id = AAZStrArg(
+        a2a.recovery_container_id = AAZStrArg(
             options=["recovery-container-id"],
             help="The recovery container Id.",
             nullable=True,
         )
-        a2_a.recovery_extended_location = AAZObjectArg(
+        a2a.recovery_extended_location = AAZObjectArg(
             options=["recovery-extended-location"],
             help="The recovery extended location.",
             nullable=True,
         )
-        a2_a.recovery_proximity_placement_group_id = AAZStrArg(
+        a2a.recovery_proximity_placement_group_id = AAZStrArg(
             options=["recovery-proximity-placement-group-id"],
             help="The recovery proximity placement group Id.",
             nullable=True,
         )
-        a2_a.recovery_resource_group_id = AAZStrArg(
+        a2a.recovery_resource_group_id = AAZStrArg(
             options=["recovery-resource-group-id"],
             help="The recovery resource group Id. Valid for V2 scenarios.",
             nullable=True,
         )
-        a2_a.recovery_subnet_name = AAZStrArg(
+        a2a.recovery_subnet_name = AAZStrArg(
             options=["recovery-subnet-name"],
             help="The recovery subnet name.",
             nullable=True,
         )
-        a2_a.recovery_virtual_machine_scale_set_id = AAZStrArg(
+        a2a.recovery_virtual_machine_scale_set_id = AAZStrArg(
             options=["recovery-virtual-machine-scale-set-id"],
             help="The virtual machine scale set Id.",
             nullable=True,
         )
-        a2_a.vm_disks = AAZListArg(
+        a2a.vm_disks = AAZListArg(
             options=["vm-disks"],
             help="The list of vm disk details.",
             nullable=True,
         )
-        a2_a.vm_managed_disks = AAZListArg(
+        a2a.vm_managed_disks = AAZListArg(
             options=["vm-managed-disks"],
             help="The list of vm managed disk details.",
             nullable=True,
         )
 
-        recovery_extended_location = cls._args_schema.provider_specific_details.a2_a.recovery_extended_location
+        recovery_extended_location = cls._args_schema.provider_specific_details.a2a.recovery_extended_location
         recovery_extended_location.name = AAZStrArg(
             options=["name"],
             help="The name of the extended location.",
@@ -217,12 +218,12 @@ class Update(AAZCommand):
             enum={"EdgeZone": "EdgeZone"},
         )
 
-        vm_disks = cls._args_schema.provider_specific_details.a2_a.vm_disks
+        vm_disks = cls._args_schema.provider_specific_details.a2a.vm_disks
         vm_disks.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.provider_specific_details.a2_a.vm_disks.Element
+        _element = cls._args_schema.provider_specific_details.a2a.vm_disks.Element
         _element.disk_uri = AAZStrArg(
             options=["disk-uri"],
             help="The disk Uri.",
@@ -236,12 +237,12 @@ class Update(AAZCommand):
             help="The recovery VHD storage account Id.",
         )
 
-        vm_managed_disks = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks
+        vm_managed_disks = cls._args_schema.provider_specific_details.a2a.vm_managed_disks
         vm_managed_disks.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.provider_specific_details.a2_a.vm_managed_disks.Element
+        _element = cls._args_schema.provider_specific_details.a2a.vm_managed_disks.Element
         _element.disk_encryption_info = AAZObjectArg(
             options=["disk-encryption-info"],
             help="The recovery disk encryption information (for one / single pass flows).",
@@ -1218,7 +1219,7 @@ class Update(AAZCommand):
 
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
-                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "A2ACrossClusterMigration", AAZStrType, ".a2_a_cross_cluster_migration", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
@@ -1233,24 +1234,24 @@ class Update(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
             if disc_a2_a is not None:
-                _UpdateHelper._build_schema_disk_encryption_info_update(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2_a.disk_encryption_info"))
-                disc_a2_a.set_prop("fabricObjectId", AAZStrType, ".a2_a.fabric_object_id", typ_kwargs={"flags": {"required": True}})
-                disc_a2_a.set_prop("multiVmGroupId", AAZStrType, ".a2_a.multi_vm_group_id")
-                disc_a2_a.set_prop("multiVmGroupName", AAZStrType, ".a2_a.multi_vm_group_name")
-                disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2_a.recovery_availability_set_id")
-                disc_a2_a.set_prop("recoveryAvailabilityZone", AAZStrType, ".a2_a.recovery_availability_zone")
-                disc_a2_a.set_prop("recoveryAzureNetworkId", AAZStrType, ".a2_a.recovery_azure_network_id")
-                disc_a2_a.set_prop("recoveryBootDiagStorageAccountId", AAZStrType, ".a2_a.recovery_boot_diag_storage_account_id")
-                disc_a2_a.set_prop("recoveryCapacityReservationGroupId", AAZStrType, ".a2_a.recovery_capacity_reservation_group_id")
-                disc_a2_a.set_prop("recoveryCloudServiceId", AAZStrType, ".a2_a.recovery_cloud_service_id")
-                disc_a2_a.set_prop("recoveryContainerId", AAZStrType, ".a2_a.recovery_container_id")
-                disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2_a.recovery_extended_location")
-                disc_a2_a.set_prop("recoveryProximityPlacementGroupId", AAZStrType, ".a2_a.recovery_proximity_placement_group_id")
-                disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2_a.recovery_resource_group_id")
-                disc_a2_a.set_prop("recoverySubnetName", AAZStrType, ".a2_a.recovery_subnet_name")
-                disc_a2_a.set_prop("recoveryVirtualMachineScaleSetId", AAZStrType, ".a2_a.recovery_virtual_machine_scale_set_id")
-                disc_a2_a.set_prop("vmDisks", AAZListType, ".a2_a.vm_disks")
-                disc_a2_a.set_prop("vmManagedDisks", AAZListType, ".a2_a.vm_managed_disks")
+                _UpdateHelper._build_schema_disk_encryption_info_update(disc_a2_a.set_prop("diskEncryptionInfo", AAZObjectType, ".a2a.disk_encryption_info"))
+                disc_a2_a.set_prop("fabricObjectId", AAZStrType, ".a2a.fabric_object_id", typ_kwargs={"flags": {"required": True}})
+                disc_a2_a.set_prop("multiVmGroupId", AAZStrType, ".a2a.multi_vm_group_id")
+                disc_a2_a.set_prop("multiVmGroupName", AAZStrType, ".a2a.multi_vm_group_name")
+                disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2a.recovery_availability_set_id")
+                disc_a2_a.set_prop("recoveryAvailabilityZone", AAZStrType, ".a2a.recovery_availability_zone")
+                disc_a2_a.set_prop("recoveryAzureNetworkId", AAZStrType, ".a2a.recovery_azure_network_id")
+                disc_a2_a.set_prop("recoveryBootDiagStorageAccountId", AAZStrType, ".a2a.recovery_boot_diag_storage_account_id")
+                disc_a2_a.set_prop("recoveryCapacityReservationGroupId", AAZStrType, ".a2a.recovery_capacity_reservation_group_id")
+                disc_a2_a.set_prop("recoveryCloudServiceId", AAZStrType, ".a2a.recovery_cloud_service_id")
+                disc_a2_a.set_prop("recoveryContainerId", AAZStrType, ".a2a.recovery_container_id")
+                disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2a.recovery_extended_location")
+                disc_a2_a.set_prop("recoveryProximityPlacementGroupId", AAZStrType, ".a2a.recovery_proximity_placement_group_id")
+                disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2a.recovery_resource_group_id")
+                disc_a2_a.set_prop("recoverySubnetName", AAZStrType, ".a2a.recovery_subnet_name")
+                disc_a2_a.set_prop("recoveryVirtualMachineScaleSetId", AAZStrType, ".a2a.recovery_virtual_machine_scale_set_id")
+                disc_a2_a.set_prop("vmDisks", AAZListType, ".a2a.vm_disks")
+                disc_a2_a.set_prop("vmManagedDisks", AAZListType, ".a2a.vm_managed_disks")
 
             recovery_extended_location = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.recoveryExtendedLocation")
             if recovery_extended_location is not None:

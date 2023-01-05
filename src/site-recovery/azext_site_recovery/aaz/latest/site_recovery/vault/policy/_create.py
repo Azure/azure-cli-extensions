@@ -72,8 +72,9 @@ class Create(AAZCommand):
         )
 
         provider_specific_input = cls._args_schema.provider_specific_input
-        provider_specific_input.a2_a = AAZObjectArg(
-            options=["a2-a"],
+        provider_specific_input.a2a = AAZObjectArg(
+            options=["a2a"],
+            help="A2A",
         )
         provider_specific_input.hyper_v_replica2012 = AAZObjectArg(
             options=["hyper-v-replica2012"],
@@ -100,22 +101,22 @@ class Create(AAZCommand):
             options=["v-mware-cbt"],
         )
 
-        a2_a = cls._args_schema.provider_specific_input.a2_a
-        a2_a.app_consistent_frequency_in_minutes = AAZIntArg(
+        a2a = cls._args_schema.provider_specific_input.a2a
+        a2a.app_consistent_frequency_in_minutes = AAZIntArg(
             options=["app-consistent-frequency-in-minutes"],
             help="The app consistent snapshot frequency (in minutes).",
         )
-        a2_a.crash_consistent_frequency_in_minutes = AAZIntArg(
+        a2a.crash_consistent_frequency_in_minutes = AAZIntArg(
             options=["crash-consistent-frequency-in-minutes"],
             help="The crash consistent snapshot frequency (in minutes).",
         )
-        a2_a.multi_vm_sync_status = AAZStrArg(
+        a2a.multi_vm_sync_status = AAZStrArg(
             options=["multi-vm-sync-status"],
             help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enable' or 'Disable'.",
             required=True,
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
-        a2_a.recovery_point_history = AAZIntArg(
+        a2a.recovery_point_history = AAZIntArg(
             options=["recovery-point-history"],
             help="The duration in minutes until which the recovery points need to be stored.",
         )
@@ -438,7 +439,7 @@ class Create(AAZCommand):
 
             provider_specific_input = _builder.get(".properties.providerSpecificInput")
             if provider_specific_input is not None:
-                provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "HyperVReplica2012", AAZStrType, ".hyper_v_replica2012", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "HyperVReplica2012R2", AAZStrType, ".hyper_v_replica2012_r2", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
@@ -459,10 +460,10 @@ class Create(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificInput{instanceType:A2A}")
             if disc_a2_a is not None:
-                disc_a2_a.set_prop("appConsistentFrequencyInMinutes", AAZIntType, ".a2_a.app_consistent_frequency_in_minutes")
-                disc_a2_a.set_prop("crashConsistentFrequencyInMinutes", AAZIntType, ".a2_a.crash_consistent_frequency_in_minutes")
-                disc_a2_a.set_prop("multiVmSyncStatus", AAZStrType, ".a2_a.multi_vm_sync_status", typ_kwargs={"flags": {"required": True}})
-                disc_a2_a.set_prop("recoveryPointHistory", AAZIntType, ".a2_a.recovery_point_history")
+                disc_a2_a.set_prop("appConsistentFrequencyInMinutes", AAZIntType, ".a2a.app_consistent_frequency_in_minutes")
+                disc_a2_a.set_prop("crashConsistentFrequencyInMinutes", AAZIntType, ".a2a.crash_consistent_frequency_in_minutes")
+                disc_a2_a.set_prop("multiVmSyncStatus", AAZStrType, ".a2a.multi_vm_sync_status", typ_kwargs={"flags": {"required": True}})
+                disc_a2_a.set_prop("recoveryPointHistory", AAZIntType, ".a2a.recovery_point_history")
 
             disc_hyper_v_replica2012 = _builder.get(".properties.providerSpecificInput{instanceType:HyperVReplica2012}")
             if disc_hyper_v_replica2012 is not None:
