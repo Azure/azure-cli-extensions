@@ -5,6 +5,7 @@
 
 import time
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
+from azure.cli.testsdk.constants import AUX_SUBSCRIPTION
 
 
 class ImageCopyTests(ScenarioTest):
@@ -13,10 +14,12 @@ class ImageCopyTests(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_image_copy_', location='westus')
     def test_image_copy(self, resource_group):
         self.kwargs.update({
+            'temporary_rg': self.create_random_name(prefix='cli_test_image_copy_tmp_', length=30),
+            'rg2': self.create_random_name(prefix='cli_test_image_copy_', length=30),
             'vm': 'vm1',
             'image': 'image1',
-            'rg2': self.create_random_name(prefix='cli_test_image_copy_', length=30),
-            'hyperVGeneration': 'V2'
+            'hyperVGeneration': 'V2',
+            'subscription2': AUX_SUBSCRIPTION,
         })
 
         self.cmd('vm create -g {rg} -n {vm} --image canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest'
@@ -28,9 +31,10 @@ class ImageCopyTests(ScenarioTest):
         self.cmd('vm generalize -g {rg} -n {vm}')
         self.cmd('image create -g {rg} -n {image} --source {vm} --hyper-v-generation {hyperVGeneration}')
         self.cmd('group create -g {rg2} -l eastus')
-        self.cmd('image copy --source-object-name {image} --source-resource-group {rg} '
-                 '--target-location eastus --target-resource-group {rg2} --target-name {image}')
-        self.cmd('image show -g {rg2} -n {image}', checks=[
+        self.cmd('image copy --source-object-name {image} --source-resource-group {rg} --target-location eastus '
+                 '--target-resource-group {rg2} --target-name {image} --target-subscription {subscription2} '
+                 '--temporary-resource-group-name {temporary_rg} --cleanup --only-show-errors')
+        self.cmd('image show -g {rg2} -n {image} --subscription {subscription2}', checks=[
             self.check('name', '{image}'),
             self.check('hyperVGeneration', '{hyperVGeneration}'),
         ])
