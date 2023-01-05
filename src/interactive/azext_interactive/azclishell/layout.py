@@ -78,7 +78,7 @@ class LayoutManager(object):
             prompt = 'az {}>> '.format(self.shell_ctx.default_command)
         else:
             prompt = 'az>> '
-        return [(Token.Az, self.prompt_prefix+prompt)]
+        return [(Token.Az, self.prompt_prefix + prompt)]
 
     def create_tutorial_layout(self):
         """ layout for example tutorial """

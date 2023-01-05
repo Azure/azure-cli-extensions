@@ -296,7 +296,7 @@ class AzCompleter(Completer):
             if text == '':
                 yield Completion(rec['command'], 0, display_meta=description)
             elif text == 'a':
-                yield Completion('az '+rec['command'], -1, display_meta=description)
+                yield Completion('az ' + rec['command'], -1, display_meta=description)
             else:
                 formatted_text = re.sub(r'\s+', ' ', text).strip()
                 if rec['command'].startswith(formatted_text) and rec['command'] != formatted_text:
@@ -309,8 +309,9 @@ class AzCompleter(Completer):
         recommend_result = self.shell_ctx.recommender.get_scenarios() or []
         for idx, rec in enumerate(recommend_result):
             yield Completion(
-                '::'+str(idx+1), -len(text), display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',
-                display=f'[Scenario {str(idx+1)}]')
+                '::' + str(idx + 1), -len(text),
+                display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',
+                display=f'[Scenario {str(idx + 1)}]')
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """
