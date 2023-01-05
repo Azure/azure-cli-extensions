@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete the specified SIM group.
 
     :example: Delete sim group
-        az mobile-network sim group delete -n sim-group-name -g rg -y'
+        az mobile-network sim group delete -n sim-group-name -g rg -y
     """
 
     _aaz_info = {

@@ -159,8 +159,8 @@ class Update(AAZCommand):
         )
 
         _element = cls._args_schema.slice_config.Element.data_network_config.Element
-        _element.5qi = AAZIntArg(
-            options=["5qi"],
+        _element.five_qi = AAZIntArg(
+            options=["five-qi"],
             help="Default QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
             nullable=True,
             fmt=AAZIntArgFormat(
@@ -589,7 +589,7 @@ class Update(AAZCommand):
 
             _elements = _builder.get(".properties.sliceConfigurations[].dataNetworkConfigurations[]")
             if _elements is not None:
-                _elements.set_prop("5qi", AAZIntType, ".5qi")
+                _elements.set_prop("5qi", AAZIntType, ".five_qi")
                 _elements.set_prop("additionalAllowedSessionTypes", AAZListType, ".additional_session_type")
                 _elements.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".arp_level")
                 _elements.set_prop("allowedServices", AAZListType, ".allowed_services", typ_kwargs={"flags": {"required": True}})

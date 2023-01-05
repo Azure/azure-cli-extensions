@@ -155,8 +155,8 @@ class Update(AAZCommand):
         )
 
         rule_qos_policy = cls._args_schema.pcc_rules.Element.rule_qos_policy
-        rule_qos_policy.5qi = AAZIntArg(
-            options=["5qi"],
+        rule_qos_policy.five_qi = AAZIntArg(
+            options=["five-qi"],
             help="QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
             nullable=True,
             fmt=AAZIntArgFormat(
@@ -263,8 +263,8 @@ class Update(AAZCommand):
         )
 
         service_qos_policy = cls._args_schema.service_qos_policy
-        service_qos_policy.5qi = AAZIntArg(
-            options=["5qi"],
+        service_qos_policy.five_qi = AAZIntArg(
+            options=["five-qi"],
             help="QoS Flow 5G QoS Indicator value. The 5QI identifies a specific QoS forwarding treatment to be provided to a flow. This must not be a standardized 5QI value corresponding to a GBR (guaranteed bit rate) QoS Flow. The illegal GBR 5QI values are: 1, 2, 3, 4, 65, 66, 67, 71, 72, 73, 74, 75, 76, 82, 83, 84, and 85. See 3GPP TS23.501 section 5.7.2.1 for a full description of the 5QI parameter, and table 5.7.4-1 for the definition of which are the GBR 5QI values.",
             nullable=True,
             fmt=AAZIntArgFormat(
@@ -596,7 +596,7 @@ class Update(AAZCommand):
 
             rule_qos_policy = _builder.get(".properties.pccRules[].ruleQosPolicy")
             if rule_qos_policy is not None:
-                rule_qos_policy.set_prop("5qi", AAZIntType, ".5qi")
+                rule_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
                 rule_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
                 _UpdateHelper._build_schema_ambr_update(rule_qos_policy.set_prop("guaranteedBitRate", AAZObjectType, ".guaranteed_bit_rate"))
                 _UpdateHelper._build_schema_ambr_update(rule_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
@@ -629,7 +629,7 @@ class Update(AAZCommand):
 
             service_qos_policy = _builder.get(".properties.serviceQosPolicy")
             if service_qos_policy is not None:
-                service_qos_policy.set_prop("5qi", AAZIntType, ".5qi")
+                service_qos_policy.set_prop("5qi", AAZIntType, ".five_qi")
                 service_qos_policy.set_prop("allocationAndRetentionPriorityLevel", AAZIntType, ".allocation_and_retention_priority_level")
                 _UpdateHelper._build_schema_ambr_update(service_qos_policy.set_prop("maximumBitRate", AAZObjectType, ".maximum_bit_rate", typ_kwargs={"flags": {"required": True}}))
                 service_qos_policy.set_prop("preemptionCapability", AAZStrType, ".preemption_capability")
