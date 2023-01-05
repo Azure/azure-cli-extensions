@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import threading
 import time
+import json
 
 import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
@@ -209,7 +210,7 @@ def _get_rdp_path(rdp_command="mstsc"):
 
 
 def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_name,
-                     resource_port=None, disable_gateway=False, configure=False):
+                     resource_port=None, disable_gateway=False, configure=False, enable_mfa=False):
     import os
     from azure.cli.core._profile import Profile
     from ._process_helper import launch_and_wait
@@ -221,8 +222,18 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
                   "try opening the JSON view of your resource (in the Overview tab), and copying the full resource ID."
         raise InvalidArgumentValueError(err_msg)
 
+    from .aaz.latest.network.bastion import Show
+    bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "name": bastion_host_name
+    })
+
+    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] != True:
+        raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
+
     if platform.system() == "Windows":
         if disable_gateway:
+            dns_name = bastion['dnsName']
             tunnel_server = _get_tunnel(cmd, resource_group_name, bastion_host_name, target_resource_id, resource_port)
             t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
             t.daemon = True
@@ -234,24 +245,20 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
             profile = Profile(cli_ctx=cmd.cli_ctx)
             access_token = profile.get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
-
-            from .aaz.latest.network.bastion import Show
-            bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
-                "resource_group": resource_group_name,
-                "name": bastion_host_name
-            })
-            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}&format=rdp"
+            
+            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
             headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Accept": "*/*",
                 "Accept-Encoding": "gzip, deflate, br",
-                "Connection": "keep-alive"
+                "Connection": "keep-alive",
+                "Content-Type": "application/json"
             }
             response = requests.get(web_address, headers=headers)
             if not response.ok:
                 raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
-            with open("conn.rdp", "w", encoding="utf-8") as f:
-                f.write(response.text)
+
+            _write_to_file(response)
 
             rdpfilepath = os.getcwd() + "/conn.rdp"
             command = [_get_rdp_path()]
@@ -262,6 +269,14 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
     else:
         raise UnrecognizedArgumentError("Platform is not supported for this command. Supported platforms: Windows")
 
+
+def _write_to_file(response):
+    with open("conn.rdp", "w", encoding="utf-8") as f:
+        lines = response.text.split("\\n")
+        for line in response.text.splitlines():
+            if not line.startswith('signscope'):
+                f.write(line+"\n")
+    
 
 def _get_tunnel(cmd, resource_group_name, name, vm_id, resource_port, port=None):
     from .tunnel import TunnelServer

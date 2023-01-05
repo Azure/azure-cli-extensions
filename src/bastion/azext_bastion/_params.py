@@ -35,6 +35,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument("configure", help="Flag to configure RDP session.", action="store_true")
         c.argument("disable_gateway", help="Flag to disable access through RD gateway.",
                    arg_type=get_three_state_flag())
+        c.argument('enable_mfa', help='Enable RDS auth for MFA if supported by the target machine.', 
+                   arg_type=get_three_state_flag())
     with self.argument_context("network bastion tunnel") as c:
         c.argument("port", help="Local port to use for the tunneling.", options_list=["--port"])
         c.argument("timeout", help="Timeout for connection to bastion host tunnel.", options_list=["--timeout"])
