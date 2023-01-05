@@ -921,8 +921,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    # api_instance = kube_client.CoreV1Api()
-    # node_api_response = None
 
     kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
