@@ -18,12 +18,11 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-# from azure.quantum.storage import create_container, upload_blob
 from ..storage import create_container, upload_blob
 
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
-from .target import TargetInfo
+from .target import TargetInfo, get_provider
 
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
@@ -222,14 +221,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     target_info = TargetInfo(cmd, target_id)
     if target_info is None:
         raise AzureInternalError("Failed to get target information.")
-    provider_id = target_info.target_id.split('.')[0]                   # <<<<< Is provider_id case sensitive? <<<<<
-
-    # Microsoft provider_id values don't follow the same pattern as all the other companies' provider_id values:
-    # A first-party provider ID might might have a dot in it.
-    if provider_id.lower() == "microsoft":
-        after_the_dot = target_info.target_id.split('.')[1]
-        if after_the_dot.lower() == "simulator" or after_the_dot.lower() == "fleetmanagement":  # <<<<< Are there more names like these?
-            provider_id = f"{provider_id}.{after_the_dot}"
+    provider_id = get_provider(cmd, target_info.target_id, resource_group_name, workspace_name, location)
+    if provider_id is None:
+        raise AzureInternalError(f"Failed to find a Provider ID for the specified Target ID, {target_info.target_id}")
 
     # Identify the type of job being submitted
     lc_job_input_format = job_input_format.lower()
