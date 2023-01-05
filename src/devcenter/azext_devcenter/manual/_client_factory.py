@@ -7,9 +7,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .helper  import get_project_data
+from .helper import get_project_data
 
-def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
+
+def cf_devcenter_dataplane(cli_ctx, dev_center, *_, project_name=None):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
@@ -17,11 +18,12 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
     )
 
     project = get_project_data(cli_ctx, dev_center, project_name)
-    endpoint = project.endpoint
+
     # We need to set the project name even if we don't need this information
     # since initializing DevCenterDataplaneClient requires this param
     if project_name is None:
-        project_name = project.name
+        project_name = project["name"]
+    endpoint = project["devCenterUri"]
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
 
@@ -31,8 +33,9 @@ def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None, *_):
         subscription_bound=False,
         base_url_bound=False,
         endpoint=endpoint,
-        project_name=project_name
+        project_name=project_name,
     )
+
 
 def cf_project_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).project
@@ -68,6 +71,7 @@ def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
 
 def cf_environment_type_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type
+
 
 def cf_notification_setting_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting
