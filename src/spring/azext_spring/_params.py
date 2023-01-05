@@ -718,6 +718,13 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
+        c.argument('apm_types', nargs='*',
+                   help="Space-separated list of APM integrated with Gateway, Allowed values: [\"ApplicationInsights\", \"AppDynamics\", \"Dynatrace\", \"NewRelic\", \"ElasticAPM\"].")
+        c.argument('properties', nargs='*',
+                   help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
+        c.argument('secrets', nargs='*',
+                   help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
+                        'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")

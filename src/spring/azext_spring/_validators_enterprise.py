@@ -191,6 +191,9 @@ def validate_gateway_update(namespace):
     validate_cpu(namespace)
     validate_memory(namespace)
     validate_instance_count(namespace)
+    _validate_gateway_apm_types(namespace)
+    _validate_gateway_envs(namespace)
+    _validate_gateway_secrets(namespace)
 
 
 def validate_api_portal_update(namespace):
@@ -213,6 +216,33 @@ def _validate_sso(namespace):
         raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
     if namespace.scope is not None:
         namespace.scope = namespace.scope.split(",") if namespace.scope else []
+
+
+def _validate_gateway_apm_types(namespace):
+    if namespace.apm_types is None:
+        return
+    allowedApmTypes = ["ApplicationInsights", "AppDynamics", "Dynatrace", "NewRelic", "ElasticAPM"]
+    for type in namespace.apm_types:
+        if (type not in allowedApmTypes):
+            raise InvalidArgumentValueError("Allowed APM types are \"ApplicationInsights\", \"AppDynamics\", \"Dynatrace\", \"NewRelic\", \"ElasticAPM\".")
+
+
+def _validate_gateway_envs(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def _validate_gateway_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
 
 
 def validate_routes(namespace):
