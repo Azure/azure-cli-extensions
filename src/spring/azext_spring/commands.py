@@ -210,7 +210,9 @@ def load_command_table(self, _):
         g.custom_command('start-jfr', 'deployment_start_jfr')
 
     with self.command_group('spring app binding', client_factory=cf_spring_20220101preview,
-                            exception_handler=handle_asc_exception) as g:
+                            exception_handler=handle_asc_exception, deprecate_info=self.deprecate(
+                                target='spring app binding',
+                                redirect='spring connection', hide=True)) as g:
         g.custom_command('list', 'binding_list')
         g.custom_show_command('show', 'binding_get')
         g.custom_command('cosmos add', 'binding_cosmos_add')
