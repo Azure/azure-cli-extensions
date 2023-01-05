@@ -1050,7 +1050,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
-    # node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1323,8 +1322,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    # api_instance = kube_client.CoreV1Api()
-    # node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1435,8 +1432,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    # api_instance = kube_client.CoreV1Api()
-    # node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
