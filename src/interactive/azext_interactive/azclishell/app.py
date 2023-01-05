@@ -501,6 +501,7 @@ class AzInteractiveShell(object):
         return cmd, continue_flag
 
     def handle_scenario(self, text):
+        """ parses for the scenario recommendation """
         num = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
             num = int(num) - 1
@@ -516,6 +517,7 @@ class AzInteractiveShell(object):
         self.scenario_repl(scenario)
 
     def scenario_repl(self, scenario):
+        """ REPL for interactive scenario execution """
         auto_suggest = ScenarioAutoSuggest()
         example_cli = CommandLineInterface(
             application=self.create_application(

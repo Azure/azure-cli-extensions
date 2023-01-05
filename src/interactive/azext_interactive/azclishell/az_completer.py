@@ -153,6 +153,7 @@ class AzCompleter(Completer):
             yield Completion(completion, -len(self.unfinished_word))
 
     def reset(self):
+        """ reset the state cache """
         self.unfinished_word = ''
         self.complete_command = ''
         self.leftover_args = ''
@@ -160,6 +161,7 @@ class AzCompleter(Completer):
         self.subtree = None
 
     def set_scenario_enabled(self, enable):
+        """ enable or disable the scenario display in completer """
         self.scenario_enabled = enable
 
     def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
@@ -280,6 +282,7 @@ class AzCompleter(Completer):
             pass
 
     def gen_recommend_completion(self, text):
+        """ generates recommended commands """
         recommend_result = self.shell_ctx.recommender.get_commands() or []
         if not recommend_result:
             default_recommendations = self.shell_ctx.recommender.get_default_recommendations()
@@ -300,6 +303,7 @@ class AzCompleter(Completer):
                     yield Completion(rec['command'], -len(text.lstrip()), display_meta=description)
 
     def gen_recommended_scenario(self, text):
+        """ generates recommended scenarios """
         if '-' in text or not re.fullmatch(r'[a-zA-Z\s]+', text):
             return
         recommend_result = self.shell_ctx.recommender.get_scenarios() or []
