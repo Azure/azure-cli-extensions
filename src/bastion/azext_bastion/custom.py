@@ -14,7 +14,6 @@ import subprocess
 import tempfile
 import threading
 import time
-import json
 
 import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
@@ -228,12 +227,12 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
         "name": bastion_host_name
     })
 
-    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] != True:
+    if bastion['sku']['name'] == "Basic" or \
+            bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     if platform.system() == "Windows":
         if disable_gateway:
-            dns_name = bastion['dnsName']
             tunnel_server = _get_tunnel(cmd, resource_group_name, bastion_host_name, target_resource_id, resource_port)
             t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
             t.daemon = True
@@ -245,8 +244,9 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
             profile = Profile(cli_ctx=cmd.cli_ctx)
             access_token = profile.get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
-            
-            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+
+            web_address = f"https://{bastion['dnsName']}/api/rdpfile?resourceId={target_resource_id}" \
+                          f"&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
             headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Accept": "*/*",
@@ -272,11 +272,10 @@ def rdp_bastion_host(cmd, target_resource_id, resource_group_name, bastion_host_
 
 def _write_to_file(response):
     with open("conn.rdp", "w", encoding="utf-8") as f:
-        lines = response.text.split("\\n")
         for line in response.text.splitlines():
             if not line.startswith('signscope'):
-                f.write(line+"\n")
-    
+                f.write(line + "\n")
+
 
 def _get_tunnel(cmd, resource_group_name, name, vm_id, resource_port, port=None):
     from .tunnel import TunnelServer
