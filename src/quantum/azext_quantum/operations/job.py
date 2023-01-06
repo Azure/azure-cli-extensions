@@ -325,7 +325,10 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if job_params is None:
         job_params = {}
     if shots is not None:
-        job_params["shots"] = int(shots)
+        try:
+            job_params["shots"] = int(shots)
+        except:
+            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.")
     if target_capability is not None:
         job_params["targetCapability"] = target_capability
     if entry_point is not None:
@@ -333,7 +336,10 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
 
     # Convert "count" to an integer     # <<<<< What about other numeric or Boolean values? Convert them too?
     if "count" in job_params.keys():
-        job_params["count"] = int(job_params["count"])
+        try:
+            job_params["count"] = int(job_params["count"])
+        except:
+            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.")
 
     # Make sure QIR jobs have an "arguments" parameter, even if it's empty
     if job_type == QIR_JOB:
