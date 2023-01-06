@@ -81,8 +81,9 @@ class ReProtect(AAZCommand):
         )
 
         provider_specific_details = cls._args_schema.provider_specific_details
-        provider_specific_details.a2_a = AAZObjectArg(
-            options=["a2-a"],
+        provider_specific_details.a2a = AAZObjectArg(
+            options=["a2a"],
+            help="A2A",
         )
         provider_specific_details.hyper_v_replica_azure = AAZObjectArg(
             options=["hyper-v-replica-azure"],
@@ -100,36 +101,36 @@ class ReProtect(AAZCommand):
             options=["in-mage-rcm-failback"],
         )
 
-        a2_a = cls._args_schema.provider_specific_details.a2_a
-        a2_a.policy_id = AAZStrArg(
+        a2a = cls._args_schema.provider_specific_details.a2a
+        a2a.policy_id = AAZStrArg(
             options=["policy-id"],
             help="The Policy Id.",
         )
-        a2_a.recovery_availability_set_id = AAZStrArg(
+        a2a.recovery_availability_set_id = AAZStrArg(
             options=["recovery-availability-set-id"],
             help="The recovery availability set.",
         )
-        a2_a.recovery_cloud_service_id = AAZStrArg(
+        a2a.recovery_cloud_service_id = AAZStrArg(
             options=["recovery-cloud-service-id"],
             help="The recovery cloud service Id. Valid for V1 scenarios.",
         )
-        a2_a.recovery_container_id = AAZStrArg(
+        a2a.recovery_container_id = AAZStrArg(
             options=["recovery-container-id"],
             help="The recovery container Id.",
         )
-        a2_a.recovery_resource_group_id = AAZStrArg(
+        a2a.recovery_resource_group_id = AAZStrArg(
             options=["recovery-resource-group-id"],
             help="The recovery resource group Id. Valid for V2 scenarios.",
         )
-        a2_a.vm_disks = AAZListArg(
+        a2a.vm_disks = AAZListArg(
             options=["vm-disks"],
             help="The list of vm disk details.",
         )
 
-        vm_disks = cls._args_schema.provider_specific_details.a2_a.vm_disks
+        vm_disks = cls._args_schema.provider_specific_details.a2a.vm_disks
         vm_disks.Element = AAZObjectArg()
 
-        _element = cls._args_schema.provider_specific_details.a2_a.vm_disks.Element
+        _element = cls._args_schema.provider_specific_details.a2a.vm_disks.Element
         _element.disk_uri = AAZStrArg(
             options=["disk-uri"],
             help="The disk Uri.",
@@ -443,7 +444,7 @@ class ReProtect(AAZCommand):
 
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
-                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
@@ -458,12 +459,12 @@ class ReProtect(AAZCommand):
 
             disc_a2_a = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}")
             if disc_a2_a is not None:
-                disc_a2_a.set_prop("policyId", AAZStrType, ".a2_a.policy_id")
-                disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2_a.recovery_availability_set_id")
-                disc_a2_a.set_prop("recoveryCloudServiceId", AAZStrType, ".a2_a.recovery_cloud_service_id")
-                disc_a2_a.set_prop("recoveryContainerId", AAZStrType, ".a2_a.recovery_container_id")
-                disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2_a.recovery_resource_group_id")
-                disc_a2_a.set_prop("vmDisks", AAZListType, ".a2_a.vm_disks")
+                disc_a2_a.set_prop("policyId", AAZStrType, ".a2a.policy_id")
+                disc_a2_a.set_prop("recoveryAvailabilitySetId", AAZStrType, ".a2a.recovery_availability_set_id")
+                disc_a2_a.set_prop("recoveryCloudServiceId", AAZStrType, ".a2a.recovery_cloud_service_id")
+                disc_a2_a.set_prop("recoveryContainerId", AAZStrType, ".a2a.recovery_container_id")
+                disc_a2_a.set_prop("recoveryResourceGroupId", AAZStrType, ".a2a.recovery_resource_group_id")
+                disc_a2_a.set_prop("vmDisks", AAZListType, ".a2a.vm_disks")
 
             vm_disks = _builder.get(".properties.providerSpecificDetails{instanceType:A2A}.vmDisks")
             if vm_disks is not None:
