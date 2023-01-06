@@ -81,7 +81,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_1.get_zones(), "test_node_zones")
+        self.assertEqual(ctx_1.get_zones(), None)
         agentpool_1 = self.create_initialized_agentpool_instance(
             availability_zones=["test_mc_zones1", "test_mc_zones2"]
         )

@@ -42,7 +42,8 @@ from .repair_utils import (
     _is_gen2,
     _unlock_encrypted_vm_run,
     _create_repair_vm,
-    _check_n_start_vm
+    _check_n_start_vm,
+    _check_existing_rg
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
@@ -100,10 +101,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
         # Create new resource group
-        create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                                        .format(loc=source_vm.location, group_name=repair_group_name)
-        logger.info('Creating resource group for repair VM and its resources...')
-        _call_az_command(create_resource_group_command)
+        if not _check_existing_rg(repair_group_name):
+            create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
+                                            .format(loc=source_vm.location, group_name=repair_group_name)
+            logger.info('Creating resource group for repair VM and its resources...')
+            _call_az_command(create_resource_group_command)
 
         # MANAGED DISK
         if is_managed:
@@ -270,7 +272,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
-        _clean_up_resources(repair_group_name, confirm=False)
+        if _check_existing_rg(repair_group_name):
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
     else:
         created_resources.append(copy_disk_id)
         command.message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \

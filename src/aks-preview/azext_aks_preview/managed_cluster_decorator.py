@@ -188,40 +188,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         return addon_consts
 
-    def get_http_proxy_config(self) -> Union[Dict, ManagedClusterHTTPProxyConfig, None]:
-        """Obtain the value of http_proxy_config.
-
-        :return: dictionary, ManagedClusterHTTPProxyConfig or None
-        """
-        # read the original value passed by the command
-        http_proxy_config = None
-        http_proxy_config_file_path = self.raw_param.get("http_proxy_config")
-        # validate user input
-        if http_proxy_config_file_path:
-            if not os.path.isfile(http_proxy_config_file_path):
-                raise InvalidArgumentValueError(
-                    "{} is not valid file, or not accessable.".format(
-                        http_proxy_config_file_path
-                    )
-                )
-            http_proxy_config = get_file_json(http_proxy_config_file_path)
-            if not isinstance(http_proxy_config, dict):
-                raise InvalidArgumentValueError(
-                    "Error reading Http Proxy Config from {}. "
-                    "Please see https://aka.ms/HttpProxyConfig for correct format.".format(
-                        http_proxy_config_file_path
-                    )
-                )
-
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if self.mc and self.mc.http_proxy_config is not None:
-                http_proxy_config = self.mc.http_proxy_config
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return http_proxy_config
-
     def get_pod_cidrs_and_service_cidrs_and_ip_families(self) -> Tuple[
         Union[List[str], None],
         Union[List[str], None],
@@ -813,24 +779,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 raise RequiredArgumentMissingError(
                     "Enabling workload identity requires enabling OIDC issuer (--enable-oidc-issuer)."
                 )
-
-        return profile
-
-    def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
-        """Obtain the value of oidc_issuer_profile based on the user input.
-
-        :return: ManagedClusterOIDCIssuerProfile
-        """
-        enable_flag_value = bool(self.raw_param.get("enable_oidc_issuer"))
-        if not enable_flag_value:
-            # enable flag not set, return a None profile, server side will backfill the default/existing value
-            return None
-
-        profile = self.models.ManagedClusterOIDCIssuerProfile()
-        if self.decorator_mode == DecoratorMode.UPDATE:
-            if self.mc.oidc_issuer_profile is not None:
-                profile = self.mc.oidc_issuer_profile
-        profile.enabled = True
 
         return profile
 
@@ -1979,16 +1927,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.addon_profiles = addon_profiles
         return mc
 
-    def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up http proxy config for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.http_proxy_config = self.context.get_http_proxy_config()
-        return mc
-
     def set_up_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up pod security policy for the ManagedCluster object.
 
@@ -2017,19 +1955,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 allow_network_plugin_kubenet=enable_pod_identity_with_kubenet,
             )
         mc.pod_identity_profile = pod_identity_profile
-        return mc
-
-    def set_up_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up OIDC issuer profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
-        if oidc_issuer_profile is not None:
-            mc.oidc_issuer_profile = oidc_issuer_profile
-
         return mc
 
     def set_up_workload_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2208,17 +2133,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
-        # DO NOT MOVE: keep this on top, construct the default AgentPool profile
+        # DO NOT MOVE: keep this on top, construct the default ManagedCluster profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
-        # set up http proxy config
-        mc = self.set_up_http_proxy_config(mc)
         # set up pod security policy
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
-        # set up oidc issuer profile, GA in 2.42.0
-        mc = self.set_up_oidc_issuer_profile(mc)
         # set up workload identity profile
         mc = self.set_up_workload_identity_profile(mc)
         # set up node restriction
@@ -2277,46 +2198,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         self.agentpool_context = self.agentpool_decorator.context
         self.context.attach_agentpool_context(self.agentpool_context)
-
-    def check_raw_parameters(self):
-        """Helper function to check whether any parameters are set.
-
-        Note: Overwritten in aks-preview to use different hard-coded error message.
-
-        If the values of all the parameters are the default values, the command execution will be terminated early and
-        raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
-        sent.
-
-        :return: None
-        """
-        # exclude some irrelevant or mandatory parameters
-        excluded_keys = ("cmd", "client", "resource_group_name", "name")
-        # check whether the remaining parameters are set
-        # the default value None or False (and other empty values, like empty string) will be considered as not set
-        is_changed = any(
-            v for k, v in self.context.raw_param.items() if k not in excluded_keys)
-
-        # special cases
-        # some parameters support the use of empty string or dictionary to update/remove previously set values
-        is_default = (
-            self.context.get_cluster_autoscaler_profile() is None and
-            self.context.get_api_server_authorized_ip_ranges() is None and
-            self.context.get_nodepool_labels() is None
-        )
-
-        if not is_changed and is_default:
-            reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
-            if not prompt_y_n(reconcilePrompt, default="n"):
-                # Note: Uncomment the followings to automatically generate the error message.
-                option_names = [
-                    '"{}"'.format(format_parameter_name_to_option_name(x))
-                    for x in self.context.raw_param.keys()
-                    if x not in excluded_keys
-                ]
-                error_msg = "Please specify one or more of {}.".format(
-                    " or ".join(option_names)
-                )
-                raise RequiredArgumentMissingError(error_msg)
 
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
@@ -2434,16 +2315,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up http proxy config for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.http_proxy_config = self.context.get_http_proxy_config()
-        return mc
-
     def update_kube_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
         """Update kube proxy config for the ManagedCluster object.
 
@@ -2497,18 +2368,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_disable_pod_identity():
             _update_addon_pod_identity(
                 mc, enable=False, models=self.models.pod_identity_models)
-        return mc
-
-    def update_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update OIDC issuer profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-        oidc_issuer_profile = self.context.get_oidc_issuer_profile()
-        if oidc_issuer_profile is not None:
-            mc.oidc_issuer_profile = oidc_issuer_profile
-
         return mc
 
     def update_workload_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2761,14 +2620,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # DO NOT MOVE: keep this on top, fetch and update the default ManagedCluster profile
         mc = self.update_mc_profile_default()
 
-        # set up http proxy config
-        mc = self.update_http_proxy_config(mc)
         # update pod security policy
         mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
-        # update oidc issure profile, GA in 2.42.0
-        mc = self.update_oidc_issuer_profile(mc)
         # update workload identity profile
         mc = self.update_workload_identity_profile(mc)
         # update node restriction

@@ -89,14 +89,30 @@ def enable_addons(cmd,
                     "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:
                 # create a Data Collection Rule (DCR) and associate it with the cluster
-                ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                                                         subscription_id, resource_group_name, name, instance.location,
-                                                         aad_route=True, create_dcr=True, create_dcra=True)
+                ensure_container_insights_for_monitoring(
+                    cmd,
+                    instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    subscription_id,
+                    resource_group_name,
+                    name,
+                    instance.location,
+                    aad_route=True,
+                    create_dcr=True,
+                    create_dcra=True,
+                    enable_syslog=enable_syslog,
+                )
         else:
             # monitoring addon will use legacy path
-            ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                                                     subscription_id, resource_group_name, name, instance.location,
-                                                     aad_route=False)
+            ensure_container_insights_for_monitoring(
+                cmd,
+                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                subscription_id,
+                resource_group_name,
+                name,
+                instance.location,
+                aad_route=False,
+                enable_syslog=enable_syslog,
+            )
 
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled

@@ -10,7 +10,7 @@ from ._validators import process_grafana_create_namespace
 
 def load_command_table(self, _):
 
-    with self.command_group('grafana', is_preview=True) as g:
+    with self.command_group('grafana') as g:
         g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
         g.custom_command('delete', 'delete_grafana', confirmation=True)
         g.custom_command('list', 'list_grafana')

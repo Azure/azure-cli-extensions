@@ -1,5 +1,13 @@
 Release History
 ===============
+1.6.1
+---
+* Add type check for argument `--artifact-path`.
+
+1.6.0
+---
+* Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.
+
 1.5.0
 ---
 * Add the validator for `--build-env`.
