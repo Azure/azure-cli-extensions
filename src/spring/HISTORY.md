@@ -1,5 +1,9 @@
 Release History
 ===============
+1.6.2
+---
+* Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
+
 1.6.1
 ---
 * Add type check for argument `--artifact-path`.
