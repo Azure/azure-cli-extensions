@@ -1,5 +1,5 @@
 # Azure CLI Mobile Network #
-This is an extension to Azure CLI to manage Dynatrace resources.
+This is an extension to Azure CLI to manage mobile network resources.
 
 ## How to use ##
 Install this extension using the below CLI command
