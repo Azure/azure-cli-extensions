@@ -13,8 +13,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2022_11_01_preview.models \
-    import _app_platform_management_client_enums as v20221101_preview_AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -224,8 +223,8 @@ def _validate_gateway_apm_types(namespace):
     if namespace.apm_types is None:
         return
     for type in namespace.apm_types:
-        if (type not in list(v20221101_preview_AppPlatformEnums.ApmType)):
-            raise InvalidArgumentValueError("Allowed APM types are: " + ', '.join(list(v20221101_preview_AppPlatformEnums.ApmType)))
+        if (type not in list(ApmType)):
+            raise InvalidArgumentValueError("Allowed APM types are: " + ', '.join(list(ApmType)))
 
 
 def _validate_gateway_envs(namespace):
