@@ -41,6 +41,8 @@ from .vendored_sdks.appplatform.v2022_01_01_preview.models \
     import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
 from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
 from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
+from .vendored_sdks.appplatform.v2022_11_01_preview.models \
+    import _app_platform_management_client_enums as v20221101_preview_AppPlatformEnums
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -719,7 +721,7 @@ def load_arguments(self, _):
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
         c.argument('apm_types', nargs='*',
-                   help="Space-separated list of APM integrated with Gateway.")
+                   help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(v20221101_preview_AppPlatformEnums.ApmType)))
         c.argument('properties', nargs='*',
                    help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
         c.argument('secrets', nargs='*',

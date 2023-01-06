@@ -223,14 +223,9 @@ def _validate_sso(namespace):
 def _validate_gateway_apm_types(namespace):
     if namespace.apm_types is None:
         return
-    allowedApmTypes = [v20221101_preview_AppPlatformEnums.GatewayApmType.APPLICATION_INSIGHTS,
-                       v20221101_preview_AppPlatformEnums.GatewayApmType.APP_DYNAMICS,
-                       v20221101_preview_AppPlatformEnums.GatewayApmType.DYNATRACE,
-                       v20221101_preview_AppPlatformEnums.GatewayApmType.NEW_RELIC,
-                       v20221101_preview_AppPlatformEnums.GatewayApmType.ELASTIC_APM]
     for type in namespace.apm_types:
-        if (type not in allowedApmTypes):
-            raise InvalidArgumentValueError("Allowed APM types are " + ','.join(allowedApmTypes))
+        if (type not in list(v20221101_preview_AppPlatformEnums.ApmType)):
+            raise InvalidArgumentValueError("Allowed APM types are: " + ', '.join(list(v20221101_preview_AppPlatformEnums.ApmType)))
 
 
 def _validate_gateway_envs(namespace):
