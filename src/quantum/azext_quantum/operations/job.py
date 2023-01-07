@@ -192,6 +192,20 @@ def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
+def _convert_numeric_params(job_params):
+    # The CLI framework passes all --job-params values as strings. This function
+    # attempts to convert numeric string values to their appropriate numeric types.
+    # Non-numeric string values and values that are already integers are unaffected.
+    for param in job_params:
+        try:
+            job_params[param] = int(job_params[param])
+        except:
+            try:
+                job_params[param] = float(job_params[param])
+            except:
+                pass
+
+
 def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
            job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
@@ -340,6 +354,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             job_params["count"] = int(job_params["count"])
         except:
             raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.")
+
+    # Convert all other numeric parameter values from string to int or float
+    _convert_numeric_params(job_params)
 
     # Make sure QIR jobs have an "arguments" parameter, even if it's empty
     if job_type == QIR_JOB:
