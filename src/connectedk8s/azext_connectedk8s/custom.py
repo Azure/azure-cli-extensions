@@ -67,8 +67,16 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
+                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None, least_privilege=False, config_settings=None):
     logger.warning("This operation might take a while...\n")
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    kubernetes_version = check_kube_connection()
 
     # Prompt for confirmation for few parameters
     if enable_private_link is True:
@@ -79,6 +87,36 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if azure_hybrid_benefit == "True":
         confirmation_message = "I confirm I have an eligible Windows Server license with Azure Hybrid Benefit to apply this benefit to AKS on HCI or Windows Server. Visit https://aka.ms/ahb-aks for details"
         utils.user_confirmation(confirmation_message, yes)
+
+    platform_serviceaccount_name = None
+
+    if least_privilege is True:
+        # pre-checks specific to least privilege scenario
+        # check if config settings are passed
+        if config_settings is None:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception="Configuration settings are not passed", fault_type=consts.Config_Settings_Not_Passed_Least_Privileges_Fault_Type, summary="Configuration settings are not passed which are mandatory when onboarding with leastPrivileges")
+            raise RequiredArgumentMissingError("Configuration settings are not passed", "Please pass required configuration settings using '--config-settings' flag while onboarding with least-privilege enabled.")
+        else:
+            logger.warning("You are onboarding your k8s cluster to Azure Arc in least privileges mode. Please ensure you have met all the pre-requisites.")
+
+        # check if azure-arc ns is present - pre-req for least privilege
+        try:
+            api_instance = kube_client.CoreV1Api()
+            api_instance.read_namespace("azure-arc")
+        except Exception as ex:
+            if ex.status == 404:
+                utils.kubernetes_exception_handler(ex, consts.Azure_Arc_Namespace_Not_Found_Least_Privileges_Fault_Type, "Azure-arc namespace is not found on the cluster while onboarding with leastPrivileges", error_message="Azure-arc namespace is not found on the cluster.", message_for_not_found="Azure-arc namespace is not found on the cluster. Please ensure you have met all the pre-requisites before onboarding the cluster with leastPrivileges")
+        # check if azure-arc-release ns is present - pre-req for least privilege
+        try:
+            api_instance = kube_client.CoreV1Api()
+            api_instance.read_namespace("azure-arc-release")
+        except Exception as ex:
+            if ex.status == 404:
+                utils.kubernetes_exception_handler(ex, consts.Azure_Arc_Release_Namespace_Not_Found_Least_Privileges_Fault_Type, "Azure-arc-release namespace is not found on the cluster while onboarding with leastPrivileges", error_message="Azure-arc namespace is not found on the cluster.", message_for_not_found="Azure-arc-release namespace is not found on the cluster. Please ensure you have met all the pre-requisites before onboarding the cluster with leastPrivileges")
+
+        # Fetch service account name from config settings
+        platform_serviceaccount_name = utils.get_serviceaccount_name_from_configsettings(config_settings)
 
     # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -124,14 +162,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
         azure_cloud = consts.Azure_DogfoodCloudName
         dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
-
-    # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
-
-    # Checking the connection to kubernetes cluster.
-    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
-    # if the user had not logged in.
-    kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
@@ -232,7 +262,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -331,7 +361,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout, container_log_path)
+                               custom_locations_oid, helm_client_location, enable_private_link, least_privilege, platform_serviceaccount_name, onboarding_timeout, container_log_path)
 
     return put_cc_response
 
@@ -749,6 +779,13 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    least_privilege = False
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        least_privilege = True
+
     # Check forced delete flag
     if(force_delete):
 
@@ -760,7 +797,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         timeout_for_crd_deletion = "20s"
         for crds in consts.CRD_FOR_FORCE_DELETE:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion), "--namespace", "{}".format(release_namespace)]
             if kube_config:
                 cmd_helm_delete.extend(["--kubeconfig", kube_config])
             if kube_context:
@@ -801,7 +838,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                     _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege, True)
 
         return
 
@@ -815,8 +852,8 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in azure-arc namespace: ",
+                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks --namespace {}' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -841,7 +878,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                  "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, least_privilege)
 
 
 def get_release_namespace(kube_config, kube_context, helm_client_location):
@@ -982,6 +1019,13 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        if auto_upgrade is not None:
+            telemetry.set_exception("Autoupdates are not supported for clusters onboarded with least privileges", fault_type=consts.AutoUpdate_Enable_Attempted_In_Least_Privileges, summary=" Autoupdates are currently not supported for clusters onboarded with least privileges")
+            raise InvalidArgumentValueError("Your cluster is onboarded with least privileges. Autoupdates are not supported for clusters onboarded with least privileges")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1168,6 +1212,10 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         raise ClientRequestError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.",
                                  recommendation="Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        logger.warning("Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before upgrading to a newer agent version.")
+
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
@@ -1347,7 +1395,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context, helm_clien
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
+                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None, yes=False):
     logger.warning("This operation might take a while...\n")
 
     features = [x.lower() for x in features]
@@ -1410,6 +1458,12 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        confirmation_message = "Your cluster is running in least privileges mode. Please ensure you have met all the role requirements and pre-requisites before enabling new features. Do you want to proceed?"
+        utils.user_confirmation(confirmation_message, yes)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -2215,6 +2269,21 @@ def get_custom_locations_oid(cmd, cl_oid):
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
+    # Install helm client
+    helm_client_location = install_helm_client()
+
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection()
+    utils.try_list_node_fix()
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
+
+    if helm_values.get('global').get('isLeastPrivilegesMode') is True:
+        telemetry.set_user_fault()
+        raise ValidationError("Troubleshoot command is currently not available for clusters onboarded with least privileges")
 
     try:
 
@@ -2235,18 +2304,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Loading the kubeconfig file in kubernetes client configuration
         load_kube_config(kube_config, kube_context)
 
-        # Install helm client
-        helm_client_location = install_helm_client()
-
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
-        release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
-
-        # Checking the connection to kubernetes cluster.
-        # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
-        # if the user had not logged in.
-        check_kube_connection()
-        utils.try_list_node_fix()
 
         # Fetch Connected Cluster for agent version
         connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
