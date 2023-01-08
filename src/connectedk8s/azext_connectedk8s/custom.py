@@ -88,6 +88,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         confirmation_message = "I confirm I have an eligible Windows Server license with Azure Hybrid Benefit to apply this benefit to AKS on HCI or Windows Server. Visit https://aka.ms/ahb-aks for details"
         utils.user_confirmation(confirmation_message, yes)
 
+    platform_serviceaccount_name = None
+
     if least_privilege is True:
         # pre-checks specific to least privilege scenario
         # check if config settings are passed
@@ -850,8 +852,8 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in {} namespace: ".format(release_namespace),
-                                           message_for_not_found="The helm release 'azure-arc' is present but the {} namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
+                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in azure-arc namespace: ",
+                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks --namespace {}' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
