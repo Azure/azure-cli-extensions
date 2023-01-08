@@ -760,7 +760,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         timeout_for_crd_deletion = "20s"
         for crds in consts.CRD_FOR_FORCE_DELETE:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion), "--namespace", "{}".format(release_namespace)]
             if kube_config:
                 cmd_helm_delete.extend(["--kubeconfig", kube_config])
             if kube_context:

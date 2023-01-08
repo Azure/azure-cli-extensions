@@ -308,6 +308,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "global.azureEnvironment={}".format(cloud_name),
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
+                        "--namepsace", "{}".format(consts.Release_Install_Namespace),
+                        "--create-namespace"
                         "--output", "json"]
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
