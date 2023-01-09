@@ -138,6 +138,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
+    # Pre onboarding checks
     try:
         absolute_path = os.path.abspath(os.path.dirname(__file__))
         kubectl_client_location = install_kubectl_client()
@@ -146,8 +147,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         diagnostic_checks = "Failed"
         batchv1_api_instance = kube_client.BatchV1Api()
         corev1_api_instance = kube_client.CoreV1Api()
-        # Performing diagnoser container check
-        diagnostic_checks = precheckutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
+        # Performing pre onboarding inspector container check
+        diagnostic_checks = precheckutils.check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
         # If all the checks passed then display no error found
         all_checks_passed = True
         # for checks in diagnostic_checks:

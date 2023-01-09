@@ -69,27 +69,42 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location)
+    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks)
 
     # Exporting helm chart after cleanup
-    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    if for_preonboarding_checks:
+        chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'ConnectPrecheckCharts')
+    else:
+        chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
     try:
         if os.path.isdir(chart_export_path):
             shutil.rmtree(chart_export_path)
     except:
-        logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location)
+        if for_preonboarding_checks:
+            logger.warning("Unable to cleanup the connect-precheck helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
+        else:
+            logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
+    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks)
 
     # Returning helm chart path
-    helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
-    chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
+    if for_preonboarding_checks:
+        # helm_chart_path = os.path.join(chart_export_path, 'connect-precheck-diagnoser')
+        helm_chart_path = os.path.join(chart_export_path, 'pre-onboarding-inspector')
+    else:
+        helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
+
+    if for_preonboarding_checks:
+        chart_path = helm_chart_path
+    else:
+        chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
+
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location):
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
@@ -98,12 +113,17 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
-                                summary='Unable to pull helm chart from the registry')
-        raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+        if for_preonboarding_checks:
+            telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Pull_HelmChart_Fault_Type,
+                                summary='Unable to pull pre-onboarding-inspector helm chart from the registry')
+            raise CLIInternalError("Unable to pull pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+        else:
+            telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
+                                    summary='Unable to pull helm chart from the registry')
+            raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
+def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
@@ -112,9 +132,152 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export helm chart from the registry')
-        raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+        if for_preonboarding_checks:
+            telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Export_HelmChart_Fault_Type,
+                                summary='Unable to export pre-onboarding-inspector helm chart from the registry')
+            raise CLIInternalError("Unable to export pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+        else:
+            telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
+                                    summary='Unable to export helm chart from the registry')
+            raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+
+
+def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
+    if for_preonboarding_checks:
+        try:
+            if consts.DNS_Check_Result_String not in dns_check_log:
+                return consts.Diagnostic_Check_Incomplete
+            formatted_dns_log = dns_check_log.replace('\t', '')
+            # Validating if DNS is working or not and displaying proper result
+            if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
+                logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+                return consts.Diagnostic_Check_Failed
+            else:
+                return consts.Diagnostic_Check_Passed
+
+        # For handling storage or OS exception that may occur during the execution
+        except OSError as e:
+                logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing Precheck - cluster DNS")
+
+        # To handle any exception that may occur during the execution
+        except Exception as e:
+            logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing Precheck - cluster DNS")
+
+        return consts.Diagnostic_Check_Incomplete
+    else:
+        global diagnoser_output
+        try:
+            if consts.DNS_Check_Result_String not in dns_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+            formatted_dns_log = dns_check_log.replace('\t', '')
+            # Validating if DNS is working or not and displaying proper result
+            if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
+                logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+                diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+                if storage_space_available:
+                    dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
+                    with open(dns_check_path, 'w+') as dns:
+                        dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
+                return consts.Diagnostic_Check_Failed, storage_space_available
+            else:
+                if storage_space_available:
+                    dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
+                    with open(dns_check_path, 'w+') as dns:
+                        dns.write(formatted_dns_log + "\nCluster DNS check passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+
+        # For handling storage or OS exception that may occur during the execution
+        except OSError as e:
+            if "[Errno 28]" in str(e):
+                storage_space_available = False
+                telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+                shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            else:
+                logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+                telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
+                diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+        # To handle any exception that may occur during the execution
+        except Exception as e:
+            logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
+            diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+        return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
+    if for_preonboarding_checks:
+        try:
+            outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            outbound_connectivity_response = outbound_connectivity_response[::-1]
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete
+            # Validating if outbound connectiivty is working or not and displaying proper result
+            if(outbound_connectivity_response != "000"):
+                return consts.Diagnostic_Check_Passed
+            else:
+                logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+                return consts.Diagnostic_Check_Failed
+
+        # For handling storage or OS exception that may occur during the execution
+        except OSError as e:
+                logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing Precheck - outbound connectivity in the cluster")
+
+        # To handle any exception that may occur during the execution
+        except Exception as e:
+            logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing Precheck - outbound connectivity in the cluster")
+
+        return consts.Diagnostic_Check_Incomplete
+    else:
+        global diagnoser_output
+        try:
+            outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            outbound_connectivity_response = outbound_connectivity_response[::-1]
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+            # Validating if outbound connectiivty is working or not and displaying proper result
+            if(outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+                diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                return consts.Diagnostic_Check_Failed, storage_space_available
+
+        # For handling storage or OS exception that may occur during the execution
+        except OSError as e:
+            if "[Errno 28]" in str(e):
+                storage_space_available = False
+                telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+                shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            else:
+                logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+                telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
+                diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+        # To handle any exception that may occur during the execution
+        except Exception as e:
+            logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
+            diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+        return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
 def add_helm_repo(kube_config, kube_context, helm_client_location):
