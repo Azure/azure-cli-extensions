@@ -146,71 +146,30 @@ def devcenter_network_connection_list_health_detail(
     )
 
 
-def devcenter_pool_create(
-    client,
-    resource_group_name,
-    project_name,
-    pool_name,
-    location,
-    dev_box_definition_name,
-    network_connection_name,
-    local_administrator,
-    license_type,
-    tags=None,
-    no_wait=False,
-):
+def devcenter_pool_create(client,
+                          resource_group_name,
+                          project_name,
+                          pool_name,
+                          location,
+                          dev_box_definition_name,
+                          network_connection_name,
+                          local_administrator,
+                          tags=None,
+                          no_wait=False):
     body = {}
     if tags is not None:
-        body["tags"] = tags
-    body["location"] = location
-    body["dev_box_definition_name"] = dev_box_definition_name
-    body["network_connection_name"] = network_connection_name
-    body["license_type"] = license_type
-    body["local_administrator"] = local_administrator
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        resource_group_name=resource_group_name,
-        project_name=project_name,
-        pool_name=pool_name,
-        body=body,
-    )
-
-
-def devcenter_pool_update(
-    client,
-    resource_group_name,
-    project_name,
-    pool_name,
-    tags=None,
-    location=None,
-    dev_box_definition_name=None,
-    network_connection_name=None,
-    local_administrator=None,
-    license_type=None,
-    no_wait=False,
-):
-    body = {}
-    if tags is not None:
-        body["tags"] = tags
-    if location is not None:
-        body["location"] = location
-    if dev_box_definition_name is not None:
-        body["dev_box_definition_name"] = dev_box_definition_name
-    if network_connection_name is not None:
-        body["network_connection_name"] = network_connection_name
-    if license_type is not None:
-        body["license_type"] = license_type
-    if local_administrator is not None:
-        body["local_administrator"] = local_administrator
-    return sdk_no_wait(
-        no_wait,
-        client.begin_update,
-        resource_group_name=resource_group_name,
-        project_name=project_name,
-        pool_name=pool_name,
-        body=body,
-    )
+        body['tags'] = tags
+    body['location'] = location
+    body['dev_box_definition_name'] = dev_box_definition_name
+    body['network_connection_name'] = network_connection_name
+    body['license_type'] = "Windows_Client"
+    body['local_administrator'] = local_administrator
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       project_name=project_name,
+                       pool_name=pool_name,
+                       body=body)
 
 
 def devcenter_schedule_show(client, resource_group_name, project_name, pool_name):
