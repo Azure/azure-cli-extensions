@@ -37,7 +37,7 @@ services:
             'compose': compose_file_name,
         })
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, 'eastus')
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -68,7 +68,7 @@ services:
             'compose': compose_file_name,
         })
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, 'eastus')
         
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -101,7 +101,7 @@ services:
             'compose': compose_file_name,
         })
 
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, 'eastus')
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'

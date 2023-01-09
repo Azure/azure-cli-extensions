@@ -2,6 +2,21 @@
 
 Release History
 ===============
+0.3.20
+++++++
+* Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
+
+0.3.19
+++++++
+* Fix "'NoneType' object is not iterable" error in `az containerapp hostname bind` command
+
+0.3.18
+++++++
+* Fix "'NoneType' object has no attribute 'get'" error in `az containerapp up` with no ingress arguments
+
+0.3.17
+++++++
+* Fix polling logic for long running operations.
 
 0.3.16
 ++++++

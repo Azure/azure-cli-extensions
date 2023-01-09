@@ -12,13 +12,13 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":false,"url":"","provisioningState":"Succeeded","httpsOnly":false,"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":2},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T00:12:53.7367376Z"}}'
@@ -52,6 +52,8 @@ interactions:
       "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},
       "apiMetadataProperties": {"title": "Pet clinic", "description": "Demo for pet
       clinic", "documentation": "doc", "version": "v1", "serverUrl": "https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},
+      "apmTypes": ["NewRelic", "ElasticAPM"], "environmentVariables": {"properties": {"a": "b", "c": "d"},
+      "secrets": {"e": "f", "g": "h"}},
       "corsProperties": {"allowedOrigins": ["*"], "allowedMethods": ["GET", "PUT",
       "DELETE"], "allowedHeaders": ["X-TEST", "X-STAGING"], "maxAge": 10, "allowCredentials":
       true, "exposedHeaders": ["Access-Control-Request-Method", "Access-Control-Request-Headers"]},
@@ -72,17 +74,18 @@ interactions:
       - application/json
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":true,"url":"","provisioningState":"Updating","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
-        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
+        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"}},
+        "corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/f53a3d2e-e989-4db6-b2d9-f7a1fa78450e?api-version=2022-01-01-preview
@@ -126,8 +129,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -173,8 +176,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -220,8 +223,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -267,8 +270,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -314,8 +317,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -361,8 +364,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -408,8 +411,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -455,8 +458,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -502,8 +505,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -549,8 +552,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -596,8 +599,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -643,8 +646,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -690,8 +693,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -737,8 +740,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -784,8 +787,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -831,8 +834,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -878,8 +881,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -925,8 +928,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -972,8 +975,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1019,8 +1022,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1070,8 +1073,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1121,8 +1124,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1172,8 +1175,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1223,8 +1226,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1274,8 +1277,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1325,8 +1328,8 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
@@ -1376,17 +1379,17 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
-        --api-description --api-doc-location --api-version --server-url --allowed-origins
-        --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
+        --api-description --api-doc-location --api-version --server-url --apm-types --properties --secrets
+        --allowed-origins --allowed-methods --allowed-headers --max-age --allow-credentials --exposed-headers
         --client-id --client-secret --issuer-uri --scope
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
-        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
+        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"}},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -1481,11 +1484,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
-        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
+        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"}},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -3138,11 +3141,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
-        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
+        clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"}},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:49:29.1200781Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -3192,7 +3195,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":false,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Updating","httpsOnly":false,"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":2},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:55:21.1751613Z"}}'
@@ -4154,7 +4157,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.41.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.0 (Linux-4.4.0-22621-Microsoft-x86_64-with-glibc2.27)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"public":false,"url":"","provisioningState":"Succeeded","httpsOnly":false,"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-74b68887c6-4f947","status":"Running"},{"name":"scg-operator-74b68887c6-vdsfm","status":"Running"}]}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":2},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"xiading@microsoft.com","createdByType":"User","createdAt":"2022-11-01T06:04:36.9850222Z","lastModifiedBy":"xiading@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-02T01:55:21.1751613Z"}}'

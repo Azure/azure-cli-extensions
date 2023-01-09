@@ -14,7 +14,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
-                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
+                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
+                          validate_remote_debugging_port, validate_ingress_client_auth_certificates)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
@@ -36,10 +37,9 @@ from ._utils import ApiType
 
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
-from .vendored_sdks.appplatform.v2022_01_01_preview.models \
-    import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
 from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
 from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType, BindingType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -393,7 +393,7 @@ def load_arguments(self, _):
                        validator=validate_ingress_send_timeout)
             c.argument('session_affinity',
                        arg_type=get_enum_type(SessionAffinity),
-                       help='Ingress session afiinity of app.',
+                       help='Ingress session affinity of app.',
                        validator=validate_ingress_timeout)
             c.argument('session_max_age',
                        type=int,
@@ -402,6 +402,9 @@ def load_arguments(self, _):
             c.argument('backend_protocol',
                        arg_type=get_enum_type(BackendProtocol),
                        help='Ingress backend protocol of app.')
+            c.argument('client_auth_certs',
+                       validator=validate_ingress_client_auth_certificates,
+                       help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
@@ -714,6 +717,13 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
+        c.argument('apm_types', nargs='*',
+                   help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(ApmType)))
+        c.argument('properties', nargs='*',
+                   help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
+        c.argument('secrets', nargs='*',
+                   help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
+                        'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
@@ -752,7 +762,7 @@ def load_arguments(self, _):
                   'spring build-service builder buildpack-binding set']:
         with self.argument_context(scope) as c:
             c.argument('type',
-                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       arg_type=get_enum_type(BindingType),
                        help='Required type for buildpack binding.')
             c.argument('properties',
                        help='Non-sensitive properties for launchProperties. Format "key[=value]".',

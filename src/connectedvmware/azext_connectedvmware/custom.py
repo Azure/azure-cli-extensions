@@ -5,9 +5,9 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from pwinput import pwinput
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
+from azext_connectedvmware.pwinput import pwinput
 from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
     VMWARE_NAMESPACE,
@@ -94,8 +94,6 @@ from .vendored_sdks.operations import (
 from ._client_factory import (
     cf_virtual_machine,
 )
-
-# endregion
 
 # region VCenters
 
@@ -1611,7 +1609,7 @@ def enable_guest_agent(
     vm_client = cf_virtual_machine(cmd.cli_ctx)
 
     if is_system_identity_enabled(vm_client, resource_group_name, vm_name) is False:
-        enable_system_identity(vm_client, resource_group_name, vm_name, no_wait)
+        enable_system_identity(vm_client, resource_group_name, vm_name, False).result()
 
     vm_creds = GuestCredential(username=username, password=password)
 

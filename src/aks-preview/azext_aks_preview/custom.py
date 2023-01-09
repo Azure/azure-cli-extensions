@@ -587,11 +587,12 @@ def aks_create(
     assign_kubelet_identity=None,
     enable_aad=False,
     enable_azure_rbac=False,
-    aad_admin_group_object_ids=None,
     aad_client_app_id=None,
     aad_server_app_id=None,
     aad_server_app_secret=None,
     aad_tenant_id=None,
+    aad_admin_group_object_ids=None,
+    enable_oidc_issuer=False,
     windows_admin_username=None,
     windows_admin_password=None,
     enable_ahub=False,
@@ -603,10 +604,21 @@ def aks_create(
     node_resource_group=None,
     enable_defender=False,
     defender_config=None,
+    disk_driver_version=None,
+    disable_disk_driver=False,
+    disable_file_driver=False,
+    enable_blob_driver=None,
+    disable_snapshot_controller=False,
+    enable_azure_keyvault_kms=False,
+    azure_keyvault_kms_key_id=None,
+    azure_keyvault_kms_key_vault_network_access=None,
+    azure_keyvault_kms_key_vault_resource_id=None,
+    http_proxy_config=None,
     # addons
     enable_addons=None,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=False,
+    enable_syslog=False,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -631,13 +643,9 @@ def aks_create(
     node_count=3,
     nodepool_tags=None,
     nodepool_labels=None,
-    nodepool_allowed_host_ports=None,
-    nodepool_asg_ids=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
-    # TODO: remove node_zones after cli 2.38.0 release
-    node_zones=None,
     zones=None,
     ppg=None,
     max_pods=0,
@@ -646,12 +654,14 @@ def aks_create(
     enable_fips_image=False,
     kubelet_config=None,
     linux_os_config=None,
-    no_wait=False,
+    host_group_id=None,
+    gpu_instance_profile=None,
+    # misc
     yes=False,
+    no_wait=False,
     aks_custom_headers=None,
     # extensions
     # managed cluster
-    http_proxy_config=None,
     ip_families=None,
     pod_cidrs=None,
     service_cidrs=None,
@@ -660,35 +670,25 @@ def aks_create(
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     enable_workload_identity=None,
-    enable_oidc_issuer=False,
-    enable_azure_keyvault_kms=False,
-    azure_keyvault_kms_key_id=None,
-    azure_keyvault_kms_key_vault_network_access=None,
-    azure_keyvault_kms_key_vault_resource_id=None,
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     cluster_snapshot_id=None,
-    disk_driver_version=None,
-    disable_disk_driver=False,
-    disable_file_driver=False,
-    enable_blob_driver=None,
-    disable_snapshot_controller=False,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     dns_zone_resource_id=None,
     enable_keda=False,
-    enable_node_restriction=False,
     enable_vpa=False,
+    enable_node_restriction=False,
     enable_cilium_dataplane=False,
+    custom_ca_trust_certificates=None,
     # nodepool
-    host_group_id=None,
     crg_id=None,
     message_of_the_day=None,
-    gpu_instance_profile=None,
     workload_runtime=None,
     enable_custom_ca_trust=False,
+    nodepool_allowed_host_ports=None,
+    nodepool_asg_ids=None,
     node_public_ip_tags=None,
-    enable_syslog=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -746,6 +746,7 @@ def aks_update(
     disable_azure_rbac=False,
     aad_tenant_id=None,
     aad_admin_group_object_ids=None,
+    enable_oidc_issuer=False,
     windows_admin_password=None,
     enable_ahub=False,
     disable_ahub=False,
@@ -757,6 +758,21 @@ def aks_update(
     enable_defender=False,
     disable_defender=False,
     defender_config=None,
+    enable_disk_driver=False,
+    disk_driver_version=None,
+    disable_disk_driver=False,
+    enable_file_driver=False,
+    disable_file_driver=False,
+    enable_blob_driver=None,
+    disable_blob_driver=None,
+    enable_snapshot_controller=False,
+    disable_snapshot_controller=False,
+    enable_azure_keyvault_kms=False,
+    disable_azure_keyvault_kms=False,
+    azure_keyvault_kms_key_id=None,
+    azure_keyvault_kms_key_vault_network_access=None,
+    azure_keyvault_kms_key_vault_resource_id=None,
+    http_proxy_config=None,
     # addons
     enable_secret_rotation=False,
     disable_secret_rotation=False,
@@ -768,12 +784,13 @@ def aks_update(
     min_count=None,
     max_count=None,
     nodepool_labels=None,
-    no_wait=False,
+    # misc
     yes=False,
+    no_wait=False,
     aks_custom_headers=None,
     # extensions
     # managed cluster
-    http_proxy_config=None,
+    ssh_key_value=None,
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     enable_pod_security_policy=False,
@@ -782,24 +799,9 @@ def aks_update(
     enable_pod_identity_with_kubenet=False,
     disable_pod_identity=False,
     enable_workload_identity=None,
-    enable_oidc_issuer=False,
-    enable_azure_keyvault_kms=False,
-    disable_azure_keyvault_kms=False,
-    azure_keyvault_kms_key_id=None,
-    azure_keyvault_kms_key_vault_network_access=None,
-    azure_keyvault_kms_key_vault_resource_id=None,
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
-    enable_disk_driver=False,
-    disk_driver_version=None,
-    disable_disk_driver=False,
-    enable_file_driver=False,
-    disable_file_driver=False,
-    enable_blob_driver=None,
-    disable_blob_driver=None,
-    enable_snapshot_controller=False,
-    disable_snapshot_controller=False,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     enable_keda=False,
@@ -818,7 +820,7 @@ def aks_update(
     enable_vpa=False,
     disable_vpa=False,
     cluster_snapshot_id=None,
-    ssh_key_value=None,
+    custom_ca_trust_certificates=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -847,6 +849,15 @@ def aks_update(
 def aks_show(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
+
+
+# pylint: disable=unused-argument
+def aks_list(cmd, client, resource_group_name=None):
+    if resource_group_name:
+        managed_clusters = client.list_by_resource_group(resource_group_name)
+    else:
+        managed_clusters = client.list()
+    return _remove_nulls(list(managed_clusters))
 
 
 def _remove_nulls(managed_clusters):
@@ -1164,8 +1175,6 @@ def aks_agentpool_add(
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
-    # TODO: remove node_zones after cli 2.38.0 release
-    node_zones=None,
     zones=None,
     ppg=None,
     enable_encryption_at_host=False,
@@ -1173,14 +1182,15 @@ def aks_agentpool_add(
     enable_fips_image=False,
     kubelet_config=None,
     linux_os_config=None,
+    host_group_id=None,
+    gpu_instance_profile=None,
+    # misc
     no_wait=False,
     aks_custom_headers=None,
     # extensions
-    host_group_id=None,
     crg_id=None,
     message_of_the_day=None,
     workload_runtime=None,
-    gpu_instance_profile=None,
     enable_custom_ca_trust=False,
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
@@ -1612,7 +1622,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
                 remove_monitoring=True,
                 aad_route=True,
                 create_dcr=False,
-                create_dcra=True
+                create_dcra=True,
+                enable_syslog=False,
             )
     except TypeError:
         pass
@@ -1657,15 +1668,31 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             else:
                 # create a Data Collection Rule (DCR) and associate it with the cluster
                 ensure_container_insights_for_monitoring(
-                    cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True,
-                    enable_syslog=enable_syslog)
+                    cmd,
+                    instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    subscription_id,
+                    resource_group_name,
+                    name,
+                    instance.location,
+                    aad_route=True,
+                    create_dcr=True,
+                    create_dcra=True,
+                    enable_syslog=enable_syslog,
+                )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
-                cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=False)
+                cmd,
+                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                subscription_id,
+                resource_group_name,
+                name,
+                instance.location,
+                aad_route=False,
+            )
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled
