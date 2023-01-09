@@ -276,8 +276,7 @@ def load_command_table(self, _):
             "create", "devcenter_environment_create", supports_no_wait=True
         )
         g.custom_command(
-            "update", "devcenter_environment_update", supports_no_wait=True
-        )
+            "update", "devcenter_environment_update")
         g.custom_command(
             "delete",
             "devcenter_environment_delete",
@@ -306,7 +305,7 @@ def load_command_table(self, _):
         g.custom_show_command("show", "devcenter_schedule_show_dp")
 
     with self.command_group(
-        "devcenter dev notification setting", devcenter_notification_setting_dp
+        "devcenter dev notification-setting", devcenter_notification_setting_dp
     ) as g:
         g.custom_command(
             "list-allowed-culture",

@@ -210,6 +210,49 @@ helps[
                --project-name "{projectName}" --user-id "me"
 """
 
+helps['devcenter dev dev-box list-upcoming-action'] = """
+    type: command
+    short-summary: "Lists upcoming actions on a Dev Box."
+    examples:
+      - name: DevBoxes_ListUpcomingActions
+        text: |-
+               az devcenter dev dev-box list-upcoming-action --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --name "myDevBox" --user-id "me"
+"""
+
+helps['devcenter dev dev-box delay-upcoming-action'] = """
+    type: command
+    short-summary: "Delays an Upcoming Action."
+    examples:
+      - name: DevBoxes_DelayUpcomingAction
+        text: |-
+               az devcenter dev dev-box delay-upcoming-action --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --delay-until "2022-09-30T17:00:00Z" --name "myDevBox" \
+--upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+"""
+
+helps['devcenter dev dev-box show-upcoming-action'] = """
+    type: command
+    short-summary: "Gets an Upcoming Action."
+    examples:
+      - name: DevBoxes_GetUpcomingAction
+        text: |-
+               az devcenter dev dev-box show-upcoming-action --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --name "myDevBox" --upcoming-action-id \
+"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+"""
+
+helps['devcenter dev dev-box skip-upcoming-action'] = """
+    type: command
+    short-summary: "Skips an Upcoming Action."
+    examples:
+      - name: DevBoxes_SkipUpcomingAction
+        text: |-
+               az devcenter dev dev-box skip-upcoming-action --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --name "myDevBox" --upcoming-action-id \
+"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+"""
+
 helps[
     "devcenter dev environment"
 ] = """
@@ -226,7 +269,7 @@ helps[
       - name: Environments_ListByProject
         text: |-
               az devcenter dev environment list --dev-center-name "{devCenterName}" \
---project-name "{projectName}"
+--project-name "{projectName}" --user-id "me"
 """
 
 helps[
@@ -271,7 +314,7 @@ helps[
       - name: Environments_Update
         text: |-
               az devcenter dev environment update --description "Personal Dev Environment 2" --dev-center-name "{devCenterName}" \
-              --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+--name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps[
@@ -300,19 +343,6 @@ helps[
 """
 
 helps[
-    "devcenter dev environment delete-action"
-] = """
-    type: command
-    short-summary: "Executes a delete action."
-    examples:
-      - name: Environments_DeleteAction
-        text: |-
-              az devcenter dev environment delete-action --action-id "delete" --parameters "{\\"functionAppRuntime\\":\\"n\
-ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me" --dev-center-name "{devCenterName}"
-"""
-
-helps[
     "devcenter dev environment deploy-action"
 ] = """
     type: command
@@ -323,18 +353,6 @@ helps[
               az devcenter dev environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
 ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
 "me" --dev-center-name "{devCenterName}"
-"""
-
-helps[
-    "devcenter dev environment list-by-project"
-] = """
-    type: command
-    short-summary: "Lists the environments for a project and user."
-    examples:
-      - name: Environments_ListByProject
-        text: |-
-              az devcenter dev environment list-by-project --dev-center-name "{devCenterName}"  \
-              --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps[
@@ -448,7 +466,7 @@ helps[
       - name: CatalogItemVersion_Get
         text: |-
                az devcenter dev catalog-item-version show --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
+               --project-name "{projectName}" --catalog-item-id "{catalogItemId}" --version "1.0.0"
 """
 
 helps[
@@ -471,6 +489,13 @@ helps[
 """
 
 helps[
+    "devcenter dev notification-setting"
+] = """
+    type: group
+    short-summary: Manage notification setting with devcenter
+"""
+
+helps[
     "devcenter dev notification-setting show"
 ] = """
     type: command
@@ -478,7 +503,8 @@ helps[
     examples:
       - name: DevCenter_GetNotificationSettings
         text: |-
-               az devcenter dev notification-setting show --user-id "me"
+               az devcenter dev notification-setting show --dev-center-name "{devCenterName}"  \
+              --project-name "{projectName}" --user-id "me"
 """
 
 helps[
@@ -505,7 +531,8 @@ helps[
     examples:
       - name: DevCenter_CreateNotificationSettings
         text: |-
-               az devcenter dev notification-setting create --culture "en-us" --enabled false --boolean-enabled \
+               az devcenter dev notification-setting create --dev-center-name "{devCenterName}"  \
+--project-name "{projectName}" --culture "en-us" --enabled false --boolean-enabled \
 true --email-notification cc="stubcc@domain.com" enabled=true recipients="stubrecipient@domain.com" \
 --webhook-notification enabled=false url="https://fake.domain/url/hook" --user-id "me"
 """
@@ -518,7 +545,8 @@ helps[
     examples:
       - name: DevCenter_ListNotificationSettingsAllowedCultures
         text: |-
-               devcenter dev notification-setting list-allowed-culture --user-id "me"
+              az devcenter dev notification-setting list-allowed-culture --dev-center-name "{devCenterName}"  \
+--project-name "{projectName}" --user-id "me"
 """
 
 # control plane
@@ -1287,7 +1315,7 @@ helps[
     examples:
       - name: NameAvailability
         text: |-
-               az devcenter check-name-availability execute --name "name1" --type "Microsoft.DevCenter/devcenters"
+               az devcenter admin check-name-availability execute --name "name1" --type "Microsoft.DevCenter/devcenters"
 """
 
 helps[
@@ -1366,7 +1394,7 @@ helps[
         text: |-
                az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" \
 --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group \
-"rg1" --license-type Windows_Client --local-administrator Enabled
+"rg1" --local-administrator Enabled
 """
 
 helps[
