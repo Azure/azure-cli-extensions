@@ -748,7 +748,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        create_containerapp_env(self, env, resource_group, "westeurope")
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
