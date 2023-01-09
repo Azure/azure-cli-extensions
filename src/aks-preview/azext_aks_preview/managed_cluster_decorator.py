@@ -4,9 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from base64 import b64encode
 from types import SimpleNamespace
-from typing import Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
@@ -15,7 +14,6 @@ from azure.cli.command_modules.acs._consts import (
 from azure.cli.command_modules.acs._helpers import (
     check_is_msi_cluster,
     format_parameter_name_to_option_name,
-    safe_list_get,
     safe_lower,
 )
 from azure.cli.command_modules.acs._validators import (
@@ -47,12 +45,9 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from azext_aks_preview._consts import (
-    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
-    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_EBPF_DATAPLANE_CILIUM,
@@ -60,9 +55,9 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
 )
 from azext_aks_preview._helpers import (
-    get_cluster_snapshot_by_snapshot_id,
     check_is_private_cluster,
     check_is_apiserver_vnet_integration_cluster,
+    get_cluster_snapshot_by_snapshot_id,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -2198,6 +2193,60 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         self.agentpool_context = self.agentpool_decorator.context
         self.context.attach_agentpool_context(self.agentpool_context)
+
+    def get_special_parameter_default_value_pairs_list(self) -> List[Tuple[Any, Any]]:
+        """Get a list of special parameter value and its corresponding default value pairs.
+        :return: list of tuples
+        """
+        return [
+            (self.context.get_cluster_autoscaler_profile(), None),
+            (self.context.get_api_server_authorized_ip_ranges(), None),
+            (self.context.get_nodepool_labels(), None),
+            (self.context.raw_param.get("enable_workload_identity"), None),
+        ]
+
+    def check_raw_parameters(self):
+        """Helper function to check whether any parameters are set.
+
+        Note: Overwritten in aks-preview to add special handling for extra default values.
+
+        If the values of all the parameters are the default values, the command execution will be terminated early and
+        raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
+        sent.
+
+        :return: None
+        """
+        # exclude some irrelevant or mandatory parameters
+        excluded_keys = ("cmd", "client", "resource_group_name", "name")
+        # check whether the remaining parameters are set
+        # the default "falsy" value will be considered as not set (e.g., None, "", [], {}, 0)
+        is_changed = any(v for k, v in self.context.raw_param.items() if k not in excluded_keys)
+
+        # special cases
+        # Some parameters support using "falsy" value to update/remove previously set values.
+        # In this case, we need to declare the expected value pair in `get_special_parameter_default_value_pairs_list`.`
+        is_different_from_special_default = False
+        for pair in self.get_special_parameter_default_value_pairs_list():
+            if pair[0] != pair[1]:
+                is_different_from_special_default = True
+                break
+
+        if is_changed or is_different_from_special_default:
+            return
+
+        reconcile_prompt = 'no argument specified to update would you like to reconcile to current settings?'
+        if prompt_y_n(reconcile_prompt, default="n"):
+            return
+
+        option_names = sorted([
+            '"{}"'.format(format_parameter_name_to_option_name(x))
+            for x in self.context.raw_param.keys()
+            if x not in excluded_keys
+        ])
+        error_msg = "Please specify one or more of {}.".format(
+            " or ".join(option_names)
+        )
+        raise RequiredArgumentMissingError(error_msg)
 
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
