@@ -1,6 +1,6 @@
 Release History
 ===============
-1.7.0
+1.6.3
 ---
 * Deprecate the subcommand 'spring app binding'.
 
