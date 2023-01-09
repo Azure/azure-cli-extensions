@@ -503,14 +503,27 @@ def aks_maintenanceconfiguration_add(
     config_name,
     config_file,
     weekday,
-    start_hour
+    start_hour,
+    schedule_type,
+    interval_days,
+    interval_weeks,
+    interval_months,
+    day_of_week,
+    day_of_month,
+    week_index,
+    duration_hours,
+    utc_offset,
+    start_date,
+    start_time
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
         if config.name == config_name:
             raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
                            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
 def aks_maintenanceconfiguration_update(
@@ -521,7 +534,18 @@ def aks_maintenanceconfiguration_update(
     config_name,
     config_file,
     weekday,
-    start_hour
+    start_hour,
+    schedule_type,
+    interval_days,
+    interval_weeks,
+    interval_months,
+    day_of_week,
+    day_of_month,
+    week_index,
+    duration_hours,
+    utc_offset,
+    start_date,
+    start_time
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
@@ -532,9 +556,9 @@ def aks_maintenanceconfiguration_update(
     if not found:
         raise CLIError("Maintenance configuration '{}' doesn't exist."
                        "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
-
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 # pylint: disable=too-many-locals
 def aks_create(

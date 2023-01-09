@@ -213,3 +213,19 @@ CONST_CUSTOM_CA_TEST_CERT = '-----BEGIN CERTIFICATE-----\n' \
                             'tEYNEGZaRElFU79WcEF0cH+ZW0+jJ95xE3thZffRz6QI6yF63m8aC9l9bbdJS2zg\n' \
                             'Yv8W+lCZi//ODeOBUugr++z9uj+vGk47JDSpV0n4JOun3ALUDJ0gqmcS\n' \
                             '-----END CERTIFICATE-----'
+
+# consts for maintenance configuration schedule type
+CONST_DAILY_MAINTENANCE_SCHEDULE = "Daily"
+CONST_WEEKLY_MAINTENANCE_SCHEDULE = "Weekly"
+CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE = "AbsoluteMonthly"
+CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE = "RelativeMonthly"
+
+CONST_WEEKINDEX_FIRST = "First"
+CONST_WEEKINDEX_SECOND = "Second"
+CONST_WEEKINDEX_THIRD = "Third"
+CONST_WEEKINDEX_FOURTH = "Fourth"
+CONST_WEEKINDEX_LAST = "Last"
+
+CONST_DEFAULT_CONFIGURATION_NAME = "default"
+CONST_AUTOUPGRADE_CONFIGURATION_NAME = "aksManagedAutoUpgradeSchedule"
+CONST_NODEOSUPGRADE_CONFIGURATION_NAME = "aksManagedNodeOSUpgradeSchedule"
