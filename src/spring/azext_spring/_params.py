@@ -269,7 +269,7 @@ def load_arguments(self, _):
         c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
                    help='A json file path indicates the certificates which would be loaded to app')
         c.argument('deployment_name', type=str, default='default',
-                   help='Name of the active deployment.', validator=validate_name)
+                   help='Name of the default deployment.', validator=validate_name)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
