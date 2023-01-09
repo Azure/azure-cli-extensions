@@ -17,7 +17,7 @@ from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build
+from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build, _convert_numeric_params
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -237,6 +237,17 @@ class QuantumJobsScenarioTest(ScenarioTest):
             assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
+
+    def test_convert_numeric_params(self):
+        # Show that it converts numeric strings, but doesn't modify params that are already numeric
+        test_job_params = {"integer1": "1", "float1.5": "1.5", "integer2": 2, "float2.5": 2.5, "integer3": "3", "float3.5": "3.5"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"integer1": 1, "float1.5": 1.5, "integer2": 2, "float2.5": 2.5, "integer3": 3, "float3.5": 3.5}
+
+        # Show that it doesn't modify non-numeric strings
+        test_job_params = {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
 
     @live_only()
     def test_submit_qir(self):

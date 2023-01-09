@@ -197,13 +197,14 @@ def _convert_numeric_params(job_params):
     # attempts to convert numeric string values to their appropriate numeric types.
     # Non-numeric string values and values that are already integers are unaffected.
     for param in job_params:
-        try:
-            job_params[param] = int(job_params[param])
-        except:
+        if isinstance(job_params[param], str):
             try:
-                job_params[param] = float(job_params[param])
+                job_params[param] = int(job_params[param])
             except:
-                pass
+                try:
+                    job_params[param] = float(job_params[param])
+                except:
+                    pass
 
 
 def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
