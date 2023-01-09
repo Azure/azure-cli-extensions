@@ -115,7 +115,7 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     if response_helm_chart_pull.returncode != 0:
         if for_preonboarding_checks:
             telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Pull_HelmChart_Fault_Type,
-                                summary='Unable to pull pre-onboarding-inspector helm chart from the registry')
+                                    summary='Unable to pull pre-onboarding-inspector helm chart from the registry')
             raise CLIInternalError("Unable to pull pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
         else:
             telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
@@ -134,7 +134,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     if response_helm_chart_export.returncode != 0:
         if for_preonboarding_checks:
             telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Export_HelmChart_Fault_Type,
-                                summary='Unable to export pre-onboarding-inspector helm chart from the registry')
+                                    summary='Unable to export pre-onboarding-inspector helm chart from the registry')
             raise CLIInternalError("Unable to export pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
         else:
             telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
