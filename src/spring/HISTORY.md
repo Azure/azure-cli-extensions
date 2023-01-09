@@ -1,5 +1,9 @@
 Release History
 ===============
+1.7.0
+---
+* Add argument `--deployment-name` in command `az spring app create`.
+
 1.6.1
 ---
 * Add type check for argument `--artifact-path`.
