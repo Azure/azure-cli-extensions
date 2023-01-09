@@ -1,5 +1,9 @@
 Release History
 ===============
+1.6.3
+---
+* Deprecate the subcommand 'spring app binding'.
+
 1.6.2
 ---
 * Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
