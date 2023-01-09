@@ -319,7 +319,7 @@ class AzInteractiveShell(object):
             command = new_command
 
         # get command/group help
-        if not command:
+        if not command and self.recommender.enabled:
             self.description_docs = u'Try [Space] or `next` to get Command Recommendation'
         elif self.completer and command in self.completer.command_description:
             self.description_docs = u'{}'.format(self.completer.command_description[command])
@@ -358,9 +358,9 @@ class AzInteractiveShell(object):
         except configparser.NoSectionError:
             self.config_default = ""
 
-    def create_application(self, full_layout=True, auto_suggest=None, prompt_prefix='', toolbar_tokens=''):
+    def create_application(self, full_layout=True, auto_suggest=None, prompt_prefix='', toolbar_hint=''):
         """ makes the application object and the buffers """
-        layout_manager = LayoutManager(self, prompt_prefix, toolbar_tokens)
+        layout_manager = LayoutManager(self, prompt_prefix, toolbar_hint)
         if full_layout:
             layout = layout_manager.create_layout(ExampleLexer, ToolbarLexer, ScenarioLexer)
         else:
@@ -423,16 +423,16 @@ class AzInteractiveShell(object):
     def handle_example(self, text, continue_flag):
         """ parses for the tutorial """
         cmd = text.partition(SELECT_SYMBOL['example'])[0].rstrip()
-        num = text.partition(SELECT_SYMBOL['example'])[2].strip()
+        selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         example = ""
         try:
-            num = int(num) - 1
+            selected_option = int(selected_option) - 1
         except ValueError:
             print("An Integer should follow the colon", file=self.output)
             return ""
         if cmd in self.completer.command_examples:
-            if num >= 0 and num < len(self.completer.command_examples[cmd]):
-                example = self.completer.command_examples[cmd][num][1]
+            if 0 <= selected_option < len(self.completer.command_examples[cmd]):
+                example = self.completer.command_examples[cmd][selected_option][1]
                 example = example.replace('\n', '')
             else:
                 print('Invalid example number', file=self.output)
@@ -457,7 +457,7 @@ class AzInteractiveShell(object):
         return self.example_repl(example_no_fill, example, starting_index, continue_flag)
 
     def example_repl(self, text, example, start_index, continue_flag):
-        """ REPL for interactive tutorials """
+        """ REPL(Read-Eval-Print Loop) for interactive tutorials """
         if start_index:
             start_index = start_index + 1
             cmd = ' '.join(text.split()[:start_index])
@@ -465,7 +465,7 @@ class AzInteractiveShell(object):
                 application=self.create_application(
                     full_layout=False,
                     prompt_prefix='(tutorial) ',
-                    toolbar_tokens='In Tutorial Mode: Press [Enter] after typing each part'
+                    toolbar_hint='In Tutorial Mode: Press [Enter] after typing each part'
                 ),
                 eventloop=create_eventloop())
             self.completer.set_scenario_enabled(False)
@@ -524,7 +524,7 @@ class AzInteractiveShell(object):
                 full_layout=False,
                 auto_suggest=auto_suggest,
                 prompt_prefix='(scenario) ',
-                toolbar_tokens='In Scenario Mode: Press [Enter] to execute commands   [Ctrl+C]Skip  [Ctrl+D]Quit'
+                toolbar_hint='In Scenario Mode: Press [Enter] to execute commands   [Ctrl+C]Skip  [Ctrl+D]Quit'
             ),
             eventloop=create_eventloop())
         self.completer.set_scenario_enabled(False)
@@ -545,6 +545,7 @@ class AzInteractiveShell(object):
                         cursor_position=len(nx_cmd['command'])))
                 example_cli.request_redraw()
                 try:
+                    # request and wait for user's input
                     document = example_cli.run()
                 except (KeyboardInterrupt, ValueError):
                     # CTRL C
@@ -557,8 +558,8 @@ class AzInteractiveShell(object):
                     continue
                 cmd = document.text
                 self.history.append(cmd)
-                telemetry.start()
                 self.recommender.update_executing(cmd, feedback=False)
+                telemetry.start()
                 self.cli_execute(cmd)
                 if self.last_exit and self.last_exit != 0:
                     telemetry.set_failure()

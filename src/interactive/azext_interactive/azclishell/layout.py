@@ -30,10 +30,10 @@ MAX_COMPLETION = 16
 class LayoutManager(object):
     """ store information and conditions for the layout """
 
-    def __init__(self, shell_ctx, prompt_prefix='', toolbar_tokens=''):
+    def __init__(self, shell_ctx, prompt_prefix='', toolbar_hint=''):
         self.shell_ctx = shell_ctx
         self.prompt_prefix = prompt_prefix
-        self.toolbar_tokens = toolbar_tokens
+        self.toolbar_hint = toolbar_hint
 
         @Condition
         def show_default(_):
@@ -115,7 +115,7 @@ class LayoutManager(object):
                     ),
                     Window(
                         TokenListControl(
-                            lambda _: [(Token.Toolbar, self.toolbar_tokens)],
+                            lambda _: [(Token.Toolbar, self.toolbar_hint)],
                             default_char=Char(' ', Token.Toolbar)),
                         height=LayoutDimension.exact(1)),
                 ]),
@@ -133,9 +133,9 @@ class LayoutManager(object):
 
         layout_lower = ConditionalContainer(
             HSplit([
-                get_anyhline(self.shell_ctx.config),
+                get_any_hline(self.shell_ctx.config),
                 get_descriptions(self.shell_ctx.config, exam_lex, lexer),
-                get_examplehline(self.shell_ctx.config),
+                get_example_hline(self.shell_ctx.config),
                 get_example(self.shell_ctx.config, exam_lex),
                 get_scenario_hline(self.shell_ctx.config),
                 get_scenario(self.shell_ctx.config, scenario_lex),
@@ -214,11 +214,6 @@ def get_height(cli):
     return None
 
 
-def get_tutorial_tokens(_):
-    """ tutorial tokens """
-    return [(Token.Toolbar, 'In Tutorial Mode: Press [Enter] after typing each part')]
-
-
 def get_lexers(main_lex, exam_lex, tool_lex, scenario_lex):
     """ gets all the lexer wrappers """
     if not main_lex:
@@ -245,7 +240,7 @@ def get_lexers(main_lex, exam_lex, tool_lex, scenario_lex):
     return lexer, exam_lex, tool_lex, scenario_lex
 
 
-def get_anyhline(config):
+def get_any_hline(config):
     """ if there is a line between descriptions and example """
     if config.BOOLEAN_STATES[config.config.get('Layout', 'command_description')] or\
        config.BOOLEAN_STATES[config.config.get('Layout', 'param_description')]:
@@ -282,7 +277,7 @@ def get_example(config, exam_lex):
     return get_empty()
 
 
-def get_examplehline(config):
+def get_example_hline(config):
     """ gets a line if there are examples """
     if config.BOOLEAN_STATES[config.config.get('Layout', 'examples')]:
         return get_hline()
