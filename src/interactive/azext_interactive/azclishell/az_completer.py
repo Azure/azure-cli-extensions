@@ -160,9 +160,9 @@ class AzCompleter(Completer):
         self.current_command = ''
         self.subtree = None
 
-    def set_scenario_enabled(self, enable):
+    def enable_scenario_recommender(self, enable):
         """ enable or disable the scenario display in completer """
-        self.scenario_enabled = enable
+        self.scenario_recommender = enable
 
     def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
         if not self.started:
