@@ -317,15 +317,15 @@ def _show_details_for_e2e_scenario(scenario, file=None):
 
 def gen_command_in_scenario(scenario, file=None):
     exec_idx = scenario.get("executeIndex", [])
-    for idx, nx_cmd in enumerate(scenario["nextCommandSet"]):
-        cmd_active = idx in exec_idx
-        if not cmd_active:
-            continue
+    for idx in exec_idx:
+        nx_cmd = scenario["nextCommandSet"][idx]
         print()
         command_sample = _get_command_sample(nx_cmd)
         print_styled_text([(Style.ACTION, "Running: ")] + command_sample,
                           file=file)
         yield nx_cmd, ''.join([part[1] for part in command_sample])
+    print_styled_text([(Style.SUCCESS, '\n(✓)Done: '),
+                       (Style.PRIMARY, 'All commands in this scenario have been executed! \n')])
 
 
 def _get_command_sample(command):

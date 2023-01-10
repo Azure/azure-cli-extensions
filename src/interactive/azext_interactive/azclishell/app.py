@@ -117,7 +117,7 @@ class AzInteractiveShell(object):
         self.param_docs = u''
         self.example_docs = u''
         self.last = None
-        self.last_exit = 0
+        self.last_exit_code = 0
         self.user_feedback = user_feedback
         self.input = input_custom
         self.output = output_custom
@@ -549,13 +549,14 @@ class AzInteractiveShell(object):
             auto_suggest.update(sample)
             retry = True
             while retry:
+                # reset and put the command in write buffer
                 example_cli.buffers[DEFAULT_BUFFER].reset(
                     initial_document=Document(
                         u'{}'.format(nx_cmd['command']),
                         cursor_position=len(nx_cmd['command'])))
                 example_cli.request_redraw()
                 try:
-                    # request and wait for user's input
+                    # wait for user's input
                     document = example_cli.run()
                 except (KeyboardInterrupt, ValueError):
                     # CTRL C
@@ -571,12 +572,12 @@ class AzInteractiveShell(object):
                 self.recommender.update_executing(cmd, feedback=False)
                 telemetry.start()
                 self.cli_execute(cmd)
-                if self.last_exit and self.last_exit != 0:
+                if self.last_exit_code and self.last_exit_code != 0:
                     telemetry.set_failure()
                 else:
                     retry = False
                     telemetry.set_success()
-                self.recommender.update_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
+                self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
                 telemetry.flush()
             if quit_scenario:
                 break
@@ -611,9 +612,9 @@ class AzInteractiveShell(object):
             telemetry.track_outside_gesture()
 
         elif cmd_stripped[0] == SELECT_SYMBOL['exit_code']:
-            meaning = "Success" if self.last_exit == 0 else "Failure"
+            meaning = "Success" if self.last_exit_code == 0 else "Failure"
 
-            print(meaning + ": " + str(self.last_exit), file=self.output)
+            print(meaning + ": " + str(self.last_exit_code), file=self.output)
             continue_flag = True
             telemetry.track_exit_code_gesture()
         elif SELECT_SYMBOL['query'] in cmd_stripped and self.last and self.last.result:
@@ -778,7 +779,7 @@ class AzInteractiveShell(object):
             else:
                 result = invocation.execute(args)
 
-            self.last_exit = 0
+            self.last_exit_code = 0
             if result and result.result is not None:
                 if self.output:
                     self.output.write(result)
@@ -789,9 +790,9 @@ class AzInteractiveShell(object):
                     self.last = result
 
         except Exception as ex:  # pylint: disable=broad-except
-            self.last_exit = handle_exception(ex)
+            self.last_exit_code = handle_exception(ex)
         except SystemExit as ex:
-            self.last_exit = int(ex.code)
+            self.last_exit_code = int(ex.code)
 
     def progress_patch(self, *args, **kwargs):
         """ forces to use the Shell Progress """
@@ -851,10 +852,10 @@ class AzInteractiveShell(object):
                     telemetry.start()
                     self.recommender.update_executing(cmd)
                     self.cli_execute(cmd)
-                    if self.last_exit and self.last_exit != 0:
+                    if self.last_exit_code and self.last_exit_code != 0:
                         telemetry.set_failure()
                     else:
                         telemetry.set_success()
-                    self.recommender.update_exec_result(self.last_exit, telemetry.get_error_info()['result_summary'])
+                    self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()
