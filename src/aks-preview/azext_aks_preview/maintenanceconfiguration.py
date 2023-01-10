@@ -153,7 +153,7 @@ def constructWeeklySchedule(cmd, interval_days, interval_weeks, interval_months,
         raise RequiredArgumentMissingError("Please specify --interval-weeks and --day-of-week when using weekly schedule.")
     if interval_days is not None or interval_months is not None or day_of_month is not None or week_index is not None:
         raise MutuallyExclusiveArgumentError('--interval-months, --day-of-month and --week-index cannot be used for Weekly schedule.')
- 
+
     WeeklySchedule = cmd.get_models('WeeklySchedule', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     weeklySchedule = WeeklySchedule(
         interval_weeks=interval_weeks,

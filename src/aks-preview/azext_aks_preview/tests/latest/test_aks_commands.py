@@ -3694,7 +3694,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_maintenancewindow(self, resource_group, resource_group_location): 
+    def test_aks_maintenancewindow(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
