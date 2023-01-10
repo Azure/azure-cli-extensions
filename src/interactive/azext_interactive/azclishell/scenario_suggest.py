@@ -30,15 +30,15 @@ class ScenarioAutoSuggest(AutoSuggest):
                 self.param_value_map[cur_param] = self.param_value_map[cur_param].strip()
 
     def get_suggestion(self, cli, buffer, document):
-        text = document.text.rsplit('\n', 1)[-1]
-        text = re.sub(r'\s+', ' ', text)
+        user_input = document.text.rsplit('\n', 1)[-1]
+        user_input = re.sub(r'\s+', ' ', user_input)
         # If the user has input the command part of sample, suggest the parameters
-        if text.startswith(self.cur_command):
+        if user_input.startswith(self.cur_command):
             # find user unfinished part of input command
-            unfinished = text.rsplit(' ', 1)[-1]
+            unfinished = user_input.rsplit(' ', 1)[-1]
             # list of unused parameters in current sample
             unused_param = list(self.param_value_map.keys())
-            completed_parts = text[-len(unfinished):].strip().split()
+            completed_parts = user_input[-len(unfinished):].strip().split()
             # last completed part of user's input
             last_part = completed_parts[-1]
 
@@ -82,5 +82,5 @@ class ScenarioAutoSuggest(AutoSuggest):
                             suggest.append(self.param_value_map[param])
                     return Suggestion(' '.join(suggest))
         # If the user hasn't finished the command part, suggest the whole sample
-        elif self.cur_command.startswith(text):
-            return Suggestion(self.cur_sample[len(text):])
+        elif self.cur_command.startswith(user_input):
+            return Suggestion(self.cur_sample[len(user_input):])

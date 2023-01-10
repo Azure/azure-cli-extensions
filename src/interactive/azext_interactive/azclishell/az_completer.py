@@ -311,7 +311,7 @@ class AzCompleter(Completer):
             yield Completion(
                 '::' + str(idx + 1), -len(text),
                 display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',
-                display=f'[Scenario {str(idx + 1)}]')
+                display=f'* command set {str(idx + 1)}')
 
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """

@@ -24,25 +24,23 @@ class RecommendType(int, Enum):
 
 class RecommendThread(threading.Thread):
     """ Worker Thread to fetch recommendation online based on user's context """
-    def __init__(self, cli_ctx, rec_path, last_exec, on_prepared):
+    def __init__(self, cli_ctx, rec_path, executing_command, on_prepared):
         super().__init__()
         self.cli_ctx = cli_ctx
         self.on_prepared = on_prepared
         self.command_history = rec_path.get_cmd_history(25)
-        if last_exec:
-            self.command_history.append(last_exec)
-        self.processed_exception = rec_path.get_result_summary() if not last_exec else None
+        if executing_command:
+            self.command_history.append(executing_command)
+        self.processed_exception = rec_path.get_result_summary() if not executing_command else None
         self.result = None
 
     def run(self) -> None:
         try:
-            recommends = get_recommend_from_api([json.dumps(cmd) for cmd in self.command_history], 1,
-                                                self.cli_ctx.config.getint('next', 'num_limit', fallback=5),
-                                                error_info=self.processed_exception)
+            self.result = get_recommend_from_api([json.dumps(cmd) for cmd in self.command_history], 1,
+                                                 self.cli_ctx.config.getint('next', 'num_limit', fallback=5),
+                                                 error_info=self.processed_exception)
         except RecommendationError:
             self.result = []
-        else:
-            self.result = [rec for rec in recommends]
         self.on_prepared()
 
 
