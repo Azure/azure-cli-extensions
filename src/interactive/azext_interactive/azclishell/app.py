@@ -152,8 +152,8 @@ class AzInteractiveShell(object):
             print("\n\nAny comments or concerns? You can use the \'feedback\' command!" +
                   " We would greatly appreciate it.\n")
 
-        print("\nA new Recommender is added to interactive mode! We hope you could enjoy it.\n"
-              "You can use 'config set interactive.enable_recommender=False' to disable Recommender.\n")
+        print("\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
+              "If you don't want to enable this feature, you can use 'config set interactive.enable_recommender=False' to disable it.\n")
 
         self.cli_ctx.data["az_interactive_active"] = True
         self.run()
