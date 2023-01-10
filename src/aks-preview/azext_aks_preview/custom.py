@@ -560,6 +560,7 @@ def aks_maintenanceconfiguration_update(
     raw_parameters = locals()
     return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
+
 # pylint: disable=too-many-locals
 def aks_create(
     cmd,

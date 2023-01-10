@@ -27,12 +27,14 @@ from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
 logger = get_logger(__name__)
 
+
 def aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters):
     resource_group_name = raw_parameters.get("resource_group_name")
     cluster_name = raw_parameters.get("cluster_name")
     config_name = raw_parameters.get("config_name")
     config = getMaintenanceConfiguration(cmd, raw_parameters)
     return client.create_or_update(resource_group_name=resource_group_name, resource_name=cluster_name, config_name=config_name, parameters=config)
+
 
 def getMaintenanceConfiguration(cmd, raw_parameters):
     config_file = raw_parameters.get("config_file")
@@ -41,13 +43,14 @@ def getMaintenanceConfiguration(cmd, raw_parameters):
         logger.info(mcr)
         return mcr
 
-    config_name = raw_parameters.get("config_name")  
+    config_name = raw_parameters.get("config_name")
     if config_name == CONST_DEFAULT_CONFIGURATION_NAME:
         return constructDefaultMaintenanceConfiguration(cmd, raw_parameters)
     elif config_name == CONST_AUTOUPGRADE_CONFIGURATION_NAME or config_name == CONST_NODEOSUPGRADE_CONFIGURATION_NAME:
         return constructDedicatedMaintenanceConfiguration(cmd, raw_parameters)
     else:
         raise InvalidArgumentValueError('--config-name must be one of default, aksManagedAutoUpgradeSchedule or aksManagedNodeOSUpgradeSchedule, not {}'.format(config_name))
+
 
 def constructDefaultMaintenanceConfiguration(cmd, raw_parameters):
     weekday = raw_parameters.get("weekday")
@@ -58,10 +61,10 @@ def constructDefaultMaintenanceConfiguration(cmd, raw_parameters):
         raise RequiredArgumentMissingError('Please specify --weekday and --start-hour for default maintenance configuration, or use --config-file instead.')
     if schedule_type is not None:
         raise MutuallyExclusiveArgumentError('--schedule-type is not supported for default maintenance configuration.')
-    
+
     MaintenanceConfiguration = cmd.get_models('MaintenanceConfiguration', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     TimeInWeek = cmd.get_models('TimeInWeek', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
-    
+
     dict = {}
     dict["day"] = weekday
     dict["hour_slots"] = [start_hour]
@@ -71,16 +74,18 @@ def constructDefaultMaintenanceConfiguration(cmd, raw_parameters):
     result.not_allowed_time = []
     return result
 
+
 def constructDedicatedMaintenanceConfiguration(cmd, raw_parameters):
     weekday = raw_parameters.get("weekday")
     start_hour = raw_parameters.get("start_hour")
     if weekday is not None or start_hour is not None:
         raise MutuallyExclusiveArgumentError('--weekday and --start-hour are only applicable to default maintenance configuration.')
-    
-    maintenanceConfiguration = cmd.get_models('MaintenanceConfiguration', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations') 
+
+    maintenanceConfiguration = cmd.get_models('MaintenanceConfiguration', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     result = maintenanceConfiguration()
     result.maintenance_window = constructMaintenanceWindow(cmd, raw_parameters)
     return result
+
 
 def constructMaintenanceWindow(cmd, raw_parameters):
     schedule = constructSchedule(cmd, raw_parameters)
@@ -104,6 +109,7 @@ def constructMaintenanceWindow(cmd, raw_parameters):
     )
     return maintenanceWindow
 
+
 def constructSchedule(cmd, raw_parameters):
     schedule_type = raw_parameters.get("schedule_type")
     interval_days = raw_parameters.get("interval_days")
@@ -112,7 +118,7 @@ def constructSchedule(cmd, raw_parameters):
     day_of_week = raw_parameters.get("day_of_week")
     day_of_month = raw_parameters.get("day_of_month")
     week_index = raw_parameters.get("week_index")
-    
+
     Schedule = cmd.get_models('Schedule', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     schedule = Schedule()
 
@@ -124,28 +130,30 @@ def constructSchedule(cmd, raw_parameters):
         schedule.absolute_monthly = constructAbsoluteMonthlySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index)
     elif schedule_type == CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE:
         schedule.relative_monthly = constructRelativeMonthlySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index)
-    else :
+    else:
         raise InvalidArgumentValueError('--schedule-type must be one of Daily, Weekly, AbsoluteMonthly or RelativeMonthly.')
     return schedule
+
 
 def constructDailySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index):
     if interval_days is None:
         raise RequiredArgumentMissingError("Please specify --interval-days when using daily schedule.")
     if interval_weeks is not None or interval_months is not None or day_of_week is not None or day_of_month is not None or week_index is not None:
         raise MutuallyExclusiveArgumentError('--interval-weeks, --interval-months, --day-of-week, --day-of-month and --week-index cannot be used for Daily schedule.')
-    
+
     DailySchedule = cmd.get_models('DailySchedule', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     dailySchedule = DailySchedule(
         interval_days=interval_days
     )
     return dailySchedule
 
+
 def constructWeeklySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index):
     if interval_weeks is None or day_of_week is None:
         raise RequiredArgumentMissingError("Please specify --interval-weeks and --day-of-week when using weekly schedule.")
     if interval_days is not None or interval_months is not None or day_of_month is not None or week_index is not None:
-        raise MutuallyExclusiveArgumentError('--interval-months, --day-of-month and --week-index cannot be used for Weekly schedule.') 
-    
+        raise MutuallyExclusiveArgumentError('--interval-months, --day-of-month and --week-index cannot be used for Weekly schedule.')
+ 
     WeeklySchedule = cmd.get_models('WeeklySchedule', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     weeklySchedule = WeeklySchedule(
         interval_weeks=interval_weeks,
@@ -153,12 +161,13 @@ def constructWeeklySchedule(cmd, interval_days, interval_weeks, interval_months,
     )
     return weeklySchedule
 
+
 def constructAbsoluteMonthlySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index):
     if interval_months is None or day_of_month is None:
         raise RequiredArgumentMissingError("Please specify --interval-months and --day-of-month when using absolute monthly schedule.")
     if interval_days is not None or interval_weeks is not None or day_of_week is not None or week_index is not None:
-        raise MutuallyExclusiveArgumentError('--interval-days, --interval-weeks, --day-of-week and --week-index cannot be used for AbsoluteMonthly schedule.') 
-    
+        raise MutuallyExclusiveArgumentError('--interval-days, --interval-weeks, --day-of-week and --week-index cannot be used for AbsoluteMonthly schedule.')
+
     AbsoluteMonthlySchedule = cmd.get_models('AbsoluteMonthlySchedule', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     absoluteMonthlySchedule = AbsoluteMonthlySchedule(
         interval_months=interval_months,
@@ -166,12 +175,13 @@ def constructAbsoluteMonthlySchedule(cmd, interval_days, interval_weeks, interva
     )
     return absoluteMonthlySchedule
 
+
 def constructRelativeMonthlySchedule(cmd, interval_days, interval_weeks, interval_months, day_of_week, day_of_month, week_index):
     if interval_months is None or day_of_week is None or week_index is None:
         raise RequiredArgumentMissingError("Please specify --interval-months, --day-of-week and --week-index when using relative monthly schedule.")
     if interval_days is not None or interval_weeks is not None or day_of_month is not None:
-        raise MutuallyExclusiveArgumentError('--interval-days, --interval-weeks and --day-of-month cannot be used for RelativeMonthly schedule.') 
-    
+        raise MutuallyExclusiveArgumentError('--interval-days, --interval-weeks and --day-of-month cannot be used for RelativeMonthly schedule.')
+
     RelativeMonthlySchedule = cmd.get_models('RelativeMonthlySchedule', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     relativeMonthlySchedule = RelativeMonthlySchedule(
         interval_months=interval_months,

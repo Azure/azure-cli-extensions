@@ -1074,7 +1074,7 @@ helps['aks maintenanceconfiguration add'] = """
           short-summary: Choose either 'Daily', 'Weekly', 'AbsoluteMonthly' or 'RelativeMonthly' for your maintenance schedule. Only applicable to 'aksManagedAutoUpgradeSchedule' and 'aksManagedNodeOSUpgradeSchedule' maintenance configuration.
         - name: --start-date
           type: string
-          short-summary: The date the maintenance configuration activates. If not specified, the maintenance window will be active right away." 
+          short-summary: The date the maintenance configuration activates. If not specified, the maintenance window will be active right away."
         - name: --start-time
           type: string
           short-summary: The start time of the maintenance window. Accepted values are from '00:00' to '23:59'. '--utc-offset' applies to this field. For example, '02:00' with '--utc-offset +02:00' means UTC time '00:00'.
@@ -1101,7 +1101,7 @@ helps['aks maintenanceconfiguration add'] = """
           short-summary: Specifies on which day of the month the maintenance occurs. E.g. 1 indicates the 1st of the month. Applicable to absolute monthly schedule type only.
         - name: --week-index
           type: string
-          short-summary: Specifies on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only. 
+          short-summary: Specifies on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only.
         - name: --config-file
           type: string
           short-summary: the maintenance configuration json file.
@@ -1153,16 +1153,16 @@ helps['aks maintenanceconfiguration add'] = """
               The maintenance is allowed from 00:00 to 12:00 (adjusted with UTC offset: -08:00) every two days, and this configuration will be effective from 2023-01-16.
         - name: Add aksManagedNodeOSUpgradeSchedule maintenance configuration with weekly schedule.
           text: |
-            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedNodeOSUpgradeSchedule --schedule-type Weekly --day-of-week Friday --interval-weeks 3 --duration 8 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30 
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedNodeOSUpgradeSchedule --schedule-type Weekly --day-of-week Friday --interval-weeks 3 --duration 8 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on Friday from 09:30 to 17:30 (adjusted with UTC offset: +05:30) every three weeks, and this configuration will be effective from 2023-01-16.
         - name: Add aksManagedAutoUpgradeSchedule maintenance configuration with absolute monthly schedule.
           text: |
-            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 --duration 6 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30 
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 --duration 6 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on the 15th of the month from 09:30 to 15:30 (adjusted with UTC offset: +05:30) every month, and this configuration will be effective from 2023-01-16.
         - name: Add aksManagedAutoUpgradeSchedule maintenance configuration with relative monthly schedule.
           text: |
-            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30 
-              The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months, and this configuration will be effective from 2023-01-16. 
+            az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30
+              The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months, and this configuration will be effective from 2023-01-16.
         - name: Add aksManagedAutoUpgradeSchedule maintenance configuration with json file.
           text: |
             az aks maintenanceconfiguration add -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --config-file ./test.json
@@ -1190,7 +1190,7 @@ helps['aks maintenanceconfiguration add'] = """
                             }
                         ]
                     }
-                } 
+                }
 """
 
 helps['aks maintenanceconfiguration update'] = """
@@ -1208,7 +1208,7 @@ helps['aks maintenanceconfiguration update'] = """
           short-summary: Choose either 'Daily', 'Weekly', 'AbsoluteMonthly' or 'RelativeMonthly' for your maintenance schedule. Only applicable to 'aksManagedAutoUpgradeSchedule' and 'aksManagedNodeOSUpgradeSchedule' maintenance configuration.
         - name: --start-date
           type: string
-          short-summary: The date the maintenance configuration activates. If not specified, the maintenance window will be active right away." 
+          short-summary: The date the maintenance configuration activates. If not specified, the maintenance window will be active right away."
         - name: --start-time
           type: string
           short-summary: The start time of the maintenance window. Accepted values are from '00:00' to '23:59'. '--utc-offset' applies to this field. For example, '02:00' with '--utc-offset +02:00' means UTC time '00:00'.
@@ -1235,7 +1235,7 @@ helps['aks maintenanceconfiguration update'] = """
           short-summary: Specifies on which day of the month the maintenance occurs. E.g. 1 indicates the 1st of the month. Applicable to absolute monthly schedule type only.
         - name: --week-index
           type: string
-          short-summary: Specifies on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only. 
+          short-summary: Specifies on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only.
         - name: --config-file
           type: string
           short-summary: the maintenance configuration json file.
@@ -1287,16 +1287,16 @@ helps['aks maintenanceconfiguration update'] = """
               The maintenance is allowed from 00:00 to 12:00 (adjusted with UTC offset: -08:00) every two days. This configuration will be effective from 2023-01-16.
         - name: Update aksManagedNodeOSUpgradeSchedule maintenance configuration with weekly schedule.
           text: |
-            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedNodeOSUpgradeSchedule --schedule-type Weekly --day-of-week Friday --interval-weeks 3 --duration 8 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30 
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedNodeOSUpgradeSchedule --schedule-type Weekly --day-of-week Friday --interval-weeks 3 --duration 8 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on Friday from 09:30 to 17:30 (adjusted with UTC offset: +05:30) every three weeks. This configuration will be effective from 2023-01-16.
         - name: Update aksManagedAutoUpgradeSchedule maintenance configuration with absolute monthly schedule.
           text: |
-            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 --duration 6 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30 
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 --duration 6 --utc-offset +05:30 --start-date 2023-01-16 --start-time 09:30
               The maintenance is allowed on the 15th of the month from 09:30 to 15:30 (adjusted with UTC offset: +05:30) every month. This configuration will be effective from 2023-01-16.
         - name: Update aksManagedAutoUpgradeSchedule maintenance configuration with relative monthly schedule.
           text: |
-            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30 
-              The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months. This configuration will be effective from 2023-01-16. 
+            az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --schedule-type RelativeMonthly --day-of-week Tuesday --week-index Last --interval-months 3 --duration 6 --start-date 2023-01-16 --start-time 09:30
+              The maintenance is allowed on the last Tuesday from 09:30 to 15:30 in default UTC time every 3 months. This configuration will be effective from 2023-01-16.
         - name: Update aksManagedAutoUpgradeSchedule maintenance configuration with json file.
           text: |
             az aks maintenanceconfiguration update -g MyResourceGroup --cluster-name test1 -n aksManagedAutoUpgradeSchedule --config-file ./test.json
@@ -1324,7 +1324,7 @@ helps['aks maintenanceconfiguration update'] = """
                             }
                         ]
                     }
-                }  
+                }
 """
 
 helps['aks nodepool'] = """

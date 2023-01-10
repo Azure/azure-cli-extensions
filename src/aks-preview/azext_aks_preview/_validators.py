@@ -804,6 +804,7 @@ def validate_application_security_groups(namespace):
         if not is_valid_resource_id(asg):
             raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
 
+
 def validate_utc_offset(namespace):
     """Validates --utc-offset for aks maintenanceconfiguration add/update commands."""
     if namespace.utc_offset is None:
@@ -813,6 +814,7 @@ def validate_utc_offset(namespace):
     if not found:
         raise InvalidArgumentValueError('--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".')
 
+
 def validate_start_date(namespace):
     """Validates --start-date for aks maintenanceconfiguration add/update commands."""
     if namespace.start_date is None:
@@ -821,6 +823,7 @@ def validate_start_date(namespace):
     found = start_dt_regex.findall(namespace.start_date)
     if not found:
         raise InvalidArgumentValueError('--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".')
+
 
 def validate_start_time(namespace):
     """Validates --start-time for aks maintenanceconfiguration add/update commands."""
