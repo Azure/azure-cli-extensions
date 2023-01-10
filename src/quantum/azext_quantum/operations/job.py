@@ -276,8 +276,32 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if job_input_file is None:
         raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FILE, JOB_SUBMIT_DOC_LINK_MSG)
 
-    # Extract the input-file-upload parameters from --job-parameters, then remove those parameters
-    # from job_params, since they should not be included in the inputParams property of job_details
+    # Extract "metadata" and "tags" from job_params, then remove those parameters from job_params,
+    # since they should not be included in the "inputParams" parameter of job_details. They are
+    # separate parameters of job_details.
+    #
+    # USAGE NOTE: The --job-params value needs to be a JSON string to specify "metadata".
+    metadata = None
+    tags = []
+    if job_params is not None:
+        if "metadata" in job_params.keys():
+            metadata = job_params["metadata"]
+            del job_params["metadata"]
+            if not isinstance(metadata, dict) and metadata is not None:
+                raise InvalidArgumentValueError('The "metadata" parameter is not valid.',
+                                                'To specify "metadata", use a JSON string for the --job-params value.')
+        if "tags" in job_params.keys():
+            tags = job_params["tags"]
+            del job_params["tags"]
+            if isinstance(tags, str):
+                tags = tags.split(',')
+            list_type = type([])    # "list" has been redefined as a function name, so "isinstance(tags, list)" doesn't work here
+            if not isinstance(tags, list_type):
+                raise InvalidArgumentValueError('The "tags" parameter is not valid.')
+
+    # Extract "content_type" and "content_encoding" from --job-parameters, then remove those parameters
+    # from job_params, since they should not be included in the "inputParams" parameter of job_details.
+    # They are parameters of the upload_blob function.
     content_type = None
     content_encoding = None
     if job_params is not None:
@@ -385,7 +409,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                    'output_data_format': job_output_format,
                    'inputParams': job_params,
                    'provider_id': provider_id,
-                   'target': target_info.target_id}
+                   'target': target_info.target_id,
+                   'metadata': metadata,
+                   'tags': tags}
 
     knack_logger.warning("Submitting job...")
     return client.create(job_id, job_details)

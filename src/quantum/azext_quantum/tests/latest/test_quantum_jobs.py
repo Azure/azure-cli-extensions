@@ -249,6 +249,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
         _convert_numeric_params(test_job_params)
         assert test_job_params == {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
 
+        # >>>>>>>> Add a test that has tags and metadata
+
     @live_only()
     def test_submit_qir(self):
         test_location = get_test_workspace_location()
