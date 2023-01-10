@@ -24,10 +24,11 @@ class RecommendType(int, Enum):
 
 class RecommendThread(threading.Thread):
     """ Worker Thread to fetch recommendation online based on user's context """
-    def __init__(self, cli_ctx, rec_path, executing_command, on_prepared):
+    def __init__(self, cli_ctx, rec_path, executing_command, on_prepared_callback):
         super().__init__()
         self.cli_ctx = cli_ctx
-        self.on_prepared = on_prepared
+        self.on_prepared_callback = on_prepared_callback
+        # The latest 25 commands are extracted for personalized analysis
         self.command_history = rec_path.get_cmd_history(25)
         if executing_command:
             self.command_history.append(executing_command)
@@ -41,7 +42,7 @@ class RecommendThread(threading.Thread):
                                                  error_info=self.processed_exception)
         except RecommendationError:
             self.result = []
-        self.on_prepared()
+        self.on_prepared_callback()
 
 
 class Recommender:
