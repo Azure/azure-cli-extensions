@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover project update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Updates a Project resource, which is a logical grouping of related jobs.
@@ -72,10 +71,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ProjectsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.ProjectsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -164,7 +183,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_project_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_project_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -263,7 +282,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_project_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_project_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -295,77 +314,79 @@ class Update(AAZCommand):
             )
 
 
-_schema_project_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_project_read = None
 
-def _build_schema_project_read(_schema):
-    global _schema_project_read
-    if _schema_project_read is not None:
-        _schema.id = _schema_project_read.id
-        _schema.name = _schema_project_read.name
-        _schema.properties = _schema_project_read.properties
-        _schema.system_data = _schema_project_read.system_data
-        _schema.type = _schema_project_read.type
-        return
+    @classmethod
+    def _build_schema_project_read(cls, _schema):
+        if cls._schema_project_read is not None:
+            _schema.id = cls._schema_project_read.id
+            _schema.name = cls._schema_project_read.name
+            _schema.properties = cls._schema_project_read.properties
+            _schema.system_data = cls._schema_project_read.system_data
+            _schema.type = cls._schema_project_read.type
+            return
 
-    _schema_project_read = AAZObjectType()
+        cls._schema_project_read = _schema_project_read = AAZObjectType()
 
-    project_read = _schema_project_read
-    project_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    project_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    project_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-    project_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    project_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        project_read = _schema_project_read
+        project_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        project_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        project_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        project_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        project_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_project_read.properties
-    properties.description = AAZStrType()
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
+        properties = _schema_project_read.properties
+        properties.description = AAZStrType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
 
-    system_data = _schema_project_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        system_data = _schema_project_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+            flags={"read_only": True},
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+            flags={"read_only": True},
+        )
 
-    _schema.id = _schema_project_read.id
-    _schema.name = _schema_project_read.name
-    _schema.properties = _schema_project_read.properties
-    _schema.system_data = _schema_project_read.system_data
-    _schema.type = _schema_project_read.type
+        _schema.id = cls._schema_project_read.id
+        _schema.name = cls._schema_project_read.name
+        _schema.properties = cls._schema_project_read.properties
+        _schema.system_data = cls._schema_project_read.system_data
+        _schema.type = cls._schema_project_read.type
 
 
 __all__ = ["Update"]

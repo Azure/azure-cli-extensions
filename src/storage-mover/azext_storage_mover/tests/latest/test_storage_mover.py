@@ -11,20 +11,20 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class StorageMoverScenario(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='eastus2')
     def test_storage_mover_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24)
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2 '
                  '--tags {{key1:value1}} --description ExampleDesc')
         self.cmd('az storage-mover show -g {rg} -n {mover_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('mover_name', '')),
-                         JMESPathCheck('location', "eastus2euap"),
+                         JMESPathCheck('location', "eastus2"),
                          JMESPathCheck('tags', {"key1":"value1"}),
                          JMESPathCheck('description', "ExampleDesc")])
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
-        self.cmd('az storage-mover update -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover update -g {rg} -n {mover_name} -l eastus2 '
                  '--tags {{key2:value2}} --description ExampleDesc2',
                  checks=[JMESPathCheck('tags', {"key2":"value2"}),
                          JMESPathCheck('description', "ExampleDesc2")])
@@ -32,7 +32,7 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     @record_only()
-    # need to manually register agent
+    # need to manually register agent, first create the rg and the storagemover
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg",
@@ -48,7 +48,7 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='eastus2')
     @StorageAccountPreparer()
     @AllowLargeResponse()
     def test_storage_mover_endpoint_scenarios(self, resource_group, storage_account):
@@ -64,7 +64,7 @@ class StorageMoverScenario(ScenarioTest):
             "endpoint_nfs": self.create_random_name('endpoint_nfs', 32),
             "vm_name": self.create_random_name('vm', 24),
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2 '
                  '--tags {{key1:value1}} --description MoverDesc')
         # create for storage container
         self.cmd('az storage container create -n {container_name} --account-name {account_name} '
@@ -112,13 +112,13 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
 
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='eastus2')
     def test_storage_mover_project_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "project_name": self.create_random_name('project', 24)
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2 '
                  '--tags {{key1:value1}} --description MoverDesc')
         self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
                  '--description ProjectDesc')

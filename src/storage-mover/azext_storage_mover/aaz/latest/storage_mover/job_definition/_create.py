@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover job-definition create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Creates a Job Definition resource, which contains configuration for a single unit of managed data transfer.
@@ -46,13 +45,11 @@ class Create(AAZCommand):
             options=["-n", "--name", "--job-definition-name"],
             help="The name of the Job Definition resource.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project-name"],
             help="The name of the Project resource.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -61,7 +58,6 @@ class Create(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -109,7 +105,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.JobDefinitionsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -324,6 +330,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

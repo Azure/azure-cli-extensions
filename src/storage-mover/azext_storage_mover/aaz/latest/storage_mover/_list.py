@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """Lists all Storage Movers in a subscription.
@@ -46,12 +45,22 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
             self.StorageMoversList(ctx=self.ctx)()
         if condition_1:
             self.StorageMoversListBySubscription(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -365,6 +374,10 @@ class List(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

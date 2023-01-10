@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-# @register_command(
-#     "storage-mover endpoint update",
-#     is_preview=True,
-# )
 class Update(AAZCommand):
     """Updates an Endpoint resource, which represents a data transfer source or destination.
     """
@@ -101,10 +97,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.EndpointsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.EndpointsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -193,7 +209,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_endpoint_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_endpoint_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -292,7 +308,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_endpoint_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_endpoint_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -338,102 +354,104 @@ class Update(AAZCommand):
             )
 
 
-_schema_endpoint_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_endpoint_read = None
 
-def _build_schema_endpoint_read(_schema):
-    global _schema_endpoint_read
-    if _schema_endpoint_read is not None:
-        _schema.id = _schema_endpoint_read.id
-        _schema.name = _schema_endpoint_read.name
-        _schema.properties = _schema_endpoint_read.properties
-        _schema.system_data = _schema_endpoint_read.system_data
-        _schema.type = _schema_endpoint_read.type
-        return
+    @classmethod
+    def _build_schema_endpoint_read(cls, _schema):
+        if cls._schema_endpoint_read is not None:
+            _schema.id = cls._schema_endpoint_read.id
+            _schema.name = cls._schema_endpoint_read.name
+            _schema.properties = cls._schema_endpoint_read.properties
+            _schema.system_data = cls._schema_endpoint_read.system_data
+            _schema.type = cls._schema_endpoint_read.type
+            return
 
-    _schema_endpoint_read = AAZObjectType()
+        cls._schema_endpoint_read = _schema_endpoint_read = AAZObjectType()
 
-    endpoint_read = _schema_endpoint_read
-    endpoint_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    endpoint_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    endpoint_read.properties = AAZObjectType(
-        flags={"required": True},
-    )
-    endpoint_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    endpoint_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        endpoint_read = _schema_endpoint_read
+        endpoint_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        endpoint_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        endpoint_read.properties = AAZObjectType(
+            flags={"required": True},
+        )
+        endpoint_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        endpoint_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_endpoint_read.properties
-    properties.description = AAZStrType()
-    properties.endpoint_type = AAZStrType(
-        serialized_name="endpointType",
-        flags={"required": True},
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
+        properties = _schema_endpoint_read.properties
+        properties.description = AAZStrType()
+        properties.endpoint_type = AAZStrType(
+            serialized_name="endpointType",
+            flags={"required": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
 
-    disc_azure_storage_blob_container = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
-    disc_azure_storage_blob_container.blob_container_name = AAZStrType(
-        serialized_name="blobContainerName",
-        flags={"required": True},
-    )
-    disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
-        serialized_name="storageAccountResourceId",
-        flags={"required": True},
-    )
+        disc_azure_storage_blob_container = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
+        disc_azure_storage_blob_container.blob_container_name = AAZStrType(
+            serialized_name="blobContainerName",
+            flags={"required": True},
+        )
+        disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+            serialized_name="storageAccountResourceId",
+            flags={"required": True},
+        )
 
-    disc_nfs_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "NfsMount")
-    disc_nfs_mount.export = AAZStrType(
-        flags={"required": True},
-    )
-    disc_nfs_mount.host = AAZStrType(
-        flags={"required": True},
-    )
-    disc_nfs_mount.nfs_version = AAZStrType(
-        serialized_name="nfsVersion",
-    )
+        disc_nfs_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "NfsMount")
+        disc_nfs_mount.export = AAZStrType(
+            flags={"required": True},
+        )
+        disc_nfs_mount.host = AAZStrType(
+            flags={"required": True},
+        )
+        disc_nfs_mount.nfs_version = AAZStrType(
+            serialized_name="nfsVersion",
+        )
 
-    system_data = _schema_endpoint_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        system_data = _schema_endpoint_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+            flags={"read_only": True},
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+            flags={"read_only": True},
+        )
 
-    _schema.id = _schema_endpoint_read.id
-    _schema.name = _schema_endpoint_read.name
-    _schema.properties = _schema_endpoint_read.properties
-    _schema.system_data = _schema_endpoint_read.system_data
-    _schema.type = _schema_endpoint_read.type
+        _schema.id = cls._schema_endpoint_read.id
+        _schema.name = cls._schema_endpoint_read.name
+        _schema.properties = cls._schema_endpoint_read.properties
+        _schema.system_data = cls._schema_endpoint_read.system_data
+        _schema.type = cls._schema_endpoint_read.type
 
 
 __all__ = ["Update"]

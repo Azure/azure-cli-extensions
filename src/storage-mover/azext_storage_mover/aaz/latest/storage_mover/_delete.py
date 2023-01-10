@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover delete",
-    is_preview=True,
     confirmation="WARNING: Deleting a storage mover will cascade delete all contained resources. \nThis will stop all ongoing migrations and break all trust relationships with registered agents.\nAre you sure you want to delete this storage mover and all its contained resources?",
 )
 class Delete(AAZCommand):
@@ -56,7 +55,17 @@ class Delete(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.StorageMoversDelete(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     class StorageMoversDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -142,6 +151,10 @@ class Delete(AAZCommand):
 
         def on_204(self, session):
             pass
+
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
 __all__ = ["Delete"]

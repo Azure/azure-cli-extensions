@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover agent update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Updates an Agent resource, which references a hybrid compute machine that can run jobs.
@@ -82,10 +81,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.AgentsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.AgentsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -174,7 +193,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_agent_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_agent_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -273,7 +292,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_agent_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_agent_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -307,125 +326,127 @@ class Update(AAZCommand):
             )
 
 
-_schema_agent_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_agent_read = None
 
-def _build_schema_agent_read(_schema):
-    global _schema_agent_read
-    if _schema_agent_read is not None:
-        _schema.id = _schema_agent_read.id
-        _schema.name = _schema_agent_read.name
-        _schema.properties = _schema_agent_read.properties
-        _schema.system_data = _schema_agent_read.system_data
-        _schema.type = _schema_agent_read.type
-        return
+    @classmethod
+    def _build_schema_agent_read(cls, _schema):
+        if cls._schema_agent_read is not None:
+            _schema.id = cls._schema_agent_read.id
+            _schema.name = cls._schema_agent_read.name
+            _schema.properties = cls._schema_agent_read.properties
+            _schema.system_data = cls._schema_agent_read.system_data
+            _schema.type = cls._schema_agent_read.type
+            return
 
-    _schema_agent_read = AAZObjectType()
+        cls._schema_agent_read = _schema_agent_read = AAZObjectType()
 
-    agent_read = _schema_agent_read
-    agent_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    agent_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    agent_read.properties = AAZObjectType(
-        flags={"required": True, "client_flatten": True},
-    )
-    agent_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    agent_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        agent_read = _schema_agent_read
+        agent_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        agent_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        agent_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        agent_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        agent_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_agent_read.properties
-    properties.agent_status = AAZStrType(
-        serialized_name="agentStatus",
-        flags={"read_only": True},
-    )
-    properties.agent_version = AAZStrType(
-        serialized_name="agentVersion",
-        flags={"read_only": True},
-    )
-    properties.arc_resource_id = AAZStrType(
-        serialized_name="arcResourceId",
-        flags={"required": True},
-    )
-    properties.arc_vm_uuid = AAZStrType(
-        serialized_name="arcVmUuid",
-        flags={"required": True},
-    )
-    properties.description = AAZStrType()
-    properties.error_details = AAZObjectType(
-        serialized_name="errorDetails",
-        flags={"read_only": True},
-    )
-    properties.last_status_update = AAZStrType(
-        serialized_name="lastStatusUpdate",
-        flags={"read_only": True},
-    )
-    properties.local_ip_address = AAZStrType(
-        serialized_name="localIPAddress",
-        flags={"read_only": True},
-    )
-    properties.memory_in_mb = AAZIntType(
-        serialized_name="memoryInMB",
-        flags={"read_only": True},
-    )
-    properties.number_of_cores = AAZIntType(
-        serialized_name="numberOfCores",
-        flags={"read_only": True},
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.uptime_in_seconds = AAZIntType(
-        serialized_name="uptimeInSeconds",
-        flags={"read_only": True},
-    )
+        properties = _schema_agent_read.properties
+        properties.agent_status = AAZStrType(
+            serialized_name="agentStatus",
+            flags={"read_only": True},
+        )
+        properties.agent_version = AAZStrType(
+            serialized_name="agentVersion",
+            flags={"read_only": True},
+        )
+        properties.arc_resource_id = AAZStrType(
+            serialized_name="arcResourceId",
+            flags={"required": True},
+        )
+        properties.arc_vm_uuid = AAZStrType(
+            serialized_name="arcVmUuid",
+            flags={"required": True},
+        )
+        properties.description = AAZStrType()
+        properties.error_details = AAZObjectType(
+            serialized_name="errorDetails",
+            flags={"read_only": True},
+        )
+        properties.last_status_update = AAZStrType(
+            serialized_name="lastStatusUpdate",
+            flags={"read_only": True},
+        )
+        properties.local_ip_address = AAZStrType(
+            serialized_name="localIPAddress",
+            flags={"read_only": True},
+        )
+        properties.memory_in_mb = AAZIntType(
+            serialized_name="memoryInMB",
+            flags={"read_only": True},
+        )
+        properties.number_of_cores = AAZIntType(
+            serialized_name="numberOfCores",
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.uptime_in_seconds = AAZIntType(
+            serialized_name="uptimeInSeconds",
+            flags={"read_only": True},
+        )
 
-    error_details = _schema_agent_read.properties.error_details
-    error_details.code = AAZStrType(
-        flags={"read_only": True},
-    )
-    error_details.message = AAZStrType(
-        flags={"read_only": True},
-    )
+        error_details = _schema_agent_read.properties.error_details
+        error_details.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_details.message = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    system_data = _schema_agent_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        system_data = _schema_agent_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+            flags={"read_only": True},
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+            flags={"read_only": True},
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+            flags={"read_only": True},
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+            flags={"read_only": True},
+        )
 
-    _schema.id = _schema_agent_read.id
-    _schema.name = _schema_agent_read.name
-    _schema.properties = _schema_agent_read.properties
-    _schema.system_data = _schema_agent_read.system_data
-    _schema.type = _schema_agent_read.type
+        _schema.id = cls._schema_agent_read.id
+        _schema.name = cls._schema_agent_read.name
+        _schema.properties = cls._schema_agent_read.properties
+        _schema.system_data = cls._schema_agent_read.system_data
+        _schema.type = cls._schema_agent_read.type
 
 
 __all__ = ["Update"]

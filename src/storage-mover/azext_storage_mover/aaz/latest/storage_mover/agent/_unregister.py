@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover agent unregister",
-    is_preview=True,
     confirmation="WARNING: Unregistering this agent will stop ongoing migrations on this agent. Job definitions that reference this agent can’t be started until their agent reference is updated to a working agent. Registering this agent again will result in a new identity and not fix existing job definitions. Note that the Azure ARC trust is not broken. The Hybrid Compute resource must be manually removed to invalidate the agent identity that may still be allowed access to target storage containers. \nAre you sure you want to unregister this storage mover agent?",
 )
 class Unregister(AAZCommand):
@@ -62,7 +61,17 @@ class Unregister(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.AgentsDelete(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     class AgentsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -152,6 +161,10 @@ class Unregister(AAZCommand):
 
         def on_204(self, session):
             pass
+
+
+class _UnregisterHelper:
+    """Helper class for Unregister"""
 
 
 __all__ = ["Unregister"]

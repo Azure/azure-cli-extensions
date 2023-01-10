@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-# @register_command(
-#     "storage-mover endpoint create",
-#     is_preview=True,
-# )
 class Create(AAZCommand):
     """Creates an Endpoint resource, which represents a data transfer source or destination.
     """
@@ -46,7 +42,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--endpoint-name"],
             help="The name of the Endpoint resource.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -55,7 +50,6 @@ class Create(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -107,7 +101,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.EndpointsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -307,6 +311,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]
