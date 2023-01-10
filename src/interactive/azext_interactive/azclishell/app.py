@@ -68,10 +68,12 @@ def space_toolbar(settings_items, empty_space):
     if len(settings_items) == 1:
         spacing = ''
     else:
+        # Calculate the length of space between items
         spacing_len = (len(empty_space) - len(NOTIFICATIONS) - counter) // (len(settings_items) - 1)
         if spacing_len < 0:
-            # Not display the first character of settings if the space is not enough
+            # Not display the first item of settings if the space is not enough
             return space_toolbar(settings_items[1:], empty_space)
+        # Sample spacing string from `empty_space`
         spacing = empty_space[:spacing_len]
 
     settings = spacing.join(settings_items)
@@ -129,7 +131,7 @@ class AzInteractiveShell(object):
         self.command_table_thread = None
         self.recommender = Recommender(
             self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()))
-        self.recommender.set_on_recommendation_prepared(self.on_recommendation_prepared)
+        self.recommender.set_on_recommendation_prepared(self.redraw_scenario_recommendation_info)
 
         # try to consolidate state information here...
         # Used by key bindings and layout
@@ -216,10 +218,14 @@ class AzInteractiveShell(object):
             self.lexer = get_az_lexer(command_info)
         self._cli = None
 
-    def on_recommendation_prepared(self):
+    def redraw_scenario_recommendation_info(self):
         scenarios = self.recommender.get_scenarios() or []
         scenarios_rec_info = "Scenario Recommendation: "
-        scenarios_rec_info += "".join([f'\n [{idx+1}] {s["scenario"]} ({len(s["nextCommandSet"])} Commands)' for idx, s in enumerate(scenarios)])
+        for idx, s in enumerate(scenarios):
+            idx_display = f'[{idx+1}]'
+            scenario_desc = f'{s["scenario"]}'
+            command_size = f'{len(s["nextCommandSet"])} Commands'
+            scenarios_rec_info += f'\n {idx_display} {scenario_desc} ({command_size})'
         self.cli.buffers['scenarios'].reset(
             initial_document=Document(u'{}'.format(scenarios_rec_info)))
         self.cli.request_redraw()
@@ -258,9 +264,10 @@ class AzInteractiveShell(object):
     def _update_toolbar(self):
         cli = self.cli
         _, cols = get_window_dim()
-        cols = int(cols)
+        # The rightmost column in window doesn't seem to be used
+        cols = int(cols) - 1
 
-        empty_space = " " * (cols - 1)
+        empty_space = " " * cols
 
         delta = datetime.datetime.utcnow() - START_TIME
         if self.user_feedback and delta.seconds < DISPLAY_TIME:
@@ -278,6 +285,7 @@ class AzInteractiveShell(object):
         toolbar, empty_space = space_toolbar(toolbar, empty_space)
         cli.buffers['bottom_toolbar'].reset(
             initial_document=Document(u'{}{}{}'.format(NOTIFICATIONS, toolbar, empty_space)))
+        # Reset the cursor pos so that the bottom toolbar doesn't appear offset
         cli.buffers['bottom_toolbar'].cursor_position = 0
 
     def _toolbar_info(self):
@@ -318,10 +326,11 @@ class AzInteractiveShell(object):
         if not self.completer.complete_command and new_command in self.completer.command_description:
             command = new_command
 
-        # get command/group help
         if not command and self.recommender.enabled:
+            # display hint only when the user doesn't have any input
             self.description_docs = u'Try [Space] or `next` to get Command Recommendation'
         elif self.completer and command in self.completer.command_description:
+            # get command/group help
             self.description_docs = u'{}'.format(self.completer.command_description[command])
 
         # get parameter help if full command
@@ -358,7 +367,8 @@ class AzInteractiveShell(object):
         except configparser.NoSectionError:
             self.config_default = ""
 
-    def create_application(self, full_layout=True, auto_suggest=None, prompt_prefix='', toolbar_hint=''):
+    def create_application(self, full_layout=True, auto_suggest=AutoSuggestFromHistory(),
+                           prompt_prefix='', toolbar_hint=''):
         """ makes the application object and the buffers """
         layout_manager = LayoutManager(self, prompt_prefix, toolbar_hint)
         if full_layout:
@@ -381,7 +391,7 @@ class AzInteractiveShell(object):
 
         writing_buffer = Buffer(
             history=self.history,
-            auto_suggest=auto_suggest or AutoSuggestFromHistory(),
+            auto_suggest=auto_suggest,
             enable_history_search=True,
             completer=self.completer,
             complete_while_typing=Always()

@@ -57,7 +57,7 @@ class AzCompleter(Completer):
         self.shell_ctx = shell_ctx
         self.started = False
 
-        self.scenario_enabled = True
+        self.scenario_recommender_enabled = True
 
         # dictionary of command to descriptions
         self.command_description = {}
@@ -162,7 +162,7 @@ class AzCompleter(Completer):
 
     def enable_scenario_recommender(self, enable):
         """ enable or disable the scenario display in completer """
-        self.scenario_recommender = enable
+        self.scenario_recommender_enabled = enable
 
     def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
         if not self.started:
@@ -192,7 +192,7 @@ class AzCompleter(Completer):
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
             yield comp
 
-        if self.scenario_enabled:
+        if self.scenario_recommender_enabled:
             for comp in self.gen_recommended_scenario(text):
                 yield comp
 
