@@ -512,15 +512,15 @@ class AzInteractiveShell(object):
 
     def handle_scenario(self, text):
         """ parses for the scenario recommendation """
-        num = text.partition(SELECT_SYMBOL['example'])[2].strip()
+        selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
-            num = int(num) - 1
+            selected_option = int(selected_option) - 1
         except ValueError:
             print("An Integer should follow the colon", file=self.output)
             return
-        if 0 <= num < len(self.recommender.get_scenarios() or []):
-            scenario = self.recommender.get_scenarios()[num]
-            self.recommender.feedback_scenario(num, scenario)
+        if 0 <= selected_option < len(self.recommender.get_scenarios() or []):
+            scenario = self.recommender.get_scenarios()[selected_option]
+            self.recommender.feedback_scenario(selected_option, scenario)
         else:
             print('Invalid example number', file=self.output)
             return
