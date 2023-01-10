@@ -1,6 +1,6 @@
 Release History
 ===============
-1.7.0
+1.6.4
 ---
 * Add argument `--deployment-name` in command `az spring app create`.
 
