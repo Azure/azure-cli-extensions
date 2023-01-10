@@ -290,24 +290,30 @@ class AzCompleter(Completer):
                 description = default_recommendations[rec]
                 description = description or self.command_description.get(rec, '')
                 if text.strip() == '':
+                    # generate default recommendation if no recommendation result
                     yield Completion(rec, 0, display_meta=description)
         for rec in recommend_result:
             description = self.command_description.get(rec['command'], 'Commonly used command by other users')
             if text == '':
+                # generate all recommendation if user inputs space or `az `
                 yield Completion(rec['command'], 0, display_meta=description)
             elif text == 'a':
+                # start all recommendation with 'az ' if the user inputs 'a'
                 yield Completion('az ' + rec['command'], -1, display_meta=description)
             else:
+                # recommend items that match the user's input if the user inputs other
                 formatted_text = re.sub(r'\s+', ' ', text).strip()
                 if rec['command'].startswith(formatted_text) and rec['command'] != formatted_text:
                     yield Completion(rec['command'], -len(text.lstrip()), display_meta=description)
 
     def gen_recommended_scenario(self, text):
         """ generates recommended scenarios """
+        # only gen scenarios when inputting command part
         if '-' in text or not re.fullmatch(r'[a-zA-Z\s]+', text):
             return
         recommend_result = self.shell_ctx.recommender.get_scenarios() or []
         for idx, rec in enumerate(recommend_result):
+            # The Completion will replace the input with '::[num]', which will execute the specific scenario
             yield Completion(
                 '::' + str(idx + 1), -len(text),
                 display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',
@@ -320,7 +326,10 @@ class AzCompleter(Completer):
 
     def gen_cmd_and_param_completions(self):
         """ generates command and parameter completions """
-        if not self.current_command and not self.unfinished_word.strip() and self.shell_ctx.recommender.enabled:
+        # if the user inputs space or 'az', provide recommendation instead of
+        # default completion when recommender is enabled
+        has_user_input = self.current_command or self.unfinished_word.strip()
+        if not has_user_input and self.shell_ctx.recommender.enabled:
             return
         if self.complete_command:
             for param in self.command_param_info.get(self.current_command, []):

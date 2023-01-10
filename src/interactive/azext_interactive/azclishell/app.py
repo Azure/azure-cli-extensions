@@ -850,12 +850,14 @@ class AzInteractiveShell(object):
                     subprocess.Popen(cmd, shell=True).communicate()
                 else:
                     telemetry.start()
+                    # Prefetch the next recommendation using current executing command
                     self.recommender.update_executing(cmd)
                     self.cli_execute(cmd)
                     if self.last_exit_code and self.last_exit_code != 0:
                         telemetry.set_failure()
                     else:
                         telemetry.set_success()
+                    # Update execution result of previous command, fetch recommendation if command failed
                     self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()

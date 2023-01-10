@@ -84,6 +84,7 @@ class LayoutManager(object):
         """ layout for example tutorial """
         lexer, _, _, _ = get_lexers(self.shell_ctx.lexer, None, None, None)
 
+        # Append prompt token, '(prefix) az>>' before prompt
         if not any(isinstance(processor, DefaultPrompt) for processor in self.input_processors):
             self.input_processors.append(DefaultPrompt(self.get_prompt_tokens))
 
