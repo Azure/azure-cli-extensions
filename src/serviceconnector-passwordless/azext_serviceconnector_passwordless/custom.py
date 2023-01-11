@@ -59,7 +59,7 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 ):
     from azure.cli.command_modules.serviceconnector.custom import local_connection_create_func
     from ._credential_free import enable_mi_for_db_linker
-    local_connection_create_func(cmd, client,
+    return local_connection_create_func(cmd, client,
                                  resource_group_name,
                                  connection_name,
                                  location,
