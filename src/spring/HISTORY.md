@@ -1,8 +1,16 @@
 Release History
 ===============
-1.6.4
+1.6.5
 ---
 * Add argument `--deployment-name` in command `az spring app create`.
+
+1.6.4
+---
+* Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
+* Add new commands `az spring service-registry create` and `az spring service-registry delete`.
+* Add new commands `az spring gateway create` and `az spring gateway delete`.
+* Add new commands `az spring api-portal create` and `az spring api-portal delete`.
+
 
 1.6.3
 ---
