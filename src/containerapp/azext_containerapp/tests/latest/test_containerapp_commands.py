@@ -23,7 +23,7 @@ class ContainerappIdentityTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group, "eastus2")
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
 
@@ -67,7 +67,7 @@ class ContainerappIdentityTests(ScenarioTest):
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -l canadacentral'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -101,7 +101,7 @@ class ContainerappIdentityTests(ScenarioTest):
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
 
-        create_containerapp_env(self, env_name, resource_group, "westeurope")
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
 
@@ -356,7 +356,7 @@ class ContainerappIngressTests(ScenarioTest):
         logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs}").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id} --location northeurope')
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
 
@@ -402,7 +402,7 @@ class ContainerappIngressTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group, "northeurope")
+        create_containerapp_env(self, env_name, resource_group)
 
         # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
         self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
@@ -542,7 +542,7 @@ class ContainerappDaprTests(ScenarioTest):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group, "eastus2")
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('properties.configuration.dapr.appId', "containerapp"),
@@ -727,7 +727,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
 
-        create_containerapp_env(self, env, resource_group, "westeurope")
+        create_containerapp_env(self, env, resource_group)
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 
@@ -748,7 +748,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
 
-        create_containerapp_env(self, env, resource_group, "westeurope")
+        create_containerapp_env(self, env, resource_group)
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')

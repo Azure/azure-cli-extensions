@@ -38,7 +38,7 @@ services:
             'compose': compose_file_name,
         })
 
-        create_containerapp_env(self, env_name, resource_group, 'eastus')
+        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
