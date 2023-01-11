@@ -177,7 +177,7 @@ K8s_Cluster_Info = "k8s_cluster_info.txt"
 Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
-Pre_Onboarding_Inspector_Job_Registry_Path = "connectprecheck.azurecr.io/helm/connect-precheck-diagnoser:0.1.0"
+Pre_Onboarding_Inspector_Job_Registry_Path = "connectprecheck.azurecr.io/helm/pre-onboarding-inspector:0.1.0"
 Pre_Onboarding_Inspector_Check_Failed_Fault_Type = "Error occured while running the pre onboarding inspector"
 Pre_Onboarding_Inspector_Helm_Release_Failed_Fault_Type = "Error while installing pre onboarding inspector helm release"
 Pre_Onboarding_Inspector_Failed_Fault_Type = "Error while executing pre onboarding inspector Job"
