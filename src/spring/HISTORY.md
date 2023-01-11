@@ -11,7 +11,6 @@ Release History
 * Add new commands `az spring gateway create` and `az spring gateway delete`.
 * Add new commands `az spring api-portal create` and `az spring api-portal delete`.
 
-
 1.6.3
 ---
 * Deprecate the subcommand 'spring app binding'.
