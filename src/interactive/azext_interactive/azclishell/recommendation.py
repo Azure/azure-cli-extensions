@@ -140,7 +140,7 @@ class Recommender:
         if not non_block:
             self.cur_thread.join(timeout)
         if not self.cur_thread.result:
-            return self.cur_thread.result
+            return None
         return [rec for rec in self.cur_thread.result if rec['type'] == rec_type]
 
     def get_commands(self, non_block=True, timeout=3.0):
