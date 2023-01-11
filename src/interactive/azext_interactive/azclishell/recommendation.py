@@ -72,12 +72,14 @@ class Recommender:
             if not recommendations or not command:
                 send_feedback(-1, trigger_commands, processed_exception, recommendations, rec=None)
                 return
+            # reformat the user input
+            # e.g. `az webapp   create -h` => `webapp create -h`
+            formatted_command = re.sub(r'^az ', '', re.sub(r'\s+', ' ', command)).strip()
             for idx, rec in enumerate(recommendations):
                 if rec['type'] != RecommendType.Command:
                     continue
-                # reformat the user input and check if the input matches recommendation
-                # e.g. `az webapp   create -h` => `webapp create -h`
-                if re.sub(r'^az ', '', re.sub(r'\s+', ' ', command)).strip().startswith(rec['command']):
+                # check if the user input matches recommendation
+                if formatted_command.startswith(rec['command']):
                     send_feedback(f'a{idx+1}', trigger_commands, processed_exception, recommendations, rec)
                     return
             send_feedback(0, trigger_commands, processed_exception, recommendations, rec=None)
