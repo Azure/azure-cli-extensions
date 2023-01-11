@@ -37,7 +37,7 @@ class RecommendThread(threading.Thread):
 
     def run(self) -> None:
         try:
-            self.result = get_recommend_from_api([json.dumps(cmd) for cmd in self.command_history], 1,
+            self.result = get_recommend_from_api([json.dumps(cmd) for cmd in self.command_history], RecommendType.All,
                                                  self.cli_ctx.config.getint('next', 'num_limit', fallback=5),
                                                  error_info=self.processed_exception)
         except RecommendationError:
