@@ -50,7 +50,7 @@ class Recommender:
         self.cli_ctx = cli_ctx
         self.rec_path = RecommendPath(filename)
         self.cur_thread = None
-        self.on_recommendation_prepared = lambda: None
+        self.on_prepared_callback = lambda: None
         self.default_recommendations = {
             'help': 'Get help message of Azure CLI',
             'init': 'Set Azure CLI global configurations interactively',
@@ -75,6 +75,8 @@ class Recommender:
             for idx, rec in enumerate(recommendations):
                 if rec['type'] != RecommendType.Command:
                     continue
+                # reformat the user input and check if the input matches recommendation
+                # e.g. `az webapp   create -h` => `webapp create -h`
                 if re.sub(r'^az ', '', re.sub(r'\s+', ' ', command)).strip().startswith(rec['command']):
                     send_feedback(f'a{idx+1}', trigger_commands, processed_exception, recommendations, rec)
                     return
@@ -104,6 +106,7 @@ class Recommender:
         """
         if not self.enabled:
             return
+        # e.g. `az  webapp create --name xxx -g xxxx` => `webapp create`
         command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
         param = sorted([p for p in cmd.split() if p.startswith('-')])
         if feedback:
@@ -122,56 +125,48 @@ class Recommender:
         self.rec_path.append_result(self.executing_command['command'], self.executing_command['arguments'],
                                     exit_code, result_summary)
         self.executing_command = None
+        # If the execution of the last command fails, get the recommendation result again
         if exit_code != 0:
             self._update()
 
     def _update(self):
         """Update recommendation result in new thread"""
         self.cur_thread = RecommendThread(self.cli_ctx, self.rec_path, self.executing_command,
-                                          self.on_recommendation_prepared)
+                                          self.on_prepared_callback)
         self.cur_thread.start()
 
-    def _get_result(self, non_block=True, timeout=3.0, rec_type=RecommendType.Command):
+    def _get_result(self, rec_type=RecommendType.Command):
         if not self.cur_thread:
-            if non_block:
-                return None
-            else:
-                self._update()
-        if not non_block:
-            self.cur_thread.join(timeout)
+            return None
         if not self.cur_thread.result:
             return self.cur_thread.result
         return [rec for rec in self.cur_thread.result if rec['type'] == rec_type]
 
-    def get_commands(self, non_block=True, timeout=3.0):
+    def get_commands(self):
         """
         Get the latest recommended commands
-        :param non_block: whether to wait for data to be prepared
-        :param timeout: block timeout
         :return: recommendation or None if the result is not prepared
         """
         if not self.enabled:
             return []
-        return self._get_result(non_block, timeout, RecommendType.Command)
+        return self._get_result(RecommendType.Command)
 
     def get_default_recommendations(self):
         if not self.enabled:
             return []
         return self.default_recommendations
 
-    def get_scenarios(self, non_block=True, timeout=3.0):
+    def get_scenarios(self):
         """
         Get the latest recommended scenarios
-        :param non_block: whether to wait for data to be prepared
-        :param timeout: block timeout
         :return: recommendation or None if the result is not prepared
         """
         if not self.enabled:
             return []
-        return self._get_result(non_block, timeout, RecommendType.Scenario)
+        return self._get_result(RecommendType.Scenario)
 
-    def set_on_recommendation_prepared(self, cb):
-        self.on_recommendation_prepared = cb
+    def set_on_prepared_callback(self, cb):
+        self.on_prepared_callback = cb
 
 
 class RecommendPath:

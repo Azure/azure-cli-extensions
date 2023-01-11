@@ -131,7 +131,7 @@ class AzInteractiveShell(object):
         self.command_table_thread = None
         self.recommender = Recommender(
             self.cli_ctx, os.path.join(self.config.get_config_dir(), self.config.get_recommend_path()))
-        self.recommender.set_on_recommendation_prepared(self.redraw_scenario_recommendation_info)
+        self.recommender.set_on_prepared_callback(self.redraw_scenario_recommendation_info)
 
         # try to consolidate state information here...
         # Used by key bindings and layout
