@@ -46,11 +46,13 @@ class Remove(AAZCommand):
             options=["--fabric-name"],
             help="Unique fabric ARM name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["-n", "--protection-container-name"],
             help="The name of the protection container.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,6 +61,7 @@ class Remove(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
@@ -85,7 +88,16 @@ class Remove(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -152,6 +164,9 @@ class Remove(AAZCommand):
                 ),
             }
             return parameters
+
+        def on_200(self, session):
+            pass
 
         def on_204(self, session):
             pass
