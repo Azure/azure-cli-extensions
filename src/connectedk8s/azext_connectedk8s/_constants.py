@@ -180,14 +180,14 @@ Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
-CLIENT_PROXY_VERSION = '1.3.021581'
+CLIENT_PROXY_VERSION = '1.3.022011'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
 API_CALL_RETRIES = 12
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
-RELEASE_DATE_WINDOWS = 'release29-11-22'
-RELEASE_DATE_LINUX = 'release29-11-22'
+RELEASE_DATE_WINDOWS = 'release12-01-23'
+RELEASE_DATE_LINUX = 'release12-01-23'
 CSP_REFRESH_TIME = 300
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
