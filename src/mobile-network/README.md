@@ -4,7 +4,7 @@ This is an extension to Azure CLI to manage mobile network resources.
 ## How to use ##
 Install this extension using the below CLI command
 ```
-az extension add --name dynatrace
+az extension add --name mobile-network
 ```
 
 ### Included Features ###
