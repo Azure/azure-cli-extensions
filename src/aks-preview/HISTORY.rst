@@ -14,7 +14,9 @@ Pending
 
 0.5.123
 +++++++
-* Update command group `az aks maintenanceconfiguration` to enable the creation of *aksManagedAutoUpgradeSchedule* and *aksManagedNodeOSUpgradeSchedule*. 
+* Update command group `az aks maintenanceconfiguration` to support the creation of dedicated maintenance configurations:
+  * *aksManagedAutoUpgradeSchedule* for scheduled cluster auto-upgrade
+  * *aksManagedNodeOSUpgradeSchedule* for scheduled node os auto-upgrade
 
 0.5.122
 +++++++

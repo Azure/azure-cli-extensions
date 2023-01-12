@@ -1086,25 +1086,25 @@ helps['aks maintenanceconfiguration add'] = """
           short-summary: The UTC offset in format +/-HH:mm. For example, '+05:30' for IST and '-07:00' for PST. If not specified, the default is '+00:00'.
         - name: --interval-days
           type: int
-          short-summary: Specifies the number of days between each set of occurrences for daily schedule type.
+          short-summary: The number of days between each set of occurrences for daily schedule type.
         - name: --interval-weeks
           type: int
-          short-summary: Specifies the number of weeks between each set of occurrences. Applicable to weekly schedule types only.
+          short-summary: The number of weeks between each set of occurrences. Applicable to weekly schedule types only.
         - name: --interval-months
           type: int
-          short-summary: Specifies the number of months between each set of occurrences. Applicable to absolute and relative monthly schedule types.
+          short-summary: The number of months between each set of occurrences. Applicable to absolute and relative monthly schedule types.
         - name: --day-of-week
           type: string
-          short-summary: Specifies on which day of the week the maintenance occurs. E.g. "Monday". Applicable to weekly and relative monthly schedule types.
+          short-summary: Specify on which day of the week the maintenance occurs. E.g. "Monday". Applicable to weekly and relative monthly schedule types.
         - name: --day-of-month
           type: int
-          short-summary: Specifies on which day of the month the maintenance occurs. E.g. 1 indicates the 1st of the month. Applicable to absolute monthly schedule type only.
+          short-summary: Specify on which day of the month the maintenance occurs. E.g. 1 indicates the 1st of the month. Applicable to absolute monthly schedule type only.
         - name: --week-index
           type: string
-          short-summary: Specifies on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only.
+          short-summary: Specify on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only.
         - name: --config-file
           type: string
-          short-summary: the maintenance configuration json file.
+          short-summary: The maintenance configuration json file.
     examples:
         - name: Add default maintenance configuration with --weekday and --start-hour.
           text: |
@@ -1220,25 +1220,25 @@ helps['aks maintenanceconfiguration update'] = """
           short-summary: The UTC offset in format +/-HH:mm. For example, '+05:30' for IST and '-07:00' for PST. If not specified, the default is '+00:00'.
         - name: --interval-days
           type: int
-          short-summary: Specifies the number of days between each set of occurrences for daily schedule type.
+          short-summary: The number of days between each set of occurrences for daily schedule type.
         - name: --interval-weeks
           type: int
-          short-summary: Specifies the number of weeks between each set of occurrences. Applicable to weekly schedule types only.
+          short-summary: The number of weeks between each set of occurrences. Applicable to weekly schedule types only.
         - name: --interval-months
           type: int
-          short-summary: Specifies the number of months between each set of occurrences. Applicable to absolute and relative monthly schedule types.
+          short-summary: The number of months between each set of occurrences. Applicable to absolute and relative monthly schedule types.
         - name: --day-of-week
           type: string
-          short-summary: Specifies on which day of the week the maintenance occurs. E.g. "Monday". Applicable to weekly and relative monthly schedule types.
+          short-summary: Specify on which day of the week the maintenance occurs. E.g. "Monday". Applicable to weekly and relative monthly schedule types.
         - name: --day-of-month
           type: int
-          short-summary: Specifies on which day of the month the maintenance occurs. E.g. 1 indicates the 1st of the month. Applicable to absolute monthly schedule type only.
+          short-summary: Specify on which day of the month the maintenance occurs. E.g. 1 indicates the 1st of the month. Applicable to absolute monthly schedule type only.
         - name: --week-index
           type: string
-          short-summary: Specifies on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only.
+          short-summary: Specify on which instance of the allowed days specified in '--day-of-week' the maintenance occurs. Applicable to relative monthly schedule type only.
         - name: --config-file
           type: string
-          short-summary: the maintenance configuration json file.
+          short-summary: The maintenance configuration json file.
     examples:
         - name: Update default maintenance configuration with --weekday and --start-hour.
           text: |
