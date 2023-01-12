@@ -229,7 +229,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
     """
 
-    # Get workspace and target information
+    # Get workspace, target, and provider information
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if ws_info is None:
         raise AzureInternalError("Failed to get workspace information.")
@@ -373,7 +373,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if entry_point is not None:
         job_params["entryPoint"] = entry_point
 
-    # Convert "count" to an integer     # <<<<< What about other numeric or Boolean values? Convert them too?
+    # Convert "count" to an integer
     if "count" in job_params.keys():
         try:
             job_params["count"] = int(job_params["count"])
