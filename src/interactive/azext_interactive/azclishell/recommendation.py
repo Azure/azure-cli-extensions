@@ -139,6 +139,7 @@ class Recommender:
 
     def _get_result(self, rec_type=RecommendType.Command):
         if not self.cur_thread:
+            # This `None` represents that the recommender is initialized but not updated
             return None
         if not self.cur_thread.result:
             # This `None` represents the request is running and recommendation is not ready

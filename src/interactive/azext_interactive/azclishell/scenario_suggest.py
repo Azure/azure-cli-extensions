@@ -17,8 +17,11 @@ class ScenarioAutoSuggest(AutoSuggest):
 
     def update(self, sample: str):
         """Change command sample that would be suggested to the user"""
+        # The sample should not start with 'az '
         self.cur_sample = sample.split('az ')[-1]
+        # Find parameters used in sample and its value
         self.param_value_map = {}
+        # Find the command part of sample
         self.cur_command = self.cur_sample.split('-')[0].strip()
         cur_param = ''
         for part in self.cur_sample.split():

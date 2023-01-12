@@ -432,6 +432,8 @@ class AzInteractiveShell(object):
 
     def handle_example(self, text, continue_flag):
         """ parses for the tutorial """
+        # Get the cmd part and index part from input
+        # e.g. webapp create :: 1  => `cmd = 'webapp create'` `selected_option='1'`
         cmd = text.partition(SELECT_SYMBOL['example'])[0].rstrip()
         selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         example = ""
@@ -513,6 +515,8 @@ class AzInteractiveShell(object):
 
     def handle_scenario(self, text):
         """ parses for the scenario recommendation """
+        # Get the index part from input
+        # e.g. :: 1  => `selected_option='1'`
         selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
             selected_option = int(selected_option) - 1
@@ -528,7 +532,7 @@ class AzInteractiveShell(object):
         self.scenario_repl(scenario)
 
     def scenario_repl(self, scenario):
-        """ REPL for interactive scenario execution """
+        """ REPL(Read-Eval-Print Loop) for interactive scenario execution """
         auto_suggest = ScenarioAutoSuggest()
         example_cli = CommandLineInterface(
             application=self.create_application(
@@ -538,7 +542,8 @@ class AzInteractiveShell(object):
                 toolbar_hint='In Scenario Mode: Press [Enter] to execute commands   [Ctrl+C]Skip  [Ctrl+D]Quit'
             ),
             eventloop=create_eventloop())
-       # When users execute the recommended command combination of scenario, they no longer need the scenario recommendation
+        # When users execute the recommended command combination of scenario,
+        # they no longer need the scenario recommendation
         self.completer.enable_scenario_recommender(False)
 
         _show_details_for_e2e_scenario(scenario, file=self.output)
