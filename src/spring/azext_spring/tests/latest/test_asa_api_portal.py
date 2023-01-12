@@ -51,6 +51,13 @@ class ApiPortalTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
+        self.cmd('spring api-portal delete -g {rg} -s {serviceName} --yes')
+
+        self.cmd('spring api-portal create -g {rg} -s {serviceName}', checks=[
+            self.check('properties.public', False),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
         self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{cert}')
         ])

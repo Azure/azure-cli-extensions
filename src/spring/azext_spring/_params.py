@@ -699,6 +699,10 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
+    for scope in ['gateway create', 'api-portal create']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('instance_count', type=int, help='Number of instance.')
+
     for scope in ['gateway update', 'api-portal update']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('instance_count', type=int, help='Number of instance.')
