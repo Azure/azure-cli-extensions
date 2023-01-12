@@ -34,7 +34,7 @@ class NetworkScenarioTest(ScenarioTest):
             'sub': '/subscriptions/{}'.format(self.get_subscription_id())
         })
 
-        self.cmd('network manager create --name {name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {name} --description "My Test Network Manager" '
                  '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  'subscriptions={sub} '
@@ -61,7 +61,7 @@ class NetworkScenarioTest(ScenarioTest):
             'sub': '/subscriptions/{}'.format(self.get_subscription_id())
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -89,7 +89,7 @@ class NetworkScenarioTest(ScenarioTest):
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
             'virtual_network': virtual_network
         })
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -122,7 +122,7 @@ class NetworkScenarioTest(ScenarioTest):
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -130,7 +130,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager security-user-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
+                 '--description {description}')
 
         self.cmd('network manager security-user-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description "test_description"')
@@ -149,11 +149,11 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--display-name "TestNetworkManager" --scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes subscriptions={sub} -l eastus2euap --resource-group {rg}')
 
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
+                 '--description {description}')
 
         self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description "test_description"')
@@ -187,7 +187,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -201,10 +201,10 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
+                 '--description {description}')
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
 
@@ -236,7 +236,7 @@ class NetworkScenarioTest(ScenarioTest):
             'name': 'TestStaticMember'
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -250,16 +250,15 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
+                 '--description {description}')
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
         
         self.cmd('network manager security-admin-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
 
-        self.cmd('network manager security-admin-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
-                 '--display-name ASampleCollection2')
+        self.cmd('network manager security-admin-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
 
         self.cmd('network manager security-admin-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
 
@@ -283,7 +282,7 @@ class NetworkScenarioTest(ScenarioTest):
             'virtual_network': virtual_network
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -297,10 +296,10 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
+                 '--description {description}')
 
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
         self.cmd('network manager security-user-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
@@ -326,7 +325,7 @@ class NetworkScenarioTest(ScenarioTest):
             'virtual_network': virtual_network
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -340,15 +339,14 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
+                 '--description {description}')
 
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
         
         self.cmd('network manager security-user-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
-        self.cmd('network manager security-user-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
-                 '--display-name ASampleCollection2')
+        self.cmd('network manager security-user-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-user-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
         self.cmd('network manager security-user-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
         self.cmd('network manager security-user-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
@@ -367,7 +365,7 @@ class NetworkScenarioTest(ScenarioTest):
             'name': 'TestStaticMember'
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -407,7 +405,7 @@ class NetworkScenarioTest(ScenarioTest):
             'name': 'TestStaticMember'
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -445,7 +443,7 @@ class NetworkScenarioTest(ScenarioTest):
             'tenant_id': tenant_id
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -477,7 +475,7 @@ class NetworkScenarioTest(ScenarioTest):
             'connection_name': 'myTestNetworkManagerConnection'
         })
 
-        network_manager = self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        network_manager = self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                                    '--scope-accesses "SecurityAdmin" "Connectivity" '
                                    '--network-manager-scopes '
                                    ' subscriptions={sub} '
@@ -508,7 +506,6 @@ class NetworkScenarioTest(ScenarioTest):
 
         network_manager = self.cmd(
             'network manager create --name {manager_name} --description "My Test Network Manager" '
-            '--display-name "TestNetworkManager" '
             '--scope-accesses "SecurityAdmin" '
             '--network-manager-scopes '
             ' subscriptions={sub} '
@@ -537,7 +534,7 @@ class NetworkScenarioTest(ScenarioTest):
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
         })
 
-        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
@@ -545,12 +542,12 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig --apply-on None',
+                 '--description {description} --apply-on None',
                  checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'))
 
         self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description "test_description" --apply-on None',
-                 checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'))
+                 '--description "test_description" --apply-on AllowRulesOnly',
+                 checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'AllowRulesOnly\']'))
         self.cmd('network manager security-admin-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
 
@@ -567,7 +564,7 @@ class NetworkScenarioTest(ScenarioTest):
 #             'mgId': 'testManagementGroupId'
 #         })
 #
-#         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+#         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
 #              '--scope-accesses "SecurityAdmin" "Connectivity" '
 #              '--network-manager-scopes '
 #              ' subscriptions={sub} '

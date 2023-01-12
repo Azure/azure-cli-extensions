@@ -6,7 +6,7 @@ import unittest
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_01_01_preview import models
+from ...vendored_sdks.appplatform.v2022_11_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 try:
@@ -79,6 +79,97 @@ class TestSpringCloudCreateEnerprise(BasicTest):
         self.assertEqual('E0', resource.sku.name)
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertIsNone(resource.properties.marketplace_resource)
+
+    def test_asc_create_enterprise_with_plan(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), disable_app_insights=True, marketplace_plan_id='my-plan')
+        resource = self.created_resource
+        self.assertEqual('E0', resource.sku.name)
+        self.assertEqual('Enterprise', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('my-plan', resource.properties.marketplace_resource.plan)
+        self.assertEqual('azure-spring-cloud-vmware-tanzu-2', resource.properties.marketplace_resource.product)
+        self.assertEqual('vmware-inc', resource.properties.marketplace_resource.publisher)
+
+
+class TestSpringAppsCreateWithApplicationLiveView(BasicTest):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.alv_resource = None
+        self.alv_request = None
+        self.dev_tool = None
+        self.dev_tool_request = None
+
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+        self.alv_request = client.application_live_views.begin_create_or_update.call_args_list
+        self.alv_resource = self.alv_request[0][0][3] if self.alv_request else None
+        self.dev_tool_request = client.dev_tool_portals.begin_create_or_update.call_args_list
+        self.dev_tool = self.dev_tool_request[0][0][3] if self.dev_tool_request else None
+
+    def test_asa_enterprise_with_alv(self):
+        self._execute('rg', 'asa', sku=self._get_sku('Enterprise'), enable_application_live_view=True, disable_app_insights=True)
+        self.assertIsNotNone(self.alv_resource)
+        self.assertEqual('rg', self.alv_request[0][0][0])
+        self.assertEqual('asa', self.alv_request[0][0][1])
+        self.assertEqual('default', self.alv_request[0][0][2])
+        self.assertIsNotNone(self.dev_tool)
+        self.assertEqual(models.DevToolPortalFeatureState.ENABLED,
+                         self.dev_tool.properties.features.application_live_view.state)
+        self.assertEqual('rg', self.dev_tool_request[0][0][0])
+        self.assertEqual('asa', self.dev_tool_request[0][0][1])
+        self.assertEqual('default', self.dev_tool_request[0][0][2])
+
+    def test_asa_enterprise_without_alv(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_live_view=False, disable_app_insights=True)
+        self.assertIsNone(self.alv_resource)
+        self.assertIsNone(self.dev_tool)
+    
+    def test_asa_standard_with_alv(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_application_live_view=True, disable_app_insights=True)
+        self.assertIsNone(self.alv_resource)
+        self.assertIsNone(self.dev_tool)
+
+    def test_asa_basic_with_alv(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Basic'), enable_application_live_view=True, disable_app_insights=True)
+        self.assertIsNone(self.alv_resource)
+        self.assertIsNone(self.dev_tool)
+
+
+class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.acc_resource = None
+        self.dev_tool = None
+
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+        call_args = client.application_accelerators.begin_create_or_update.call_args_list
+        self.acc_resource = call_args[0][0][3] if call_args else None
+        call_args = client.dev_tool_portals.begin_create_or_update.call_args_list
+        self.dev_tool = call_args[0][0][3] if call_args else None
+
+    def test_asa_enterprise_with_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_accelerator=True, disable_app_insights=True)
+        self.assertIsNotNone(self.acc_resource)
+        self.assertIsNotNone(self.dev_tool)
+
+    def test_asa_enterprise_without_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_application_accelerator=False, disable_app_insights=True)
+        self.assertIsNone(self.acc_resource)
+        self.assertIsNone(self.dev_tool)
+    
+    def test_asa_standard_with_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_application_accelerator=True, disable_app_insights=True)
+        self.assertIsNone(self.acc_resource)
+        self.assertIsNone(self.dev_tool)
+
+    def test_asa_basic_with_acc(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Basic'), enable_application_accelerator=True, disable_app_insights=True)
+        self.assertIsNone(self.acc_resource)
+        self.assertIsNone(self.dev_tool)
 
 
 class TestSpringCloudCreateWithAI(BasicTest):

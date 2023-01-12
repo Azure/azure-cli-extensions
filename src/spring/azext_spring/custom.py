@@ -26,6 +26,7 @@ from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_2020
 from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
 from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_09_01_preview import models as models_20220901preview
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
@@ -187,7 +188,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
 
 
 def spring_delete(cmd, client, resource_group, name, no_wait=False):
-    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
+    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/asa_exitsurvey")
     return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
 
 
@@ -313,6 +314,23 @@ def app_stop(cmd, client,
     logger.warning("Successfully triggered the action 'stop' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_stop,
                        resource_group, service, name, deployment.name)
+
+
+def deployment_enable_remote_debugging(cmd, client, resource_group, service, name, remote_debugging_port=None, deployment=None, no_wait=False):
+    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    remote_debugging_payload = models_20220901preview.RemoteDebuggingPayload(port=remote_debugging_port)
+    return sdk_no_wait(no_wait, client.deployments.begin_enable_remote_debugging,
+                       resource_group, service, name, deployment.name, remote_debugging_payload)
+
+
+def deployment_disable_remote_debugging(cmd, client, resource_group, service, name, deployment=None, no_wait=False):
+    logger.warning("Disable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    return sdk_no_wait(no_wait, client.deployments.begin_disable_remote_debugging,
+                       resource_group, service, name, deployment.name)
+
+
+def deployment_get_remote_debugging(cmd, client, resource_group, service, name, deployment=None):
+    return client.deployments.get_remote_debugging_config(resource_group, service, name, deployment.name)
 
 
 def app_restart(cmd, client,
@@ -1517,3 +1535,13 @@ def app_connect(cmd, client, resource_group, service, name,
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(EXEC_PROTOCOL_CTRL_C_MSG)
+
+    try:
+        import termios
+        # Turn on the terminal echo after exiting.
+        mode = termios.tcgetattr(sys.stdin.fileno())
+        mode[3] = mode[3] | termios.ECHO
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, mode)
+    except ModuleNotFoundError:
+        # termios works only on Unix
+        pass

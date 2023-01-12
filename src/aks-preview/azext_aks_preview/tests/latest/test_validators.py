@@ -114,6 +114,10 @@ class EnableCustomCATrustNamespace:
         self.os_type = os_type
         self.enable_custom_ca_trust = enable_custom_ca_trust
 
+class CustomCATrustCertificatesNamespace:
+    def __init__(self, os_type, custom_ca_trust_certificates):
+        self.os_type = os_type
+        self.custom_ca_trust_certificates = custom_ca_trust_certificates
 
 class DisableWindowsOutboundNatNamespace:
     def __init__(self, os_type, disable_windows_outbound_nat):
@@ -195,6 +199,23 @@ class TestEnableCustomCATrust(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
         self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestCustomCATrustCertificates(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["foo", ""]
+        for v in valid:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Linux", v))
+
+    def test_fail_if_os_type_windows(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Windows", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("invalid", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
 class TestDisableWindowsOutboundNAT(unittest.TestCase):
@@ -515,6 +536,66 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         validators.validate_agent_pool_name(
+            namespace
+        )
+
+
+class TestValidateAllowedHostPorts(unittest.TestCase):
+    def test_invalid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80,443,8080",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_allowed_host_ports(
+                namespace
+            )
+
+    def test_valid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80/tcp,443/tcp,8080-8090/tcp,53/udp",
+            }
+        )
+        validators.validate_allowed_host_ports(
+            namespace
+        )
+
+
+class TestValidateApplicationSecurityGroups(unittest.TestCase):
+    def test_invalid_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "invalid",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_empty_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "",
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_multiple_application_security_groups(self):
+        asg_ids = ','.join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": asg_ids,
+            }
+        )
+        validators.validate_application_security_groups(
             namespace
         )
 

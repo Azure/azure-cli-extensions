@@ -11,7 +11,6 @@ from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
 
 from azure.cli.core import azclierror
-from azure.core.exceptions import ResourceNotFoundError
 
 
 class SshCustomCommandTest(unittest.TestCase):
@@ -19,7 +18,7 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.ssh_info.SSHSession')
-    @mock.patch('azext_ssh.custom._decide_resource_type')
+    @mock.patch('azext_ssh.resource_type_utils.decide_resource_type')
     def test_ssh_vm(self, mock_type, mock_info, mock_assert, mock_do_op):      
         cmd = mock.Mock()
         ssh_info = mock.Mock()
@@ -37,7 +36,7 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.ssh_info.SSHSession')
-    @mock.patch('azext_ssh.custom._decide_resource_type')
+    @mock.patch('azext_ssh.resource_type_utils.decide_resource_type')
     @mock.patch('platform.system')
     def test_ssh_vm_rdp(self, mock_sys, mock_type, mock_info, mock_assert, mock_do_op):      
         cmd = mock.Mock()
@@ -57,7 +56,7 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.ssh_info.SSHSession')
-    @mock.patch('azext_ssh.custom._decide_resource_type')
+    @mock.patch('azext_ssh.resource_type_utils.decide_resource_type')
     def test_ssh_vm_debug(self, mock_type, mock_info, mock_assert, mock_do_op):      
         cmd = mock.Mock()
         ssh_info = mock.Mock()
@@ -73,7 +72,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_do_op.assert_called_once_with(cmd, ssh_info, ssh_utils.start_ssh_connection)
 
     @mock.patch('azext_ssh.custom._do_ssh_op')
-    @mock.patch('azext_ssh.custom._decide_resource_type')
+    @mock.patch('azext_ssh.resource_type_utils.decide_resource_type')
     @mock.patch('os.environ.get')
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.ssh_info.SSHSession')
@@ -100,7 +99,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.custom._do_ssh_op')
-    @mock.patch('azext_ssh.custom._decide_resource_type')
+    @mock.patch('azext_ssh.resource_type_utils.decide_resource_type')
     @mock.patch('os.path.dirname')
     @mock.patch('os.path.isdir')
     @mock.patch('azext_ssh.ssh_info.ConfigSession')
@@ -131,10 +130,10 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_type.assert_called_once_with(cmd, config_info)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "user")
         mock_do_op.assert_called_once_with(cmd, config_info, ssh_utils.write_ssh_config)
-
+    
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.custom._do_ssh_op')
-    @mock.patch('azext_ssh.custom._decide_resource_type')
+    @mock.patch('azext_ssh.resource_type_utils.decide_resource_type')
     @mock.patch('azext_ssh.ssh_info.ConfigSession')
     @mock.patch('os.path.isdir')
     @mock.patch('os.path.dirname')
@@ -158,13 +157,13 @@ class SshCustomCommandTest(unittest.TestCase):
         self.assertRaises(
             azclierror.ArgumentUsageError, custom.ssh_config, cmd, 'path', 'rg', 'vm', 'ip', 'pub', 'priv', True, False, 'user', 'cert', 'port', 'type', 'cred', 'proxy', 'client'
         )
-    
+
     @mock.patch('azext_ssh.custom.ssh_vm')
     def test_ssh_arc(self, mock_vm):
         cmd = mock.Mock()
-        custom.ssh_arc(cmd, "rg", "vm", "pub", "priv", "user", "cert", "port", "client", False, "proxy", False, [])
+        custom.ssh_arc(cmd, "rg", "vm", "pub", "priv", "user", "cert", "port", None, "client", False, "proxy", False, [])
 
-        mock_vm.assert_called_once_with(cmd, "rg", "vm", None, "pub", "priv", False, "user", "cert", "port", "client", False, "Microsoft.HybridCompute", "proxy", False, [])
+        mock_vm.assert_called_once_with(cmd, "rg", "vm", None, "pub", "priv", False, "user", "cert", "port", "client", False, 'arc_resource_type_placeholder', "proxy", False, [])
 
     def test_ssh_cert_no_args(self):
         cmd = mock.Mock()
@@ -193,10 +192,10 @@ class SshCustomCommandTest(unittest.TestCase):
 
         mock_get_keys.assert_called_once_with('/pubkey/path', None, None, '/client/path')
         mock_write_cert.assert_called_once_with(cmd, 'pubkey', '/cert/path', '/client/path')
-    
+
     def test_assert_args_invalid_resource_type(self):
         self.assertRaises(azclierror.InvalidArgumentValueError, custom._assert_args, 'rg', 'vm', 'ip', "Microsoft.Network", 'cert', 'user')
-    
+     
     def test_assert_args_no_ip_or_vm(self):
         self.assertRaises(azclierror.RequiredArgumentMissingError, custom._assert_args, None, None, None, None, None, None)
 
@@ -215,8 +214,9 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('os.path.isfile')
     def test_assert_args_invalid_cert_filepath(self, mock_is_file):
         mock_is_file.return_value = False
+        # Legacy Resource Type shouldn't raise error.
         self.assertRaises(azclierror.FileOperationError, custom._assert_args, 'rg', 'vm', None, 'Microsoft.HybridCompute', 'cert_path', 'username')
-    
+
     @mock.patch('azext_ssh.ssh_utils.create_ssh_keyfile')
     @mock.patch('tempfile.mkdtemp')
     @mock.patch('os.path.isfile')
@@ -360,7 +360,7 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd.cli_ctx.cloud = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
 
-        op_info = ssh_info.SSHSession(None, None, "1.2.3.4", None, None, False, None, None, None, None, None, None, "Microsoft.Compute", None, None, False)
+        op_info = ssh_info.SSHSession(None, None, "1.2.3.4", None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.ssh_client_folder = "/client/folder"
@@ -389,7 +389,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_op = mock.Mock()
         mock_ip.return_value = "1.2.3.4"
 
-        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, False, False, "username", None, None, "Microsoft.Compute", None, None, None)
+        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, False, False, "username", None, None, "Microsoft.Compute/virtualMachines", None, None, None)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.cert_file = "cert"
@@ -408,7 +408,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_op = mock.Mock()
         mock_ip.return_value = None
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, None, None, "Microsoft.Compute", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False)
 
         self.assertRaises(
             azclierror.ResourceNotFoundError, custom._do_ssh_op, cmd, op_info, mock_op)
@@ -426,7 +426,7 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd = mock.Mock()      
         mock_op = mock.Mock()
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False)
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
         op_info.ssh_client_folder = "client"
@@ -435,7 +435,7 @@ class SshCustomCommandTest(unittest.TestCase):
         custom._do_ssh_op(cmd, op_info, mock_op)
         
         mock_get_proxy.assert_called_once_with('proxy')
-        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', None)
+        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', None)
         mock_op.assert_called_once_with(op_info, False, False)
         mock_get_cert.assert_not_called()
         mock_check_keys.assert_not_called()
@@ -471,7 +471,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
         mock_op = mock.Mock()
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, "port", None, [], False, "Microsoft.HybridCompute", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.ssh_client_folder = "client"
@@ -486,66 +486,8 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
         mock_get_proxy.assert_called_once_with('proxy')
-        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 3600)
+        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', 3600)
         mock_op.assert_called_once_with(op_info, False, True)
-
-    def test_decide_resource_type_ip(self):
-        cmd = mock.Mock()
-        op_info = ssh_info.SSHSession(None, None, "ip", None, None, False, None, None, None, None, [], False, None, None, None, False)
-        self.assertEqual(custom._decide_resource_type(cmd, op_info), "Microsoft.Compute")
-    
-    @mock.patch('azext_ssh.custom._check_if_arc_server')
-    def test_decide_resource_type_resourcetype_arc(self, mock_is_arc):
-        cmd = mock.Mock()
-        mock_is_arc.return_value = None, None, True
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, "Microsoft.HybridCompute", None, None, False)
-        self.assertEqual(custom._decide_resource_type(cmd, op_info), "Microsoft.HybridCompute")
-    
-    @mock.patch('azext_ssh.custom._check_if_azure_vm')
-    def test_decide_resource_type_resourcetype_arc(self, mock_is_vm):
-        cmd = mock.Mock()
-        mock_is_vm.return_value = None, None, True
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, "Microsoft.Compute", None, None, False)
-        self.assertEqual(custom._decide_resource_type(cmd, op_info), "Microsoft.Compute")
-
-    @mock.patch('azext_ssh.custom._check_if_azure_vm')
-    @mock.patch('azext_ssh.custom._check_if_arc_server')
-    def test_decide_resource_type_rg_vm_both(self, mock_is_arc, mock_is_vm):
-        cmd = mock.Mock()
-        mock_is_vm.return_value = None, None, True
-        mock_is_arc.return_value = None, None, True
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, None, None, None, False)
-        self.assertRaises(
-            azclierror.BadRequestError, custom._decide_resource_type, cmd, op_info)
-    
-    @mock.patch('azext_ssh.custom._check_if_azure_vm')
-    @mock.patch('azext_ssh.custom._check_if_arc_server')
-    def test_decide_resource_type_rg_vm_neither(self, mock_is_arc, mock_is_vm):
-        cmd = mock.Mock()
-        mock_is_vm.return_value = None, ResourceNotFoundError(), False
-        mock_is_arc.return_value = None, ResourceNotFoundError(), False
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, None, None, None, False)
-        self.assertRaises(
-            azclierror.ResourceNotFoundError, custom._decide_resource_type, cmd, op_info)
-    
-    @mock.patch('azext_ssh.custom._check_if_azure_vm')
-    @mock.patch('azext_ssh.custom._check_if_arc_server')
-    def test_decide_resource_type_rg_vm_arc(self, mock_is_arc, mock_is_vm):
-        cmd = mock.Mock()
-        mock_is_vm.return_value = None, ResourceNotFoundError(), False
-        mock_is_arc.return_value = None, None, True
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, None, None, None, False)
-        self.assertEqual(custom._decide_resource_type(cmd, op_info), "Microsoft.HybridCompute")
-    
-    @mock.patch('azext_ssh.custom._check_if_azure_vm')
-    @mock.patch('azext_ssh.custom._check_if_arc_server')
-    def test_decide_resource_type_rg_vm_arc(self, mock_is_arc, mock_is_vm):
-        cmd = mock.Mock()
-        mock_is_vm.return_value = None, None, True
-        mock_is_arc.return_value = None, ResourceNotFoundError(), False
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, None, None, None, False)
-        self.assertEqual(custom._decide_resource_type(cmd, op_info), "Microsoft.Compute")
-
     
     if __name__ == '__main__':
         unittest.main()
