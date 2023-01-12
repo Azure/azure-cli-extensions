@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery protection-container-mapping create",
+    "site-recovery fabric protection-container mapping show",
 )
-class Create(AAZCommand):
-    """Create operation to create a protection container mapping.
+class Show(AAZCommand):
+    """Get the details of a protection container mapping.
     """
 
     _aaz_info = {
@@ -25,11 +25,10 @@ class Create(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,16 +45,19 @@ class Create(AAZCommand):
             options=["--fabric-name"],
             help="Fabric name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.mapping_name = AAZStrArg(
             options=["-n", "--name", "--mapping-name"],
-            help="Protection container mapping name.",
+            help="Protection Container mapping name.",
             required=True,
+            id_part="child_name_3",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,85 +66,13 @@ class Create(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.policy_id = AAZStrArg(
-            options=["--policy-id"],
-            arg_group="Properties",
-            help="Applicable policy.",
-        )
-        _args_schema.provider_specific_input = AAZObjectArg(
-            options=["--provider-input", "--provider-specific-input"],
-            arg_group="Properties",
-            help="Provider specific input for pairing.",
-        )
-        _args_schema.target_protection_container_id = AAZStrArg(
-            options=["--target-container", "--target-protection-container-id"],
-            arg_group="Properties",
-            help="The target unique protection container name.",
-        )
-
-        provider_specific_input = cls._args_schema.provider_specific_input
-        provider_specific_input.a2a = AAZObjectArg(
-            options=["a2a"],
-            help="A2A",
-        )
-        provider_specific_input.v_mware_cbt = AAZObjectArg(
-            options=["v-mware-cbt"],
-        )
-
-        a2a = cls._args_schema.provider_specific_input.a2a
-        a2a.agent_auto_update_status = AAZStrArg(
-            options=["agent-auto-update-status"],
-            help="A value indicating whether the auto update is enabled.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        a2a.automation_account_arm_id = AAZStrArg(
-            options=["automation-account-arm-id"],
-            help="The automation account arm id.",
-        )
-        a2a.automation_account_authentication_type = AAZStrArg(
-            options=["automation-account-authentication-type"],
-            help="A value indicating the type authentication to use for automation Account.",
-            default="RunAsAccount",
-            enum={"RunAsAccount": "RunAsAccount", "SystemAssignedIdentity": "SystemAssignedIdentity"},
-        )
-
-        v_mware_cbt = cls._args_schema.provider_specific_input.v_mware_cbt
-        v_mware_cbt.key_vault_id = AAZStrArg(
-            options=["key-vault-id"],
-            help="The target key vault ARM Id.",
-        )
-        v_mware_cbt.key_vault_uri = AAZStrArg(
-            options=["key-vault-uri"],
-            help="The target key vault URL.",
-        )
-        v_mware_cbt.service_bus_connection_string_secret_name = AAZStrArg(
-            options=["service-bus-connection-string-secret-name"],
-            help="The secret name of the service bus connection string.",
-        )
-        v_mware_cbt.storage_account_id = AAZStrArg(
-            options=["storage-account-id"],
-            help="The storage account ARM Id.",
-            required=True,
-        )
-        v_mware_cbt.storage_account_sas_secret_name = AAZStrArg(
-            options=["storage-account-sas-secret-name"],
-            help="The secret name of the storage account.",
-        )
-        v_mware_cbt.target_location = AAZStrArg(
-            options=["target-location"],
-            help="The target location.",
-            required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectionContainerMappingsCreate(ctx=self.ctx)()
+        self.ReplicationProtectionContainerMappingsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -157,30 +87,14 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationProtectionContainerMappingsCreate(AAZHttpOperation):
+    class ReplicationProtectionContainerMappingsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -193,7 +107,7 @@ class Create(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -243,52 +157,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("policyId", AAZStrType, ".policy_id")
-                properties.set_prop("providerSpecificInput", AAZObjectType, ".provider_specific_input")
-                properties.set_prop("targetProtectionContainerId", AAZStrType, ".target_protection_container_id")
-
-            provider_specific_input = _builder.get(".properties.providerSpecificInput")
-            if provider_specific_input is not None:
-                provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
-                provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".v_mware_cbt", typ_kwargs={"flags": {"required": True}})
-                provider_specific_input.discriminate_by("instanceType", "A2A")
-                provider_specific_input.discriminate_by("instanceType", "VMwareCbt")
-
-            disc_a2_a = _builder.get(".properties.providerSpecificInput{instanceType:A2A}")
-            if disc_a2_a is not None:
-                disc_a2_a.set_prop("agentAutoUpdateStatus", AAZStrType, ".a2a.agent_auto_update_status")
-                disc_a2_a.set_prop("automationAccountArmId", AAZStrType, ".a2a.automation_account_arm_id")
-                disc_a2_a.set_prop("automationAccountAuthenticationType", AAZStrType, ".a2a.automation_account_authentication_type")
-
-            disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
-            if disc_v_mware_cbt is not None:
-                disc_v_mware_cbt.set_prop("keyVaultId", AAZStrType, ".v_mware_cbt.key_vault_id")
-                disc_v_mware_cbt.set_prop("keyVaultUri", AAZStrType, ".v_mware_cbt.key_vault_uri")
-                disc_v_mware_cbt.set_prop("serviceBusConnectionStringSecretName", AAZStrType, ".v_mware_cbt.service_bus_connection_string_secret_name")
-                disc_v_mware_cbt.set_prop("storageAccountId", AAZStrType, ".v_mware_cbt.storage_account_id", typ_kwargs={"flags": {"required": True}})
-                disc_v_mware_cbt.set_prop("storageAccountSasSecretName", AAZStrType, ".v_mware_cbt.storage_account_sas_secret_name")
-                disc_v_mware_cbt.set_prop("targetLocation", AAZStrType, ".v_mware_cbt.target_location", typ_kwargs={"flags": {"required": True}})
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -513,8 +385,8 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Create"]
+__all__ = ["Show"]

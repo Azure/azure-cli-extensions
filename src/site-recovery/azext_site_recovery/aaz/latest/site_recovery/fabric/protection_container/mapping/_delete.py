@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery protection-container-mapping delete",
+    "site-recovery fabric protection-container mapping delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
