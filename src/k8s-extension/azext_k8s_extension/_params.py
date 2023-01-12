@@ -78,15 +78,15 @@ def load_arguments(self, _):
         c.argument('plan_name',
                    arg_group="Marketplace",
                    options_list=['--plan-name'],
-                   help='Name of the 3rd Party Artifact that is being procured.')
+                   help='The plan name is referring to the Plan ID of the extension that is being taken from Marketplace portal under Usage Information + Support')
         c.argument('plan_product',
                    arg_group="Marketplace",
                    options_list=['--plan-product'],
-                   help='The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the OfferID specified for the artifact at the time of Data Market onboarding.')
+                   help='The plan product is referring to the Product ID of the extension that is being taken from Marketplace portal under Usage Information + Support. An example of this is the name of the ISV offering used.')
         c.argument('plan_publisher',
                    arg_group="Marketplace",
                    options_list=['--plan-publisher'],
-                   help='The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic')
+                   help='The plan publisher is referring to the Publisher ID of the extension that is being taken from Marketplace portal under Usage Information + Support')
     with self.argument_context(f"{consts.EXTENSION_NAME} update") as c:
         c.argument('yes',
                    options_list=['--yes', '-y'],

@@ -58,11 +58,11 @@ class DefaultExtension(PartnerExtensionModel):
         plan = None
         if plan_name is not None or plan_product is not None or plan_publisher is not None:
             if plan_name is None:
-                raise ArgumentUsageError(f'Usage error: Missing required plan info property: {plan_name}')
+                raise ArgumentUsageError('Usage error: Missing valid plan name. To find the correct plan name please refer to the Marketplace portal under ‘Usage Information + Support.’ The Plan Id listed here will be the valid plan name required.')
             if plan_product is None:
-                raise ArgumentUsageError(f'Usage error: Missing required plan info property: {plan_product}')
+                raise ArgumentUsageError('Usage error: Missing a valid plan product. To find the correct plan product please refer to the Marketplace portal under ‘Usage Information + Support.’ The Product Id listed here will be the valid plan product required.')
             if plan_publisher is None:
-                raise ArgumentUsageError(f'Usage error: Missing required plan info property: {plan_publisher}')
+                raise ArgumentUsageError('Usage error: Missing a valid plan publisher. To find the correct plan publisher please refer to the Marketplace portal under ‘Usage Information + Support.’ The Publisher Id listed here will be the valid plan publisher required')
 
             plan = Plan(
                 name=plan_name,

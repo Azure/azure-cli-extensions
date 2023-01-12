@@ -15,14 +15,14 @@ helps[f'{consts.EXTENSION_NAME}'] = """
 
 helps[f'{consts.EXTENSION_NAME} create'] = f"""
     type: command
-    short-summary: Create a Kubernetes Extension.
+    short-summary: Create a Kubernetes Cluster Extension, including purchasing an extension Offer from Azure Marketplace (AKS only). Please refer to the example at the end to see how to create an extension or purchase an extension offer.
     examples:
       - name: Create a Kubernetes Extension
         text: |-
           az {consts.EXTENSION_NAME} create --resource-group my-resource-group \
 --cluster-name mycluster --cluster-type connectedClusters --name myextension \
 --extension-type microsoft.openservicemesh --scope cluster --release-train stable
-      - name: Create a Kubernetes Marketplace (3rd party) Extension
+      - name: Create a Kubernetes Marketplace Extension
         text: |-
           az {consts.EXTENSION_NAME} create --resource-group my-resource-group \
 --cluster-name mycluster --cluster-type managedClusters --name myextension \
