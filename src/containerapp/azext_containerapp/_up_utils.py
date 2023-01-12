@@ -368,7 +368,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
             self.cmd.command_kwargs[key] = task_command_kwargs[key]
 
-        with NamedTemporaryFile(mode="w") as task_file:
+        with NamedTemporaryFile(mode="w", delete=False) as task_file:
             task_file.write(task_content)
             task_file.flush()
 
