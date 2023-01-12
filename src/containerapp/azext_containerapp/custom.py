@@ -560,7 +560,7 @@ def create_containerapp(cmd,
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             not disable_warnings and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
-        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and r["properties"]["configuration"]["ingress"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
             not disable_warnings and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
             target_port = target_port or "<port>"
@@ -2029,7 +2029,7 @@ def show_ip_restrictions(cmd, name, resource_group_name):
             containerapp_def['properties']['configuration']['ingress']
         except Exception as e:
             raise ValidationError("Ingress must be enabled to list ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
-        return containerapp_def['properties']['configuration']['ingress']['ipSecurityRestrictions']
+        return safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
     except Exception as e:
         return []
 
@@ -2093,13 +2093,10 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    registries_def = None
     registry = None
 
-    if "registries" not in containerapp_def["properties"]["configuration"]:
-        containerapp_def["properties"]["configuration"]["registries"] = []
-
-    registries_def = containerapp_def["properties"]["configuration"]["registries"]
+    registries_def = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
+    containerapp_def["properties"]["configuration"]["registries"] = registries_def
 
     if (not username or not password) and not identity:
         # If registry is Azure Container Registry, we can try inferring credentials
@@ -2884,7 +2881,7 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
         cert_id = certs[0]["id"]
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
-    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+    new_custom_domains = list(filter(lambda c: safe_get(c, "name", default=[]) != hostname, custom_domains))
     new_domain = ContainerAppCustomDomainModel
     new_domain["name"] = hostname
     new_domain["certificateId"] = cert_id
