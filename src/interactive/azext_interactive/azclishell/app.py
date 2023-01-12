@@ -327,10 +327,10 @@ class AzInteractiveShell(object):
             command = new_command
 
         if not command and self.recommender.enabled:
-            # display hint only when the user doesn't have any input
+            # display hint to promote CLI recommendation when the user doesn't have any input
             self.description_docs = u'Try [Space] or `next` to get Command Recommendation'
         elif self.completer and command in self.completer.command_description:
-            # get command/group help
+            # Display the help message of the command when the user has input
             self.description_docs = u'{}'.format(self.completer.command_description[command])
 
         # get parameter help if full command
@@ -478,6 +478,7 @@ class AzInteractiveShell(object):
                     toolbar_hint='In Tutorial Mode: Press [Enter] after typing each part'
                 ),
                 eventloop=create_eventloop())
+            # Scenario recommendation cannot be enabled in tutorial mode
             self.completer.enable_scenario_recommender(False)
             example_cli.buffers['example_line'].reset(
                 initial_document=Document(u'{}\n'.format(
@@ -537,6 +538,7 @@ class AzInteractiveShell(object):
                 toolbar_hint='In Scenario Mode: Press [Enter] to execute commands   [Ctrl+C]Skip  [Ctrl+D]Quit'
             ),
             eventloop=create_eventloop())
+       # When users execute the recommended command combination of scenario, they no longer need the scenario recommendation
         self.completer.enable_scenario_recommender(False)
 
         _show_details_for_e2e_scenario(scenario, file=self.output)
@@ -569,14 +571,16 @@ class AzInteractiveShell(object):
                     continue
                 cmd = document.text
                 self.history.append(cmd)
+                # Prefetch the next recommendation using current executing command
                 self.recommender.update_executing(cmd, feedback=False)
                 telemetry.start()
                 self.cli_execute(cmd)
-                if self.last_exit_code and self.last_exit_code != 0:
+                if self.last_exit_code:
                     telemetry.set_failure()
                 else:
                     retry = False
                     telemetry.set_success()
+                # Update execution result of previous command, fetch recommendation if command failed
                 self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
                 telemetry.flush()
             if quit_scenario:
@@ -853,7 +857,7 @@ class AzInteractiveShell(object):
                     # Prefetch the next recommendation using current executing command
                     self.recommender.update_executing(cmd)
                     self.cli_execute(cmd)
-                    if self.last_exit_code and self.last_exit_code != 0:
+                    if self.last_exit_code:
                         telemetry.set_failure()
                     else:
                         telemetry.set_success()

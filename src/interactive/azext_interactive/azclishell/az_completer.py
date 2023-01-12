@@ -313,7 +313,7 @@ class AzCompleter(Completer):
             return
         recommend_result = self.shell_ctx.recommender.get_scenarios() or []
         for idx, rec in enumerate(recommend_result):
-            # The Completion will replace the input with '::[num]', which will execute the specific scenario
+            # '::[num]' is the statement to select the recommended scenarios. The Completion will replace the input with '::[num]', which will execute the specific scenario
             yield Completion(
                 '::' + str(idx + 1), -len(text),
                 display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',

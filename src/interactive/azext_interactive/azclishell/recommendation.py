@@ -141,6 +141,7 @@ class Recommender:
         if not self.cur_thread:
             return None
         if not self.cur_thread.result:
+            # This `None` represents the request is running and recommendation is not ready
             return None
         return [rec for rec in self.cur_thread.result if rec['type'] == rec_type]
 
@@ -149,23 +150,18 @@ class Recommender:
         Get the latest recommended commands
         :return: recommendation or None if the result is not prepared
         """
-        if not self.enabled:
-            return []
-        return self._get_result(RecommendType.Command)
+        # The `[]` represents no recommendation fetched from recommendation service
+        return self._get_result(RecommendType.Command) if self.enabled else []
 
     def get_default_recommendations(self):
-        if not self.enabled:
-            return []
-        return self.default_recommendations
+        return self.default_recommendations if self.enabled else []
 
     def get_scenarios(self):
         """
         Get the latest recommended scenarios
         :return: recommendation or None if the result is not prepared
         """
-        if not self.enabled:
-            return []
-        return self._get_result(RecommendType.Scenario)
+        return self._get_result(RecommendType.Scenario) if self.enabled else []
 
     def set_on_prepared_callback(self, cb):
         self.on_prepared_callback = cb
