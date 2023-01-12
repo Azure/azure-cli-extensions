@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric network network-mapping list",
+    "site-recovery fabric network-mapping list",
 )
 class List(AAZCommand):
     """List all ASR network mappings for the specified network.

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery fabric network network-mapping",
+    "site-recovery fabric network-mapping",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Vault Fabric Network Mapping

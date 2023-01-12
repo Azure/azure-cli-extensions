@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric network network-mapping update",
+    "site-recovery fabric network-mapping update",
 )
 class Update(AAZCommand):
     """Update operation to create an ASR network mapping.
