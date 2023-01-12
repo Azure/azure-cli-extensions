@@ -63,7 +63,7 @@ class ScenarioAutoSuggest(AutoSuggest):
             # If user is inputting a parameter, suggest the parameter and the rest part
             if unfinished.startswith('-'):
                 suggest = []
-                # Find the parameter user is inputting
+                # Find the parameter user is inputting and suggest the unfinished part
                 for param in unused_param:
                     if param.startswith(unfinished):
                         suggest.append(param[len(unfinished):])
