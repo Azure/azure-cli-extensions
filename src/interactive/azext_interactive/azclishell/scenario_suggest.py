@@ -60,6 +60,7 @@ class ScenarioAutoSuggest(AutoSuggest):
             # If user is inputting a parameter, suggest the parameter and the rest part
             if unfinished.startswith('-'):
                 suggest = []
+                # Find the parameter user is inputting
                 for param in unused_param:
                     if param.startswith(unfinished):
                         suggest.append(param[len(unfinished):])
@@ -68,11 +69,13 @@ class ScenarioAutoSuggest(AutoSuggest):
                         unused_param.remove(param)
                         break
                 if suggest:
+                    # If we suggest the inputting param successfully, suggest the rest parameters
                     for param in unused_param:
                         suggest.append(param)
                         if self.param_value_map[param]:
                             suggest.append(self.param_value_map[param])
                     return Suggestion(' '.join(suggest))
+            # If the user finish input with space, suggest all the rest unused parameters
             elif unfinished == '':
                 if not last_part.startswith('-'):
                     suggest = []
