@@ -5,7 +5,7 @@ parameters:
 jobs:
 - job: ${{ parameters.jobName}}
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'ubuntu-20.04'
   variables:
     ${{ if eq(variables['IS_PRIVATE_BRANCH'], 'False') }}:
       EXTENSION_NAME: "k8s-extension"
