@@ -291,6 +291,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
     ensure_namespace_cleanup()
 
 
+# DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
@@ -308,6 +309,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "global.azureEnvironment={}".format(cloud_name),
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
+                        "--namespace", "{}".format(consts.Release_Install_Namespace),
+                        "--create-namespace",
                         "--output", "json"]
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:

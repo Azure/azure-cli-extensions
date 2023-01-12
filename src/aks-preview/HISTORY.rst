@@ -12,7 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.122
++++++++
 * Vendor new SDK and bump API version to 2022-11-02-preview.
+* Remove the error prompt about "no argument specified" when `--enable-workload-identity=False` is specified.
 
 0.5.121
 +++++++

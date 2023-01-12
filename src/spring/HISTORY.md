@@ -1,5 +1,20 @@
 Release History
 ===============
+1.6.4
+---
+* Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
+* Add new commands `az spring service-registry create` and `az spring service-registry delete`.
+* Add new commands `az spring gateway create` and `az spring gateway delete`.
+* Add new commands `az spring api-portal create` and `az spring api-portal delete`.
+
+1.6.3
+---
+* Deprecate the subcommand 'spring app binding'.
+
+1.6.2
+---
+* Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
+
 1.6.1
 ---
 * Add type check for argument `--artifact-path`.
