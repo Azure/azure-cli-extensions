@@ -30,6 +30,7 @@ def load_command_table(self, _):
         g.custom_command("list", "list_fleet")
         g.custom_command("delete", "delete_fleet", supports_no_wait=True)
         g.custom_command("get-credentials", "get_credentials")
+        g.wait_command("wait")
 
     # fleet members command group
     with self.command_group("fleet member", fleet_members_sdk, client_factory=cf_fleet_members) as g:
@@ -37,3 +38,4 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_fleet_member", supports_no_wait=True)
         g.custom_command("list", "list_fleet_member")
         g.custom_show_command("show", "show_fleet_member")
+        g.wait_command("wait")

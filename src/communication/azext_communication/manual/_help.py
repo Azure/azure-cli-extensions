@@ -407,3 +407,100 @@ helps['communication chat message receipt send'] = """
         text: |-
                az communication chat message receipt send --thread "19:a-bcd=xyz" --message-id "12345678"
 """
+
+helps['communication rooms'] = """
+    type: group
+    short-summary: Commands to interact with Azure Communication Services Rooms gateway.
+"""
+
+helps['communication rooms create'] = """
+    type: command
+    short-summary: "Create a new room."
+    examples:
+      - name: Create a room with default parameters
+        text: |-
+               az communication rooms create
+      - name: Create a room with valid-from and valid-until date/times
+        text: |-
+               az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+      - name: Create a room with InviteOnly join policy
+        text: |-
+               az communication rooms create --join-policy "InviteOnly"
+      - name: Create a room with a list of participants with presenter role
+        text: |-
+               az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with attendee role
+        text: |-
+               az communication rooms create --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with presenter and consumer roles
+        text: |-
+               az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""
+
+helps['communication rooms get'] = """
+    type: command
+    short-summary: "Return attributes of an existing room."
+    examples:
+      - name: Get room
+        text: |-
+               az communication rooms get --room "12345678901234567"
+"""
+
+helps['communication rooms update'] = """
+    type: command
+    short-summary: "Update attributes of an existing room."
+    examples:
+      - name: Update a room's valid-from and valid-until properties
+        text: |-
+               az communication rooms update --room "12345678901234567" --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+"""
+
+helps['communication rooms delete'] = """
+    type: command
+    short-summary: "Delete an existing room."
+    examples:
+      - name: Delete an existing room
+        text: |-
+               az communication rooms delete --room "12345678901234567"
+"""
+
+helps['communication rooms participant'] = """
+    type: group
+    short-summary: Commands to manage participants of an existing room.
+"""
+
+helps['communication rooms participant get'] = """
+    type: command
+    short-summary: "Get participants of a room."
+    examples:
+      - name: Get room's participants
+        text: |-
+               az communication rooms participant get --room "12345678901234567"
+"""
+
+helps['communication rooms participant add'] = """
+    type: command
+    short-summary: "Add participants to a room."
+    examples:
+      - name: Add presenter and attendee participants to a room
+        text: |-
+               az communication rooms participant add --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""
+
+helps['communication rooms participant update'] = """
+    type: command
+    short-summary: "Replace the participants of a room."
+    examples:
+      - name: Update room participants
+        text: |-
+               az communication rooms participant update --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""
+
+helps['communication rooms participant remove'] = """
+    type: command
+    short-summary: "Remove participants from a room."
+    examples:
+      - name: Remove room participants
+        text: |-
+               az communication rooms participant remove --room "12345678901234567" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""

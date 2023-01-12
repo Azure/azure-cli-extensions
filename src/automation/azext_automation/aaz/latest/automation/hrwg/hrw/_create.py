@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a hybrid runbook worker.
+
+    :example: Create a hybrid runbook worker
+        az automation hrwg hrw create --automation-account-name accountName --resource-group groupName --hybrid-runbook-worker-group-name hybridRunbookWorkerGroupName --hybrid-runbook-worker-id hybridRunbookWorkerId --vm-resource-id vmResourceId
     """
 
     _aaz_info = {
-        "version": "2021-06-22",
+        "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}", "2021-06-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}/hybridrunbookworkers/{}", "2022-08-08"],
         ]
     }
 
@@ -74,7 +77,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.HybridRunbookWorkersCreate(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -87,7 +100,7 @@ class Create(AAZCommand):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200, 201]:
-                return self.on_200(session)
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
@@ -136,7 +149,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-06-22",
+                    "api-version", "2022-08-08",
                     required=True,
                 ),
             }
@@ -170,42 +183,42 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200_201.properties
             properties.ip = AAZStrType()
             properties.last_seen_date_time = AAZStrType(
                 serialized_name="lastSeenDateTime",
@@ -223,7 +236,7 @@ class Create(AAZCommand):
                 serialized_name="workerType",
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
                 flags={"read_only": True},
@@ -249,7 +262,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
 
 __all__ = ["Create"]

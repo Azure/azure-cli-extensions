@@ -14,7 +14,7 @@ from ._help import helps  # pylint: disable=unused-import
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2020-10-02')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2021-04-10')
         storage_custom = CliCommandType(operations_tmpl='azure.cli.command_modules.storage.custom#{}')
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                     resource_type=CUSTOM_DATA_STORAGE_BLOB,

@@ -13,19 +13,19 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies?api-version=2022-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}},{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy2","name":"policy2","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmVm","state":"Enabled","displayName":"policy2","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy2","name":"policy2","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmVm","state":"Enabled","displayName":"policy2","provisioningState":"Succeeded"}}]}'
     headers:
       content-length:
-      - '687'
+      - '725'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:05 GMT
+      - Mon, 17 Oct 2022 15:53:40 GMT
       server:
       - Rocket
     status:
@@ -45,19 +45,19 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --placement-policy-name
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}}'
     headers:
       content-length:
-      - '338'
+      - '357'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:09 GMT
+      - Mon, 17 Oct 2022 15:53:43 GMT
       server:
       - Rocket
     status:
@@ -66,7 +66,7 @@ interactions:
 - request:
     body: '{"properties": {"type": "VmHost", "state": "Enabled", "displayName": "policy1",
       "vmMembers": ["testVmMembers"], "hostMembers": ["testHostMembers"], "affinityType":
-      "AntiAffinity"}}'
+      "AntiAffinity", "affinityStrength": "Must", "azureHybridBenefitType": "SqlHost"}}'
     headers:
       Accept:
       - application/json
@@ -77,26 +77,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '180'
+      - '245'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --placement-policy-name --state
-        --display-name --vm-members --host-members --affinity-type
+        --display-name --vm-members --host-members --affinity-type --affinity-strength
+        --azure-hybrid-benefit
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}}'
     headers:
       content-length:
-      - '338'
+      - '357'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:13 GMT
+      - Mon, 17 Oct 2022 15:53:45 GMT
       server:
       - Rocket
     status:
@@ -104,7 +105,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"state": "Enabled", "vmMembers": ["testVmMembers"], "hostMembers":
-      ["testHostMembers"]}}'
+      ["testHostMembers"], "affinityStrength": "Must", "azureHybridBenefitType": "SqlHost"}}'
     headers:
       Accept:
       - application/json
@@ -115,26 +116,26 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '104'
+      - '169'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --placement-policy-name --state
-        --vm-members --host-members
+        --vm-members --host-members --affinity-strength --azure-hybrid-benefit
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PATCH
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Disabled","displayName":"policy1","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Disabled","displayName":"policy1","provisioningState":"Succeeded"}}'
     headers:
       content-length:
-      - '339'
+      - '358'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:18 GMT
+      - Mon, 17 Oct 2022 15:53:47 GMT
       server:
       - Rocket
     status:
@@ -156,9 +157,9 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --placement-policy-name --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
       string: ''
@@ -166,7 +167,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 Jul 2022 16:07:22 GMT
+      - Mon, 17 Oct 2022 15:53:49 GMT
       server:
       - Rocket
     status:
@@ -192,19 +193,19 @@ interactions:
       - --resource-group --private-cloud --cluster-name --placement-policy-name --state
         --display-name --vm-members --affinity-type
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Enabled","displayName":"policy1","provisioningState":"Succeeded"}}'
     headers:
       content-length:
-      - '338'
+      - '357'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:26 GMT
+      - Mon, 17 Oct 2022 15:53:51 GMT
       server:
       - Rocket
     status:
@@ -229,19 +230,19 @@ interactions:
       - --resource-group --private-cloud --cluster-name --placement-policy-name --state
         --vm-members
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PATCH
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Disabled","displayName":"policy1","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1","name":"policy1","type":"Microsoft.AVS/privateClouds/clusters/placementPolicies","properties":{"type":"VmHost","state":"Disabled","displayName":"policy1","provisioningState":"Succeeded"}}'
     headers:
       content-length:
-      - '339'
+      - '358'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:31 GMT
+      - Mon, 17 Oct 2022 15:53:54 GMT
       server:
       - Rocket
     status:
@@ -263,9 +264,9 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --placement-policy-name --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_placement_policy000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/placementPolicies/policy1?api-version=2022-05-01
   response:
     body:
       string: ''
@@ -273,7 +274,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 Jul 2022 16:07:35 GMT
+      - Mon, 17 Oct 2022 15:53:56 GMT
       server:
       - Rocket
     status:

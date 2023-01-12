@@ -15,6 +15,73 @@ import msrest.serialization
 from ._azure_arc_vmware_management_service_api_enums import *
 
 
+class AvailablePatchCountByClassification(msrest.serialization.Model):
+    """Summarization of patches available for installation on the machine by classification.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar security: Number of security patches available for installation.
+    :vartype security: int
+    :ivar critical: Number of critical patches available for installation.
+    :vartype critical: int
+    :ivar definition: Number of definition patches available for installation.
+    :vartype definition: int
+    :ivar update_rollup: Number of update Rollup patches available for installation.
+    :vartype update_rollup: int
+    :ivar feature_pack: Number of feature pack patches available for installation.
+    :vartype feature_pack: int
+    :ivar service_pack: Number of service pack patches available for installation.
+    :vartype service_pack: int
+    :ivar tools: Number of tools patches available for installation.
+    :vartype tools: int
+    :ivar updates: Number of updates category patches available for installation.
+    :vartype updates: int
+    :ivar other: Number of other patches available for installation.
+    :vartype other: int
+    """
+
+    _validation = {
+        'security': {'readonly': True},
+        'critical': {'readonly': True},
+        'definition': {'readonly': True},
+        'update_rollup': {'readonly': True},
+        'feature_pack': {'readonly': True},
+        'service_pack': {'readonly': True},
+        'tools': {'readonly': True},
+        'updates': {'readonly': True},
+        'other': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'security': {'key': 'security', 'type': 'int'},
+        'critical': {'key': 'critical', 'type': 'int'},
+        'definition': {'key': 'definition', 'type': 'int'},
+        'update_rollup': {'key': 'updateRollup', 'type': 'int'},
+        'feature_pack': {'key': 'featurePack', 'type': 'int'},
+        'service_pack': {'key': 'servicePack', 'type': 'int'},
+        'tools': {'key': 'tools', 'type': 'int'},
+        'updates': {'key': 'updates', 'type': 'int'},
+        'other': {'key': 'other', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(AvailablePatchCountByClassification, self).__init__(**kwargs)
+        self.security = None
+        self.critical = None
+        self.definition = None
+        self.update_rollup = None
+        self.feature_pack = None
+        self.service_pack = None
+        self.tools = None
+        self.updates = None
+        self.other = None
+
+
 class Cluster(msrest.serialization.Model):
     """Define the cluster.
 
@@ -1652,6 +1719,53 @@ class InventoryItemsList(msrest.serialization.Model):
         self.value = value
 
 
+class LinuxParameters(msrest.serialization.Model):
+    """Input for InstallPatches on a Linux VM, as directly received by the API.
+
+    :ivar classifications_to_include: The update classifications to select when installing patches
+     for Linux.
+    :vartype classifications_to_include: list[str or
+     ~azure.mgmt.connectedvmware.models.VMGuestPatchClassificationLinux]
+    :ivar package_name_masks_to_include: packages to include in the patch operation. Format:
+     packageName_packageVersion.
+    :vartype package_name_masks_to_include: list[str]
+    :ivar package_name_masks_to_exclude: packages to exclude in the patch operation. Format:
+     packageName_packageVersion.
+    :vartype package_name_masks_to_exclude: list[str]
+    """
+
+    _attribute_map = {
+        'classifications_to_include': {'key': 'classificationsToInclude', 'type': '[str]'},
+        'package_name_masks_to_include': {'key': 'packageNameMasksToInclude', 'type': '[str]'},
+        'package_name_masks_to_exclude': {'key': 'packageNameMasksToExclude', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        classifications_to_include: Optional[List[Union[str, "VMGuestPatchClassificationLinux"]]] = None,
+        package_name_masks_to_include: Optional[List[str]] = None,
+        package_name_masks_to_exclude: Optional[List[str]] = None,
+        **kwargs
+    ):
+        """
+        :keyword classifications_to_include: The update classifications to select when installing
+         patches for Linux.
+        :paramtype classifications_to_include: list[str or
+         ~azure.mgmt.connectedvmware.models.VMGuestPatchClassificationLinux]
+        :keyword package_name_masks_to_include: packages to include in the patch operation. Format:
+         packageName_packageVersion.
+        :paramtype package_name_masks_to_include: list[str]
+        :keyword package_name_masks_to_exclude: packages to exclude in the patch operation. Format:
+         packageName_packageVersion.
+        :paramtype package_name_masks_to_exclude: list[str]
+        """
+        super(LinuxParameters, self).__init__(**kwargs)
+        self.classifications_to_include = classifications_to_include
+        self.package_name_masks_to_include = package_name_masks_to_include
+        self.package_name_masks_to_exclude = package_name_masks_to_exclude
+
+
 class MachineExtension(msrest.serialization.Model):
     """Describes a Machine Extension.
 
@@ -1679,6 +1793,9 @@ class MachineExtension(msrest.serialization.Model):
     :vartype type_properties_type: str
     :ivar type_handler_version: Specifies the version of the script handler.
     :vartype type_handler_version: str
+    :ivar enable_automatic_upgrade: Indicates whether the extension should be automatically
+     upgraded by the platform if there is a newer version available.
+    :vartype enable_automatic_upgrade: bool
     :ivar auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -1714,6 +1831,7 @@ class MachineExtension(msrest.serialization.Model):
         'publisher': {'key': 'properties.publisher', 'type': 'str'},
         'type_properties_type': {'key': 'properties.type', 'type': 'str'},
         'type_handler_version': {'key': 'properties.typeHandlerVersion', 'type': 'str'},
+        'enable_automatic_upgrade': {'key': 'properties.enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'properties.autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'properties.settings', 'type': 'object'},
         'protected_settings': {'key': 'properties.protectedSettings', 'type': 'object'},
@@ -1730,6 +1848,7 @@ class MachineExtension(msrest.serialization.Model):
         publisher: Optional[str] = None,
         type_properties_type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
+        enable_automatic_upgrade: Optional[bool] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[Any] = None,
         protected_settings: Optional[Any] = None,
@@ -1751,6 +1870,9 @@ class MachineExtension(msrest.serialization.Model):
         :paramtype type_properties_type: str
         :keyword type_handler_version: Specifies the version of the script handler.
         :paramtype type_handler_version: str
+        :keyword enable_automatic_upgrade: Indicates whether the extension should be automatically
+         upgraded by the platform if there is a newer version available.
+        :paramtype enable_automatic_upgrade: bool
         :keyword auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
          version if one is available at deployment time. Once deployed, however, the extension will not
          upgrade minor versions unless redeployed, even with this property set to true.
@@ -1775,6 +1897,7 @@ class MachineExtension(msrest.serialization.Model):
         self.publisher = publisher
         self.type_properties_type = type_properties_type
         self.type_handler_version = type_handler_version
+        self.enable_automatic_upgrade = enable_automatic_upgrade
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.settings = settings
         self.protected_settings = protected_settings
@@ -1988,6 +2111,9 @@ class MachineExtensionUpdate(ResourcePatch):
     :vartype type: str
     :ivar type_handler_version: Specifies the version of the script handler.
     :vartype type_handler_version: str
+    :ivar enable_automatic_upgrade: Indicates whether the extension should be automatically
+     upgraded by the platform if there is a newer version available.
+    :vartype enable_automatic_upgrade: bool
     :ivar auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -2005,6 +2131,7 @@ class MachineExtensionUpdate(ResourcePatch):
         'publisher': {'key': 'properties.publisher', 'type': 'str'},
         'type': {'key': 'properties.type', 'type': 'str'},
         'type_handler_version': {'key': 'properties.typeHandlerVersion', 'type': 'str'},
+        'enable_automatic_upgrade': {'key': 'properties.enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'properties.autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'properties.settings', 'type': 'object'},
         'protected_settings': {'key': 'properties.protectedSettings', 'type': 'object'},
@@ -2018,6 +2145,7 @@ class MachineExtensionUpdate(ResourcePatch):
         publisher: Optional[str] = None,
         type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
+        enable_automatic_upgrade: Optional[bool] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[Any] = None,
         protected_settings: Optional[Any] = None,
@@ -2035,6 +2163,9 @@ class MachineExtensionUpdate(ResourcePatch):
         :paramtype type: str
         :keyword type_handler_version: Specifies the version of the script handler.
         :paramtype type_handler_version: str
+        :keyword enable_automatic_upgrade: Indicates whether the extension should be automatically
+         upgraded by the platform if there is a newer version available.
+        :paramtype enable_automatic_upgrade: bool
         :keyword auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
          version if one is available at deployment time. Once deployed, however, the extension will not
          upgrade minor versions unless redeployed, even with this property set to true.
@@ -2050,6 +2181,7 @@ class MachineExtensionUpdate(ResourcePatch):
         self.publisher = publisher
         self.type = type
         self.type_handler_version = type_handler_version
+        self.enable_automatic_upgrade = enable_automatic_upgrade
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.settings = settings
         self.protected_settings = protected_settings
@@ -2516,6 +2648,11 @@ class OsProfile(msrest.serialization.Model):
     :vartype admin_username: str
     :ivar admin_password: Gets or sets administrator password.
     :vartype admin_password: str
+    :ivar guest_id: Gets or sets the guestId.
+    :vartype guest_id: str
+    :ivar allow_extension_operations: Gets or sets a value indicating whether the VM is ready for
+     extension operations.
+    :vartype allow_extension_operations: bool
     :ivar os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
      "Other".
     :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
@@ -2529,9 +2666,15 @@ class OsProfile(msrest.serialization.Model):
     :vartype tools_version_status: str
     :ivar tools_version: Gets or sets the current version of VMware Tools.
     :vartype tools_version: str
+    :ivar windows_configuration: Specifies the windows configuration for update management.
+    :vartype windows_configuration:
+     ~azure.mgmt.connectedvmware.models.OsProfileWindowsConfiguration
+    :ivar linux_configuration: Specifies the linux configuration for update management.
+    :vartype linux_configuration: ~azure.mgmt.connectedvmware.models.OsProfileLinuxConfiguration
     """
 
     _validation = {
+        'allow_extension_operations': {'readonly': True},
         'os_name': {'readonly': True},
         'tools_running_status': {'readonly': True},
         'tools_version_status': {'readonly': True},
@@ -2542,11 +2685,15 @@ class OsProfile(msrest.serialization.Model):
         'computer_name': {'key': 'computerName', 'type': 'str'},
         'admin_username': {'key': 'adminUsername', 'type': 'str'},
         'admin_password': {'key': 'adminPassword', 'type': 'str'},
+        'guest_id': {'key': 'guestId', 'type': 'str'},
+        'allow_extension_operations': {'key': 'allowExtensionOperations', 'type': 'bool'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'os_name': {'key': 'osName', 'type': 'str'},
         'tools_running_status': {'key': 'toolsRunningStatus', 'type': 'str'},
         'tools_version_status': {'key': 'toolsVersionStatus', 'type': 'str'},
         'tools_version': {'key': 'toolsVersion', 'type': 'str'},
+        'windows_configuration': {'key': 'windowsConfiguration', 'type': 'OsProfileWindowsConfiguration'},
+        'linux_configuration': {'key': 'linuxConfiguration', 'type': 'OsProfileLinuxConfiguration'},
     }
 
     def __init__(
@@ -2555,7 +2702,10 @@ class OsProfile(msrest.serialization.Model):
         computer_name: Optional[str] = None,
         admin_username: Optional[str] = None,
         admin_password: Optional[str] = None,
+        guest_id: Optional[str] = None,
         os_type: Optional[Union[str, "OsType"]] = None,
+        windows_configuration: Optional["OsProfileWindowsConfiguration"] = None,
+        linux_configuration: Optional["OsProfileLinuxConfiguration"] = None,
         **kwargs
     ):
         """
@@ -2565,19 +2715,194 @@ class OsProfile(msrest.serialization.Model):
         :paramtype admin_username: str
         :keyword admin_password: Gets or sets administrator password.
         :paramtype admin_password: str
+        :keyword guest_id: Gets or sets the guestId.
+        :paramtype guest_id: str
         :keyword os_type: Gets or sets the type of the os. Possible values include: "Windows", "Linux",
          "Other".
         :paramtype os_type: str or ~azure.mgmt.connectedvmware.models.OsType
+        :keyword windows_configuration: Specifies the windows configuration for update management.
+        :paramtype windows_configuration:
+         ~azure.mgmt.connectedvmware.models.OsProfileWindowsConfiguration
+        :keyword linux_configuration: Specifies the linux configuration for update management.
+        :paramtype linux_configuration: ~azure.mgmt.connectedvmware.models.OsProfileLinuxConfiguration
         """
         super(OsProfile, self).__init__(**kwargs)
         self.computer_name = computer_name
         self.admin_username = admin_username
         self.admin_password = admin_password
+        self.guest_id = guest_id
+        self.allow_extension_operations = None
         self.os_type = os_type
         self.os_name = None
         self.tools_running_status = None
         self.tools_version_status = None
         self.tools_version = None
+        self.windows_configuration = windows_configuration
+        self.linux_configuration = linux_configuration
+
+
+class OsProfileLinuxConfiguration(msrest.serialization.Model):
+    """Specifies the linux configuration for update management.
+
+    :ivar assessment_mode: Specifies the assessment mode.
+    :vartype assessment_mode: str
+    :ivar patch_mode: Specifies the patch mode.
+    :vartype patch_mode: str
+    """
+
+    _attribute_map = {
+        'assessment_mode': {'key': 'patchSettings.assessmentMode', 'type': 'str'},
+        'patch_mode': {'key': 'patchSettings.patchMode', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        assessment_mode: Optional[str] = None,
+        patch_mode: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword assessment_mode: Specifies the assessment mode.
+        :paramtype assessment_mode: str
+        :keyword patch_mode: Specifies the patch mode.
+        :paramtype patch_mode: str
+        """
+        super(OsProfileLinuxConfiguration, self).__init__(**kwargs)
+        self.assessment_mode = assessment_mode
+        self.patch_mode = patch_mode
+
+
+class OsProfileUpdate(msrest.serialization.Model):
+    """Defines the os update properties.
+
+    :ivar windows_configuration: Specifies the windows configuration for update management.
+    :vartype windows_configuration:
+     ~azure.mgmt.connectedvmware.models.OsProfileUpdateWindowsConfiguration
+    :ivar linux_configuration: Specifies the linux configuration for update management.
+    :vartype linux_configuration:
+     ~azure.mgmt.connectedvmware.models.OsProfileUpdateLinuxConfiguration
+    """
+
+    _attribute_map = {
+        'windows_configuration': {'key': 'windowsConfiguration', 'type': 'OsProfileUpdateWindowsConfiguration'},
+        'linux_configuration': {'key': 'linuxConfiguration', 'type': 'OsProfileUpdateLinuxConfiguration'},
+    }
+
+    def __init__(
+        self,
+        *,
+        windows_configuration: Optional["OsProfileUpdateWindowsConfiguration"] = None,
+        linux_configuration: Optional["OsProfileUpdateLinuxConfiguration"] = None,
+        **kwargs
+    ):
+        """
+        :keyword windows_configuration: Specifies the windows configuration for update management.
+        :paramtype windows_configuration:
+         ~azure.mgmt.connectedvmware.models.OsProfileUpdateWindowsConfiguration
+        :keyword linux_configuration: Specifies the linux configuration for update management.
+        :paramtype linux_configuration:
+         ~azure.mgmt.connectedvmware.models.OsProfileUpdateLinuxConfiguration
+        """
+        super(OsProfileUpdate, self).__init__(**kwargs)
+        self.windows_configuration = windows_configuration
+        self.linux_configuration = linux_configuration
+
+
+class OsProfileUpdateLinuxConfiguration(msrest.serialization.Model):
+    """Specifies the linux configuration for update management.
+
+    :ivar assessment_mode: Specifies the assessment mode.
+    :vartype assessment_mode: str
+    :ivar patch_mode: Specifies the patch mode.
+    :vartype patch_mode: str
+    """
+
+    _attribute_map = {
+        'assessment_mode': {'key': 'patchSettings.assessmentMode', 'type': 'str'},
+        'patch_mode': {'key': 'patchSettings.patchMode', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        assessment_mode: Optional[str] = None,
+        patch_mode: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword assessment_mode: Specifies the assessment mode.
+        :paramtype assessment_mode: str
+        :keyword patch_mode: Specifies the patch mode.
+        :paramtype patch_mode: str
+        """
+        super(OsProfileUpdateLinuxConfiguration, self).__init__(**kwargs)
+        self.assessment_mode = assessment_mode
+        self.patch_mode = patch_mode
+
+
+class OsProfileUpdateWindowsConfiguration(msrest.serialization.Model):
+    """Specifies the windows configuration for update management.
+
+    :ivar assessment_mode: Specifies the assessment mode.
+    :vartype assessment_mode: str
+    :ivar patch_mode: Specifies the patch mode.
+    :vartype patch_mode: str
+    """
+
+    _attribute_map = {
+        'assessment_mode': {'key': 'patchSettings.assessmentMode', 'type': 'str'},
+        'patch_mode': {'key': 'patchSettings.patchMode', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        assessment_mode: Optional[str] = None,
+        patch_mode: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword assessment_mode: Specifies the assessment mode.
+        :paramtype assessment_mode: str
+        :keyword patch_mode: Specifies the patch mode.
+        :paramtype patch_mode: str
+        """
+        super(OsProfileUpdateWindowsConfiguration, self).__init__(**kwargs)
+        self.assessment_mode = assessment_mode
+        self.patch_mode = patch_mode
+
+
+class OsProfileWindowsConfiguration(msrest.serialization.Model):
+    """Specifies the windows configuration for update management.
+
+    :ivar assessment_mode: Specifies the assessment mode.
+    :vartype assessment_mode: str
+    :ivar patch_mode: Specifies the patch mode.
+    :vartype patch_mode: str
+    """
+
+    _attribute_map = {
+        'assessment_mode': {'key': 'patchSettings.assessmentMode', 'type': 'str'},
+        'patch_mode': {'key': 'patchSettings.patchMode', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        assessment_mode: Optional[str] = None,
+        patch_mode: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword assessment_mode: Specifies the assessment mode.
+        :paramtype assessment_mode: str
+        :keyword patch_mode: Specifies the patch mode.
+        :paramtype patch_mode: str
+        """
+        super(OsProfileWindowsConfiguration, self).__init__(**kwargs)
+        self.assessment_mode = assessment_mode
+        self.patch_mode = patch_mode
 
 
 class PlacementProfile(msrest.serialization.Model):
@@ -2956,6 +3281,33 @@ class ResourceStatus(msrest.serialization.Model):
         self.last_updated_at = None
 
 
+class SecurityProfile(msrest.serialization.Model):
+    """Specifies the Security profile settings for the virtual machine.
+
+    :ivar uefi_settings: Specifies the security settings like secure boot used while creating the
+     virtual machine.
+    :vartype uefi_settings: ~azure.mgmt.connectedvmware.models.UefiSettings
+    """
+
+    _attribute_map = {
+        'uefi_settings': {'key': 'uefiSettings', 'type': 'UefiSettings'},
+    }
+
+    def __init__(
+        self,
+        *,
+        uefi_settings: Optional["UefiSettings"] = None,
+        **kwargs
+    ):
+        """
+        :keyword uefi_settings: Specifies the security settings like secure boot used while creating
+         the virtual machine.
+        :paramtype uefi_settings: ~azure.mgmt.connectedvmware.models.UefiSettings
+        """
+        super(SecurityProfile, self).__init__(**kwargs)
+        self.uefi_settings = uefi_settings
+
+
 class StopVirtualMachineOptions(msrest.serialization.Model):
     """Defines the stop action properties.
 
@@ -3108,6 +3460,33 @@ class SystemData(msrest.serialization.Model):
         self.last_modified_by = last_modified_by
         self.last_modified_by_type = last_modified_by_type
         self.last_modified_at = last_modified_at
+
+
+class UefiSettings(msrest.serialization.Model):
+    """Specifies the security settings like secure boot used while creating the virtual machine.
+
+    :ivar secure_boot_enabled: Specifies whether secure boot should be enabled on the virtual
+     machine.
+    :vartype secure_boot_enabled: bool
+    """
+
+    _attribute_map = {
+        'secure_boot_enabled': {'key': 'secureBootEnabled', 'type': 'bool'},
+    }
+
+    def __init__(
+        self,
+        *,
+        secure_boot_enabled: Optional[bool] = None,
+        **kwargs
+    ):
+        """
+        :keyword secure_boot_enabled: Specifies whether secure boot should be enabled on the virtual
+         machine.
+        :paramtype secure_boot_enabled: bool
+        """
+        super(UefiSettings, self).__init__(**kwargs)
+        self.secure_boot_enabled = secure_boot_enabled
 
 
 class VCenter(msrest.serialization.Model):
@@ -3536,6 +3915,8 @@ class VirtualMachine(msrest.serialization.Model):
     :vartype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfile
     :ivar guest_agent_profile: Guest agent status properties.
     :vartype guest_agent_profile: ~azure.mgmt.connectedvmware.models.GuestAgentProfile
+    :ivar security_profile: Gets the security profile.
+    :vartype security_profile: ~azure.mgmt.connectedvmware.models.SecurityProfile
     :ivar mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the virtual
      machine.
     :vartype mo_ref_id: str
@@ -3601,6 +3982,7 @@ class VirtualMachine(msrest.serialization.Model):
         'network_profile': {'key': 'properties.networkProfile', 'type': 'NetworkProfile'},
         'storage_profile': {'key': 'properties.storageProfile', 'type': 'StorageProfile'},
         'guest_agent_profile': {'key': 'properties.guestAgentProfile', 'type': 'GuestAgentProfile'},
+        'security_profile': {'key': 'properties.securityProfile', 'type': 'SecurityProfile'},
         'mo_ref_id': {'key': 'properties.moRefId', 'type': 'str'},
         'inventory_item_id': {'key': 'properties.inventoryItemId', 'type': 'str'},
         'mo_name': {'key': 'properties.moName', 'type': 'str'},
@@ -3633,6 +4015,7 @@ class VirtualMachine(msrest.serialization.Model):
         network_profile: Optional["NetworkProfile"] = None,
         storage_profile: Optional["StorageProfile"] = None,
         guest_agent_profile: Optional["GuestAgentProfile"] = None,
+        security_profile: Optional["SecurityProfile"] = None,
         mo_ref_id: Optional[str] = None,
         inventory_item_id: Optional[str] = None,
         smbios_uuid: Optional[str] = None,
@@ -3674,6 +4057,8 @@ class VirtualMachine(msrest.serialization.Model):
         :paramtype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfile
         :keyword guest_agent_profile: Guest agent status properties.
         :paramtype guest_agent_profile: ~azure.mgmt.connectedvmware.models.GuestAgentProfile
+        :keyword security_profile: Gets the security profile.
+        :paramtype security_profile: ~azure.mgmt.connectedvmware.models.SecurityProfile
         :keyword mo_ref_id: Gets or sets the vCenter MoRef (Managed Object Reference) ID for the
          virtual machine.
         :paramtype mo_ref_id: str
@@ -3703,6 +4088,7 @@ class VirtualMachine(msrest.serialization.Model):
         self.network_profile = network_profile
         self.storage_profile = storage_profile
         self.guest_agent_profile = guest_agent_profile
+        self.security_profile = security_profile
         self.mo_ref_id = mo_ref_id
         self.inventory_item_id = inventory_item_id
         self.mo_name = None
@@ -3716,6 +4102,266 @@ class VirtualMachine(msrest.serialization.Model):
         self.statuses = None
         self.provisioning_state = None
         self.vm_id = None
+
+
+class VirtualMachineAssessPatchesResult(msrest.serialization.Model):
+    """Describes the properties of an AssessPatches result.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar status: The overall success or failure status of the operation. It remains "InProgress"
+     until the operation completes. At that point it will become "Unknown", "Failed", "Succeeded",
+     or "CompletedWithWarnings.". Possible values include: "Unknown", "InProgress", "Failed",
+     "Succeeded", "CompletedWithWarnings".
+    :vartype status: str or ~azure.mgmt.connectedvmware.models.PatchOperationStatus
+    :ivar assessment_activity_id: The activity ID of the operation that produced this result.
+    :vartype assessment_activity_id: str
+    :ivar reboot_pending: The overall reboot status of the VM. It will be true when partially
+     installed patches require a reboot to complete installation but the reboot has not yet
+     occurred.
+    :vartype reboot_pending: bool
+    :ivar available_patch_count_by_classification: Summarization of patches available for
+     installation on the machine by classification.
+    :vartype available_patch_count_by_classification:
+     ~azure.mgmt.connectedvmware.models.AvailablePatchCountByClassification
+    :ivar start_date_time: The UTC timestamp when the operation began.
+    :vartype start_date_time: ~datetime.datetime
+    :ivar last_modified_date_time: The UTC timestamp when the operation finished.
+    :vartype last_modified_date_time: ~datetime.datetime
+    :ivar started_by: Indicates if operation was triggered by user or by platform. Possible values
+     include: "User", "Platform".
+    :vartype started_by: str or ~azure.mgmt.connectedvmware.models.PatchOperationStartedBy
+    :ivar patch_service_used: Specifies the patch service used for the operation. Possible values
+     include: "Unknown", "WU", "WU_WSUS", "YUM", "APT", "Zypper".
+    :vartype patch_service_used: str or ~azure.mgmt.connectedvmware.models.PatchServiceUsed
+    :ivar os_type: The operating system type of the machine. Possible values include: "Windows",
+     "Linux".
+    :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsTypeUM
+    :ivar error_details: The errors that were encountered during execution of the operation. The
+     details array contains the list of them.
+    :vartype error_details: ~azure.mgmt.connectedvmware.models.ErrorDetail
+    """
+
+    _validation = {
+        'status': {'readonly': True},
+        'assessment_activity_id': {'readonly': True},
+        'reboot_pending': {'readonly': True},
+        'start_date_time': {'readonly': True},
+        'last_modified_date_time': {'readonly': True},
+        'started_by': {'readonly': True},
+        'patch_service_used': {'readonly': True},
+        'os_type': {'readonly': True},
+        'error_details': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'assessment_activity_id': {'key': 'assessmentActivityId', 'type': 'str'},
+        'reboot_pending': {'key': 'rebootPending', 'type': 'bool'},
+        'available_patch_count_by_classification': {'key': 'availablePatchCountByClassification', 'type': 'AvailablePatchCountByClassification'},
+        'start_date_time': {'key': 'startDateTime', 'type': 'iso-8601'},
+        'last_modified_date_time': {'key': 'lastModifiedDateTime', 'type': 'iso-8601'},
+        'started_by': {'key': 'startedBy', 'type': 'str'},
+        'patch_service_used': {'key': 'patchServiceUsed', 'type': 'str'},
+        'os_type': {'key': 'osType', 'type': 'str'},
+        'error_details': {'key': 'errorDetails', 'type': 'ErrorDetail'},
+    }
+
+    def __init__(
+        self,
+        *,
+        available_patch_count_by_classification: Optional["AvailablePatchCountByClassification"] = None,
+        **kwargs
+    ):
+        """
+        :keyword available_patch_count_by_classification: Summarization of patches available for
+         installation on the machine by classification.
+        :paramtype available_patch_count_by_classification:
+         ~azure.mgmt.connectedvmware.models.AvailablePatchCountByClassification
+        """
+        super(VirtualMachineAssessPatchesResult, self).__init__(**kwargs)
+        self.status = None
+        self.assessment_activity_id = None
+        self.reboot_pending = None
+        self.available_patch_count_by_classification = available_patch_count_by_classification
+        self.start_date_time = None
+        self.last_modified_date_time = None
+        self.started_by = None
+        self.patch_service_used = None
+        self.os_type = None
+        self.error_details = None
+
+
+class VirtualMachineInstallPatchesParameters(msrest.serialization.Model):
+    """Input for InstallPatches as directly received by the API.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar maximum_duration: Required. Specifies the maximum amount of time that the operation will
+     run. It must be an ISO 8601-compliant duration string such as PT4H (4 hours).
+    :vartype maximum_duration: str
+    :ivar reboot_setting: Required. Defines when it is acceptable to reboot a VM during a software
+     update operation. Possible values include: "IfRequired", "Never", "Always".
+    :vartype reboot_setting: str or ~azure.mgmt.connectedvmware.models.VMGuestPatchRebootSetting
+    :ivar windows_parameters: Input for InstallPatches on a Windows VM, as directly received by the
+     API.
+    :vartype windows_parameters: ~azure.mgmt.connectedvmware.models.WindowsParameters
+    :ivar linux_parameters: Input for InstallPatches on a Linux VM, as directly received by the
+     API.
+    :vartype linux_parameters: ~azure.mgmt.connectedvmware.models.LinuxParameters
+    """
+
+    _validation = {
+        'maximum_duration': {'required': True},
+        'reboot_setting': {'required': True},
+    }
+
+    _attribute_map = {
+        'maximum_duration': {'key': 'maximumDuration', 'type': 'str'},
+        'reboot_setting': {'key': 'rebootSetting', 'type': 'str'},
+        'windows_parameters': {'key': 'windowsParameters', 'type': 'WindowsParameters'},
+        'linux_parameters': {'key': 'linuxParameters', 'type': 'LinuxParameters'},
+    }
+
+    def __init__(
+        self,
+        *,
+        maximum_duration: str,
+        reboot_setting: Union[str, "VMGuestPatchRebootSetting"],
+        windows_parameters: Optional["WindowsParameters"] = None,
+        linux_parameters: Optional["LinuxParameters"] = None,
+        **kwargs
+    ):
+        """
+        :keyword maximum_duration: Required. Specifies the maximum amount of time that the operation
+         will run. It must be an ISO 8601-compliant duration string such as PT4H (4 hours).
+        :paramtype maximum_duration: str
+        :keyword reboot_setting: Required. Defines when it is acceptable to reboot a VM during a
+         software update operation. Possible values include: "IfRequired", "Never", "Always".
+        :paramtype reboot_setting: str or ~azure.mgmt.connectedvmware.models.VMGuestPatchRebootSetting
+        :keyword windows_parameters: Input for InstallPatches on a Windows VM, as directly received by
+         the API.
+        :paramtype windows_parameters: ~azure.mgmt.connectedvmware.models.WindowsParameters
+        :keyword linux_parameters: Input for InstallPatches on a Linux VM, as directly received by the
+         API.
+        :paramtype linux_parameters: ~azure.mgmt.connectedvmware.models.LinuxParameters
+        """
+        super(VirtualMachineInstallPatchesParameters, self).__init__(**kwargs)
+        self.maximum_duration = maximum_duration
+        self.reboot_setting = reboot_setting
+        self.windows_parameters = windows_parameters
+        self.linux_parameters = linux_parameters
+
+
+class VirtualMachineInstallPatchesResult(msrest.serialization.Model):
+    """The result summary of an installation operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar status: The overall success or failure status of the operation. It remains "InProgress"
+     until the operation completes. At that point it will become "Failed", "Succeeded", "Unknown" or
+     "CompletedWithWarnings.". Possible values include: "Unknown", "InProgress", "Failed",
+     "Succeeded", "CompletedWithWarnings".
+    :vartype status: str or ~azure.mgmt.connectedvmware.models.PatchOperationStatus
+    :ivar installation_activity_id: The activity ID of the operation that produced this result.
+    :vartype installation_activity_id: str
+    :ivar reboot_status: The reboot state of the VM following completion of the operation. Possible
+     values include: "Unknown", "NotNeeded", "Required", "Started", "Failed", "Completed".
+    :vartype reboot_status: str or ~azure.mgmt.connectedvmware.models.VMGuestPatchRebootStatus
+    :ivar maintenance_window_exceeded: Whether the operation ran out of time before it completed
+     all its intended actions.
+    :vartype maintenance_window_exceeded: bool
+    :ivar excluded_patch_count: The number of patches that were not installed due to the user
+     blocking their installation.
+    :vartype excluded_patch_count: int
+    :ivar not_selected_patch_count: The number of patches that were detected as available for
+     install, but did not meet the operation's criteria.
+    :vartype not_selected_patch_count: int
+    :ivar pending_patch_count: The number of patches that were identified as meeting the
+     installation criteria, but were not able to be installed. Typically this happens when
+     maintenanceWindowExceeded == true.
+    :vartype pending_patch_count: int
+    :ivar installed_patch_count: The number of patches successfully installed.
+    :vartype installed_patch_count: int
+    :ivar failed_patch_count: The number of patches that could not be installed due to some issue.
+     See errors for details.
+    :vartype failed_patch_count: int
+    :ivar start_date_time: The UTC timestamp when the operation began.
+    :vartype start_date_time: ~datetime.datetime
+    :ivar last_modified_date_time: The UTC timestamp when the operation finished.
+    :vartype last_modified_date_time: ~datetime.datetime
+    :ivar started_by: Indicates if operation was triggered by user or by platform. Possible values
+     include: "User", "Platform".
+    :vartype started_by: str or ~azure.mgmt.connectedvmware.models.PatchOperationStartedBy
+    :ivar patch_service_used: Specifies the patch service used for the operation. Possible values
+     include: "Unknown", "WU", "WU_WSUS", "YUM", "APT", "Zypper".
+    :vartype patch_service_used: str or ~azure.mgmt.connectedvmware.models.PatchServiceUsed
+    :ivar os_type: The operating system type of the machine. Possible values include: "Windows",
+     "Linux".
+    :vartype os_type: str or ~azure.mgmt.connectedvmware.models.OsTypeUM
+    :ivar error_details: The errors that were encountered during execution of the operation. The
+     details array contains the list of them.
+    :vartype error_details: ~azure.mgmt.connectedvmware.models.ErrorDetail
+    """
+
+    _validation = {
+        'status': {'readonly': True},
+        'installation_activity_id': {'readonly': True},
+        'reboot_status': {'readonly': True},
+        'maintenance_window_exceeded': {'readonly': True},
+        'excluded_patch_count': {'readonly': True},
+        'not_selected_patch_count': {'readonly': True},
+        'pending_patch_count': {'readonly': True},
+        'installed_patch_count': {'readonly': True},
+        'failed_patch_count': {'readonly': True},
+        'start_date_time': {'readonly': True},
+        'last_modified_date_time': {'readonly': True},
+        'started_by': {'readonly': True},
+        'patch_service_used': {'readonly': True},
+        'os_type': {'readonly': True},
+        'error_details': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'installation_activity_id': {'key': 'installationActivityId', 'type': 'str'},
+        'reboot_status': {'key': 'rebootStatus', 'type': 'str'},
+        'maintenance_window_exceeded': {'key': 'maintenanceWindowExceeded', 'type': 'bool'},
+        'excluded_patch_count': {'key': 'excludedPatchCount', 'type': 'int'},
+        'not_selected_patch_count': {'key': 'notSelectedPatchCount', 'type': 'int'},
+        'pending_patch_count': {'key': 'pendingPatchCount', 'type': 'int'},
+        'installed_patch_count': {'key': 'installedPatchCount', 'type': 'int'},
+        'failed_patch_count': {'key': 'failedPatchCount', 'type': 'int'},
+        'start_date_time': {'key': 'startDateTime', 'type': 'iso-8601'},
+        'last_modified_date_time': {'key': 'lastModifiedDateTime', 'type': 'iso-8601'},
+        'started_by': {'key': 'startedBy', 'type': 'str'},
+        'patch_service_used': {'key': 'patchServiceUsed', 'type': 'str'},
+        'os_type': {'key': 'osType', 'type': 'str'},
+        'error_details': {'key': 'errorDetails', 'type': 'ErrorDetail'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(VirtualMachineInstallPatchesResult, self).__init__(**kwargs)
+        self.status = None
+        self.installation_activity_id = None
+        self.reboot_status = None
+        self.maintenance_window_exceeded = None
+        self.excluded_patch_count = None
+        self.not_selected_patch_count = None
+        self.pending_patch_count = None
+        self.installed_patch_count = None
+        self.failed_patch_count = None
+        self.start_date_time = None
+        self.last_modified_date_time = None
+        self.started_by = None
+        self.patch_service_used = None
+        self.os_type = None
+        self.error_details = None
 
 
 class VirtualMachineInventoryItem(InventoryItemProperties):
@@ -4232,6 +4878,8 @@ class VirtualMachineUpdate(msrest.serialization.Model):
     :vartype identity: ~azure.mgmt.connectedvmware.models.Identity
     :ivar hardware_profile: Defines the resource properties.
     :vartype hardware_profile: ~azure.mgmt.connectedvmware.models.HardwareProfile
+    :ivar os_profile: OS properties.
+    :vartype os_profile: ~azure.mgmt.connectedvmware.models.OsProfileUpdate
     :ivar storage_profile: Defines the resource update properties.
     :vartype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfileUpdate
     :ivar network_profile: Defines the update resource properties.
@@ -4242,6 +4890,7 @@ class VirtualMachineUpdate(msrest.serialization.Model):
         'tags': {'key': 'tags', 'type': '{str}'},
         'identity': {'key': 'identity', 'type': 'Identity'},
         'hardware_profile': {'key': 'properties.hardwareProfile', 'type': 'HardwareProfile'},
+        'os_profile': {'key': 'properties.osProfile', 'type': 'OsProfileUpdate'},
         'storage_profile': {'key': 'properties.storageProfile', 'type': 'StorageProfileUpdate'},
         'network_profile': {'key': 'properties.networkProfile', 'type': 'NetworkProfileUpdate'},
     }
@@ -4252,6 +4901,7 @@ class VirtualMachineUpdate(msrest.serialization.Model):
         tags: Optional[Dict[str, str]] = None,
         identity: Optional["Identity"] = None,
         hardware_profile: Optional["HardwareProfile"] = None,
+        os_profile: Optional["OsProfileUpdate"] = None,
         storage_profile: Optional["StorageProfileUpdate"] = None,
         network_profile: Optional["NetworkProfileUpdate"] = None,
         **kwargs
@@ -4263,6 +4913,8 @@ class VirtualMachineUpdate(msrest.serialization.Model):
         :paramtype identity: ~azure.mgmt.connectedvmware.models.Identity
         :keyword hardware_profile: Defines the resource properties.
         :paramtype hardware_profile: ~azure.mgmt.connectedvmware.models.HardwareProfile
+        :keyword os_profile: OS properties.
+        :paramtype os_profile: ~azure.mgmt.connectedvmware.models.OsProfileUpdate
         :keyword storage_profile: Defines the resource update properties.
         :paramtype storage_profile: ~azure.mgmt.connectedvmware.models.StorageProfileUpdate
         :keyword network_profile: Defines the update resource properties.
@@ -4272,6 +4924,7 @@ class VirtualMachineUpdate(msrest.serialization.Model):
         self.tags = tags
         self.identity = identity
         self.hardware_profile = hardware_profile
+        self.os_profile = os_profile
         self.storage_profile = storage_profile
         self.network_profile = network_profile
 
@@ -4554,3 +5207,64 @@ class VirtualSCSIController(msrest.serialization.Model):
         self.bus_number = bus_number
         self.scsi_ctlr_unit_number = scsi_ctlr_unit_number
         self.sharing = sharing
+
+
+class WindowsParameters(msrest.serialization.Model):
+    """Input for InstallPatches on a Windows VM, as directly received by the API.
+
+    :ivar classifications_to_include: The update classifications to select when installing patches
+     for Windows.
+    :vartype classifications_to_include: list[str or
+     ~azure.mgmt.connectedvmware.models.VMGuestPatchClassificationWindows]
+    :ivar kb_numbers_to_include: Kbs to include in the patch operation.
+    :vartype kb_numbers_to_include: list[str]
+    :ivar kb_numbers_to_exclude: Kbs to exclude in the patch operation.
+    :vartype kb_numbers_to_exclude: list[str]
+    :ivar exclude_kbs_requiring_reboot: Filters out Kbs that don't have an
+     InstallationRebootBehavior of 'NeverReboots' when this is set to true.
+    :vartype exclude_kbs_requiring_reboot: bool
+    :ivar max_patch_publish_date: This is used to install patches that were published on or before
+     this given max published date.
+    :vartype max_patch_publish_date: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'classifications_to_include': {'key': 'classificationsToInclude', 'type': '[str]'},
+        'kb_numbers_to_include': {'key': 'kbNumbersToInclude', 'type': '[str]'},
+        'kb_numbers_to_exclude': {'key': 'kbNumbersToExclude', 'type': '[str]'},
+        'exclude_kbs_requiring_reboot': {'key': 'excludeKbsRequiringReboot', 'type': 'bool'},
+        'max_patch_publish_date': {'key': 'maxPatchPublishDate', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        *,
+        classifications_to_include: Optional[List[Union[str, "VMGuestPatchClassificationWindows"]]] = None,
+        kb_numbers_to_include: Optional[List[str]] = None,
+        kb_numbers_to_exclude: Optional[List[str]] = None,
+        exclude_kbs_requiring_reboot: Optional[bool] = None,
+        max_patch_publish_date: Optional[datetime.datetime] = None,
+        **kwargs
+    ):
+        """
+        :keyword classifications_to_include: The update classifications to select when installing
+         patches for Windows.
+        :paramtype classifications_to_include: list[str or
+         ~azure.mgmt.connectedvmware.models.VMGuestPatchClassificationWindows]
+        :keyword kb_numbers_to_include: Kbs to include in the patch operation.
+        :paramtype kb_numbers_to_include: list[str]
+        :keyword kb_numbers_to_exclude: Kbs to exclude in the patch operation.
+        :paramtype kb_numbers_to_exclude: list[str]
+        :keyword exclude_kbs_requiring_reboot: Filters out Kbs that don't have an
+         InstallationRebootBehavior of 'NeverReboots' when this is set to true.
+        :paramtype exclude_kbs_requiring_reboot: bool
+        :keyword max_patch_publish_date: This is used to install patches that were published on or
+         before this given max published date.
+        :paramtype max_patch_publish_date: ~datetime.datetime
+        """
+        super(WindowsParameters, self).__init__(**kwargs)
+        self.classifications_to_include = classifications_to_include
+        self.kb_numbers_to_include = kb_numbers_to_include
+        self.kb_numbers_to_exclude = kb_numbers_to_exclude
+        self.exclude_kbs_requiring_reboot = exclude_kbs_requiring_reboot
+        self.max_patch_publish_date = max_patch_publish_date

@@ -5,10 +5,10 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from getpass import getpass
 from knack.util import CLIError
-from azext_connectedvmware.vmware_utils import get_resource_id
 from azure.cli.core.util import sdk_no_wait
+from azext_connectedvmware.pwinput import pwinput
+from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
     VMWARE_NAMESPACE,
     VCENTER_RESOURCE_TYPE,
@@ -95,8 +95,6 @@ from ._client_factory import (
     cf_virtual_machine,
 )
 
-# endregion
-
 # region VCenters
 
 
@@ -122,21 +120,27 @@ def connect_vcenter(
             'username': username,
             'password': password,
         }
-        if fqdn is None:
+        while not creds['fqdn']:
             print('Please provide vcenter FQDN or IP address: ', end='')
             creds['fqdn'] = input()
-        if username is None:
+            if not creds['fqdn']:
+                print('Parameter is required, please try again')
+        while not creds['username']:
             print('Please provide vcenter username: ', end='')
             creds['username'] = input()
-        if password is None:
-            creds['password'] = getpass('Please provide vcenter password: ')
+            if not creds['username']:
+                print('Parameter is required, please try again')
+        while not creds['password']:
+            creds['password'] = pwinput('Please provide vcenter password: ')
+            if not creds['password']:
+                print('Parameter is required, please try again')
+            passwdConfim = pwinput('Please confirm vcenter password: ')
+            if creds['password'] != passwdConfim:
+                print('Passwords do not match, please try again')
+                creds['password'] = None
         print('Confirm vcenter details? [Y/n]: ', end='')
         res = input().lower()
         if res in ['y', '']:
-            for cred_type, cred_val in creds.items():
-                if not cred_val:
-                    print(f'{cred_type} cannot be empty. Please try again.')
-                    continue
             fqdn, username, password = creds['fqdn'], creds['username'], creds['password']
             creds_ok = True
         elif res != 'n':
@@ -969,11 +973,12 @@ def delete_vm(
     resource_group_name,
     resource_name,
     force=False,
+    retain=None,
     no_wait=False,
 ):
 
     return sdk_no_wait(
-        no_wait, client.begin_delete, resource_group_name, resource_name, force
+        no_wait, client.begin_delete, resource_group_name, resource_name, force, retain,
     )
 
 
@@ -1604,7 +1609,7 @@ def enable_guest_agent(
     vm_client = cf_virtual_machine(cmd.cli_ctx)
 
     if is_system_identity_enabled(vm_client, resource_group_name, vm_name) is False:
-        enable_system_identity(vm_client, resource_group_name, vm_name, no_wait)
+        enable_system_identity(vm_client, resource_group_name, vm_name, False).result()
 
     vm_creds = GuestCredential(username=username, password=password)
 
