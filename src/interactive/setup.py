@@ -32,7 +32,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'prompt_toolkit~=1.0.15'
+    'prompt_toolkit~=3.0.32'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

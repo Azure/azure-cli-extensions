@@ -9,7 +9,7 @@ from __future__ import print_function
 from prompt_toolkit import prompt
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.keys import Keys
-from prompt_toolkit.key_binding.manager import KeyBindingManager
+from prompt_toolkit.key_binding import KeyBindings
 # pylint: enable=import-error
 
 from . import telemetry
@@ -20,33 +20,28 @@ class InteractiveKeyBindings(object):
 
     def __init__(self, shell_ctx):
 
-        manager = KeyBindingManager(
-            enable_system_bindings=True,
-            enable_auto_suggest_bindings=True,
-            enable_abort_and_exit_bindings=True
-        )
         self.shell_ctx = shell_ctx
-        self.registry = manager.registry
+        self.kb = KeyBindings()
 
         @Condition
-        def not_prompting(_):
+        def not_prompting():
             return not shell_ctx.is_prompting
 
         @Condition
-        def not_example_repl(_):
+        def not_example_repl():
             return not shell_ctx.is_example_repl
 
-        @self.registry.add_binding(Keys.ControlD, eager=True)
+        @self.kb.add_binding(Keys.ControlD, eager=True)
         def _exit(event):
             """ exits the program when Control D is pressed """
-            event.cli.set_return_value(None)
+            event.app.exit(result=None)
 
-        @self.registry.add_binding(Keys.Enter, filter=not_prompting & not_example_repl)
+        @self.kb.add_binding(Keys.Enter, filter=not_prompting & not_example_repl)
         def _enter(event):
             """ Sends the command to the terminal"""
-            event.cli.set_return_value(event.cli.current_buffer)
+            event.app.exit(result=event.app.current_buffer)
 
-        @self.registry.add_binding(Keys.ControlY, eager=True)
+        @self.kb.add_binding(Keys.ControlY, eager=True)
         def _pan_up(_):
             """ Pans the example pan up"""
             telemetry.track_scroll_examples()
@@ -54,7 +49,7 @@ class InteractiveKeyBindings(object):
             if shell_ctx.example_page > 1:
                 shell_ctx.example_page -= 1
 
-        @self.registry.add_binding(Keys.ControlN, eager=True)
+        @self.kb.add_binding(Keys.ControlN, eager=True)
         def _pan_down(_):
             """ Pans the example pan down"""
             telemetry.track_scroll_examples()
@@ -62,7 +57,7 @@ class InteractiveKeyBindings(object):
             if shell_ctx.example_page < 10:
                 shell_ctx.example_page += 1
 
-        @self.registry.add_binding(Keys.F1, eager=True)
+        @self.kb.add_binding(Keys.F1, eager=True)
         def _config_settings(event):
             """ opens the configuration """
             telemetry.track_open_config()
@@ -82,16 +77,16 @@ class InteractiveKeyBindings(object):
 
             shell_ctx.is_prompting = False
             print("\nPlease restart the interactive mode for changes to take effect.\n\n")
-            event.cli.set_return_value(event.cli.current_buffer)
+            event.app.exit(result=event.app.current_buffer)
 
-        @self.registry.add_binding(Keys.F2, eager=True)
+        @self.kb.add_binding(Keys.F2, eager=True)
         def _toggle_default(_):
             """ shows the defaults"""
             telemetry.track_toggle_default()
 
             shell_ctx.is_showing_default = not shell_ctx.is_showing_default
 
-        @self.registry.add_binding(Keys.F3, eager=True)
+        @self.kb.add_binding(Keys.F3, eager=True)
         def _toggle_symbols(_):
             """ shows the symbol bindings"""
             telemetry.track_toggle_symbol_bindings()
