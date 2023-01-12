@@ -86,6 +86,16 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         raise ValidationError(err_msg)
 
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
+
+    from azure.core.exceptions import HttpResponseError
+    try:
+        if client.get(resource_group_name, azure_firewall_name):
+            err_msg = f"The specified firewall: {azure_firewall_name} already exists."
+            raise ValidationError(err_msg)
+    except HttpResponseError:
+        # continue the normal creation process
+        pass
+
     (AzureFirewall,
      SubResource,
      AzureFirewallSku,
