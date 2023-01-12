@@ -826,6 +826,7 @@ class AzInteractiveShell(object):
         telemetry.flush()
         while True:
             try:
+                # Reset the user input analysis state in completer to clear the hint in command description section
                 self.completer.reset()
                 document = self.cli.run(reset_current_buffer=True)
                 text = document.text
