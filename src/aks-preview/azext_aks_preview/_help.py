@@ -292,7 +292,7 @@ helps['aks create'] = """
         – name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource group
-          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are unrestricted, and readonly (recommended: readonly)
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended: readonly)
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
@@ -687,7 +687,7 @@ helps['aks update'] = """
         – name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource group
-          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are unrestricted, and readonly (recommended: readonly)
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended: readonly)
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
