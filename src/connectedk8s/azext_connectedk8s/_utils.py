@@ -290,6 +290,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
                                " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
     ensure_namespace_cleanup()
 
+
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
