@@ -1,0 +1,104 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - '2022-12-05T20:10:25.201037Z'
+      Repeatability-Request-ID:
+      - dadcbb89-74d8-11ed-ac7d-a864f13124e5
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      x-ms-date:
+      - Mon, 05 Dec 2022 20:10:25 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+  response:
+    body:
+      string: '{"id": "sanitized", "createdDateTime": "2022-12-05T20:10:26.4057697+00:00",
+        "validFrom": "2022-12-05T20:10:26.2883426+00:00", "validUntil": "2023-06-03T20:10:26.2883426+00:00",
+        "roomJoinPolicy": "InviteOnly", "participants": []}'
+    headers:
+      api-supported-versions:
+      - 2021-04-07, 2022-02-01
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Dec 2022 20:10:26 GMT
+      location:
+      - '99427783755003361'
+      ms-cv:
+      - hAvUH3IALE2Y0cIcfdLQvA.0
+      repeatability-result:
+      - accepted
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0MVCOYwAAAACbi2jm2naHTJwpdsYjk1oKWVZSMzExMDAwMTE1MDIxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
+      "sanitized"}}, "role": "Consumer"}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - 9yM+xm0r0m7guClX1Hr5BsENOLhDxuDrsToSVRqbc60=
+      x-ms-date:
+      - Mon, 05 Dec 2022 20:10:26 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants:add?api-version=2022-02-01
+  response:
+    body:
+      string: '{"error": {"code": "InvalidInput", "message": "Identifier format is
+        invalid."}}'
+    headers:
+      api-supported-versions:
+      - '2022-02-01'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Dec 2022 20:10:26 GMT
+      ms-cv:
+      - quPuWPZ0Ik+aqQNAC7B83A.0
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0MlCOYwAAAAD1uszgy6UoRZrPgFZXTk3vWVZSMzExMDAwMTE1MDIzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-error-code:
+      - InvalidInput
+    status:
+      code: 400
+      message: Bad Request
+version: 1

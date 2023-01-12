@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{}'
+    body: null
     headers:
       Accept:
       - application/json
@@ -9,51 +9,49 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2'
+      - '0'
       Content-Type:
       - application/json
       User-Agent:
-      - azsdk-python-communication-identity/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - azsdk-python-communication-identity/1.3.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Tue, 16 Aug 2022 10:01:23 GMT
+      - Mon, 05 Dec 2022 20:07:16 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-10-01
   response:
     body:
       string: '{"identity": {"id": "sanitized"}}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
-        2021-11-01, 2022-06-01
-      connection:
-      - keep-alive
+        2021-11-01, 2022-06-01, 2022-10-01
       content-length:
       - '33'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Aug 2022 10:01:25 GMT
+      - Mon, 05 Dec 2022 20:07:17 GMT
       ms-cv:
-      - DtQjJTOjm0iKVzzVzvuf5w.0
+      - RpD/N19yg02WcLmeURw65A.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
-      - 20220816T100125Z-vucxhh51rx5mv27fvss3h7q1kc00000000f000000000382h
+      - 0dU+OYwAAAACLD0mn9uJEQLJqGGqGJebDWVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 119ms
+      - 123ms
     status:
       code: 201
       message: Created
 - request:
-    body: '{"scopes": ["chat"]}'
+    body: '{"scopes": ["chat"], "expiresInMinutes": null}'
     headers:
       Accept:
       - application/json
@@ -62,48 +60,44 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '20'
+      - '46'
       Content-Type:
       - application/json
       User-Agent:
-      - azsdk-python-communication-identity/1.1.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AzureCli/1.3.0 azsdk-python-communication-identity/1.3.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - sZHRO4JkAmw3HcI1PyxrC5twHvkHIWjyMLVIkauXKRA=
+      - nhFAfqVNNvGtmqZXLZeMFVwYcIW0NuuEF0d+D1dlKIY=
       x-ms-date:
-      - Tue, 16 Aug 2022 10:01:24 GMT
+      - Mon, 05 Dec 2022 20:07:17 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities/sanitized/:issueAccessToken?api-version=2022-06-01
+    uri: https://sanitized.communication.azure.com/identities/sanitized/:issueAccessToken?api-version=2022-10-01
   response:
     body:
-      string: '{"token": "sanitized", "expiresOn": "2022-08-17T10:01:26.4548108+00:00"}'
+      string: '{"token": "sanitized", "expiresOn": "2022-12-06T20:07:18.1691915+00:00"}'
     headers:
-      accept-ranges:
-      - bytes
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
-        2021-11-01, 2022-06-01
-      connection:
-      - keep-alive
+        2021-11-01, 2022-06-01, 2022-10-01
       content-length:
       - '72'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Aug 2022 10:01:26 GMT
+      - Mon, 05 Dec 2022 20:07:17 GMT
       ms-cv:
-      - pE/7U/HMYUWGgOzEfInuHg.0
+      - Pz341IMcDUyigGEZ+2If6Q.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
-      - 20220816T100126Z-p18hf8s3dx4xf8cgexx53pe93400000000dg000000009gxw
+      - 0dU+OYwAAAABFKR5Rip2wTrMs+UY47OsrWVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 186ms
+      - 178ms
     status:
       code: 200
       message: OK

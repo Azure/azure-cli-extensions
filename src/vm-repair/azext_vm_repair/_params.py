@@ -27,11 +27,12 @@ def load_arguments(self, _):
         c.argument('repair_password', help='Admin password for the repair VM.')
         c.argument('repair_vm_name', help='Name of repair VM.')
         c.argument('copy_disk_name', help='Name of OS disk copy.')
-        c.argument('repair_group_name', help='Repair resource group name.')
+        c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
         c.argument('enable_nested', help='enable nested hyperv.')
         c.argument('associate_public_ip', help='Option to create repair vm with public ip')
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|suse12|ubuntu20|centos7|oracle7)')
+        c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
@@ -50,4 +51,5 @@ def load_arguments(self, _):
         c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
 
     with self.argument_context('vm repair reset-nic') as c:
+        c.argument('subscriptionid', help='Subscription id to default subscription using `az account set -s NAME_OR_ID`.')
         c.argument('yes', help='Do not prompt for confirmation to start VM if it is not running.')

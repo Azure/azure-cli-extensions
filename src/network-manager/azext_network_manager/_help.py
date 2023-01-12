@@ -50,7 +50,7 @@ helps['network manager create'] = """
       - name: Create/Update Azure Virtual Network Manager
         text: |-
                az network manager create --name "TestNetworkManager" -l eastus2euap --description "My Test Network Manager" \
---display-name "TestNetworkManager" --scope-accesses "SecurityAdmin" "Connectivity" \
+--scope-accesses "SecurityAdmin" "Connectivity" \
 --network-manager-scopes management-groups="/providers/Microsoft.Management/testmg" subscriptions="/subscriptions/00000000-0000-0\
 000-0000-000000000000" --resource-group "rg1"
 """
@@ -139,7 +139,7 @@ helps['network manager list-effective-security-admin-rule'] = """
 
 helps['network manager list-active-security-admin-rule'] = """
     type: command
-    short-summary: "Lists active security admin rule in a network manager."
+    short-summary: "List all security admin rules that have been deployed by this network manager."
     examples:
       - name: Get Azure Virtual Network Manager Active Security Admin Rule
         text: |-
@@ -213,7 +213,7 @@ helps['network manager connect-config create'] = """
 "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-existing-peering true --display-name "myTestConnectivityConfig" --hub resource-id="subscriptions/subscriptionA/resource\
+--delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resource\
 Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
 --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """
@@ -346,8 +346,7 @@ helps['network manager group delete'] = """
 #       - name: Create network manager security user Configuration
 #         text: |-
 #                az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
-# --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
-# --delete-existing-ns-gs true
+# --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy"
 # """
 #
 # helps['network manager security-user-config update'] = """
@@ -398,8 +397,7 @@ helps['network manager security-admin-config create'] = """
       - name: Create network manager security admin Configuration
         text: |-
                az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --apply-on None
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
 """
 
 helps['network manager security-admin-config update'] = """
@@ -429,7 +427,7 @@ helps['network manager security-admin-config rule-collection create'] = """
       - name: Create security admin rule collections
         text: |-
                az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
---rule-collection-name "myTestCollection" --description "A sample description" --display-name "ASampleCollection" \
+--rule-collection-name "myTestCollection" --description "A sample description" \
 --applies-to-groups  network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
 """
 
@@ -450,7 +448,7 @@ helps['network manager security-admin-config rule-collection update'] = """
       - name: Update security admin rule collection
         text: |-
                az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
+"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
 helps['network manager security-admin-config rule-collection show'] = """
@@ -581,7 +579,7 @@ helps['network manager security-admin-config rule-collection rule delete'] = """
 #       - name: Create security user rule collections
 #         text: |-
 #                az network manager security-user-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
-# --rule-collection-name myTestCollection --description "A sample description" --display-name "ASampleCollection" \
+# --rule-collection-name myTestCollection --description "A sample description" \
 # --applies-to-groups  network-group-id=/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
 # """
 #
@@ -602,7 +600,7 @@ helps['network manager security-admin-config rule-collection rule delete'] = """
 #       - name: Update security user rule collection
 #         text: |-
 #                az network manager security-user-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-# "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
+# "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 # """
 #
 # helps['network manager security-user-config rule-collection show'] = """
@@ -745,7 +743,7 @@ helps['network manager connection subscription show'] = """
 
 helps['network manager connection subscription create'] = """
     type: command
-    short-summary: "Create a connection from this subscription to a cross tenant network manager."
+    short-summary: "Create a connection from a subscription to a cross-tenant network manager."
     examples:
       - name: Create network manager connection
         text: |-

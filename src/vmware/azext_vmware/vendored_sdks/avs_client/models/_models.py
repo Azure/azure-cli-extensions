@@ -84,17 +84,17 @@ class AddonProperties(msrest.serialization.Model):
     """The properties of an addon.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AddonHcxProperties, AddonSrmProperties, AddonVrProperties.
+    sub-classes are: AddonArcProperties, AddonHcxProperties, AddonSrmProperties, AddonVrProperties.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
-     Possible values include: "SRM", "VR", "HCX".
+     Possible values include: "SRM", "VR", "HCX", "Arc".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
 
@@ -109,7 +109,7 @@ class AddonProperties(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'addon_type': {'HCX': 'AddonHcxProperties', 'SRM': 'AddonSrmProperties', 'VR': 'AddonVrProperties'}
+        'addon_type': {'Arc': 'AddonArcProperties', 'HCX': 'AddonHcxProperties', 'SRM': 'AddonSrmProperties', 'VR': 'AddonVrProperties'}
     }
 
     def __init__(
@@ -121,6 +121,43 @@ class AddonProperties(msrest.serialization.Model):
         self.provisioning_state = None
 
 
+class AddonArcProperties(AddonProperties):
+    """The properties of an Arc addon.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param addon_type: Required. The type of private cloud addon.Constant filled by server.
+     Possible values include: "SRM", "VR", "HCX", "Arc".
+    :type addon_type: str or ~avs_client.models.AddonType
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
+    :param v_center: The VMware vCenter resource ID.
+    :type v_center: str
+    """
+
+    _validation = {
+        'addon_type': {'required': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'addon_type': {'key': 'addonType', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'v_center': {'key': 'vCenter', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AddonArcProperties, self).__init__(**kwargs)
+        self.addon_type = 'Arc'  # type: str
+        self.v_center = kwargs.get('v_center', None)
+
+
 class AddonHcxProperties(AddonProperties):
     """The properties of an HCX addon.
 
@@ -129,10 +166,10 @@ class AddonHcxProperties(AddonProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
-     Possible values include: "SRM", "VR", "HCX".
+     Possible values include: "SRM", "VR", "HCX", "Arc".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param offer: Required. The HCX offer, example VMware MaaS Cloud Provider (Enterprise).
     :type offer: str
@@ -197,10 +234,10 @@ class AddonSrmProperties(AddonProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
-     Possible values include: "SRM", "VR", "HCX".
+     Possible values include: "SRM", "VR", "HCX", "Arc".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param license_key: The Site Recovery Manager (SRM) license.
     :type license_key: str
@@ -234,10 +271,10 @@ class AddonVrProperties(AddonProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param addon_type: Required. The type of private cloud addon.Constant filled by server.
-     Possible values include: "SRM", "VR", "HCX".
+     Possible values include: "SRM", "VR", "HCX", "Arc".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     :param vrs_count: Required. The vSphere Replication Server (VRS) count.
     :type vrs_count: int
@@ -462,7 +499,7 @@ class Cluster(Resource):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
@@ -540,7 +577,7 @@ class CommonClusterProperties(msrest.serialization.Model):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
@@ -579,7 +616,7 @@ class ClusterProperties(CommonClusterProperties):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
@@ -629,6 +666,55 @@ class ClusterUpdate(msrest.serialization.Model):
         self.hosts = kwargs.get('hosts', None)
 
 
+class ClusterZone(msrest.serialization.Model):
+    """Zone and associated hosts info.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar hosts: List of hosts belonging to the availability zone in a cluster.
+    :vartype hosts: list[str]
+    :ivar zone: Availability zone identifier.
+    :vartype zone: str
+    """
+
+    _validation = {
+        'hosts': {'readonly': True},
+        'zone': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'hosts': {'key': 'hosts', 'type': '[str]'},
+        'zone': {'key': 'zone', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterZone, self).__init__(**kwargs)
+        self.hosts = None
+        self.zone = None
+
+
+class ClusterZoneList(msrest.serialization.Model):
+    """List of all zones and associated hosts for a cluster.
+
+    :param zones: Zone and associated hosts info.
+    :type zones: list[~avs_client.models.ClusterZone]
+    """
+
+    _attribute_map = {
+        'zones': {'key': 'zones', 'type': '[ClusterZone]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterZoneList, self).__init__(**kwargs)
+        self.zones = kwargs.get('zones', None)
+
+
 class Datastore(Resource):
     """A datastore resource.
 
@@ -641,7 +727,7 @@ class Datastore(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar provisioning_state: The state of the datastore provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Pending", "Creating", "Updating", "Deleting".
+     "Succeeded", "Failed", "Cancelled", "Pending", "Creating", "Updating", "Deleting", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.DatastoreProvisioningState
     :param net_app_volume: An Azure NetApp Files volume.
     :type net_app_volume: ~avs_client.models.NetAppVolume
@@ -786,6 +872,9 @@ class EncryptionKeyVaultProperties(msrest.serialization.Model):
     :type key_name: str
     :param key_version: The version of the key.
     :type key_version: str
+    :ivar auto_detected_key_version: The auto-detected version of the key if versionType is
+     auto-detected.
+    :vartype auto_detected_key_version: str
     :param key_vault_url: The URL of the vault.
     :type key_vault_url: str
     :ivar key_state: The state of key provided. Possible values include: "Connected",
@@ -797,6 +886,7 @@ class EncryptionKeyVaultProperties(msrest.serialization.Model):
     """
 
     _validation = {
+        'auto_detected_key_version': {'readonly': True},
         'key_state': {'readonly': True},
         'version_type': {'readonly': True},
     }
@@ -804,6 +894,7 @@ class EncryptionKeyVaultProperties(msrest.serialization.Model):
     _attribute_map = {
         'key_name': {'key': 'keyName', 'type': 'str'},
         'key_version': {'key': 'keyVersion', 'type': 'str'},
+        'auto_detected_key_version': {'key': 'autoDetectedKeyVersion', 'type': 'str'},
         'key_vault_url': {'key': 'keyVaultUrl', 'type': 'str'},
         'key_state': {'key': 'keyState', 'type': 'str'},
         'version_type': {'key': 'versionType', 'type': 'str'},
@@ -816,6 +907,7 @@ class EncryptionKeyVaultProperties(msrest.serialization.Model):
         super(EncryptionKeyVaultProperties, self).__init__(**kwargs)
         self.key_name = kwargs.get('key_name', None)
         self.key_version = kwargs.get('key_version', None)
+        self.auto_detected_key_version = None
         self.key_vault_url = kwargs.get('key_vault_url', None)
         self.key_state = None
         self.version_type = None
@@ -943,7 +1035,7 @@ class ExpressRouteAuthorization(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar provisioning_state: The state of the  ExpressRoute Circuit Authorization provisioning.
-     Possible values include: "Succeeded", "Failed", "Updating".
+     Possible values include: "Succeeded", "Failed", "Updating", "Canceled".
     :vartype provisioning_state: str or
      ~avs_client.models.ExpressRouteAuthorizationProvisioningState
     :ivar express_route_authorization_id: The ID of the ExpressRoute Circuit Authorization.
@@ -1026,7 +1118,7 @@ class GlobalReachConnection(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar provisioning_state: The state of the  ExpressRoute Circuit Authorization provisioning.
-     Possible values include: "Succeeded", "Failed", "Updating".
+     Possible values include: "Succeeded", "Failed", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.GlobalReachConnectionProvisioningState
     :ivar address_prefix: The network used for global reach carved out from the original network
      block provided for the private cloud.
@@ -1275,7 +1367,7 @@ class ManagementCluster(CommonClusterProperties):
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
@@ -1646,7 +1738,7 @@ class PlacementPolicyProperties(msrest.serialization.Model):
     :param display_name: Display name of the placement policy.
     :type display_name: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PlacementPolicyProvisioningState
     """
 
@@ -1687,12 +1779,20 @@ class PlacementPolicyUpdate(msrest.serialization.Model):
     :type vm_members: list[str]
     :param host_members: Host members list.
     :type host_members: list[str]
+    :param affinity_strength: vm-host placement policy affinity strength (should/must). Possible
+     values include: "Should", "Must".
+    :type affinity_strength: str or ~avs_client.models.AffinityStrength
+    :param azure_hybrid_benefit_type: placement policy azure hybrid benefit opt-in type. Possible
+     values include: "SqlHost", "None".
+    :type azure_hybrid_benefit_type: str or ~avs_client.models.AzureHybridBenefitType
     """
 
     _attribute_map = {
         'state': {'key': 'properties.state', 'type': 'str'},
         'vm_members': {'key': 'properties.vmMembers', 'type': '[str]'},
         'host_members': {'key': 'properties.hostMembers', 'type': '[str]'},
+        'affinity_strength': {'key': 'properties.affinityStrength', 'type': 'str'},
+        'azure_hybrid_benefit_type': {'key': 'properties.azureHybridBenefitType', 'type': 'str'},
     }
 
     def __init__(
@@ -1703,6 +1803,8 @@ class PlacementPolicyUpdate(msrest.serialization.Model):
         self.state = kwargs.get('state', None)
         self.vm_members = kwargs.get('vm_members', None)
         self.host_members = kwargs.get('host_members', None)
+        self.affinity_strength = kwargs.get('affinity_strength', None)
+        self.azure_hybrid_benefit_type = kwargs.get('azure_hybrid_benefit_type', None)
 
 
 class TrackedResource(Resource):
@@ -1779,7 +1881,7 @@ class PrivateCloud(TrackedResource):
     :param encryption: Customer managed key encryption, can be enabled or disabled.
     :type encryption: ~avs_client.models.Encryption
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating".
+     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
     :param circuit: An ExpressRoute Circuit.
     :type circuit: ~avs_client.models.Circuit
@@ -1811,6 +1913,10 @@ class PrivateCloud(TrackedResource):
     :param secondary_circuit: A secondary expressRoute circuit from a separate AZ. Only present in
      a stretched private cloud.
     :type secondary_circuit: ~avs_client.models.Circuit
+    :ivar nsx_public_ip_quota_raised: Flag to indicate whether the private cloud has the quota for
+     provisioned NSX Public IP count raised from 64 to 1024. Possible values include: "Enabled",
+     "Disabled".
+    :vartype nsx_public_ip_quota_raised: str or ~avs_client.models.NsxPublicIpQuotaRaisedEnum
     """
 
     _validation = {
@@ -1826,6 +1932,7 @@ class PrivateCloud(TrackedResource):
         'vcenter_certificate_thumbprint': {'readonly': True},
         'nsxt_certificate_thumbprint': {'readonly': True},
         'external_cloud_links': {'readonly': True},
+        'nsx_public_ip_quota_raised': {'readonly': True},
     }
 
     _attribute_map = {
@@ -1854,6 +1961,7 @@ class PrivateCloud(TrackedResource):
         'nsxt_certificate_thumbprint': {'key': 'properties.nsxtCertificateThumbprint', 'type': 'str'},
         'external_cloud_links': {'key': 'properties.externalCloudLinks', 'type': '[str]'},
         'secondary_circuit': {'key': 'properties.secondaryCircuit', 'type': 'Circuit'},
+        'nsx_public_ip_quota_raised': {'key': 'properties.nsxPublicIpQuotaRaised', 'type': 'str'},
     }
 
     def __init__(
@@ -1881,6 +1989,7 @@ class PrivateCloud(TrackedResource):
         self.nsxt_certificate_thumbprint = None
         self.external_cloud_links = None
         self.secondary_circuit = kwargs.get('secondary_circuit', None)
+        self.nsx_public_ip_quota_raised = None
 
 
 class PrivateCloudIdentity(msrest.serialization.Model):
@@ -2008,7 +2117,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     :param encryption: Customer managed key encryption, can be enabled or disabled.
     :type encryption: ~avs_client.models.Encryption
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating".
+     "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
     :param circuit: An ExpressRoute Circuit.
     :type circuit: ~avs_client.models.Circuit
@@ -2040,6 +2149,10 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     :param secondary_circuit: A secondary expressRoute circuit from a separate AZ. Only present in
      a stretched private cloud.
     :type secondary_circuit: ~avs_client.models.Circuit
+    :ivar nsx_public_ip_quota_raised: Flag to indicate whether the private cloud has the quota for
+     provisioned NSX Public IP count raised from 64 to 1024. Possible values include: "Enabled",
+     "Disabled".
+    :vartype nsx_public_ip_quota_raised: str or ~avs_client.models.NsxPublicIpQuotaRaisedEnum
     """
 
     _validation = {
@@ -2052,6 +2165,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
         'vcenter_certificate_thumbprint': {'readonly': True},
         'nsxt_certificate_thumbprint': {'readonly': True},
         'external_cloud_links': {'readonly': True},
+        'nsx_public_ip_quota_raised': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2073,6 +2187,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
         'nsxt_certificate_thumbprint': {'key': 'nsxtCertificateThumbprint', 'type': 'str'},
         'external_cloud_links': {'key': 'externalCloudLinks', 'type': '[str]'},
         'secondary_circuit': {'key': 'secondaryCircuit', 'type': 'Circuit'},
+        'nsx_public_ip_quota_raised': {'key': 'nsxPublicIpQuotaRaised', 'type': 'str'},
     }
 
     def __init__(
@@ -2093,6 +2208,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
         self.nsxt_certificate_thumbprint = None
         self.external_cloud_links = None
         self.secondary_circuit = kwargs.get('secondary_circuit', None)
+        self.nsx_public_ip_quota_raised = None
 
 
 class PrivateCloudUpdate(msrest.serialization.Model):
@@ -2390,7 +2506,7 @@ class ScriptExecution(ProxyResource):
     :ivar finished_at: Time the script execution was finished.
     :vartype finished_at: ~datetime.datetime
     :ivar provisioning_state: The state of the script execution resource. Possible values include:
-     "Pending", "Running", "Succeeded", "Failed", "Cancelling", "Cancelled", "Deleting".
+     "Pending", "Running", "Succeeded", "Failed", "Cancelling", "Cancelled", "Deleting", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.ScriptExecutionProvisioningState
     :param output: Standard output stream from the powershell execution.
     :type output: list[str]
@@ -2505,6 +2621,10 @@ class ScriptPackage(ProxyResource):
     :vartype description: str
     :ivar version: Module version.
     :vartype version: str
+    :ivar company: Company that created and supports the package.
+    :vartype company: str
+    :ivar uri: Link to support by the package vendor.
+    :vartype uri: str
     """
 
     _validation = {
@@ -2513,6 +2633,8 @@ class ScriptPackage(ProxyResource):
         'type': {'readonly': True},
         'description': {'readonly': True},
         'version': {'readonly': True},
+        'company': {'readonly': True},
+        'uri': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2521,6 +2643,8 @@ class ScriptPackage(ProxyResource):
         'type': {'key': 'type', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'version': {'key': 'properties.version', 'type': 'str'},
+        'company': {'key': 'properties.company', 'type': 'str'},
+        'uri': {'key': 'properties.uri', 'type': 'str'},
     }
 
     def __init__(
@@ -2530,6 +2654,8 @@ class ScriptPackage(ProxyResource):
         super(ScriptPackage, self).__init__(**kwargs)
         self.description = None
         self.version = None
+        self.company = None
+        self.uri = None
 
 
 class ScriptPackagesList(msrest.serialization.Model):
@@ -2877,7 +3003,7 @@ class VmHostPlacementPolicyProperties(PlacementPolicyProperties):
     :param display_name: Display name of the placement policy.
     :type display_name: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PlacementPolicyProvisioningState
     :param vm_members: Required. Virtual machine members list.
     :type vm_members: list[str]
@@ -2886,6 +3012,12 @@ class VmHostPlacementPolicyProperties(PlacementPolicyProperties):
     :param affinity_type: Required. placement policy affinity type. Possible values include:
      "Affinity", "AntiAffinity".
     :type affinity_type: str or ~avs_client.models.AffinityType
+    :param affinity_strength: vm-host placement policy affinity strength (should/must). Possible
+     values include: "Should", "Must".
+    :type affinity_strength: str or ~avs_client.models.AffinityStrength
+    :param azure_hybrid_benefit_type: placement policy azure hybrid benefit opt-in type. Possible
+     values include: "SqlHost", "None".
+    :type azure_hybrid_benefit_type: str or ~avs_client.models.AzureHybridBenefitType
     """
 
     _validation = {
@@ -2904,6 +3036,8 @@ class VmHostPlacementPolicyProperties(PlacementPolicyProperties):
         'vm_members': {'key': 'vmMembers', 'type': '[str]'},
         'host_members': {'key': 'hostMembers', 'type': '[str]'},
         'affinity_type': {'key': 'affinityType', 'type': 'str'},
+        'affinity_strength': {'key': 'affinityStrength', 'type': 'str'},
+        'azure_hybrid_benefit_type': {'key': 'azureHybridBenefitType', 'type': 'str'},
     }
 
     def __init__(
@@ -2915,6 +3049,8 @@ class VmHostPlacementPolicyProperties(PlacementPolicyProperties):
         self.vm_members = kwargs['vm_members']
         self.host_members = kwargs['host_members']
         self.affinity_type = kwargs['affinity_type']
+        self.affinity_strength = kwargs.get('affinity_strength', None)
+        self.azure_hybrid_benefit_type = kwargs.get('azure_hybrid_benefit_type', None)
 
 
 class VmPlacementPolicyProperties(PlacementPolicyProperties):
@@ -2933,7 +3069,7 @@ class VmPlacementPolicyProperties(PlacementPolicyProperties):
     :param display_name: Display name of the placement policy.
     :type display_name: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PlacementPolicyProvisioningState
     :param vm_members: Required. Virtual machine members list.
     :type vm_members: list[str]
@@ -2966,6 +3102,38 @@ class VmPlacementPolicyProperties(PlacementPolicyProperties):
         self.type = 'VmVm'  # type: str
         self.vm_members = kwargs['vm_members']
         self.affinity_type = kwargs['affinity_type']
+
+
+class WorkloadNetwork(ProxyResource):
+    """Workload Network.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetwork, self).__init__(**kwargs)
 
 
 class WorkloadNetworkDhcp(ProxyResource):
@@ -3022,7 +3190,7 @@ class WorkloadNetworkDhcpEntity(msrest.serialization.Model):
     :ivar segments: NSX Segments consuming DHCP.
     :vartype segments: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
     :param revision: NSX revision number.
     :type revision: long
@@ -3103,7 +3271,7 @@ class WorkloadNetworkDhcpRelay(WorkloadNetworkDhcpEntity):
     :ivar segments: NSX Segments consuming DHCP.
     :vartype segments: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
     :param revision: NSX revision number.
     :type revision: long
@@ -3151,7 +3319,7 @@ class WorkloadNetworkDhcpServer(WorkloadNetworkDhcpEntity):
     :ivar segments: NSX Segments consuming DHCP.
     :vartype segments: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
     :param revision: NSX revision number.
     :type revision: long
@@ -3212,7 +3380,7 @@ class WorkloadNetworkDnsService(ProxyResource):
     :ivar status: DNS Service status. Possible values include: "SUCCESS", "FAILURE".
     :vartype status: str or ~avs_client.models.DnsServiceStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or
      ~avs_client.models.WorkloadNetworkDnsServiceProvisioningState
     :param revision: NSX revision number.
@@ -3308,7 +3476,7 @@ class WorkloadNetworkDnsZone(ProxyResource):
     :param dns_services: Number of DNS Services using the DNS zone.
     :type dns_services: long
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDnsZoneProvisioningState
     :param revision: NSX revision number.
     :type revision: long
@@ -3449,6 +3617,36 @@ class WorkloadNetworkGatewayList(msrest.serialization.Model):
         self.next_link = None
 
 
+class WorkloadNetworkList(msrest.serialization.Model):
+    """A list of workload networks.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetwork]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetwork]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
 class WorkloadNetworkPortMirroring(ProxyResource):
     """NSX Port Mirroring.
 
@@ -3472,7 +3670,7 @@ class WorkloadNetworkPortMirroring(ProxyResource):
     :ivar status: Port Mirroring Status. Possible values include: "SUCCESS", "FAILURE".
     :vartype status: str or ~avs_client.models.PortMirroringStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or
      ~avs_client.models.WorkloadNetworkPortMirroringProvisioningState
     :param revision: NSX revision number.
@@ -3562,7 +3760,7 @@ class WorkloadNetworkPublicIP(ProxyResource):
     :ivar public_ip_block: CIDR Block of the Public IP Block.
     :vartype public_ip_block: str
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkPublicIPProvisioningState
     """
 
@@ -3647,7 +3845,7 @@ class WorkloadNetworkSegment(ProxyResource):
     :ivar status: Segment status. Possible values include: "SUCCESS", "FAILURE".
     :vartype status: str or ~avs_client.models.SegmentStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkSegmentProvisioningState
     :param revision: NSX revision number.
     :type revision: long
@@ -3850,7 +4048,7 @@ class WorkloadNetworkVMGroup(ProxyResource):
     :ivar status: VM Group status. Possible values include: "SUCCESS", "FAILURE".
     :vartype status: str or ~avs_client.models.VMGroupStatusEnum
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
-     "Failed", "Building", "Deleting", "Updating".
+     "Failed", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkVMGroupProvisioningState
     :param revision: NSX revision number.
     :type revision: long

@@ -18,7 +18,7 @@ class VmwareScriptScenarioTest(ScenarioTest):
             'subscription': '12341234-1234-1234-1234-123412341234',
             'privatecloud': 'cloud1',
             'scriptExecution': 'addSsoServer',
-            'scriptPackage': 'AVS.PowerCommands@1.0.0',
+            'scriptPackage': 'Microsoft.AVS.Management@3.0.48',
             'scriptCmdlet': 'New-ExternalSsoDomain'
         })
 
