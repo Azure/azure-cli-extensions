@@ -37,18 +37,20 @@ class FleetScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
-    @ResourceGroupPreparer(name_prefix='fleet-cli-', random_name_length=15)
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='centraluseuap')
     def test_fleet(self):
 
         self.kwargs.update({
-            'fleet_name': self.create_random_name(prefix='fleet-', length=15),
-            'member_name': self.create_random_name(prefix='fleet-mc-', length=15),
+            'fleet_name': self.create_random_name(prefix='fl-', length=7),
+            'member_name': self.create_random_name(prefix='flmc-', length=9),
             'ssh_key_value': self.generate_ssh_keys()
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
             self.check('name', '{fleet_name}')
         ])
+
+        self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])
 
         self.cmd('fleet update -g {rg} -n {fleet_name} --tags foo=doo', checks=[
             self.check('name', '{fleet_name}'),

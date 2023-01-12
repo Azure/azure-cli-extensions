@@ -9,9 +9,11 @@
 # --------------------------------------------------------------------------
 
 import os
+from sys import prefix
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk import StorageAccountPreparer
+
 from .example_steps import step_create
 from .example_steps import step_update
 from .example_steps import step_linked_service_create
@@ -70,14 +72,10 @@ from .example_steps import step_managed_virtual_network_show
 from .example_steps import step_managed_private_endpoint_create
 from .example_steps import step_managed_private_endpoint_list
 from .example_steps import step_managed_private_endpoint_show
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
+from .. import try_manual, raise_if, calc_coverage
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
 # Env setup_main
@@ -165,25 +163,48 @@ def call_main(test):
 class DatafactorymainTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DatafactorymainTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
-        })
+        self.kwargs.update({"subscription_id": self.get_subscription_id()})
 
-        self.kwargs.update({
-            'myFactory': self.create_random_name(prefix='exampleFactoryName'[:9], length=18),
-            'myIntegrationRuntime': self.create_random_name(prefix='exampleIntegrationRuntime'[:12], length=25),
-            'myIntegrationRuntime2': 'exampleManagedIntegrationRuntime',
-            'myLinkedService': self.create_random_name(prefix='exampleLinkedService'[:10], length=20),
-            'myDataset': self.create_random_name(prefix='exampleDataset'[:7], length=14),
-            'myPipeline': self.create_random_name(prefix='examplePipeline'[:7], length=15),
-            'myTrigger': self.create_random_name(prefix='exampleTrigger'[:7], length=14),
-        })
+        self.kwargs.update(
+            {
+                "myFactory": self.create_random_name(
+                    prefix="exampleFactoryName"[:9], length=18
+                ),
+                "myIntegrationRuntime": self.create_random_name(
+                    prefix="exampleIntegrationRuntime"[:12], length=25
+                ),
+                "myIntegrationRuntime2": "exampleManagedIntegrationRuntime",
+                "myLinkedService": self.create_random_name(
+                    prefix="exampleLinkedService"[:10], length=20
+                ),
+                "myDataset": self.create_random_name(
+                    prefix="exampleDataset"[:7], length=14
+                ),
+                "myPipeline": self.create_random_name(
+                    prefix="examplePipeline"[:7], length=15
+                ),
+                "myTrigger": self.create_random_name(
+                    prefix="exampleTrigger"[:7], length=14
+                ),
+                "myMappingDataFlow": self.create_random_name(
+                    prefix="exampleDataFlow"[:7], length=14
+                ),
+                "myFlowletDataFlow": self.create_random_name(
+                    prefix="exampleDataFlow"[:7], length=14
+                ),
+            }
+        )
 
-    @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(
+        name_prefix="clitestdatafactory_exampleResourceGroup"[:7],
+        key="rg",
+        parameter_name="rg",
+    )
     def test_datafactory_main(self, rg):
         call_main(self)
         calc_coverage(__file__)
         raise_if()
+
 
 # Env setup_managedprivateendpoint
 @try_manual
@@ -217,21 +238,32 @@ def call_managedprivateendpoint(test):
 class DatafactorymanagedPrivateEndpointTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DatafactorymanagedPrivateEndpointTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
-        })
+        self.kwargs.update({"subscription_id": self.get_subscription_id()})
 
-        self.kwargs.update({
-            'myFactory': self.create_random_name(prefix='exampleFactoryName'[:9], length=18),
-            'myManagedVirtualNetwork': self.create_random_name(prefix='exampleManagedVirtualNetworkName'[:16],
-                                                               length=32),
-            'myManagedPrivateEndpoint': self.create_random_name(prefix='exampleManagedPrivateEndpointName'[:16],
-                                                                length=33),
-        })
+        self.kwargs.update(
+            {
+                "myFactory": self.create_random_name(
+                    prefix="exampleFactoryName"[:9], length=18
+                ),
+                "myManagedVirtualNetwork": self.create_random_name(
+                    prefix="exampleManagedVirtualNetworkName"[:16], length=32
+                ),
+                "myManagedPrivateEndpoint": self.create_random_name(
+                    prefix="exampleManagedPrivateEndpointName"[:16], length=33
+                ),
+            }
+        )
 
-    @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
-    @StorageAccountPreparer(name_prefix='clitestdatafactory_exampleBlobStorage'[:7], key='sa',
-                            resource_group_parameter_name='rg')
+    @ResourceGroupPreparer(
+        name_prefix="clitestdatafactory_exampleResourceGroup"[:7],
+        key="rg",
+        parameter_name="rg",
+    )
+    @StorageAccountPreparer(
+        name_prefix="clitestdatafaƒfsctory_exampleBlobStorage"[:7],
+        key="sa",
+        resource_group_parameter_name="rg",
+    )
     def test_datafactory_managedPrivateEndpoint(self, rg):
         call_managedprivateendpoint(self)
         calc_coverage(__file__)

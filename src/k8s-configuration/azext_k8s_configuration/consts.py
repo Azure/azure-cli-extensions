@@ -8,8 +8,8 @@
 # API VERSIONS -----------------------------------------
 
 SOURCE_CONTROL_API_VERSION = "2022-03-01"
-FLUXCONFIG_API_VERSION = "2022-03-01"
-EXTENSION_API_VERSION = "2022-03-01"
+FLUXCONFIG_API_VERSION = "2022-07-01"
+EXTENSION_API_VERSION = "2022-07-01"
 
 # ERROR/HELP TEXT DEFINITIONS -----------------------------------------
 
@@ -41,7 +41,30 @@ REQUIRED_BUCKET_VALUES_MISSING_ERROR = (
 REQUIRED_BUCKET_VALUES_MISSING_HELP = (
     "Provide either both of '--secret-key' and '--access-key' or '--local-auth-ref'"
 )
-
+REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_VALUES_MISSING_ERROR = (
+    "Error! Service principal is invalid because it is missing value(s)"
+)
+REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_VALUES_MISSING_HELP = (
+    "Provide '--sp-client-id', '--sp-tenant-id', and either '--sp-client-secret' or '--sp-client-cert'"
+)
+REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_AUTH_ERROR = (
+    "Error! Too many authentication methods provided for service principal"
+)
+REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_AUTH_HELP = (
+    "Provide either '--sp-client-secret' or '--sp-client-cert'"
+)
+REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_CERT_VALUES_MISSING_ERROR = (
+    "Error! Service principal certificate password is invalid"
+)
+REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_CERT_VALUES_MISSING_HELP = (
+    "Provide '--sp-client-id', '--sp-tenant-id', and '--sp-client-cert' with your '--sp-cert-password"
+)
+REQUIRED_AZURE_BLOB_AUTH_ERROR = (
+    "Error! Too many authentication methods provided for Azure Blob"
+)
+REQUIRED_AZURE_BLOB_AUTH_HELP = (
+    "Specify one of the available authentication methods from the list: '--local-auth-ref', '--account-key', '--sas-token', '--mi-client-id', or service principal with '--sp-client-id', '--sp-tenant-id', and either '--sp-client-secret' or '--sp-client-cert'"
+)
 EXTRA_VALUES_PROVIDED_ERROR = (
     "Error! Invalid properties [{}] were specified for kind '{}'"
 )
@@ -213,6 +236,24 @@ BUCKET_VALID_PARAMS = {
     "local_auth_ref",
 }
 
+AZUREBLOB_REQUIRED_PARAMS = {"url", "container_name"}
+AZUREBLOB_VALID_PARAMS = {
+    "url",
+    "container_name",
+    "sync_interval",
+    "timeout",
+    "account_key",
+    "local_auth_ref",
+    "sp_tenant_id",
+    "sp_client_id",
+    "sp_client_cert",
+    "sp_client_cert_password",
+    "sp_client_secret",
+    "sp_client_cert_send_chain",
+    "sas_token",
+    "mi_client_id",
+}
+
 DEPENDENCY_KEYS = ["dependencies", "depends_on", "dependsOn", "depends"]
 SYNC_INTERVAL_KEYS = ["interval", "sync_interval", "syncInterval"]
 RETRY_INTERVAL_KEYS = ["retryInterval", "retry_interval"]
@@ -222,12 +263,16 @@ REQUIRED_KUSTOMIZATION_KEYS = {"name"}
 VALID_DURATION_REGEX = r"((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?"
 VALID_GIT_URL_REGEX = r"^(((http|https|ssh)://)|(git@))"
 VALID_BUCKET_URL_REGEX = r"^(((http|https)://))"
+VALID_AZUREBLOB_URL_REGEX = r"^(((http|https)://))"
 
 VALID_KUBERNETES_DNS_SUBDOMAIN_NAME_REGEX = r"^[a-z0-9]([\.\-a-z0-9]*[a-z0-9])?$"
 VALID_KUBERNETES_DNS_NAME_REGEX = r"^[a-z0-9]([\-a-z0-9]*[a-z0-9])?$"
 
 GIT = "git"
 BUCKET = "bucket"
+BUCKET_CAPS = "Bucket"
+AZBLOB = "azblob"
+AZURE_BLOB = "AzureBlob"
 GIT_REPOSITORY = "GitRepository"
 
 CONNECTED_CLUSTER_TYPE = "connectedclusters"

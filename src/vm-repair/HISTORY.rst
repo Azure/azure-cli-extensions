@@ -2,6 +2,22 @@
 Release History
 ===============
 
+0.4.10
+++++++
+Support for hosting repair vm in existing resource group and fixing existing resource group logic 
+
+0.4.9
+++++++
+Fix for encrypted vm's auto unlock feature 
+
+0.4.8
+++++++
+Fix for encrypted vm's and fixing test cases
+
+0.4.7
+++++++
+Setting subscription account for reset-nic
+
 0.4.6
 ++++++
 Updating the fetch_repair_vm to use the small letters in the query instead of capital letters
