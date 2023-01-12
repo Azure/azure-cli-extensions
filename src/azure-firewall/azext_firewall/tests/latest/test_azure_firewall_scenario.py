@@ -33,6 +33,11 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('threatIntelMode', 'Alert'),
             self.check('"Network.FTP.AllowActiveFTP"', 'true')
         ])
+        # validate same firewall name
+        from azure.cli.core.azclierror import ValidationError
+        with self.assertRaisesRegex(ValidationError, 'The specified firewall: af1 already exists.'):
+            self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert --allow-active-ftp')
+
         self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny --allow-active-ftp false', checks=[
             self.check('threatIntelMode', 'Deny'),
             self.not_exists('"Network.FTP.AllowActiveFTP"')
