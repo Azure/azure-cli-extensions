@@ -26,6 +26,8 @@ from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 
@@ -342,6 +344,14 @@ def validate_nat_gateway_managed_outbound_ip_count(namespace):
         if namespace.nat_gateway_managed_outbound_ip_count < 1 or namespace.nat_gateway_managed_outbound_ip_count > 16:
             raise InvalidArgumentValueError(
                 "--nat-gateway-managed-outbound-ip-count must be in the range [1,16]")
+
+
+def validate_outbound_type_in_update(namespace):
+    """validate outbound type in update operation"""
+    if namespace.outbound_type is not None:
+        if namespace.outbound_type not in [CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY]:
+            raise InvalidArgumentValueError(
+                f"Invalid outbound type {namespace.outbound_type}, supported values are loadBalancer and managedNATGateway")
 
 
 def validate_nat_gateway_idle_timeout(namespace):
