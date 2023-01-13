@@ -3705,7 +3705,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'auto_upgrade_config_name': 'aksManagedAutoUpgradeSchedule',
             'node_os_upgrade_config_name': 'aksManagedNodeOSUpgradeSchedule',
             'ssh_key_value': self.generate_ssh_keys(),
-            'future_date': (datetime.datetime.now() + datetime.timedelta(days=10)).strftime("%Y-%m-%d")
+            'future_date': "2123-01-01" 
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
