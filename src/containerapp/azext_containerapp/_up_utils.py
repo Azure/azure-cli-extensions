@@ -369,8 +369,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.command_kwargs[key] = task_command_kwargs[key]
 
         with NamedTemporaryFile(mode="w", delete=False) as task_file:
-            task_file.write(task_content)
-            task_file.flush()
+            try:
+               task_file.write(task_content)
+               task_file.flush()
+            finally:
+               task_file.close()
+               os.unlink(task_file.name)
 
             acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
             logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
