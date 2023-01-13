@@ -291,8 +291,8 @@ helps['aks create'] = """
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
         – name: --nrg-lockdown-restriction-level
           type: string
-          short-summary: Restriction level on the managed node resource group
-          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended: readonly)
+          short-summary: Restriction level on the managed node resource group.
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended: readonly).
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
@@ -686,8 +686,8 @@ helps['aks update'] = """
           long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
         – name: --nrg-lockdown-restriction-level
           type: string
-          short-summary: Restriction level on the managed node resource group
-          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended: readonly)
+          short-summary: Restriction level on the managed node resource.
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended: readonly).
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
