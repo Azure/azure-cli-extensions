@@ -386,8 +386,7 @@ helps[
     "devcenter dev artifact list"
 ] = """
     type: command
-    short-summary: "Lists the artifacts for an environment at a specified path, or returns the file at the path. And \
-Lists the artifacts for an environment."
+    short-summary: "Lists the artifacts for an environment at a specified path, or returns the file at the path."
     examples:
       - name: Artifacts_Get
         text: |-
@@ -832,8 +831,7 @@ helps[
     "devcenter admin environment-type list"
 ] = """
     type: command
-    short-summary: "Lists all environment types configured for this project. And Lists environment types for the \
-devcenter."
+    short-summary: "Lists all environment types configured for the devcenter."
     examples:
       - name: EnvironmentTypes_ListByDevCenter
         text: |-
@@ -1732,7 +1730,7 @@ helps[
     "devcenter admin image list"
 ] = """
     type: command
-    short-summary: "Lists images for a gallery. And Lists images for a devcenter."
+    short-summary: "Lists images for a gallery or lists images for a devcenter."
     examples:
       - name: Images_ListByGallery
         text: |-
