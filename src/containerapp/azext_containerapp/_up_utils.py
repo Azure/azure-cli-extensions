@@ -373,12 +373,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             try:
                 task_file.write(task_content)
                 task_file.flush()
+                acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
+                logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
             finally:
                 task_file.close()
                 os.unlink(task_file.name)
 
-            acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
-            logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
             from time import sleep
             sleep(10)
 
