@@ -487,10 +487,12 @@ def devcenter_environment_update(
     parameters=None,
     scheduled_tasks=None,
     tags=None,
-    user_id='me'
+    user_id=None
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}
+    if user_id is None:
+        user_id = "me"
     if description is not None:
         body["description"] = description
     if catalog_name is not None:
