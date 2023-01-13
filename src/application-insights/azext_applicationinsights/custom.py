@@ -151,6 +151,7 @@ def update_component_tags(client, application, resource_group_name, tags):
 
 def connect_webapp(cmd, client, resource_group_name, application, app_service, enable_profiler=None, enable_snapshot_debugger=None):
     from azure.cli.command_modules.appservice.custom import update_app_settings
+    from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
     app_insights = client.get(resource_group_name, application)
     if app_insights is None or app_insights.instrumentation_key is None:
@@ -166,16 +167,27 @@ def connect_webapp(cmd, client, resource_group_name, application, app_service, e
         settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=1.0.0")
     elif enable_snapshot_debugger is False:
         settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=disabled")
+
+    if is_valid_resource_id(app_service):
+        resource_id = parse_resource_id(app_service)
+        app_service = resource_id['name']
+        resource_group_name = resource_id['resource_group']  # use the resource group name in id
     return update_app_settings(cmd, resource_group_name, app_service, settings)
 
 
 def connect_function(cmd, client, resource_group_name, application, app_service):
     from azure.cli.command_modules.appservice.custom import update_app_settings
+    from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
     app_insights = client.get(resource_group_name, application)
     if app_insights is None or app_insights.instrumentation_key is None:
         raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
     settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
+
+    if is_valid_resource_id(app_service):
+        resource_id = parse_resource_id(app_service)
+        app_service = resource_id['name']
+        resource_group_name = resource_id['resource_group']  # use the resource group name in id
     return update_app_settings(cmd, resource_group_name, app_service, settings)
 
 

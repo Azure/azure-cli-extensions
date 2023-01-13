@@ -31,11 +31,11 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
-        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType
+        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
-    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
+    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy. Name must begin with a letter and contain only letters and numbers.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
     rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name', '-r'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
 
     # region FrontDoors
@@ -175,9 +175,10 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door waf-policy managed-rules add') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to apply.')
+        c.argument('rule_set_type', options_list=['--type'], help='Ruleset type to use.')
         c.argument('version', help='Rule set version.')
+        c.argument('rule_set_action', options_list=['--action'], arg_type=get_enum_type(ManagedRuleSetActionType),
+                   help='Action for applied rulesets, only required for Microsoft_DefaultRuleSet with version 2.0 or higher.')
 
     with self.argument_context('network front-door waf-policy managed-rules list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)

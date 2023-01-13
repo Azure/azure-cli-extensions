@@ -71,7 +71,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None,
-                          enable_fat_flow_logging=False, virtual_network_name=None, conf_name=None, public_ip=None,
+                          enable_fat_flow_logging=None, enable_udp_log_optimization=None,
+                          virtual_network_name=None, conf_name=None, public_ip=None,
                           management_conf_name=None, management_public_ip=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
@@ -127,12 +128,17 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     if allow_active_ftp:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
-        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+        firewall.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
 
     if enable_fat_flow_logging:
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
-        firewall.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = "true"
+        firewall.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+
+    if enable_udp_log_optimization:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
 
     if conf_name is not None:
         subnet_id = resource_id(
@@ -192,7 +198,8 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None,
                           threat_intel_mode=None, hub_public_ip_addresses=None,
-                          hub_public_ip_count=None, allow_active_ftp=None, enable_fat_flow_logging=None):
+                          hub_public_ip_count=None, allow_active_ftp=None,
+                          enable_fat_flow_logging=None, enable_udp_log_optimization=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if all([hub_public_ip_addresses, hub_public_ip_count]):
@@ -256,7 +263,7 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
         if instance.additional_properties is None:
             instance.additional_properties = {}
         if allow_active_ftp:
-            instance.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+            instance.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
         elif 'Network.FTP.AllowActiveFTP' in instance.additional_properties:
             del instance.additional_properties['Network.FTP.AllowActiveFTP']
 
@@ -264,9 +271,17 @@ def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=N
         if instance.additional_properties is None:
             instance.additional_properties = {}
         if enable_fat_flow_logging:
-            instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = "true"
+            instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
         elif 'Network.AdditionalLogs.EnableFatFlowLogging' in instance.additional_properties:
             del instance.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging']
+
+    if enable_udp_log_optimization is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        if enable_udp_log_optimization:
+            instance.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+        elif 'Network.AdditionalLogs.EnableUdpLogOptimization' in instance.additional_properties:
+            del instance.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization']
 
     return instance
 
