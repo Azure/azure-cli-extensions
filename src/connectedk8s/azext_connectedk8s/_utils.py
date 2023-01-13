@@ -69,42 +69,33 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='AzureArcCharts'):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks)
+    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name)
 
     # Exporting helm chart after cleanup
-    if for_preonboarding_checks:
-        chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'ConnectPrecheckCharts')
-    else:
-        chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_path_name)
     try:
         if os.path.isdir(chart_export_path):
             shutil.rmtree(chart_export_path)
     except:
-        if for_preonboarding_checks:
-            logger.warning("Unable to cleanup the connect-precheck helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
-        else:
-            logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks)
+        logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_path_name, chart_export_path))
+
+    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
 
     # Returning helm chart path
-    if for_preonboarding_checks:
-        # helm_chart_path = os.path.join(chart_export_path, 'connect-precheck-diagnoser')
+    if chart_path_name == 'ConnectPrecheckCharts':
         helm_chart_path = os.path.join(chart_export_path, 'pre-onboarding-inspector')
-    else:
-        helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
-
-    if for_preonboarding_checks:
         chart_path = helm_chart_path
     else:
+        helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
         chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
 
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='azure-arc'):
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
@@ -113,17 +104,12 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
-        if for_preonboarding_checks:
-            telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Pull_HelmChart_Fault_Type,
-                                    summary='Unable to pull pre-onboarding-inspector helm chart from the registry')
-            raise CLIInternalError("Unable to pull pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
-        else:
-            telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
-                                    summary='Unable to pull helm chart from the registry')
-            raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+        telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
+                                summary="Unable to pull {} helm charts from the registry".format(chart_path_name))
+        raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_path_name, registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
+def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name='azure-arc'):
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
@@ -132,14 +118,82 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
-        if for_preonboarding_checks:
-            telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Export_HelmChart_Fault_Type,
-                                    summary='Unable to export pre-onboarding-inspector helm chart from the registry')
-            raise CLIInternalError("Unable to export pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
-        else:
             telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                    summary='Unable to export helm chart from the registry')
-            raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+                                    summary='Unable to export {} helm chart from the registry'.format(chart_path_name))
+            raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_path_name, registry_path) + error_helm_chart_export.decode("ascii"))
+
+
+# def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
+#     # Pulling helm chart from registry
+#     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+#     pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks)
+
+#     # Exporting helm chart after cleanup
+#     if for_preonboarding_checks:
+#         chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'ConnectPrecheckCharts')
+#     else:
+#         chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+#     try:
+#         if os.path.isdir(chart_export_path):
+#             shutil.rmtree(chart_export_path)
+#     except:
+#         if for_preonboarding_checks:
+#             logger.warning("Unable to cleanup the connect-precheck helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
+#         else:
+#             logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
+#     export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks)
+
+#     # Returning helm chart path
+#     if for_preonboarding_checks:
+#         # helm_chart_path = os.path.join(chart_export_path, 'connect-precheck-diagnoser')
+#         helm_chart_path = os.path.join(chart_export_path, 'pre-onboarding-inspector')
+#     else:
+#         helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
+
+#     if for_preonboarding_checks:
+#         chart_path = helm_chart_path
+#     else:
+#         chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
+
+#     return chart_path
+
+
+# def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
+#     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
+#     if kube_config:
+#         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
+#     if kube_context:
+#         cmd_helm_chart_pull.extend(["--kube-context", kube_context])
+#     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
+#     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
+#     if response_helm_chart_pull.returncode != 0:
+#         if for_preonboarding_checks:
+#             telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Pull_HelmChart_Fault_Type,
+#                                     summary='Unable to pull pre-onboarding-inspector helm chart from the registry')
+#             raise CLIInternalError("Unable to pull pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+#         else:
+#             telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
+#                                     summary='Unable to pull helm chart from the registry')
+#             raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+
+
+# def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, for_preonboarding_checks=False):
+#     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
+#     if kube_config:
+#         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
+#     if kube_context:
+#         cmd_helm_chart_export.extend(["--kube-context", kube_context])
+#     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
+#     _, error_helm_chart_export = response_helm_chart_export.communicate()
+#     if response_helm_chart_export.returncode != 0:
+#         if for_preonboarding_checks:
+#             telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Export_HelmChart_Fault_Type,
+#                                     summary='Unable to export pre-onboarding-inspector helm chart from the registry')
+#             raise CLIInternalError("Unable to export pre-onboarding-inspector helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+#         else:
+#             telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
+#                                     summary='Unable to export helm chart from the registry')
+#             raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
 def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
