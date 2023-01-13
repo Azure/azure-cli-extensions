@@ -593,17 +593,17 @@ def load_arguments(self, _):
             c.argument('config_name', options_list=[
                        '--name', '-n'], help='The config name.')
             c.argument('config_file', help='The config json file.')
-            c.argument('weekday', help='weekday on which maintenance can happen. e.g. Monday')
-            c.argument('start_hour', type=int, help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
+            c.argument('weekday', help='Weekday on which maintenance can happen. e.g. Monday')
+            c.argument('start_hour', type=int, help='Maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
             c.argument('schedule_type', arg_type=get_enum_type(schedule_types),
                        help='Schedule type for non-default maintenance configuration.')
             c.argument('interval_days', type=int, help='The number of days between each set of occurrences for Daily schedule.')
             c.argument('interval_weeks', type=int, help='The number of weeks between each set of occurrences for Weekly schedule.')
             c.argument('interval_months', type=int, help='The number of months between each set of occurrences for AbsoluteMonthly or RelativeMonthly schedule.')
-            c.argument('day_of_week', help='Specifies on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
-            c.argument('day_of_month', help='Specifies on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
+            c.argument('day_of_week', help='Specify on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
+            c.argument('day_of_month', help='Specify on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
             c.argument('week_index', arg_type=get_enum_type(week_indexes),
-                       help='Specifies on which instance of the weekday specified in --day-of-week the maintenance occurs for RelativeMonthly schedule.')
+                       help='Specify on which instance of the weekday specified in --day-of-week the maintenance occurs for RelativeMonthly schedule.')
             c.argument('duration_hours', options_list=['--duration'], type=int,
                        help='The length of maintenance window. The value ranges from 4 to 24 hours.')
             c.argument('utc_offset', validator=validate_utc_offset,
