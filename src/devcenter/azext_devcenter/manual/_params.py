@@ -613,7 +613,7 @@ def load_arguments(self, _):
             "user_id",
             type=str,
             help="The id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
+            "authentication context. Default is 'me'",
         )
         c.argument(
             "environment_name",
