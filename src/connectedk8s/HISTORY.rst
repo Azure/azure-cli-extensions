@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.7
+++++++
+
+* Install new helm release in azure-arc-release NS
+
 1.3.6
 ++++++
 

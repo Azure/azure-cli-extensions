@@ -12,9 +12,22 @@ from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
 from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
+
+
+def gateway_create(cmd, client, service, resource_group, instance_count=None):
+    sku = get_spring_sku(client, resource_group, service)
+    gateway_resource = models.GatewayResource()
+    if instance_count and sku:
+        gateway_resource.sku = models.Sku(name=sku.name, tier=sku.tier, capacity=instance_count)
+    return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
+
+
+def gateway_delete(cmd, client, service, resource_group):
+    return client.gateways.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
 def gateway_update(cmd, client, resource_group, service,
@@ -32,6 +45,9 @@ def gateway_update(cmd, client, resource_group, service,
                    api_doc_location=None,
                    api_version=None,
                    server_url=None,
+                   apm_types=None,
+                   properties=None,
+                   secrets=None,
                    allowed_origins=None,
                    allowed_methods=None,
                    allowed_headers=None,
@@ -66,18 +82,23 @@ def gateway_update(cmd, client, resource_group, service,
         memory=memory or gateway.properties.resource_requests.memory
     )
 
-    properties = models.GatewayProperties(
+    update_apm_types = apm_types if apm_types is not None else gateway.properties.apm_types
+    environment_variables = _update_envs(gateway.properties.environment_variables, properties, secrets)
+
+    model_properties = models.GatewayProperties(
         public=assign_endpoint if assign_endpoint is not None else gateway.properties.public,
         https_only=https_only if https_only is not None else gateway.properties.https_only,
         sso_properties=sso_properties,
         api_metadata_properties=api_metadata_properties,
         cors_properties=cors_properties,
+        apm_types=update_apm_types,
+        environment_variables=environment_variables,
         resource_requests=resource_requests)
 
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier,
                      capacity=instance_count or gateway.sku.capacity)
 
-    gateway_resource = models.GatewayResource(properties=properties, sku=sku)
+    gateway_resource = models.GatewayResource(properties=model_properties, sku=sku)
 
     logger.warning(LOG_RUNNING_PROMPT)
     return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
@@ -195,6 +216,17 @@ def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, ma
     if exposed_headers is not None:
         cors.exposed_headers = exposed_headers.split(",") if exposed_headers else None
     return cors
+
+
+def _update_envs(existing, envs_dict, secrets_dict):
+    if envs_dict is None and secrets_dict is None:
+        return existing
+    envs = existing if existing is not None else models.GatewayPropertiesEnvironmentVariables()
+    if envs_dict is not None:
+        envs.properties = envs_dict
+    if secrets_dict is not None:
+        envs.secrets = secrets_dict
+    return envs
 
 
 def _validate_route_config_not_exist(client, resource_group, service, name):
