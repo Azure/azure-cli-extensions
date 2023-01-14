@@ -29,7 +29,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.random_name_length = random_name_length
 
     def create_resource(self, name, **_):
-        cmd = 'az network vnet create --resource-group {} --name {}'
+        cmd = 'az network vnet create --resource-group {} --name {} --location "westus3"'
         cmd = cmd.format(self.test_class_instance.kwargs.get(self.resource_group_key), name)
         self.live_only_execute(self.cli_ctx, cmd)
         self.test_class_instance.kwargs[self.key] = name

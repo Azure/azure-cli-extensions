@@ -14,6 +14,50 @@ from .. import (
     try_manual,
 )
 
+def create_dev_center(self):
+    self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
+
+    return self.cmd('az devcenter admin devcenter create '
+             '--location "{location}" '
+             '--tags CostCode="12345" '
+             '--name "{devcenterName}" '
+             '--resource-group "{rg}"').get_output_in_json()
+
+def create_dev_center_with_identity(self):
+    self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+            'identityName': self.create_random_name(prefix='testid_', length=24)
+        })
+
+    test_identity = self.cmd('az identity create '
+                             '--resource-group {rg} '
+                             '--name {identityName}').get_output_in_json()
+        
+    self.kwargs.update({
+        'userAssignedIdentity': test_identity['id'],
+        'identityPrincipalId': test_identity['principalId']
+    })
+
+    return self.cmd('az devcenter admin devcenter create '
+         '--identity-type "UserAssigned" '
+         '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+         '--location "{location}" '
+         '--tags CostCode="12345" '
+         '--name "{devcenterName}" '
+         '--resource-group "{rg}"').get_output_in_json()
+
+def create_virtual_network_with_subnet(self):
+    self.kwargs.update({
+            'vNetName': self.create_random_name(prefix='cli', length=24),
+            'subnetName': self.create_random_name(prefix='cli', length=24)
+        })
+
+    self.cmd('az network vnet create -n "{vNetName}" --location "{location}" -g "{rg}"')
+
+    return self.cmd('az network vnet subnet create -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"').get_output_in_json()   
+
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Test class for Scenario
@@ -23,13 +67,14 @@ class DevcenterScenarioTest(ScenarioTest):
         super(DevcenterScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'subscriptionId': self.get_subscription_id(),
-            'devcenterName': self.create_random_name(prefix='cli', length=24),
-            'location': 'westus3'
+            'location': 'westus3',
+            'networkConnectionName': self.create_random_name(prefix='cli', length=24)
         })
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_devcenter_scenario(self):
         self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
             'identityName': self.create_random_name(prefix='testid_', length=24),
             'devcenterName2': self.create_random_name(prefix='cli', length=24)
         })
@@ -46,7 +91,13 @@ class DevcenterScenarioTest(ScenarioTest):
              '--tags CostCode="12345" '
              '--name "{devcenterName}" '
              '--resource-group "{rg}"',
-             checks=[self.check('name', "{devcenterName}")])
+             checks=[
+                self.check('name', "{devcenterName}"),
+                self.check('location', "{location}"),
+                self.check('tags.CostCode', "12345"),
+                self.check('resourceGroup', "{rg}"),
+            ]
+        )
 
         self.cmd('az devcenter admin devcenter list '
              '--resource-group "{rg}" ',
@@ -73,7 +124,12 @@ class DevcenterScenarioTest(ScenarioTest):
              '--name "{devcenterName2}" '
              '--resource-group "{rg}"',
              checks=[
-                self.check('identity.type', 'UserAssigned')]
+                self.check('identity.type', 'UserAssigned'),
+                self.check('name', "{devcenterName2}"),
+                self.check('location', "{location}"),
+                self.check('tags.CostCode', "12345"),
+                self.check('resourceGroup', "{rg}"),
+            ]
         )
 
         self.cmd('az devcenter admin devcenter update '
@@ -81,7 +137,14 @@ class DevcenterScenarioTest(ScenarioTest):
              '--location "{location}" '
              '--name "{devcenterName2}" '
              '--resource-group "{rg}"',
-             checks=[self.check('tags.CostCode', '123')])
+             checks=[
+                self.check('tags.CostCode', '123'),
+                self.check('identity.type', 'UserAssigned'),
+                self.check('name', "{devcenterName2}"),
+                self.check('location', "{location}"),
+                self.check('resourceGroup', "{rg}"),
+            ]
+        )
 
         self.cmd('az devcenter admin devcenter list '
              '--resource-group "{rg}" ',
@@ -95,21 +158,27 @@ class DevcenterScenarioTest(ScenarioTest):
              '--resource-group "{rg}"',
              checks=[
                 self.check('name', "{devcenterName}"),
-                self.check('tags.CostCode', '12345')
-             ])
+                self.check('location', "{location}"),
+                self.check('tags.CostCode', "12345"),
+                self.check('resourceGroup', "{rg}"),
+            ]
+        )
 
         self.cmd('az devcenter admin devcenter show '
              '--name "{devcenterName2}" '
              '--resource-group "{rg}"',
              checks=[
+                self.check('tags.CostCode', '123'),
+                self.check('identity.type', 'UserAssigned'),
                 self.check('name', "{devcenterName2}"),
-                self.check('tags.CostCode', '123')
-             ])
+                self.check('location', "{location}"),
+                self.check('resourceGroup', "{rg}"),
+            ]
+        )
 
         self.cmd('az devcenter admin devcenter delete --yes '
                  '--name "{devcenterName}" '
-                 '--resource-group "{rg}"',
-                 checks=[])
+                 '--resource-group "{rg}"')
 
         self.cmd('az devcenter admin devcenter list '
              '--resource-group "{rg}" ',
@@ -120,8 +189,7 @@ class DevcenterScenarioTest(ScenarioTest):
 
         self.cmd('az devcenter admin devcenter delete --yes '
                  '--name "{devcenterName2}" '
-                 '--resource-group "{rg}"',
-                 checks=[])
+                 '--resource-group "{rg}"')
 
         self.cmd('az devcenter admin devcenter list '
              '--resource-group "{rg}" ',
@@ -130,3 +198,212 @@ class DevcenterScenarioTest(ScenarioTest):
             ]
         )
 
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_project_scenario(self):
+
+        dev_center = create_dev_center(self)
+
+        self.kwargs.update({
+            'devCenterId': dev_center['id'],
+            'projectName': self.create_random_name(prefix='cli', length=24)
+        })
+
+        self.cmd('az devcenter admin project list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ]
+        )
+
+        self.cmd('az devcenter admin project create '
+             '--location "{location}" '
+             '--tags CostCode="12345" '
+             '--name "{projectName}" '
+             '--dev-center-id "{devCenterId}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('name', "{projectName}"),
+                self.check('location', "{location}"),
+                self.check('tags.CostCode', "12345"),
+                self.check('resourceGroup', "{rg}"),
+                self.check('devCenterId', "{devCenterId}")
+            ]
+        )
+
+        self.cmd('az devcenter admin project list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{projectName}"),
+            ]
+        )
+
+        self.cmd('az devcenter admin project update '
+             '--tags CostCode="123" '
+             '--location "{location}" '
+             '--name "{projectName}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('tags.CostCode', '123'),
+                self.check('name', "{projectName}"),
+                self.check('location', "{location}"),
+                self.check('resourceGroup', "{rg}"),
+                self.check('devCenterId', "{devCenterId}")
+            ]
+        )
+
+
+        self.cmd('az devcenter admin project show '
+             '--name "{projectName}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('name', "{projectName}"),
+                self.check('tags.CostCode', '123'),
+                self.check('location', "{location}"),
+                self.check('resourceGroup', "{rg}"),
+                self.check('devCenterId', "{devCenterId}")
+             ])
+
+        self.cmd('az devcenter admin project delete --yes '
+                 '--name "{projectName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin project list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ]
+        )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_network_connection_scenario(self):
+        subnet = create_virtual_network_with_subnet(self)
+        self.kwargs.update({
+            'subnetId': subnet['id'],
+        })
+
+        self.kwargs.update({
+            'networkConnectionName': self.create_random_name(prefix='cli', length=24),
+            'networkConnectionName2': self.create_random_name(prefix='cli', length=24),
+            'networkingRgName1': self.create_random_name(prefix='cli', length=24),
+            'networkingRgName2': self.create_random_name(prefix='cli', length=24)
+        })
+
+        self.cmd('az devcenter admin network-connection list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection create '
+             '--location "{location}" '
+             '--tags CostCode="12345" '
+             '--name "{networkConnectionName}" '
+             '--domain-join-type "HybridAzureADJoin" '
+             '--domain-name "fidalgoppe010.local" '
+             '--domain-password "fakePassword" '
+             '--domain-username "domainjoin@fidalgoppe010.local" '
+             '--subnet-id "{subnetId}" '
+             '--networking-resource-group-name "{networkingRgName1}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('name', "{networkConnectionName}"),
+                self.check('domainJoinType', 'HybridAzureADJoin'),
+                self.check('domainName', 'fidalgoppe010.local'),
+                self.check('domainUsername', 'domainjoin@fidalgoppe010.local'),
+                self.check('location', "{location}"),
+                self.check('tags.CostCode', "12345"),
+                self.check('subnetId', "{subnetId}"),
+                self.check('networkingResourceGroupName', "{networkingRgName1}"),
+                self.check('resourceGroup', "{rg}")
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{networkConnectionName}"),
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection create '
+             '--location "{location}" '
+             '--tags CostCode="12345" '
+             '--name "{networkConnectionName2}" '
+             '--domain-join-type "AzureADJoin" '
+             '--subnet-id "{subnetId}" '
+             '--networking-resource-group-name "{networkingRgName2}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('name', "{networkConnectionName2}"),
+                self.check('domainJoinType', 'AzureADJoin'),
+                self.check('location', "{location}"),
+                self.check('tags.CostCode', "12345"),
+                self.check('subnetId', "{subnetId}"),
+                self.check('networkingResourceGroupName', "{networkingRgName2}"),
+                self.check('resourceGroup', "{rg}")
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection update '
+             '--tags CostCode="123" '
+             '--location "{location}" '
+             '--name "{networkConnectionName}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('tags.CostCode', '123'),
+                self.check('name', "{networkConnectionName}"),
+                self.check('domainJoinType', 'HybridAzureADJoin'),
+                self.check('domainName', 'fidalgoppe010.local'),
+                self.check('domainUsername', 'domainjoin@fidalgoppe010.local'),
+                self.check('location', "{location}"),
+                self.check('subnetId', "{subnetId}"),
+                self.check('networkingResourceGroupName', "{networkingRgName1}"),
+                self.check('resourceGroup', "{rg}")
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection show '
+             '--name "{networkConnectionName2}" '
+             '--resource-group "{rg}"',
+             checks=[
+                self.check('tags.CostCode', '12345'),
+                self.check('name', "{networkConnectionName2}"),
+                self.check('domainJoinType', 'AzureADJoin'),
+                self.check('location', "{location}"),
+                self.check('subnetId', "{subnetId}"),
+                self.check('networkingResourceGroupName', "{networkingRgName2}"),
+                self.check('resourceGroup', "{rg}")
+             ]
+        )
+
+        self.cmd('az devcenter admin network-connection list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 2),
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection delete --yes '
+                 '--name "{networkConnectionName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin network-connection list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 1),
+            ]
+        )
+
+        self.cmd('az devcenter admin network-connection delete --yes '
+                 '--name "{networkConnectionName2}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin network-connection list '
+             '--resource-group "{rg}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ]
+        )
