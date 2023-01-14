@@ -302,15 +302,22 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     # Extract "content_type" and "content_encoding" from --job-parameters, then remove those parameters
     # from job_params, since they should not be included in the "inputParams" parameter of job_details.
     # They are parameters of the upload_blob function.
+    # These param names are accepted in two formats: See comments below.
     content_type = None
     content_encoding = None
     if job_params is not None:
-        if "content_type" in job_params.keys():
+        if "content_type" in job_params.keys():         # Names are often in in snake_case in our Jupyter notebooks...
             content_type = job_params["content_type"]
             del job_params["content_type"]
+        if "contentType" in job_params.keys():          # ...however, the params that go into inputParams are generally in camelCase.
+            content_type = job_params["contentType"]
+            del job_params["contentType"]
         if "content_encoding" in job_params.keys():
             content_encoding = job_params["content_encoding"]
             del job_params["content_encoding"]
+        if "contentEncoding" in job_params.keys():
+            content_encoding = job_params["contentEncoding"]
+            del job_params["contentEncoding"]
 
     # Prepare for input file upload according to job type
     if job_type == QIO_JOB:

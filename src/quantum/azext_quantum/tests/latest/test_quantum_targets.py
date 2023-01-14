@@ -7,10 +7,11 @@ import os
 import pytest
 import unittest
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing
+from ...operations.target import get_provider, TargetInfo
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -52,3 +53,14 @@ class QuantumTargetsScenarioTest(ScenarioTest):
     def test_target_errors(self):
         self.cmd(f'az quantum target clear')
         issue_cmd_with_param_missing(self, "az quantum target set", "az quantum target set -t target-id\nSelect a default when submitting jobs to Azure Quantum.")
+
+    @live_only()
+    def test_get_provider(self):
+        test_location = get_test_workspace_location()
+        test_workspace = get_test_workspace()
+        test_resource_group = get_test_resource_group()
+        # test_target = get_test_target())
+        # test_provider = get_test_provider
+        # returned_provider = get_provider(self.cmd, test_target, test_resource_group, test_workspace, test_location)
+        # assert returned_provider == test_provider
+        # >>>>> TODO: Finish this test
