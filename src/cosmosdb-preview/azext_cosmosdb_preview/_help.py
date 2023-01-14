@@ -169,6 +169,125 @@ examples:
       az managed-cassandra datacenter list --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
+
+helps['managed-cassandra repair'] = """
+type: group
+short-summary: Repair feature of Azure Managed Cassandra.
+"""
+
+helps['managed-cassandra repair status'] = """
+type: command
+short-summary: Shows status of all repairs of the cluster.
+examples:
+  - name: Shows repair status of the cluster.
+    text: |
+      az managed-cassandra repair status --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair tablestatus'] = """
+type: command
+short-summary: Shows a map of "keyspace_names to list of table_names" that are available as seen by the repair services.
+examples:
+  - name: Shows repair status of the cluster.
+    text: |
+      az managed-cassandra repair tablestatus --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair create'] = """
+type: command
+short-summary: Create a repair run for the cluster.
+examples:
+  - name: Creates a repair for the specified keyspace of the cluster.
+    text: |
+      az managed-cassandra repair
+        --keyspace MyKeyspaceName \\
+        --cause MyCause \\
+        --owner MyOwnerName \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair list'] = """
+type: command
+short-summary: Shows list of repair.
+examples:
+  - name: Shows list of repair.
+    text: |
+      az managed-cassandra repair list --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair show'] = """
+type: command
+short-summary: Given repair_run_id, this command show details of the repair.
+examples:
+  - name: Shows details of repair_run_id
+    text: |
+      az managed-cassandra repair show --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair update'] = """
+type: command
+short-summary: Update intensity of a given repair_run_id.
+examples:
+  - name: Update intensity of a given repair_run_id.
+    text: |
+      az managed-cassandra repair delete --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --intensity 0.85 \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair pause'] = """
+type: command
+short-summary: Pause a give repair_run_id.
+examples:
+  - name: Pause a give repair_run_id.
+    text: |
+      az managed-cassandra repair pause --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair delete'] = """
+type: command
+short-summary: Delete a given repair_run_id.
+examples:
+  - name: Delete a given repair_run_id
+    text: |
+      az managed-cassandra repair delete --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair delete'] = """
+type: command
+short-summary: Given repair_run_id, this command show details of the repair.
+examples:
+  - name: Shows details of repair_run_id
+    text: |
+      az managed-cassandra repair show --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair segment list'] = """
+type: command
+short-summary: Given repair_run_id, this command lists all segment of the repair run.
+examples:
+  - name: List segments of a repair run.
+    text: |
+      az managed-cassandra segment list --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair segment abort'] = """
+type: command
+short-summary: Given repair_run_id and segment_id this command abort that particular segment of a repair run.
+examples:
+  - name: Abort a segment of a repair run.
+    text: |
+      az managed-cassandra repair show --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --segment-id "00000000-0000-08gc-0000-000000000000" \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup
+"""
+
 helps['cosmosdb service'] = """
 type: group
 short-summary: Commands to perform operations on Service.

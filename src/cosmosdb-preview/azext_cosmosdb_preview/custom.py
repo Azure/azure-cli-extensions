@@ -46,7 +46,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentity
+    ManagedServiceIdentityUserAssignedIdentity,
+    CassandraClusterRepairPublicResource,
+    CassandraClusterRepairPublicProperties
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -361,6 +363,108 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
     )
 
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
+
+
+def cli_cosmosdb_managed_cassandra_repair_status(client,
+                                                 resource_group_name,
+                                                 cluster_name):
+    return client.get_repair_cluster_status(resource_group_name, cluster_name)
+    
+def cli_cosmosdb_managed_cassandra_repair_tablestatus(client,
+                                                 resource_group_name,
+                                                 cluster_name):
+    return client.get_repair_table_status(resource_group_name, cluster_name)
+
+def cli_cosmosdb_managed_cassandra_repair_create(client,
+                                                resource_group_name,
+                                                cluster_name,
+                                                keyspace,
+                                                owner,
+                                                cause,
+                                                tables,
+                                                segment_count,
+                                                repair_parallelism,
+                                                intensity,
+                                                incremental_repair,
+                                                nodes,
+                                                data_centers,
+                                                black_listed_tables,
+                                                repair_thread_count):
+       
+    repair_properties = CassandraClusterRepairPublicProperties(
+        keyspace=keyspace,
+        owner=owner,
+        cause=cause,
+        tables=tables,
+        segment_count=segment_count,
+        repair_parallelism=repair_parallelism,
+        intensity=intensity,
+        incremental_repair=incremental_repair,
+        nodes=nodes,
+        data_centers=data_centers,
+        black_listed_tables=black_listed_tables,
+        repair_thread_count=repair_thread_count
+    )
+
+    repair_resource = CassandraClusterRepairPublicResource(
+        properties=repair_properties
+    )
+    
+    return client.create_repair_run(resource_group_name, cluster_name, repair_resource)
+    
+def cli_cosmosdb_managed_cassandra_repair_list(client,
+                                                resource_group_name,
+                                                cluster_name):
+    return client.list_repair_runs(resource_group_name, cluster_name)
+
+
+def cli_cosmosdb_managed_cassandra_repair_show(client,
+                                                resource_group_name,
+                                                cluster_name,
+                                                repair_run_id):
+    return client.show_repair_run(resource_group_name, cluster_name, repair_run_id)
+    
+
+def cli_cosmosdb_managed_cassandra_repair_pause(client,
+                                                resource_group_name,
+                                                cluster_name,
+                                                repair_run_id):
+    return client.pause_repair_run(resource_group_name, cluster_name, repair_run_id)
+
+def cli_cosmosdb_managed_cassandra_repair_update(client,
+                                                resource_group_name,
+                                                cluster_name,
+                                                repair_run_id,
+                                                intensity):
+    return client.update_repair_intensity(resource_group_name, cluster_name, repair_run_id, intensity)
+
+def cli_cosmosdb_managed_cassandra_repair_resume(client,
+                                                resource_group_name,
+                                                cluster_name,
+                                                repair_run_id):
+    return client.resume_repair_run(resource_group_name, cluster_name, repair_run_id)
+
+
+def cli_cosmosdb_managed_cassandra_repair_delete(client,
+                                                resource_group_name,
+                                                cluster_name,
+                                                repair_run_id):
+    return client.delete_repair_run(resource_group_name, cluster_name, repair_run_id)
+
+
+def cli_cosmosdb_managed_cassandra_repair_segment_list(client,
+                                                        resource_group_name,
+                                                        cluster_name,
+                                                        repair_run_id):
+    return client.list_repair_segments(resource_group_name, cluster_name, repair_run_id)
+
+
+def cli_cosmosdb_managed_cassandra_repair_segment_abort(client,
+                                                        resource_group_name,
+                                                        cluster_name,
+                                                        repair_run_id,
+                                                        segment_id):
+    return client.abort_segment(resource_group_name, cluster_name, repair_run_id, segment_id)
 
 
 def cli_cosmosdb_service_create(client,

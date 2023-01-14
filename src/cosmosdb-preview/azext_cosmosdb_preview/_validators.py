@@ -245,3 +245,24 @@ def validate_mongo_user_definition_id(ns):
     """ Extracts Guid user definition Id """
     if ns.mongo_user_definition_id is not None:
         ns.mongo_user_definition_id = _parse_resource_path(ns.mongo_user_definition_id, False, "mongodbUserDefinitions")
+        
+        
+def validate_table_list(ns):
+    """ Extract comma separated string to a list """
+    if ns.tables is not None:
+        ns.table = ns.table.split(',')
+
+def validate_node_list(ns):
+    """ Extract comma separated string to a list """
+    if ns.tables is not None:
+        ns.table = ns.table.split(',')
+
+def validate_datacenter_list(ns):
+    """ Extract comma separated string to a list """
+    if ns.tables is not None:
+        ns.table = ns.table.split(',')
+
+def validate_blacklisted_list(ns):
+    """ Extract comma separated string to a list """
+    if ns.tables is not None:
+        ns.table = ns.table.split(',')
