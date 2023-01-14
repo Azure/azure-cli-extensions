@@ -23,6 +23,11 @@ class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_e2e(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -89,6 +94,11 @@ class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_container_acr(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -131,6 +141,11 @@ class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_update(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -199,6 +214,11 @@ class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_container_acr(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -265,6 +285,11 @@ class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_update_containers(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -340,6 +365,11 @@ class ContainerappScenarioTest(ScenarioTest):
     @mock.patch("azext_containerapp._ssh_utils._resize_terminal")
     @mock.patch("sys.stdin")
     def test_containerapp_ssh(self, resource_group=None, *args):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         # containerapp_name = self.create_random_name(prefix='capp', length=24)
         # env_name = self.create_random_name(prefix='env', length=24)
 
@@ -419,6 +449,11 @@ class ContainerappScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_eventstream(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         containerapp_name = self.create_random_name(prefix='capp', length=24)
         env_name = self.create_random_name(prefix='env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -440,6 +475,11 @@ class ContainerappScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_registry_msi(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
         app = self.create_random_name(prefix='app', length=24)

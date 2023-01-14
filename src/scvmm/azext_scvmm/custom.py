@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=unused-argument,too-many-lines
 
-from pwinput import pwinput
+from getpass import getpass
 from azure.cli.core.azclierror import (
     UnrecognizedArgumentError,
     RequiredArgumentMissingError,
@@ -121,10 +121,10 @@ def connect_vmmserver(
             if not creds['username']:
                 print('Parameter is required, please try again')
         while not creds['password']:
-            creds['password'] = pwinput('Please provide vmmserver password: ')
+            creds['password'] = getpass('Please provide vmmserver password: ')
             if not creds['password']:
                 print('Parameter is required, please try again')
-            passwdConfim = pwinput('Please confirm vmmserver password: ')
+            passwdConfim = getpass('Please confirm vmmserver password: ')
             if creds['password'] != passwdConfim:
                 print('Passwords do not match, please try again')
                 creds['password'] = None

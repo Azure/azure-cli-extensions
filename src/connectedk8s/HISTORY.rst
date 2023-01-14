@@ -2,10 +2,15 @@
 
 Release History
 ===============
-1.3.7
+1.3.8
 ++++++
 
 * Added connectedk8s proxy support for fairfax
+
+1.3.7
+++++++
+
+* Install new helm release in azure-arc-release NS
 
 1.3.6
 ++++++
