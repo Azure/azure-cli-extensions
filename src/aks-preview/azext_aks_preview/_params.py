@@ -72,6 +72,15 @@ from azext_aks_preview._consts import (
     CONST_DISK_DRIVER_V2,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
+    CONST_DAILY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKLY_MAINTENANCE_SCHEDULE,
+    CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKINDEX_FIRST,
+    CONST_WEEKINDEX_SECOND,
+    CONST_WEEKINDEX_THIRD,
+    CONST_WEEKINDEX_FOURTH,
+    CONST_WEEKINDEX_LAST,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -134,6 +143,9 @@ from azext_aks_preview._validators import (
     validate_disable_windows_outbound_nat,
     validate_allowed_host_ports,
     validate_application_security_groups,
+    validate_utc_offset,
+    validate_start_date,
+    validate_start_time,
     validate_outbound_type_in_update,
 )
 
@@ -177,6 +189,22 @@ auto_upgrade_channels = [
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NONE_UPGRADE_CHANNEL,
+]
+
+# consts for maintenance configuration
+schedule_types = [
+    CONST_DAILY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKLY_MAINTENANCE_SCHEDULE,
+    CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
+]
+
+week_indexes = [
+    CONST_WEEKINDEX_FIRST,
+    CONST_WEEKINDEX_SECOND,
+    CONST_WEEKINDEX_THIRD,
+    CONST_WEEKINDEX_FOURTH,
+    CONST_WEEKINDEX_LAST,
 ]
 
 # consts for credential
@@ -566,12 +594,26 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_name', options_list=[
                        '--name', '-n'], help='The config name.')
-            c.argument('config_file', options_list=[
-                       '--config-file'], help='The config json file.', required=False)
-            c.argument('weekday', options_list=[
-                       '--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
-            c.argument('start_hour', type=int, options_list=[
-                       '--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
+            c.argument('config_file', help='The config json file.')
+            c.argument('weekday', help='Weekday on which maintenance can happen. e.g. Monday')
+            c.argument('start_hour', type=int, help='Maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
+            c.argument('schedule_type', arg_type=get_enum_type(schedule_types),
+                       help='Schedule type for non-default maintenance configuration.')
+            c.argument('interval_days', type=int, help='The number of days between each set of occurrences for Daily schedule.')
+            c.argument('interval_weeks', type=int, help='The number of weeks between each set of occurrences for Weekly schedule.')
+            c.argument('interval_months', type=int, help='The number of months between each set of occurrences for AbsoluteMonthly or RelativeMonthly schedule.')
+            c.argument('day_of_week', help='Specify on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
+            c.argument('day_of_month', help='Specify on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
+            c.argument('week_index', arg_type=get_enum_type(week_indexes),
+                       help='Specify on which instance of the weekday specified in --day-of-week the maintenance occurs for RelativeMonthly schedule.')
+            c.argument('duration_hours', options_list=['--duration'], type=int,
+                       help='The length of maintenance window. The value ranges from 4 to 24 hours.')
+            c.argument('utc_offset', validator=validate_utc_offset,
+                       help='The UTC offset in format +/-HH:mm. e.g. -08:00 or +05:30.')
+            c.argument('start_date', validator=validate_start_date,
+                       help='The date the maintenance window activates. e.g. 2023-01-01.')
+            c.argument('start_time', validator=validate_start_time,
+                       help='The start time of the maintenance window. e.g. 09:30.')
 
     for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
         with self.argument_context(scope) as c:

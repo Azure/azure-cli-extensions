@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.124
++++++++
+* Update command group `az aks maintenanceconfiguration` to support the creation of dedicated maintenance configurations:
+  * *aksManagedAutoUpgradeSchedule* for scheduled cluster auto-upgrade
+  * *aksManagedNodeOSUpgradeSchedule* for scheduled node os auto-upgrade
+
 0.5.123
 +++++++
 * Add the KataMshvVmIsolation option to --workload-runtime.

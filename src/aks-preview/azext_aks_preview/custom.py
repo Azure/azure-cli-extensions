@@ -501,16 +501,29 @@ def aks_maintenanceconfiguration_add(
     resource_group_name,
     cluster_name,
     config_name,
-    config_file,
-    weekday,
-    start_hour
+    config_file=None,
+    weekday=None,
+    start_hour=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
         if config.name == config_name:
             raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
                            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
 def aks_maintenanceconfiguration_update(
@@ -519,9 +532,20 @@ def aks_maintenanceconfiguration_update(
     resource_group_name,
     cluster_name,
     config_name,
-    config_file,
-    weekday,
-    start_hour
+    config_file=None,
+    weekday=None,
+    start_hour=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
@@ -532,8 +556,9 @@ def aks_maintenanceconfiguration_update(
     if not found:
         raise CLIError("Maintenance configuration '{}' doesn't exist."
                        "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
 # pylint: disable=too-many-locals
