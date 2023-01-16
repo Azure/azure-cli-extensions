@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.123
++++++++
+* Add the KataMshvVmIsolation option to --workload-runtime.
+
 0.5.122
 +++++++
 * Vendor new SDK and bump API version to 2022-11-02-preview.
