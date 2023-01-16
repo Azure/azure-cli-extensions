@@ -671,7 +671,7 @@ helps['aks update'] = """
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Default is loadbalancer, other available options are managedNATGateway, userassignedNATGateway, UDR
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
