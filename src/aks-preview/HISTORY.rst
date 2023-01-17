@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.123
++++++++
+* Add `--nrg-restriction <restriction level>` option for chosing the node resource group restriction level in `aks create` and `aks update`
+
 0.5.122
 +++++++
 * Vendor new SDK and bump API version to 2022-11-02-preview.
