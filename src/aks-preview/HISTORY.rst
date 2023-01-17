@@ -11,7 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.125
++++++++
 * Update the minimum required cli core version to `2.44.0`.
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
 
 0.5.124
 +++++++
@@ -27,12 +32,6 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2022-11-02-preview.
 * Remove the error prompt about "no argument specified" when `--enable-workload-identity=False` is specified.
-
-0.5.122
-+++++++
-
-* Support for data collection settings to the AKS Monitoring addon
-* Add `--data-collection-settings` option in aks create and aks enable-addons
 
 0.5.121
 +++++++
