@@ -11,7 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.125
++++++++
 * Update the minimum required cli core version to `2.44.0`.
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
 
 0.5.124
 +++++++

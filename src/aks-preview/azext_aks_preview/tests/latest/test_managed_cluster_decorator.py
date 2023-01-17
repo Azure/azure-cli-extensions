@@ -484,7 +484,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_3)
         ctx_3.attach_mc(mc_3)
         self.assertEqual(ctx_3.get_load_balancer_managed_outbound_ipv6_count(), 20)
-    
+
     def test_get_load_balancer_backend_pool_type(self):
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -3326,6 +3326,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_subnet_prefix": None,
                 "enable_msi_auth_for_monitoring": False,
                 "enable_syslog": False,
+                "data_collection_settings": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3366,6 +3367,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_subnet_id": "test_appgw_subnet_id",
                 "appgw_watch_namespace": "test_appgw_watch_namespace",
                 "enable_syslog": False,
+                "data_collection_settings": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4408,7 +4410,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # fail on incomplete mc object (no network profile)
         with self.assertRaises(UnknownError):
             dec_9.update_load_balancer_profile(mc_9)
-        
+
         # custom value
         dec_10 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -4508,7 +4510,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        
+
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -4925,7 +4927,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         self.assertEqual(dec_mc_0, ground_truth_mc_0)
-        
+
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -5465,7 +5467,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_node_restriction(mc_2)
 
-        ground_truth_mc_2 = self.models.ManagedCluster( 
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             security_profile=self.models.ManagedClusterSecurityProfile(
                 node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
@@ -5526,7 +5528,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_vpa(mc_2)
 
-        ground_truth_mc_2 = self.models.ManagedCluster( 
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
                 vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
