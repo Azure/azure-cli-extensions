@@ -501,16 +501,29 @@ def aks_maintenanceconfiguration_add(
     resource_group_name,
     cluster_name,
     config_name,
-    config_file,
-    weekday,
-    start_hour
+    config_file=None,
+    weekday=None,
+    start_hour=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
         if config.name == config_name:
             raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
                            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
 def aks_maintenanceconfiguration_update(
@@ -519,9 +532,20 @@ def aks_maintenanceconfiguration_update(
     resource_group_name,
     cluster_name,
     config_name,
-    config_file,
-    weekday,
-    start_hour
+    config_file=None,
+    weekday=None,
+    start_hour=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None
 ):
     configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
@@ -532,8 +556,9 @@ def aks_maintenanceconfiguration_update(
     if not found:
         raise CLIError("Maintenance configuration '{}' doesn't exist."
                        "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
 
 
 # pylint: disable=too-many-locals
@@ -620,6 +645,7 @@ def aks_create(
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=False,
     enable_syslog=False,
+    data_collection_settings=None,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -1563,14 +1589,15 @@ def aks_addon_enable(cmd, client, resource_group_name, name, addon, workspace_re
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=False,
-                     dns_zone_resource_id=None, enable_syslog=False):
+                     dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
     return enable_addons(cmd, client, resource_group_name, name, addon, workspace_resource_id=workspace_resource_id,
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
-                         dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog)
+                         dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog,
+                         data_collection_settings=data_collection_settings)
 
 
 def aks_addon_disable(cmd, client, resource_group_name, name, addon, no_wait=False):
@@ -1582,7 +1609,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=False,
-                     dns_zone_resource_id=None, enable_syslog=False):
+                     dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
 
@@ -1601,7 +1628,8 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
-                         dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog)
+                         dns_zone_resource_id=dns_zone_resource_id,
+                         enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
 
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
@@ -1626,6 +1654,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
                 create_dcr=False,
                 create_dcra=True,
                 enable_syslog=False,
+                data_collection_settings=None,
             )
     except TypeError:
         pass
@@ -1648,7 +1677,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=False,
-                      dns_zone_resource_id=None, enable_syslog=False):
+                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
 
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -1659,7 +1688,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                              dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog)
+                              dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -1680,12 +1709,15 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                     create_dcr=True,
                     create_dcra=True,
                     enable_syslog=enable_syslog,
+                    data_collection_settings=data_collection_settings,
                 )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
+            if data_collection_settings is not None:
+                raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -1766,7 +1798,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    no_wait=False,  # pylint: disable=unused-argument
-                   enable_syslog=False):
+                   enable_syslog=False,
+                   data_collection_settings=None):
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,

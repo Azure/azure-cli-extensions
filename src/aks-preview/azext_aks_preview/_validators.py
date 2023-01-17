@@ -26,6 +26,8 @@ from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 
@@ -342,6 +344,14 @@ def validate_nat_gateway_managed_outbound_ip_count(namespace):
         if namespace.nat_gateway_managed_outbound_ip_count < 1 or namespace.nat_gateway_managed_outbound_ip_count > 16:
             raise InvalidArgumentValueError(
                 "--nat-gateway-managed-outbound-ip-count must be in the range [1,16]")
+
+
+def validate_outbound_type_in_update(namespace):
+    """validate outbound type in update operation"""
+    if namespace.outbound_type is not None:
+        if namespace.outbound_type not in [CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY]:
+            raise InvalidArgumentValueError(
+                f"Invalid outbound type {namespace.outbound_type}, supported values are loadBalancer and managedNATGateway")
 
 
 def validate_nat_gateway_idle_timeout(namespace):
@@ -803,3 +813,33 @@ def validate_application_security_groups(namespace):
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
             raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
+
+
+def validate_utc_offset(namespace):
+    """Validates --utc-offset for aks maintenanceconfiguration add/update commands."""
+    if namespace.utc_offset is None:
+        return
+    utc_offset_regex = re.compile(r'^[+-]\d{2}:\d{2}$')
+    found = utc_offset_regex.findall(namespace.utc_offset)
+    if not found:
+        raise InvalidArgumentValueError('--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".')
+
+
+def validate_start_date(namespace):
+    """Validates --start-date for aks maintenanceconfiguration add/update commands."""
+    if namespace.start_date is None:
+        return
+    start_dt_regex = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+    found = start_dt_regex.findall(namespace.start_date)
+    if not found:
+        raise InvalidArgumentValueError('--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".')
+
+
+def validate_start_time(namespace):
+    """Validates --start-time for aks maintenanceconfiguration add/update commands."""
+    if namespace.start_time is None:
+        return
+    start_time_regex = re.compile(r'^\d{2}:\d{2}$')
+    found = start_time_regex.findall(namespace.start_time)
+    if not found:
+        raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')

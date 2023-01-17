@@ -69,10 +69,20 @@ from azext_aks_preview._consts import (
     CONST_STABLE_UPGRADE_CHANNEL,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
+    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
     CONST_DISK_DRIVER_V1,
     CONST_DISK_DRIVER_V2,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
+    CONST_DAILY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKLY_MAINTENANCE_SCHEDULE,
+    CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKINDEX_FIRST,
+    CONST_WEEKINDEX_SECOND,
+    CONST_WEEKINDEX_THIRD,
+    CONST_WEEKINDEX_FOURTH,
+    CONST_WEEKINDEX_LAST,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -135,6 +145,10 @@ from azext_aks_preview._validators import (
     validate_disable_windows_outbound_nat,
     validate_allowed_host_ports,
     validate_application_security_groups,
+    validate_utc_offset,
+    validate_start_date,
+    validate_start_time,
+    validate_outbound_type_in_update,
 )
 
 # candidates for enumeration
@@ -151,7 +165,7 @@ node_os_skus = [
     CONST_OS_SKU_WINDOWS2022,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
-workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
 gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
     CONST_GPU_INSTANCE_PROFILE_MIG2_G,
@@ -181,6 +195,22 @@ auto_upgrade_channels = [
 nrg_lockdown_restriction_levels = [
     CONST_NRG_RESTRICTION_READONLY,
     CONST_NRG_RESTRICTION_UNRESTRICTED,
+]
+
+# consts for maintenance configuration
+schedule_types = [
+    CONST_DAILY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKLY_MAINTENANCE_SCHEDULE,
+    CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
+]
+
+week_indexes = [
+    CONST_WEEKINDEX_FIRST,
+    CONST_WEEKINDEX_SECOND,
+    CONST_WEEKINDEX_THIRD,
+    CONST_WEEKINDEX_FOURTH,
+    CONST_WEEKINDEX_LAST,
 ]
 
 # consts for credential
@@ -286,6 +316,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('aci_subnet_name')
         c.argument('appgw_name', arg_group='Application Gateway')
         c.argument('appgw_subnet_cidr', arg_group='Application Gateway')
@@ -441,7 +472,7 @@ def load_arguments(self, _):
         # managed cluster
         c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(), validator=validate_ssh_key_for_update)
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
-        c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
+        c.argument('outbound_type', arg_type=get_enum_type(outbound_types), validator=validate_outbound_type_in_update)
         c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
         c.argument('disable_pod_security_policy', action='store_true', is_preview=True)
         c.argument('enable_pod_identity', action='store_true')
@@ -572,12 +603,26 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_name', options_list=[
                        '--name', '-n'], help='The config name.')
-            c.argument('config_file', options_list=[
-                       '--config-file'], help='The config json file.', required=False)
-            c.argument('weekday', options_list=[
-                       '--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
-            c.argument('start_hour', type=int, options_list=[
-                       '--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
+            c.argument('config_file', help='The config json file.')
+            c.argument('weekday', help='Weekday on which maintenance can happen. e.g. Monday')
+            c.argument('start_hour', type=int, help='Maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
+            c.argument('schedule_type', arg_type=get_enum_type(schedule_types),
+                       help='Schedule type for non-default maintenance configuration.')
+            c.argument('interval_days', type=int, help='The number of days between each set of occurrences for Daily schedule.')
+            c.argument('interval_weeks', type=int, help='The number of weeks between each set of occurrences for Weekly schedule.')
+            c.argument('interval_months', type=int, help='The number of months between each set of occurrences for AbsoluteMonthly or RelativeMonthly schedule.')
+            c.argument('day_of_week', help='Specify on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
+            c.argument('day_of_month', help='Specify on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
+            c.argument('week_index', arg_type=get_enum_type(week_indexes),
+                       help='Specify on which instance of the weekday specified in --day-of-week the maintenance occurs for RelativeMonthly schedule.')
+            c.argument('duration_hours', options_list=['--duration'], type=int,
+                       help='The length of maintenance window. The value ranges from 4 to 24 hours.')
+            c.argument('utc_offset', validator=validate_utc_offset,
+                       help='The UTC offset in format +/-HH:mm. e.g. -08:00 or +05:30.')
+            c.argument('start_date', validator=validate_start_date,
+                       help='The date the maintenance window activates. e.g. 2023-01-01.')
+            c.argument('start_time', validator=validate_start_time,
+                       help='The start time of the maintenance window. e.g. 09:30.')
 
     for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
         with self.argument_context(scope) as c:
@@ -612,6 +657,7 @@ def load_arguments(self, _):
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks addon disable') as c:
@@ -642,6 +688,7 @@ def load_arguments(self, _):
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks disable-addons') as c:
@@ -663,6 +710,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks get-credentials') as c:
