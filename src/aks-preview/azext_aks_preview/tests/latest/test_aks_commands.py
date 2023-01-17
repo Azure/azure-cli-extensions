@@ -3016,7 +3016,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--enable-managed-identity ' \
-                     '--nrg-lockdown-restriction-level ReadOnly ' \
+                     '--nrg-restriction ReadOnly ' \
                      '--ssh-key-value={ssh_key_value} ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview'
         self.cmd(create_cmd, checks=[
@@ -3024,8 +3024,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('nodeResourceGroupProfile.restrictionLevel', 'ReadOnly')
         ])
 
-        # update upgrade channel
-        self.cmd('aks update --resource-group={resource_group} --name={name} --nrg-lockdown-restriction-level Unrestricted --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview', checks=[
+        # update nrg restriction
+        self.cmd('aks update --resource-group={resource_group} --name={name} --nrg-restriction Unrestricted --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('nodeResourceGroupProfile.restrictionLevel', 'Unrestricted')
         ])

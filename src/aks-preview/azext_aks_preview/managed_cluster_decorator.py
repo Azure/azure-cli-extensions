@@ -467,12 +467,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_backend_pool_type
 
-    def get_nrg_lockdown_restriction_level(self) -> Union[str, None]:
-        """Obtain the value of nrg_lockdown_restriction_level.
+    def get_nrg_restriction(self) -> Union[str, None]:
+        """Obtain the value of nrg_restriction.
         :return: string or None
         """
         # read the original value passed by the command
-        nrg_lockdown_restriction_level = self.raw_param.get("nrg_lockdown_restriction_level")
+        nrg_restriction = self.raw_param.get("nrg_restriction")
 
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
@@ -481,11 +481,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc.node_resource_group_profile and
                 self.mc.node_resource_group_profile.restriction_level is not None
             ):
-                nrg_lockdown_restriction_level = self.mc.node_resource_group_profile.restriction_level
+                nrg_restriction = self.mc.node_resource_group_profile.restriction_level
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
-        return nrg_lockdown_restriction_level
+        return nrg_restriction
 
     def get_kube_proxy_config(self) -> Union[Dict, ContainerServiceNetworkProfileKubeProxyConfig, None]:
         """Obtain the value of kube_proxy_config.
@@ -2147,9 +2147,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         node_resource_group_profile = None
-        nrg_lockdown_restriction_level = self.context.get_nrg_lockdown_restriction_level()
-        if nrg_lockdown_restriction_level:
-            node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile(restriction_level=nrg_lockdown_restriction_level)
+        nrg_restriction = self.context.get_nrg_restriction()
+        if nrg_restriction:
+            node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile(restriction_level=nrg_restriction)
         mc.node_resource_group_profile = node_resource_group_profile
         return mc
 
@@ -2699,11 +2699,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        nrg_lockdown_restriction_level = self.context.get_nrg_lockdown_restriction_level()
-        if nrg_lockdown_restriction_level is not None:
+        nrg_restriction = self.context.get_nrg_restriction()
+        if nrg_restriction is not None:
             if mc.node_resource_group_profile is None:
                 mc.node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile()
-            mc.node_resource_group_profile.restriction_level = nrg_lockdown_restriction_level
+            mc.node_resource_group_profile.restriction_level = nrg_restriction
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
