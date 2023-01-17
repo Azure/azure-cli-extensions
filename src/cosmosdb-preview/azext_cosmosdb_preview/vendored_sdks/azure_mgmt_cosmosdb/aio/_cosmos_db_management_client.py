@@ -12,12 +12,13 @@ from typing import Any, Awaitable, TYPE_CHECKING
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
 
-from .. import models
+from .. import models as _models
 from .._serialization import Deserializer, Serializer
 from ._configuration import CosmosDBManagementClientConfiguration
 from .operations import (
     CassandraClustersOperations,
     CassandraDataCentersOperations,
+    CassandraRepairOperations,
     CassandraResourcesOperations,
     CollectionOperations,
     CollectionPartitionOperations,
@@ -117,6 +118,8 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     :ivar cassandra_data_centers: CassandraDataCentersOperations operations
     :vartype cassandra_data_centers:
      azure.mgmt.cosmosdb.aio.operations.CassandraDataCentersOperations
+    :ivar cassandra_repair: CassandraRepairOperations operations
+    :vartype cassandra_repair: azure.mgmt.cosmosdb.aio.operations.CassandraRepairOperations
     :ivar notebook_workspaces: NotebookWorkspacesOperations operations
     :vartype notebook_workspaces: azure.mgmt.cosmosdb.aio.operations.NotebookWorkspacesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
@@ -164,11 +167,15 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     :vartype service: azure.mgmt.cosmosdb.aio.operations.ServiceOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
+    :param intensity_value: Required.
+    :type intensity_value: str
+    :param segment_id: Required.
+    :type segment_id: str
     :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2022-08-15-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2022-11-15-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -178,16 +185,22 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     def __init__(
         self,
         credential: "AsyncTokenCredential",
+        intensity_value: str,
+        segment_id: str,
         subscription_id: str,
         base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
         self._config = CosmosDBManagementClientConfiguration(
-            credential=credential, subscription_id=subscription_id, **kwargs
+            credential=credential,
+            intensity_value=intensity_value,
+            segment_id=segment_id,
+            subscription_id=subscription_id,
+            **kwargs
         )
         self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
@@ -242,6 +255,9 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
             self._client, self._config, self._serialize, self._deserialize
         )
         self.cassandra_data_centers = CassandraDataCentersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.cassandra_repair = CassandraRepairOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.notebook_workspaces = NotebookWorkspacesOperations(

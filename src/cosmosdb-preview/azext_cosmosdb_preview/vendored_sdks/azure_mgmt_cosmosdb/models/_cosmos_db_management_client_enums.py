@@ -31,12 +31,11 @@ class ApiType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class AuthenticationMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Which authentication method Cassandra should use to authenticate clients. 'None' turns off
     authentication, so should not be used except in emergencies. 'Cassandra' is the default
-    password based authentication. The default is 'Cassandra'. 'Ldap' is in preview.
+    password based authentication. The default is 'Cassandra'.
     """
 
     NONE = "None"
     CASSANDRA = "Cassandra"
-    LDAP = "Ldap"
 
 
 class BackupPolicyMigrationStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
