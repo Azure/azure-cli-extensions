@@ -124,7 +124,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
 
 
 def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
-        if for_preonboarding_checks == False:
+        if for_preonboarding_checks is False:
             global diagnoser_output
         try:
             if consts.DNS_Check_Result_String not in dns_check_log:
@@ -174,7 +174,7 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
             logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
             if for_preonboarding_checks:
                     telemetry.set_user_fault()
-            else:                    
+            else:
                 diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
 
@@ -182,7 +182,7 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
 
 
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
-        if for_preonboarding_checks == False:
+        if for_preonboarding_checks is False:
             global diagnoser_output
         try:
             outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
@@ -225,21 +225,21 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_pre
                 shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
             else:
                 logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-                if for_preonboarding_checks == False:
+                if for_preonboarding_checks is False:
                     diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
                 telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
 
         # To handle any exception that may occur during the execution
         except Exception as e:
             logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-            if for_preonboarding_checks == False:
+            if for_preonboarding_checks is False:
                 diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
             else:
                 telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
         if for_preonboarding_checks:
-           return consts.Diagnostic_Check_Incomplete
-        else: 
+            return consts.Diagnostic_Check_Incomplete
+        else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
