@@ -359,6 +359,9 @@ helps['aks create'] = """
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
+        - name: --node-os-upgrade-channel
+          type: string
+          short-summary: <TODO: let Paul fill in>
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -713,6 +716,9 @@ helps['aks update'] = """
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
+        - name: --node-os-upgrade-channel
+          type: string
+          short-summary: <TODO: let Paul fill in>
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
