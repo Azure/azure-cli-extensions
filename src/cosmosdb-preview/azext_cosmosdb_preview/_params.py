@@ -176,7 +176,7 @@ def load_arguments(self, _):
     # Managed Cassandra Repair Create
     with self.argument_context('managed-cassandra repair create') as c:
         c.argument('keyspace', options_list=['--keyspace', '-k'], help="The name of the table keyspace.", required=True)
-        c.argument('owner', options_list=['--owner', '-o'], help="Owner name for the run. This could be any string identifying the owner.", required=True)
+        c.argument('owner', options_list=['--owner', '-r'], help="Owner name for the run. This could be any string identifying the owner.", required=True)
         c.argument('cause', options_list=['--cause', '-a'], help="Identifies the process, or cause the repair was started.", required=True)
         c.argument('tables', options_list=['--tables', '-t'], validator=validate_table_list, help="The name of the targeted tables (column families) as comma separated list. If no tables given, then the whole keyspace is targeted.", required=False)
         c.argument('segment_count', options_list=['--segment-count', '-s'], help="Defines the amount of segments per node to create for the repair run.", required=False)
