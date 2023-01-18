@@ -354,6 +354,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
+        import os
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
@@ -368,12 +369,16 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
             self.cmd.command_kwargs[key] = task_command_kwargs[key]
 
-        with NamedTemporaryFile(mode="w") as task_file:
-            task_file.write(task_content)
-            task_file.flush()
+        with NamedTemporaryFile(mode="w", delete=False) as task_file:
+            try:
+                task_file.write(task_content)
+                task_file.flush()
+                acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
+                logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
+            finally:
+                task_file.close()
+                os.unlink(task_file.name)
 
-            acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
-            logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
             from time import sleep
             sleep(10)
 

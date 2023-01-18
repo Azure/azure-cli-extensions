@@ -45,14 +45,16 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from azext_aks_preview._consts import (
+    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_NETWORK_PLUGIN_AZURE,
+    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_PRIVATE_DNS_ZONE_NONE,
-    CONST_PRIVATE_DNS_ZONE_SYSTEM,
-    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -249,6 +251,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
+        Note: Overwritten in aks-preview to support being updated.
+
         Note: All the external parameters involved in the validation are not verified in their own getters.
 
         When outbound_type is not assigned, dynamic completion will be triggerd. By default, the value is set to
@@ -400,12 +404,83 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
 
+    def _get_network_plugin(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of network_plugin.
+
+        Note: Overwritten in aks-preview to update the valiation.
+
+        Note: SDK provides default value "kubenet" for network_plugin.
+
+        This function supports the option of enable_validation. When enabled, in case network_plugin is assigned, if
+        pod_cidr is assigned, the value of network_plugin is "azure" and network_plugin_mode is not "overlay", an
+        InvalidArgumentValueError will be raised; otherwise, if any of pod_cidr, service_cidr, dns_service_ip,
+        docker_bridge_address or network_policy is assigned, a RequiredArgumentMissingError will be raised.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        network_plugin = self.raw_param.get("network_plugin")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.network_plugin is not None
+        ):
+            network_plugin = self.mc.network_profile.network_plugin
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            (
+                pod_cidr,
+                service_cidr,
+                dns_service_ip,
+                docker_bridge_address,
+                network_policy,
+            ) = self._get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(
+                enable_validation=False
+            )
+            if network_plugin:
+                if network_plugin == CONST_NETWORK_PLUGIN_AZURE and pod_cidr:
+                    if self.get_network_plugin_mode() != CONST_NETWORK_PLUGIN_MODE_OVERLAY:
+                        raise InvalidArgumentValueError(
+                            "Please specify network plugin mode `overlay` when using pod_cidr or "
+                            "use network plugin `kubenet`. For more information about Azure CNI "
+                            "Overlay please see https://aka.ms/aksoverlay"
+                        )
+            else:
+                if (
+                    pod_cidr or
+                    service_cidr or
+                    dns_service_ip or
+                    docker_bridge_address or
+                    network_policy
+                ):
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return network_plugin
+
     def get_network_plugin_mode(self) -> Union[str, None]:
-        """Get the value of network_plugin_mode
+        """Get the value of network_plugin_mode.
+
+        Note: Currently this parameter does not support being updated.
 
         :return: str or None
         """
-        return self.raw_param.get('network_plugin_mode')
+        # read the original value passed by the command
+        network_plugin_mode = self.raw_param.get("network_plugin_mode")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.network_plugin_mode is not None
+        ):
+            network_plugin_mode = self.mc.network_profile.network_plugin_mode
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return network_plugin_mode
 
     def get_enable_cilium_dataplane(self) -> bool:
         """Get the value of enable_cilium_dataplane
