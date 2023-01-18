@@ -104,7 +104,7 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
-        if chart_path_name is 'AzureArcCharts':
+        if chart_path_name == 'AzureArcCharts':
             chart_path_name = 'azure-arc' 
         telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
                                 summary="Unable to pull {} helm charts from the registry".format(chart_path_name))
@@ -120,7 +120,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
-        if chart_path_name is 'AzureArcCharts':
+        if chart_path_name == 'AzureArcCharts':
             chart_path_name = 'azure-arc' 
         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
                                 summary='Unable to export {} helm chart from the registry'.format(chart_path_name))
