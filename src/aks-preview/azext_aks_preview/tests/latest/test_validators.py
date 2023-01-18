@@ -124,10 +124,6 @@ class DisableWindowsOutboundNatNamespace:
         self.os_type = os_type
         self.disable_windows_outbound_nat = disable_windows_outbound_nat
 
-class UpdateOutBoundTypeNamespace:
-    def __init__(self, outbound_type):
-        self.outbound_type = outbound_type
-
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%"]
@@ -234,18 +230,6 @@ class TestDisableWindowsOutboundNAT(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("invalid", True))
         self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
-
-class TestUpdateOutBoundType(unittest.TestCase):
-    def test_pass_if_os_type_loadbalancer(self):
-        validators.validate_outbound_type_in_update(UpdateOutBoundTypeNamespace("loadBalancer"))
-
-    def test_pass_if_os_type_managedNATGateway(self):
-        validators.validate_outbound_type_in_update(UpdateOutBoundTypeNamespace("managedNATGateway"))
-
-    def test_pass_if_os_type_UDR(self):
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_outbound_type_in_update(UpdateOutBoundTypeNamespace("userDefinedRoute"))
-        self.assertTrue('Invalid outbound type userDefinedRoute, supported values are loadBalancer and managedNATGateway' in str(cm.exception), msg=str(cm.exception))
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):

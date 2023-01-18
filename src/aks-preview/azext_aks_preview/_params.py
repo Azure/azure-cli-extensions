@@ -146,7 +146,6 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_start_date,
     validate_start_time,
-    validate_outbound_type_in_update,
 )
 
 # candidates for enumeration
@@ -464,7 +463,7 @@ def load_arguments(self, _):
         # managed cluster
         c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(), validator=validate_ssh_key_for_update)
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
-        c.argument('outbound_type', arg_type=get_enum_type(outbound_types), validator=validate_outbound_type_in_update)
+        c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
         c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
         c.argument('disable_pod_security_policy', action='store_true', is_preview=True)
         c.argument('enable_pod_identity', action='store_true')
