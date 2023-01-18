@@ -158,27 +158,17 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
                             dns.write(formatted_dns_log + "\nCluster DNS check passed successfully.")
                     return consts.Diagnostic_Check_Passed, storage_space_available
 
-        # For handling storage or OS exception that may occur during the execution
-        except OSError as e:
-            if "[Errno 28]" in str(e):
-                storage_space_available = False
-                telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-                shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-            else:
-                logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-                diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-                telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
-
         # To handle any exception that may occur during the execution
         except Exception as e:
             logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-            if for_preonboarding_checks:
-                    telemetry.set_user_fault()
-            else:
+            if for_preonboarding_checks is False:
                 diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
 
-        return consts.Diagnostic_Check
+        if for_preonboarding_checks:
+            return consts.Diagnostic_Check_Incomplete
+        else:
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
@@ -217,25 +207,11 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_pre
                             outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
                     return consts.Diagnostic_Check_Failed, storage_space_available
 
-        # For handling storage or OS exception that may occur during the execution
-        except OSError as e:
-            if "[Errno 28]" in str(e):
-                storage_space_available = False
-                telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-                shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-            else:
-                logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-                if for_preonboarding_checks is False:
-                    diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-                telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
-
         # To handle any exception that may occur during the execution
         except Exception as e:
             logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
             if for_preonboarding_checks is False:
                 diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-            else:
-                telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
         if for_preonboarding_checks:
             return consts.Diagnostic_Check_Incomplete

@@ -161,6 +161,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ManualInterrupt('Process terminated externally.')
 
     if all_checks_passed is False:
+        logger.warning("One or more cluster diagnostics check failed.")
         return
 
     required_node_exists = check_linux_amd64_node(node_api_response)
