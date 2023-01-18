@@ -84,9 +84,9 @@ CONST_PATCH_UPGRADE_CHANNEL = "patch"
 CONST_NODE_IMAGE_UPGRADE_CHANNEL = "node-image"
 CONST_NONE_UPGRADE_CHANNEL = "none"
 
-# consts for nrg restriction level
-CONST_NRG_RESTRICTION_READONLY = "ReadOnly"
-CONST_NRG_RESTRICTION_UNRESTRICTED = "Unrestricted"
+# consts for nrg-lockdown restriction level
+CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY = "ReadOnly"
+CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED = "Unrestricted"
 
 # network plugin
 CONST_NETWORK_PLUGIN_KUBENET = "kubenet"
