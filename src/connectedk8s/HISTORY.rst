@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.3.7
+1.3.8
 ++++++
 
 * Added DNS and outbound connectivity prechecks in connect command
