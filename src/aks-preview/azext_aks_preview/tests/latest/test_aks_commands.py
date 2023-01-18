@@ -3047,7 +3047,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('nodeResourceGroupProfile.restrictionLevel', 'ReadOnly')
         ])
 
-        # update upgrade channel
+        # update the nrg restriction level
         self.cmd('aks update --resource-group={resource_group} --name={name} --nrg-lockdown-restriction-level Unrestricted --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('nodeResourceGroupProfile.restrictionLevel', 'Unrestricted')
