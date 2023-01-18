@@ -2,17 +2,15 @@
 
 Release History
 ===============
-<<<<<<< HEAD
 1.3.8
 ++++++
 
 * Added DNS and outbound connectivity prechecks in connect command
-=======
+
 1.3.7
 ++++++
 
 * Install new helm release in azure-arc-release NS
->>>>>>> 943e8af2032cd7e040d6d95d5e70167c1754f58a
 
 1.3.6
 ++++++
