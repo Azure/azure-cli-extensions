@@ -2,10 +2,15 @@
 
 Release History
 ===============
+1.3.9
+++++++
+
+* * Added DNS and outbound connectivity prechecks in connect command
+
 1.3.8
 ++++++
 
-* Added DNS and outbound connectivity prechecks in connect command
+* Added connectedk8s proxy support for fairfax
 
 1.3.7
 ++++++
