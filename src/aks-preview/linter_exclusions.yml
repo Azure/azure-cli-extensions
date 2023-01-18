@@ -45,6 +45,9 @@ aks create:
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
+    nrg_lockdown_restriction_level:
+      rule_exclusions:
+      - option_length_too_long
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:
