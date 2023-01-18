@@ -43,7 +43,7 @@ def load_command_table(self, _):
     cosmosdb_managed_cassandra_repair_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#CassandraRepairOperations.{}',
         client_factory=cf_cassandra_cluster_repair)
-`
+
     cosmosdb_rbac_mongo_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
         client_factory=cf_mongo_db_resources)
@@ -64,7 +64,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('managed-cassandra repair', cosmosdb_managed_cassandra_repair_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
+    with self.command_group('managed-cassandra repair', cosmosdb_managed_cassandra_repair_sdk, client_factory=cf_cassandra_cluster_repair, is_preview=True) as g:
         g.custom_command('status', 'cli_cosmosdb_managed_cassandra_repair_status', supports_no_wait=True)
         g.custom_command('tablestatus', 'cli_cosmosdb_managed_cassandra_repair_tablestatus', supports_no_wait=True)
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_repair_create', supports_no_wait=True)
