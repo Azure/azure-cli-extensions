@@ -11,6 +11,28 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
+
+0.5.125
++++++++
+* Update the minimum required cli core version to `2.44.0`.
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
+
+0.5.124
++++++++
+* Update command group `az aks maintenanceconfiguration` to support the creation of dedicated maintenance configurations:
+  * *aksManagedAutoUpgradeSchedule* for scheduled cluster auto-upgrade
+  * *aksManagedNodeOSUpgradeSchedule* for scheduled node os auto-upgrade
+
+0.5.123
++++++++
+* Add the KataMshvVmIsolation option to --workload-runtime.
+
+0.5.122
++++++++
+* Vendor new SDK and bump API version to 2022-11-02-preview.
+* Remove the error prompt about "no argument specified" when `--enable-workload-identity=False` is specified.
 
 0.5.121
 +++++++

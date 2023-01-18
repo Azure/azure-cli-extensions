@@ -98,6 +98,7 @@ helps['grafana data-source query'] = """
 helps['grafana notification-channel'] = """
     type: group
     short-summary: Commands to manage notification channels of an instance.
+    long-summary: as part of legacy alerting, this command group will be deprecated in a future release
 """
 
 helps['grafana notification-channel list'] = """

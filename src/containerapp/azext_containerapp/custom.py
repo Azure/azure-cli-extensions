@@ -2881,7 +2881,7 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
         cert_id = certs[0]["id"]
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
-    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+    new_custom_domains = list(filter(lambda c: safe_get(c, "name", default=[]) != hostname, custom_domains))
     new_domain = ContainerAppCustomDomainModel
     new_domain["name"] = hostname
     new_domain["certificateId"] = cert_id

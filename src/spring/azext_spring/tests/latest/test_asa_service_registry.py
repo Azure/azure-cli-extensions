@@ -31,3 +31,9 @@ class ServiceRegistryTest(ScenarioTest):
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default")
         ])
         self.cmd('spring service-registry unbind --app {app} -g {rg} -s {serviceName}')
+
+        self.cmd('spring service-registry delete -g {rg} -s {serviceName} --yes')
+
+        self.cmd('spring service-registry create -g {rg} -s {serviceName}', checks=[
+            self.check('properties.provisioningState', "Succeeded")
+        ])

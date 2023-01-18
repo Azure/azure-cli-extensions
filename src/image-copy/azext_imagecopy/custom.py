@@ -33,8 +33,9 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
             raise CLIError('Don\'t specify an existing resource group in --temporary-resource-group-name '
                            'when --cleanup is set')
 
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    target_subscription = get_subscription_id(cmd.cli_ctx)
+    if not target_subscription:
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        target_subscription = get_subscription_id(cmd.cli_ctx)
     logger.debug('subscription id - %s', target_subscription)
 
     # get the os disk id from source vm/image
