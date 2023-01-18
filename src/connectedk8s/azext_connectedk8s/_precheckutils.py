@@ -45,13 +45,13 @@ logger = get_logger(__name__)
 # pylint: disable
 
 
-def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
+def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
         # Executing the pre onboarding inspector job and fetching the logs obtained
-        preonboarding_inspector_container_log = executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
+        preonboarding_inspector_container_log = executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
         # If preonboarding_inspector_container_log is not empty then only we will check for the results
         if(preonboarding_inspector_container_log is not None and preonboarding_inspector_container_log != ""):
             preonboarding_inspector_container_log_list = preonboarding_inspector_container_log.split("\n")
@@ -89,7 +89,7 @@ def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_ins
     return consts.Diagnostic_Check_Incomplete
 
 
-def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, release_namespace, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
+def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
     job_name = "pre-onboarding-inspector-job"
     # Setting the log output as Empty
     preonboarding_inspector_container_log = ""
@@ -127,7 +127,7 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
                 telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Failed_Fault_Type, summary="Error while executing pre onboarding inspector Job")
                 return
         try:
-            chart_path = azext_utils.get_chart_path(consts.Pre_Onboarding_Inspector_Job_Registry_Path, kube_config, kube_context, helm_client_location, True)
+            chart_path = azext_utils.get_chart_path(consts.Pre_Onboarding_Inspector_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'ConnectPrecheckCharts')
 
             helm_install_release(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
