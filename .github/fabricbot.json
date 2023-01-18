@@ -12882,6 +12882,75 @@
           }
         ]
       }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isAction",
+              "parameters": {
+                "action": "opened"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "titleContains",
+                  "parameters": {
+                    "titlePattern": "Extension Regression Test for"
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "Triggered by CLI Extension Regression Test Pipeline"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[Regression-Test] Auto assign labels and reviewers based on PR title/description.",
+        "actions": [
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "evelyn-ys"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "assignToUser",
+            "parameters": {
+              "user": "evelyn-ys"
+            }
+          },
+          {
+            "name": "addMilestone",
+            "parameters": {
+              "milestoneName": "Backlog"
+            }
+          }
+        ]
+      }
     }
   ],
   "userGroups": [
