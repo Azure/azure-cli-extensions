@@ -364,8 +364,8 @@ def build_abort_segment_request(
     resource_group_name: str,
     cluster_name: str,
     repair_run_id: str,
-    subscription_id: str,
     segment_id: str,
+    subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -402,8 +402,8 @@ def build_update_request(
     resource_group_name: str,
     cluster_name: str,
     repair_run_id: str,
-    subscription_id: str,
     intensity_value: str,
+    subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -1121,7 +1121,7 @@ class CassandraRepairOperations:
 
     @distributed_trace
     def abort_segment(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, segment_id: str, **kwargs: Any
     ) -> None:
         """abort_segment.
 
@@ -1132,6 +1132,8 @@ class CassandraRepairOperations:
         :type cluster_name: str
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
+        :param segment_id: Id of a segment of a repair run. Required.
+        :type segment_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
@@ -1157,8 +1159,8 @@ class CassandraRepairOperations:
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             repair_run_id=repair_run_id,
+            segment_id=segment_id,
             subscription_id=self._config.subscription_id,
-            segment_id=self._config.segment_id,
             api_version=api_version,
             template_url=self.abort_segment.metadata["url"],
             headers=_headers,
@@ -1186,7 +1188,7 @@ class CassandraRepairOperations:
 
     @distributed_trace
     def update(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, intensity_value: str, **kwargs: Any
     ) -> None:
         """update.
 
@@ -1197,6 +1199,8 @@ class CassandraRepairOperations:
         :type cluster_name: str
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
+        :param intensity_value: Floating point value representing intensity of the repair. Required.
+        :type intensity_value: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None or the result of cls(response)
         :rtype: None
@@ -1222,8 +1226,8 @@ class CassandraRepairOperations:
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             repair_run_id=repair_run_id,
+            intensity_value=intensity_value,
             subscription_id=self._config.subscription_id,
-            intensity_value=self._config.intensity_value,
             api_version=api_version,
             template_url=self.update.metadata["url"],
             headers=_headers,

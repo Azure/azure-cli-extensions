@@ -33,10 +33,6 @@ class CosmosDBManagementClientConfiguration(Configuration):  # pylint: disable=t
 
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param intensity_value: Required.
-    :type intensity_value: str
-    :param segment_id: Required.
-    :type segment_id: str
     :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :keyword api_version: Api Version. Default value is "2022-11-15-preview". Note that overriding
@@ -44,24 +40,16 @@ class CosmosDBManagementClientConfiguration(Configuration):  # pylint: disable=t
     :paramtype api_version: str
     """
 
-    def __init__(
-        self, credential: "TokenCredential", intensity_value: str, segment_id: str, subscription_id: str, **kwargs: Any
-    ) -> None:
+    def __init__(self, credential: "TokenCredential", subscription_id: str, **kwargs: Any) -> None:
         super(CosmosDBManagementClientConfiguration, self).__init__(**kwargs)
         api_version: Literal["2022-11-15-preview"] = kwargs.pop("api_version", "2022-11-15-preview")
 
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
-        if intensity_value is None:
-            raise ValueError("Parameter 'intensity_value' must not be None.")
-        if segment_id is None:
-            raise ValueError("Parameter 'segment_id' must not be None.")
         if subscription_id is None:
             raise ValueError("Parameter 'subscription_id' must not be None.")
 
         self.credential = credential
-        self.intensity_value = intensity_value
-        self.segment_id = segment_id
         self.subscription_id = subscription_id
         self.api_version = api_version
         self.credential_scopes = kwargs.pop("credential_scopes", ["https://management.azure.com/.default"])
