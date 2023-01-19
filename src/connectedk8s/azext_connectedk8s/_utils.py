@@ -72,7 +72,10 @@ def validate_location(cmd, location):
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='AzureArcCharts'):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name)
+    if chart_path_name == 'ConnectPrecheckCharts':
+        pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name)
+    else:
+        pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, 'azure-arc')
 
     # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_path_name)
@@ -82,7 +85,10 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_path_name, chart_export_path))
 
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
+    if chart_path_name == 'ConnectPrecheckCharts':
+        export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
+    else:
+        export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, 'azure-arc') 
 
     # Returning helm chart path
     if chart_path_name == 'ConnectPrecheckCharts':
@@ -95,7 +101,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='azure-arc'):
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc'):
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
@@ -104,14 +110,12 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
-        if chart_path_name == 'AzureArcCharts':
-            chart_path_name = 'azure-arc' 
         telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
-                                summary="Unable to pull {} helm charts from the registry".format(chart_path_name))
-        raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_path_name, registry_path) + error_helm_chart_pull.decode("ascii"))
+                                summary="Unable to pull {} helm charts from the registry".format(chart_name))
+        raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name='azure-arc'):
+def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc'):
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
@@ -120,11 +124,9 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
-        if chart_path_name == 'AzureArcCharts':
-            chart_path_name = 'azure-arc' 
         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export {} helm chart from the registry'.format(chart_path_name))
-        raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_path_name, registry_path) + error_helm_chart_export.decode("ascii"))
+                                summary='Unable to export {} helm chart from the registry'.format(chart_name))
+        raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
 def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
