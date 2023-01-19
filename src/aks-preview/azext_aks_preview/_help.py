@@ -361,7 +361,7 @@ helps['aks create'] = """
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --node-os-upgrade-channel
           type: string
-          short-summary: <TODO let Paul fill in>
+          short-summary: Manner in which the OS on your nodes is updated. It could be none, unmanged, nodeimage or securitypatch (default Unmanaged)
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -718,7 +718,7 @@ helps['aks update'] = """
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --node-os-upgrade-channel
           type: string
-          short-summary: <TODO let Paul fill in>
+          short-summary: Manner in which the OS on your nodes is updated. It could be none, unmanged, nodeimage or securitypatch (default Unmanaged)
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
