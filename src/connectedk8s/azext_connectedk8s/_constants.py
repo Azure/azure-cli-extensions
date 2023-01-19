@@ -180,12 +180,13 @@ Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
 Pre_Onboarding_Inspector_Job_Registry_Path = "arck8sdiagnoser.azurecr.io/public/pre-onboarding-inspector:0.1.0"
-Pre_Onboarding_Inspector_Check_Execution_Failed_Fault_Type = "Error occured while running the pre onboarding inspector"
 Pre_Onboarding_Inspector_Helm_Install_Failed_Fault_Type = "Error while installing pre onboarding inspector helm release"
-Pre_Onboarding_Inspector_Failed_Fault_Type = "Error while executing pre onboarding inspector in the cluster"
+Pre_Onboarding_Inspector_Failed_Fault_Type = "Error occured while running pre onboarding inspector"
 Pre_Onboarding_Inspector_Pull_HelmChart_Fault_Type = 'pre-onboarding-inspector-helm-chart-pull-error'
 Pre_Onboarding_Inspector_Export_HelmChart_Fault_Type = 'pre-onboarding-inspector-helm-chart-export-error'
 Pre_Onboarding_Inspector_Install_HelmRelease_Fault_Type = 'pre-onboarding-inspector-helm-release-install-error'
+Pre_Onboarding_Inspector_Job_Not_Scheduled = 'Unable to schedule pre-onboarding-inspector job'
+Pre_Onboarding_Inspector_Job_Not_Complete = 'Unable to complete pre-onboarding-inspector job after scheduling'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

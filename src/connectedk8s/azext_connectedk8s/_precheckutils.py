@@ -84,7 +84,7 @@ def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_ins
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to perform pre onboarding inspector container on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Pre_Onboarding_Inspector_Check_Execution_Failed_Fault_Type, summary="Error occured while performing the pre onboarding inspector container")
+        telemetry.set_exception(exception=e, fault_type=consts.Pre_Onboarding_Inspector_Failed_Fault_Type, summary="Error occured while executing the pre onboarding inspector container")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -158,10 +158,14 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
                 continue
 
         if (is_job_scheduled is False):
+            telemetry.set_exception(exception="Couldn't schedule pre onboarding inspector job in the cluster", fault_type=consts.Pre_Onboarding_Inspector_Job_Not_Scheduled,
+                                    summary="Couldn't schedule pre onboarding inspector job in the cluster")
             logger.warning("Unable to schedule the pre onboarding inspector job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
+            telemetry.set_exception(exception="Couldn't complete pre onboarding inspector job after scheduling in the cluster", fault_type=consts.Pre_Onboarding_Inspector_Job_Not_Scheduled,
+                                    summary="Couldn't complete pre onboarding inspector job after scheduling in the cluster")
             logger.warning("Unable to finish the pre onboarding inspector job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return

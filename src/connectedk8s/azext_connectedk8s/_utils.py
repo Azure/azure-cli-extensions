@@ -88,7 +88,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     if chart_path_name == 'ConnectPrecheckCharts':
         export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
     else:
-        export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, 'azure-arc') 
+        export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, 'azure-arc')
 
     # Returning helm chart path
     if chart_path_name == 'ConnectPrecheckCharts':
@@ -143,7 +143,6 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
             if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
                 logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
                 if for_preonboarding_checks:
-                    telemetry.set_user_fault()
                     telemetry.set_exception(exception="DNS not working in the cluster", fault_type=consts.DNS_Failed_Fault_Type,
                                             summary="DNS not working in the cluster")
                     return consts.Diagnostic_Check_Failed
@@ -201,7 +200,6 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_pre
             else:
                 logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
                 if for_preonboarding_checks:
-                    telemetry.set_user_fault()
                     telemetry.set_exception(exception="Failed outbound network connectivity from the cluster", fault_type=consts.Outbound_Connectivity_Failed_Fault_Type,
                                             summary="Failed outbound network connectivity from the cluster")
                     return consts.Diagnostic_Check_Failed
