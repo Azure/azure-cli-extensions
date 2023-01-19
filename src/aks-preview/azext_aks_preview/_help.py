@@ -292,6 +292,10 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --nrg-lockdown-restriction-level
+          type: string
+          short-summary: Restriction level on the managed node resource group.
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
@@ -677,7 +681,7 @@ helps['aks update'] = """
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -686,6 +690,10 @@ helps['aks update'] = """
           type: bool
           short-summary: Disable pod security policy
           long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
+        - name: --nrg-lockdown-restriction-level
+          type: string
+          short-summary: Restriction level on the managed node resource.
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
