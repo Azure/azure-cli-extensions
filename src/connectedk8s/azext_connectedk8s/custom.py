@@ -161,7 +161,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ManualInterrupt('Process terminated externally.')
 
     if all_checks_passed is False:
-        raise ValidationError("One or more diagnostic checks failed and hence the cluster cannot be onboarded. Please refer to the troubleshooting docs for the diagnostic checks and try onboarding again.")
+        raise ValidationError("One or more cluster diagnostic checks failed and hence the cluster cannot be onboarded. Please refer to the troubleshooting docs for the diagnostic checks and try onboarding again.")
 
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
