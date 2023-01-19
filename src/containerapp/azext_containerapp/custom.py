@@ -2366,10 +2366,13 @@ def enable_dapr(cmd, name, resource_group_name,
     if 'configuration' not in containerapp_def['properties']:
         containerapp_def['properties']['configuration'] = {}
 
-    if 'dapr' not in containerapp_def['properties']['configuration']:
-        containerapp_def['properties']['configuration']['dapr'] = {}
+    if not safe_get(containerapp_def, "properties", "configuration", "dapr"):
+        if "dapr" not in containerapp_def['properties']['configuration']:
+            containerapp_def['properties']['configuration']['dapr'] = {}
 
-    if dapr_app_id:
+    if not safe_get(containerapp_def, "properties", "configuration", "dapr", "appId"):
+        if dapr_app_id not in containerapp_def['properties']['configuration']['dapr']:
+            containerapp_def['properties']['configuration']['dapr']['appId'] = {}
         containerapp_def['properties']['configuration']['dapr']['appId'] = dapr_app_id
 
     if dapr_app_port:
