@@ -2144,8 +2144,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """Set up auto upgrade profile for the ManagedCluster object.
         :return: the ManagedCluster object
         """
-        self._ensure_mc(mc)
-
         mc = super().set_up_auto_upgrade_profile(mc)
 
         node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
@@ -2699,10 +2697,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """Update auto upgrade profile for the ManagedCluster object.
         :return: the ManagedCluster object
         """
-        self._ensure_mc(mc)
-
-        
         mc = super().update_auto_upgrade_profile(mc)
+        
         node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
         if node_os_upgrade_channel is not None:
             if mc.auto_upgrade_profile is None:
