@@ -2234,7 +2234,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
         return mc
-    
+
     def set_up_node_resource_group_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up node resource group profile for the ManagedCluster object.
         :return: the ManagedCluster object
