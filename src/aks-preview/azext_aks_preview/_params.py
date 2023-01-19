@@ -45,6 +45,8 @@ from azext_aks_preview._consts import (
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
     CONST_NONE_UPGRADE_CHANNEL,
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
@@ -189,6 +191,10 @@ auto_upgrade_channels = [
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NONE_UPGRADE_CHANNEL,
 ]
+nrg_lockdown_restriction_levels = [
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
+]
 
 # consts for maintenance configuration
 schedule_types = [
@@ -253,6 +259,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
+        c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
@@ -395,6 +402,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
+        c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('kube_proxy_config')
