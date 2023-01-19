@@ -1,13 +1,17 @@
 def create_dev_center(self):
     self.kwargs.update({
-            'devcenterName': self.create_random_name(prefix='cli', length=24),
-        })
+        'devcenterName': self.create_random_name(prefix='cli', length=24),
+    })
 
-    return self.cmd('az devcenter admin devcenter create '
+    dev_center = self.cmd('az devcenter admin devcenter create '
              '--location "{location}" '
              '--tags CostCode="12345" '
              '--name "{devcenterName}" '
              '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'devCenterId': dev_center['id'],
+    })
 
 def create_identity(self):
     return self.cmd('az identity create '

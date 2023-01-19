@@ -20,8 +20,6 @@ from .helper import (
     create_sig_with_role_assignments,
     create_project
 )
-# Test class for Scenario
-
 
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
@@ -45,7 +43,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-                 )
+        )
 
         self.cmd('az devcenter admin devcenter create '
                  '--location "{location}" '
@@ -161,10 +159,9 @@ class DevcenterScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_project_scenario(self):
-        dev_center = create_dev_center(self)
+        create_dev_center(self)
 
         self.kwargs.update({
-            'devCenterId': dev_center['id'],
             'projectName': self.create_random_name(prefix='cli', length=24)
         })
 
@@ -234,7 +231,6 @@ class DevcenterScenarioTest(ScenarioTest):
                  ]
                  )
 
-#To do: add run health check and list health check
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_network_connection_scenario(self):
         subnet = create_virtual_network_with_subnet(self)
@@ -351,8 +347,28 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 2),
                  ]
-                 )
+        )
 
+        self.cmd('az devcenter admin network-connection list-health-detail '
+                 '--resource-group "{rg}" '
+                 '-n "{networkConnectionName2}" ',
+                 checks=[
+                    self.check("length(@)", 1),
+                    self.check("[0].healthChecks[0].displayName", "Azure tenant readiness"),
+                 ]
+        )
+
+        self.cmd('az devcenter admin network-connection show-health-detail '
+                 '--resource-group "{rg}" '
+                 '-n "{networkConnectionName2}" ',
+                 checks=[
+                    self.check("healthChecks[0].displayName", "Azure tenant readiness"),
+                    self.check("healthChecks[0].status", "Passed"),
+                    self.check("healthChecks[1].displayName", "Azure virtual network readiness"),
+                    self.check("healthChecks[1].status", "Passed"),
+                 ]
+        )
+        
         self.cmd('az devcenter admin network-connection delete --yes '
                  '--name "{networkConnectionName2}" '
                  '--resource-group "{rg}"')
@@ -366,7 +382,7 @@ class DevcenterScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
-    def test_devbox_definition_with_gallery_scenario(self):
+    def test_gallery_scenario(self):
         create_dev_center_with_identity(self)
         create_sig_with_role_assignments(self)
 
@@ -391,7 +407,6 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=[
                      self.check('name', "{galleryName}"),
-                     self.check('type', "microsoft.devcenter/devcenters/galleries"),
                      self.check('resourceGroup', "{rg}"),
                      self.check('galleryResourceId', "{sigId}")
                  ]
@@ -479,8 +494,29 @@ class DevcenterScenarioTest(ScenarioTest):
             'imageVersionId': imageVersion['id']
         })
 
-        # create devbox_definition
+        self.cmd('az devcenter admin gallery delete --yes '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{galleryName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin gallery list '
+                 '--dev-center "{devcenterName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+        )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_devbox_definition_scenario(self):
+        create_dev_center(self)
         create_project(self)
+        self.kwargs.update({
+            'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365",
+            'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+            'osStorageType': "ssd_1024gb",
+            'skuName': "general_a_8c32gb_v1"
+        })
 
         self.cmd('az devcenter admin devbox-definition list '
                  '--resource-group "{rg}" '
@@ -501,26 +537,87 @@ class DevcenterScenarioTest(ScenarioTest):
         self.cmd('az devcenter admin devbox-definition create '
                  '--dev-center "{devcenterName}" '
                  '--name "{devBoxDefinitionName}" '
-                 '--image-reference id="{imageVersionId}" '
+                 '--image-reference id="{imageRefId}" '
                  '--resource-group "{rg}" '
-                 '--hibernate-support "Disabled"'
+                 '--hibernate-support "Disabled" '
+                 '--os-storage-type "{osStorageType}" '
+                 '--sku name="{skuName}" '
                  '--location "{location}" ',
                  checks=[
                      self.check('name', "{galleryName}"),
-                     self.check('type', "microsoft.devcenter/devcenters/galleries"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('galleryResourceId', "{sigId}")
+                     self.check('osStorageType', "{osStorageType}"),
+                     self.check('hibernateSupport', "Disabled"),
+                     self.check('imageReference.id', "{imageRefId}"),
+                     self.check('sku.name', "{skuName}"),
+                     self.check('location', "{location}")
                  ]
         )
 
-        self.cmd('az devcenter admin gallery delete --yes '
+        self.cmd('az devcenter admin devbox-definition list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+        )
+
+        self.cmd('az devcenter admin devbox-definition list '
+                 '--resource-group "{rg}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+        )
+
+        self.cmd('az devcenter admin devbox-definition update '
                  '--dev-center "{devcenterName}" '
-                 '--name "{galleryName}" '
+                 '--name "{devBoxDefinitionName}" '
+                 '--resource-group "{rg}" '
+                 '--hibernate-support "Enabled" '
+                 '--location "{location}" ',
+                 checks=[
+                     self.check('name', "{galleryName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('osStorageType', "{osStorageType}"),
+                     self.check('hibernateSupport', "Enabled"),
+                     self.check('imageReference.id', "{imageRefId}"),
+                     self.check('sku.name', "{skuName}"),
+                     self.check('location', "{location}")
+                 ]
+        )
+
+        self.cmd('az devcenter admin devbox-definition show '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{devBoxDefinitionName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{galleryName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('osStorageType', "{osStorageType}"),
+                     self.check('hibernateSupport', "Enabled"),
+                     self.check('imageReference.id', "{imageRefId}"),
+                     self.check('sku.name', "{skuName}"),
+                     self.check('location', "{location}")
+                 ]
+        )
+
+        self.cmd('az devcenter admin devbox-definition delete --yes '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{devBoxDefinitionName}" '
                  '--resource-group "{rg}"')
 
-        self.cmd('az devcenter admin gallery list '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
+        self.cmd('az devcenter admin devbox-definition list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+        )
+
+        self.cmd('az devcenter admin devbox-definition list '
+                 '--resource-group "{rg}" '
+                 '--project "{projectName}" ',
                  checks=[
                      self.check("length(@)", 0),
                  ]
