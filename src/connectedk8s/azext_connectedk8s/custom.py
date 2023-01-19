@@ -2269,16 +2269,24 @@ def get_custom_locations_oid(cmd, cl_oid):
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
-    # Install helm client
-    helm_client_location = install_helm_client()
+    # Setting kube_config
+    kube_config = set_kube_config(kube_config)
 
-    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
     check_kube_connection()
+
     utils.try_list_node_fix()
+
+    # Install helm client
+    helm_client_location = install_helm_client()
+
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
+
     helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, helm_client_location)
 
     if helm_values.get('global').get('isLeastPrivilegesMode') is True:
@@ -2290,19 +2298,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         logger.warning("Diagnoser running. This may take a while ...\n")
         absolute_path = os.path.abspath(os.path.dirname(__file__))
 
+        kube_client.rest.logger.setLevel(logging.WARNING)
+
         # Setting the intial values as True
         storage_space_available = True
         probable_sufficient_resource_for_agents = True
 
         # Setting default values for all checks as True
         diagnostic_checks = {consts.Fetch_Kubectl_Cluster_Info: consts.Diagnostic_Check_Incomplete, consts.Retrieve_Arc_Agents_Event_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieve_Arc_Agents_Logs: consts.Diagnostic_Check_Incomplete, consts.Retrieve_Deployments_Logs: consts.Diagnostic_Check_Incomplete, consts.Fetch_Connected_Cluster_Resource: consts.Diagnostic_Check_Incomplete, consts.Storing_Diagnoser_Results_Logs: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Expiry_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Security_Policy_Check: consts.Diagnostic_Check_Incomplete, consts.KAP_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Diagnoser_Check: consts.Diagnostic_Check_Incomplete, consts.MSI_Cert_Check: consts.Diagnostic_Check_Incomplete, consts.Agent_Version_Check: consts.Diagnostic_Check_Incomplete, consts.Arc_Agent_State_Check: consts.Diagnostic_Check_Incomplete}
-
-        # Setting kube_config
-        kube_config = set_kube_config(kube_config)
-        kube_client.rest.logger.setLevel(logging.WARNING)
-
-        # Loading the kubeconfig file in kubernetes client configuration
-        load_kube_config(kube_config, kube_context)
 
         # Install kubectl client
         kubectl_client_location = install_kubectl_client()
