@@ -5,6 +5,7 @@ Release History
 
 1.2.0
 +++++
+* Drop python 3.6 support
 * Update websocket dependency version
 * Remove hard limit of sku
 
