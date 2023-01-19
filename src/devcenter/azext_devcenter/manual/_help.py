@@ -1682,13 +1682,6 @@ iders/Microsoft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --n
 """
 
 helps[
-    "devcenter admin gallery update"
-] = """
-    type: command
-    short-summary: "Update a gallery."
-"""
-
-helps[
     "devcenter admin gallery delete"
 ] = """
     type: command

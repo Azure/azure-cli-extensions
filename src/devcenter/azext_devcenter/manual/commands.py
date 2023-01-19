@@ -416,13 +416,6 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_gallery_list")
         g.custom_show_command("show", "devcenter_gallery_show")
         g.custom_command("create", "devcenter_gallery_create", supports_no_wait=True)
-        g.generic_update_command(
-            "update",
-            supports_no_wait=True,
-            custom_func_name="devcenter_gallery_update",
-            setter_arg_name="body",
-            setter_name="begin_create_or_update",
-        )
         g.custom_command(
             "delete",
             "devcenter_gallery_delete",
