@@ -6,3 +6,7 @@ Release History
 0.1.0
 ++++++
 * Initial release.
+
+0.1.2
+++++++
+* Bug fix for '--unauthenticated-client-action' option in webapp auth, updated allowed values.
