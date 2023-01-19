@@ -182,7 +182,7 @@ def load_arguments(self, _):
         c.argument('segment_count', options_list=['--segment-count', '-s'], help="Defines the amount of segments per node to create for the repair run.", required=False)
         c.argument('repair_parallelism', options_list=['--repair-parallelism', '-p'], help="Defines the used repair parallelism for repair run. Valid values are SEQUENTIAL, PARALLEL or DATACENTER_AWARE.", required=False)
         c.argument('intensity', options_list=['--intensity', '-i'], help="Defines the repair intensity for repair run.", required=False)
-        c.argument('incremental_repair', options_list=['--incremental-repair', '-r'], arg_type=get_three_state_flag(), help="Defines if incremental repair should be done. [true/false]. True when this flag is passed. False otherwise.", required=False)
+        c.argument('incremental_repair', options_list=['--incremental-repair', '-e'], arg_type=get_three_state_flag(), help="Defines if incremental repair should be done. [true/false]. True when this flag is passed. False otherwise.", required=False)
         c.argument('nodes', options_list=['--nodes', '-n'], validator=validate_node_list, help="A specific comma separated list of nodes IP address whose tokens should be repaired.", required=False)
         c.argument('data_centers', options_list=['--data-center', '-d'], validator=validate_datacenter_list, help="A specific comma separated list of datacenters to repair.", required=False)
         c.argument('black_listed_tables', options_list=['--black-listed-tables', '-b'], validator=validate_blacklisted_list, help="The name of the tables that should not be repaired. Cannot be used in conjunction with the tables parameter.", required=False)

@@ -188,7 +188,7 @@ helps['managed-cassandra repair tablestatus'] = """
 type: command
 short-summary: Shows a map of "keyspace_names to list of table_names" that are available as seen by the repair services.
 examples:
-  - name: Shows repair status of the cluster.
+  - name: Shows list of tables by keyspace that are available to repair.
     text: |
       az managed-cassandra repair tablestatus --cluster-name MyCluster --resource-group MyResourceGroup
 """
@@ -208,7 +208,7 @@ examples:
 
 helps['managed-cassandra repair list'] = """
 type: command
-short-summary: Shows list of repair.
+short-summary: Returns list of repair for the cluster.
 examples:
   - name: Shows list of repair.
     text: |
@@ -217,7 +217,7 @@ examples:
 
 helps['managed-cassandra repair show'] = """
 type: command
-short-summary: Given repair_run_id, this command show details of the repair.
+short-summary: Given repair_run_id, this command shows details of the repair.
 examples:
   - name: Shows details of repair_run_id
     text: |
@@ -256,15 +256,6 @@ examples:
         --cluster-name MyCluster --resource-group MyResourceGroup
 """
 
-helps['managed-cassandra repair delete'] = """
-type: command
-short-summary: Given repair_run_id, this command show details of the repair.
-examples:
-  - name: Shows details of repair_run_id
-    text: |
-      az managed-cassandra repair show --repair-run-id "00000000-0000-0001-0000-000000000000" \\
-        --cluster-name MyCluster --resource-group MyResourceGroup
-"""
 
 helps['managed-cassandra repair segment list'] = """
 type: command
@@ -272,7 +263,7 @@ short-summary: Given repair_run_id, this command lists all segment of the repair
 examples:
   - name: List segments of a repair run.
     text: |
-      az managed-cassandra segment list --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+      az managed-cassandra repair segment list --repair-run-id "00000000-0000-0001-0000-000000000000" \\
         --cluster-name MyCluster --resource-group MyResourceGroup
 """
 
