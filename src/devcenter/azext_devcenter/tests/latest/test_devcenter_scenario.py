@@ -10,6 +10,7 @@
 
 import os
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import (
     try_manual,
 )
@@ -20,6 +21,7 @@ from .helper import (
     create_sig_with_role_assignments,
     create_project
 )
+
 
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
@@ -43,7 +45,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devcenter create '
                  '--location "{location}" '
@@ -248,7 +250,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin network-connection create '
                  '--location "{location}" '
@@ -267,7 +269,7 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('networkingResourceGroupName', "{networkingRgName2}"),
                      self.check('resourceGroup', "{rg}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin network-connection list '
                  '--resource-group "{rg}" ',
@@ -275,7 +277,7 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check("length(@)", 1),
                      self.check("[0].name", "{networkConnectionName2}"),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin network-connection create '
                  '--location "{location}" '
@@ -299,16 +301,14 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('networkingResourceGroupName', "{networkingRgName1}"),
                      self.check('resourceGroup', "{rg}")
                  ]
-        )
-
+                 )
 
         self.cmd('az devcenter admin network-connection list '
                  '--resource-group "{rg}" ',
                  checks=[
                      self.check("length(@)", 2)
                  ]
-        )
-
+                 )
 
         self.cmd('az devcenter admin network-connection update '
                  '--tags CostCode="123" '
@@ -347,28 +347,28 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 2),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin network-connection list-health-detail '
                  '--resource-group "{rg}" '
                  '-n "{networkConnectionName2}" ',
                  checks=[
-                    self.check("length(@)", 1),
-                    self.check("[0].healthChecks[0].displayName", "Azure tenant readiness"),
+                     self.check("length(@)", 1),
+                     self.check("[0].healthChecks[0].displayName", "Azure tenant readiness"),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin network-connection show-health-detail '
                  '--resource-group "{rg}" '
                  '-n "{networkConnectionName2}" ',
                  checks=[
-                    self.check("healthChecks[0].displayName", "Azure tenant readiness"),
-                    self.check("healthChecks[0].status", "Passed"),
-                    self.check("healthChecks[1].displayName", "Azure virtual network readiness"),
-                    self.check("healthChecks[1].status", "Passed"),
+                     self.check("healthChecks[0].displayName", "Azure tenant readiness"),
+                     self.check("healthChecks[0].status", "Passed"),
+                     self.check("healthChecks[1].displayName", "Azure virtual network readiness"),
+                     self.check("healthChecks[1].status", "Passed"),
                  ]
-        )
-        
+                 )
+
         self.cmd('az devcenter admin network-connection delete --yes '
                  '--name "{networkConnectionName2}" '
                  '--resource-group "{rg}"')
@@ -378,9 +378,9 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 1),
                  ]
-        )
+                 )
 
-
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_gallery_scenario(self):
         create_dev_center_with_identity(self)
@@ -396,9 +396,10 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--resource-group "{rg}" '
                  '--dev-center "{devcenterName}" ',
                  checks=[
-                     self.check("length(@)", 0),
+                     self.check("length(@)", 1),
+                     self.check("[0].name", "Default")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin gallery create '
                  '--dev-center "{devcenterName}" '
@@ -410,16 +411,15 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('resourceGroup', "{rg}"),
                      self.check('galleryResourceId', "{sigId}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin gallery list '
                  '--dev-center "{devcenterName}" '
                  '--resource-group "{rg}" ',
                  checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "{galleryName}"),
+                     self.check("length(@)", 2)
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin gallery show '
                  '--dev-center "{devcenterName}" '
@@ -430,23 +430,23 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('resourceGroup', "{rg}"),
                      self.check('galleryResourceId', "{sigId}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin image list '
-                 '--gallery-name "{galleryName}"'
+                 '--gallery-name "{galleryName}" '
                  '--dev-center "{devcenterName}" '
                  '--resource-group "{rg}" ',
                  checks=[
                      self.check("length(@)", 1),
                      self.check("[0].name", "{imageDefName}"),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin image show '
                  '--name "{imageDefName}" '
-                 '--gallery-name "{galleryName}"'
+                 '--gallery-name "{galleryName}" '
                  '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
+                 '--resource-group "{rg}"',
                  checks=[
                      self.check('name', "{imageDefName}"),
                      self.check('offer', "{offer}"),
@@ -454,41 +454,41 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('sku', "{sku}"),
                      self.check('resourceGroup', "{rg}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin image-version list '
                  '--image-name "{imageDefName}" '
-                 '--gallery-name "{galleryName}"'
+                 '--gallery-name "{galleryName}" '
                  '--dev-center "{devcenterName}" '
                  '--resource-group "{rg}" ',
                  checks=[
                      self.check("length(@)", 1),
                      self.check("[0].name", "{imageVersion}"),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin image-version list '
                  '--image-name "{imageDefName}" '
-                 '--gallery-name "{galleryName}"'
+                 '--gallery-name "{galleryName}" '
                  '--dev-center "{devcenterName}" '
                  '--resource-group "{rg}" ',
                  checks=[
                      self.check("length(@)", 1),
                      self.check("[0].name", "{imageVersion}"),
                  ]
-        )
+                 )
 
         imageVersion = self.cmd('az devcenter admin image-version show '
-                 '--image-name "{imageDefName}" '
-                 '--gallery-name "{galleryName}"'
-                 '--dev-center "{devcenterName}" '
-                 '--version-name {imageVersion}'
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check('resourceGroup', "{rg}"),
-                     self.check("name", "{imageVersion}")
-                 ]
-        ).get_output_in_json()
+                                '--image-name "{imageDefName}" '
+                                '--gallery-name "{galleryName}" '
+                                '--dev-center "{devcenterName}" '
+                                '--version-name {imageVersion} '
+                                '--resource-group "{rg}" ',
+                                checks=[
+                                    self.check('resourceGroup', "{rg}"),
+                                    self.check("name", "{imageVersion}")
+                                ]
+                                ).get_output_in_json()
 
         self.kwargs.update({
             'imageVersionId': imageVersion['id']
@@ -503,9 +503,9 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--dev-center "{devcenterName}" '
                  '--resource-group "{rg}" ',
                  checks=[
-                     self.check("length(@)", 0),
+                     self.check("length(@)", 1),
                  ]
-        )
+                 )
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_devbox_definition_scenario(self):
@@ -524,7 +524,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition list '
                  '--resource-group "{rg}" '
@@ -532,7 +532,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition create '
                  '--dev-center "{devcenterName}" '
@@ -544,7 +544,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--sku name="{skuName}" '
                  '--location "{location}" ',
                  checks=[
-                     self.check('name', "{galleryName}"),
+                     self.check('name', "{devBoxDefinitionName}"),
                      self.check('resourceGroup', "{rg}"),
                      self.check('osStorageType', "{osStorageType}"),
                      self.check('hibernateSupport', "Disabled"),
@@ -552,7 +552,7 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('sku.name', "{skuName}"),
                      self.check('location', "{location}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition list '
                  '--resource-group "{rg}" '
@@ -560,7 +560,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 1),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition list '
                  '--resource-group "{rg}" '
@@ -568,7 +568,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 1),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition update '
                  '--dev-center "{devcenterName}" '
@@ -577,7 +577,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--hibernate-support "Enabled" '
                  '--location "{location}" ',
                  checks=[
-                     self.check('name', "{galleryName}"),
+                     self.check('name', "{devBoxDefinitionName}"),
                      self.check('resourceGroup', "{rg}"),
                      self.check('osStorageType', "{osStorageType}"),
                      self.check('hibernateSupport', "Enabled"),
@@ -585,14 +585,14 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('sku.name', "{skuName}"),
                      self.check('location', "{location}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition show '
                  '--dev-center "{devcenterName}" '
                  '--name "{devBoxDefinitionName}" '
                  '--resource-group "{rg}" ',
                  checks=[
-                     self.check('name', "{galleryName}"),
+                     self.check('name', "{devBoxDefinitionName}"),
                      self.check('resourceGroup', "{rg}"),
                      self.check('osStorageType', "{osStorageType}"),
                      self.check('hibernateSupport', "Enabled"),
@@ -600,7 +600,7 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('sku.name', "{skuName}"),
                      self.check('location', "{location}")
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition delete --yes '
                  '--dev-center "{devcenterName}" '
@@ -613,7 +613,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-        )
+                 )
 
         self.cmd('az devcenter admin devbox-definition list '
                  '--resource-group "{rg}" '
@@ -621,4 +621,4 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 0),
                  ]
-        )
+                 )
