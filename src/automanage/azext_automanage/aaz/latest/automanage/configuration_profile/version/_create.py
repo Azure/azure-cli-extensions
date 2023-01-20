@@ -45,7 +45,6 @@ class Create(AAZCommand):
             options=["--profile-name", "--configuration-profile-name"],
             help="Name of the configuration profile.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,7 +53,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--version-name"],
             help="The configuration profile version name.",
             required=True,
-            id_part="child_name_1",
         )
 
         # define Arg Group "Parameters"
@@ -263,6 +261,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

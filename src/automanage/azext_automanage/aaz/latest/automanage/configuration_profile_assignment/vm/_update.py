@@ -183,7 +183,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_configuration_profile_assignment_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_configuration_profile_assignment_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -282,7 +282,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_configuration_profile_assignment_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_configuration_profile_assignment_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -314,79 +314,81 @@ class Update(AAZCommand):
             )
 
 
-_schema_configuration_profile_assignment_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_configuration_profile_assignment_read = None
 
-def _build_schema_configuration_profile_assignment_read(_schema):
-    global _schema_configuration_profile_assignment_read
-    if _schema_configuration_profile_assignment_read is not None:
-        _schema.id = _schema_configuration_profile_assignment_read.id
-        _schema.managed_by = _schema_configuration_profile_assignment_read.managed_by
-        _schema.name = _schema_configuration_profile_assignment_read.name
-        _schema.properties = _schema_configuration_profile_assignment_read.properties
-        _schema.system_data = _schema_configuration_profile_assignment_read.system_data
-        _schema.type = _schema_configuration_profile_assignment_read.type
-        return
+    @classmethod
+    def _build_schema_configuration_profile_assignment_read(cls, _schema):
+        if cls._schema_configuration_profile_assignment_read is not None:
+            _schema.id = cls._schema_configuration_profile_assignment_read.id
+            _schema.managed_by = cls._schema_configuration_profile_assignment_read.managed_by
+            _schema.name = cls._schema_configuration_profile_assignment_read.name
+            _schema.properties = cls._schema_configuration_profile_assignment_read.properties
+            _schema.system_data = cls._schema_configuration_profile_assignment_read.system_data
+            _schema.type = cls._schema_configuration_profile_assignment_read.type
+            return
 
-    _schema_configuration_profile_assignment_read = AAZObjectType()
+        cls._schema_configuration_profile_assignment_read = _schema_configuration_profile_assignment_read = AAZObjectType()
 
-    configuration_profile_assignment_read = _schema_configuration_profile_assignment_read
-    configuration_profile_assignment_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    configuration_profile_assignment_read.managed_by = AAZStrType(
-        serialized_name="managedBy",
-    )
-    configuration_profile_assignment_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    configuration_profile_assignment_read.properties = AAZObjectType()
-    configuration_profile_assignment_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    configuration_profile_assignment_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        configuration_profile_assignment_read = _schema_configuration_profile_assignment_read
+        configuration_profile_assignment_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        configuration_profile_assignment_read.managed_by = AAZStrType(
+            serialized_name="managedBy",
+        )
+        configuration_profile_assignment_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        configuration_profile_assignment_read.properties = AAZObjectType()
+        configuration_profile_assignment_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        configuration_profile_assignment_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_configuration_profile_assignment_read.properties
-    properties.configuration_profile = AAZStrType(
-        serialized_name="configurationProfile",
-    )
-    properties.status = AAZStrType(
-        flags={"read_only": True},
-    )
-    properties.target_id = AAZStrType(
-        serialized_name="targetId",
-        flags={"read_only": True},
-    )
+        properties = _schema_configuration_profile_assignment_read.properties
+        properties.configuration_profile = AAZStrType(
+            serialized_name="configurationProfile",
+        )
+        properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.target_id = AAZStrType(
+            serialized_name="targetId",
+            flags={"read_only": True},
+        )
 
-    system_data = _schema_configuration_profile_assignment_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-    )
+        system_data = _schema_configuration_profile_assignment_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    _schema.id = _schema_configuration_profile_assignment_read.id
-    _schema.managed_by = _schema_configuration_profile_assignment_read.managed_by
-    _schema.name = _schema_configuration_profile_assignment_read.name
-    _schema.properties = _schema_configuration_profile_assignment_read.properties
-    _schema.system_data = _schema_configuration_profile_assignment_read.system_data
-    _schema.type = _schema_configuration_profile_assignment_read.type
+        _schema.id = cls._schema_configuration_profile_assignment_read.id
+        _schema.managed_by = cls._schema_configuration_profile_assignment_read.managed_by
+        _schema.name = cls._schema_configuration_profile_assignment_read.name
+        _schema.properties = cls._schema_configuration_profile_assignment_read.properties
+        _schema.system_data = cls._schema_configuration_profile_assignment_read.system_data
+        _schema.type = cls._schema_configuration_profile_assignment_read.type
 
 
 __all__ = ["Update"]

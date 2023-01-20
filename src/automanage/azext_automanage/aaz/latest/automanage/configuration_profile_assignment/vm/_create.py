@@ -45,7 +45,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--configuration-profile-assignment-name"],
             help="Name of the configuration profile assignment. Only default is supported.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,7 +53,6 @@ class Create(AAZCommand):
             options=["--vm-name"],
             help="The name of the virtual machine.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -238,6 +236,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

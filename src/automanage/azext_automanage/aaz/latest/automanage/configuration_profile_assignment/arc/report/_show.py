@@ -197,7 +197,7 @@ class Show(AAZCommand):
                 serialized_name="endTime",
             )
             properties.error = AAZObjectType()
-            _build_schema_error_detail_read(properties.error)
+            _ShowHelper._build_schema_error_detail_read(properties.error)
             properties.last_modified_time = AAZStrType(
                 serialized_name="lastModifiedTime",
                 flags={"read_only": True},
@@ -224,7 +224,7 @@ class Show(AAZCommand):
 
             _element = cls._schema_on_200.properties.resources.Element
             _element.error = AAZObjectType()
-            _build_schema_error_detail_read(_element.error)
+            _ShowHelper._build_schema_error_detail_read(_element.error)
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -261,56 +261,58 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_error_detail_read = None
+class _ShowHelper:
+    """Helper class for Show"""
 
+    _schema_error_detail_read = None
 
-def _build_schema_error_detail_read(_schema):
-    global _schema_error_detail_read
-    if _schema_error_detail_read is not None:
-        _schema.additional_info = _schema_error_detail_read.additional_info
-        _schema.code = _schema_error_detail_read.code
-        _schema.details = _schema_error_detail_read.details
-        _schema.message = _schema_error_detail_read.message
-        _schema.target = _schema_error_detail_read.target
-        return
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
 
-    _schema_error_detail_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
 
-    error_detail_read = _schema_error_detail_read
-    error_detail_read.additional_info = AAZListType(
-        serialized_name="additionalInfo",
-        flags={"read_only": True},
-    )
-    error_detail_read.code = AAZStrType(
-        flags={"read_only": True},
-    )
-    error_detail_read.details = AAZListType(
-        flags={"read_only": True},
-    )
-    error_detail_read.message = AAZStrType(
-        flags={"read_only": True},
-    )
-    error_detail_read.target = AAZStrType(
-        flags={"read_only": True},
-    )
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    additional_info = _schema_error_detail_read.additional_info
-    additional_info.Element = AAZObjectType()
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
 
-    _element = _schema_error_detail_read.additional_info.Element
-    _element.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    details = _schema_error_detail_read.details
-    details.Element = AAZObjectType()
-    _build_schema_error_detail_read(details.Element)
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
 
-    _schema.additional_info = _schema_error_detail_read.additional_info
-    _schema.code = _schema_error_detail_read.code
-    _schema.details = _schema_error_detail_read.details
-    _schema.message = _schema_error_detail_read.message
-    _schema.target = _schema_error_detail_read.target
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
 
 __all__ = ["Show"]

@@ -179,4 +179,8 @@ class ShowDefault(AAZCommand):
             return cls._schema_on_200
 
 
+class _ShowDefaultHelper:
+    """Helper class for ShowDefault"""
+
+
 __all__ = ["ShowDefault"]
