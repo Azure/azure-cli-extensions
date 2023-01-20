@@ -368,13 +368,13 @@ def cli_cosmosdb_managed_cassandra_cluster_show_backup(client,
 def cli_cosmosdb_managed_cassandra_repair_status(client,
                                                  resource_group_name,
                                                  cluster_name):
-    return client.get_cluster_status(resource_group_name, cluster_name)
+    return client.begin_get_cluster_status(resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_repair_tablestatus(client,
                                                  resource_group_name,
                                                  cluster_name):
-    return client.get_table_status(resource_group_name, cluster_name)
+    return client.begin_get_table_status(resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_repair_create(client,
@@ -412,27 +412,27 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
         properties=repair_properties
     )
     
-    return client.create(resource_group_name, cluster_name, repair_resource)
+    return client.begin_create(resource_group_name, cluster_name, repair_resource)
 
 
 def cli_cosmosdb_managed_cassandra_repair_list(client,
                                                 resource_group_name,
                                                 cluster_name):
-    return client.list(resource_group_name, cluster_name)
+    return client.begin_list(resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_repair_show(client,
                                                 resource_group_name,
                                                 cluster_name,
                                                 repair_run_id):
-    return client.show(resource_group_name, cluster_name, repair_run_id)
+    return client.begin_show(resource_group_name, cluster_name, repair_run_id)
 
 
 def cli_cosmosdb_managed_cassandra_repair_pause(client,
                                                 resource_group_name,
                                                 cluster_name,
                                                 repair_run_id):
-    return client.pause(resource_group_name, cluster_name, repair_run_id)
+    return client.begin_pause(resource_group_name, cluster_name, repair_run_id)
 
 
 def cli_cosmosdb_managed_cassandra_repair_update(client,
@@ -440,28 +440,28 @@ def cli_cosmosdb_managed_cassandra_repair_update(client,
                                                 cluster_name,
                                                 repair_run_id,
                                                 intensity):
-    return client.update(resource_group_name, cluster_name, repair_run_id, intensity)
+    return client.begin_update(resource_group_name, cluster_name, repair_run_id, intensity)
 
 
 def cli_cosmosdb_managed_cassandra_repair_resume(client,
                                                 resource_group_name,
                                                 cluster_name,
                                                 repair_run_id):
-    return client.resume(resource_group_name, cluster_name, repair_run_id)
+    return client.begin_resume(resource_group_name, cluster_name, repair_run_id)
 
 
 def cli_cosmosdb_managed_cassandra_repair_delete(client,
                                                 resource_group_name,
                                                 cluster_name,
                                                 repair_run_id):
-    return client.delete(resource_group_name, cluster_name, repair_run_id)
+    return client.begin_delete(resource_group_name, cluster_name, repair_run_id)
 
 
 def cli_cosmosdb_managed_cassandra_repair_segment_list(client,
                                                         resource_group_name,
                                                         cluster_name,
                                                         repair_run_id):
-    return client.list_segments(resource_group_name, cluster_name, repair_run_id)
+    return client.begin_list_segments(resource_group_name, cluster_name, repair_run_id)
 
 
 def cli_cosmosdb_managed_cassandra_repair_segment_abort(client,
@@ -469,7 +469,7 @@ def cli_cosmosdb_managed_cassandra_repair_segment_abort(client,
                                                         cluster_name,
                                                         repair_run_id,
                                                         segment_id):
-    return client.abort_segment(resource_group_name, cluster_name, repair_run_id, segment_id)
+    return client.begin_abort_segment(resource_group_name, cluster_name, repair_run_id, segment_id)
 
 
 def cli_cosmosdb_service_create(client,

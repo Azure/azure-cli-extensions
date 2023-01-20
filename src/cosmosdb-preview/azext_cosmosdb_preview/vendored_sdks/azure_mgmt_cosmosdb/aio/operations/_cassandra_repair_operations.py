@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import sys
-from typing import Any, Callable, Dict, IO, List, Optional, TypeVar, Union, overload
+from typing import Any, Callable, Dict, IO, List, Optional, TypeVar, Union, cast, overload
 
 from azure.core.exceptions import (
     ClientAuthenticationError,
@@ -19,10 +19,12 @@ from azure.core.exceptions import (
 )
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator_async import distributed_trace_async
 from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._vendor import _convert_request
@@ -48,7 +50,7 @@ T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
-class CassandraRepairOperations:
+class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
     """
     .. warning::
         **DO NOT** instantiate this class directly.
@@ -67,22 +69,9 @@ class CassandraRepairOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    @distributed_trace_async
-    async def get_cluster_status(
+    async def _get_cluster_status_initial(
         self, resource_group_name: str, cluster_name: str, **kwargs: Any
     ) -> _models.CassandraReaperClusterStatus:
-        """get_cluster_status.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraReaperClusterStatus or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraReaperClusterStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -104,7 +93,7 @@ class CassandraRepairOperations:
             cluster_name=cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.get_cluster_status.metadata["url"],
+            template_url=self._get_cluster_status_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -117,7 +106,7 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -128,15 +117,15 @@ class CassandraRepairOperations:
 
         return deserialized
 
-    get_cluster_status.metadata = {
+    _get_cluster_status_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairStatus"
     }
 
     @distributed_trace_async
-    async def get_table_status(
+    async def begin_get_cluster_status(
         self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> Dict[str, List[str]]:
-        """get_table_status.
+    ) -> AsyncLROPoller[_models.CassandraReaperClusterStatus]:
+        """get_cluster_status.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -144,10 +133,69 @@ class CassandraRepairOperations:
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: dict mapping str to list of str or the result of cls(response)
-        :rtype: dict[str, list[str]]
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either CassandraReaperClusterStatus or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperClusterStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[_models.CassandraReaperClusterStatus] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._get_cluster_status_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("CassandraReaperClusterStatus", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_get_cluster_status.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairStatus"
+    }
+
+    async def _get_table_status_initial(
+        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+    ) -> Dict[str, List[str]]:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -169,7 +217,7 @@ class CassandraRepairOperations:
             cluster_name=cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.get_table_status.metadata["url"],
+            template_url=self._get_table_status_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -182,7 +230,7 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -193,92 +241,88 @@ class CassandraRepairOperations:
 
         return deserialized
 
-    get_table_status.metadata = {
+    _get_table_status_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairTables"
     }
 
-    @overload
-    async def create(
-        self,
-        resource_group_name: str,
-        cluster_name: str,
-        body: _models.CassandraClusterRepairPublicResource,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.CassandraReaperRunStatus:
-        """create.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: The properties specifying the desired state of repairRun to be created. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CassandraClusterRepairPublicResource
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraReaperRunStatus or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def create(
-        self,
-        resource_group_name: str,
-        cluster_name: str,
-        body: IO,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.CassandraReaperRunStatus:
-        """create.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: The properties specifying the desired state of repairRun to be created. Required.
-        :type body: IO
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraReaperRunStatus or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
     @distributed_trace_async
-    async def create(
+    async def begin_get_table_status(
+        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[Dict[str, List[str]]]:
+        """get_table_status.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Managed Cassandra cluster name. Required.
+        :type cluster_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either dict mapping str to list of str or
+         the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[dict[str, list[str]]]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[Dict[str, List[str]]] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._get_table_status_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("{[str]}", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_get_table_status.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairTables"
+    }
+
+    async def _create_initial(
         self,
         resource_group_name: str,
         cluster_name: str,
         body: Union[_models.CassandraClusterRepairPublicResource, IO],
         **kwargs: Any
     ) -> _models.CassandraReaperRunStatus:
-        """create.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: The properties specifying the desired state of repairRun to be created. Is either
-         a model type or a IO type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CassandraClusterRepairPublicResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraReaperRunStatus or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -312,7 +356,7 @@ class CassandraRepairOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self.create.metadata["url"],
+            template_url=self._create_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -325,7 +369,7 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -336,28 +380,172 @@ class CassandraRepairOperations:
 
         return deserialized
 
-    create.metadata = {
+    _create_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns"
     }
 
-    @distributed_trace_async
-    async def delete(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
-    ) -> None:
-        """delete.
+    @overload
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: _models.CassandraClusterRepairPublicResource,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.CassandraReaperRunStatus]:
+        """create.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
-        :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
-        :type repair_run_id: str
+        :param body: The properties specifying the desired state of repairRun to be created. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.CassandraClusterRepairPublicResource
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
-        :rtype: None
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either CassandraReaperRunStatus or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+
+    @overload
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: IO,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.CassandraReaperRunStatus]:
+        """create.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Managed Cassandra cluster name. Required.
+        :type cluster_name: str
+        :param body: The properties specifying the desired state of repairRun to be created. Required.
+        :type body: IO
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either CassandraReaperRunStatus or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def begin_create(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Union[_models.CassandraClusterRepairPublicResource, IO],
+        **kwargs: Any
+    ) -> AsyncLROPoller[_models.CassandraReaperRunStatus]:
+        """create.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Managed Cassandra cluster name. Required.
+        :type cluster_name: str
+        :param body: The properties specifying the desired state of repairRun to be created. Is either
+         a model type or a IO type. Required.
+        :type body: ~azure.mgmt.cosmosdb.models.CassandraClusterRepairPublicResource or IO
+        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
+         Default value is None.
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either CassandraReaperRunStatus or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.CassandraReaperRunStatus] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._create_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                body=body,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("CassandraReaperRunStatus", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_create.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns"
+    }
+
+    async def _delete_initial(  # pylint: disable=inconsistent-return-statements
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> None:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -380,7 +568,7 @@ class CassandraRepairOperations:
             repair_run_id=repair_run_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.delete.metadata["url"],
+            template_url=self._delete_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -393,33 +581,91 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {
+    _delete_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}"
     }
 
     @distributed_trace_async
-    async def list(
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> _models.CassandraReaperRunStatusFeedResponse:
-        """list.
+    async def begin_delete(
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """delete.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
+        :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
+        :type repair_run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraReaperRunStatusFeedResponse or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraReaperRunStatusFeedResponse
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._delete_initial(  # type: ignore
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_delete.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}"
+    }
+
+    async def _list_initial(
+        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+    ) -> _models.CassandraReaperRunStatusFeedResponse:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -441,7 +687,7 @@ class CassandraRepairOperations:
             cluster_name=cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.list.metadata["url"],
+            template_url=self._list_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -454,7 +700,7 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -465,28 +711,85 @@ class CassandraRepairOperations:
 
         return deserialized
 
-    list.metadata = {
+    _list_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/list"
     }
 
     @distributed_trace_async
-    async def pause(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
-    ) -> None:
-        """pause.
+    async def begin_list(
+        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+    ) -> AsyncLROPoller[_models.CassandraReaperRunStatusFeedResponse]:
+        """list.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
-        :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
-        :type repair_run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
-        :rtype: None
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either CassandraReaperRunStatusFeedResponse
+         or the result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatusFeedResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[_models.CassandraReaperRunStatusFeedResponse] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._list_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("CassandraReaperRunStatusFeedResponse", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_list.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/list"
+    }
+
+    async def _pause_initial(  # pylint: disable=inconsistent-return-statements
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> None:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -509,7 +812,7 @@ class CassandraRepairOperations:
             repair_run_id=repair_run_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.pause.metadata["url"],
+            template_url=self._pause_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -522,22 +825,22 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    pause.metadata = {
+    _pause_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/pause"
     }
 
     @distributed_trace_async
-    async def resume(  # pylint: disable=inconsistent-return-statements
+    async def begin_pause(
         self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
-    ) -> None:
-        """resume.
+    ) -> AsyncLROPoller[None]:
+        """pause.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -547,10 +850,66 @@ class CassandraRepairOperations:
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
-        :rtype: None
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._pause_initial(  # type: ignore
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_pause.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/pause"
+    }
+
+    async def _resume_initial(  # pylint: disable=inconsistent-return-statements
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> None:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -573,7 +932,7 @@ class CassandraRepairOperations:
             repair_run_id=repair_run_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.resume.metadata["url"],
+            template_url=self._resume_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -586,22 +945,22 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    resume.metadata = {
+    _resume_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/resume"
     }
 
     @distributed_trace_async
-    async def list_segments(
+    async def begin_resume(
         self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
-    ) -> _models.CassandraRepairSegmentResourceFeedResponse:
-        """list_segments.
+    ) -> AsyncLROPoller[None]:
+        """resume.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -611,10 +970,66 @@ class CassandraRepairOperations:
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraRepairSegmentResourceFeedResponse or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraRepairSegmentResourceFeedResponse
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._resume_initial(  # type: ignore
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_resume.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/resume"
+    }
+
+    async def _list_segments_initial(
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> _models.CassandraRepairSegmentResourceFeedResponse:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -637,7 +1052,7 @@ class CassandraRepairOperations:
             repair_run_id=repair_run_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.list_segments.metadata["url"],
+            template_url=self._list_segments_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -650,7 +1065,7 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -661,15 +1076,15 @@ class CassandraRepairOperations:
 
         return deserialized
 
-    list_segments.metadata = {
+    _list_segments_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/segments"
     }
 
     @distributed_trace_async
-    async def show(
+    async def begin_list_segments(
         self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
-    ) -> _models.CassandraReaperRunStatus:
-        """show.
+    ) -> AsyncLROPoller[_models.CassandraRepairSegmentResourceFeedResponse]:
+        """list_segments.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -679,10 +1094,70 @@ class CassandraRepairOperations:
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraReaperRunStatus or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either
+         CassandraRepairSegmentResourceFeedResponse or the result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraRepairSegmentResourceFeedResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[_models.CassandraRepairSegmentResourceFeedResponse] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._list_segments_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("CassandraRepairSegmentResourceFeedResponse", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_list_segments.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/segments"
+    }
+
+    async def _show_initial(
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> _models.CassandraReaperRunStatus:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -705,7 +1180,7 @@ class CassandraRepairOperations:
             repair_run_id=repair_run_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.show.metadata["url"],
+            template_url=self._show_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -718,7 +1193,7 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -729,15 +1204,15 @@ class CassandraRepairOperations:
 
         return deserialized
 
-    show.metadata = {
+    _show_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/show"
     }
 
     @distributed_trace_async
-    async def abort_segment(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, segment_id: str, **kwargs: Any
-    ) -> None:
-        """abort_segment.
+    async def begin_show(
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+    ) -> AsyncLROPoller[_models.CassandraReaperRunStatus]:
+        """show.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -746,13 +1221,71 @@ class CassandraRepairOperations:
         :type cluster_name: str
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
-        :param segment_id: Id of a segment of a repair run. Required.
-        :type segment_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
-        :rtype: None
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either CassandraReaperRunStatus or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[_models.CassandraReaperRunStatus] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._show_initial(
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("CassandraReaperRunStatus", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_show.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/show"
+    }
+
+    async def _abort_segment_initial(  # pylint: disable=inconsistent-return-statements
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, segment_id: str, **kwargs: Any
+    ) -> None:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -776,7 +1309,7 @@ class CassandraRepairOperations:
             segment_id=segment_id,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.abort_segment.metadata["url"],
+            template_url=self._abort_segment_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -789,22 +1322,22 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    abort_segment.metadata = {
+    _abort_segment_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/segments/{segmentId}/abort"
     }
 
     @distributed_trace_async
-    async def update(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, intensity_value: str, **kwargs: Any
-    ) -> None:
-        """update.
+    async def begin_abort_segment(
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, segment_id: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """abort_segment.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -813,13 +1346,70 @@ class CassandraRepairOperations:
         :type cluster_name: str
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
-        :param intensity_value: Floating point value representing intensity of the repair. Required.
-        :type intensity_value: str
+        :param segment_id: Id of a segment of a repair run. Required.
+        :type segment_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None or the result of cls(response)
-        :rtype: None
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._abort_segment_initial(  # type: ignore
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                segment_id=segment_id,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_abort_segment.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/segments/{segmentId}/abort"
+    }
+
+    async def _update_initial(  # pylint: disable=inconsistent-return-statements
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, intensity_value: str, **kwargs: Any
+    ) -> None:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -843,7 +1433,7 @@ class CassandraRepairOperations:
             intensity_value=intensity_value,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.update.metadata["url"],
+            template_url=self._update_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -856,13 +1446,87 @@ class CassandraRepairOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    update.metadata = {
+    _update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/intensity/{intensityValue}"
+    }
+
+    @distributed_trace_async
+    async def begin_update(
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, intensity_value: str, **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """update.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Managed Cassandra cluster name. Required.
+        :type cluster_name: str
+        :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
+        :type repair_run_id: str
+        :param intensity_value: Floating point value representing intensity of the repair. Required.
+        :type intensity_value: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2022-11-15-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._update_initial(  # type: ignore
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                repair_run_id=repair_run_id,
+                intensity_value=intensity_value,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_update.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/intensity/{intensityValue}"
     }
