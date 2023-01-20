@@ -1207,8 +1207,8 @@ is not possible for the resource this may be omitted.
         text: |-
                az devcenter admin devbox-definition create --location "eastus" --hibernate-support "Enabled" \
 --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.Dev\
-Center/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "SSD_1024" \
---sku name="Preview" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+Center/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" \
+--sku name="general_a_8c32gb_v1" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 """
 
 helps[
@@ -1679,13 +1679,6 @@ helps[
                az devcenter admin gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/prov\
 iders/Microsoft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{galleryName}" --resource-group \
 "rg1"
-"""
-
-helps[
-    "devcenter admin gallery update"
-] = """
-    type: command
-    short-summary: "Update a gallery."
 """
 
 helps[
