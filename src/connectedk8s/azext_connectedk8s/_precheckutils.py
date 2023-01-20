@@ -45,13 +45,13 @@ logger = get_logger(__name__)
 # pylint: disable
 
 
-def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
+def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
         # Executing the pre onboarding inspector job and fetching the logs obtained
-        preonboarding_inspector_container_log = executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert)
+        preonboarding_inspector_container_log = executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
         # If preonboarding_inspector_container_log is not empty then only we will check for the results
         if(preonboarding_inspector_container_log is not None and preonboarding_inspector_container_log != ""):
             preonboarding_inspector_container_log_list = preonboarding_inspector_container_log.split("\n")
@@ -89,7 +89,7 @@ def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_ins
     return consts.Diagnostic_Check_Incomplete
 
 
-def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, http_proxy, https_proxy, no_proxy, proxy_cert):
+def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
     job_name = "pre-onboarding-inspector-job"
     # Setting the log output as Empty
     preonboarding_inspector_container_log = ""
@@ -129,7 +129,7 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
         try:
             chart_path = azext_utils.get_chart_path(consts.Pre_Onboarding_Inspector_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'ConnectPrecheckCharts')
 
-            helm_install_release_preonboarding_inspector(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
+            helm_install_release_preonboarding_inspector(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
         except Exception as e:
             logger.warning("An error occured while installing helm release of pre onboarding inspector in the cluster. Exception:")
@@ -192,9 +192,10 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
     return preonboarding_inspector_container_log
 
 
-def helm_install_release_preonboarding_inspector(chart_path, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
+def helm_install_release_preonboarding_inspector(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "pre-onboarding-inspector", chart_path]
     # To set some other helm parameters through file
+    cmd_helm_install.extend(["--set", "global,location={}".format(location)])
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
     if http_proxy:
