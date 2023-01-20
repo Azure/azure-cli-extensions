@@ -2821,7 +2821,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         mc = super().update_auto_upgrade_profile(mc)
-        
+
         node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
         if node_os_upgrade_channel is not None:
             if mc.auto_upgrade_profile is None:
