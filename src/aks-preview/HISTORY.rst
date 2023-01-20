@@ -11,6 +11,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.127
++++++++
+* Add `--node-os-upgrade-channel <node os upgrade channel>` option for specifying the manner in which the OS on your nodes is updated in `aks create` and `aks update`
+
+0.5.126
++++++++
+* Add `--nrg-lockdown-restriction-level <restriction level>` option for chosing the node resource group restriction level in `aks create` and `aks update`
 * Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
 
 0.5.125

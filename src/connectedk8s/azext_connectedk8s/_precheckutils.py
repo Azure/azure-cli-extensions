@@ -84,7 +84,7 @@ def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_ins
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to perform pre onboarding inspector container on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Pre_Onboarding_Inspector_Failed_Fault_Type, summary="Error occured while executing the pre onboarding inspector container")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error occured while executing the pre onboarding inspector container")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -124,17 +124,17 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
             # If any exception occured we will print the exception and return
             if exception_occured_counter == 1:
                 logger.warning("An error occured while installing the pre onboarding inspector helm release in the cluster. Exception:")
-                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Failed_Fault_Type, summary="Error while executing pre onboarding inspector Job")
+                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing pre onboarding inspector Job")
                 return
         try:
-            chart_path = azext_utils.get_chart_path(consts.Pre_Onboarding_Inspector_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'ConnectPrecheckCharts')
+            chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'ConnectPrecheckCharts')
 
             helm_install_release_preonboarding_inspector(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
         except Exception as e:
             logger.warning("An error occured while installing helm release of pre onboarding inspector in the cluster. Exception:")
             logger.warning(str(e))
-            telemetry.set_exception(exception=e, fault_type=consts.Pre_Onboarding_Inspector_Helm_Install_Failed_Fault_Type, summary="Error while installing pre onboarding inspector helm release")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type, summary="Error while installing pre onboarding inspector helm release")
             # Deleting all the stale resources that got created
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
@@ -158,13 +158,13 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
                 continue
 
         if (is_job_scheduled is False):
-            telemetry.set_exception(exception="Couldn't schedule pre onboarding inspector job in the cluster", fault_type=consts.Pre_Onboarding_Inspector_Job_Not_Scheduled,
+            telemetry.set_exception(exception="Couldn't schedule pre onboarding inspector job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
                                     summary="Couldn't schedule pre onboarding inspector job in the cluster")
             logger.warning("Unable to schedule the pre onboarding inspector job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
-            telemetry.set_exception(exception="Couldn't complete pre onboarding inspector job after scheduling in the cluster", fault_type=consts.Pre_Onboarding_Inspector_Job_Not_Scheduled,
+            telemetry.set_exception(exception="Couldn't complete pre onboarding inspector job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
                                     summary="Couldn't complete pre onboarding inspector job after scheduling in the cluster")
             logger.warning("Unable to finish the pre onboarding inspector job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
@@ -186,7 +186,7 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
     except Exception as e:
         logger.warning("An exception has occured while trying to execute the pre onboarding inspector in the cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        telemetry.set_exception(exception=e, fault_type=consts.Pre_Onboarding_Inspector_Failed_Fault_Type, summary="Error while executing Pre onboarding inspector Job")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing Pre onboarding inspector Job")
         return
 
     return preonboarding_inspector_container_log
@@ -219,6 +219,6 @@ def helm_install_release_preonboarding_inspector(chart_path, location, http_prox
     if response_helm_install.returncode != 0:
         if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Pre_Onboarding_Inspector_Install_HelmRelease_Fault_Type,
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Install_HelmRelease_Fault_Type,
                                 summary='Unable to install pre onboarding inspector helm release')
         raise CLIInternalError("Unable to install pre onboarding inspector helm release: " + error_helm_install.decode("ascii"))
