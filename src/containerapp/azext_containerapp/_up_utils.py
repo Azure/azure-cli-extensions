@@ -46,7 +46,8 @@ from ._utils import (
     trigger_workflow,
     _ensure_location_allowed,
     register_provider_if_needed,
-    validate_environment_location
+    validate_environment_location,
+    list_environment_locations
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -203,19 +204,46 @@ class ContainerAppEnvironment(Resource):
             )  # TODO use .info()
 
     def create(self):
-        self.location = validate_environment_location(self.cmd, self.location)
         register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
-        env = create_managed_environment(
-            self.cmd,
-            self.name,
-            location=self.location,
-            resource_group_name=self.resource_group.name,
-            logs_key=self.logs_key,
-            logs_customer_id=self.logs_customer_id,
-            disable_warnings=True,
-        )
-        self.exists = True
-        return env
+
+        if self.location:
+            self.location = validate_environment_location(self.cmd, self.location)
+
+            env = create_managed_environment(
+                self.cmd,
+                self.name,
+                location=self.location,
+                resource_group_name=self.resource_group.name,
+                logs_key=self.logs_key,
+                logs_customer_id=self.logs_customer_id,
+                disable_warnings=True,
+            )
+            self.exists = True
+
+            return env
+        else:
+            res_locations = list_environment_locations(self.cmd)
+            for loc in res_locations:
+                try:
+                    env = create_managed_environment(
+                        self.cmd,
+                        self.name,
+                        location=loc,
+                        resource_group_name=self.resource_group.name,
+                        logs_key=self.logs_key,
+                        logs_customer_id=self.logs_customer_id,
+                        disable_warnings=True,
+                    )
+
+                    self.exists = True
+                    self.location = loc
+
+                    return env
+                except Exception as ex:
+                    logger.info(
+                        f"Failed to create ManagedEnvironment in {loc} due to {ex}"
+                    )
+            raise ValidationError("Can not find a region with quota to create ManagedEnvironment")
 
     def get_rid(self):
         rid = self.name
@@ -326,6 +354,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
+        import os
 
         task_name = "cli_build_containerapp"
         registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
@@ -340,12 +369,16 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
             self.cmd.command_kwargs[key] = task_command_kwargs[key]
 
-        with NamedTemporaryFile(mode="w") as task_file:
-            task_file.write(task_content)
-            task_file.flush()
+        with NamedTemporaryFile(mode="w", delete=False) as task_file:
+            try:
+                task_file.write(task_content)
+                task_file.flush()
+                acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
+                logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
+            finally:
+                task_file.close()
+                os.unlink(task_file.name)
 
-            acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
-            logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
             from time import sleep
             sleep(10)
 
