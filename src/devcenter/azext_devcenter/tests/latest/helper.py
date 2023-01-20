@@ -105,10 +105,7 @@ def create_sig(self):
              '--os-snapshot "{diskId}" ')
 
 
-def create_sig_with_role_assignments(self):
-
-    create_sig(self)
-
+def create_sig_role_assignments(self):
     self.kwargs.update({
         'windows365ObjectId': '8eec7c09-06ae-48e9-aafd-9fb31a5d5175'
     })
