@@ -250,7 +250,11 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             access_token = profile.get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
             
-            web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+            if bastion['sku']['name'] == "QuickConnect" or  bastion['sku']['name'] == "Developer":
+                web_address = f"https://{bastion_endpoint}/api/omni/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+            else:
+                web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+
             headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Accept": "*/*",
@@ -334,7 +338,7 @@ def create_bastion_tunnel(cmd, target_resource_id, resource_group_name, bastion_
         "resource_group": resource_group_name,
         "name": bastion_host_name
     })
-
+    
     if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] != True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
