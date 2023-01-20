@@ -155,6 +155,7 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     @record_only()
+    # self.cmd('az stack-hci cluster create --cluster-name {cluster_name} -g {rg}')
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.cluster.')
     def test_automanage_configuration_profile_assignment_cluster_scenarios(self):
         self.kwargs.update({
@@ -166,7 +167,6 @@ class AutomanageScenario(ScenarioTest):
                               '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id': profile_id})
 
-        self.cmd('az stack-hci cluster create --cluster-name {cluster_name} -g {rg}')
         self.cmd('az automanage configuration-profile-assignment cluster create -n default -g {rg} '
                  '--cluster-name {cluster_name} --configuration-profile {profile_id}')
         self.cmd('az automanage configuration-profile-assignment cluster show -n default -g {rg} '
