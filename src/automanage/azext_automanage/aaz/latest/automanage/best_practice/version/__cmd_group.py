@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "automanage best-practice version",
+)
 class __CMDGroup(AAZCommandGroup):
     """Manage Automanage best practice version
     """

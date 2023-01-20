@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "automanage best-practice version show",
+)
 class Show(AAZCommand):
     """Get information about a Automanage best practice version
     """

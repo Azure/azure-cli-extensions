@@ -25,7 +25,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Jan 2023 03:40:49 GMT
+      - Fri, 20 Jan 2023 05:29:29 GMT
       expires:
       - '-1'
       pragma:
@@ -73,7 +73,103 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Jan 2023 03:40:49 GMT
+      - Fri, 20 Jan 2023 05:29:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage best-practice version list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --best-practice-name
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest/versions?api-version=2022-05-04
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest/versions/2021-06-30","name":"AzureBestPracticesDevTest/2021-06-30","type":"Microsoft.Automanage/bestPractices/versions","properties":{"configuration":{"Antimalware/Enable":"true","Antimalware/EnableRealTimeProtection":"true","Antimalware/RunScheduledScan":"true","Antimalware/ScanType":"Quick","Antimalware/ScanDay":"7","Antimalware/ScanTimeInMinutes":"120","Backup/Enable":"false","VMInsights/Enable":"false","AzureSecurityCenter/Enable":"true","UpdateManagement/Enable":"true","ChangeTrackingAndInventory/Enable":"true","GuestConfiguration/Enable":"true","LogAnalytics/Enable":"true","BootDiagnostics/Enable":"true"}},"systemData":{"createdAt":"2021-06-30T00:00:00+00:00","createdBy":"SYSTEM","createdByType":"User","lastModifiedAt":"2021-06-30T00:00:00+00:00","lastModifiedBy":"SYSTEM","lastModifiedByType":"User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '909'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 05:29:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage best-practice version show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --best-practice-name --version-name
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest/versions/2021-06-30?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest/versions/2021-06-30","name":"AzureBestPracticesDevTest/2021-06-30","type":"Microsoft.Automanage/bestPractices/versions","properties":{"configuration":{"Antimalware/Enable":"true","Antimalware/EnableRealTimeProtection":"true","Antimalware/RunScheduledScan":"true","Antimalware/ScanType":"Quick","Antimalware/ScanDay":"7","Antimalware/ScanTimeInMinutes":"120","Backup/Enable":"false","VMInsights/Enable":"false","AzureSecurityCenter/Enable":"true","UpdateManagement/Enable":"true","ChangeTrackingAndInventory/Enable":"true","GuestConfiguration/Enable":"true","LogAnalytics/Enable":"true","BootDiagnostics/Enable":"true"}},"systemData":{"createdAt":"2021-06-30T00:00:00+00:00","createdBy":"SYSTEM","createdByType":"User","lastModifiedAt":"2021-06-30T00:00:00+00:00","lastModifiedBy":"SYSTEM","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '897'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 05:29:31 GMT
       expires:
       - '-1'
       pragma:
@@ -119,7 +215,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Jan 2023 03:40:50 GMT
+      - Fri, 20 Jan 2023 05:29:32 GMT
       expires:
       - '-1'
       pragma:
@@ -165,7 +261,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Jan 2023 03:40:52 GMT
+      - Fri, 20 Jan 2023 05:29:34 GMT
       expires:
       - '-1'
       pragma:

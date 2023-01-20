@@ -17,14 +17,13 @@ class AutomanageScenario(ScenarioTest):
             best_practice_name = best_practice_name[1]["name"]
             self.cmd('az automanage best-practice show --best-practice-name {}'.format(best_practice_name))
 
-            # TODO server error
-            # version_name = self.cmd('az automanage best-practice version list '
-            #                         '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
-            # if version_name and len(version_name) >= 1:
-            #     version_name = version_name[0]["name"].split('/')[1]
-            #
-            #     self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
-            #              '{}'.format(best_practice_name, version_name))
+            version_name = self.cmd('az automanage best-practice version list '
+                                    '--best-practice-name {}'.format(best_practice_name)).get_output_in_json()
+            if version_name and len(version_name) >= 1:
+                version_name = version_name[0]["name"].split('/')[1]
+
+                self.cmd('az automanage best-practice version show --best-practice-name {} --version-name '
+                         '{}'.format(best_practice_name, version_name))
 
         # service-principal
         self.cmd('az automanage service-principal list')
@@ -58,23 +57,22 @@ class AutomanageScenario(ScenarioTest):
                  checks=[JMESPathCheck('properties.configuration', {"Antimalware/Enable": True,
                                                                     "VMInsights/Enable": False})])
 
-        # TODO server error
         # # version
-        # self.cmd('az automanage configuration-profile version create --profile-name {profile_name} -g {rg} '
-        #          '-n {version_name} --configuration {{\\\"Antimalware/Enable\\\":false}}')
-        # self.cmd('az automanage configuration-profile version show --profile-name {profile_name} -g {rg} '
-        #          '-n {version_name}',
-        #          checks=[JMESPathCheck('name', self.kwargs.get('version_name', '')),
-        #                  JMESPathCheck('properties.configuration', {"Antimalware/Enable": False})])
-        # self.cmd('az automanage configuration-profile version list --profile-name {profile_name} -g {rg}',
-        #          checks=[JMESPathCheck('length(@)', 1)])
-        # self.cmd('az automanage configuration-profile version update --profile-name {profile_name} -g {rg} '
-        #          '-n {version_name} --configuration {{\\\"Antimalware/Enable\\\":true}}',
-        #          checks=[JMESPathCheck('properties.configuration', {"Antimalware/Enable": True})])
-        # self.cmd('az automanage configuration-profile version delete --profile-name {profile_name} -g {rg} '
-        #          '-n {version_name}')
-        # self.cmd('az automanage configuration-profile version list --profile-name {profile_name} -g {rg}',
-        #          checks=[JMESPathCheck('length(@)', 0)])
+        self.cmd('az automanage configuration-profile version create --profile-name {profile_name} -g {rg} '
+                 '-n {version_name} --configuration {{\\\"Antimalware/Enable\\\":false}}')
+        self.cmd('az automanage configuration-profile version show --profile-name {profile_name} -g {rg} '
+                 '-n {version_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('version_name', '')),
+                         JMESPathCheck('properties.configuration', {"Antimalware/Enable": False})])
+        self.cmd('az automanage configuration-profile version list --profile-name {profile_name} -g {rg}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az automanage configuration-profile version update --profile-name {profile_name} -g {rg} '
+                 '-n {version_name} --configuration {{\\\"Antimalware/Enable\\\":true}}',
+                 checks=[JMESPathCheck('properties.configuration', {"Antimalware/Enable": True})])
+        self.cmd('az automanage configuration-profile version delete --profile-name {profile_name} -g {rg} '
+                 '-n {version_name} -y')
+        self.cmd('az automanage configuration-profile version list --profile-name {profile_name} -g {rg}',
+                 checks=[JMESPathCheck('length(@)', 0)])
 
         self.cmd('az automanage configuration-profile delete -n {profile_name} -g {rg} -y')
         self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
@@ -116,7 +114,7 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment vm delete -n default -g {rg} --vm-name {vm_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
-    @record_only()
+    # @record_only()
     # need to first run：
     # az group create -l eastus2euap -g rgtestautomanage
     # (run as admin in Powershell) Connect-AzConnectedMachine -ResourceGroupName rgtestautomanage -Name arc1 -Location eastus2euap
