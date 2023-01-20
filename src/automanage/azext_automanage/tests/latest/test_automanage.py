@@ -114,7 +114,7 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile-assignment vm delete -n default -g {rg} --vm-name {vm_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
-    # @record_only()
+    @record_only()
     # need to first run：
     # az group create -l eastus2euap -g rgtestautomanage
     # (run as admin in Powershell) Connect-AzConnectedMachine -ResourceGroupName rgtestautomanage -Name arc1 -Location eastus2euap
@@ -154,6 +154,7 @@ class AutomanageScenario(ScenarioTest):
                  '{arc_name} -y')
         self.cmd('az automanage configuration-profile-assignment list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
+    @record_only()
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.cluster.')
     def test_automanage_configuration_profile_assignment_cluster_scenarios(self):
         self.kwargs.update({
