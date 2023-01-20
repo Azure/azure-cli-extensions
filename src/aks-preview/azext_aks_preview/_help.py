@@ -292,6 +292,10 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --nrg-lockdown-restriction-level
+          type: string
+          short-summary: Restriction level on the managed node resource group.
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
@@ -359,6 +363,9 @@ helps['aks create'] = """
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
+        - name: --node-os-upgrade-channel
+          type: string
+          short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -683,6 +690,10 @@ helps['aks update'] = """
           type: bool
           short-summary: Disable pod security policy
           long-summary: PodSecurityPolicy is deprecated. See https://aka.ms/aks/psp for details.
+        - name: --nrg-lockdown-restriction-level
+          type: string
+          short-summary: Restriction level on the managed node resource.
+          long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -713,6 +724,9 @@ helps['aks update'] = """
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
+        - name: --node-os-upgrade-channel
+          type: string
+          short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
