@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage configuration-profile-assignment list",
 )
 class List(AAZCommand):
-    """List list of configuration profile assignments under a given subscription
+    """List configuration profile assignments under a given subscription
+
+    :example: list configuration-profile-assignment
+        az automanage configuration-profile-assignment list -g {rg}
     """
 
     _aaz_info = {

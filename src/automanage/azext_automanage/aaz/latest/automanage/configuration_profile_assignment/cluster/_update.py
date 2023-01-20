@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an association between a AzureStackHCI cluster and Automanage configuration profile
+
+    :example: update configuration-profile-assignment cluster
+        az automanage configuration-profile-assignment cluster update --n default -g {rg} --cluster-name {cluster_name} --configuration-profile {profile_id_2}
     """
 
     _aaz_info = {

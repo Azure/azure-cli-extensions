@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about an association between an ARC machine and Automanage configuration profile
+
+    :example: show configuration-profile-assignment for arc
+        az automanage configuration-profile-assignment arc show -n default -g {rg} --machine-name {arc_name}
     """
 
     _aaz_info = {

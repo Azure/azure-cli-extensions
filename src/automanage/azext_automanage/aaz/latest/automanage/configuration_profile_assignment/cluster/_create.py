@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an association between an AzureStackHCI cluster and Automanage configuration profile
+
+    :example: create configuration-profile-assignment for cluster
+        az automanage configuration-profile-assignment cluster create -n default -g {rg} --cluster-name {cluster_name} --configuration-profile {profile_id}
     """
 
     _aaz_info = {

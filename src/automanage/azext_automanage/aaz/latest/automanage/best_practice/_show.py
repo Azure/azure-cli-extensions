@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about a Automanage best practice
+
+    :example: Show best-practice
+        az automanage best-practice show --best-practice-name {}
     """
 
     _aaz_info = {

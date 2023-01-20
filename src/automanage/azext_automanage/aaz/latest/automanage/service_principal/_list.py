@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the Automanage AAD first party Application Service Principal details for the subscription id.
+
+    :example: list service-principal
+        az automanage service-principal list
     """
 
     _aaz_info = {

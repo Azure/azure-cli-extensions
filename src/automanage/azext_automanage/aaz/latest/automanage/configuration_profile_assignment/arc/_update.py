@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an association between a ARC machine and Automanage configuration profile
+
+    :example: update configuration-profile-assignment for arc
+        az automanage configuration-profile-assignment arc update --n default -g {rg} --machine-name {arc_name} --configuration-profile {profile_id_2}
     """
 
     _aaz_info = {

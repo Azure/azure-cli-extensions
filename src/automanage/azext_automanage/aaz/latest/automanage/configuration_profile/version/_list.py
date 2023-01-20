@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage configuration-profile version list",
 )
 class List(AAZCommand):
-    """List a list of configuration profile version for a configuration profile 
+    """List configuration profile versions for a configuration profile
+
+    :example: list configuration-profile version
+        az automanage configuration-profile version list --profile-name {profile_name} -g {rg}
     """
 
     _aaz_info = {

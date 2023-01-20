@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a configuration profile version
+
+    :example: create configuration-profile version
+        az automanage configuration-profile version create --profile-name {profile_name} -g {rg} -n {version_name} --configuration {"Antimalware/Enable":false}
     """
 
     _aaz_info = {

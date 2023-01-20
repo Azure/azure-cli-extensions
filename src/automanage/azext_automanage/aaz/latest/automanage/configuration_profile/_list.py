@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage configuration-profile list",
 )
 class List(AAZCommand):
-    """List a list of configuration profile within a subscription
+    """List configuration profiles within a subscription
+
+    :example: list configuration-profile
+        az automanage configuration-profile list -g {rg}
     """
 
     _aaz_info = {

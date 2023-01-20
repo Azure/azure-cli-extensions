@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about a report associated with an ARC machine configuration profile assignment run
+
+    :example: show configuration-profile-assignment for arc report
+        az automanage configuration-profile-assignment arc report show -n {report_name} --assignment-name default -g {rg} --machine-name {arc_name}
     """
 
     _aaz_info = {

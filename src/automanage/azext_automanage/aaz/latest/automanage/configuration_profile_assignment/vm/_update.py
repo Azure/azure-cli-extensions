@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an association between a VM and Automanage configuration profile
+
+    :example: update configuration-profile-assignment vm
+        az automanage configuration-profile-assignment vm update --n default -g {rg} --vm-name {vm_name} --configuration-profile {profile_id_2}
     """
 
     _aaz_info = {

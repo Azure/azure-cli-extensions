@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an association between an ARC machine and Automanage configuration profile
+
+    :example: create configuration-profile-assignment for arc
+        az automanage configuration-profile-assignment arc create -n default -g {rg} --machine-name {arc_name} --configuration-profile {profile_id}
     """
 
     _aaz_info = {

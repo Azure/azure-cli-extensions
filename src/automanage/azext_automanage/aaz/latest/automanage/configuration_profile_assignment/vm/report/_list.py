@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage configuration-profile-assignment vm report list",
 )
 class List(AAZCommand):
-    """List a list of reports within a given VM configuration profile assignment
+    """List reports within a given VM configuration profile assignment
+
+    :example: list configuration-profile-assignment vm report
+        az automanage configuration-profile-assignment vm report list --assignment-name default -g {rg} --vm-name {vm_name}
     """
 
     _aaz_info = {

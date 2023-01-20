@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about a report associated with a VM configuration profile assignment run
+
+    :example: show configuration-profile-assignment vm report
+        az automanage configuration-profile-assignment vm report show -n {report_name} --assignment-name default -g {rg} --vm-name {vm_name}
     """
 
     _aaz_info = {

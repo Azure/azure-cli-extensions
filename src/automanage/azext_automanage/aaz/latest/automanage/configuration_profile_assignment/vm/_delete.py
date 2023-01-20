@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an association between a VM and Automanage configuration profile
+
+    :example: delete configuration-profile-assignment for vm
+        az automanage configuration-profile-assignment vm delete -n default -g {rg} --vm-name {vm_name}
     """
 
     _aaz_info = {

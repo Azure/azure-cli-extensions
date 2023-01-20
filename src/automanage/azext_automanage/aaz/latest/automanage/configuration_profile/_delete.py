@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a configuration profile
+
+    :example: delete configuration-profile
+        az automanage configuration-profile delete -n {profile_name} -g {rg}
     """
 
     _aaz_info = {

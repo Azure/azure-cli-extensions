@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage best-practice version list",
 )
 class List(AAZCommand):
-    """List a list of Automanage best practices versions
+    """List Automanage best practice versions
+
+    :example: List best-practice versions
+        az automanage best-practice version list --best-practice-name {}
     """
 
     _aaz_info = {

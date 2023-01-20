@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage configuration-profile-assignment cluster report list",
 )
 class List(AAZCommand):
-    """List a list of reports within a given AzureStackHCI cluster configuration profile assignment
+    """List reports within a given AzureStackHCI cluster configuration profile assignment
+
+    :example: list configuration-profile-assignment cluster report
+        az automanage configuration-profile-assignment cluster report list --assignment-name default -g {rg} --cluster-name {cluster_name}
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an association between an AzureStackHCI cluster and Automanage configuration profile
+
+    :example: delete configuration-profile-assignment cluster
+        az automanage configuration-profile-assignment cluster delete -n default -g {rg} --cluster-name {cluster_name}
     """
 
     _aaz_info = {

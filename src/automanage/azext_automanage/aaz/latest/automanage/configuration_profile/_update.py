@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a configuration profile
+
+    :example: update configuration-profile
+        az automanage configuration-profile update -n {profile_name} -g {rg} --configuration {"Antimalware/Enable":true,"VMInsights/Enable":false}
     """
 
     _aaz_info = {

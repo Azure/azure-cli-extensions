@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about a configuration profile version
+
+    :example: show configuration-profile version
+        az automanage configuration-profile version show --profile-name {profile_name} -g {rg} -n {version_name}
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an association between a VM and Automanage configuration profile
+
+    :example: create configuration-profile-assignment for vm
+        az automanage configuration-profile-assignment vm create -n default -g {rg} --vm-name {vm_name} --configuration-profile {profile_id}
     """
 
     _aaz_info = {

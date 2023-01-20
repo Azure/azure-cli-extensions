@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an association between an ARC machine and Automanage configuration profile
+
+    :example: delete configuration-profile-assignment for arc
+        az automanage configuration-profile-assignment arc delete -n default -g {rg} --machine-name {arc_name}
     """
 
     _aaz_info = {

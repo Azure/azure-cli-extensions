@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ShowDefault(AAZCommand):
     """Get the Automanage AAD first party Application Service Principal details for the subscription id.
+
+    :example: Show default service-principal
+        az automanage service-principal show-default
     """
 
     _aaz_info = {

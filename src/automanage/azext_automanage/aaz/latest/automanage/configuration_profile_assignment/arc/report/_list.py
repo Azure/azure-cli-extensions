@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "automanage configuration-profile-assignment arc report list",
 )
 class List(AAZCommand):
-    """List a list of reports within a given ARC machine configuration profile assignment
+    """List reports within a given ARC machine configuration profile assignment
+
+    :example: list configuration-profile-assignment for arc report
+        az automanage configuration-profile-assignment arc report list --assignment-name default -g {rg} --machine-name {arc_name}
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about an association between an AzureStackHCI cluster and Automanage configuration profile
+
+    :example: show configuration-profile-assignment for cluster
+        az automanage configuration-profile-assignment cluster show -n default -g {rg} --cluster-name {cluster_name}
     """
 
     _aaz_info = {

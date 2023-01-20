@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about an association between a VM and Automanage configuration profile
+
+    :example: show configuration-profile-assignment vm
+        az automanage configuration-profile-assignment vm show -n default -g {rg} --vm-name {vm_name}
     """
 
     _aaz_info = {
