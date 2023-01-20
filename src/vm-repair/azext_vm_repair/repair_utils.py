@@ -380,7 +380,7 @@ def _check_linux_hyperV_gen(source_vm):
         vm_hyperVGen = hyperVGen_list[0]
         if vm_hyperVGen != 'V2':
             vm_hyperVGen = 'V1'
-        
+
         return vm_hyperVGen
 
     return disk_hyperVGen
