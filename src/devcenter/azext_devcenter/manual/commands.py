@@ -328,9 +328,6 @@ def load_command_table(self, _):
             "create", "devcenter_attached_network_create", supports_no_wait=True
         )
         g.custom_command(
-            "update", "devcenter_attached_network_update", supports_no_wait=True
-        )
-        g.custom_command(
             "delete",
             "devcenter_attached_network_delete",
             supports_no_wait=True,

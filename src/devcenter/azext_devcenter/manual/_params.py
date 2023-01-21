@@ -1230,27 +1230,6 @@ def load_arguments(self, _):
             "to attach to the Dev Center.",
         )
 
-    with self.argument_context("devcenter admin attached-network update") as c:
-        c.argument("resource_group_name", resource_group_name_type)
-        c.argument(
-            "dev_center_name",
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
-        )
-        c.argument(
-            "attached_network_connection_name",
-            options_list=["--name", "-n", "--attached-network-connection-name"],
-            type=str,
-            help="The name of the attached network connection.",
-            id_part="child_name_1",
-        )
-        c.argument(
-            "network_connection_id",
-            type=str,
-            help="The resource ID of the NetworkConnection you want to " "attach.",
-        )
-
     with self.argument_context("devcenter admin attached-network delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(

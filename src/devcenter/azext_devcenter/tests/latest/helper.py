@@ -111,12 +111,12 @@ def create_sig_role_assignments(self):
     })
 
     self.cmd('az role assignment create --role "Contributor" '
-                 '--assignee "{identityPrincipalId}" '
-                 '--scope "{sigId}"')
+             '--assignee "{identityPrincipalId}" '
+             '--scope "{sigId}"')
 
     self.cmd('az role assignment create --role "Reader" '
-                 '--assignee "{windows365ObjectId}" '
-                 '--scope "{sigId}"')
+             '--assignee "{windows365ObjectId}" '
+             '--scope "{sigId}"')
 
 
 def create_project(self):
@@ -129,3 +129,69 @@ def create_project(self):
              '--name "{projectName}" '
              '--dev-center-id "{devCenterId}" '
              '--resource-group "{rg}"')
+
+
+def create_network_connection(self):
+    subnet = create_virtual_network_with_subnet(self)
+
+    self.kwargs.update({
+        'subnetId': subnet['id'],
+        'networkConnectionName': self.create_random_name(prefix='cli', length=24),
+        'networkingRgName1': self.create_random_name(prefix='cli', length=24),
+    })
+
+    network_connection = self.cmd('az devcenter admin network-connection create '
+                                  '--location "{location}" '
+                                  '--tags CostCode="12345" '
+                                  '--name "{networkConnectionName}" '
+                                  '--domain-join-type "AzureADJoin" '
+                                  '--subnet-id "{subnetId}" '
+                                  '--networking-resource-group-name "{networkingRgName1}" '
+                                  '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'networkConnectionId': network_connection['id'],
+    })
+
+
+def create_attached_network_dev_box_definition(self):
+    create_dev_center(self)
+    create_project(self)
+    create_network_connection(self)
+    self.kwargs.update({
+        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365",
+        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+        'osStorageType': "ssd_1024gb",
+        'skuName': "general_a_8c32gb_v1",
+        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
+        'devBoxDefinitionName2': self.create_random_name(prefix='c2', length=12)
+    })
+
+    self.cmd('az devcenter admin attached-network create '
+             '--dev-center "{devcenterName}" '
+             '--name "{attachedNetworkName}" '
+             '--network-connection-id "{networkConnectionId}" '
+             '--resource-group "{rg}" '
+             )
+
+    self.cmd('az devcenter admin devbox-definition create '
+             '--dev-center "{devcenterName}" '
+             '--name "{devBoxDefinitionName}" '
+             '--image-reference id="{imageRefId}" '
+             '--resource-group "{rg}" '
+             '--hibernate-support "Enabled" '
+             '--os-storage-type "{osStorageType}" '
+             '--sku name="{skuName}" '
+             '--location "{location}" '
+             )
+
+    self.cmd('az devcenter admin devbox-definition create '
+             '--dev-center "{devcenterName}" '
+             '--name "{devBoxDefinitionName2}" '
+             '--image-reference id="{imageRefId}" '
+             '--resource-group "{rg}" '
+             '--hibernate-support "Enabled" '
+             '--os-storage-type "{osStorageType}" '
+             '--sku name="{skuName}" '
+             '--location "{location}" '
+             )
