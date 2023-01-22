@@ -40,11 +40,11 @@ class VmwareDatastoresScenarioTest(ScenarioTest):
         self.cmd('az vmware datastore list --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster}')
 
         # Create a new ANF based datastore
-        # self.cmd('az vmware datastore netapp-volume create --name ANFDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --volume-id {volume_id}')
+        self.cmd('az vmware datastore netapp-volume create --name ANFDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --volume-id {volume_id}')
         # "ANF datastore is not enabled for the cloud SAN version 'v1'
 
         # Get the newly created ANF based datastore
-        # self.cmd('az vmware datastore show --name ANFDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster}')
+        self.cmd('az vmware datastore show --name ANFDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster}')
 
         # Delete the newly created ANF based datastore
         self.cmd('az vmware datastore delete --name iSCSIDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --yes')

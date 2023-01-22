@@ -33,6 +33,83 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 # fmt: off
 
+def build_assess_patches_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{name}/assessPatches")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "name": _SERIALIZER.url("name", name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
+def build_install_patches_request_initial(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{name}/installPatches")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "name": _SERIALIZER.url("name", name, 'str'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
 def build_create_request_initial(
     subscription_id,  # type: str
     resource_group_name,  # type: str
@@ -40,7 +117,7 @@ def build_create_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -80,7 +157,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -117,7 +194,7 @@ def build_update_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -157,8 +234,9 @@ def build_delete_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     force = kwargs.pop('force', None)  # type: Optional[bool]
+    retain = kwargs.pop('retain', None)  # type: Optional[bool]
 
     accept = "application/json"
     # Construct URL
@@ -176,6 +254,8 @@ def build_delete_request_initial(
     _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
     if force is not None:
         _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
+    if retain is not None:
+        _query_parameters['retain'] = _SERIALIZER.query("retain", retain, 'bool')
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -197,7 +277,7 @@ def build_stop_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -237,7 +317,7 @@ def build_start_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -274,7 +354,7 @@ def build_restart_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -309,7 +389,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -343,7 +423,7 @@ def build_list_by_resource_group_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -394,6 +474,252 @@ class VirtualMachinesOperations(object):
         self._deserialize = deserializer
         self._config = config
 
+    def _assess_patches_initial(
+        self,
+        resource_group_name,  # type: str
+        name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Optional["_models.VirtualMachineAssessPatchesResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.VirtualMachineAssessPatchesResult"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
+
+        
+        request = build_assess_patches_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            name=name,
+            api_version=api_version,
+            template_url=self._assess_patches_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('VirtualMachineAssessPatchesResult', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    _assess_patches_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{name}/assessPatches"}  # type: ignore
+
+
+    @distributed_trace
+    def begin_assess_patches(
+        self,
+        resource_group_name,  # type: str
+        name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller["_models.VirtualMachineAssessPatchesResult"]
+        """The operation to assess patches on a vSphere VMware machine identity in Azure.
+
+        :param resource_group_name: The name of the resource group.
+        :type resource_group_name: str
+        :param name: The name of the vSphere VMware machine.
+        :type name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either VirtualMachineAssessPatchesResult or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineAssessPatchesResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineAssessPatchesResult"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._assess_patches_initial(
+                resource_group_name=resource_group_name,
+                name=name,
+                api_version=api_version,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+        kwargs.pop('error_map', None)
+
+        def get_long_running_output(pipeline_response):
+            response = pipeline_response.http_response
+            deserialized = self._deserialize('VirtualMachineAssessPatchesResult', pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+
+    begin_assess_patches.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{name}/assessPatches"}  # type: ignore
+
+    def _install_patches_initial(
+        self,
+        resource_group_name,  # type: str
+        name,  # type: str
+        install_patches_input,  # type: "_models.VirtualMachineInstallPatchesParameters"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Optional["_models.VirtualMachineInstallPatchesResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.VirtualMachineInstallPatchesResult"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(install_patches_input, 'VirtualMachineInstallPatchesParameters')
+
+        request = build_install_patches_request_initial(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            name=name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self._install_patches_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('VirtualMachineInstallPatchesResult', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    _install_patches_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{name}/installPatches"}  # type: ignore
+
+
+    @distributed_trace
+    def begin_install_patches(
+        self,
+        resource_group_name,  # type: str
+        name,  # type: str
+        install_patches_input,  # type: "_models.VirtualMachineInstallPatchesParameters"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller["_models.VirtualMachineInstallPatchesResult"]
+        """The operation to install patches on a vSphere VMware machine identity in Azure.
+
+        :param resource_group_name: The name of the resource group.
+        :type resource_group_name: str
+        :param name: The name of the vSphere VMware machine.
+        :type name: str
+        :param install_patches_input: Input for InstallPatches as directly received by the API.
+        :type install_patches_input:
+         ~azure.mgmt.connectedvmware.models.VirtualMachineInstallPatchesParameters
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either VirtualMachineInstallPatchesResult or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineInstallPatchesResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstallPatchesResult"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._install_patches_initial(
+                resource_group_name=resource_group_name,
+                name=name,
+                install_patches_input=install_patches_input,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+        kwargs.pop('error_map', None)
+
+        def get_long_running_output(pipeline_response):
+            response = pipeline_response.http_response
+            deserialized = self._deserialize('VirtualMachineInstallPatchesResult', pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+
+    begin_install_patches.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{name}/installPatches"}  # type: ignore
+
     def _create_initial(
         self,
         resource_group_name,  # type: str
@@ -408,7 +734,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -485,7 +811,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -555,7 +881,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_get_request(
@@ -604,7 +930,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -682,7 +1008,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -730,6 +1056,7 @@ class VirtualMachinesOperations(object):
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
         force=None,  # type: Optional[bool]
+        retain=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -739,7 +1066,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_delete_request_initial(
@@ -748,6 +1075,7 @@ class VirtualMachinesOperations(object):
             virtual_machine_name=virtual_machine_name,
             api_version=api_version,
             force=force,
+            retain=retain,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -776,6 +1104,7 @@ class VirtualMachinesOperations(object):
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
         force=None,  # type: Optional[bool]
+        retain=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -789,6 +1118,8 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_name: str
         :param force: Whether force delete was specified.
         :type force: bool
+        :param retain: Whether to just disable the VM from azure and retain the VM in the VMM.
+        :type retain: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -801,7 +1132,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -814,6 +1145,7 @@ class VirtualMachinesOperations(object):
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
                 force=force,
+                retain=retain,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -853,7 +1185,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -921,7 +1253,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -974,7 +1306,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_start_request_initial(
@@ -1032,7 +1364,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -1082,7 +1414,7 @@ class VirtualMachinesOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_restart_request_initial(
@@ -1140,7 +1472,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -1192,7 +1524,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
         error_map = {
@@ -1270,7 +1602,7 @@ class VirtualMachinesOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
         error_map = {

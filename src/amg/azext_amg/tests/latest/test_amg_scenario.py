@@ -47,10 +47,11 @@ class AmgScenarioTest(ScenarioTest):
             self.check('length(properties.outboundIPs)', 2)
         ])
 
-        self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled')
+        self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled --public-network-access Disabled')
         self.cmd('grafana show -g {rg} -n {name}', checks=[
             self.check('properties.deterministicOutboundIp', 'Disabled'),
             self.check('properties.apiKey', 'Disabled'),
+            self.check('properties.publicNetworkAccess', 'Disabled'),
             self.check('properties.outboundIPs', None)
         ])
 
@@ -88,6 +89,45 @@ class AmgScenarioTest(ScenarioTest):
             number = len(self.cmd('grafana dashboard list -g {rg} -n {name} --api-key ' + api_key).get_output_in_json())
             self.assertTrue(number > 0)
 
+    @ResourceGroupPreparer(name_prefix='cli_test_amg')
+    def test_service_account_e2e(self, resource_group):
+
+        self.kwargs.update({
+            'name': 'clitestserviceaccount',
+            'location': 'westcentralus',
+            "account": "myServiceAccount",
+            "token": "myToken"
+        })
+
+        owner = self._get_signed_in_user()
+        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd('grafana create -g {rg} -n {name} -l {location}')
+            self.cmd('grafana update -g {rg} -n {name} --service-account Enabled')
+            self.cmd('grafana service-account list -g {rg} -n {name}', checks=[
+                self.check('length([])', 0)
+            ])
+            self.cmd('grafana service-account create -g {rg} -n {name} --service-account oldName --role viewer --is-disabled true', checks=[
+                self.check('isDisabled', True)
+            ])
+            self.cmd('grafana service-account update -g {rg} -n {name} --service-account oldName --new-name {account} --role Admin --is-disabled false', checks=[
+                # self.check('isDisabled', False)
+            ])
+            self.cmd('grafana service-account show -g {rg} -n {name} --service-account {account}')
+            self.cmd('grafana service-account list -g {rg} -n {name}')
+            result = self.cmd('grafana service-account token create -g {rg} -n {name} --service-account {account} --token {token} --time-to-live 1d').get_output_in_json()
+            key = result["key"]
+            self.cmd('grafana service-account token list -g {rg} -n {name} --service-account {account}', checks=[
+                self.check('length([])', 1)
+            ])
+            number = len(self.cmd('grafana dashboard list -g {rg} -n {name} --token ' + key).get_output_in_json())
+            self.assertTrue(number > 0)
+            self.cmd('grafana service-account token delete -g {rg} -n {name} --service-account {account} --token {token}')
+            self.cmd('grafana service-account token list -g {rg} -n {name} --service-account {account}', checks=[
+                self.check('length([])', 0)
+            ])
+            self.cmd('grafana service-account delete -g {rg} -n {name} --service-account {account}')
 
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westeurope')
