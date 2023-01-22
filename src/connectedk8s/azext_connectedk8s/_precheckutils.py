@@ -195,7 +195,7 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
 def helm_install_release_preonboarding_inspector(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "pre-onboarding-inspector", chart_path]
     # To set some other helm parameters through file
-    cmd_helm_install.extend(["--set", "global,location={}".format(location)])
+    cmd_helm_install.extend(["--set", "global.location={}".format(location)])
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
     if http_proxy:
