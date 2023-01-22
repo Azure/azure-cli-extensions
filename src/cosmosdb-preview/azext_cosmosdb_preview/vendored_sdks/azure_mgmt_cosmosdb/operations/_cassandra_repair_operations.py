@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import sys
-from typing import Any, Callable, Dict, IO, List, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 
 from azure.core.exceptions import (
     ClientAuthenticationError,
@@ -610,9 +610,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairStatus"
     }
 
-    def _get_table_status_initial(
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> Dict[str, List[str]]:
+    def _get_table_status_initial(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> str:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -627,7 +625,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         api_version: Literal["2022-11-15-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
-        cls: ClsType[Dict[str, List[str]]] = kwargs.pop("cls", None)
+        cls: ClsType[str] = kwargs.pop("cls", None)
 
         request = build_get_table_status_request(
             resource_group_name=resource_group_name,
@@ -651,7 +649,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("{[str]}", pipeline_response)
+        deserialized = self._deserialize("str", pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -663,9 +661,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
     }
 
     @distributed_trace
-    def begin_get_table_status(
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> LROPoller[Dict[str, List[str]]]:
+    def begin_get_table_status(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> LROPoller[str]:
         """get_table_status.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -681,9 +677,8 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either dict mapping str to list of str or the
-         result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[dict[str, list[str]]]
+        :return: An instance of LROPoller that returns either str or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[str]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -692,7 +687,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         api_version: Literal["2022-11-15-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
-        cls: ClsType[Dict[str, List[str]]] = kwargs.pop("cls", None)
+        cls: ClsType[str] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -709,7 +704,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("{[str]}", pipeline_response)
+            deserialized = self._deserialize("str", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
