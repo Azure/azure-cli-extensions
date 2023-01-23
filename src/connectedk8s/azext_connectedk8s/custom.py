@@ -33,6 +33,7 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
@@ -199,6 +200,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except ArgumentUsageError as argex:
             raise(argex)
         except Exception as ex:
+            if isinstance(ex, HttpResponseError):
+                status_code = ex.response.status_code
+                if status_code == 404:
+                    telemetry.set_exception(exception='Private link scope resource does not exist',
+                                            fault_type=consts.Pls_Resource_Not_Found, summary='Pls resource does not exist')
+                    raise ArgumentUsageError("The private link scope resource '{}' does not exist. Please ensure that you pass a valid ARM Resource Id.".format(private_link_scope_resource_id))
             logger.warning("Error occured while checking the private link scope resource location: %s\n", ex)
 
     # Check Release Existance
