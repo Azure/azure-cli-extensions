@@ -72,7 +72,7 @@ def validate_location(cmd, location):
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='AzureArcCharts'):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    if chart_path_name == 'ConnectPrecheckCharts':
+    if chart_path_name == 'cluster_diagnostic_checks':
         pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name)
     else:
         pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, 'azure-arc')
@@ -85,14 +85,14 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_path_name, chart_export_path))
 
-    if chart_path_name == 'ConnectPrecheckCharts':
+    if chart_path_name == 'cluster_diagnostic_checks':
         export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
     else:
         export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, 'azure-arc')
 
     # Returning helm chart path
-    if chart_path_name == 'ConnectPrecheckCharts':
-        helm_chart_path = os.path.join(chart_export_path, 'pre-onboarding-inspector')
+    if chart_path_name == 'cluster_diagnostic_checks':
+        helm_chart_path = os.path.join(chart_export_path, 'cluster-diagnostic-checks')
         chart_path = helm_chart_path
     else:
         helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
@@ -129,12 +129,12 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
-        if for_preonboarding_checks is False:
+def check_cluster_DNS(dns_check_log, for_cluster_diagnostics_checks=False, filepath_with_timestamp=None, storage_space_available=False):
+        if for_cluster_diagnostics_checks is False:
             global diagnoser_output
         try:
             if consts.DNS_Check_Result_String not in dns_check_log:
-                if for_preonboarding_checks:
+                if for_cluster_diagnostics_checks:
                     return consts.Diagnostic_Check_Incomplete
                 else:
                     return consts.Diagnostic_Check_Incomplete, storage_space_available
@@ -142,7 +142,7 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
             # Validating if DNS is working or not and displaying proper result
             if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
                 logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
-                if for_preonboarding_checks:
+                if for_cluster_diagnostics_checks:
                     telemetry.set_exception(exception="DNS not working in the cluster", fault_type=consts.DNS_Failed_Fault_Type,
                                             summary="DNS not working in the cluster")
                     return consts.Diagnostic_Check_Failed
@@ -154,7 +154,7 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
                             dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
                     return consts.Diagnostic_Check_Failed, storage_space_available
             else:
-                if for_preonboarding_checks:
+                if for_cluster_diagnostics_checks:
                     return consts.Diagnostic_Check_Passed
                 else:
                     if storage_space_available:
@@ -166,30 +166,30 @@ def check_cluster_DNS(dns_check_log, for_preonboarding_checks=False, filepath_wi
         # To handle any exception that may occur during the execution
         except Exception as e:
             logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-            if for_preonboarding_checks is False:
+            if for_cluster_diagnostics_checks is False:
                 diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
 
-        if for_preonboarding_checks:
+        if for_cluster_diagnostics_checks:
             return consts.Diagnostic_Check_Incomplete
         else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_preonboarding_checks=False, filepath_with_timestamp=None, storage_space_available=False):
-        if for_preonboarding_checks is False:
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_cluster_diagnostics_checks=False, filepath_with_timestamp=None, storage_space_available=False):
+        if for_cluster_diagnostics_checks is False:
             global diagnoser_output
         try:
             outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
             outbound_connectivity_response = outbound_connectivity_response[::-1]
             if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
-                if for_preonboarding_checks:
+                if for_cluster_diagnostics_checks:
                     return consts.Diagnostic_Check_Incomplete
                 else:
                     return consts.Diagnostic_Check_Incomplete, storage_space_available
             # Validating if outbound connectiivty is working or not and displaying proper result
             if(outbound_connectivity_response != "000"):
-                if for_preonboarding_checks:
+                if for_cluster_diagnostics_checks:
                     return consts.Diagnostic_Check_Passed
                 else:
                     if storage_space_available:
@@ -199,7 +199,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_pre
                     return consts.Diagnostic_Check_Passed, storage_space_available
             else:
                 logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-                if for_preonboarding_checks:
+                if for_cluster_diagnostics_checks:
                     telemetry.set_exception(exception="Failed outbound network connectivity from the cluster", fault_type=consts.Outbound_Connectivity_Failed_Fault_Type,
                                             summary="Failed outbound network connectivity from the cluster")
                     return consts.Diagnostic_Check_Failed
@@ -214,10 +214,10 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, for_pre
         # To handle any exception that may occur during the execution
         except Exception as e:
             logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-            if for_preonboarding_checks is False:
+            if for_cluster_diagnostics_checks is False:
                 diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
-        if for_preonboarding_checks:
+        if for_cluster_diagnostics_checks:
             return consts.Diagnostic_Check_Incomplete
         else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available

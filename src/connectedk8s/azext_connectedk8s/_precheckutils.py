@@ -45,21 +45,21 @@ logger = get_logger(__name__)
 # pylint: disable
 
 
-def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
+def cluster_diagnostic_checks_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
-        # Executing the pre onboarding inspector job and fetching the logs obtained
-        preonboarding_inspector_container_log = executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
-        # If preonboarding_inspector_container_log is not empty then only we will check for the results
-        if(preonboarding_inspector_container_log is not None and preonboarding_inspector_container_log != ""):
-            preonboarding_inspector_container_log_list = preonboarding_inspector_container_log.split("\n")
-            preonboarding_inspector_container_log_list.pop(-1)
+        # Executing the cluster_diagnostic_checks job and fetching the logs obtained
+        cluster_diagnostic_checks_container_log = executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
+        # If cluster_diagnostic_checks_container_log is not empty then only we will check for the results
+        if(cluster_diagnostic_checks_container_log is not None and cluster_diagnostic_checks_container_log != ""):
+            cluster_diagnostic_checks_container_log_list = cluster_diagnostic_checks_container_log.split("\n")
+            cluster_diagnostic_checks_container_log_list.pop(-1)
             dns_check_log = ""
             counter_container_logs = 1
-            # For retrieving only preonboarding inspector logs from the inspector output
-            for outputs in preonboarding_inspector_container_log_list:
+            # For retrieving only cluster_diagnostic_checks logs from the output
+            for outputs in cluster_diagnostic_checks_container_log_list:
                 if consts.Outbound_Connectivity_Check_Result_String in outputs:
                     counter_container_logs = 1
                 elif consts.DNS_Check_Result_String in outputs:
@@ -68,11 +68,11 @@ def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_ins
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
             dns_check = azext_utils.check_cluster_DNS(dns_check_log, True)
-            outbound_connectivity_check = azext_utils.check_cluster_outbound_connectivity(preonboarding_inspector_container_log_list[-1], True)
+            outbound_connectivity_check = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], True)
         else:
             return consts.Diagnostic_Check_Incomplete
 
-        # If both the check passed then we will return pre onboarding inspector checks Passed
+        # If both the check passed then we will return cluster diagnostic checks Passed
         if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
             return consts.Diagnostic_Check_Passed
         # If any of the check remain Incomplete than we will return Incomplete
@@ -83,18 +83,18 @@ def check_preonboarding_inspector_container(corev1_api_instance, batchv1_api_ins
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to perform pre onboarding inspector container on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error occured while executing the pre onboarding inspector container")
+        logger.warning("An exception has occured while trying to perform cluster diagnostic checks container on the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error occured while executing the cluster diagnostic checks container")
 
     return consts.Diagnostic_Check_Incomplete
 
 
-def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
-    job_name = "pre-onboarding-inspector-job"
+def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
+    job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
-    preonboarding_inspector_container_log = ""
+    cluster_diagnostic_checks_container_log = ""
 
-    cmd_helm_delete = [helm_client_location, "uninstall", "pre-onboarding-inspector"]
+    cmd_helm_delete = [helm_client_location, "uninstall", "cluster-diagnostic-checks"]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -102,9 +102,9 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
 
     # To handle the user keyboard Interrupt
     try:
-        # Executing the pre onboarding inspector job yaml
+        # Executing the cluster diagnostic checks job yaml
         config.load_kube_config(kube_config, kube_context)
-        # Attempting deletion of pre onboarding inspector resources to handle the scenario if any stale resources are present
+        # Attempting deletion of cluster diagnostic checks resources to handle the scenario if any stale resources are present
         response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
         output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
         # If any error occured while execution of delete command
@@ -123,22 +123,22 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
                     exception_occured_counter = 1
             # If any exception occured we will print the exception and return
             if exception_occured_counter == 1:
-                logger.warning("An error occured while installing the pre onboarding inspector helm release in the cluster. Exception:")
-                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing pre onboarding inspector Job")
+                logger.warning("An error occured while installing the cluster diagnostic checks helm release in the cluster. Exception:")
+                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing cluster diagnostic checks Job")
                 return
         try:
-            chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'ConnectPrecheckCharts')
+            chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'cluster_diagnostic_checks')
 
-            helm_install_release_preonboarding_inspector(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
+            helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
         # To handle the Exception that occured
         except Exception as e:
-            logger.warning("An error occured while installing helm release of pre onboarding inspector in the cluster. Exception:")
+            logger.warning("An error occured while installing helm release of cluster diagnostic checks in the cluster. Exception:")
             logger.warning(str(e))
-            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type, summary="Error while installing pre onboarding inspector helm release")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type, summary="Error while installing cluster diagnostic checks helm release")
             # Deleting all the stale resources that got created
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
-        # Watching for pre onboarding inspector container to reach in completed stage
+        # Watching for cluster diagnostic checks container to reach in completed stage
         w = watch.Watch()
         is_job_complete = False
         is_job_scheduled = False
@@ -146,10 +146,10 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
         for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='default', label_selector="", timeout_seconds=60):
             try:
                 # Checking if job get scheduled or not
-                if event["object"].metadata.name == "pre-onboarding-inspector-job":
+                if event["object"].metadata.name == "cluster-diagnostic-checks-job":
                     is_job_scheduled = True
                 # Checking if job reached completed stage or not
-                if event["object"].metadata.name == "pre-onboarding-inspector-job" and event["object"].status.conditions[0].type == "Complete":
+                if event["object"].metadata.name == "cluster-diagnostic-checks-job" and event["object"].status.conditions[0].type == "Complete":
                     is_job_complete = True
                     w.stop()
             except Exception as e:
@@ -158,19 +158,19 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
                 continue
 
         if (is_job_scheduled is False):
-            telemetry.set_exception(exception="Couldn't schedule pre onboarding inspector job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
-                                    summary="Couldn't schedule pre onboarding inspector job in the cluster")
-            logger.warning("Unable to schedule the pre onboarding inspector job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
+            telemetry.set_exception(exception="Couldn't schedule cluster diagnostic checks job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
+                                    summary="Couldn't schedule cluster diagnostic checks job in the cluster")
+            logger.warning("Unable to schedule the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
-            telemetry.set_exception(exception="Couldn't complete pre onboarding inspector job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
-                                    summary="Couldn't complete pre onboarding inspector job after scheduling in the cluster")
-            logger.warning("Unable to finish the pre onboarding inspector job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
+            telemetry.set_exception(exception="Couldn't complete cluster diagnostic checks job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
+                                    summary="Couldn't complete cluster diagnostic checks job after scheduling in the cluster")
+            logger.warning("Unable to finish the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:
-            # Fetching the pre onboarding inspector Container logs
+            # Fetching the cluster diagnostic checks Container logs
             all_pods = corev1_api_instance.list_namespaced_pod('default')
             # Traversing through all agents
             for each_pod in all_pods.items:
@@ -178,22 +178,22 @@ def executing_preonboarding_inspector_job(corev1_api_instance, batchv1_api_insta
                 pod_name = each_pod.metadata.name
                 if(pod_name.startswith(job_name)):
                     # Creating a text file with the name of the container and adding that containers logs in it
-                    preonboarding_inspector_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="pre-onboarding-inspector-container", namespace='default')
-        # Clearing all the resources after fetching the pre onboarding inspector container logs
+                    cluster_diagnostic_checks_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="cluster-diagnostic-checks-container", namespace='default')
+        # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to execute the pre onboarding inspector in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to execute the cluster diagnostic checks in the cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing Pre onboarding inspector Job")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing cluster diagnostic checks Job")
         return
 
-    return preonboarding_inspector_container_log
+    return cluster_diagnostic_checks_container_log
 
 
-def helm_install_release_preonboarding_inspector(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
-    cmd_helm_install = [helm_client_location, "upgrade", "--install", "pre-onboarding-inspector", chart_path]
+def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
+    cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path]
     # To set some other helm parameters through file
     cmd_helm_install.extend(["--set", "global.location={}".format(location)])
     if https_proxy:
@@ -220,5 +220,5 @@ def helm_install_release_preonboarding_inspector(chart_path, location, http_prox
         if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Install_HelmRelease_Fault_Type,
-                                summary='Unable to install pre onboarding inspector helm release')
-        raise CLIInternalError("Unable to install pre onboarding inspector helm release: " + error_helm_install.decode("ascii"))
+                                summary='Unable to install cluster diagnostic checks helm release')
+        raise CLIInternalError("Unable to install cluster diagnostic checks helm release: " + error_helm_install.decode("ascii"))
