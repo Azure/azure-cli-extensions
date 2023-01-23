@@ -186,7 +186,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
 
 
 def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
-    cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path]
+    cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path, "--namespace", "{}".format(consts.Release_Install_Namespace), "--create-namespace", "--output", "json"]
     # To set some other helm parameters through file
     cmd_helm_install.extend(["--set", "global.location={}".format(location)])
     if https_proxy:
