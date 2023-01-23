@@ -67,8 +67,8 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
                     counter_container_logs = 0
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
-            dns_check, _ = azext_utils.check_cluster_DNS(dns_check_log, True)
-            outbound_connectivity_check, _ = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], True)
+            dns_check, _ = azext_utils.check_cluster_DNS(dns_check_log, False)
+            outbound_connectivity_check, _ = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], False)
         else:
             return consts.Diagnostic_Check_Incomplete
 
@@ -83,8 +83,8 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to perform cluster diagnostic checks container on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error occured while executing the cluster diagnostic checks container")
+        logger.warning("An exception has occured while trying to execute cluster diagnostic checks container on the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type, summary="Error occured while executing the cluster diagnostic checks container")
 
     return consts.Diagnostic_Check_Incomplete
 
@@ -124,20 +124,13 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             # If any exception occured we will print the exception and return
             if exception_occured_counter == 1:
                 logger.warning("An error occured while installing the cluster diagnostic checks helm release in the cluster. Exception:")
-                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing cluster diagnostic checks Job")
+                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
                 return
-        try:
-            chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'cluster_diagnostic_checks')
 
-            helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
-        # To handle the Exception that occured
-        except Exception as e:
-            logger.warning("An error occured while installing helm release of cluster diagnostic checks in the cluster. Exception:")
-            logger.warning(str(e))
-            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type, summary="Error while installing cluster diagnostic checks helm release")
-            # Deleting all the stale resources that got created
-            Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-            return
+        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'cluster_diagnostic_checks')
+
+        helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
+
         # Watching for cluster diagnostic checks container to reach in completed stage
         w = watch.Watch()
         is_job_complete = False
@@ -186,7 +179,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     except Exception as e:
         logger.warning("An exception has occured while trying to execute the cluster diagnostic checks in the cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Failed_Fault_Type, summary="Error while executing cluster diagnostic checks Job")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type, summary="Error while executing cluster diagnostic checks Job")
         return
 
     return cluster_diagnostic_checks_container_log
@@ -219,6 +212,6 @@ def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_pr
     if response_helm_install.returncode != 0:
         if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Install_HelmRelease_Fault_Type,
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type,
                                 summary='Unable to install cluster diagnostic checks helm release')
         raise CLIInternalError("Unable to install cluster diagnostic checks helm release: " + error_helm_install.decode("ascii"))

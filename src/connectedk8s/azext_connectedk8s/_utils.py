@@ -129,7 +129,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available):
+def check_cluster_DNS(dns_check_log, store_logs, filepath_with_timestamp=None, storage_space_available=False):
     
     global diagnoser_output
     try:
@@ -140,13 +140,13 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
         if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
             logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
             diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
-            if storage_space_available:
+            if storage_space_available and store_logs :
                 dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
             return consts.Diagnostic_Check_Failed, storage_space_available
         else:
-            if storage_space_available:
+            if storage_space_available and store_logs :
                 dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(formatted_dns_log + "\nCluster DNS check passed successfully.")
@@ -172,7 +172,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available):
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, store_logs, filepath_with_timestamp=None, storage_space_available=False):
     
     global diagnoser_output
     try:
@@ -182,7 +182,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
             return consts.Diagnostic_Check_Incomplete, storage_space_available
         # Validating if outbound connectiivty is working or not and displaying proper result
         if(outbound_connectivity_response != "000"):
-            if storage_space_available:
+            if storage_space_available and store_logs :
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
@@ -190,7 +190,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
         else:
             logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
             diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-            if storage_space_available:
+            if storage_space_available and store_logs :
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")

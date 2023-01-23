@@ -181,10 +181,11 @@ Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = "arck8sdiagnoser.azurecr.io/public/pre-onboarding-inspector:0.1.0"
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
-Cluster_Diagnostic_Checks_Failed_Fault_Type = "Error occured while running cluster diagnostic checks"
-Cluster_Diagnostic_Checks_Install_HelmRelease_Fault_Type = 'cluster-diagnostic-checks-helm-release-install-error'
+Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
+Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
 Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
+Pre_Onboarding_Diagnostic_Checks_Execution_Failed= 'Exception occured while trying to execute pre-onboarding diagnostic checks'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

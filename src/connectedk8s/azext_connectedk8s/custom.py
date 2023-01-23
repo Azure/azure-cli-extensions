@@ -148,7 +148,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         diagnostic_checks = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
 
     except Exception as e:
+        telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
+                                fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
         logger.warning("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+        return
 
     # Handling the user manual interrupt
     except KeyboardInterrupt:
