@@ -827,6 +827,57 @@ class DevcenterScenarioTest(ScenarioTest):
                  ]
                  )
 
+        self.cmd('az devcenter admin schedule create '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 '--time "13:00" '
+                 '--time-zone "America/Los_Angeles" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('timeZone', "America/Los_Angeles"),
+                     self.check('time', "13:00"),
+                     self.check('frequency', "Daily"),
+                     self.check('typePropertiesType', "StopDevBox")
+                 ]
+                 )
+
+        self.cmd('az devcenter admin schedule update '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 '--time "17:30" '
+                 '--time-zone "America/New_York" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('timeZone', "America/New_York"),
+                     self.check('time', "17:30"),
+                     self.check('frequency', "Daily"),
+                     self.check('typePropertiesType', "StopDevBox")
+                 ]
+                 )
+        
+        self.cmd('az devcenter admin schedule show '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('timeZone', "America/New_York"),
+                     self.check('time', "17:30"),
+                     self.check('frequency', "Daily"),
+                     self.check('typePropertiesType', "StopDevBox")
+                 ]
+                 )
+        
+        self.cmd('az devcenter admin schedule delete --yes '
+                 '--project-name "{projectName}" '
+                 '--pool-name "{poolName}" '
+                 '--resource-group "{rg}"')
+
         self.cmd('az devcenter admin pool delete --yes '
                  '--project-name "{projectName}" '
                  '--name "{poolName}" '
@@ -861,5 +912,12 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--type "Microsoft.DevCenter/devcenters" ',
                  checks=[
                      self.check("nameAvailable", False),
+                 ]
+                 )
+
+    def test_sku_scenario(self):
+        self.cmd('az devcenter admin sku list',
+                 checks=[
+                     self.check("length(@)", 9),
                  ]
                  )
