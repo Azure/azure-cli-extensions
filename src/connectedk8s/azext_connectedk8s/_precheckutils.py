@@ -45,13 +45,13 @@ logger = get_logger(__name__)
 # pylint: disable
 
 
-def cluster_diagnostic_checks_container(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
+def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
         # Executing the cluster_diagnostic_checks job and fetching the logs obtained
-        cluster_diagnostic_checks_container_log = executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
+        cluster_diagnostic_checks_container_log = executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
         # If cluster_diagnostic_checks_container_log is not empty then only we will check for the results
         if(cluster_diagnostic_checks_container_log is not None and cluster_diagnostic_checks_container_log != ""):
             cluster_diagnostic_checks_container_log_list = cluster_diagnostic_checks_container_log.split("\n")
@@ -89,7 +89,7 @@ def cluster_diagnostic_checks_container(corev1_api_instance, batchv1_api_instanc
     return consts.Diagnostic_Check_Incomplete
 
 
-def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
+def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""

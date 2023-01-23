@@ -140,28 +140,22 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Pre onboarding checks
     try:
-        absolute_path = os.path.abspath(os.path.dirname(__file__))
         kubectl_client_location = install_kubectl_client()
         helm_client_location = install_helm_client()
         diagnostic_checks = "Failed"
         batchv1_api_instance = kube_client.BatchV1Api()
         # Performing cluster-diagnostic-checks
-        diagnostic_checks = precheckutils.cluster_diagnostic_checks_container(api_instance, batchv1_api_instance, absolute_path, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
-        # If all the checks passed then display no error found
-        all_checks_passed = True
-        # for checks in diagnostic_checks:
-        if diagnostic_checks != consts.Diagnostic_Check_Passed:
-                all_checks_passed = False
+        diagnostic_checks = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
 
     except Exception as e:
-        logger.warning("Exception occured : {}".format(str(e)))
+        logger.warning("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
 
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         raise ManualInterrupt('Process terminated externally.')
 
-    if all_checks_passed is False:
-        raise ValidationError("One or more cluster diagnostic checks failed and hence the cluster cannot be onboarded. Please resolve them and try onboarding again.")
+    if diagnostic_checks != consts.Diagnostic_Check_Passed:
+        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
