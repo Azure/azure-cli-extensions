@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import (
     try_manual,
@@ -25,7 +25,7 @@ from .helper import (
     create_attached_network_dev_box_definition
 )
 
-
+@record_only()
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -164,6 +164,10 @@ class DevcenterScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_project_scenario(self):
+        self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
+
         create_dev_center(self)
 
         self.kwargs.update({
@@ -385,6 +389,9 @@ class DevcenterScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_devbox_definition_scenario(self):
+        self.kwargs.update({
+        'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
         create_dev_center(self)
         create_project(self)
         self.kwargs.update({
@@ -642,10 +649,13 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check("length(@)", 1),
                  ]
-        )
+                 )
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_attached_network_scenario(self):
+        self.kwargs.update({
+        'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
         create_dev_center(self)
         create_project(self)
         create_network_connection(self)
@@ -827,5 +837,29 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--project-name "{projectName}" ',
                  checks=[
                      self.check("length(@)", 0),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_check_name_avail_scenario(self):
+        self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
+
+        self.cmd('az devcenter admin check-name-availability execute '
+                 '--name "{devcenterName}" '
+                 '--type "Microsoft.DevCenter/devcenters" ',
+                 checks=[
+                     self.check("nameAvailable", True),
+                 ]
+                 )
+
+        create_dev_center(self)
+
+        self.cmd('az devcenter admin check-name-availability execute '
+                 '--name "{devcenterName}" '
+                 '--type "Microsoft.DevCenter/devcenters" ',
+                 checks=[
+                     self.check("nameAvailable", False),
                  ]
                  )
