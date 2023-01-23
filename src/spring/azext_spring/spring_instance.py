@@ -15,7 +15,8 @@ from ._tanzu_component import (create_application_configuration_service,
                                create_dev_tool_portal,
                                create_service_registry,
                                create_gateway,
-                               create_api_portal)
+                               create_api_portal,
+                               create_application_accelerator)
 
 from ._validators import (_parse_sku_name, validate_instance_not_existed)
 from azure.cli.core.commands import LongRunningOperation
@@ -43,7 +44,6 @@ class DefaultSpringCloud:
     def before_create(self, **kwargs):
         _warn_enable_java_agent(**kwargs)
         validate_instance_not_existed(self.client,
-                                      self.resource_group,
                                       self.name,
                                       self.location)
 
@@ -113,7 +113,6 @@ class DefaultSpringCloud:
 class EnterpriseSpringCloud(DefaultSpringCloud):
     def before_create(self, **_):
         validate_instance_not_existed(self.client,
-                                      self.resource_group,
                                       self.name,
                                       self.location)
 
@@ -128,7 +127,8 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
             create_dev_tool_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),
-            create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs)
+            create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_application_accelerator(self.cmd, self.client, self.resource_group, self.name, **kwargs)
         ]
         pollers = [x for x in pollers if x]
         if not no_wait:
@@ -166,6 +166,7 @@ def spring_create(cmd, client, resource_group, name,
                   gateway_instance_count=None,
                   enable_api_portal=False,
                   api_portal_instance_count=None,
+                  enable_application_accelerator=False,
                   enable_log_stream_public_endpoint=None,
                   ingress_read_timeout=None,
                   marketplace_plan_id=None,
@@ -199,6 +200,7 @@ def spring_create(cmd, client, resource_group, name,
         'gateway_instance_count': gateway_instance_count,
         'enable_api_portal': enable_api_portal,
         'api_portal_instance_count': api_portal_instance_count,
+        'enable_application_accelerator': enable_application_accelerator,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
         'marketplace_plan_id': marketplace_plan_id,
         'no_wait': no_wait

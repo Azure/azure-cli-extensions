@@ -1059,8 +1059,11 @@ def safe_get(model, *keys, default=None):
     if not model:
         return default
     for k in keys[:-1]:
-        model = model.get(k, {})
-    return model.get(keys[-1], default)
+        model = model.get(k)
+        if model is None:
+            return default
+    value = model.get(keys[-1], default)
+    return default if not value else value
 
 
 def safe_set(model, *keys, value):
@@ -1386,10 +1389,7 @@ def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
         r = ContainerAppClient.update(cmd, resource_group_name, name, envelope)
     except CLIError as e:
         handle_raw_exception(e)
-    if "customDomains" in r["properties"]["configuration"]["ingress"]:
-        return list(r["properties"]["configuration"]["ingress"]["customDomains"])
-    else:
-        return []
+    return safe_get(r, "properties", "configuration", "ingress", "customDomains", default=[])
 
 
 def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
@@ -1401,10 +1401,7 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
         if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
-        if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
-            custom_domains = app["properties"]["configuration"]["ingress"]["customDomains"]
-        else:
-            custom_domains = []
+        custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
     except CLIError as e:
         handle_raw_exception(e)
     return custom_domains
@@ -1506,42 +1503,19 @@ def is_registry_msi_system(identity):
 
 
 def validate_environment_location(cmd, location):
-    from ._constants import MAX_ENV_PER_LOCATION
-    from .custom import list_managed_environments
-    env_list = list_managed_environments(cmd)
-
-    locations = [loc["location"] for loc in env_list]
-    locations = list(set(locations))  # remove duplicates
-
-    location_count = {}
-    for loc in locations:
-        location_count[loc] = len([e for e in env_list if e["location"] == loc])  # pylint: disable=used-before-assignment
-
-    disallowed_locations = []
-    for _, value in enumerate(location_count):
-        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
-            disallowed_locations.append(value)
-
     res_locations = list_environment_locations(cmd)
-    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
 
     allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
             _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+
+            return location
         except Exception as e:  # pylint: disable=broad-except
             raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
-
-    if len(res_locations) > 0:
-        if not location:
-            logger.warning("Creating environment on location %s.", res_locations[0])
-            return res_locations[0]
-        if location in disallowed_locations:
-            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
-        return location
     else:
-        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
+        return res_locations[0]
 
 
 def list_environment_locations(cmd):

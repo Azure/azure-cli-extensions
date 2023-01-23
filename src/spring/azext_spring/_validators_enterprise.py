@@ -13,6 +13,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -43,7 +44,17 @@ def validate_build_env(cmd, namespace):
         if isinstance(namespace.build_env, list):
             env_dict = {}
             for item in namespace.build_env:
-                env_dict.update(validate_tag(item))
+                if item:
+                    comps = item.split('=', 1)
+                    if len(comps) <= 1:
+                        raise ArgumentUsageError("The value of env {} should not be empty.".format(item))
+                    else:
+                        if match(r"^[-._a-zA-Z][-._a-zA-Z0-9]*$", comps[0]):
+                            result = {}
+                            result = {comps[0]: comps[1]}
+                            env_dict.update(result)
+                        else:
+                            raise ArgumentUsageError("The env name {} is not allowed. The valid env name should follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'(For example, BP_JVM_VERSION).".format(comps[0]))
             namespace.build_env = env_dict
 
 
@@ -111,6 +122,26 @@ def validate_git_uri(namespace):
         raise InvalidArgumentValueError("Git URI should start with \"https://\" or \"git@\"")
 
 
+def validate_acc_git_url(namespace):
+    url = namespace.git_url
+    if not url:
+        raise ArgumentUsageError("Git Repository configurations '--git-url' should be all provided.")
+    if url and (not url.startswith("https://")) and (not url.startswith("ssh://")):
+        raise InvalidArgumentValueError("Git URL should start with \"https://\" or \"ssh://\"")
+
+
+def validate_acc_git_refs(namespace):
+    args = [namespace.git_branch, namespace.git_commit, namespace.git_tag]
+    if all(x is None for x in args):
+        raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch --git-commit --git-tag' should be all provided.")
+
+
+def validate_git_interval(namespace):
+    if namespace.git_interval is not None:
+        if namespace.git_interval < 1:
+            raise InvalidArgumentValueError("--git-interval must be greater than 0")
+
+
 def validate_acs_ssh_or_warn(namespace):
     private_key = namespace.private_key
     host_key = namespace.host_key
@@ -161,6 +192,9 @@ def validate_gateway_update(namespace):
     validate_cpu(namespace)
     validate_memory(namespace)
     validate_instance_count(namespace)
+    _validate_gateway_apm_types(namespace)
+    _validate_gateway_envs(namespace)
+    _validate_gateway_secrets(namespace)
 
 
 def validate_api_portal_update(namespace):
@@ -183,6 +217,32 @@ def _validate_sso(namespace):
         raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
     if namespace.scope is not None:
         namespace.scope = namespace.scope.split(",") if namespace.scope else []
+
+
+def _validate_gateway_apm_types(namespace):
+    if namespace.apm_types is None:
+        return
+    for type in namespace.apm_types:
+        if (type not in list(ApmType)):
+            raise InvalidArgumentValueError("Allowed APM types are: " + ', '.join(list(ApmType)))
+
+
+def _validate_gateway_envs(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def _validate_gateway_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
 
 
 def validate_routes(namespace):
@@ -249,3 +309,10 @@ def validate_buildpack_binding_exist(cmd, namespace):
                                  DEFAULT_BUILD_SERVICE_NAME,
                                  namespace.builder_name,
                                  namespace.name)
+
+
+def validate_customized_accelerator(namespace):
+    validate_acc_git_url(namespace)
+    validate_acc_git_refs(namespace)
+    if namespace.accelerator_tags is not None:
+        namespace.accelerator_tags = namespace.accelerator_tags.split(",") if namespace.accelerator_tags else []

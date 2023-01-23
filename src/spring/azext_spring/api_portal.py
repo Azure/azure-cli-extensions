@@ -4,10 +4,40 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.azclierror import ClientRequestError
-
+from azure.cli.core.commands.client_factory import get_subscription_id
+from msrestazure.tools import resource_id
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from ._utils import get_spring_sku
 
 DEFAULT_NAME = "default"
+GATEWAY_RESOURCE_TYPE = "gateways"
+
+
+def api_portal_create(cmd, client, resource_group, service, instance_count=None):
+    gateway_id = resource_id(
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group,
+        namespace='Microsoft.AppPlatform',
+        type='Spring',
+        name=service,
+        child_type_1=GATEWAY_RESOURCE_TYPE,
+        child_name_1=DEFAULT_NAME
+    )
+
+    api_portal_resource = models.ApiPortalResource(
+        properties=models.ApiPortalProperties(
+            gateway_ids=[gateway_id]
+        )
+    )
+
+    sku = get_spring_sku(client, resource_group, service)
+    if instance_count and sku:
+        api_portal_resource.sku = models.Sku(name=sku.name, tier=sku.tier, capacity=instance_count)
+    return client.api_portals.begin_create_or_update(resource_group, service, DEFAULT_NAME, api_portal_resource)
+
+
+def api_portal_delete(cmd, client, resource_group, service):
+    return client.api_portals.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
 def api_portal_show(cmd, client, resource_group, service):

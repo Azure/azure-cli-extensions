@@ -40,10 +40,10 @@ class BuildService:
         logger.warning("[1/{}] Requesting for upload URL.".format(total_steps))
         upload_info = self._get_upload_info()
         logger.warning("[2/{}] Uploading package to blob.".format(total_steps))
-        uploader_selector(upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
+        uploader_selector(cli_ctx=self.cmd.cli_ctx, upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
         logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, kwargs['app']))
         build_result_id = self._queue_build(upload_info.relative_path, **kwargs)
-        logger.warning("[4/{}] Waiting for building docker image to finish. This may take a few minutes.".format(total_steps))
+        logger.warning("[4/{}] Waiting for building container image to finish. This may take a few minutes.".format(total_steps))
         self._wait_build_finished(build_result_id)
         return build_result_id
 
@@ -105,7 +105,12 @@ class BuildService:
 
         if result.properties.provisioning_state != "Succeeded":
             log_url = self._try_get_build_log_url(build_result_id)
-            raise DeploymentError("Failed to build docker image, please check the build logs {} and retry.".format(log_url))
+            if hasattr(result.properties, "error"):
+                build_error = result.properties.error
+                error_msg = "Failed to build container image, error code: {}, message: {}, check the build logs {} for more details and retry.".format(build_error.code, build_error.message, log_url)
+            else:
+                error_msg = "Failed to build container image, please check the build logs {} and retry.".format(log_url)
+            raise DeploymentError(error_msg)
 
     def _get_build_result(self, id):
         resource_id = parse_resource_id(id)

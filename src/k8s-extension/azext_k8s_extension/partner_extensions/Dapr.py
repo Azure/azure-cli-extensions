@@ -95,7 +95,6 @@ class Dapr(DefaultExtension):
             name = prompt(self.MSG_ENTER_RELEASE_NAME, self.RELEASE_INFO_HELP_STRING) or self.DEFAULT_RELEASE_NAME
             if release_name and name != release_name:
                 logger.warning("The release name has been changed from '%s' to '%s'.", release_name, name)
-
             namespace = prompt(self.MSG_ENTER_RELEASE_NAMESPACE, self.RELEASE_INFO_HELP_STRING)\
                 or self.DEFAULT_RELEASE_NAMESPACE
             if release_namespace and namespace != release_namespace:

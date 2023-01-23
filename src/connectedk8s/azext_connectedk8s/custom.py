@@ -206,7 +206,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -241,36 +241,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                      "in the resource group {} ".format(resource_group_name) +
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
-
-    try:
-        k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
-        if kube_context:  # if custom kube-context is specified
-            if k8s_contexts[1].get('name') == kube_context:
-                current_k8s_context = k8s_contexts[1]
-            else:
-                for context in k8s_contexts[0]:
-                    if context.get('name') == kube_context:
-                        current_k8s_context = context
-                        break
-        else:
-            current_k8s_context = k8s_contexts[1]
-
-        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
-        namespace_exists = False
-        k8s_v1 = kube_client.CoreV1Api()
-        k8s_ns = k8s_v1.list_namespace()
-        for ns in k8s_ns.items:
-            if ns.metadata.name == current_k8s_namespace:
-                namespace_exists = True
-                break
-        if namespace_exists is False:
-            telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
-                                    summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
-            raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
-    except ValidationError as e:
-        raise e
-    except Exception as e:
-        logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
@@ -816,7 +786,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namepace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -1138,7 +1108,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -1294,7 +1264,7 @@ def validate_release_namespace(client, cluster_name, resource_group_name, kube_c
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -1791,11 +1761,6 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     cloud = send_cloud_telemetry(cmd)
-    if cloud == consts.Azure_USGovCloudName:
-        telemetry.set_debug_info('User tried proxy command in fairfax')
-        telemetry.set_exception(exception='Proxy command is not present yet in fairfax cloud.', fault_type=consts.ClusterConnect_Not_Present_Fault_Type,
-                                summary=f'User tried proxy command in fairfax.')
-        raise ClientRequestError(f'Cluster Connect feature is not yet available in {consts.Azure_USGovCloudName}')
 
     tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     client_proxy_port = consts.CLIENT_PROXY_PORT
@@ -1826,6 +1791,8 @@ def client_side_proxy_wrapper(cmd,
     CSP_Url = consts.CSP_Storage_Url
     if cloud == consts.Azure_ChinaCloudName:
         CSP_Url = consts.CSP_Storage_Url_Mooncake
+    elif cloud == consts.Azure_USGovCloudName:
+        CSP_Url = consts.CSP_Storage_Url_Fairfax
 
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1925,6 +1892,8 @@ def client_side_proxy_wrapper(cmd,
 
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
         if not utils.is_cli_using_msal_auth():
             # Fetching creds
@@ -1964,6 +1933,8 @@ def client_side_proxy_wrapper(cmd,
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
     telemetry.set_debug_info('User type is ', user_type)
 

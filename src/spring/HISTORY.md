@@ -1,10 +1,53 @@
 Release History
 ===============
+1.6.4
+---
+* Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
+* Add new commands `az spring service-registry create` and `az spring service-registry delete`.
+* Add new commands `az spring gateway create` and `az spring gateway delete`.
+* Add new commands `az spring api-portal create` and `az spring api-portal delete`.
+
+1.6.3
+---
+* Deprecate the subcommand 'spring app binding'.
+
+1.6.2
+---
+* Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
+
+1.6.1
+---
+* Add type check for argument `--artifact-path`.
+
+1.6.0
+---
+* Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.
+
+1.5.0
+---
+* Add the validator for `--build-env`.
+
+1.4.2
+---
+* Fix the missing echo in `bash` after exiting from `az spring app connect`.
+
+1.4.1
+---
+* Fix enabling dev tool failed when creating Azure Spring Apps Enterprise in command `az spring create --sku Enterprise --enable-application-live-view --enable-application-accelerator`.
+
+1.4.0
+---
+* Show help link when `az spring app deploy` failed.
+
 1.3.0
 ---
 * Add new command group `az spring application-live-view` to manage Application Live View.
+* Support route to app level in command `az spring gateway route-config create` and `az spring gateway route-config create`.
 * Add new command group `az spring dev-tool` to manage Dev Tools.
 * Add argument `--enable-application-live-view` in command `az spring create` to support enable application live view when creating Enterprise sku Spring resource.
+* Add new command group `az spring application-accelerator customized-accelerator` to manage Customized Accelerator.
+* Add new command group `az spring application-accelerator predefined-accelerator` to manage Predefined Accelerator.
+* Add argument `--enable-application-accelerator` in command `az spring create` to support enable application accelerator when creating Enterprise sku Spring resource.
 
 1.2.0
 ---

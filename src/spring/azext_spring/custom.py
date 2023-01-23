@@ -188,7 +188,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
 
 
 def spring_delete(cmd, client, resource_group, name, no_wait=False):
-    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
+    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/asa_exitsurvey")
     return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
 
 
@@ -1535,3 +1535,13 @@ def app_connect(cmd, client, resource_group, service, name,
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(EXEC_PROTOCOL_CTRL_C_MSG)
+
+    try:
+        import termios
+        # Turn on the terminal echo after exiting.
+        mode = termios.tcgetattr(sys.stdin.fileno())
+        mode[3] = mode[3] | termios.ECHO
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, mode)
+    except ModuleNotFoundError:
+        # termios works only on Unix
+        pass
