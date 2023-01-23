@@ -1,8 +1,4 @@
 def create_dev_center(self):
-    self.kwargs.update({
-        'devcenterName': self.create_random_name(prefix='cli', length=24),
-    })
-
     dev_center = self.cmd('az devcenter admin devcenter create '
                           '--location "{location}" '
                           '--tags CostCode="12345" '
@@ -155,6 +151,10 @@ def create_network_connection(self):
 
 
 def create_attached_network_dev_box_definition(self):
+    self.kwargs.update({
+        'devcenterName': self.create_random_name(prefix='cli', length=24),
+    })
+
     create_dev_center(self)
     create_project(self)
     create_network_connection(self)
