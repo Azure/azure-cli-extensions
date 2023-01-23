@@ -810,7 +810,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{poolName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('devBoxDefinitionName', "{devBoxDefinitionName}"),
+                     self.check('devBoxDefinitionName', "{devBoxDefinitionName2}"),
                      self.check('localAdministrator', "Enabled"),
                      self.check('networkConnectionName', "{attachedNetworkName}"),
                      self.check('location', "{location}")
