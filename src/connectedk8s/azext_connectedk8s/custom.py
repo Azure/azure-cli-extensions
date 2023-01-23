@@ -137,12 +137,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
-    required_node_exists = check_linux_amd64_node(node_api_response)
+    required_node_exists = check_linux_node(node_api_response)
     if not required_node_exists:
         telemetry.set_user_fault()
-        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'", fault_type=consts.Linux_Amd64_Node_Not_Exists,
-                                summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
-        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the OS 'linux'", fault_type=consts.Linux_Node_Not_Exists,
+                                summary="Couldn't find any node on the kubernetes cluster with the OS 'linux'")
+        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
     crb_permission = utils.can_create_clusterrolebindings()
     if not crb_permission:
@@ -551,16 +551,28 @@ def get_kubernetes_infra(api_response):  # Heuristic
         return "generic"
 
 
-def check_linux_amd64_node(api_response):
+def check_linux_node(api_response):
+    try:
+        for item in api_response.items:
+            node_os = item.metadata.labels.get("kubernetes.io/os")
+            if node_os == "linux":
+                return True
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug("Error occured while trying to find a linux node: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault_OS, 'Unable to find a linux node',
+                                           raise_error=False)
+    return False
+
+
+def check_arm64_node(api_response):
     try:
         for item in api_response.items:
             node_arch = item.metadata.labels.get("kubernetes.io/arch")
-            node_os = item.metadata.labels.get("kubernetes.io/os")
-            if node_arch == "amd64" and node_os == "linux":
+            if node_arch == "arm64":
                 return True
     except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
+        logger.debug("Error occured while trying to find an arm64 node: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault_Arch, 'Unable to find an arm64 node',
                                            raise_error=False)
     return False
 
@@ -719,6 +731,12 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
+    utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api()
+    node_api_response = utils.validate_node_api_response(api_instance, None)
+    is_arm64_cluster = check_arm64_node(node_api_response)
+    
+
     # Check forced delete flag
     if(force_delete):
 
@@ -771,7 +789,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                     _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
 
         return
 
@@ -780,7 +798,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         return
 
     # Loading config map
-    api_instance = kube_client.CoreV1Api()
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
@@ -811,7 +828,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                  "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
 
 
 def get_release_namespace(kube_config, kube_context, helm_client_location):
