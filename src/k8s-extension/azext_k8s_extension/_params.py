@@ -12,7 +12,7 @@ from . import consts
 
 from .action import (
     AddConfigurationSettings,
-    AddConfigurationProtectedSettings
+    AddConfigurationProtectedSettings,
 )
 
 
@@ -52,30 +52,41 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config-settings', '--config'],
+                   options_list=['--configuration-settings', '--config'],
                    action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings', '--config-protected-settings', '--config-protected'],
+                   options_list=['--config-protected-settings', '--config-protected'],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings-file', '--config-settings-file', '--config-file'],
+                   options_list=['--config-settings-file', '--config-file'],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings-file', '--config-protected-settings-file', '--config-protected-file'],
+                   options_list=['--config-protected-file', '--protected-settings-file'],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
-
+        c.argument('plan_name',
+                   arg_group="Marketplace",
+                   options_list=['--plan-name'],
+                   help='The plan name is referring to the Plan ID of the extension that is being taken from Marketplace portal under Usage Information + Support')
+        c.argument('plan_product',
+                   arg_group="Marketplace",
+                   options_list=['--plan-product'],
+                   help='The plan product is referring to the Product ID of the extension that is being taken from Marketplace portal under Usage Information + Support. An example of this is the name of the ISV offering used.')
+        c.argument('plan_publisher',
+                   arg_group="Marketplace",
+                   options_list=['--plan-publisher'],
+                   help='The plan publisher is referring to the Publisher ID of the extension that is being taken from Marketplace portal under Usage Information + Support')
     with self.argument_context(f"{consts.EXTENSION_NAME} update") as c:
         c.argument('yes',
                    options_list=['--yes', '-y'],
