@@ -119,7 +119,7 @@ class TunnelServer:
             self.client, _address = self.sock.accept()
 
             auth_token = self._get_auth_token()
-            if self.bastion['sku']['name'] == "QuickConnect" or  bastion['sku']['name'] == "Developer":
+            if self.bastion['sku']['name'] == "QuickConnect" or self.bastion['sku']['name'] == "Developer":
                 host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{auth_token}"
             else:
                 host = f"wss://{self.bastion_endpoint}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"
@@ -216,6 +216,6 @@ class TunnelServer:
 
     def get_port(self):
         return self.local_port
-    
+
     def set_host_name(self, hostname):
         self.host_name = hostname

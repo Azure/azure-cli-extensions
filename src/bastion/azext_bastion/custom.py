@@ -18,6 +18,7 @@ import time
 import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
     UnrecognizedArgumentError, CLIInternalError, ClientRequestError
+from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
 
@@ -132,20 +133,24 @@ def _build_args(cert_file, private_key_file):
     return private_key + certificate
 
 
-def ssh_bastion_host(cmd, auth_type, target_resource_id, resource_group_name, bastion_host_name,
+def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
                      resource_port=None, username=None, ssh_key=None):
     import os
     from .aaz.latest.network.bastion import Show
 
     _test_extension(SSH_EXTENSION_NAME)
+    bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "name": bastion_host_name
+    })
 
     if not resource_port:
         resource_port = 22
-    
-    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] != True:
+
+    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
+    _validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port)
@@ -216,7 +221,6 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     import os
     from azure.cli.core._profile import Profile
     from ._process_helper import launch_and_wait
-    from azure.cli.core.commands.client_factory import get_subscription_id
     from .aaz.latest.network.bastion import Show
 
     bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
@@ -226,8 +230,8 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
 
     if not resource_port:
         resource_port = 3389
-    
-    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] != True:
+
+    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
@@ -249,8 +253,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             profile = Profile(cli_ctx=cmd.cli_ctx)
             access_token = profile.get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
-            
-            if bastion['sku']['name'] == "QuickConnect" or  bastion['sku']['name'] == "Developer":
+            if bastion['sku']['name'] == "QuickConnect" or bastion['sku']['name'] == "Developer":
                 web_address = f"https://{bastion_endpoint}/api/omni/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
             else:
                 web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
@@ -267,7 +270,6 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
                 raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
 
             _write_to_file(response)
-
             rdpfilepath = os.getcwd() + "/conn.rdp"
             command = [_get_rdp_path()]
             if configure:
@@ -277,29 +279,33 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     else:
         raise UnrecognizedArgumentError("Platform is not supported for this command. Supported platforms: Windows")
 
+
 def _is_ipconnect_request(cmd, bastion, target_ip_address):
-    if bastion['enableIpConnect'] == True and target_ip_address:
+    if bastion['enableIpConnect'] is True and target_ip_address:
         return True
-    
+
     return False
+
 
 def _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address):
     if target_ip_address:
-        if bastion['enableIpConnect'] != True:
+        if bastion['enableIpConnect'] is not True:
             raise InvalidArgumentValueError("Bastion does not have IP Connect feature enabled, please enable and try again")
         target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
     elif not is_valid_resource_id(target_resource_id):
         err_msg = "Please enter a valid resource ID. If this is not working, " \
                   "try opening the JSON view of your resource (in the Overview tab), and copying the full resource ID."
         raise InvalidArgumentValueError(err_msg)
-    
+
+
 def _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id):
-    if bastion['sku']['name'] == "QuickConnect" or  bastion['sku']['name'] == "Developer":
+    if bastion['sku']['name'] == "QuickConnect" or bastion['sku']['name'] == "Developer":
         from .developer_sku_helper import (_get_data_pod)
         bastion_endpoint = _get_data_pod(cmd, resource_port, target_resource_id, bastion)
         return bastion_endpoint
 
     return bastion['dnsName']
+
 
 def _write_to_file(response):
     with open("conn.rdp", "w", encoding="utf-8") as f:
@@ -310,7 +316,7 @@ def _write_to_file(response):
 
 def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None):
     from .tunnel import TunnelServer
-    
+
     if port is None:
         port = 0  # will auto-select a free port from 1024-65535
     tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
@@ -321,6 +327,7 @@ def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None)
 def _start_tunnel(tunnel_server):
     tunnel_server.start_server()
 
+
 def _tunnel_close_handler(tunnel):
     logger.info("Ctrl + C received. Clean up and then exit.")
     tunnel.cleanup()
@@ -328,7 +335,7 @@ def _tunnel_close_handler(tunnel):
     sys.exit()
 
 
-def create_bastion_tunnel(cmd, target_resource_id, resource_group_name, bastion_host_name, resource_port, port,
+def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name, resource_port, port,
                           timeout=None):
     if not is_valid_resource_id(target_resource_id):
         raise InvalidArgumentValueError("Please enter a valid VM resource ID.")
@@ -338,11 +345,11 @@ def create_bastion_tunnel(cmd, target_resource_id, resource_group_name, bastion_
         "resource_group": resource_group_name,
         "name": bastion_host_name
     })
-    
-    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] != True:
+
+    if bastion['sku']['name'] == "Basic" or bastion['sku']['name'] == "Standard" and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
+    _validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port)

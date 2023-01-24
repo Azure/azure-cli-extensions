@@ -4,12 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import ipaddress
-from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
-    UnrecognizedArgumentError, CLIInternalError, ClientRequestError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
-def validate_ip_address(cmd, namespace):
+
+def validate_ip_address(namespace):
     if namespace.target_ip_address is not None:
         _validate_ip_address_format(namespace)
+
 
 def _validate_ip_address_format(namespace):
     if namespace.target_ip_address is not None:
