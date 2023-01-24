@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.21
+++++++
+* Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+
 0.3.20
 ++++++
 * Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
