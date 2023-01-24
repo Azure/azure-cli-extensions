@@ -145,7 +145,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         diagnostic_checks = "Failed"
         batchv1_api_instance = kube_client.BatchV1Api()
         storage_space_available = True
-        precheckutils.initialize_diagnoser_output()
+
         current_time = time.ctime(time.time())
         time_stamp = ""
         for elements in current_time:

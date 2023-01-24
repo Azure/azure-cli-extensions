@@ -46,9 +46,6 @@ logger = get_logger(__name__)
 
 diagnoser_output = []
 
-def initialize_diagnoser_output():
-     global diagnoser_output
-
 def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, filepath_with_timestamp, storage_space_available):
     global diagnoser_output
     try:
