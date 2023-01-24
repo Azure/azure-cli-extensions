@@ -146,7 +146,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         batchv1_api_instance = kube_client.BatchV1Api()
         storage_space_available = True
         precheckutils.initialize_diagnoser_output()
-        # diagnoser_output = precheckutils.initialize_diagnoser_output()
         current_time = time.ctime(time.time())
         time_stamp = ""
         for elements in current_time:
@@ -160,8 +159,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         time_stamp = cluster_name + '-' + time_stamp
         
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, True)
-        # filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, diagnoser_output)
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
 
         if(diagnostic_folder_status is not True):
             storage_space_available = False
@@ -169,7 +167,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         # Performing cluster-diagnostic-checks
         diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, filepath_with_timestamp, storage_space_available)
         Storing_Diagnoser_Results_Logs = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
-        # Storing_Diagnoser_Results_Logs = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, diagnoser_output)
 
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
@@ -179,6 +176,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Handling the user manual interrupt
     except KeyboardInterrupt:
+        try:
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+        except Exception as e:
+            pass
         raise ManualInterrupt('Process terminated externally.')
 
     # If the checks didnt pass then stop the onboarding
@@ -2288,7 +2289,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             time_stamp += elements
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp)
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Arc_Diagnostic_Logs)
 
         if(diagnostic_folder_status is not True):
             storage_space_available = False

@@ -72,8 +72,6 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
                     counter_container_logs = 0
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
-            # dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, True)
-            # outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], filepath_with_timestamp, storage_space_available, True)
             dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output)
             outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], filepath_with_timestamp, storage_space_available, diagnoser_output)
         else:
@@ -134,7 +132,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                 telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
                 return
 
-        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, 'cluster_diagnostic_checks')
+        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name)
 
         helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
 

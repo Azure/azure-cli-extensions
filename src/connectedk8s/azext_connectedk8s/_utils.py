@@ -74,7 +74,7 @@ def validate_location(cmd, location):
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='AzureArcCharts'):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    if chart_path_name == 'cluster_diagnostic_checks':
+    if chart_path_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
         pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name)
     else:
         pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, 'azure-arc')
@@ -87,13 +87,13 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_path_name, chart_export_path))
 
-    if chart_path_name == 'cluster_diagnostic_checks':
+    if chart_path_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
         export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
     else:
         export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, 'azure-arc')
 
     # Returning helm chart path
-    if chart_path_name == 'cluster_diagnostic_checks':
+    if chart_path_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
         helm_chart_path = os.path.join(chart_export_path, 'cluster-diagnostic-checks')
         chart_path = helm_chart_path
     else:
@@ -134,11 +134,6 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
 # def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, for_preonboarding_checks=False):
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
     
-    # global diagnoser_output
-    # if for_preonboarding_checks:
-    #     diagnoser_output = precheckutils.diagnoser_output
-    # else:
-    #     diagnoser_output = troubleshootutils.diagnoser_output
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
@@ -181,12 +176,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
 
 # def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, for_preonboarding_checks=False):
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
-    
-    # global diagnoser_output
-    # if for_preonboarding_checks:
-    #     diagnoser_output = precheckutils.diagnoser_output
-    # else:
-    #     diagnoser_output = troubleshootutils.diagnoser_output
+
     try:
         outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
         outbound_connectivity_response = outbound_connectivity_response[::-1]
@@ -229,14 +219,13 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
 
 
 def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag, for_preonboarding_checks=False):
-# def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag, diagnoser_output):
 
     # This function is used to store the output that is obtained throughout the Diagnoser process
-    # global diagnoser_output
     if for_preonboarding_checks:
         diagnoser_output = precheckutils.diagnoser_output
     else:
         diagnoser_output = troubleshootutils.diagnoser_output
+
     try:
         # If storage space is available then only we store the output
         if storage_space_available:
@@ -277,18 +266,12 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
     return consts.Diagnostic_Check_Failed
 
 
-def create_folder_diagnosticlogs(time_stamp, for_preonboarding_checks=False):
-# def create_folder_diagnosticlogs(time_stamp, diagnoser_output):
+def create_folder_diagnosticlogs(time_stamp, folder_name):
 
-    # global diagnoser_output
-    if for_preonboarding_checks:
-        diagnoser_output = precheckutils.diagnoser_output
-    else:
-        diagnoser_output = troubleshootutils.diagnoser_output
     try:
         # Fetching path to user directory to create the arc diagnostic folder
         home_dir = os.path.expanduser('~')
-        filepath = os.path.join(home_dir, '.azure', consts.Arc_Diagnostic_Logs)
+        filepath = os.path.join(home_dir, '.azure', folder_name)
         # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
         try:
             os.mkdir(filepath)
@@ -314,14 +297,12 @@ def create_folder_diagnosticlogs(time_stamp, for_preonboarding_checks=False):
         else:
             logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
-            diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
             return "", False
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
-        diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         return "", False
 
 
