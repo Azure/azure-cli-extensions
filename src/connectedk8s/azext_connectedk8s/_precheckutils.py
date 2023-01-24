@@ -44,8 +44,13 @@ logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 # pylint: disable
 
+diagnoser_output = []
 
-def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
+def initialize_diagnoser_output():
+     global diagnoser_output
+
+def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, filepath_with_timestamp, storage_space_available):
+    global diagnoser_output
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
@@ -67,26 +72,28 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
                     counter_container_logs = 0
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
-            dns_check, _ = azext_utils.check_cluster_DNS(dns_check_log, False)
-            outbound_connectivity_check, _ = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], False)
+            # dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, True)
+            # outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], filepath_with_timestamp, storage_space_available, True)
+            dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output)
+            outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(cluster_diagnostic_checks_container_log_list[-1], filepath_with_timestamp, storage_space_available, diagnoser_output)
         else:
-            return consts.Diagnostic_Check_Incomplete
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # If both the check passed then we will return cluster diagnostic checks Passed
         if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
-            return consts.Diagnostic_Check_Passed
+            return consts.Diagnostic_Check_Passed, storage_space_available
         # If any of the check remain Incomplete than we will return Incomplete
         elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
-            return consts.Diagnostic_Check_Incomplete
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
         else:
-            return consts.Diagnostic_Check_Failed
+            return consts.Diagnostic_Check_Failed, storage_space_available
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while trying to execute cluster diagnostic checks container on the cluster. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type, summary="Error occured while executing the cluster diagnostic checks container")
 
-    return consts.Diagnostic_Check_Incomplete
+    return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
 def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
@@ -94,7 +101,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
 
-    cmd_helm_delete = [helm_client_location, "uninstall", "cluster-diagnostic-checks"]
+    cmd_helm_delete = [helm_client_location, "uninstall", "cluster-diagnostic-checks", "-n", "azure-arc-release"]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -136,7 +143,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
         is_job_complete = False
         is_job_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 180 seconds
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='default', label_selector="", timeout_seconds=60):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc-release', label_selector="", timeout_seconds=60):
             try:
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "cluster-diagnostic-checks-job":
@@ -154,26 +161,26 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             telemetry.set_exception(exception="Couldn't schedule cluster diagnostic checks job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
                                     summary="Couldn't schedule cluster diagnostic checks job in the cluster")
             logger.warning("Unable to schedule the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
-            Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
             telemetry.set_exception(exception="Couldn't complete cluster diagnostic checks job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
                                     summary="Couldn't complete cluster diagnostic checks job after scheduling in the cluster")
             logger.warning("Unable to finish the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
-            Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:
             # Fetching the cluster diagnostic checks Container logs
-            all_pods = corev1_api_instance.list_namespaced_pod('default')
+            all_pods = corev1_api_instance.list_namespaced_pod('azure-arc-release')
             # Traversing through all agents
             for each_pod in all_pods.items:
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
                 if(pod_name.startswith(job_name)):
                     # Creating a text file with the name of the container and adding that containers logs in it
-                    cluster_diagnostic_checks_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="cluster-diagnostic-checks-container", namespace='default')
+                    cluster_diagnostic_checks_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="cluster-diagnostic-checks-container", namespace='azure-arc-release')
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
-        Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+        # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
