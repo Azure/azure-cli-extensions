@@ -156,13 +156,13 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             telemetry.set_exception(exception="Couldn't schedule cluster diagnostic checks job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
                                     summary="Couldn't schedule cluster diagnostic checks job in the cluster")
             logger.warning("Unable to schedule the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
-            # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
             telemetry.set_exception(exception="Couldn't complete cluster diagnostic checks job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
                                     summary="Couldn't complete cluster diagnostic checks job after scheduling in the cluster")
             logger.warning("Unable to finish the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
-            # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:
             # Fetching the cluster diagnostic checks Container logs
@@ -175,7 +175,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                     # Creating a text file with the name of the container and adding that containers logs in it
                     cluster_diagnostic_checks_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="cluster-diagnostic-checks-container", namespace='azure-arc-release')
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
-        # Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+        Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
