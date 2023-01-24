@@ -335,7 +335,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                 if provider_id.lower() == "rigetti":
                     content_type = "application/octet-stream"
                 else:
-                    # MAINTENANCE NOTE: The following value is valid for QCI and Quantinuum. Make sure it's correct to new providers.
+                    # MAINTENANCE NOTE: The following value is valid for QCI and Quantinuum.
+                    # Make sure it's correct for new providers when they are added. If not,
+                    # modify this logic.
                     content_type = "application/x-qir.v1"
             content_encoding = None
 
