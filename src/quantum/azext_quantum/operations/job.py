@@ -332,7 +332,11 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     else:
         if job_type == QIR_JOB:
             if content_type is None:
-                content_type = "application/x-qir.v1"       # <<<<< Is this a valid default for all QIR jobs?
+                if provider_id.lower() == "rigetti":
+                    content_type = "application/octet-stream"
+                else:
+                    # MAINTENANCE NOTE: The following value is valid for QCI and Quantinuum. Make sure it's correct to new providers.
+                    content_type = "application/x-qir.v1"
             content_encoding = None
 
         with open(job_input_file, "rb") as input_file:
