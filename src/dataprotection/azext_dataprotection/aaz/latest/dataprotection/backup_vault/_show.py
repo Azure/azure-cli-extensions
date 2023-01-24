@@ -12,13 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-vault wait",
+    "dataprotection backup-vault show",
+    is_experimental=True,
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get a resource belonging to a resource group.
+
+    :example: Get BackupVault
+        az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+
+    :example: Get BackupVault With MSI
+        az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {
+        "version": "2022-12-01",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2022-12-01"],
         ]
@@ -65,7 +73,7 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
     class BackupVaultsGet(AAZHttpOperation):
@@ -302,8 +310,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]

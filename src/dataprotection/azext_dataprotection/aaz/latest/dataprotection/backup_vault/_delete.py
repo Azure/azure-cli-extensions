@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-vault delete",
+    "dataprotection backup-vault delete",
     is_experimental=True,
     confirmation="Are you sure you want to perform this operation?",
 )

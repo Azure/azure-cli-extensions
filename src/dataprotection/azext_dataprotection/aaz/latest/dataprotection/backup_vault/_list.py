@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-vault list",
+    "dataprotection backup-vault list",
     is_experimental=True,
 )
 class List(AAZCommand):

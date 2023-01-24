@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "data-protection backup-vault",
+    "dataprotection",
     is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage backup vault with dataprotection.
+    """Manage Data Protection.
     """
     pass
 
