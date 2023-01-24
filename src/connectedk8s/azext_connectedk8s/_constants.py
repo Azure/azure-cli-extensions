@@ -188,7 +188,7 @@ Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while exe
 Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
 Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
-Pre_Onboarding_Diagnostic_Checks_Execution_Failed= 'Exception occured while trying to execute pre-onboarding diagnostic checks'
+Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while trying to execute pre-onboarding diagnostic checks'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

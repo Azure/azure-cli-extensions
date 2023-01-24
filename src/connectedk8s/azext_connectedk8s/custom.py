@@ -157,7 +157,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 continue
             time_stamp += elements
         time_stamp = cluster_name + '-' + time_stamp
-        
+
         # Generate the diagnostic folder in a given location
         filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
 

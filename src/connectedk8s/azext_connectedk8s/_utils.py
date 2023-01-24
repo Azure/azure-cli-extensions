@@ -133,7 +133,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
 
 # def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, for_preonboarding_checks=False):
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
-    
+
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
