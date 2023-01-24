@@ -782,13 +782,6 @@ kConnections/{networkConnectionName}" --dev-center-name "Contoso" --resource-gro
 """
 
 helps[
-    "devcenter admin attached-network update"
-] = """
-    type: command
-    short-summary: "Update an attached network connection."
-"""
-
-helps[
     "devcenter admin attached-network delete"
 ] = """
     type: command
