@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Updates a BackupVault resource belonging to a resource group. For example, updating tags for a resource.
 
     :example: Patch BackupVault
-        az az dataprotection backup-vault update --azure-monitor-alerts-for-job-failures "Enabled" --tags newKey="newVal" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+        az dataprotection backup-vault update --azure-monitor-alerts-for-job-failures "Enabled" --tags newKey="newVal" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {
