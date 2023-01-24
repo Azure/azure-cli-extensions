@@ -29,7 +29,7 @@ MINIMUM_MAX_POLL_WAIT_SECS = 1
 DEFAULT_SHOTS = 500
 QIO_DEFAULT_TIMEOUT = 100
 
-ERROR_MSG_MISSING_INPUT_FILE = "The following argument is required: --job-input-file"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
+ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 
@@ -213,7 +213,7 @@ def submit(cmd, program_args, resource_group_name, workspace_name, location, tar
     """
     Submit a quantum program to run on Azure Quantum.
     """
-    if job_input_format is None:
+    if job_input_file is None:
         return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
                               project, job_name, shots, storage, no_build, job_params, target_capability)
 
@@ -228,6 +228,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     """
     Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
     """
+    if job_input_format is None:
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Get workspace, target, and provider information
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
@@ -257,9 +259,6 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             job_output_format = "microsoft.qio-results.v2"
         else:
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
-
-    if job_input_file is None:
-        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FILE, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Extract "metadata" and "tags" from job_params, then remove those parameters from job_params,
     # since they should not be included in the "inputParams" parameter of job_details. They are
