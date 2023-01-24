@@ -17,6 +17,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Gets list of backup vault in a subscription or in a resource group.
+
+    :example: List backup vault in a subscription
+        az dataprotection backup-vault list
+
+    :example: List backup vault in a resource group
+        az dataprotection backup-vault list -g sarath-rg
     """
 
     _aaz_info = {

@@ -17,6 +17,12 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a resource belonging to a resource group.
+
+    :example: Get BackupVault
+        az az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+
+    :example: Get BackupVault With MSI
+        az az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {

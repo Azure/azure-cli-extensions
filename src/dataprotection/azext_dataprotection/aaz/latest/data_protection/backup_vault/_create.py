@@ -17,6 +17,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a BackupVault resource belonging to a resource group.
+
+    :example: Create BackupVault
+        az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings "[{type:LocallyRedundant,datastore-type:VaultStore}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+
+    :example: Create BackupVault With MSI
+        az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings "[{type:LocallyRedundant,datastore-type:VaultStore}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {
@@ -102,7 +108,7 @@ class Create(AAZCommand):
         _args_schema.storage_settings = AAZListArg(
             options=["--storage-settings"],
             arg_group="Properties",
-            help={"short-summary": "Storage Settings.", "long-summary": "Usage: --storage-settings datastore-type=XX type=XX.\ndatastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument."},
+            help={"short-summary": "Storage Settings.", "long-summary": "Usage: --storage-settings \"[{type:XX,datastore-type:XX}]\".\ndatastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument."},
             required=True,
         )
 

@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a BackupVault resource from the resource group.
+
+    :example: Delete BackupVault
+        az dataprotection backup-vault delete --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {
