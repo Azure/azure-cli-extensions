@@ -23,16 +23,12 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
     content = {"query": query}
     request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
 
-    resource_endpoint = cli_ctx.cloud.endpoints.resource_manager
-    # Handle dogfood case
-    if resource_endpoint == "https://api-dogfood.resources.windows-int.net/":
-        resource_endpoint = "https://management.core.windows.net/"
     response = send_raw_request(
         cli_ctx,
         "POST",
         request_url,
         body=json.dumps(content),
-        resource=resource_endpoint,
+        resource=cli_ctx.cloud.endpoints.active_directory_resource_id,
     )
     resource_graph_data = response.json()["data"]
 
