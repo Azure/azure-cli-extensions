@@ -24,6 +24,7 @@ import websocket
 from websocket import create_connection, WebSocket
 
 from msrestazure.azure_exceptions import CloudError
+from .BastionServiceConstants import BastionSku
 
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import should_disable_connection_verify
@@ -119,7 +120,7 @@ class TunnelServer:
             self.client, _address = self.sock.accept()
 
             auth_token = self._get_auth_token()
-            if self.bastion['sku']['name'] == "QuickConnect" or self.bastion['sku']['name'] == "Developer":
+            if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or self.bastion['sku']['name'] == BastionSku.Developer.name:
                 host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{auth_token}"
             else:
                 host = f"wss://{self.bastion_endpoint}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"

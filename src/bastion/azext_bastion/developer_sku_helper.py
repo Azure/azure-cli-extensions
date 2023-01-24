@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+# pylint: disable=import-error,unused-import
+
 def _get_data_pod(cmd, resource_port, target_resource_id, bastion):
     from azure.cli.core._profile import Profile
     from azure.cli.core.util import should_disable_connection_verify
