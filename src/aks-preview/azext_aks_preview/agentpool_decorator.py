@@ -35,6 +35,7 @@ logger = get_logger(__name__)
 AgentPool = TypeVar("AgentPool")
 AgentPoolsOperations = TypeVar("AgentPoolsOperations")
 PortRange = TypeVar("PortRange")
+IPTag = TypeVar("IPTag")
 
 
 # pylint: disable=too-few-public-methods
@@ -66,37 +67,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             external_functions["get_snapshot_by_snapshot_id"] = get_nodepool_snapshot_by_snapshot_id
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
-
-    def get_zones(self) -> Union[List[str], None]:
-        """Obtain the value of zones.
-
-        Note: Inherited and extended in aks-preview to add support for a different parameter name (node_zones).
-
-        :return: list of strings or None
-        """
-        zones = super().get_zones()
-        if zones is not None:
-            return zones
-        # read the original value passed by the command
-        return self.raw_param.get("node_zones")
-
-    def get_host_group_id(self) -> Union[str, None]:
-        """Obtain the value of host_group_id.
-
-        :return: string or None
-        """
-        # read the original value passed by the command
-        host_group_id = self.raw_param.get("host_group_id")
-        # try to read the property value corresponding to the parameter from the `agentpool` object
-        if (
-            self.agentpool and
-            self.agentpool.host_group_id is not None
-        ):
-            host_group_id = self.agentpool.host_group_id
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return host_group_id
 
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.
@@ -144,21 +114,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return message_of_the_day
-
-    def get_gpu_instance_profile(self) -> Union[str, None]:
-        """Obtain the value of gpu_instance_profile.
-
-        :return: string or None
-        """
-        # read the original value passed by the command
-        gpu_instance_profile = self.raw_param.get("gpu_instance_profile")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if self.agentpool and self.agentpool.gpu_instance_profile is not None:
-            gpu_instance_profile = self.agentpool.gpu_instance_profile
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return gpu_instance_profile
 
     def get_workload_runtime(self) -> Union[str, None]:
         """Obtain the value of workload_runtime, default value is CONST_WORKLOAD_RUNTIME_OCI_CONTAINER.
@@ -304,6 +259,17 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             ))
         return port_ranges
 
+    def get_ip_tags(self) -> Union[List[IPTag], None]:
+        ip_tags = self.raw_param.get("node_public_ip_tags")
+        res = []
+        if ip_tags:
+            for k, v in ip_tags.items():
+                res.append(self.models.IPTag(
+                    ip_tag_type=k,
+                    tag=v,
+                ))
+        return res
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -345,7 +311,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        agentpool.host_group_id = self.context.get_host_group_id()
         agentpool.capacity_reservation_group_id = self.context.get_crg_id()
         return agentpool
 
@@ -362,11 +327,12 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def set_up_gpu_properties(self, agentpool: AgentPool) -> AgentPool:
         """Set up gpu related properties for the AgentPool object.
 
+        Note: Inherited and extended in aks-preview to set workload runtime.
+
         :return: the AgentPool object
         """
-        self._ensure_agentpool(agentpool)
+        agentpool = super().set_up_gpu_properties(agentpool)
 
-        agentpool.gpu_instance_profile = self.context.get_gpu_instance_profile()
         agentpool.workload_runtime = self.context.get_workload_runtime()
         return agentpool
 
@@ -402,11 +368,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         asg_ids = self.context.get_asg_ids()
         allowed_host_ports = self.context.get_allowed_host_ports()
-        if asg_ids and allowed_host_ports:
-            agentpool.network_profile = self.models.AgentPoolNetworkProfile(
-                application_security_groups=asg_ids,
-                allowed_host_ports=allowed_host_ports,
-            )
+        agentpool.network_profile = self.models.AgentPoolNetworkProfile()
+        if allowed_host_ports is not None:
+            agentpool.network_profile.allowed_host_ports = allowed_host_ports
+            agentpool.network_profile.application_security_groups = asg_ids
+
+        ip_tags = self.context.get_ip_tags()
+        if ip_tags:
+            agentpool.network_profile.node_public_ip_tags = ip_tags
+
         return agentpool
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
@@ -424,8 +394,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_preview_vm_properties(agentpool)
         # set up message of the day
         agentpool = self.set_up_motd(agentpool)
-        # set up gpu profiles
-        agentpool = self.set_up_gpu_properties(agentpool)
         # set up custom ca trust
         agentpool = self.set_up_custom_ca_trust(agentpool)
         # set up agentpool windows profile
@@ -490,7 +458,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         asg_ids = self.context.get_asg_ids()
         allowed_host_ports = self.context.get_allowed_host_ports()
-        if asg_ids or allowed_host_ports:
+        if not agentpool.network_profile and (asg_ids or allowed_host_ports):
             agentpool.network_profile = self.models.AgentPoolNetworkProfile()
         if asg_ids is not None:
             agentpool.network_profile.application_security_groups = asg_ids

@@ -48,7 +48,7 @@ setupAZ(){
 # need to be executed in a venv
 installTestPackages(){
     # install pytest plugins
-    pip install pytest-json-report pytest-rerunfailures pytest-cov --upgrade
+    pip install pytest-json-report pytest-rerunfailures pytest-cov pytest-forked --upgrade
 
     # install coverage for measuring code coverage
     pip install coverage

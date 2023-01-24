@@ -100,50 +100,12 @@ aks create:
     assign_kubelet_identity:
       rule_exclusions:
       - option_length_too_long
-aks addon enable:
-  parameters:
-    appgw_watch_namespace:
-      rule_exclusions:
-      - option_length_too_long
-    workspace_resource_id:
-      rule_exclusions:
-      - option_length_too_long
-    enable_msi_auth_for_monitoring:
-      rule_exclusions:
-      - option_length_too_long
-aks addon update:
-  parameters:
-    appgw_watch_namespace:
-      rule_exclusions:
-      - option_length_too_long
-    workspace_resource_id:
-      rule_exclusions:
-      - option_length_too_long
-    enable_msi_auth_for_monitoring:
-      rule_exclusions:
-      - option_length_too_long
-aks enable-addons:
-  parameters:
-    appgw_watch_namespace:
-      rule_exclusions:
-      - option_length_too_long
-    workspace_resource_id:
-      rule_exclusions:
-      - option_length_too_long
-    enable_msi_auth_for_monitoring:
-      rule_exclusions:
-      - option_length_too_long
-aks nodepool add:
-  parameters:
-    enable_node_public_ip:
-      rule_exclusions:
-      - option_length_too_long
-    node_public_ip_prefix_id:
+    node_public_ip_tags:
       rule_exclusions:
         - option_length_too_long
-    enable_encryption_at_host:
+    custom_ca_trust_certificates:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -212,6 +174,9 @@ aks update:
     ksm_metric_labels_allow_list:
       rule_exclusions:
       - option_length_too_long
+    custom_ca_trust_certificates:
+      rule_exclusions:
+        - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -1212,7 +1177,7 @@ iot central user update:
     central_dns_suffix:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot device-update update:
+iot du update:
   rule_exclusions:
     - require_wait_command_if_no_wait
 iot dps enrollment update:
@@ -1245,6 +1210,31 @@ iot hub distributed-tracing update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub message-endpoint create cosmosdb-collection:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create eventhub:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create servicebus-queue:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create servicebus-topic:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create storage-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 iot hub module-identity update:
   parameters:
     auth_type_dataplane:

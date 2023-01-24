@@ -42,6 +42,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+    CONST_CUSTOM_CA_TEST_CERT,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -72,6 +73,8 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
+
+from azure.cli.core.util import read_file_content
 
 
 class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
@@ -481,7 +484,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_3)
         ctx_3.attach_mc(mc_3)
         self.assertEqual(ctx_3.get_load_balancer_managed_outbound_ipv6_count(), 20)
-    
+
     def test_get_load_balancer_backend_pool_type(self):
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -559,6 +562,71 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disable_pod_security_policy()
+
+    def test_get_network_plugin(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "network_plugin": None,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_network_plugin(), None)
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(network_plugin="test_network_plugin")
+        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile_1)
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_network_plugin(), "test_network_plugin")
+
+        # invalid parameter
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "pod_cidr": "test_pod_cidr",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on network_plugin not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_2.get_network_plugin()
+
+        # custom
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "pod_cidr": "test_pod_cidr",
+                    "network_plugin": "azure",
+                    "network_plugin_mode": "test_mode",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on network_plugin_mode not specified as overlay
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_network_plugin()
+
+        # custom
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "pod_cidr": "test_pod_cidr",
+                    "network_plugin": "azure",
+                    "network_plugin_mode": "overlay",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_network_plugin(), "azure")
 
     def test_mc_get_network_plugin_mode(self):
         # default
@@ -1933,253 +2001,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ctx_7.get_disk_driver(), ground_truth_disk_csi_driver_7
         )
 
-    def test_get_file_driver(self):
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_file_driver": True,
-                    "disable_file_driver": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_file_driver and disable_file_driver
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_1.get_file_driver()
-
-        # fail on prompt_y_n not specified when disabling file driver
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "disable_file_driver": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with patch(
-            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
-            return_value=False,
-        ), self.assertRaises(DecoratorEarlyExitException):
-            ctx_2.get_file_driver()
-
-    def test_get_snapshot_controller(self):
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_snapshot_controller": True,
-                    "disable_snapshot_controller": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_snapshot_controller and disable_snapshot_controller
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_1.get_snapshot_controller()
-
-        # fail on prompt_y_n not specified when disabling snapshot controller
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "disable_snapshot_controller": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with patch(
-            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
-            return_value=False,
-        ), self.assertRaises(DecoratorEarlyExitException):
-            ctx_2.get_snapshot_controller()
-
-    def test_get_blob_driver(self):
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_blob_driver": True,
-                    "disable_blob_driver": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_blob_driver and disable_blob_driver
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_1.get_blob_driver()
-
-        # fail on prompt_y_n not specified when disabling blob driver
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "disable_blob_driver": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with patch(
-            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
-            return_value=False,
-        ), self.assertRaises(DecoratorEarlyExitException):
-            ctx_2.get_blob_driver()
-
-        # fail on prompt_y_n not specified when enabling blob driver
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_blob_driver": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with patch(
-            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
-            return_value=False,
-        ), self.assertRaises(DecoratorEarlyExitException):
-            ctx_3.get_blob_driver()
-
-        # create with blob driver enabled
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_blob_driver": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        ctx_4.attach_mc(mc_1)
-        storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            blob_csi_driver=self.models.ManagedClusterStorageProfileBlobCSIDriver(
-                enabled=True,
-            ),
-        )
-        self.assertEqual(ctx_4.get_storage_profile(), storage_profile_1)
-
-        # create without blob driver enabled
-        ctx_5 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        ctx_5.attach_mc(mc_1)
-        storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            blob_csi_driver=None,
-        )
-        self.assertEqual(ctx_5.get_storage_profile(), storage_profile_2)
-
-        # update blob driver enabled
-        ctx_6 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_blob_driver": True,
-                "yes": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        ctx_6.attach_mc(mc_1)
-        storage_profile_3 = self.models.ManagedClusterStorageProfile(
-            blob_csi_driver=self.models.ManagedClusterStorageProfileBlobCSIDriver(
-                enabled=True,
-            ),
-        )
-        self.assertEqual(ctx_6.get_storage_profile(), storage_profile_3)
-
-        # update blob driver disabled
-        ctx_7 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "disable_blob_driver": True,
-                "yes": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        ctx_7.attach_mc(mc_1)
-        storage_profile_4 = self.models.ManagedClusterStorageProfile(
-            blob_csi_driver=self.models.ManagedClusterStorageProfileBlobCSIDriver(
-                enabled=False,
-            ),
-        )
-        self.assertEqual(ctx_7.get_storage_profile(), storage_profile_4)
-
-    def test_get_storage_profile(self):
-        # create
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "disable_disk_driver": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        ctx_1.attach_mc(mc_1)
-        ground_truth_storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=False,
-            ),
-            file_csi_driver=None,
-            snapshot_controller=None,
-        )
-        self.assertEqual(ctx_1.get_storage_profile(), ground_truth_storage_profile_1)
-
-        # update
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({
-                "enable_file_driver": True,
-                "disable_snapshot_controller": True,
-                "yes": True,
-            }),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=True,
-            ),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(
-                enabled=False,
-            ),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(
-                enabled=True,
-            ),
-        )
-        mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            storage_profile=storage_profile_2,
-        )
-        ctx_2.attach_mc(mc_2)
-        ground_truth_storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=None,
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(
-                enabled=True,
-            ),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(
-                enabled=False,
-            ),
-        )
-        self.assertEqual(ctx_2.get_storage_profile(), ground_truth_storage_profile_2)
-
     def test_get_enable_apiserver_vnet_integration(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -3410,6 +3231,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             message_of_the_day="W10=",  # base64 encode of "[]"
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
@@ -3568,6 +3390,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "rotation_poll_interval": None,
                 "appgw_subnet_prefix": None,
                 "enable_msi_auth_for_monitoring": False,
+                "enable_syslog": False,
+                "data_collection_settings": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3607,6 +3431,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_id": "test_appgw_id",
                 "appgw_subnet_id": "test_appgw_subnet_id",
                 "appgw_watch_namespace": "test_appgw_watch_namespace",
+                "enable_syslog": False,
+                "data_collection_settings": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3979,22 +3805,20 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location", creation_data=cd)
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_set_up_storage_profile(self):
+    def test_set_up_custom_ca_trust_certificates(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
-            {"disable_disk_driver": True, "disable_file_driver": True, "disable_snapshot_controller": True},
+            {"custom_ca_trust_certificates": get_test_data_file_path("certs.txt")},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_storage_profile(mc_1)
-        storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(enabled=False),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(enabled=False),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(enabled=False),
+        dec_mc_1 = dec_1.set_up_custom_ca_trust_certificates(mc_1)
+        sec_profile = self.models.ManagedClusterSecurityProfile(
+            custom_ca_trust_certificates=[str.encode(CONST_CUSTOM_CA_TEST_CERT) for _ in range(2)]
         )
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location", storage_profile=storage_profile_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location", security_profile=sec_profile)
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_set_up_ingress_web_app_routing(self):
@@ -4234,6 +4058,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             mode=CONST_NODEPOOL_MODE_SYSTEM,
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
+            network_profile=self.models.AgentPoolNetworkProfile(),
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
@@ -4309,6 +4134,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         self.assertIsNone(dec_2.check_raw_parameters())
+
+        # custom value
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_workload_identity": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        self.assertIsNone(dec_3.check_raw_parameters())
 
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
@@ -4640,6 +4476,107 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(UnknownError):
             dec_9.update_load_balancer_profile(mc_9)
 
+        # custom value
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"outbound_type": "managedNATGateway"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+                load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
+                    outbound_ip_prefixes=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                        public_ip_prefixes=[
+                            self.models.load_balancer_models.ResourceReference(
+                                id="id1"
+                            ),
+                            self.models.load_balancer_models.ResourceReference(
+                                id="id2"
+                            ),
+                        ]
+                    )
+                ),
+            ),
+        )
+        dec_10.context.attach_mc(mc_10)
+        dec_mc_10 = dec_10.update_load_balancer_profile(mc_10)
+
+        ground_truth_mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        self.assertEqual(dec_mc_10, ground_truth_mc_10)
+
+    def test_update_nat_gateway_profile(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"outbound_type": "loadBalancer"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_nat_gateway_profile(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                nat_gateway_profile=self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(),
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_nat_gateway_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                outbound_type="loadBalancer",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_outbound_type(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "outbound_type": "managedNATGateway",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_outbound_type_in_network_profile(None)
+        dec_mc_1 = dec_1.update_outbound_type_in_network_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="managedNATGateway",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+
+
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -4957,7 +4894,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
-        self.assertIsNone(updated_mc.oidc_issuer_profile)
+        self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
     def test_update_oidc_issuer_profile__enabled(self):
         dec = AKSPreviewManagedClusterUpdateDecorator(
@@ -5055,7 +4992,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         self.assertEqual(dec_mc_0, ground_truth_mc_0)
-        
+
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -5358,56 +5295,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
-
-    def test_update_storage_profile(self):
-        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"disable_disk_driver": True, "disable_file_driver": True, "disable_snapshot_controller": True, "yes": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(enabled=True),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(enabled=True),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(enabled=True),
-        )
-        mc_1 = self.models.ManagedCluster(location="test_location", storage_profile=storage_profile_1)
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.update_storage_profile(mc_1)
-        ground_truth_storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(enabled=False),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(enabled=False),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(enabled=False),
-        )
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location", storage_profile=ground_truth_storage_profile_1
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_disk_driver": True, "enable_file_driver": True, "enable_snapshot_controller": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(enabled=False),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(enabled=False),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(enabled=False),
-        )
-        mc_2 = self.models.ManagedCluster(location="test_location", storage_profile=storage_profile_2)
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_storage_profile(mc_2)
-        ground_truth_storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(enabled=True),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(enabled=True),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(enabled=True),
-        )
-        ground_truth_mc_2 = self.models.ManagedCluster(
-            location="test_location", storage_profile=ground_truth_storage_profile_2
-        )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
-
     def test_update_workload_auto_scaler_profile(self):
         # Throws exception when incorrect mc object is passed.
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
@@ -5562,6 +5449,60 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_update_custom_ca_certificates(self):
+        # set to non-empty
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "custom_ca_trust_certificates": get_test_data_file_path("certs.txt"),
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_1.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
+        )
+
+        dec_mc_1 = dec_1.update_custom_ca_trust_certificates(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                custom_ca_trust_certificates=[str.encode(CONST_CUSTOM_CA_TEST_CERT) for _ in range(2)]
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # set to empty
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"custom_ca_trust_certificates": None},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                custom_ca_trust_certificates=None
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_2.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
+        )
+
+        dec_mc_2 = dec_2.update_custom_ca_trust_certificates(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                custom_ca_trust_certificates=None
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_update_node_restriction(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -5591,7 +5532,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_node_restriction(mc_2)
 
-        ground_truth_mc_2 = self.models.ManagedCluster( 
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             security_profile=self.models.ManagedClusterSecurityProfile(
                 node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
@@ -5599,8 +5540,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             ),
         )
-        print(dec_mc_2.security_profile)
-        print(ground_truth_mc_2.security_profile)
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -5654,7 +5593,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_vpa(mc_2)
 
-        ground_truth_mc_2 = self.models.ManagedCluster( 
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
                 vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
@@ -5662,8 +5601,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             ),
         )
-        print(dec_mc_2.workload_auto_scaler_profile)
-        print(ground_truth_mc_2.workload_auto_scaler_profile)
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -5687,6 +5624,38 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_update_azure_monitor_profile(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_azure_monitor_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_linux_profile(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_key_value": "test_key"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        # fail on cluster has no linux profile
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_mc_1 = dec_1.update_linux_profile(mc_1)
 
     def test_update_mc_profile_preview(self):
         import inspect
@@ -5746,7 +5715,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with patch(
             "azure.cli.command_modules.acs.managed_cluster_decorator.get_rg_location",
             return_value="test_location",
-        ), patch("azure.cli.command_modules.acs.managed_cluster_decorator.Profile", return_value=mock_profile,), patch(
+        ), patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.Profile",
+            return_value=mock_profile,
+        ), patch(
             "azext_aks_preview.managed_cluster_decorator.AKSPreviewManagedClusterUpdateDecorator.check_raw_parameters",
             return_value=True,
         ), patch.object(
