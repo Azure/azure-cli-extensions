@@ -22,7 +22,8 @@ from .helper import (
     create_project,
     create_sig,
     create_network_connection,
-    create_attached_network_dev_box_definition
+    create_attached_network_dev_box_definition,
+    create_kv_policy
 )
 
 @record_only()
@@ -392,8 +393,10 @@ class DevcenterScenarioTest(ScenarioTest):
         self.kwargs.update({
         'devcenterName': self.create_random_name(prefix='cli', length=24),
         })
+
         create_dev_center(self)
         create_project(self)
+
         self.kwargs.update({
             'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365",
             'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
@@ -656,9 +659,11 @@ class DevcenterScenarioTest(ScenarioTest):
         self.kwargs.update({
         'devcenterName': self.create_random_name(prefix='cli', length=24),
         })
+
         create_dev_center(self)
         create_project(self)
         create_network_connection(self)
+
         self.kwargs.update({
             'attachedNetworkName': self.create_random_name(prefix='c2', length=12)
         })
@@ -919,5 +924,101 @@ class DevcenterScenarioTest(ScenarioTest):
         self.cmd('az devcenter admin sku list',
                  checks=[
                      self.check("length(@)", 9),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_catalog_scenario(self):
+        self.kwargs.update({
+        'catalogName': self.create_random_name(prefix='c2', length=12),
+        'branch': 'main',
+        'path':  "/Catalog_v2",
+        'secretIdentifier': "https://clitesting.vault.azure.net/secrets/cli-secret/8af094b2fcfb4f8bbca20a2abedac00f",
+        'secretIdentifier2': "https://clitesting.vault.azure.net/secrets/cli-secret/00000000000000000000000000000000",
+        'uri': "https://github.com/amandalim95/Project-Fidalgo-PrivatePreview.git"
+        })
+
+        create_dev_center_with_identity(self)
+        create_kv_policy(self)
+
+        self.cmd('az devcenter admin catalog list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog create '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--git-hub path="{path}" branch="{branch}" '
+                 'secret-identifier="{secretIdentifier}" uri="{uri}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{catalogName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('gitHub.branch', "{branch}"),
+                     self.check('gitHub.path', "{path}"),
+                     self.check('gitHub.secretIdentifier', "{secretIdentifier}"),
+                     self.check('gitHub.uri', "{uri}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog sync '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--resource-group "{rg}" '
+                 )
+
+        self.cmd('az devcenter admin catalog show '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{catalogName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('gitHub.branch', "{branch}"),
+                     self.check('gitHub.path', "{path}"),
+                     self.check('gitHub.secretIdentifier', "{secretIdentifier}"),
+                     self.check('gitHub.uri', "{uri}"),
+                     self.check('syncState', "Succeeded")
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog update '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--git-hub path="" branch="" '
+                 'secret-identifier="{secretIdentifier2}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{catalogName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('gitHub.branch', ""),
+                     self.check('gitHub.path', ""),
+                     self.check('gitHub.secretIdentifier', "{secretIdentifier2}"),
+                     self.check('gitHub.uri', "{uri}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog delete --yes '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin catalog list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
                  ]
                  )

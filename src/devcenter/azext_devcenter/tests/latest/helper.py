@@ -114,6 +114,10 @@ def create_sig_role_assignments(self):
              '--assignee "{windows365ObjectId}" '
              '--scope "{sigId}"')
 
+def create_kv_policy(self):
+    self.cmd('az keyvault set-policy -n "clitesting" '
+            '--secret-permissions get list '
+            '--object-id "{identityPrincipalId}"')
 
 def create_project(self):
     self.kwargs.update({
