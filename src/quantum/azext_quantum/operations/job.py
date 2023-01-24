@@ -494,8 +494,6 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
     Get the results of running a Q# job.
     """
     import tempfile
-    # import json
-    # import os
     from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
 
     path = os.path.join(tempfile.gettempdir(), job_id)
