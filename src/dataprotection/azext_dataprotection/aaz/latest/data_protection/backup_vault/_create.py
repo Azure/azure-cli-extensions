@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "data-protection backup-vault create",
+    is_experimental=True,
 )
 class Create(AAZCommand):
     """Create a BackupVault resource belonging to a resource group.
@@ -46,7 +47,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["-n", "--name", "--vault-name"],
+            options=["--vault-name"],
             help="The name of the backup vault.",
             required=True,
         )
@@ -98,62 +99,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.feature_settings = AAZObjectArg(
-            options=["--feature-settings"],
-            arg_group="Properties",
-            help="Feature Settings",
-        )
-        _args_schema.security_settings = AAZObjectArg(
-            options=["--security-settings"],
-            arg_group="Properties",
-            help="Security Settings",
-        )
         _args_schema.storage_settings = AAZListArg(
             options=["--storage-settings"],
             arg_group="Properties",
-            help="Storage Settings. Usage: --storage-settings datastore-type=XX type=XX. datastore-type: Gets or sets the type of the datastore. type: Gets or sets the type. Multiple actions can be specified by using more than one --storage-settings argument.",
+            help={"short-summary": "Storage Settings.", "long-summary": "Usage: --storage-settings datastore-type=XX type=XX.\ndatastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument."},
             required=True,
-        )
-
-        feature_settings = cls._args_schema.feature_settings
-        feature_settings.cross_subscription_restore_settings = AAZObjectArg(
-            options=["cross-subscription-restore-settings"],
-            help="CrossSubscriptionRestore Settings",
-        )
-
-        cross_subscription_restore_settings = cls._args_schema.feature_settings.cross_subscription_restore_settings
-        cross_subscription_restore_settings.state = AAZStrArg(
-            options=["state"],
-            help="CrossSubscriptionRestore state",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
-        )
-
-        security_settings = cls._args_schema.security_settings
-        security_settings.immutability_settings = AAZObjectArg(
-            options=["immutability-settings"],
-            help="Immutability Settings at vault level",
-        )
-        security_settings.soft_delete_settings = AAZObjectArg(
-            options=["soft-delete-settings"],
-            help="Soft delete related settings",
-        )
-
-        immutability_settings = cls._args_schema.security_settings.immutability_settings
-        immutability_settings.state = AAZStrArg(
-            options=["state"],
-            help="Immutability state",
-            enum={"Disabled": "Disabled", "Locked": "Locked", "Unlocked": "Unlocked"},
-        )
-
-        soft_delete_settings = cls._args_schema.security_settings.soft_delete_settings
-        soft_delete_settings.retention_duration_in_days = AAZFloatArg(
-            options=["retention-duration-in-days"],
-            help="Soft delete retention duration",
-        )
-        soft_delete_settings.state = AAZStrArg(
-            options=["state"],
-            help="State of soft delete",
-            enum={"AlwaysOn": "AlwaysOn", "Off": "Off", "On": "On"},
         )
 
         storage_settings = cls._args_schema.storage_settings
@@ -169,6 +119,16 @@ class Create(AAZCommand):
             options=["type"],
             help="Gets or sets the type.",
             enum={"GeoRedundant": "GeoRedundant", "LocallyRedundant": "LocallyRedundant", "ZoneRedundant": "ZoneRedundant"},
+        )
+
+        # define Arg Group "SecuritySettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.immutability_state = AAZStrArg(
+            options=["--immutability-state"],
+            arg_group="SecuritySettings",
+            help="Immutability state",
+            enum={"Disabled": "Disabled", "Locked": "Locked", "Unlocked": "Unlocked"},
         )
         return cls._args_schema
 
@@ -290,18 +250,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("featureSettings", AAZObjectType, ".feature_settings")
                 properties.set_prop("monitoringSettings", AAZObjectType)
-                properties.set_prop("securitySettings", AAZObjectType, ".security_settings")
+                properties.set_prop("securitySettings", AAZObjectType)
                 properties.set_prop("storageSettings", AAZListType, ".storage_settings", typ_kwargs={"flags": {"required": True}})
-
-            feature_settings = _builder.get(".properties.featureSettings")
-            if feature_settings is not None:
-                feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType, ".cross_subscription_restore_settings")
-
-            cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
-            if cross_subscription_restore_settings is not None:
-                cross_subscription_restore_settings.set_prop("state", AAZStrType, ".state")
 
             monitoring_settings = _builder.get(".properties.monitoringSettings")
             if monitoring_settings is not None:
@@ -313,17 +264,11 @@ class Create(AAZCommand):
 
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:
-                security_settings.set_prop("immutabilitySettings", AAZObjectType, ".immutability_settings")
-                security_settings.set_prop("softDeleteSettings", AAZObjectType, ".soft_delete_settings")
+                security_settings.set_prop("immutabilitySettings", AAZObjectType)
 
             immutability_settings = _builder.get(".properties.securitySettings.immutabilitySettings")
             if immutability_settings is not None:
-                immutability_settings.set_prop("state", AAZStrType, ".state")
-
-            soft_delete_settings = _builder.get(".properties.securitySettings.softDeleteSettings")
-            if soft_delete_settings is not None:
-                soft_delete_settings.set_prop("retentionDurationInDays", AAZFloatType, ".retention_duration_in_days")
-                soft_delete_settings.set_prop("state", AAZStrType, ".state")
+                immutability_settings.set_prop("state", AAZStrType, ".immutability_state")
 
             storage_settings = _builder.get(".properties.storageSettings")
             if storage_settings is not None:
