@@ -242,36 +242,21 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
 
     # Identify the type of job being submitted
     lc_job_input_format = job_input_format.lower()
-    if "qir.v" in lc_job_input_format:       # QCI uses "qir.v1", but Rigetti uses "rigetti.qir.v1" and Quantinuum uses "honeywell.qir.v1"
+    if "qir.v" in lc_job_input_format:
         job_type = QIR_JOB
     elif lc_job_input_format == "microsoft.qio.v2":
         job_type = QIO_JOB
     else:
         job_type = PASS_THROUGH_JOB
 
-    # If output format is not specified, supply a default for QIR or QIO jobs   # <<<<< Is this out-of-scope?
+    # If output format is not specified, supply a default for QIR or QIO jobs
     if job_output_format is None:
         if job_type == QIR_JOB:
-            job_output_format = "microsoft.quantum-results.v1"      # <<<<< This works for QCI, but is it OK for Rigetti and Quantinuum QIR? <<<<<
+            job_output_format = "microsoft.quantum-results.v1"
         elif job_type == QIO_JOB:
             job_output_format = "microsoft.qio-results.v2"
         else:
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
-
-    # Look for an input file based on job_input_format
-    if job_input_file is None:
-        if job_type == QIR_JOB:
-            input_file_extension = ".bc"
-        elif job_type == QIO_JOB:
-            input_file_extension = ".json"
-        else:
-            raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FILE, JOB_SUBMIT_DOC_LINK_MSG)
-
-        path = os.path.abspath(os.curdir)
-        for file_name in os.listdir(path):
-            if file_name.endswith(input_file_extension):
-                job_input_file = os.path.join(path, file_name)
-                break
 
     if job_input_file is None:
         raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FILE, JOB_SUBMIT_DOC_LINK_MSG)
@@ -280,7 +265,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     # since they should not be included in the "inputParams" parameter of job_details. They are
     # separate parameters of job_details.
     #
-    # USAGE NOTE: The --job-params value needs to be a JSON string to specify "metadata".
+    #   USAGE NOTE: To specify "metadata", the --job-params value needs to be entered as a JSON string or file.
+    #
     metadata = None
     tags = []
     if job_params is not None:
@@ -299,19 +285,25 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             if not isinstance(tags, list_type):
                 raise InvalidArgumentValueError('The "tags" parameter is not valid.')
 
-    # Extract "content_type" and "content_encoding" from --job-parameters, then remove those parameters
-    # from job_params, since they should not be included in the "inputParams" parameter of job_details.
-    # They are parameters of the upload_blob function.
-    # These param names are accepted in two formats: See comments below.
+    # Extract content type and content encoding from --job-parameters, then remove those parameters from job_params, since
+    # they should not be included in the "inputParams" parameter of job_details. Content type and content encoding are
+    # parameters of the upload_blob function. These parameters are accepted in three case-formats: kebab-case, snake_case,
+    # and camelCase. (See comments below.)
     content_type = None
     content_encoding = None
     if job_params is not None:
-        if "content_type" in job_params.keys():         # Names are often in in snake_case in our Jupyter notebooks...
+        if "content-type" in job_params.keys():         # Parameter names in the CLI are commonly in kebab-case (hyphenated)...
+            content_type = job_params["content-type"]
+            del job_params["content-type"]
+        if "content_type" in job_params.keys():         # ...however names are often in in snake_case in our Jupyter notebooks...
             content_type = job_params["content_type"]
             del job_params["content_type"]
-        if "contentType" in job_params.keys():          # ...however, the params that go into inputParams are generally in camelCase.
+        if "contentType" in job_params.keys():          # ...but the params that go into inputParams are generally in camelCase.
             content_type = job_params["contentType"]
             del job_params["contentType"]
+        if "content-encoding" in job_params.keys():
+            content_encoding = job_params["content-encoding"]
+            del job_params["content-encoding"]
         if "content_encoding" in job_params.keys():
             content_encoding = job_params["content_encoding"]
             del job_params["content_encoding"]
@@ -361,8 +353,15 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     knack_logger.warning("Uploading input data...")
     try:
         blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, False)
-    except:
-        raise AzureResponseError("Upload failed. Please try submitting the job again.")
+    except Exception as e:
+        # Unexplained behavior:
+        #    QIR bitcode input and QIO (gzip) input data get UnicodeDecodeError on jobs run in tests using
+        #    "azdev test --live", but the same commands are successful when run interactively.
+        #    See commented-out tests in test_submit in test_quantum_jobs.py
+        error_msg = f"Input file upload failed.\nError type: {type(e)}"
+        if isinstance(e, UnicodeDecodeError):
+            error_msg += f"\nReason: {e.reason}"
+        raise AzureResponseError(error_msg) from e
 
     start_of_blob_name = blob_uri.find(blob_name)
     container_uri = blob_uri[0:start_of_blob_name - 1]

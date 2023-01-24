@@ -244,58 +244,47 @@ class QuantumJobsScenarioTest(ScenarioTest):
         _convert_numeric_params(test_job_params)
         assert test_job_params == {"integer1": 1, "float1.5": 1.5, "integer2": 2, "float2.5": 2.5, "integer3": 3, "float3.5": 3.5}
 
-        # Show that it doesn't modify non-numeric strings
+        # Make sure it doesn't modify non-numeric strings
         test_job_params = {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
         _convert_numeric_params(test_job_params)
         assert test_job_params == {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
 
-        # >>>>>>>> Add a test that has tags and metadata
+        # Make sure it doesn't modify the "tags" list
+        test_job_params = {"string1": "string_value1", "tags": ["tag1", "tag2", "3", "4"], "integer1": "1"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "tags": ["tag1", "tag2", "3", "4"], "integer1": 1}
+
+        # Make sure it doesn't modify nested dict like metadata uses
+        test_job_params = {"string1": "string_value1", "metadata": {"meta1": "meta_value1", "meta2": "2"}, "integer1": "1"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "metadata": {"meta1": "meta_value1", "meta2": "2"}, "integer1": 1}
 
     @live_only()
-    def test_submit_qir(self):
+    def test_submit(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
-        # test_workspace_temp = get_test_workspace_random_name()
-        test_workspace_temp = "e2e-test-v-wjones-local"                                 # <<<<< Temporarily used for local debugging <<<<<
-        # test_qir-provider_sku_list = "qci/qci-freepreview"
-        test_qir_provider_sku_list = "qci/qci-freepreview, Microsoft/DZH3178M639F"      # <<<<< Microsoft SKU added here because it's also an auto-add provider, speeds up workspace creation <<<<<
-        # <<<<<                                                                         # <<<<< Remove Microsoft SKU after Task 46910 is implemented <<<<<
-        test_storage_account = get_test_workspace_storage()
-        test_bitcode_pathname = "src/quantum/azext_quantum/tests/latest/input_data/Qrng.bc"
+        test_workspace_temp = get_test_workspace_random_name()
+        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,Microsoft/DZH3178M639F"
+        test_storage = get_test_workspace_storage()
 
-        # # Create a workspace
-        # self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_qir_provider_sku_list}" -o json', checks=[
-        # self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
-        # ])
-        # <<<<< Temporarily commented-out to speed up the local tests during debugging <<<<<
-
-        # Run a QIR job
+        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list}")
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
-        self.cmd("az quantum target set -t qci.simulator")
 
-        # results = self.cmd("az quantum run --shots 100 --job-input-format qir.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator -o json")
+        # Run a Quil pass-through job on Rigetti
+        results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+        self.assertIn("ro", results)
+
+        # Run a Qiskit pass-through job on IonQ
+        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
+        self.assertIn("histogram", results)
+
+        # Unexplained behavior: upload_blob fails with on the next two tests, but the same commands succeed when run interactively.
+        # # Run a QIR job on QCI
+        # results = self.cmd("az quantum run -t qci.simulator --shots 100 --job-input-format qir.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator -o json")
         # self.assertIn("Histogram", results)
+        #
+        # # Run a QIO job
+        # results = self.cmd("az quantum run -t microsoft.paralleltempering-parameterfree.cpu --job-input-format microsoft.qio.v2 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/QIO-Problem-2.json -o json").get_output_in_json()
+        # self.assertIn("solutions", results)
 
-        # self.cmd(f"az quantum run --shots 99 --job-input-format qir.v1 --job-input-file {test_bitcode_pathname} --entry-point Qrng__SampleQuantumRandomNumberGenerator")
-        
-        # >>>>> Trying to suppress logging because "azdev test" tries to log the bitcode file data as utf-8 unicode and crashes >>>>
-        import logging
-        # logger = logging.getLogger(__name__)
-        logger = logging.getLogger()
-        
-        # logger.disable()
-        # logger.disabled()
-        # logger.shutdown()
-        # logger.manager.disable()
-        # logger.setLevel(logging.CRITICAL + 1)
-        # logger.disabled == True
-        logger.addFilter(lambda record: False)
-
-        #results = self.cmd(f"az quantum run --shots 99 --job-input-format qir.v1 --job-input-file {test_bitcode_pathname} --entry-point Qrng__SampleQuantumRandomNumberGenerator").get_output_in_json()
-
-        # # Delete the workspace
-        # self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-        # self.check("name", test_workspace_temp),
-        # self.check("provisioningState", "Deleting")
-        # ])
-        # <<<<< Temporarily commented-out during local debugging:  Re-use the workspace for local tests <<<<<
+        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')

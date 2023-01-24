@@ -52,10 +52,10 @@ def load_arguments(self, _):
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
     auto_accept_type = CLIArgumentType(help='If specified, provider terms are accepted without an interactive Y/N prompt.')
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
-    job_input_file_type = CLIArgumentType(help='The location of the input file to submit. Path defaults to current folder. Default filename extension is based on --job-input-type')
-    job_input_format_type = CLIArgumentType(help='The format of the file to submit. Defaults to Q# project.')
-    job_output_format_type = CLIArgumentType(help='The expected job output format.')
-    entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR. Ignored for Q# projects.')
+    job_input_file_type = CLIArgumentType(help='The location of the input file to submit. Required for QIR, QIO, and pass-through jobs. Ignored on Q# jobs.')
+    job_input_format_type = CLIArgumentType(help='The format of the file to submit. Omit this parameter on Q# jobs.')
+    job_output_format_type = CLIArgumentType(help='The expected job output format. Ignored on Q# jobs.')
+    entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR. Ignored on Q# jobs.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
