@@ -316,8 +316,11 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             content_type = "application/json"
         if content_encoding is None:
             content_encoding = "gzip"
-        with open(job_input_file, encoding="utf-8") as qio_file:
-            uncompressed_blob_data = qio_file.read()
+        try:
+            with open(job_input_file, encoding="utf-8") as qio_file:
+                uncompressed_blob_data = qio_file.read()
+        except (IOError, OSError) as e:
+            raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
         if ("content_type" in uncompressed_blob_data and "application/x-protobuf" in uncompressed_blob_data) or (content_type.lower() == "application/x-protobuf"):
             raise InvalidArgumentValueError('Content type "application/x-protobuf" is not supported.')
@@ -339,14 +342,18 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
                     # modify this logic.
                     content_type = "application/x-qir.v1"
             content_encoding = None
-
-        with open(job_input_file, "rb") as input_file:
-            blob_data = input_file.read()
+        try:
+            with open(job_input_file, "rb") as input_file:
+                blob_data = input_file.read()
+        except (IOError, OSError) as e:
+            raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
     # Upload the input file to the workspace's storage account
     if storage is None:
         from .workspace import get as ws_get
         ws = ws_get(cmd)
+        if ws.storage_account is None:
+            raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
         storage = ws.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     container_name = "quantum-job-" + job_id
