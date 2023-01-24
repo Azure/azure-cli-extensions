@@ -23,16 +23,19 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
     content = {"query": query}
     request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
 
+    resource_endpoint = cli_ctx.cloud.endpoints.resource_manager
+    # Handle dogfood case
+    if resource_endpoint == "https://api-dogfood.resources.windows-int.net/":
+        resource_endpoint = "https://management.core.windows.net/"
     response = send_raw_request(
         cli_ctx,
         "POST",
         request_url,
         body=json.dumps(content),
-        resource=cli_ctx.cloud.endpoints.resource_manager,
+        resource=resource_endpoint,
     )
     resource_graph_data = response.json()["data"]
 
-    # TODO: confirm this scenario and error messages
     if len(resource_graph_data) == 0 and project_name is None:
         error_message = f"""No projects were found in the dev center \
 '{dev_center_name}'. Please contact your admin to gain access to specific projects."""
