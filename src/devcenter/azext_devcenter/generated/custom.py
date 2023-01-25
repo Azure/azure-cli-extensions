@@ -12,6 +12,9 @@
 
 from azure.cli.core.util import sdk_no_wait
 
+# Generated control plane commands from autorest
+# DO NOT UPDATE THIS FILE, used to track changes from autorest generation
+# Update the custom.py under the manual folder
 
 def devcenter_dev_center_list(client,
                               resource_group_name=None,
@@ -59,15 +62,12 @@ def devcenter_dev_center_update(client,
                                 resource_group_name,
                                 dev_center_name,
                                 tags=None,
-                                location=None,
                                 type_=None,
                                 user_assigned_identities=None,
                                 no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
-    if location is not None:
-        body['location'] = location
     body['identity'] = {}
     if type_ is not None:
         body['identity']['type'] = type_
@@ -135,15 +135,12 @@ def devcenter_project_update(client,
                              resource_group_name,
                              project_name,
                              tags=None,
-                             location=None,
                              dev_center_id=None,
                              description=None,
                              no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
-    if location is not None:
-        body['location'] = location
     if dev_center_id is not None:
         body['dev_center_id'] = dev_center_id
     if description is not None:

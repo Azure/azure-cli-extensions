@@ -1033,12 +1033,6 @@ def load_arguments(self, _):
         )
         c.argument("tags", tags_type)
         c.argument(
-            "location",
-            arg_type=get_location_type(self.cli_ctx),
-            required=False,
-            validator=get_default_location_from_resource_group,
-        )
-        c.argument(
             "type_",
             options_list=["--identity-type"],
             arg_type=get_enum_type(
@@ -1132,12 +1126,6 @@ def load_arguments(self, _):
             id_part="name",
         )
         c.argument("tags", tags_type)
-        c.argument(
-            "location",
-            arg_type=get_location_type(self.cli_ctx),
-            required=False,
-            validator=get_default_location_from_resource_group,
-        )
         c.argument(
             "dev_center_id", type=str, help="Resource Id of an associated DevCenter"
         )
@@ -1975,12 +1963,6 @@ def load_arguments(self, _):
         )
         c.argument("tags", tags_type)
         c.argument(
-            "location",
-            arg_type=get_location_type(self.cli_ctx),
-            required=False,
-            validator=get_default_location_from_resource_group,
-        )
-        c.argument(
             "image_reference",
             action=AddImageReference,
             nargs="+",
@@ -2151,12 +2133,6 @@ def load_arguments(self, _):
             id_part="child_name_1",
         )
         c.argument("tags", tags_type)
-        c.argument(
-            "location",
-            arg_type=get_location_type(self.cli_ctx),
-            required=False,
-            validator=get_default_location_from_resource_group,
-        )
         c.argument(
             "dev_box_definition_name",
             options_list=["--devbox-definition-name", "-d"],
@@ -2401,12 +2377,6 @@ def load_arguments(self, _):
             id_part="name",
         )
         c.argument("tags", tags_type)
-        c.argument(
-            "location",
-            arg_type=get_location_type(self.cli_ctx),
-            required=False,
-            validator=get_default_location_from_resource_group,
-        )
         c.argument(
             "subnet_id", type=str, help="The subnet to attach Virtual Machines to"
         )
