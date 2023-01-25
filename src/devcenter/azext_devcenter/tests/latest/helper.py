@@ -48,7 +48,8 @@ def create_virtual_network_with_subnet(self):
         'subnetName': self.create_random_name(prefix='cli', length=24)
     })
 
-    self.cmd('az network vnet create -n "{vNetName}" --location "{location}" -g "{rg}"')
+    self.cmd(
+        'az network vnet create -n "{vNetName}" --location "{location}" -g "{rg}"')
 
     return self.cmd('az network vnet subnet create -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"').get_output_in_json()
 
@@ -66,7 +67,8 @@ def create_sig(self):
         'imageVersion': "1.0.0"
     })
 
-    sig = self.cmd('az sig create -r "{sigName}" --location "{location}" -g "{rg}"').get_output_in_json()
+    sig = self.cmd(
+        'az sig create -r "{sigName}" --location "{location}" -g "{rg}"').get_output_in_json()
 
     self.cmd('az sig image-definition create -i "{imageDefName}" -p "{publisher}" '
              '-g "{rg}" -f "{offer}" -s "{sku}" --location "{location}" '
@@ -114,10 +116,12 @@ def create_sig_role_assignments(self):
              '--assignee "{windows365ObjectId}" '
              '--scope "{sigId}"')
 
+
 def create_kv_policy(self):
     self.cmd('az keyvault set-policy -n "clitesting" '
-            '--secret-permissions get list '
-            '--object-id "{identityPrincipalId}"')
+             '--secret-permissions get list '
+             '--object-id "{identityPrincipalId}"')
+
 
 def create_project(self):
     self.kwargs.update({
@@ -196,4 +200,24 @@ def create_attached_network_dev_box_definition(self):
              '--os-storage-type "{osStorageType}" '
              '--sku name="{skuName}" '
              '--location "{location}" '
+             )
+
+
+def create_env_type(self):
+    self.kwargs.update({
+        'envTypeName': self.create_random_name(prefix='c', length=24),
+        'tagVal1': 'val1',
+        'tagKey1': "key1",
+    })
+
+    self.cmd('az devcenter admin environment-type create '
+             '--dev-center "{devcenterName}" '
+             '--resource-group "{rg}" '
+             '--name "{envTypeName}" '
+             '--tags {tagVal1}="{tagKey1}" ',
+             checks=[
+                 self.check('name', "{envTypeName}"),
+                 self.check('resourceGroup', "{rg}"),
+                 self.check('tags.val1', "{tagKey1}"),
+             ]
              )
