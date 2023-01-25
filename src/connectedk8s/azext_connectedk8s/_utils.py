@@ -71,33 +71,26 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_path_name='AzureArcCharts'):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc'):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    if chart_path_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
-        pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_path_name)
-    else:
-        pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, 'azure-arc')
+    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
 
     # Exporting helm chart after cleanup
-    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_path_name)
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_folder_name)
     try:
         if os.path.isdir(chart_export_path):
             shutil.rmtree(chart_export_path)
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_path_name, chart_export_path))
 
-    if chart_path_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
-        export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_path_name)
-    else:
-        export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, 'azure-arc')
+    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
 
     # Returning helm chart path
-    if chart_path_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
-        helm_chart_path = os.path.join(chart_export_path, 'cluster-diagnostic-checks')
+    helm_chart_path = os.path.join(chart_export_path, chart_name)
+    if chart_folder_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
         chart_path = helm_chart_path
     else:
-        helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
         chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
 
     return chart_path

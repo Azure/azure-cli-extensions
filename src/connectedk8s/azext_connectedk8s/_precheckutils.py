@@ -130,7 +130,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                 telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
                 return
 
-        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name)
+        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name, consts.Pre_Onboarding_Helm_Charts_Release_Name)
 
         helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
 
@@ -162,7 +162,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
         elif (is_job_scheduled is True and is_job_complete is False):
             telemetry.set_exception(exception="Couldn't complete cluster diagnostic checks job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
                                     summary="Couldn't complete cluster diagnostic checks job after scheduling in the cluster")
-            logger.warning("Unable to finish the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
+            logger.warning("Cluster diagnostics job didn't reach completed state in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:

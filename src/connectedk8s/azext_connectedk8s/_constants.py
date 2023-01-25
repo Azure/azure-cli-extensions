@@ -171,6 +171,7 @@ Arc_Deployment_Logs = "arc_deployment_logs"
 Arc_Diagnostic_Logs = "arc_diagnostic_logs"
 Pre_Onboarding_Check_Logs = "pre_onboarding_check_logs"
 Pre_Onboarding_Helm_Charts_Folder_Name = 'PreOnboardingChecksCharts'
+Pre_Onboarding_Helm_Charts_Release_Name = 'cluster-diagnostic-checks'
 Describe_Non_Ready_Arc_Agents = "describe_non_ready_arc_agents"
 Agent_State = "agent_state.txt"
 Arc_Agents_Events = "arc_agent_events.txt"
