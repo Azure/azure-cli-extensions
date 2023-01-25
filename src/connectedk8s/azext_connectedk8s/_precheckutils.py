@@ -101,7 +101,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
-        cmd_helm_delete.extend(["--context", kube_context])
+        cmd_helm_delete.extend(["--kube-context", kube_context])
 
     # To handle the user keyboard Interrupt
     try:
