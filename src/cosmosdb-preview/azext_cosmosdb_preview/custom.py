@@ -453,8 +453,9 @@ def cli_cosmosdb_managed_cassandra_repair_resume(client,
 def cli_cosmosdb_managed_cassandra_repair_delete(client,
                                                 resource_group_name,
                                                 cluster_name,
-                                                repair_run_id):
-    return client.begin_delete(resource_group_name, cluster_name, repair_run_id)
+                                                repair_run_id,
+                                                owner_name):
+    return client.begin_delete(resource_group_name, cluster_name, repair_run_id, owner_name)
 
 
 def cli_cosmosdb_managed_cassandra_repair_segment_list(client,
