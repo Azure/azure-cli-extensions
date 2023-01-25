@@ -126,7 +126,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                     exception_occured_counter = 1
             # If any exception occured we will print the exception and return
             if exception_occured_counter == 1:
-                logger.warning("An error occured while installing the cluster diagnostic checks helm release in the cluster. Exception:")
+                logger.warning("Cleanup of previous diagnostic checks helm release failed and hence couldn't install the new helm release. Please cleanup older release using \"helm delete cluster-diagnostic-checks -n azuer-arc-release\" and try onboarding again")
                 telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
                 return
 

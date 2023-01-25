@@ -131,7 +131,6 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-# def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, for_preonboarding_checks=False):
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
 
     try:
@@ -174,7 +173,6 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-# def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, for_preonboarding_checks=False):
 def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
 
     try:

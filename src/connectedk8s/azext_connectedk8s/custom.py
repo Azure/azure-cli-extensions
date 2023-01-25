@@ -171,8 +171,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
                                 fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
-        logger.warning("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
-        return
+        raise CLIInternalError("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
 
     # Handling the user manual interrupt
     except KeyboardInterrupt:
@@ -184,12 +183,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # If the checks didnt pass then stop the onboarding
     if diagnostic_checks != consts.Diagnostic_Check_Passed:
-        # all_checks_passed = False
         if storage_space_available:
-                logger.warning("The diagnoser logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
-                raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
-        else:
-                raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+                logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
