@@ -165,7 +165,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             storage_space_available = False
 
         # Performing cluster-diagnostic-checks
-        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, filepath_with_timestamp, storage_space_available)
+        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
         utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
 
     except Exception as e:

@@ -47,14 +47,14 @@ logger = get_logger(__name__)
 diagnoser_output = []
 
 
-def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, filepath_with_timestamp, storage_space_available):
+def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available):
     global diagnoser_output
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
         # Executing the cluster_diagnostic_checks job and fetching the logs obtained
-        cluster_diagnostic_checks_container_log = executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert)
+        cluster_diagnostic_checks_container_log = executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud)
         # If cluster_diagnostic_checks_container_log is not empty then only we will check for the results
         if(cluster_diagnostic_checks_container_log is not None and cluster_diagnostic_checks_container_log != ""):
             cluster_diagnostic_checks_container_log_list = cluster_diagnostic_checks_container_log.split("\n")
@@ -92,7 +92,7 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert):
+def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud):
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
@@ -132,7 +132,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
 
         chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name, consts.Pre_Onboarding_Helm_Charts_Release_Name)
 
-        helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location)
+        helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, kube_config, kube_context, helm_client_location)
 
         # Watching for cluster diagnostic checks container to reach in completed stage
         w = watch.Watch()
@@ -188,10 +188,11 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     return cluster_diagnostic_checks_container_log
 
 
-def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
+def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path, "--namespace", "{}".format(consts.Release_Install_Namespace), "--create-namespace", "--output", "json"]
     # To set some other helm parameters through file
     cmd_helm_install.extend(["--set", "global.location={}".format(location)])
+    cmd_helm_install.extend(["--set", "global.azureCloud={}".format(azure_cloud)])
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
     if http_proxy:
