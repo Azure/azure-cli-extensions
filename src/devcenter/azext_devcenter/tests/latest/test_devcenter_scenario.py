@@ -9,7 +9,8 @@
 # --------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, record_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import (
     try_manual,
@@ -22,8 +23,11 @@ from .helper import (
     create_project,
     create_sig,
     create_network_connection,
-    create_attached_network_dev_box_definition
+    create_attached_network_dev_box_definition,
+    create_kv_policy,
+    create_env_type
 )
+
 
 @record_only()
 @try_manual
@@ -273,7 +277,8 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('location', "{location}"),
                      self.check('tags.CostCode', "12345"),
                      self.check('subnetId', "{subnetId}"),
-                     self.check('networkingResourceGroupName', "{networkingRgName2}"),
+                     self.check('networkingResourceGroupName',
+                                "{networkingRgName2}"),
                      self.check('resourceGroup', "{rg}")
                  ]
                  )
@@ -301,11 +306,13 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('name', "{networkConnectionName}"),
                      self.check('domainJoinType', 'HybridAzureADJoin'),
                      self.check('domainName', 'fidalgoppe010.local'),
-                     self.check('domainUsername', 'domainjoin@fidalgoppe010.local'),
+                     self.check('domainUsername',
+                                'domainjoin@fidalgoppe010.local'),
                      self.check('location', "{location}"),
                      self.check('tags.CostCode', "12345"),
                      self.check('subnetId', "{subnetId}"),
-                     self.check('networkingResourceGroupName', "{networkingRgName1}"),
+                     self.check('networkingResourceGroupName',
+                                "{networkingRgName1}"),
                      self.check('resourceGroup', "{rg}")
                  ]
                  )
@@ -327,10 +334,12 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('name', "{networkConnectionName}"),
                      self.check('domainJoinType', 'HybridAzureADJoin'),
                      self.check('domainName', 'fidalgoppe010.local'),
-                     self.check('domainUsername', 'domainjoin@fidalgoppe010.local'),
+                     self.check('domainUsername',
+                                'domainjoin@fidalgoppe010.local'),
                      self.check('location', "{location}"),
                      self.check('subnetId', "{subnetId}"),
-                     self.check('networkingResourceGroupName', "{networkingRgName1}"),
+                     self.check('networkingResourceGroupName',
+                                "{networkingRgName1}"),
                      self.check('resourceGroup', "{rg}")
                  ]
                  )
@@ -344,7 +353,8 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('domainJoinType', 'AzureADJoin'),
                      self.check('location', "{location}"),
                      self.check('subnetId', "{subnetId}"),
-                     self.check('networkingResourceGroupName', "{networkingRgName2}"),
+                     self.check('networkingResourceGroupName',
+                                "{networkingRgName2}"),
                      self.check('resourceGroup', "{rg}")
                  ]
                  )
@@ -361,7 +371,8 @@ class DevcenterScenarioTest(ScenarioTest):
                  '-n "{networkConnectionName2}" ',
                  checks=[
                      self.check("length(@)", 1),
-                     self.check("[0].healthChecks[0].displayName", "Azure tenant readiness"),
+                     self.check("[0].healthChecks[0].displayName",
+                                "Azure tenant readiness"),
                  ]
                  )
 
@@ -369,9 +380,11 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--resource-group "{rg}" '
                  '-n "{networkConnectionName2}" ',
                  checks=[
-                     self.check("healthChecks[0].displayName", "Azure tenant readiness"),
+                     self.check(
+                         "healthChecks[0].displayName", "Azure tenant readiness"),
                      self.check("healthChecks[0].status", "Passed"),
-                     self.check("healthChecks[1].displayName", "Azure virtual network readiness"),
+                     self.check("healthChecks[1].displayName",
+                                "Azure virtual network readiness"),
                      self.check("healthChecks[1].status", "Passed"),
                  ]
                  )
@@ -390,10 +403,12 @@ class DevcenterScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_devbox_definition_scenario(self):
         self.kwargs.update({
-        'devcenterName': self.create_random_name(prefix='cli', length=24),
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
         })
+
         create_dev_center(self)
         create_project(self)
+
         self.kwargs.update({
             'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365",
             'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
@@ -654,11 +669,13 @@ class DevcenterScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_attached_network_scenario(self):
         self.kwargs.update({
-        'devcenterName': self.create_random_name(prefix='cli', length=24),
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
         })
+
         create_dev_center(self)
         create_project(self)
         create_network_connection(self)
+
         self.kwargs.update({
             'attachedNetworkName': self.create_random_name(prefix='c2', length=12)
         })
@@ -687,7 +704,8 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{attachedNetworkName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('networkConnectionId', "{networkConnectionId}"),
+                     self.check('networkConnectionId',
+                                "{networkConnectionId}"),
                      self.check('domainJoinType', "AzureADJoin"),
                  ]
                  )
@@ -716,7 +734,8 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{attachedNetworkName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('networkConnectionId', "{networkConnectionId}"),
+                     self.check('networkConnectionId',
+                                "{networkConnectionId}"),
                      self.check('domainJoinType', "AzureADJoin"),
                  ]
                  )
@@ -728,7 +747,8 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{attachedNetworkName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('networkConnectionId', "{networkConnectionId}"),
+                     self.check('networkConnectionId',
+                                "{networkConnectionId}"),
                      self.check('domainJoinType', "AzureADJoin"),
                  ]
                  )
@@ -780,9 +800,11 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{poolName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('devBoxDefinitionName', "{devBoxDefinitionName}"),
+                     self.check('devBoxDefinitionName',
+                                "{devBoxDefinitionName}"),
                      self.check('localAdministrator', "Disabled"),
-                     self.check('networkConnectionName', "{attachedNetworkName}"),
+                     self.check('networkConnectionName',
+                                "{attachedNetworkName}"),
                      self.check('location', "{location}")
                  ]
                  )
@@ -806,9 +828,11 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{poolName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('devBoxDefinitionName', "{devBoxDefinitionName2}"),
+                     self.check('devBoxDefinitionName',
+                                "{devBoxDefinitionName2}"),
                      self.check('localAdministrator', "Enabled"),
-                     self.check('networkConnectionName', "{attachedNetworkName}"),
+                     self.check('networkConnectionName',
+                                "{attachedNetworkName}"),
                      self.check('location', "{location}")
                  ]
                  )
@@ -820,9 +844,11 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "{poolName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('devBoxDefinitionName', "{devBoxDefinitionName2}"),
+                     self.check('devBoxDefinitionName',
+                                "{devBoxDefinitionName2}"),
                      self.check('localAdministrator', "Enabled"),
-                     self.check('networkConnectionName', "{attachedNetworkName}"),
+                     self.check('networkConnectionName',
+                                "{attachedNetworkName}"),
                      self.check('location', "{location}")
                  ]
                  )
@@ -858,7 +884,7 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('typePropertiesType', "StopDevBox")
                  ]
                  )
-        
+
         self.cmd('az devcenter admin schedule show '
                  '--pool-name "{poolName}" '
                  '--project-name "{projectName}" '
@@ -872,7 +898,7 @@ class DevcenterScenarioTest(ScenarioTest):
                      self.check('typePropertiesType', "StopDevBox")
                  ]
                  )
-        
+
         self.cmd('az devcenter admin schedule delete --yes '
                  '--project-name "{projectName}" '
                  '--pool-name "{poolName}" '
@@ -919,5 +945,295 @@ class DevcenterScenarioTest(ScenarioTest):
         self.cmd('az devcenter admin sku list',
                  checks=[
                      self.check("length(@)", 9),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_catalog_scenario(self):
+        self.kwargs.update({
+            'catalogName': self.create_random_name(prefix='c2', length=12),
+            'branch': 'main',
+            'path':  "/Catalog_v2",
+            'secretIdentifier': "https://clitesting.vault.azure.net/secrets/cli-secret/8af094b2fcfb4f8bbca20a2abedac00f",
+            'secretIdentifier2': "https://clitesting.vault.azure.net/secrets/cli-secret/00000000000000000000000000000000",
+            'uri': "https://github.com/amandalim95/Project-Fidalgo-PrivatePreview.git"
+        })
+
+        create_dev_center_with_identity(self)
+        create_kv_policy(self)
+
+        self.cmd('az devcenter admin catalog list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog create '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--git-hub path="{path}" branch="{branch}" '
+                 'secret-identifier="{secretIdentifier}" uri="{uri}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{catalogName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('gitHub.branch', "{branch}"),
+                     self.check('gitHub.path', "{path}"),
+                     self.check('gitHub.secretIdentifier',
+                                "{secretIdentifier}"),
+                     self.check('gitHub.uri', "{uri}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog sync '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--resource-group "{rg}" '
+                 )
+
+        self.cmd('az devcenter admin catalog show '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{catalogName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('gitHub.branch', "{branch}"),
+                     self.check('gitHub.path', "{path}"),
+                     self.check('gitHub.secretIdentifier',
+                                "{secretIdentifier}"),
+                     self.check('gitHub.uri', "{uri}"),
+                     self.check('syncState', "Succeeded")
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog update '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--git-hub path="" branch="" '
+                 'secret-identifier="{secretIdentifier2}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{catalogName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('gitHub.branch', ""),
+                     self.check('gitHub.path', ""),
+                     self.check('gitHub.secretIdentifier',
+                                "{secretIdentifier2}"),
+                     self.check('gitHub.uri', "{uri}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin catalog delete --yes '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{catalogName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin catalog list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_env_type_scenario(self):
+
+        self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='c2', length=24),
+            'envTypeName': self.create_random_name(prefix='c', length=24),
+            'tagVal1': 'val1',
+            'tagKey1':  "key1",
+            'tagVal2': 'val2',
+            'tagKey2':  "key2",
+        })
+
+        create_dev_center(self)
+
+        self.cmd('az devcenter admin environment-type list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin environment-type create '
+                 '--dev-center "{devcenterName}" '
+                 '--resource-group "{rg}" '
+                 '--name "{envTypeName}" '
+                 '--tags {tagVal1}="{tagKey1}" ',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('tags.val1', "{tagKey1}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin environment-type list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin environment-type update '
+                 '--dev-center "{devcenterName}" '
+                 '--resource-group "{rg}" '
+                 '--name "{envTypeName}" '
+                 '--tags {tagVal2}="{tagKey2}" ',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('tags.val2', "{tagKey2}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin environment-type show '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{envTypeName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('tags.val2', "{tagKey2}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin environment-type delete --yes '
+                 '--dev-center "{devcenterName}" '
+                 '--name "{envTypeName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin environment-type list '
+                 '--resource-group "{rg}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_proj_env_type_scenario(self):
+
+        self.kwargs.update({
+            'ownerRole': "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+        })
+
+        create_dev_center_with_identity(self)
+        create_project(self)
+        create_env_type(self)
+
+        self.cmd('az devcenter admin project-environment-type list '
+                 '--resource-group "{rg}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-environment-type create '
+                 '--project "{projectName}" '
+                 '--environment-type-name "{envTypeName}" '
+                 '--deployment-target-id "/subscriptions/{subscriptionId}" '
+                 '--status "Enabled" '
+                 '--identity-type "SystemAssigned, UserAssigned" '
+                 '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+                 '--user-role-assignments "{{\\"{identityPrincipalId}\\":{{\\"roles\\":{{\\"{ownerRole}\\":{{}}}}}}}}" '
+                 '--location "{location}" '
+                 '--roles "{{\\"{ownerRole}\\":{{}}}}" '
+                 '--resource-group "{rg}"',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('location', "{location}"),
+                     self.check('deploymentTargetId',
+                                "/subscriptions/{subscriptionId}"),
+                     self.check('identity.type',
+                                "SystemAssigned, UserAssigned"),
+                     self.check('status', "Enabled"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-environment-type list '
+                 '--resource-group "{rg}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-allowed-environment-type list '
+                 '--resource-group "{rg}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-allowed-environment-type show '
+                 '--resource-group "{rg}" '
+                 '--environment-type-name "{envTypeName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-environment-type update '
+                 '--project "{projectName}" '
+                 '--environment-type-name "{envTypeName}" '
+                 '--status "Disabled" '
+                 '--identity-type "UserAssigned" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('location', "{location}"),
+                     self.check('deploymentTargetId',
+                                "/subscriptions/{subscriptionId}"),
+                     self.check('identity.type', "UserAssigned"),
+                     self.check('status', "Disabled"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-environment-type show '
+                 '--project "{projectName}" '
+                 '--environment-type-name "{envTypeName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{envTypeName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('location', "{location}"),
+                     self.check('deploymentTargetId',
+                                "/subscriptions/{subscriptionId}"),
+                     self.check('identity.type', "UserAssigned"),
+                     self.check('status', "Disabled"),
+                 ]
+                 )
+
+        self.cmd('az devcenter admin project-environment-type delete --yes '
+                 '--project "{projectName}" '
+                 '--environment-type-name "{envTypeName}" '
+                 '--resource-group "{rg}"')
+
+        self.cmd('az devcenter admin project-environment-type list '
+                 '--resource-group "{rg}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
                  ]
                  )
