@@ -23,6 +23,7 @@ from ._models_py3 import Capacity
 from ._models_py3 import CassandraClusterDataCenterNodeItem
 from ._models_py3 import CassandraClusterPublicStatus
 from ._models_py3 import CassandraClusterPublicStatusDataCentersItem
+from ._models_py3 import CassandraClusterRepairListFilter
 from ._models_py3 import CassandraClusterRepairPublicProperties
 from ._models_py3 import CassandraClusterRepairPublicResource
 from ._models_py3 import CassandraKeyspaceCreateUpdateParameters
@@ -326,6 +327,7 @@ from ._cosmos_db_management_client_enums import AuthenticationMethod
 from ._cosmos_db_management_client_enums import BackupPolicyMigrationStatus
 from ._cosmos_db_management_client_enums import BackupPolicyType
 from ._cosmos_db_management_client_enums import BackupStorageRedundancy
+from ._cosmos_db_management_client_enums import CassandraRepairRunStateEnum
 from ._cosmos_db_management_client_enums import CompositePathSortOrder
 from ._cosmos_db_management_client_enums import ConflictResolutionMode
 from ._cosmos_db_management_client_enums import ConnectionState
@@ -386,6 +388,7 @@ __all__ = [
     "CassandraClusterDataCenterNodeItem",
     "CassandraClusterPublicStatus",
     "CassandraClusterPublicStatusDataCentersItem",
+    "CassandraClusterRepairListFilter",
     "CassandraClusterRepairPublicProperties",
     "CassandraClusterRepairPublicResource",
     "CassandraKeyspaceCreateUpdateParameters",
@@ -688,6 +691,7 @@ __all__ = [
     "BackupPolicyMigrationStatus",
     "BackupPolicyType",
     "BackupStorageRedundancy",
+    "CassandraRepairRunStateEnum",
     "CompositePathSortOrder",
     "ConflictResolutionMode",
     "ConnectionState",

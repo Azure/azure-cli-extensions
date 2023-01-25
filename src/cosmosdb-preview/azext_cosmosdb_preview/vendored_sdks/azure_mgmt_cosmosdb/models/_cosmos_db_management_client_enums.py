@@ -62,6 +62,18 @@ class BackupStorageRedundancy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ZONE = "Zone"
 
 
+class CassandraRepairRunStateEnum(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Valid states of repair run."""
+
+    NOT_STARTED = "NOT_STARTED"
+    RUNNING = "RUNNING"
+    ERROR = "ERROR"
+    DONE = "DONE"
+    PAUSED = "PAUSED"
+    ABORTED = "ABORTED"
+    DELETED = "DELETED"
+
+
 class CompositePathSortOrder(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Sort order for composite paths."""
 

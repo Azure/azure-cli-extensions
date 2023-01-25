@@ -48,7 +48,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     AnalyticalStorageConfiguration,
     ManagedServiceIdentityUserAssignedIdentity,
     CassandraClusterRepairPublicResource,
-    CassandraClusterRepairPublicProperties
+    CassandraClusterRepairPublicProperties,
+    CassandraRepairRunStateEnum,
+    CassandraClusterRepairListFilter
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -417,8 +419,23 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
 
 def cli_cosmosdb_managed_cassandra_repair_list(client,
                                                 resource_group_name,
-                                                cluster_name):
-    return client.begin_list(resource_group_name, cluster_name)
+                                                cluster_name,
+                                                keyspace=None,
+                                                repair_run_states=None):
+    valid_states = [e.name for e in CassandraRepairRunStateEnum]
+
+    if (repair_run_states is not None):
+        repair_run_states = repair_run_states.upper().replace(" ", "").split(',')
+        for state in repair_run_states:
+            if state not in valid_states:
+                raise InvalidArgumentValueError('The repair run states passed are not valid.')
+
+    filter = CassandraClusterRepairListFilter(
+        keyspace=keyspace,
+        repair_run_states=repair_run_states
+    )
+
+    return client.begin_list(resource_group_name, cluster_name, filter)
 
 
 def cli_cosmosdb_managed_cassandra_repair_show(client,

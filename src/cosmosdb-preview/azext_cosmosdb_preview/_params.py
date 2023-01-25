@@ -200,6 +200,11 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('repair_run_id', options_list=['--repair-run-id', '-r'], help="Guid identifying the repair run.", required=True)
 
+    # Managed Cassandra Repair List
+    with self.argument_context('managed-cassandra repair list') as c:
+        c.argument('keyspace', options_list=['--keyspace', '-k'], help="Keyspace to filter on.", required=False)
+        c.argument('repair_run_states', options_list=['--repair-run-state', '-s'], help="Filter based on repair run state by passing comma separated list. Valid states are NOT_STARTED,RUNNING,ERROR,DONE,PAUSED,ABORTED,DELETED", required=False)
+
     # Managed Cassandra Repair Intensity
     with self.argument_context('managed-cassandra repair update') as c:
         c.argument('intensity', options_list=['--intensity', '-i'], help="Intensity value for the repair run.", required=True)

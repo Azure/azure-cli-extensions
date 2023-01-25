@@ -750,6 +750,43 @@ class CassandraClusterPublicStatusDataCentersItem(_serialization.Model):
         self.nodes = nodes
 
 
+class CassandraClusterRepairListFilter(_serialization.Model):
+    """Request object to filter list of repair runs.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar keyspace: Keyspace name of the repair run.
+    :vartype keyspace: str
+    :ivar repair_run_states:
+    :vartype repair_run_states: list[str or
+     ~azure.mgmt.cosmosdb.models.CassandraRepairRunStateEnum]
+    """
+
+    _validation = {
+        "keyspace": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "keyspace": {"key": "keyspace", "type": "str"},
+        "repair_run_states": {"key": "repairRunStates", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        repair_run_states: Optional[List[Union[str, "_models.CassandraRepairRunStateEnum"]]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword repair_run_states:
+        :paramtype repair_run_states: list[str or
+         ~azure.mgmt.cosmosdb.models.CassandraRepairRunStateEnum]
+        """
+        super().__init__(**kwargs)
+        self.keyspace = None
+        self.repair_run_states = repair_run_states
+
+
 class CassandraClusterRepairPublicProperties(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """CassandraClusterRepairPublicProperties.
 

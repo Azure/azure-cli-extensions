@@ -156,7 +156,12 @@ def build_create_request(
 
 
 def build_delete_request(
-    resource_group_name: str, cluster_name: str, repair_run_id: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str,
+    cluster_name: str,
+    repair_run_id: str,
+    owner_name: str,
+    subscription_id: str,
+    **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -169,7 +174,7 @@ def build_delete_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/owner/{ownerName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
@@ -180,6 +185,7 @@ def build_delete_request(
             "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
         ),
         "repairRunId": _SERIALIZER.url("repair_run_id", repair_run_id, "str"),
+        "ownerName": _SERIALIZER.url("owner_name", owner_name, "str"),
     }
 
     _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
@@ -200,6 +206,7 @@ def build_list_request(resource_group_name: str, cluster_name: str, subscription
     api_version: Literal["2022-11-15-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-15-preview")
     )
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -223,6 +230,8 @@ def build_list_request(resource_group_name: str, cluster_name: str, subscription
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
+    if content_type is not None:
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
@@ -953,7 +962,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
     }
 
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, owner_name: str, **kwargs: Any
     ) -> None:
         error_map = {
             401: ClientAuthenticationError,
@@ -975,6 +984,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             repair_run_id=repair_run_id,
+            owner_name=owner_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             template_url=self._delete_initial.metadata["url"],
@@ -998,12 +1008,12 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
             return cls(pipeline_response, None, {})
 
     _delete_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/owner/{ownerName}"
     }
 
     @distributed_trace
     def begin_delete(
-        self, resource_group_name: str, cluster_name: str, repair_run_id: str, **kwargs: Any
+        self, resource_group_name: str, cluster_name: str, repair_run_id: str, owner_name: str, **kwargs: Any
     ) -> LROPoller[None]:
         """delete.
 
@@ -1014,6 +1024,8 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         :type cluster_name: str
         :param repair_run_id: Id of repair run created to repair Cassandra cluster. Required.
         :type repair_run_id: str
+        :param owner_name: Owner Name that was used to create the Repair Run. Required.
+        :type owner_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1041,6 +1053,7 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 repair_run_id=repair_run_id,
+                owner_name=owner_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -1069,11 +1082,15 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_delete.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/{repairRunId}/owner/{ownerName}"
     }
 
     def _list_initial(
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Optional[Union[_models.CassandraClusterRepairListFilter, IO]] = None,
+        **kwargs: Any
     ) -> _models.CassandraReaperRunStatusFeedResponse:
         error_map = {
             401: ClientAuthenticationError,
@@ -1083,19 +1100,34 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         }
         error_map.update(kwargs.pop("error_map", {}) or {})
 
-        _headers = kwargs.pop("headers", {}) or {}
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: Literal["2022-11-15-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.CassandraReaperRunStatusFeedResponse] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(body, (IO, bytes)):
+            _content = body
+        else:
+            if body is not None:
+                _json = self._serialize.body(body, "CassandraClusterRepairListFilter")
+            else:
+                _json = None
 
         request = build_list_request(
             resource_group_name=resource_group_name,
             cluster_name=cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
             template_url=self._list_initial.metadata["url"],
             headers=_headers,
             params=_params,
@@ -1124,9 +1156,15 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/repairRuns/list"
     }
 
-    @distributed_trace
+    @overload
     def begin_list(
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Optional[_models.CassandraClusterRepairListFilter] = None,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
     ) -> LROPoller[_models.CassandraReaperRunStatusFeedResponse]:
         """list.
 
@@ -1135,6 +1173,11 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
         :type resource_group_name: str
         :param cluster_name: Managed Cassandra cluster name. Required.
         :type cluster_name: str
+        :param body: Optional filter parameters to list repairs. Default value is None.
+        :type body: ~azure.mgmt.cosmosdb.models.CassandraClusterRepairListFilter
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1149,12 +1192,86 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
          ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatusFeedResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        _headers = kwargs.pop("headers", {}) or {}
+
+    @overload
+    def begin_list(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Optional[IO] = None,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.CassandraReaperRunStatusFeedResponse]:
+        """list.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Managed Cassandra cluster name. Required.
+        :type cluster_name: str
+        :param body: Optional filter parameters to list repairs. Default value is None.
+        :type body: IO
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either CassandraReaperRunStatusFeedResponse or
+         the result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatusFeedResponse]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace
+    def begin_list(
+        self,
+        resource_group_name: str,
+        cluster_name: str,
+        body: Optional[Union[_models.CassandraClusterRepairListFilter, IO]] = None,
+        **kwargs: Any
+    ) -> LROPoller[_models.CassandraReaperRunStatusFeedResponse]:
+        """list.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param cluster_name: Managed Cassandra cluster name. Required.
+        :type cluster_name: str
+        :param body: Optional filter parameters to list repairs. Is either a model type or a IO type.
+         Default value is None.
+        :type body: ~azure.mgmt.cosmosdb.models.CassandraClusterRepairListFilter or IO
+        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
+         Default value is None.
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either CassandraReaperRunStatusFeedResponse or
+         the result of cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CassandraReaperRunStatusFeedResponse]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: Literal["2022-11-15-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.CassandraReaperRunStatusFeedResponse] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
@@ -1163,7 +1280,9 @@ class CassandraRepairOperations:  # pylint: disable=too-many-public-methods
             raw_result = self._list_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
+                body=body,
                 api_version=api_version,
+                content_type=content_type,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,
