@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.4.1
+++++++
+ * Update version missed in previous release
+ * Remove redundant version definition in setup.py
+ 
+
 1.4.0
 ++++++
  * Add communication rooms command group in preview mode
