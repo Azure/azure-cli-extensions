@@ -6,9 +6,11 @@
 # pylint: disable=import-error,unused-import
 
 from enum import Enum
- 
+
+
 class BastionSku(Enum):
-    Basic = 1
-    Standard = 2
-    Developer = 3
-    QuickConnect = 4
+
+    Basic = "Basic"
+    Standard = "Standard"
+    Developer = "Developer"
+    QuickConnect = "QuickConnect"

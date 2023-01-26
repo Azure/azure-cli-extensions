@@ -147,7 +147,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if not resource_port:
         resource_port = 22
 
-    if bastion['sku']['name'] == BastionSku.Basic.name or bastion['sku']['name'] == BastionSku.Standard.name and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     _validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
@@ -231,7 +231,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     if not resource_port:
         resource_port = 3389
 
-    if bastion['sku']['name'] == BastionSku.Basic.name or bastion['sku']['name'] == BastionSku.Standard.name and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
@@ -253,10 +253,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             profile = Profile(cli_ctx=cmd.cli_ctx)
             access_token = profile.get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
-            if bastion['sku']['name'] == BastionSku.QuickConnect.name or bastion['sku']['name'] == BastionSku.Developer.name:
-                web_address = f"https://{bastion_endpoint}/api/omni/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
-            else:
-                web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+            web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}"
 
             headers = {
                 "Authorization": f"Bearer {access_token}",
@@ -299,7 +296,7 @@ def _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_
 
 
 def _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id):
-    if bastion['sku']['name'] == BastionSku.QuickConnect.name or bastion['sku']['name'] == BastionSku.Developer.name:
+    if bastion['sku']['name'] == BastionSku.QuickConnect.value or bastion['sku']['name'] == BastionSku.Developer.value:
         from .developer_sku_helper import (_get_data_pod)
         bastion_endpoint = _get_data_pod(cmd, resource_port, target_resource_id, bastion)
         return bastion_endpoint
@@ -346,7 +343,7 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
         "name": bastion_host_name
     })
 
-    if bastion['sku']['name'] == BastionSku.Basic.name or bastion['sku']['name'] == BastionSku.Standard.name and bastion['enableTunneling'] is not True:
+    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     _validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
