@@ -17,7 +17,7 @@ short-summary: SSH to a virtual machine using Tunneling from Azure Bastion.
 examples:
   - name: SSH to virtual machine using Azure Bastion using password.
     text: |
-        az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id /subscriptions/ vmResourceId --auth-type password --username xyz
+        az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --auth-type password --username xyz
   - name: SSH to virtual machine using Azure Bastion using ssh key file.
     text: |
         az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --auth-type ssh-key --username xyz --ssh-key C:/filepath/sshkey.pem
