@@ -102,7 +102,6 @@ class DevcenterScenarioTest(ScenarioTest):
 
         self.cmd('az devcenter admin devcenter update '
                  '--tags CostCode="123" '
-                 '--location "{location}" '
                  '--name "{devcenterName2}" '
                  '--resource-group "{rg}"',
                  checks=[
@@ -210,7 +209,6 @@ class DevcenterScenarioTest(ScenarioTest):
 
         self.cmd('az devcenter admin project update '
                  '--tags CostCode="123" '
-                 '--location "{location}" '
                  '--name "{projectName}" '
                  '--resource-group "{rg}"',
                  checks=[
@@ -326,7 +324,6 @@ class DevcenterScenarioTest(ScenarioTest):
 
         self.cmd('az devcenter admin network-connection update '
                  '--tags CostCode="123" '
-                 '--location "{location}" '
                  '--name "{networkConnectionName}" '
                  '--resource-group "{rg}"',
                  checks=[
@@ -410,7 +407,7 @@ class DevcenterScenarioTest(ScenarioTest):
         create_project(self)
 
         self.kwargs.update({
-            'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365",
+            'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
             'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
             'osStorageType': "ssd_1024gb",
             'skuName': "general_a_8c32gb_v1"
@@ -472,8 +469,7 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--dev-center "{devcenterName}" '
                  '--name "{devBoxDefinitionName}" '
                  '--resource-group "{rg}" '
-                 '--hibernate-support "Enabled" '
-                 '--location "{location}" ',
+                 '--hibernate-support "Enabled" ',
                  checks=[
                      self.check('name', "{devBoxDefinitionName}"),
                      self.check('resourceGroup', "{rg}"),
@@ -822,7 +818,6 @@ class DevcenterScenarioTest(ScenarioTest):
                  '--local-administrator "Enabled" '
                  '-d "{devBoxDefinitionName2}" '
                  '--name "{poolName}" '
-                 '--location "{location}" '
                  '--project-name "{projectName}" '
                  '--resource-group "{rg}" ',
                  checks=[

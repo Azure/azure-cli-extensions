@@ -16,6 +16,7 @@ from azure.cli.core.util import sdk_no_wait
 # DO NOT UPDATE THIS FILE, used to track changes from autorest generation
 # Update the custom.py under the manual folder
 
+
 def devcenter_dev_center_list(client,
                               resource_group_name=None,
                               top=None):

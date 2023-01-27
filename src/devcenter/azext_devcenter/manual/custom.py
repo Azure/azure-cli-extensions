@@ -8,6 +8,7 @@ from ._client_factory import cf_devcenter_dataplane
 
 # control plane commands (these will override the generated custom.py as they are imported second)
 
+
 def devcenter_dev_center_list(client, resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
@@ -967,7 +968,6 @@ def devcenter_network_connection_show_health_detail(client,
                                                     network_connection_name):
     return client.get_health_details(resource_group_name=resource_group_name,
                                      network_connection_name=network_connection_name)
-
 
 
 # dataplane commands
