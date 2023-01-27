@@ -395,9 +395,6 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         job_params["targetCapability"] = target_capability
     if entry_point is not None:
         job_params["entryPoint"] = entry_point
-    # # An entry point is required on QIR jobs
-    # elif job_type == QIR_JOB and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
-    #     raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Convert "count" to an integer
     if "count" in job_params.keys():
