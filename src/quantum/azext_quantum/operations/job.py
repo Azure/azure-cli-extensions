@@ -262,8 +262,27 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # An entry point is required on QIR jobs
-    if job_type == QIR_JOB and entry_point is None and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
-        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
+    # if job_type == QIR_JOB and entry_point is None and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
+    #     raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
+    if job_type == QIR_JOB:
+        # An entry point is required for a QIR job, but there are four ways to specify it:
+        #   -  Use the --entry-point parameter
+        #   -  Include it in --job-params as entryPoint=MyEntryPoint
+        #   -  Include it as 'entryPoint':'MyEntryPoint' in a JSON --job-params string or file
+        #   -  Include it in an "items" list in a JSON --job-params string or file
+        found_entry_point_in_items = False
+        if "items" in job_params:
+            items_list = job_params["items"]
+            if isinstance(items_list, type([])):    # "list" has been redefined as a function name
+                for item in items_list:
+                    if isinstance(item, dict):
+                        for item_dict in items_list:
+                            if "entryPoint" in item_dict:
+                                if item_dict["entryPoint"] is not None:
+                                    found_entry_point_in_items = True
+        if not found_entry_point_in_items:
+            if entry_point is None and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
+                raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Extract "metadata" and "tags" from job_params, then remove those parameters from job_params,
     # since they should not be included in the "inputParams" parameter of job_details. They are
