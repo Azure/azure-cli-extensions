@@ -156,9 +156,9 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
 
     if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
-            and not smtp and not host and not user and not password and not start_tls_policy and skip_verify is None
-            and not from_address and not from_name):
-        raise ArgumentUsageError("Please supply at least one parameter value to update Grafana instance")
+            and not smtp and not host and not user and not password and not start_tls_policy and not from_address
+            and not from_name and skip_verify is None):
+        raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
 
     client = cf_amg(cmd.cli_ctx)
 
@@ -176,8 +176,8 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     if tags:
         instance.tags = tags
 
-    if (smtp is not None or host or user or password or start_tls_policy or
-            skip_verify is not None or from_address or from_name):
+    if (smtp or host or user or password or start_tls_policy
+            or from_address or from_name or skip_verify is not None):
 
         from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
         if not instance.properties.grafana_configurations:
@@ -185,7 +185,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
         if not instance.properties.grafana_configurations.smtp:
             instance.properties.grafana_configurations.smtp = Smtp()
 
-        if smtp is not None:
+        if smtp:
             instance.properties.grafana_configurations.smtp.enabled = (smtp == "Enabled")
         if host:
             instance.properties.grafana_configurations.smtp.host = host
