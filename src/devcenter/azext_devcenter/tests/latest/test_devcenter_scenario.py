@@ -948,7 +948,7 @@ class DevcenterScenarioTest(ScenarioTest):
         self.kwargs.update({
             'catalogName': self.create_random_name(prefix='c2', length=12),
             'branch': 'main',
-            'path':  "/Catalog_v2",
+            'path': "/Catalog_v2",
             'secretIdentifier': "https://clitesting.vault.azure.net/secrets/cli-secret/8af094b2fcfb4f8bbca20a2abedac00f",
             'secretIdentifier2': "https://clitesting.vault.azure.net/secrets/cli-secret/00000000000000000000000000000000",
             'uri': "https://github.com/amandalim95/Project-Fidalgo-PrivatePreview.git"
@@ -1049,9 +1049,9 @@ class DevcenterScenarioTest(ScenarioTest):
             'devcenterName': self.create_random_name(prefix='c2', length=24),
             'envTypeName': self.create_random_name(prefix='c', length=24),
             'tagVal1': 'val1',
-            'tagKey1':  "key1",
+            'tagKey1': "key1",
             'tagVal2': 'val2',
-            'tagKey2':  "key2",
+            'tagKey2': "key2",
         })
 
         create_dev_center(self)
