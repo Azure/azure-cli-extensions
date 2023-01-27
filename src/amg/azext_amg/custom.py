@@ -152,10 +152,13 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
                    public_network_access=None, smtp=None, host=None, user=None, password=None,
                    start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
                    resource_group_name=None, tags=None):
-    if (not api_key_and_service_account and not deterministic_outbound_ip
-            and not public_network_access and not tags):
-        raise ArgumentUsageError("--api-key | --service-account | --tags"
-                                 "--deterministic-outbound-ip | --public-network-access")
+
+    # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
+
+    if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
+            and not smtp and not host and not user and not password and not start_tls_policy and skip_verify is None
+            and not from_address and not from_name):
+        raise ArgumentUsageError("Please supply at least one parameter value to update Grafana instance")
 
     client = cf_amg(cmd.cli_ctx)
 
@@ -173,7 +176,6 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     if tags:
         instance.tags = tags
 
-    # pylint: disable=too-many-boolean-expressions
     if (smtp is not None or host or user or password or start_tls_policy or
             skip_verify is not None or from_address or from_name):
 
@@ -201,7 +203,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
             instance.properties.grafana_configurations.smtp.from_name = from_name
 
     # "begin_create" uses PUT, which handles both Create and Update
-    return client.grafana.update(resource_group_name, grafana_name, instance)
+    return client.grafana.begin_create(resource_group_name, grafana_name, instance)
 
 
 def show_grafana(cmd, grafana_name, resource_group_name=None):
