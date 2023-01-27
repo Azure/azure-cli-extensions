@@ -342,7 +342,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
 
 def _write_cert_file(certificate_contents, cert_file):
     with open(cert_file, 'w', encoding='utf-8') as f:
-        f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
+        f.write(f"rsa-sha2-256-cert-v01@openssh.com {certificate_contents}")
     oschmod.set_mode(cert_file, 0o644)
     return cert_file
 
