@@ -262,10 +262,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # An entry point is required on QIR jobs
-    # if job_type == QIR_JOB and entry_point is None and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
-    #     raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
     if job_type == QIR_JOB:
-        # An entry point is required for a QIR job, but there are four ways to specify it:
+        # An entry point is required for a QIR job, but there are four ways to specify it in a CLI command:
         #   -  Use the --entry-point parameter
         #   -  Include it in --job-params as entryPoint=MyEntryPoint
         #   -  Include it as 'entryPoint':'MyEntryPoint' in a JSON --job-params string or file
