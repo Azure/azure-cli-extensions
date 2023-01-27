@@ -31,6 +31,7 @@ QIO_DEFAULT_TIMEOUT = 100
 
 ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
 ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
+ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 
 # Job types
@@ -260,6 +261,10 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         else:
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
+    # An entry point is required on QIR jobs
+    if job_type == QIR_JOB and entry_point is None and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
+
     # Extract "metadata" and "tags" from job_params, then remove those parameters from job_params,
     # since they should not be included in the "inputParams" parameter of job_details. They are
     # separate parameters of job_details.
@@ -390,6 +395,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         job_params["targetCapability"] = target_capability
     if entry_point is not None:
         job_params["entryPoint"] = entry_point
+    # # An entry point is required on QIR jobs
+    # elif job_type == QIR_JOB and ("entryPoint" not in job_params.keys() or job_params["entryPoint"] is None):
+    #     raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ENTRY_POINT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # Convert "count" to an integer
     if "count" in job_params.keys():
@@ -406,7 +414,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         if "arguments" not in job_params:
             job_params["arguments"] = []
 
-    # ...and supply a default "shots" if it's not specified (like Q# does)
+    # ...supply a default "shots" if it's not specified (like Q# does)
         if "shots" not in job_params:
             job_params["shots"] = DEFAULT_SHOTS
 
