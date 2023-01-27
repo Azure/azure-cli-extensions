@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# This file is a reduced version of qdk-python/azure-quantum/azure/quantum/target/target.py
+# This file is a reduced version of qdk-python\azure-quantum\azure\quantum\storage.py
 # It only contains the functions required to do inputData blob upload for job submission.
+# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.
 
 # Unused imports were removed to reduce Pylint style-rule violations.
 import logging

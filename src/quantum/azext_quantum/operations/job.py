@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
 
-from ..storage import create_container, upload_blob
+from .._storage import create_container, upload_blob
 
 from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
