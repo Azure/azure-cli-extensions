@@ -29,28 +29,33 @@ from azext_devcenter.action import (
 from ._validators import validate_attached_network_or_dev_box_def, validate_dev_box_list
 
 
+dev_center_type = CLIArgumentType(
+    options_list=["--dev-center-name", "--dev-center", "-d"],
+    help='The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.',
+    configured_default='dev-center')
+
+project_type = CLIArgumentType(
+    options_list=["--project", "--project-name"],
+    help='The name of the project. Use az configure -d project=<project_name> to configure a default.',
+    configured_default='project')
+
+
 def load_arguments(self, _):
 
     with self.argument_context("devcenter dev project list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context("devcenter dev project show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--name", "-n", "--project-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The DevCenter " "Project upon which to execute operations.",
         )
@@ -58,37 +63,21 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev pool list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=[
-                "--project-name",
-                "--project",
-            ],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
 
     with self.argument_context("devcenter dev pool show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=[
-                "--project-name",
-                "--project",
-            ],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "pool_name",
@@ -100,19 +89,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev schedule list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=[
-                "--project-name",
-                "--project",
-            ],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "pool_name",
@@ -124,19 +105,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev schedule show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=[
-                "--project-name",
-                "--project",
-            ],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "pool_name",
@@ -156,19 +129,11 @@ def load_arguments(self, _):
     ) as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            required=True,
-            type=str,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=[
-                "--project-name",
-                "--project",
-            ],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -180,16 +145,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -207,16 +167,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box create") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -246,16 +201,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box delete") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -273,16 +223,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box show-remote-connection") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -300,16 +245,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box start") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -327,16 +267,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box stop") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -359,16 +294,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box delay-upcoming-action") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -388,16 +318,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box list-upcoming-action") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -415,16 +340,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box show-upcoming-action") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -443,16 +363,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box skip-upcoming-action") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -471,16 +386,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev dev-box wait") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -498,16 +408,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -519,16 +424,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -546,16 +446,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment create") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -598,16 +493,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment update") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -641,16 +531,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment delete") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -668,16 +553,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment wait") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -695,10 +575,7 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment custom-action") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
@@ -728,10 +605,7 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment deploy-action") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
@@ -761,16 +635,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev artifact list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -784,31 +653,21 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev catalog-item list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
 
     with self.argument_context("devcenter dev catalog-item show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
@@ -817,16 +676,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev catalog-item-version list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
@@ -835,17 +689,11 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev catalog-item-version show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            required=True,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
@@ -855,32 +703,21 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev environment-type list") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
 
     with self.argument_context("devcenter dev notification-setting create") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            required=True,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -922,17 +759,12 @@ def load_arguments(self, _):
     with self.argument_context("devcenter dev notification-setting show") as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
             required=True,
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -946,17 +778,12 @@ def load_arguments(self, _):
     ) as c:
         c.argument(
             "dev_center",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            required=True,
-            help="The DevCenter to operate on.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
             required=True,
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
+            arg_type=project_type,
         )
         c.argument(
             "user_id",
@@ -973,7 +800,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--name", "-n", "--dev-center-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of " "the devcenter.",
             id_part="name",
@@ -983,7 +810,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--name", "-n", "--dev-center-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of " "the devcenter.",
         )
@@ -1026,7 +853,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--name", "-n", "--dev-center-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of " "the devcenter.",
             id_part="name",
@@ -1064,7 +891,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--name", "-n", "--dev-center-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of " "the devcenter.",
             id_part="name",
@@ -1074,7 +901,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--name", "-n", "--dev-center-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of " "the devcenter.",
             id_part="name",
@@ -1087,7 +914,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--name", "-n", "--project-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of the " "project.",
             id_part="name",
@@ -1097,7 +924,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--name", "-n", "--project-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of the " "project.",
         )
@@ -1120,7 +947,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--name", "-n", "--project-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of the " "project.",
             id_part="name",
@@ -1135,7 +962,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--name", "-n", "--project-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of the " "project.",
             id_part="name",
@@ -1145,7 +972,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--name", "-n", "--project-name"],
+            options_list=["--name", "-n"],
             type=str,
             help="The name of the " "project.",
             id_part="name",
@@ -1158,15 +985,11 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context(
@@ -1176,9 +999,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -1190,19 +1011,14 @@ def load_arguments(self, _):
         )
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context("devcenter admin attached-network create") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "attached_network_connection_name",
@@ -1222,10 +1038,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "attached_network_connection_name",
@@ -1239,9 +1052,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -1253,35 +1064,25 @@ def load_arguments(self, _):
         )
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context("devcenter admin environment-type list") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context("devcenter admin environment-type show") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "environment_type_name",
@@ -1295,9 +1096,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "environment_type_name",
@@ -1312,10 +1111,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "environment_type_name",
@@ -1331,10 +1127,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "environment_type_name",
@@ -1348,10 +1141,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "environment_type_name",
@@ -1367,9 +1157,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
 
     with self.argument_context(
@@ -1378,9 +1166,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -1394,18 +1180,14 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
 
     with self.argument_context("devcenter admin project-environment-type show") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -1419,9 +1201,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "environment_type_name", type=str, help="The name of the environment type."
@@ -1488,9 +1268,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -1552,9 +1330,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -1568,19 +1344,14 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context("devcenter admin gallery show") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "gallery_name",
@@ -1594,9 +1365,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "gallery_name",
@@ -1615,10 +1384,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "gallery_name",
@@ -1632,10 +1398,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "gallery_name",
@@ -1649,9 +1412,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument("gallery_name", type=str, help="The name of the gallery.")
 
@@ -1659,10 +1420,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "gallery_name",
@@ -1682,9 +1440,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument("gallery_name", type=str, help="The name of the gallery.")
         c.argument("image_name", type=str, help="The name of the image.")
@@ -1693,10 +1449,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "gallery_name",
@@ -1721,19 +1474,14 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
 
     with self.argument_context("devcenter admin catalog show") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "catalog_name",
@@ -1747,9 +1495,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "catalog_name",
@@ -1774,10 +1520,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "catalog_name",
@@ -1804,10 +1547,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "catalog_name",
@@ -1821,10 +1561,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "catalog_name",
@@ -1838,10 +1575,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "catalog_name",
@@ -1858,15 +1592,11 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
 
     with self.argument_context(
@@ -1876,16 +1606,11 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "dev_box_definition_name",
@@ -1899,9 +1624,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
+            arg_type=dev_center_type,
         )
         c.argument(
             "dev_box_definition_name",
@@ -1949,10 +1672,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "dev_box_definition_name",
@@ -1992,10 +1712,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "dev_box_definition_name",
@@ -2009,16 +1726,11 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "dev_center_name",
-            options_list=["--dev-center-name", "--dev-center", "-d"],
-            type=str,
-            help="The name of the devcenter.",
-            id_part="name",
+            arg_type=dev_center_type,
         )
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "dev_box_definition_name",
@@ -2054,18 +1766,14 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
 
     with self.argument_context("devcenter admin pool show") as c:
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2080,9 +1788,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "pool_name",
@@ -2120,9 +1826,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2156,9 +1860,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2173,9 +1875,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2190,9 +1890,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2207,9 +1905,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
         )
         c.argument(
             "pool_name",
@@ -2239,9 +1935,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2271,9 +1965,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
@@ -2288,9 +1980,7 @@ def load_arguments(self, _):
         c.argument("resource_group_name", resource_group_name_type)
         c.argument(
             "project_name",
-            options_list=["--project-name", "--project"],
-            type=str,
-            help="The name of the project.",
+            arg_type=project_type,
             id_part="name",
         )
         c.argument(
