@@ -37,6 +37,9 @@ def load_arguments(self, _):
 
     # region AzureFirewalls
     with self.argument_context('network firewall') as c:
+        c.argument("on_exist", arg_type=get_enum_type(["overwrite", "skip", "error"]),
+                   help="Decide what to do when the resource exists. `overwrite` means overwrite existing resource; "
+                        "`skip` means skip creation and return existing resource; `error` means raise an error.")
         c.argument('azure_firewall_name', firewall_name_type, options_list=['--name', '-n'], id_part='name')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('description', help='Rule description.')

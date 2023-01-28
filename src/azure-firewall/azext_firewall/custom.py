@@ -9,6 +9,7 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.core.exceptions import HttpResponseError
 from msrestazure.tools import is_valid_resource_id, resource_id
 from ._client_factory import network_client_factory
 
@@ -66,7 +67,7 @@ def _find_item_at_path(instance, path):
 
 
 # region AzureFirewall
-def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
+def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, on_exist='overwrite', location=None,
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
@@ -74,6 +75,20 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           enable_fat_flow_logging=None, enable_udp_log_optimization=None,
                           virtual_network_name=None, conf_name=None, public_ip=None,
                           management_conf_name=None, management_public_ip=None):
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    try:
+        if ret := (client.get(resource_group_name, azure_firewall_name)):
+            if on_exist.lower() == "error":
+                err_msg = f"The specified firewall: {azure_firewall_name} already exists."
+                raise ValidationError(err_msg)
+            elif on_exist.lower() == "skip":
+                return ret
+            else:
+                pass
+    except HttpResponseError:
+        # continue the normal creation process
+        pass
+
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
@@ -84,17 +99,6 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     if tier and tier.lower() == 'basic' and not all([management_conf_name, management_public_ip]):
         err_msg = "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."
         raise ValidationError(err_msg)
-
-    client = network_client_factory(cmd.cli_ctx).azure_firewalls
-
-    from azure.core.exceptions import HttpResponseError
-    try:
-        if client.get(resource_group_name, azure_firewall_name):
-            err_msg = f"The specified firewall: {azure_firewall_name} already exists."
-            raise ValidationError(err_msg)
-    except HttpResponseError:
-        # continue the normal creation process
-        pass
 
     (AzureFirewall,
      SubResource,

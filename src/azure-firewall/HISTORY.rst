@@ -4,7 +4,7 @@ Release History
 ===============
 0.14.5
 ++++++
-* `az network firewall create`: Add validation for duplicate firewall name
+* `az network firewall create`: Add parameter `--on-exist` for firewall creation
 
 0.14.4
 ++++++
