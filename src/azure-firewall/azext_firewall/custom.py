@@ -77,12 +77,12 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, on_exis
                           management_conf_name=None, management_public_ip=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     try:
-        if ret := (client.get(resource_group_name, azure_firewall_name)):
+        if client.get(resource_group_name, azure_firewall_name):
             if on_exist.lower() == "error":
                 err_msg = f"The specified firewall: {azure_firewall_name} already exists."
                 raise ValidationError(err_msg)
             elif on_exist.lower() == "skip":
-                return ret
+                return client.get(resource_group_name, azure_firewall_name)
             else:
                 pass
     except HttpResponseError:
