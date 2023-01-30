@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.128
++++++++
+* Fix option name `--duration` for command group `az aks maintenanceconfiguration`
+
 0.5.127
 +++++++
 * Add `--node-os-upgrade-channel <node os upgrade channel>` option for specifying the manner in which the OS on your nodes is updated in `aks create` and `aks update`
