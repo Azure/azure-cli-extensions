@@ -19,10 +19,10 @@ class Create(AAZCommand):
     """Create a BackupVault resource belonging to a resource group.
 
     :example: Create BackupVault
-        az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings "[{type:LocallyRedundant,datastore-type:VaultStore}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+        az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 
     :example: Create BackupVault With MSI
-        az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings "[{type:LocallyRedundant,datastore-type:VaultStore}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+        az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {
@@ -107,8 +107,9 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.storage_settings = AAZListArg(
             options=["--storage-settings"],
+            singular_options=["--storage-settings"],
             arg_group="Properties",
-            help={"short-summary": "Storage Settings.", "long-summary": "Usage: --storage-settings \"[{type:XX,datastore-type:XX}]\".\ndatastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument."},
+            help={"short-summary": "Storage Settings.", "long-summary": "Usage: --storage-settings type=XX datastore-type=XX.\ndatastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument."},
             required=True,
         )
 
@@ -133,7 +134,7 @@ class Create(AAZCommand):
         _args_schema.immutability_state = AAZStrArg(
             options=["--immutability-state"],
             arg_group="SecuritySettings",
-            help="Immutability state",
+            help={"short-summary": "Immutability state", "long-summary": "Use this parameter to configure immutability settings for the vault. Allowed values are Disabled, Unlocked and Locked. By default, immutability is ‘Disabled’ for the vault. ‘Unlocked’ means that immutability is enabled for the vault and can be reversed. ‘Locked’ means that immutability is enabled for the vault and cannot be reversed."},
             enum={"Disabled": "Disabled", "Locked": "Locked", "Unlocked": "Unlocked"},
         )
         return cls._args_schema
