@@ -102,7 +102,7 @@ class Update(AAZCommand):
         _args_schema.immutability_state = AAZStrArg(
             options=["--immutability-state"],
             arg_group="SecuritySettings",
-            help={"short-summary": "Immutability state", "long-summary": "Use this parameter to configure immutability settings for the vault. Allowed values are Disabled, Unlocked and Locked. By default, immutability is ‘Disabled’ for the vault. ‘Unlocked’ means that immutability is enabled for the vault and can be reversed. ‘Locked’ means that immutability is enabled for the vault and cannot be reversed."},
+            help={"short-summary": "Immutability state", "long-summary": "Use this parameter to configure immutability settings for the vault. Allowed values are Disabled, Unlocked and Locked. By default, immutability is \"Disabled\" for the vault. \"Unlocked\" means that immutability is enabled for the vault and can be reversed. \"Locked\" means that immutability is enabled for the vault and cannot be reversed."},
             nullable=True,
             enum={"Disabled": "Disabled", "Locked": "Locked", "Unlocked": "Unlocked"},
         )
