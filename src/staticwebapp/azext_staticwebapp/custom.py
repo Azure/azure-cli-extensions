@@ -54,5 +54,5 @@ def show_dbconnection(cmd, resource_group_name, name, environment=None, detailed
     return DbConnectionClient.list(cmd, resource_group_name, name, environment, detailed=detailed)
 
 
-def delete_dbconnection(cmd, resource_group_name, name, environment):
+def delete_dbconnection(cmd, resource_group_name, name, environment=None):
     return DbConnectionClient.delete(cmd, resource_group_name, name, environment)
