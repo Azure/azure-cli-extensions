@@ -21,6 +21,7 @@ from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 
 logger = get_logger(__name__)
 
+
 def dataprotection_backup_vault_list(client, resource_group_name=None):
     if resource_group_name is not None:
         return client.get_in_resource_group(resource_group_name=resource_group_name)
