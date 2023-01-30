@@ -11,7 +11,7 @@ def load_arguments(self, _):
     with self.argument_context('staticwebapp dbconnection') as c:
         c.argument('name', options_list=['--name', '-n'], help="Name of the Static Web App")
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment', help="Name of the environment of Static Web App.", default="default",
+        c.argument('environment', help="Name of the environment of Static Web App.",
                    options_list=["--environment", "-e"])
 
     with self.argument_context('staticwebapp dbconnection create') as c:
