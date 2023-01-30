@@ -1316,16 +1316,17 @@ class CustomDomain(Model):
 
 
 class IPSecurityRestrictions(Model):
-    """Custom Domain of a Container App.
+    """IP Restrictions of a Container App.
 
-    :param name: Hostname.
+    :param name: ipAddressRange
     :type name: str
-    :param binding_type: Custom Domain binding type. Possible values include:
-     'Disabled', 'SniEnabled'
-    :type binding_type: str or ~commondefinitions.models.BindingType
-    :param certificate_id: Resource Id of the Certificate to be bound to this
-     hostname. Must exist in the Managed Environment.
-    :type certificate_id: str
+    :param name: action
+    :type name: str
+    :param name: name
+    :type name: str
+    :param name: description
+    :type name: str
+
     """
 
     _attribute_map = {
