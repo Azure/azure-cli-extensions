@@ -2,10 +2,14 @@
 
 Release History
 ===============
+0.1.18
+++++++++++++++++++
+* `az monitor app-insights web-test`: Fix issue for header property create and display.
+
 0.1.17
 ++++++++++++++++++
-* `az monitor  app-insights component connect-webapp`: Support cross resource groups.
-* `az monitor  app-insights component connect-function`: Support cross resource groups.
+* `az monitor app-insights component connect-webapp`: Support cross resource groups.
+* `az monitor app-insights component connect-function`: Support cross resource groups.
 
 0.1.16
 ++++++++++++++++++

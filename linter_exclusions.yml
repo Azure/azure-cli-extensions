@@ -1210,6 +1210,31 @@ iot hub distributed-tracing update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub message-endpoint create cosmosdb-collection:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create eventhub:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create servicebus-queue:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create servicebus-topic:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create storage-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 iot hub module-identity update:
   parameters:
     auth_type_dataplane:
