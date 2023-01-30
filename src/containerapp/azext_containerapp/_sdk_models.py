@@ -1315,6 +1315,34 @@ class CustomDomain(Model):
         self.certificate_id = kwargs.get('certificate_id', None)
 
 
+class IPSecurityRestrictions(Model):
+    """Custom Domain of a Container App.
+
+    :param name: Hostname.
+    :type name: str
+    :param binding_type: Custom Domain binding type. Possible values include:
+     'Disabled', 'SniEnabled'
+    :type binding_type: str or ~commondefinitions.models.BindingType
+    :param certificate_id: Resource Id of the Certificate to be bound to this
+     hostname. Must exist in the Managed Environment.
+    :type certificate_id: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'ipAddressRange': {'key': 'ipAddressRange', 'type': 'str'},
+        'action': {'key': 'action', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(IPSecurityRestrictions, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.ipAddressRange = kwargs.get('ipAddressRange', None)
+        self.action = kwargs.get('action', None)
+        self.description = kwargs.get('description', None)
+
+
 class CustomHostnameAnalysisResult(ProxyResource):
     """Custom domain analysis.
 
@@ -2071,6 +2099,7 @@ class Ingress(Model):
         'traffic': {'key': 'traffic', 'type': '[TrafficWeight]'},
         'custom_domains': {'key': 'customDomains', 'type': '[CustomDomain]'},
         'allow_insecure': {'key': 'allowInsecure', 'type': 'bool'},
+        'ipSecurityRestrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
     }
 
     def __init__(self, **kwargs):
@@ -2082,6 +2111,7 @@ class Ingress(Model):
         self.traffic = kwargs.get('traffic', None)
         self.custom_domains = kwargs.get('custom_domains', None)
         self.allow_insecure = kwargs.get('allow_insecure', None)
+        self.ipSecurityRestrictions = kwargs.get('ipSecurityRestrictions', None)
 
 
 class LegacyMicrosoftAccount(Model):
