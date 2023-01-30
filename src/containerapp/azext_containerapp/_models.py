@@ -153,7 +153,7 @@ Ingress = {
     "exposedPort": None,
     "traffic": None,  # TrafficWeight
     "customDomains": None,  # [CustomDomain]
-    "ipSecurityRestrictions": None # [IPSecurityRestrictions]
+    "ipSecurityRestrictions": None  # [IPSecurityRestrictions]
 }
 
 RegistryCredentials = {
