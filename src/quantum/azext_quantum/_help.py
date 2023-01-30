@@ -21,7 +21,7 @@ helps['quantum execute'] = """
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-params key1=value1 key2=value2 -- --n-qubits=3
+                --job-params key1=value1 key2=value2 --program-args key1=value1 key2=value2
       - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -38,7 +38,7 @@ helps['quantum run'] = """
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-params key1=value1 key2=value2 -- --n-qubits=3
+                --job-params key1=value1 key2=value2 --program-args key1=value1 key2=value2
       - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -94,7 +94,7 @@ helps['quantum job submit'] = """
       - name: Submit the Q# program with program parameters (e.g. n-qubits = 2).
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob -- --n-qubits=2
+               -t MyTarget --job-name MyJob --program-args n-qubits=2
       - name: Submit a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
