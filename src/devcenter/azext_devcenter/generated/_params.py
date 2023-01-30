@@ -10,6 +10,10 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+# Generated control plane params from autorest
+# DO NOT UPDATE THIS FILE, used to track changes from autorest generation
+# Update the _params.py under the manual
+
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,

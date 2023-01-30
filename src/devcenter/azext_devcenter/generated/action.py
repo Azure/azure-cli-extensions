@@ -10,7 +10,6 @@
 
 
 # pylint: disable=protected-access
-
 # pylint: disable=no-self-use
 
 
