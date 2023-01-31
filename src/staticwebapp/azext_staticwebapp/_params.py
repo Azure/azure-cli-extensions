@@ -24,5 +24,5 @@ def load_arguments(self, _):
         c.argument('mi_system_assigned', options_list=["--mi-system-assigned", "-s"], help="Use the Static Web App's system-assigned identity for auth with the database. Must be assigned to the Static Web App and have the right permissions on the database.")
 
     with self.argument_context('staticwebapp dbconnection show') as c:
-        c.argument('detailed', options_list=['--detailed', '-d'],action='store_true',
+        c.argument('detailed', options_list=['--detailed', '-d'], action='store_true',
                    default=False, help="Get detailed information on database connections")

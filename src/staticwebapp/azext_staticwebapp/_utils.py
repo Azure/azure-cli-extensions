@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 class ConnectionType(Enum):
     CONNECTION_STRING = auto()
     MANAGED_IDENTITY_USER_ASSIGNED = auto()
-    MANAGED_IDENTITY_SYSTEM_ASSIGNED= auto()
+    MANAGED_IDENTITY_SYSTEM_ASSIGNED = auto()
 
 
 class Sku(Enum):
@@ -54,7 +54,7 @@ class AbstractDbHandler:
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
-                              username=None, password=None, **kwargs):
+                               username=None, password=None, **kwargs):
         raise NotImplementedError()
 
     # saves some time by prevent reparsing of RIDs
@@ -184,7 +184,7 @@ class AzureSqlHandler(AbstractDbHandler):
 
     @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
-                              username=None, password=None, **kwargs) -> str:
+                               username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         name = parsed_rid["name"]
 
@@ -283,7 +283,6 @@ class PgSqlSingleHandler(AbstractDbHandler):
             client_id = cls._get_client_id(cmd, connection_type, kwargs["app"], kwargs["identity_rid"])
             return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
                     f"User Id={client_id};Ssl Mode=Require;")
-
 
 
 class PgSqlFlexHandler(AbstractDbHandler):

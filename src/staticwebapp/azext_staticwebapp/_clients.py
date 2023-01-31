@@ -21,7 +21,7 @@ class DbConnectionClient():
         sub_id = get_subscription_id(cmd.cli_ctx)
         if environment:
             url_fmt = ("{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/staticsites/{}/builds/{}"
-                    "/databaseConnections/{}?api-version={}")
+                       "/databaseConnections/{}?api-version={}")
             request_url = url_fmt.format(
                 management_hostname.strip('/'),
                 sub_id,
@@ -107,7 +107,6 @@ class DbConnectionClient():
 
         r = send_raw_request(cmd.cli_ctx, verb, request_url)
         return r.json()
-
 
     @classmethod
     def delete(cls, cmd, resource_group_name, name, environment, connection_name="default"):
