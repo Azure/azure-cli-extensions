@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.3.21
+0.3.22
 ++++++
 * Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
 
