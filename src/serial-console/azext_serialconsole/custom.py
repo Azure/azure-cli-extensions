@@ -277,8 +277,8 @@ class Terminal:
 
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-        result, storage_account_region = get_region_from_storage_account(cmd.cli_ctx, resource_group_name,
-                                                                         vm_vmss_name, vmss_instanceid)
+        _, storage_account_region = get_region_from_storage_account(cmd.cli_ctx, resource_group_name,
+                                                                    vm_vmss_name, vmss_instanceid)
         if storage_account_region is not None:
             kwargs = {'storage_account_region': storage_account_region}
         else:
@@ -371,7 +371,7 @@ class SerialConsole:
             chars_copy = chars.copy()
             chars_copy[indx] = "\u25A0"
             squares = " ".join(chars_copy)
-            # PC.clear_line()
+            PC.clear_line()
             PC.print("Connecting to console of VM   " +
                      squares, color=PrintClass.CYAN)
             PC.show_cursor()
@@ -698,12 +698,11 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                               'MyScaleSet -g MyResourceGroup --instance-ids *".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
-        else:
-            if result.boot_diagnostics is not None:
-                logger.debug(result.boot_diagnostics)
-                if result.boot_diagnostics.console_screenshot_blob_uri is not None:
-                    storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
-                    storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
+        if result.boot_diagnostics is not None:
+            logger.debug(result.boot_diagnostics)
+            if result.boot_diagnostics.console_screenshot_blob_uri is not None:
+                storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
+                storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
     else:
         try:
             result_data = client.virtual_machines.get(
@@ -729,11 +728,10 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                               'parameter "--storage https://mystor.blob.windows.net/".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
-        else:
-            if result.diagnostics_profile is not None:
-                if result.diagnostics_profile.boot_diagnostics is not None:
-                    storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-                    storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
+        if result.diagnostics_profile is not None:
+            if result.diagnostics_profile.boot_diagnostics is not None:
+                storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
+                storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
 
     return result, storage_account_region
 
