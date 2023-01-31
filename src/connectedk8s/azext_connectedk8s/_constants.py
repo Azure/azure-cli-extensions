@@ -135,6 +135,8 @@ Diagnoser_Job_Failed_Fault_Type = "Error while executing Diagnoser Job"
 Diagnoser_Container_Check_Failed_Fault_Type = "Error occured while performing the diagnoser container checks"
 Cluster_DNS_Check_Fault_Type = "Error occured while performing cluster DNS check"
 Outbound_Connectivity_Check_Fault_Type = "Error occured while performing outbound connectivity check in the cluster"
+Outbound_Connectivity_Failed_Fault_Type = "Outbound network connectivity failed in cluster diagnostic checks"
+DNS_Failed_Fault_Type = "DNS resolution failed in cluster diagnostic checks"
 MSI_Cert_Check_Fault_Type = "Error occurred while trying to perform MSI ceritificate presence check"
 Cluster_Security_Policy_Check_Fault_Type = "Error occured while performing cluster security policy check"
 KAP_Cert_Check_Fault_Type = "Error occurred while trying to perform KAP ceritificate presence check"
@@ -167,6 +169,9 @@ Arc_Agent_State_Check = "arc_agent_state_check"
 Arc_Agents_Logs = "arc_agents_logs"
 Arc_Deployment_Logs = "arc_deployment_logs"
 Arc_Diagnostic_Logs = "arc_diagnostic_logs"
+Pre_Onboarding_Check_Logs = "pre_onboarding_check_logs"
+Pre_Onboarding_Helm_Charts_Folder_Name = 'PreOnboardingChecksCharts'
+Pre_Onboarding_Helm_Charts_Release_Name = 'cluster-diagnostic-checks'
 Describe_Non_Ready_Arc_Agents = "describe_non_ready_arc_agents"
 Agent_State = "agent_state.txt"
 Arc_Agents_Events = "arc_agent_events.txt"
@@ -176,7 +181,14 @@ DNS_Check = "dns_check.txt"
 K8s_Cluster_Info = "k8s_cluster_info.txt"
 Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
-
+# Connect Precheck Diagnoser constants
+Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.0"
+Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
+Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
+Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
+Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
+Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
+Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while trying to execute pre-onboarding diagnostic checks'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

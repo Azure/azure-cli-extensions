@@ -48,6 +48,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
+import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
@@ -136,6 +137,55 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
+
+    # Pre onboarding checks
+    try:
+        kubectl_client_location = install_kubectl_client()
+        helm_client_location = install_helm_client()
+        diagnostic_checks = "Failed"
+        batchv1_api_instance = kube_client.BatchV1Api()
+        storage_space_available = True
+
+        current_time = time.ctime(time.time())
+        time_stamp = ""
+        for elements in current_time:
+            if(elements == ' '):
+                time_stamp += '-'
+                continue
+            elif(elements == ':'):
+                time_stamp += '.'
+                continue
+            time_stamp += elements
+        time_stamp = cluster_name + '-' + time_stamp
+
+        # Generate the diagnostic folder in a given location
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
+
+        if(diagnostic_folder_status is not True):
+            storage_space_available = False
+
+        # Performing cluster-diagnostic-checks
+        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
+        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+
+    except Exception as e:
+        telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
+                                fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+        raise CLIInternalError("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        try:
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+        except Exception as e:
+            pass
+        raise ManualInterrupt('Process terminated externally.')
+
+    # If the checks didnt pass then stop the onboarding
+    if diagnostic_checks != consts.Diagnostic_Check_Passed:
+        if storage_space_available:
+                logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
@@ -2235,7 +2285,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             time_stamp += elements
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Arc_Diagnostic_Logs)
 
         if(diagnostic_folder_status is not True):
             storage_space_available = False
@@ -2315,7 +2365,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2336,7 +2386,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')

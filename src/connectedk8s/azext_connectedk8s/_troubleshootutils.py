@@ -16,53 +16,11 @@ import shutil
 from knack.log import get_logger
 from azure.cli.core import telemetry
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._utils as azext_utils
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 
 diagnoser_output = []
-
-
-def create_folder_diagnosticlogs(time_stamp):
-
-    global diagnoser_output
-    try:
-        # Fetching path to user directory to create the arc diagnostic folder
-        home_dir = os.path.expanduser('~')
-        filepath = os.path.join(home_dir, '.azure', consts.Arc_Diagnostic_Logs)
-        # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
-        try:
-            os.mkdir(filepath)
-        except FileExistsError:
-            pass
-        filepath_with_timestamp = os.path.join(filepath, time_stamp)
-        try:
-            os.mkdir(filepath_with_timestamp)
-        except FileExistsError:
-            # Deleting the folder if present with the same timestamp to prevent overriding in the same folder and then creating it again
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=True)
-            os.mkdir(filepath_with_timestamp)
-            pass
-
-        return filepath_with_timestamp, True
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            return "", False
-        else:
-            logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
-            diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-            return "", False
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
-        diagnoser_output.append("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
-        return "", False
 
 
 def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available, kubectl_client_location, kube_config, kube_context):
@@ -493,8 +451,8 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
                     counter_container_logs = 0
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
-            dns_check, storage_space_available = check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available)
-            outbound_connectivity_check, storage_space_available = check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available)
+            dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output)
+            outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available, diagnoser_output)
         else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
@@ -737,93 +695,6 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
     return diagnoser_container_log
 
 
-def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available):
-
-    global diagnoser_output
-    try:
-        if consts.DNS_Check_Result_String not in dns_check_log:
-            return consts.Diagnostic_Check_Incomplete, storage_space_available
-        formatted_dns_log = dns_check_log.replace('\t', '')
-        # Validating if DNS is working or not and displaying proper result
-        if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
-            logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
-            diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
-            if storage_space_available:
-                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
-                with open(dns_check_path, 'w+') as dns:
-                    dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
-            return consts.Diagnostic_Check_Failed, storage_space_available
-        else:
-            if storage_space_available:
-                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
-                with open(dns_check_path, 'w+') as dns:
-                    dns.write(formatted_dns_log + "\nCluster DNS check passed successfully.")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-        else:
-            logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
-            diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
-        diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
-
-    return consts.Diagnostic_Check_Incomplete, storage_space_available
-
-
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available):
-
-    global diagnoser_output
-    try:
-        outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
-        outbound_connectivity_response = outbound_connectivity_response[::-1]
-        if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
-            return consts.Diagnostic_Check_Incomplete, storage_space_available
-        # Validating if outbound connectiivty is working or not and displaying proper result
-        if(outbound_connectivity_response != "000"):
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-            diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
-            return consts.Diagnostic_Check_Failed, storage_space_available
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-        else:
-            logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
-            diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
-        diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
-
-    return consts.Diagnostic_Check_Incomplete, storage_space_available
-
-
 def check_msi_certificate_presence(corev1_api_instance):
 
     global diagnoser_output
@@ -997,47 +868,3 @@ def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, a
             diagnoser_output.append("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
-
-
-def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
-
-    # This function is used to store the output that is obtained throughout the Diagnoser process
-    global diagnoser_output
-    try:
-        # If storage space is available then only we store the output
-        if storage_space_available:
-            # Path to store the diagnoser results
-            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
-            # If any results are obtained during the process than we will add it to the text file.
-            if len(diagnoser_output) > 0:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    for output in diagnoser_output:
-                        cli_output_writer.write(output + "\n")
-                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
-                    if flag == 0:
-                        cli_output_writer.write("Process terminated externally.\n")
-
-            # If no issues was found during the whole troubleshoot execution
-            elif flag:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
-            # If process was terminated by user
-            else:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("Process terminated externally.\n")
-
-        return consts.Diagnostic_Check_Passed
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
-
-    return consts.Diagnostic_Check_Failed
