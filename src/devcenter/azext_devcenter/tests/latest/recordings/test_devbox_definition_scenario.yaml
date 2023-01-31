@@ -23,10 +23,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:22:53.2209894Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:22:53.2209894Z"},"identity":{"principalId":"ec0f8f40-8192-4530-95e6-cc4d59a773b7","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:15:49.6622889Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:15:49.6622889Z"},"identity":{"principalId":"c5168787-5ae4-4ec7-a1fe-31d84cb1c758","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA?api-version=2022-11-11-preview
       cache-control:
       - no-cache
       content-length:
@@ -34,9 +34,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:22:54 GMT
+      - Fri, 27 Jan 2023 02:15:51 GMT
       etag:
-      - '"090058c5-0000-4d00-0000-63cb305e0000"'
+      - '"1700f555-0000-4d00-0000-63d333d70000"'
       expires:
       - '-1'
       pragma:
@@ -48,15 +48,15 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-quota:
-      - '{"name":{"localizedValue":null,"value":"devCenters"},"limit":100,"currentUsed":47,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"westus3"}'
+      - '{"name":{"localizedValue":null,"value":"devCenters"},"limit":100,"currentUsed":21,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"westus3"}'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1194'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '296'
+      - '299'
       x-rate-limit-reset:
-      - '2023-01-21T00:23:37.5298667Z'
+      - '2023-01-27T02:16:50.7015106Z'
     status:
       code: 201
       message: Created
@@ -76,21 +76,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2","name":"980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-01-21T00:22:54.075137Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA","name":"19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-01-27T02:15:50.7193453Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '548'
+      - '549'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:23:23 GMT
+      - Fri, 27 Jan 2023 02:16:21 GMT
       etag:
-      - '"00007e07-0000-4d00-0000-63cb305e0000"'
+      - '"00006817-0000-4d00-0000-63d333d60000"'
       expires:
       - '-1'
       pragma:
@@ -122,21 +122,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2","name":"980c98bf-3d84-47fe-a24d-24e8c61fbce9*7AB86B45B59733E11BBEA5549F75549DC136B7FE79D82711C001B57D702540E2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Succeeded","startTime":"2023-01-21T00:22:54.075137Z","endTime":"2023-01-21T00:23:48.8275546Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA","name":"19b339e2-1899-4936-aaa1-b6a8ebd562dd*EA2B9CB012F6BCE9C9CF1E4A3F507A9A6B156CF2F9A554AE37922F3BB1135EAA","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Succeeded","startTime":"2023-01-27T02:15:50.7193453Z","endTime":"2023-01-27T02:16:47.6889648Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '608'
+      - '609'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:23:54 GMT
+      - Fri, 27 Jan 2023 02:16:50 GMT
       etag:
-      - '"00008107-0000-4d00-0000-63cb30940000"'
+      - '"00007017-0000-4d00-0000-63d3340f0000"'
       expires:
       - '-1'
       pragma:
@@ -171,7 +171,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:22:53.2209894Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:22:53.2209894Z"},"identity":{"principalId":"ec0f8f40-8192-4530-95e6-cc4d59a773b7","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:15:49.6622889Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:15:49.6622889Z"},"identity":{"principalId":"c5168787-5ae4-4ec7-a1fe-31d84cb1c758","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -180,9 +180,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:23:54 GMT
+      - Fri, 27 Jan 2023 02:16:50 GMT
       etag:
-      - '"090094c5-0000-4d00-0000-63cb30940000"'
+      - '"17004b56-0000-4d00-0000-63d3340f0000"'
       expires:
       - '-1'
       pragma:
@@ -223,10 +223,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003","name":"cli000003","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:23:55.9963457Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:23:55.9963457Z"},"properties":{"provisioningState":"Accepted","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003","name":"cli000003","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:16:53.0172442Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:16:53.0172442Z"},"properties":{"provisioningState":"Accepted","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/2a4fc571-a3c5-4546-8e41-e91ab30c9a60*6E40CE6CEEFD04868DE97067E83C792363C0A7225A248B541A5C8BDAEABAD790?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/f13b4995-d81f-4701-84f9-9ea5be3ceac3*F4DDF377BAD13C27C7576A9486DD81C3250D3B3E87202269B847D20C8249E49B?api-version=2022-11-11-preview
       cache-control:
       - no-cache
       content-length:
@@ -234,9 +234,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:23:56 GMT
+      - Fri, 27 Jan 2023 02:16:53 GMT
       etag:
-      - '"00003c39-0000-4d00-0000-63cb309c0000"'
+      - '"430048b8-0000-4d00-0000-63d334150000"'
       expires:
       - '-1'
       pragma:
@@ -250,13 +250,13 @@ interactions:
       x-ms-quota:
       - '{"name":{"localizedValue":null,"value":"projects"},"limit":500,"currentUsed":15,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"westus3"}'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1197'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
       - '299'
       x-rate-limit-reset:
-      - '2023-01-21T00:24:56.1773581Z'
+      - '2023-01-27T02:17:53.1117772Z'
     status:
       code: 201
       message: Created
@@ -276,10 +276,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/2a4fc571-a3c5-4546-8e41-e91ab30c9a60*6E40CE6CEEFD04868DE97067E83C792363C0A7225A248B541A5C8BDAEABAD790?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/f13b4995-d81f-4701-84f9-9ea5be3ceac3*F4DDF377BAD13C27C7576A9486DD81C3250D3B3E87202269B847D20C8249E49B?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/2a4fc571-a3c5-4546-8e41-e91ab30c9a60*6E40CE6CEEFD04868DE97067E83C792363C0A7225A248B541A5C8BDAEABAD790","name":"2a4fc571-a3c5-4546-8e41-e91ab30c9a60*6E40CE6CEEFD04868DE97067E83C792363C0A7225A248B541A5C8BDAEABAD790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003","status":"Succeeded","startTime":"2023-01-21T00:23:56.3357359Z","endTime":"2023-01-21T00:23:57.7037926Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/f13b4995-d81f-4701-84f9-9ea5be3ceac3*F4DDF377BAD13C27C7576A9486DD81C3250D3B3E87202269B847D20C8249E49B","name":"f13b4995-d81f-4701-84f9-9ea5be3ceac3*F4DDF377BAD13C27C7576A9486DD81C3250D3B3E87202269B847D20C8249E49B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003","status":"Succeeded","startTime":"2023-01-27T02:16:53.3087215Z","endTime":"2023-01-27T02:16:55.2162969Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -288,9 +288,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:24:26 GMT
+      - Fri, 27 Jan 2023 02:17:23 GMT
       etag:
-      - '"00008407-0000-4d00-0000-63cb309d0000"'
+      - '"00007517-0000-4d00-0000-63d334170000"'
       expires:
       - '-1'
       pragma:
@@ -325,7 +325,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003","name":"cli000003","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:23:55.9963457Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:23:55.9963457Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003","name":"cli000003","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:16:53.0172442Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:16:53.0172442Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -334,9 +334,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:24:26 GMT
+      - Fri, 27 Jan 2023 02:17:23 GMT
       etag:
-      - '"00003e39-0000-4d00-0000-63cb309d0000"'
+      - '"43004bb8-0000-4d00-0000-63d334170000"'
       expires:
       - '-1'
       pragma:
@@ -382,7 +382,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:24:28 GMT
+      - Fri, 27 Jan 2023 02:17:25 GMT
       expires:
       - '-1'
       pragma:
@@ -394,16 +394,16 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 5e8da6d7-2c77-44d1-937a-6b1e9f1c0c91
-      - d7d33edf-c865-4425-85b4-5734512d7464
-      - fe4b04cd-da20-440b-a730-c4c5b3bc725b
-      - c8117c2b-a6de-49ae-bd5d-992e37a0a42b
-      - 9621d845-99ac-4cd9-bc47-3a9a8cf2d169
-      - 9b1169c5-3b97-4b98-95bd-2f2a303c5dab
-      - 861d4e35-507c-4f4f-8f92-4021e4f6886d
-      - fe02a6bb-70ac-43e7-9625-9a80928cb982
-      - e18ff5af-62c6-4a87-97a7-fb8e62f195d2
-      - 7ee2647d-2731-4d25-ae3a-06a8b861340d
+      - 52ea2d14-8fc2-444f-b60f-3b88efe7177e
+      - 66861ab3-1358-4882-8b5c-a554ffbb4c3f
+      - 0f10a8ad-491f-41a0-8fb4-b7dd3cf22b0f
+      - 0d10bac2-87cc-46e1-8b28-f28756f19177
+      - 64f7f722-a753-4c0d-a200-e2d22ce86a7f
+      - 8d3a3205-ecb1-4052-8aa8-bf50a8ee6aa0
+      - 3c15ceda-2fa9-47d7-9b39-033b25cee626
+      - b14a6347-f11d-4429-8ff8-562dab89550f
+      - 9f13ab6a-1f18-40c1-af69-baf45d525c11
+      - f9fcc521-6371-4028-9f33-4ffde30ee4f5
     status:
       code: 200
       message: OK
@@ -435,7 +435,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:24:29 GMT
+      - Fri, 27 Jan 2023 02:17:28 GMT
       expires:
       - '-1'
       pragma:
@@ -453,14 +453,14 @@ interactions:
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '297'
+      - '299'
       x-rate-limit-reset:
-      - '2023-01-21T00:24:56.3878724Z'
+      - '2023-01-27T02:18:26.7769123Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus3", "properties": {"imageReference": {"id": "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365"},
+    body: '{"location": "westus3", "properties": {"imageReference": {"id": "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365"},
       "sku": {"name": "general_a_8c32gb_v1"}, "osStorageType": "ssd_1024gb", "hibernateSupport":
       "Disabled"}}'
     headers:
@@ -485,10 +485,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.0851996Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:24:31.0851996Z"},"properties":{"provisioningState":"Accepted","imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.5730194Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:17:29.5730194Z"},"properties":{"provisioningState":"Accepted","imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/38b27099-0aed-442d-b969-0b78f7c87a30*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/fbb1f854-a834-40b7-9bb5-0a3f52fcbee8*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
       cache-control:
       - no-cache
       content-length:
@@ -496,9 +496,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:24:31 GMT
+      - Fri, 27 Jan 2023 02:17:29 GMT
       etag:
-      - '"00002435-0000-4d00-0000-63cb30bf0000"'
+      - '"000034d8-0000-4d00-0000-63d3343a0000"'
       expires:
       - '-1'
       pragma:
@@ -510,15 +510,15 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-quota:
-      - '{"name":{"localizedValue":null,"value":"devBoxDefinitions"},"limit":200,"currentUsed":15,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"westus3"}'
+      - '{"name":{"localizedValue":null,"value":"devBoxDefinitions"},"limit":200,"currentUsed":18,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"westus3"}'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1196'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
       - '296'
       x-rate-limit-reset:
-      - '2023-01-21T00:24:56.1773581Z'
+      - '2023-01-27T02:17:53.1117772Z'
     status:
       code: 201
       message: Created
@@ -539,21 +539,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/38b27099-0aed-442d-b969-0b78f7c87a30*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/fbb1f854-a834-40b7-9bb5-0a3f52fcbee8*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/38b27099-0aed-442d-b969-0b78f7c87a30*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E","name":"38b27099-0aed-442d-b969-0b78f7c87a30*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","status":"Succeeded","startTime":"2023-01-21T00:24:31.4477927Z","endTime":"2023-01-21T00:24:36.2726112Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/fbb1f854-a834-40b7-9bb5-0a3f52fcbee8*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2","name":"fbb1f854-a834-40b7-9bb5-0a3f52fcbee8*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","status":"Succeeded","startTime":"2023-01-27T02:17:29.845725Z","endTime":"2023-01-27T02:17:30.9026597Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '636'
+      - '635'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:01 GMT
+      - Fri, 27 Jan 2023 02:18:00 GMT
       etag:
-      - '"00008807-0000-4d00-0000-63cb30c40000"'
+      - '"00007a17-0000-4d00-0000-63d3343a0000"'
       expires:
       - '-1'
       pragma:
@@ -589,7 +589,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.0851996Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:24:31.0851996Z"},"properties":{"provisioningState":"Succeeded","imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.5730194Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:17:29.5730194Z"},"properties":{"provisioningState":"Succeeded","imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"}}}'
     headers:
       cache-control:
       - no-cache
@@ -598,9 +598,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:01 GMT
+      - Fri, 27 Jan 2023 02:18:00 GMT
       etag:
-      - '"00002635-0000-4d00-0000-63cb30c40000"'
+      - '"000036d8-0000-4d00-0000-63d3343a0000"'
       expires:
       - '-1'
       pragma:
@@ -637,7 +637,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.0851996Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:24:31.0851996Z"},"properties":{"provisioningState":"Succeeded","imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.5730194Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:17:29.5730194Z"},"properties":{"provisioningState":"Succeeded","imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"}}}]}'
     headers:
       cache-control:
       - no-cache
@@ -646,7 +646,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:04 GMT
+      - Fri, 27 Jan 2023 02:18:02 GMT
       expires:
       - '-1'
       pragma:
@@ -658,16 +658,16 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - c006ac6d-3dfb-4c45-8790-82f4470c65bf
-      - 3aac8e16-1d65-4de2-8d30-7614de45ddec
-      - e17b0a6b-21df-4680-92cb-5807c547e861
-      - 64f5a04e-64ac-45d9-8a97-391da87a620d
-      - 4c3078c7-eea0-4a2a-986e-7a59417b28de
-      - 5f2cbf4f-2cab-4bfe-a100-82b2db131227
-      - 7ac45f81-4e95-4766-99db-5934a0623641
-      - b9b53932-b2f2-496d-8585-48bbed7b6e31
-      - 786de452-1ee6-40de-97d1-a1b3b3d7281e
-      - 3df52bac-ba43-4a7c-aa81-3a79affe023f
+      - 398c736a-fb29-4bda-b257-13caded21737
+      - 67249898-d3a7-4eed-a98c-f667a63ccdf5
+      - 8a201559-7b90-4073-9059-9497c35711f9
+      - d91d6da8-da0b-46c1-836e-2391599952d5
+      - 9605f78c-9ebd-46ab-9ca6-6716e7cc8748
+      - 19ac2ce0-3903-42ee-8f01-b69524b4edf7
+      - 0c5eb0cc-70a1-4261-bd89-845d039228d6
+      - 9f0a568e-0c4c-45cf-98b3-e4f897dc8def
+      - a317e91c-df78-4ed9-aead-fbe87c46198f
+      - 45c1421e-ff8f-4afe-b423-eb179535b0d8
     status:
       code: 200
       message: OK
@@ -690,7 +690,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003/devboxdefinitions?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003/devboxdefinitions/c1000004","name":"c1000004","type":"Microsoft.DevCenter/projects/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.085199Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:24:31.085199Z"},"properties":{"provisioningState":"Succeeded","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003/devboxdefinitions/c1000004","name":"c1000004","type":"Microsoft.DevCenter/projects/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.573019Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:17:29.573019Z"},"properties":{"provisioningState":"Succeeded","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Disabled"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -699,7 +699,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:06 GMT
+      - Fri, 27 Jan 2023 02:18:04 GMT
       expires:
       - '-1'
       pragma:
@@ -719,12 +719,12 @@ interactions:
       x-rate-limit-remaining:
       - '299'
       x-rate-limit-reset:
-      - '2023-01-21T00:26:05.3957627Z'
+      - '2023-01-27T02:19:03.3097588Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus3", "properties": {"hibernateSupport": "Enabled"}}'
+    body: '{"properties": {"hibernateSupport": "Enabled"}}'
     headers:
       Accept:
       - application/json
@@ -735,11 +735,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '70'
+      - '47'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --dev-center --name --resource-group --hibernate-support --location
+      - --dev-center --name --resource-group --hibernate-support
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PATCH
@@ -749,7 +749,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/e28d92c4-f47e-456a-9184-565cf03d77a3*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/9f8ecba9-8421-40cf-aabc-2edecfaaa0a3*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
       cache-control:
       - no-cache
       content-length:
@@ -757,13 +757,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:07 GMT
+      - Fri, 27 Jan 2023 02:18:04 GMT
       etag:
-      - '"00002935-0000-4d00-0000-63cb30e40000"'
+      - '"000039d8-0000-4d00-0000-63d3345d0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/e28d92c4-f47e-456a-9184-565cf03d77a3*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/9f8ecba9-8421-40cf-aabc-2edecfaaa0a3*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -773,13 +773,13 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '297'
+      - '298'
       x-rate-limit-reset:
-      - '2023-01-21T00:26:05.3957627Z'
+      - '2023-01-27T02:19:03.3097588Z'
     status:
       code: 202
       message: Accepted
@@ -795,14 +795,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --dev-center --name --resource-group --hibernate-support --location
+      - --dev-center --name --resource-group --hibernate-support
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/e28d92c4-f47e-456a-9184-565cf03d77a3*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/9f8ecba9-8421-40cf-aabc-2edecfaaa0a3*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/e28d92c4-f47e-456a-9184-565cf03d77a3*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E","name":"e28d92c4-f47e-456a-9184-565cf03d77a3*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","status":"Succeeded","startTime":"2023-01-21T00:25:07.9797989Z","endTime":"2023-01-21T00:25:23.2407916Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/9f8ecba9-8421-40cf-aabc-2edecfaaa0a3*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2","name":"9f8ecba9-8421-40cf-aabc-2edecfaaa0a3*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","status":"Succeeded","startTime":"2023-01-27T02:18:05.3994065Z","endTime":"2023-01-27T02:18:13.2872665Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -811,9 +811,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:37 GMT
+      - Fri, 27 Jan 2023 02:18:34 GMT
       etag:
-      - '"00008c07-0000-4d00-0000-63cb30f30000"'
+      - '"00008017-0000-4d00-0000-63d334650000"'
       expires:
       - '-1'
       pragma:
@@ -841,14 +841,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --dev-center --name --resource-group --hibernate-support --location
+      - --dev-center --name --resource-group --hibernate-support
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.0851996Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:25:07.8816044Z"},"properties":{"imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.5730194Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:18:05.3470241Z"},"properties":{"imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -857,9 +857,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:37 GMT
+      - Fri, 27 Jan 2023 02:18:34 GMT
       etag:
-      - '"00002b35-0000-4d00-0000-63cb30f30000"'
+      - '"00003bd8-0000-4d00-0000-63d334650000"'
       expires:
       - '-1'
       pragma:
@@ -896,7 +896,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.0851996Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:25:07.8816044Z"},"properties":{"imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","name":"c1000004","type":"microsoft.devcenter/devcenters/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.5730194Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:18:05.3470241Z"},"properties":{"imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -905,9 +905,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:39 GMT
+      - Fri, 27 Jan 2023 02:18:36 GMT
       etag:
-      - '"00002b35-0000-4d00-0000-63cb30f30000"'
+      - '"00003bd8-0000-4d00-0000-63d334650000"'
       expires:
       - '-1'
       pragma:
@@ -944,7 +944,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003/devboxdefinitions/c1000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003/devboxdefinitions/c1000004","name":"c1000004","type":"Microsoft.DevCenter/projects/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-21T00:24:31.085199Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-21T00:25:07.881604Z"},"properties":{"provisioningState":"Succeeded","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Enabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000003/devboxdefinitions/c1000004","name":"c1000004","type":"Microsoft.DevCenter/projects/devboxdefinitions","location":"westus3","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-01-27T02:17:29.573019Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-27T02:18:05.347024Z"},"properties":{"provisioningState":"Succeeded","imageValidationStatus":"Succeeded","activeImageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"imageReference":{"id":"/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365","exactVersion":"1.0.0"},"sku":{"name":"general_a_8c32gb_v1"},"osStorageType":"ssd_1024gb","hibernateSupport":"Enabled"}}'
     headers:
       cache-control:
       - no-cache
@@ -953,7 +953,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:40 GMT
+      - Fri, 27 Jan 2023 02:18:36 GMT
       expires:
       - '-1'
       pragma:
@@ -971,9 +971,9 @@ interactions:
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '296'
+      - '299'
       x-rate-limit-reset:
-      - '2023-01-21T00:26:05.3957627Z'
+      - '2023-01-27T02:19:37.0787452Z'
     status:
       code: 200
       message: OK
@@ -1001,7 +1001,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/18ba2e05-faa2-4038-81b6-8ab77c093d6d*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/a90b5387-61c2-46b7-bb74-8f88d8934251*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
       cache-control:
       - no-cache
       content-length:
@@ -1009,13 +1009,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:25:41 GMT
+      - Fri, 27 Jan 2023 02:18:37 GMT
       etag:
-      - '"00002c35-0000-4d00-0000-63cb31050000"'
+      - '"00003fd8-0000-4d00-0000-63d3347d0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/18ba2e05-faa2-4038-81b6-8ab77c093d6d*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/a90b5387-61c2-46b7-bb74-8f88d8934251*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -1025,13 +1025,13 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14997'
       x-rate-limit-limit:
       - 1m
       x-rate-limit-remaining:
-      - '295'
+      - '298'
       x-rate-limit-reset:
-      - '2023-01-21T00:26:05.3957627Z'
+      - '2023-01-27T02:19:37.0787452Z'
     status:
       code: 202
       message: Accepted
@@ -1051,10 +1051,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.44.1 azsdk-python-devcenter/unknown Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/18ba2e05-faa2-4038-81b6-8ab77c093d6d*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/a90b5387-61c2-46b7-bb74-8f88d8934251*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/18ba2e05-faa2-4038-81b6-8ab77c093d6d*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E","name":"18ba2e05-faa2-4038-81b6-8ab77c093d6d*4D91D10784FD1624AC9FA86DBD6C1EF449FE9C2F1EC03C013EF7C8D568DC6E3E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","status":"Succeeded","startTime":"2023-01-21T00:25:41.5477328Z","endTime":"2023-01-21T00:25:41.9391338Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/a90b5387-61c2-46b7-bb74-8f88d8934251*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2","name":"a90b5387-61c2-46b7-bb74-8f88d8934251*F0BA0DFA67C302FABCC851357CEF22BE46220B50E3D41018B14FB52950FC3BA2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002/devboxdefinitions/c1000004","status":"Succeeded","startTime":"2023-01-27T02:18:37.8525905Z","endTime":"2023-01-27T02:18:38.2621042Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -1063,9 +1063,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:26:11 GMT
+      - Fri, 27 Jan 2023 02:19:07 GMT
       etag:
-      - '"00009007-0000-4d00-0000-63cb31050000"'
+      - '"00008517-0000-4d00-0000-63d3347e0000"'
       expires:
       - '-1'
       pragma:
@@ -1109,7 +1109,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:26:13 GMT
+      - Fri, 27 Jan 2023 02:19:08 GMT
       expires:
       - '-1'
       pragma:
@@ -1121,16 +1121,16 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 2e8cbc5b-7bb3-4b75-a0b7-7e3d7f336eee
-      - 9e3d6044-66b1-4d70-98e8-6e35f53ecc2e
-      - 208fee31-f653-4b30-9821-2c5a186f678b
-      - 5af7bff8-16f9-4822-8fc3-068cda471b0b
-      - 4dc40166-b862-4d32-b204-bb7d281ce91e
-      - a61857b3-bda2-4211-915f-7547342eb11d
-      - 80f26734-7156-4550-8f15-7f5279e635b5
-      - 00106f80-d73d-4c87-9ef0-b40c93809213
-      - aef5cf09-a5b6-4a04-a5f5-e5cfc344e41f
-      - 94cb71fb-65a9-4dfc-839d-4a0fac6439fe
+      - ed0dffd6-6e2a-4c32-a765-ea2679e25624
+      - 0e52e69e-c6bb-42cb-a709-a563d6770779
+      - 6930c79e-515d-4d6d-bf65-0f8fe4eb5123
+      - 55614b30-61bc-44bd-8f3f-60cde47d97ef
+      - f2f9f7e0-b2a4-4ff6-b387-cb089bde6011
+      - 4506d113-4938-4cc6-af55-1c7b23102ad9
+      - c94dcc84-4d1b-4c42-897c-149eb6aa7945
+      - dc170ce0-2236-47f2-85f0-7b756abfbc0f
+      - ad78a0c0-4628-40ad-8583-c7a99fecff71
+      - 843d6057-49be-48f7-bc2a-246ac554c1ec
     status:
       code: 200
       message: OK
@@ -1162,7 +1162,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 21 Jan 2023 00:26:14 GMT
+      - Fri, 27 Jan 2023 02:19:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1182,7 +1182,7 @@ interactions:
       x-rate-limit-remaining:
       - '295'
       x-rate-limit-reset:
-      - '2023-01-21T00:26:40.5024795Z'
+      - '2023-01-27T02:19:37.0787452Z'
     status:
       code: 200
       message: OK

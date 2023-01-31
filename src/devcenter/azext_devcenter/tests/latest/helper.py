@@ -167,7 +167,7 @@ def create_attached_network_dev_box_definition(self):
     create_project(self)
     create_network_connection(self)
     self.kwargs.update({
-        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-m365",
+        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
         'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
         'osStorageType': "ssd_1024gb",
         'skuName': "general_a_8c32gb_v1",

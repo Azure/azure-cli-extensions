@@ -1,9 +1,10 @@
 import json
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
+from azure.cli.core._profile import Profile
 
 
-def get_project_data(cli_ctx, dev_center_name, project_name=None):
+def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip("/")
     api_version = "2021-03-01"
 
@@ -30,15 +31,27 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
         body=json.dumps(content),
         resource=cli_ctx.cloud.endpoints.active_directory_resource_id,
     )
-    resource_graph_data = response.json()["data"]
+    return response.json()["data"]
+
+
+def get_project_data(cli_ctx, dev_center_name, project_name=None):
+    profile = Profile()
+    tenant_id = profile.get_subscription()['tenantId']
+
+    resource_graph_data = get_project_arg(
+        cli_ctx, dev_center_name, project_name)
+
+    error_help = f"""under the current tenant '{tenant_id}'. \
+Please contact your admin to gain access to specific projects or \
+use a different tenant where you have access to projects."""
 
     if len(resource_graph_data) == 0 and project_name is None:
         error_message = f"""No projects were found in the dev center \
-'{dev_center_name}'. Please contact your admin to gain access to specific projects."""
+'{dev_center_name}' {error_help}"""
         raise ResourceNotFoundError(error_message)
     if len(resource_graph_data) == 0:
         error_message = f"""No project '{project_name}' was found in the dev center \
-'{dev_center_name}'. Please contact your admin to gain access to specific projects."""
+'{dev_center_name}' {error_help}"""
         raise ResourceNotFoundError(error_message)
 
     return resource_graph_data[0]
