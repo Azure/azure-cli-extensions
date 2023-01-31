@@ -5,6 +5,7 @@
 
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
+from datetime import timedelta
 
 # customized control plane commands (these will override the generated as they are imported second)
 
@@ -374,17 +375,27 @@ def devcenter_dev_box_delay_upcoming_action(
     dev_center,
     project_name,
     dev_box_name,
+    delay_time,
     upcoming_action_id,
-    delay_until,
     user_id='me'
 ):
+    split_time = delay_time.split(':')
+    hours = int(split_time[0])
+    minutes = int(split_time[1])
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    upcoming_action = cf_dataplane.dev_box.get_upcoming_action(
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+        upcoming_action_id=upcoming_action_id,
+    )
+    delayed_time = upcoming_action.scheduled_time + timedelta(hours=hours, minutes=minutes)
+    
     return cf_dataplane.dev_box.delay_upcoming_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
         upcoming_action_id=upcoming_action_id,
-        delay_until=delay_until,
-    )
+        delay_until=delayed_time,
+    ) 
 
 
 def devcenter_dev_box_list_upcoming_action(

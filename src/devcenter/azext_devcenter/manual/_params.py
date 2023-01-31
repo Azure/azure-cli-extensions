@@ -383,7 +383,7 @@ def load_arguments(self, _):
             help="The name of a Dev " "Box.",
         )
         c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
-        c.argument("delay_until", help="The delayed action time (UTC).")
+        c.argument("delay_time", help="The delayed timespan from the current scheduled time. Format HH:MM'")
 
     with self.argument_context("devcenter dev dev-box list-upcoming-action") as c:
         c.argument(
