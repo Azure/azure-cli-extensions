@@ -74,6 +74,9 @@ class Update(AAZCommand):
         custom_details.azure = AAZObjectArg(
             options=["azure"],
         )
+        custom_details.hyper_v_site = AAZObjectArg(
+            options=["hyper-v-site"],
+        )
         custom_details.in_mage_rcm = AAZObjectArg(
             options=["in-mage-rcm"],
         )
@@ -83,6 +86,13 @@ class Update(AAZCommand):
 
         azure = cls._args_schema.custom_details.azure
         azure.location = AAZStrArg(
+            options=["location"],
+            help="The Location.",
+            nullable=True,
+        )
+
+        hyper_v_site = cls._args_schema.custom_details.hyper_v_site
+        hyper_v_site.location = AAZStrArg(
             options=["location"],
             help="The Location.",
             nullable=True,
@@ -393,15 +403,21 @@ class Update(AAZCommand):
             custom_details = _builder.get(".properties.customDetails")
             if custom_details is not None:
                 custom_details.set_const("instanceType", "Azure", AAZStrType, ".azure", typ_kwargs={"flags": {"required": True}})
+                custom_details.set_const("instanceType", "HyperVSite", AAZStrType, ".hyper_v_site", typ_kwargs={"flags": {"required": True}})
                 custom_details.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
                 custom_details.set_const("instanceType", "VMwareV2", AAZStrType, ".v_mware_v2", typ_kwargs={"flags": {"required": True}})
                 custom_details.discriminate_by("instanceType", "Azure")
+                custom_details.discriminate_by("instanceType", "HyperVSite")
                 custom_details.discriminate_by("instanceType", "InMageRcm")
                 custom_details.discriminate_by("instanceType", "VMwareV2")
 
             disc_azure = _builder.get(".properties.customDetails{instanceType:Azure}")
             if disc_azure is not None:
                 disc_azure.set_prop("location", AAZStrType, ".azure.location")
+
+            disc_hyper_v_site = _builder.get(".properties.customDetails{instanceType:HyperVSite}")
+            if disc_hyper_v_site is not None:
+                disc_hyper_v_site.set_prop("location", AAZStrType, ".hyper_v_site.location")
 
             disc_in_mage_rcm = _builder.get(".properties.customDetails{instanceType:InMageRcm}")
             if disc_in_mage_rcm is not None:
