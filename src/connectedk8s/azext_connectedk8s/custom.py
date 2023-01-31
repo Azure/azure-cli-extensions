@@ -780,7 +780,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
 
 
-def get_release_namespace(kube_config, kube_context, helm_client_location):
+def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
     cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
     if kube_config:
         cmd_helm_release.extend(["--kubeconfig", kube_config])
@@ -800,7 +800,7 @@ def get_release_namespace(kube_config, kube_context, helm_client_location):
     except json.decoder.JSONDecodeError:
         return None
     for release in output_helm_release:
-        if release['name'] == 'azure-arc':
+        if release['name'] == release_name:
             return release['namespace']
     return None
 
