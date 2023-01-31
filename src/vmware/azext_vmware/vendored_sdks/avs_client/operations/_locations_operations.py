@@ -47,7 +47,6 @@ class LocationsOperations(object):
     def check_trial_availability(
         self,
         location,  # type: str
-        sku=None,  # type: Optional["_models.Sku"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.Trial"
@@ -55,8 +54,6 @@ class LocationsOperations(object):
 
         :param location: Azure region.
         :type location: str
-        :param sku: The sku to check for trial availability.
-        :type sku: ~avs_client.models.Sku
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Trial, or the result of cls(response)
         :rtype: ~avs_client.models.Trial
@@ -67,8 +64,7 @@ class LocationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
-        content_type = kwargs.pop("content_type", "application/json")
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
@@ -85,16 +81,9 @@ class LocationsOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        if sku is not None:
-            body_content = self._serialize.body(sku, 'Sku')
-        else:
-            body_content = None
-        body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -130,7 +119,7 @@ class LocationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL

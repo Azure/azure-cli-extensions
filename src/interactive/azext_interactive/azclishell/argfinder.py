@@ -6,8 +6,7 @@
 import argparse
 
 from argcomplete import CompletionFinder
-
-from ..vendored_sdks.argcomplete.compat import USING_PYTHON2, ensure_bytes
+from argcomplete.compat import USING_PYTHON2, ensure_bytes
 
 
 class ArgsFinder(CompletionFinder):  # pylint: disable=too-few-public-methods

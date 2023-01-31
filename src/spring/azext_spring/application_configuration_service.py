@@ -23,15 +23,6 @@ DEFAULT_NAME = "default"
 logger = get_logger(__name__)
 
 
-def application_configuration_service_create(cmd, client, service, resource_group):
-    acs_resource = models.ConfigurationServiceResource()
-    return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
-
-
-def application_configuration_service_delete(cmd, client, service, resource_group):
-    return client.configuration_services.begin_delete(resource_group, service, DEFAULT_NAME)
-
-
 def application_configuration_service_show(cmd, client, service, resource_group):
     return client.configuration_services.get(resource_group, service, DEFAULT_NAME)
 

@@ -5,5 +5,4 @@
 # license information.
 # --------------------------------------------------------------------------
 from .v2022_01_15_preview.models import *
-from .v2022_04_02_preview.models import *
-from .v2022_11_01.models import *
+from .v2022_03_01.models import *

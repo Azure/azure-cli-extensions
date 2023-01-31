@@ -84,7 +84,7 @@ def load_command_table(self, _):
 
     gateway_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.gateway#{}',
-        client_factory=cf_spring_20221101preview
+        client_factory=cf_spring_20220101preview
     )
 
     gateway_custom_domain_cmd_group = CliCommandType(
@@ -210,9 +210,7 @@ def load_command_table(self, _):
         g.custom_command('start-jfr', 'deployment_start_jfr')
 
     with self.command_group('spring app binding', client_factory=cf_spring_20220101preview,
-                            exception_handler=handle_asc_exception, deprecate_info=self.deprecate(
-                                target='spring app binding',
-                                redirect='spring connection', hide=True)) as g:
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'binding_list')
         g.custom_show_command('show', 'binding_get')
         g.custom_command('cosmos add', 'binding_cosmos_add')
@@ -262,8 +260,6 @@ def load_command_table(self, _):
                               table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
-        g.custom_command('create', 'service_registry_create', table_transformer=transform_service_registry_output)
-        g.custom_command('delete', 'service_registry_delete', confirmation=True)
 
     with self.command_group('spring dev-tool', is_preview=True,
                             custom_command_type=dev_tool_portal_cmd_group,
@@ -290,8 +286,6 @@ def load_command_table(self, _):
                               table_transformer=transform_application_configuration_service_output)
         g.custom_command('bind', 'application_configuration_service_bind')
         g.custom_command('unbind', 'application_configuration_service_unbind')
-        g.custom_command('create', 'application_configuration_service_create', table_transformer=transform_application_configuration_service_output)
-        g.custom_command('delete', 'application_configuration_service_delete', confirmation=True)
 
     with self.command_group('spring application-configuration-service git repo',
                             custom_command_type=application_configuration_service_cmd_group,
@@ -307,8 +301,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('update', 'gateway_update', validator=validate_gateway_update, supports_no_wait=True)
         g.custom_command('clear', 'gateway_clear', supports_no_wait=True)
-        g.custom_command('create', 'gateway_create', table_transformer=transform_spring_cloud_gateway_output)
-        g.custom_command('delete', 'gateway_delete', confirmation=True)
 
     with self.command_group('spring gateway custom-domain',
                             custom_command_type=gateway_custom_domain_cmd_group,
@@ -336,8 +328,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'api_portal_show', table_transformer=transform_api_portal_output)
         g.custom_command('update', 'api_portal_update', validator=validate_api_portal_update)
         g.custom_command('clear', 'api_portal_clear')
-        g.custom_command('create', 'api_portal_create', table_transformer=transform_api_portal_output)
-        g.custom_command('delete', 'api_portal_delete', confirmation=True)
 
     with self.command_group('spring api-portal custom-domain',
                             custom_command_type=api_portal_custom_domain_cmd_group,

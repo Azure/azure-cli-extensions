@@ -72,10 +72,7 @@ class DataProtectionKubernetes(DefaultExtension):
         configuration_settings,
         configuration_protected_settings,
         configuration_settings_file,
-        configuration_protected_settings_file,
-        plan_name,
-        plan_publisher,
-        plan_product,
+        configuration_protected_settings_file
     ):
         # Current scope of DataProtection Kubernetes Backup extension is 'cluster' #TODO: add TSGs when they are in place
         if scope == 'namespace':

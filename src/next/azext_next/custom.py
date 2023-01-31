@@ -2,44 +2,41 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import json
 import re
+import json
 
-from azure.cli.core import telemetry
 from azure.cli.core.azclierror import RecommendationError
-from azure.cli.core.style import Style, print_styled_text
 from knack import help_files
-
+from .utils import (get_int_option, get_command_list, get_last_exception, get_title_case, get_yes_or_no_option,
+                    get_latest_command)
 from .constants import RecommendType
+from colorama import Fore, init
 from .requests import get_recommend_from_api
-from .utils import (OptionRange, select_combined_option, get_command_list,
-                    get_last_exception, get_latest_command,
-                    capitalize_first_char, get_yes_or_no_option, select_option)
+from azure.cli.core.style import print_styled_text, Style
+import azure.cli.core.telemetry as telemetry
 
 
-def handle_next(cmd, command_only=False, scenario_only=False):
-    if scenario_only:
-        request_type = RecommendType.Scenario.value
-    elif command_only:
-        request_type = RecommendType.Command.value
+def handle_next(cmd):
+    init(autoreset=True)  # turn on automatic color recovery for colorama
+
+    if cmd.cli_ctx.config.getboolean('next', 'filter_type', fallback=False):
+        request_type = _get_filter_option()
     else:
-        # Fallback to the configured filter_type if not command_only and scenario_only
-        request_type = RecommendType.get(cmd.cli_ctx.config.get('next', 'recommended_type', fallback='all')).value
+        request_type = RecommendType.All.value
 
     # Upload all execution commands of local record for personalized analysis
     command_history = get_command_list(cmd, 0)
 
     processed_exception = None
-    if request_type in (RecommendType.All, RecommendType.Solution):
+    if request_type == RecommendType.All or request_type == RecommendType.Solution:
         processed_exception = get_last_exception(cmd, get_latest_command(command_history))
 
     if request_type == RecommendType.Solution and not processed_exception:
         _handle_error_no_exception_found()
-        return
+        return None
 
     recommends = get_recommend_from_api(command_history, request_type,
-                                        cmd.cli_ctx.config.getint('next', 'command_num_limit', fallback=5),
-                                        cmd.cli_ctx.config.getint('next', 'scenario_num_limit', fallback=5),
+                                        cmd.cli_ctx.config.getint('next', 'num_limit', fallback=5),
                                         error_info=processed_exception)
     if not recommends:
         send_feedback(request_type, -1, command_history, processed_exception)
@@ -47,54 +44,18 @@ def handle_next(cmd, command_only=False, scenario_only=False):
         return
 
     print()
+    _give_recommends(cmd, recommends)
 
-    # divide recommendation items into two sets
-    command_recommendations = [item for item in recommends if item['type'] != RecommendType.Scenario]
-    scenario_recommendations = [item for item in recommends if item['type'] == RecommendType.Scenario]
-    has_multi_type_recommendation = command_recommendations and scenario_recommendations
+    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
+                            Fore.RESET + ": ", 0, len(recommends), -1)
+    if option == 0:
+        send_feedback(request_type, 0, command_history, processed_exception, recommends)
+        print('\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
+        return
+    print()
 
-    if not has_multi_type_recommendation:
-        _give_recommends(cmd, recommends)
-
-        option_msg = [(Style.PRIMARY, "Please select your option "),
-                      (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
-        option = select_option(option_msg, min_option=0, max_option=len(recommends), default_option=-1)
-        if option == 0:
-            send_feedback(request_type, 0, command_history, processed_exception, recommends)
-            print(
-                '\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
-            return
-        print()
-
-        rec = recommends[option - 1]
-        send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
-    else:
-        # display scenario recommendations with prefix 'b', and command recommendations with prefix 'a'
-        print_styled_text([(Style.PRIMARY, "COMMAND")])
-        print()
-        _give_recommends(cmd, command_recommendations, prefix='a')
-        print_styled_text([(Style.PRIMARY, "SCENARIO")])
-        print()
-        _give_recommends(cmd, scenario_recommendations, prefix='b')
-        option_msg = [(Style.PRIMARY, "Please select your option "),
-                      (Style.SECONDARY, "(for example, enter \"b2\" for the second scenario. if none, enter 0)"),
-                      (Style.PRIMARY, ": ")]
-        group, option = select_combined_option(
-            option_msg,
-            {'a': OptionRange(1, len(command_recommendations)), 'b': OptionRange(1, len(scenario_recommendations))},
-            (None, -1))
-        if group == 'a':
-            rec = command_recommendations[option - 1]
-            send_feedback(request_type, group + str(option), command_history, processed_exception, recommends, rec)
-        elif group == 'b':
-            rec = scenario_recommendations[option - 1]
-            send_feedback(request_type, group + str(option), command_history, processed_exception, recommends, rec)
-        else:
-            send_feedback(request_type, 0, command_history, processed_exception, recommends)
-            print(
-                '\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
-            return
-        print()
+    rec = recommends[option - 1]
+    send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
 
     if rec['type'] == RecommendType.Scenario:
         _show_details_for_e2e_scenario(cmd, rec)
@@ -108,7 +69,7 @@ def handle_next(cmd, command_only=False, scenario_only=False):
               'If you want to execute the commands in interactive mode, '
               'you can use "az config set next.execute_in_prompt=True" to set it up.\n')
 
-    return
+    return None
 
 
 def _handle_error_no_exception_found():
@@ -122,17 +83,19 @@ def _handle_error_no_exception_found():
     az_error.print_error()
 
 
-def _give_recommends(cmd, recommends, prefix=''):
-    for idx, rec in enumerate(recommends):
+def _give_recommends(cmd, recommends):
+    idx = 0
+    for rec in recommends:
+        idx += 1
         if rec['type'] == RecommendType.Scenario:
-            _give_recommend_scenarios(prefix + str(idx + 1), rec)
+            _give_recommend_scenarios(idx, rec)
         else:
-            _give_recommend_commands(cmd, prefix + str(idx + 1), rec)
+            _give_recommend_commands(cmd, idx, rec)
 
 
 def _get_cmd_help_from_ctx(cmd, default_value):
     command_help = default_value
-    cmd_help = help_files._load_help_file(cmd)   # pylint: disable=protected-access
+    cmd_help = help_files._load_help_file(cmd)
     if cmd_help and 'short-summary' in cmd_help:
         command_help = cmd_help['short-summary']
     if command_help:
@@ -141,7 +104,7 @@ def _get_cmd_help_from_ctx(cmd, default_value):
 
 
 def _feed_arguments_from_sample(rec):
-    cmd_help = help_files._load_help_file(rec['command'])   # pylint: disable=protected-access
+    cmd_help = help_files._load_help_file(rec['command'])
     if cmd_help:
         if cmd_help['type'] == 'group':
             rec['arguments'] = ['-h']
@@ -178,7 +141,7 @@ def _give_recommend_commands(cmd, idx, rec):
         _feed_arguments_from_sample(rec)
 
     if 'arguments' in rec and cmd.cli_ctx.config.getboolean('next', 'show_arguments', fallback=False):
-        command_item = f"{command_item} {' '.join(rec['arguments'])}"
+        command_item = "{} {}".format(command_item, ' '.join(rec['arguments']))
     print_styled_text([(Style.ACTION, index_str), (Style.PRIMARY, command_item)])
 
     if 'reason' in rec:
@@ -187,29 +150,26 @@ def _give_recommend_commands(cmd, idx, rec):
         reason = _get_cmd_help_from_ctx(rec['command'], "")
         if 'usage_condition' in rec and rec['usage_condition']:
             reason = reason + " (" + rec['usage_condition'] + ")"
-    reason = reason.rstrip(".")
 
     if reason:
         space_padding = re.sub('.', ' ', index_str)
-        print_styled_text([(Style.SECONDARY, space_padding + capitalize_first_char(reason) + "\n")])
+        print_styled_text([(Style.SECONDARY, space_padding + get_title_case(reason) + "\n")])
     else:
         print()
 
 
 def _give_recommend_scenarios(idx, rec):
     index_str = "[" + str(idx) + "] "
-    num_notice = f" ({len(rec['nextCommandSet'])} Commands)"
+    num_notice = " ({} Commands)".format(len(rec['nextCommandSet']))
     print_styled_text([(Style.ACTION, index_str), (Style.PRIMARY, rec['scenario']), (Style.SECONDARY, num_notice)])
     if 'reason' in rec:
-        # Use the first sentence as reason to keep the reason short
-        reason = rec['reason'].split('.')[0]
+        reason = rec['reason']
     else:
         reason = "This is a set of commands that may help you complete this scenario."
-    reason = reason.rstrip(".")
 
     if reason:
         space_padding = re.sub('.', ' ', index_str)
-        print_styled_text([(Style.SECONDARY, space_padding + capitalize_first_char(reason) + "\n")])
+        print_styled_text([(Style.SECONDARY, space_padding + get_title_case(reason) + "\n")])
     else:
         print()
 
@@ -230,7 +190,7 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
         if param in store_true_params:
             args.append(param)
         else:
-            print_styled_text([(Style.ACTION, "Please input "), (Style.PRIMARY, param + ": ")], end='')
+            print("Please input " + Fore.LIGHTBLUE_EX + param + Fore.RESET + ":", end='')
             value = input()
             if param == '<positional argument>':
                 if value:
@@ -246,7 +206,7 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
 
     if '--output' not in args and '-o' not in args:
         args.append('--output')
-        if output_format == 'status':
+        if 'status' == output_format:
             is_show_operation = False
             for operation in ['show', 'list', 'get', 'version']:
                 if operation in nx_cmd:
@@ -266,88 +226,69 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
     else:
         try:
             exit_code = cmd.cli_ctx.invoke(args)
-        except Exception:   # pylint: disable=broad-except
+        except Exception:
             return -1
         except SystemExit:
             return -1
 
-    if output_format == 'status' and exit_code == 0:
+    if 'status' == output_format and exit_code == 0:
         from .utils import print_successful_styled_text
-        print()
         print_successful_styled_text('command completed\n')
 
     return exit_code
 
 
-def _get_command_sample(command):
-    """Try getting example from command. Or load the example from `--help` if not found."""
-    if "example" in command and command["example"]:
-        command_sample, _ = _format_command_sample(command["example"].replace(" $", " "))
-        return command_sample
+def _get_command_item_sample(rec):
+    if "example" in rec and rec["example"]:
+        example = Fore.LIGHTBLUE_EX + rec["example"]
+        example = re.sub('<', Fore.RESET + '<', example)
+        example = re.sub('>', '>' + Fore.LIGHTBLUE_EX, example)
+        return example
 
-    from knack import help_files
-    parameter = []
-    if "arguments" in command and command["arguments"]:
-        parameter = command["arguments"]
-        sorted_param = sorted(parameter)
-        cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
+    nx_param = []
+    if "arguments" in rec and rec["arguments"]:
+        nx_param = rec["arguments"]
+        sorted_nx_param = sorted(nx_param)
+        cmd_help = help_files._load_help_file(rec['command'])
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
-                command_sample, example_arguments = _format_command_sample(cmd_example['text'])
-                if sorted(example_arguments) == sorted_param:
-                    return command_sample
+                cmd_items = cmd_example['text'].split()
 
-    command = command["command"] if command["command"].startswith("az ") else "az " + command["command"]
-    command_sample = f"{command} {' '.join(parameter) if parameter else ''}"
-    return [(Style.PRIMARY, command_sample)]
-
-
-def _format_command_sample(command_sample):
-    """
-    Format command sample in the style of `az xxx --name <appServicePlan>`.
-    Also return the arguments used in the sample.
-    """
-    if not command_sample:
-        return [], []
-
-    cmd_items = command_sample.split()
-    arguments_start = False
-    example_arguments = []
-    command_item = []
-    argument_values = {}
-    values = []
-    for item in cmd_items:
-        if item.startswith('-'):
-            arguments_start = True
-            if values and example_arguments:
-                argument_values[example_arguments[-1]] = values
+                arguments_start = False
+                example_arguments = []
+                command_item = []
+                argument_values = {}
                 values = []
-            example_arguments.append(item)
-        elif not arguments_start:
-            command_item.append(item)
-        else:
-            values.append(item)
-    if values and example_arguments:
-        argument_values[example_arguments[-1]] = values
+                for item in cmd_items:
+                    if item.startswith('-'):
+                        arguments_start = True
+                        if values and example_arguments:
+                            argument_values[example_arguments[-1]] = values
+                            values = []
+                        example_arguments.append(item)
+                    elif not arguments_start:
+                        command_item.append(item)
+                    else:
+                        values.append(item)
+                if values and example_arguments:
+                    argument_values[example_arguments[-1]] = values
 
-    formatted_example = [(Style.PRIMARY, ' '.join(command_item))]
-    for argument in example_arguments:
-        formatted_example.append((Style.PRIMARY, " " + argument))
-        if argument in argument_values and argument_values[argument]:
-            argument_value = ' '.join(argument_values[argument])
-            if not (argument_value.startswith('<') and argument_value.endswith('>')):
-                argument_value = '<' + argument_value + '>'
-            formatted_example.append((Style.WARNING, ' ' + argument_value))
+                if sorted(example_arguments) == sorted_nx_param:
+                    example = Fore.LIGHTBLUE_EX + ' '.join(command_item)
+                    for argument in example_arguments:
+                        example = example + " " + Fore.LIGHTBLUE_EX + argument
+                        if argument in argument_values and argument_values[argument]:
+                            example = example + Fore.RESET + ' <' + ' '.join(argument_values[argument]) + '>'
+                    return example
 
-    return formatted_example, example_arguments
+    return Fore.LIGHTBLUE_EX + "az {} {}".format(rec["command"], ' '.join(nx_param) if nx_param else "")
 
 
 def _execute_recommend_commands(cmd, rec):
     nx_param = []
     if "arguments" in rec:
         nx_param = rec["arguments"]
-    print_styled_text([(Style.ACTION, "Running: ")], end='')
-    print_styled_text(_get_command_sample(rec))
+    print("\nRunning: " + _get_command_item_sample(rec))
     print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
     execute_result = _execute_nx_cmd(cmd, rec["command"], nx_param, catch_exception=True)
     is_help_printed = False
@@ -356,8 +297,7 @@ def _execute_recommend_commands(cmd, rec):
             _print_help_info(cmd, rec["command"])
             is_help_printed = True
 
-        step_msg = [(Style.PRIMARY, "Do you want to retry this command? "), (Style.SECONDARY, "(y/n)"),
-                    (Style.PRIMARY, ": ")]
+        step_msg = "Do you want to retry this command? " + Fore.LIGHTBLACK_EX + "(y/n)" + Fore.RESET + ": "
         run_option = get_yes_or_no_option(step_msg)
         if run_option:
             execute_result = _execute_nx_cmd(cmd, rec["command"], nx_param, catch_exception=True)
@@ -367,9 +307,7 @@ def _execute_recommend_commands(cmd, rec):
 
 
 def _execute_recommend_scenarios(cmd, rec):
-    exec_idx = rec.get("executeIndex")
-    for idx in exec_idx:
-        nx_cmd = rec["nextCommandSet"][idx]
+    for nx_cmd in rec["nextCommandSet"]:
         nx_param = []
         if "arguments" in nx_cmd:
             nx_param = nx_cmd["arguments"]
@@ -377,11 +315,10 @@ def _execute_recommend_scenarios(cmd, rec):
         if cmd.cli_ctx.config.getboolean('next', 'print_help', fallback=False):
             _print_help_info(cmd, nx_cmd["command"])
 
-        print_styled_text([(Style.ACTION, "Running: ")], end='')
-        print_styled_text(_get_command_sample(nx_cmd))
-        option_msg = [(Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
-                      (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-        run_option = select_option(option_msg, min_option=1, max_option=3, default_option=1)
+        print("\nRunning: " + _get_command_item_sample(nx_cmd))
+        step_msg = "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process " + Fore.LIGHTBLACK_EX \
+                   + "(Enter is to Run)" + Fore.RESET + ": "
+        run_option = get_int_option(step_msg, 1, 3, 1)
         if run_option == 1:
             print_styled_text([(Style.SECONDARY, "Input Enter to skip unnecessary parameters")])
             execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
@@ -391,10 +328,9 @@ def _execute_recommend_scenarios(cmd, rec):
                     _print_help_info(cmd, nx_cmd["command"])
                     is_help_printed = True
 
-                option_msg = [
-                    (Style.PRIMARY, "How do you want to run this step? 1. Run it 2. Skip it 3. Quit process "),
-                    (Style.SECONDARY, "(Enter is to Run)"), (Style.PRIMARY, ": ")]
-                run_option = select_option(option_msg, min_option=1, max_option=3, default_option=1)
+                step_msg = "Do you want to retry this step? 1. Run it 2. Skip it 3. Quit process " + Fore.LIGHTBLACK_EX \
+                           + "(Enter is to Run)" + Fore.RESET + ": "
+                run_option = get_int_option(step_msg, 1, 3, 1)
                 if run_option == 1:
                     execute_result = _execute_nx_cmd(cmd, nx_cmd['command'], nx_param, catch_exception=True)
                 elif run_option == 2:
@@ -414,24 +350,34 @@ def _execute_recommend_scenarios(cmd, rec):
     print_successful_styled_text('All commands in this scenario have been executed! \n')
 
 
+def _get_filter_option():
+    msg = '''
+Please select the type of recommendation you need:
+1. all: It will intelligently analyze the types of recommendation you need, and may recommend multiple types of command to you
+2. solution: Only the solutions to problems when errors occur are recommend
+3. command: Only the commands with high correlation with previously executed commands are recommend
+4. scenario: Only the E2E scenarios related to current usage scenarios are recommended
+'''
+    print(msg)
+    return get_int_option("What kind of recommendation do you want? " + Fore.LIGHTBLACK_EX + "(RETURN is to set all)" +
+                          Fore.RESET + ": ", 1, 4, 1)
+
+
 def _show_details_for_e2e_scenario(cmd, rec):
-    print_styled_text([(Style.WARNING, rec['scenario']),
-                       (Style.PRIMARY, " contains the following commands:\n")])
+    print_styled_text([(Style.PRIMARY, rec['scenario']),
+                       (Style.ACTION, " contains the following commands:\n")])
 
     nx_cmd_set = rec["nextCommandSet"]
-    exec_idx = rec.get("executeIndex")
-    for idx, nx_cmd in enumerate(nx_cmd_set):
+    idx = 0
+    for nx_cmd in nx_cmd_set:
+        idx += 1
         command_item = "az " + nx_cmd['command']
         if 'arguments' in nx_cmd and cmd.cli_ctx.config.getboolean('next', 'show_arguments', fallback=False):
-            command_item = f"{command_item} {' '.join(nx_cmd['arguments'])}"
-        cmd_active = idx in exec_idx
-        styled_command = [(Style.ACTION, " > "), (Style.PRIMARY, command_item)]
-        if not cmd_active:
-            styled_command.append((Style.WARNING, " (executed)"))
-        print_styled_text(styled_command)
+            command_item = "{} {}".format(command_item, ' '.join(nx_cmd['arguments']))
+        print(command_item)
 
         if nx_cmd['reason']:
-            print_styled_text([(Style.SECONDARY, capitalize_first_char(nx_cmd['reason']) + "\n")])
+            print_styled_text([(Style.SECONDARY, get_title_case(nx_cmd['reason']) + "\n")])
         else:
             print()
 

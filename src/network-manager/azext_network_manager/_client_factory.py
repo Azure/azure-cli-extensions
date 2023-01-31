@@ -59,6 +59,10 @@ def cf_networkmanager(cli_ctx, *_):
     return cf_network_cl(cli_ctx).network_managers
 
 
+def cf_securityadminconfiguration(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).security_admin_configurations
+
+
 def cf_securityuserconfiguration(cli_ctx, *_):
     return cf_network_cl(cli_ctx).security_user_configurations
 

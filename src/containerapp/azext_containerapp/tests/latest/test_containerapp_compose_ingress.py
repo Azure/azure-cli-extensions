@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import os
+
 import unittest  # pylint: disable=unused-import
 
 from azure.cli.testsdk import (ResourceGroupPreparer)
@@ -18,11 +18,6 @@ class ContainerappComposePreviewIngressScenarioTest(ContainerappComposePreviewSc
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_external(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
-
         compose_text = """
 services:
   foo:
@@ -91,11 +86,6 @@ class ContainerappComposePreviewIngressBothScenarioTest(ContainerappComposePrevi
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_both(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
-
         compose_text = """
 services:
   foo:
@@ -131,11 +121,6 @@ class ContainerappComposePreviewIngressPromptScenarioTest(ContainerappComposePre
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_ingress_prompt(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
-
         compose_text = """
 services:
   foo:

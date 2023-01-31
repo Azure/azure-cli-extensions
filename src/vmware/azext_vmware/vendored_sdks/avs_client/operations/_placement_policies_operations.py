@@ -75,7 +75,7 @@ class PlacementPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -160,7 +160,7 @@ class PlacementPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
@@ -204,7 +204,7 @@ class PlacementPoliciesOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         placement_policy_name,  # type: str
-        placement_policy,  # type: "_models.PlacementPolicy"
+        properties=None,  # type: Optional["_models.PlacementPolicyProperties"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.PlacementPolicy"
@@ -213,7 +213,9 @@ class PlacementPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+
+        _placement_policy = _models.PlacementPolicy(properties=properties)
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -238,7 +240,7 @@ class PlacementPoliciesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(placement_policy, 'PlacementPolicy')
+        body_content = self._serialize.body(_placement_policy, 'PlacementPolicy')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -266,7 +268,7 @@ class PlacementPoliciesOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         placement_policy_name,  # type: str
-        placement_policy,  # type: "_models.PlacementPolicy"
+        properties=None,  # type: Optional["_models.PlacementPolicyProperties"]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["_models.PlacementPolicy"]
@@ -283,8 +285,8 @@ class PlacementPoliciesOperations(object):
         :param placement_policy_name: Name of the VMware vSphere Distributed Resource Scheduler (DRS)
          placement policy.
         :type placement_policy_name: str
-        :param placement_policy: A placement policy in the private cloud cluster.
-        :type placement_policy: ~avs_client.models.PlacementPolicy
+        :param properties: placement policy properties.
+        :type properties: ~avs_client.models.PlacementPolicyProperties
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -308,7 +310,7 @@ class PlacementPoliciesOperations(object):
                 private_cloud_name=private_cloud_name,
                 cluster_name=cluster_name,
                 placement_policy_name=placement_policy_name,
-                placement_policy=placement_policy,
+                properties=properties,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -360,7 +362,7 @@ class PlacementPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -506,7 +508,7 @@ class PlacementPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL

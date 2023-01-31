@@ -8,7 +8,6 @@
 
 try:
     from ._models_py3 import Addon
-    from ._models_py3 import AddonArcProperties
     from ._models_py3 import AddonHcxProperties
     from ._models_py3 import AddonList
     from ._models_py3 import AddonProperties
@@ -23,8 +22,6 @@ try:
     from ._models_py3 import ClusterList
     from ._models_py3 import ClusterProperties
     from ._models_py3 import ClusterUpdate
-    from ._models_py3 import ClusterZone
-    from ._models_py3 import ClusterZoneList
     from ._models_py3 import CommonClusterProperties
     from ._models_py3 import Datastore
     from ._models_py3 import DatastoreList
@@ -83,7 +80,6 @@ try:
     from ._models_py3 import VirtualMachinesList
     from ._models_py3 import VmHostPlacementPolicyProperties
     from ._models_py3 import VmPlacementPolicyProperties
-    from ._models_py3 import WorkloadNetwork
     from ._models_py3 import WorkloadNetworkDhcp
     from ._models_py3 import WorkloadNetworkDhcpEntity
     from ._models_py3 import WorkloadNetworkDhcpList
@@ -95,7 +91,6 @@ try:
     from ._models_py3 import WorkloadNetworkDnsZonesList
     from ._models_py3 import WorkloadNetworkGateway
     from ._models_py3 import WorkloadNetworkGatewayList
-    from ._models_py3 import WorkloadNetworkList
     from ._models_py3 import WorkloadNetworkPortMirroring
     from ._models_py3 import WorkloadNetworkPortMirroringList
     from ._models_py3 import WorkloadNetworkPublicIP
@@ -110,7 +105,6 @@ try:
     from ._models_py3 import WorkloadNetworkVirtualMachinesList
 except (SyntaxError, ImportError):
     from ._models import Addon  # type: ignore
-    from ._models import AddonArcProperties  # type: ignore
     from ._models import AddonHcxProperties  # type: ignore
     from ._models import AddonList  # type: ignore
     from ._models import AddonProperties  # type: ignore
@@ -125,8 +119,6 @@ except (SyntaxError, ImportError):
     from ._models import ClusterList  # type: ignore
     from ._models import ClusterProperties  # type: ignore
     from ._models import ClusterUpdate  # type: ignore
-    from ._models import ClusterZone  # type: ignore
-    from ._models import ClusterZoneList  # type: ignore
     from ._models import CommonClusterProperties  # type: ignore
     from ._models import Datastore  # type: ignore
     from ._models import DatastoreList  # type: ignore
@@ -185,7 +177,6 @@ except (SyntaxError, ImportError):
     from ._models import VirtualMachinesList  # type: ignore
     from ._models import VmHostPlacementPolicyProperties  # type: ignore
     from ._models import VmPlacementPolicyProperties  # type: ignore
-    from ._models import WorkloadNetwork  # type: ignore
     from ._models import WorkloadNetworkDhcp  # type: ignore
     from ._models import WorkloadNetworkDhcpEntity  # type: ignore
     from ._models import WorkloadNetworkDhcpList  # type: ignore
@@ -197,7 +188,6 @@ except (SyntaxError, ImportError):
     from ._models import WorkloadNetworkDnsZonesList  # type: ignore
     from ._models import WorkloadNetworkGateway  # type: ignore
     from ._models import WorkloadNetworkGatewayList  # type: ignore
-    from ._models import WorkloadNetworkList  # type: ignore
     from ._models import WorkloadNetworkPortMirroring  # type: ignore
     from ._models import WorkloadNetworkPortMirroringList  # type: ignore
     from ._models import WorkloadNetworkPublicIP  # type: ignore
@@ -214,10 +204,8 @@ except (SyntaxError, ImportError):
 from ._avs_client_enums import (
     AddonProvisioningState,
     AddonType,
-    AffinityStrength,
     AffinityType,
     AvailabilityStrategy,
-    AzureHybridBenefitType,
     CloudLinkStatus,
     ClusterProvisioningState,
     DatastoreProvisioningState,
@@ -234,7 +222,6 @@ from ._avs_client_enums import (
     HcxEnterpriseSiteStatus,
     InternetEnum,
     MountOptionEnum,
-    NsxPublicIpQuotaRaisedEnum,
     OptionalParamEnum,
     PlacementPolicyProvisioningState,
     PlacementPolicyState,
@@ -258,7 +245,6 @@ from ._avs_client_enums import (
     WorkloadNetworkDhcpProvisioningState,
     WorkloadNetworkDnsServiceProvisioningState,
     WorkloadNetworkDnsZoneProvisioningState,
-    WorkloadNetworkName,
     WorkloadNetworkPortMirroringProvisioningState,
     WorkloadNetworkPublicIPProvisioningState,
     WorkloadNetworkSegmentProvisioningState,
@@ -267,7 +253,6 @@ from ._avs_client_enums import (
 
 __all__ = [
     'Addon',
-    'AddonArcProperties',
     'AddonHcxProperties',
     'AddonList',
     'AddonProperties',
@@ -282,8 +267,6 @@ __all__ = [
     'ClusterList',
     'ClusterProperties',
     'ClusterUpdate',
-    'ClusterZone',
-    'ClusterZoneList',
     'CommonClusterProperties',
     'Datastore',
     'DatastoreList',
@@ -342,7 +325,6 @@ __all__ = [
     'VirtualMachinesList',
     'VmHostPlacementPolicyProperties',
     'VmPlacementPolicyProperties',
-    'WorkloadNetwork',
     'WorkloadNetworkDhcp',
     'WorkloadNetworkDhcpEntity',
     'WorkloadNetworkDhcpList',
@@ -354,7 +336,6 @@ __all__ = [
     'WorkloadNetworkDnsZonesList',
     'WorkloadNetworkGateway',
     'WorkloadNetworkGatewayList',
-    'WorkloadNetworkList',
     'WorkloadNetworkPortMirroring',
     'WorkloadNetworkPortMirroringList',
     'WorkloadNetworkPublicIP',
@@ -369,10 +350,8 @@ __all__ = [
     'WorkloadNetworkVirtualMachinesList',
     'AddonProvisioningState',
     'AddonType',
-    'AffinityStrength',
     'AffinityType',
     'AvailabilityStrategy',
-    'AzureHybridBenefitType',
     'CloudLinkStatus',
     'ClusterProvisioningState',
     'DatastoreProvisioningState',
@@ -389,7 +368,6 @@ __all__ = [
     'HcxEnterpriseSiteStatus',
     'InternetEnum',
     'MountOptionEnum',
-    'NsxPublicIpQuotaRaisedEnum',
     'OptionalParamEnum',
     'PlacementPolicyProvisioningState',
     'PlacementPolicyState',
@@ -413,7 +391,6 @@ __all__ = [
     'WorkloadNetworkDhcpProvisioningState',
     'WorkloadNetworkDnsServiceProvisioningState',
     'WorkloadNetworkDnsZoneProvisioningState',
-    'WorkloadNetworkName',
     'WorkloadNetworkPortMirroringProvisioningState',
     'WorkloadNetworkPublicIPProvisioningState',
     'WorkloadNetworkSegmentProvisioningState',

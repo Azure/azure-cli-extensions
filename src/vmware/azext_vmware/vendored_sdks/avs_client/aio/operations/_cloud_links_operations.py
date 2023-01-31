@@ -67,7 +67,7 @@ class CloudLinksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -146,7 +146,7 @@ class CloudLinksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
@@ -188,7 +188,7 @@ class CloudLinksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         cloud_link_name: str,
-        cloud_link: "_models.CloudLink",
+        linked_cloud: Optional[str] = None,
         **kwargs: Any
     ) -> "_models.CloudLink":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
@@ -196,7 +196,9 @@ class CloudLinksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+
+        _cloud_link = _models.CloudLink(linked_cloud=linked_cloud)
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -220,7 +222,7 @@ class CloudLinksOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(cloud_link, 'CloudLink')
+        body_content = self._serialize.body(_cloud_link, 'CloudLink')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -247,7 +249,7 @@ class CloudLinksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         cloud_link_name: str,
-        cloud_link: "_models.CloudLink",
+        linked_cloud: Optional[str] = None,
         **kwargs: Any
     ) -> AsyncLROPoller["_models.CloudLink"]:
         """Create or update a cloud link in a private cloud.
@@ -260,8 +262,8 @@ class CloudLinksOperations:
         :type private_cloud_name: str
         :param cloud_link_name: Name of the cloud link resource.
         :type cloud_link_name: str
-        :param cloud_link: A cloud link in the private cloud.
-        :type cloud_link: ~avs_client.models.CloudLink
+        :param linked_cloud: Identifier of the other private cloud participating in the link.
+        :type linked_cloud: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -284,7 +286,7 @@ class CloudLinksOperations:
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 cloud_link_name=cloud_link_name,
-                cloud_link=cloud_link,
+                linked_cloud=linked_cloud,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -332,7 +334,7 @@ class CloudLinksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL

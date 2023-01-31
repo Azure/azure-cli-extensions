@@ -67,7 +67,7 @@ class AddonsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -146,7 +146,7 @@ class AddonsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
@@ -188,7 +188,7 @@ class AddonsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         addon_name: str,
-        addon: "_models.Addon",
+        properties: Optional["_models.AddonProperties"] = None,
         **kwargs: Any
     ) -> "_models.Addon":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Addon"]
@@ -196,7 +196,9 @@ class AddonsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+
+        _addon = _models.Addon(properties=properties)
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -220,7 +222,7 @@ class AddonsOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(addon, 'Addon')
+        body_content = self._serialize.body(_addon, 'Addon')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -247,7 +249,7 @@ class AddonsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         addon_name: str,
-        addon: "_models.Addon",
+        properties: Optional["_models.AddonProperties"] = None,
         **kwargs: Any
     ) -> AsyncLROPoller["_models.Addon"]:
         """Create or update a addon in a private cloud.
@@ -260,8 +262,8 @@ class AddonsOperations:
         :type private_cloud_name: str
         :param addon_name: Name of the addon for the private cloud.
         :type addon_name: str
-        :param addon: A addon in the private cloud.
-        :type addon: ~avs_client.models.Addon
+        :param properties: The properties of an addon resource.
+        :type properties: ~avs_client.models.AddonProperties
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -284,7 +286,7 @@ class AddonsOperations:
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 addon_name=addon_name,
-                addon=addon,
+                properties=properties,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -332,7 +334,7 @@ class AddonsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL

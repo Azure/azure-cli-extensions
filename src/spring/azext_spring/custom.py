@@ -1535,13 +1535,3 @@ def app_connect(cmd, client, resource_group, service, name,
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 conn.send(EXEC_PROTOCOL_CTRL_C_MSG)
-
-    try:
-        import termios
-        # Turn on the terminal echo after exiting.
-        mode = termios.tcgetattr(sys.stdin.fileno())
-        mode[3] = mode[3] | termios.ECHO
-        termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, mode)
-    except ModuleNotFoundError:
-        # termios works only on Unix
-        pass

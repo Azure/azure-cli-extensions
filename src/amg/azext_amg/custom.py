@@ -148,59 +148,22 @@ def list_grafana(cmd, resource_group_name=None):
     return client.grafana.list()
 
 
-def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
-                   public_network_access=None, smtp=None, host=None, user=None, password=None,
-                   start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
-                   resource_group_name=None, tags=None):
-
-    # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
-
-    if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
-            and not smtp and not host and not user and not password and not start_tls_policy and not from_address
-            and not from_name and skip_verify is None):
-        raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
+def update_grafana(cmd, grafana_name, api_key=None, deterministic_outbound_ip=None, resource_group_name=None,
+                   tags=None):
+    if not api_key and not deterministic_outbound_ip and not tags:
+        raise ArgumentUsageError("--api-key | --deterministic-outbound-ip | --public-network-access")
 
     client = cf_amg(cmd.cli_ctx)
-
     instance = client.grafana.get(resource_group_name, grafana_name)
 
-    if api_key_and_service_account:
-        instance.properties.api_key = api_key_and_service_account
+    if api_key:
+        instance.properties.api_key = api_key
 
     if deterministic_outbound_ip:
         instance.properties.deterministic_outbound_ip = deterministic_outbound_ip
 
-    if public_network_access:
-        instance.properties.public_network_access = public_network_access
-
     if tags:
         instance.tags = tags
-
-    if (smtp or host or user or password or start_tls_policy
-            or from_address or from_name or skip_verify is not None):
-
-        from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
-        if not instance.properties.grafana_configurations:
-            instance.properties.grafana_configurations = GrafanaConfigurations()
-        if not instance.properties.grafana_configurations.smtp:
-            instance.properties.grafana_configurations.smtp = Smtp()
-
-        if smtp:
-            instance.properties.grafana_configurations.smtp.enabled = (smtp == "Enabled")
-        if host:
-            instance.properties.grafana_configurations.smtp.host = host
-        if user:
-            instance.properties.grafana_configurations.smtp.user = user
-        if password:
-            instance.properties.grafana_configurations.smtp.password = password
-        if start_tls_policy:
-            instance.properties.grafana_configurations.smtp.start_tls_policy = start_tls_policy
-        if skip_verify is not None:
-            instance.properties.grafana_configurations.smtp.skip_verify = skip_verify
-        if from_address:
-            instance.properties.grafana_configurations.smtp.from_address = from_address
-        if from_name:
-            instance.properties.grafana_configurations.smtp.from_name = from_name
 
     # "begin_create" uses PUT, which handles both Create and Update
     return client.grafana.begin_create(resource_group_name, grafana_name, instance)
@@ -225,20 +188,19 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
     _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
 
-def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_token=None):
+def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/dashboards/uid/" + uid,
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
-def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/search?type=dash-db",
-                             api_key_or_token=api_key_or_token)
+def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/search?type=dash-db", api_key=api_key)
     return json.loads(response.content)
 
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None,
-                     overwrite=None, api_key_or_token=None):
+                     overwrite=None, api_key=None):
     if "dashboard" in definition:
         payload = definition
     else:
@@ -260,22 +222,21 @@ def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, res
         del payload['dashboard']['id']
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
-                             payload, api_key_or_token=api_key_or_token)
+                             payload, api_key=api_key)
     return json.loads(response.content)
 
 
 def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None,
-                     api_key_or_token=None):
+                     api_key=None):
     return create_dashboard(cmd, grafana_name, definition, folder=folder,
                             resource_group_name=resource_group_name,
-                            overwrite=overwrite, api_key_or_token=api_key_or_token)
+                            overwrite=overwrite, api_key=api_key)
 
 
 def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None,
-                     api_key_or_token=None):
+                     api_key=None):
     import copy
-    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition,
-                                          api_key_or_token=api_key_or_token)
+    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, api_key=api_key)
     if "dashboard" in data:
         payload = data
     else:
@@ -304,18 +265,17 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
                 logger.warning("No data source was found matching the required parameter of %s", parameter['pluginId'])
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
-                             payload, api_key_or_token=api_key_or_token)
+                             payload, api_key=api_key)
     return json.loads(response.content)
 
 
-def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, api_key_or_token=None):
+def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, api_key=None):
     import re
 
     try:
         int(definition)
-        # try load from Grafana gallery
         response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                                 "/api/gnet/dashboards/" + str(definition), api_key_or_token=api_key_or_token)
+                                 "/api/gnet/dashboards/" + str(definition), api_key=api_key)
         definition = json.loads(response.content)["json"]
         return definition
     except ValueError:
@@ -334,134 +294,128 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
     return definition
 
 
-def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_token=None):
+def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key=None):
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/dashboards/uid/" + uid,
-                  api_key_or_token=api_key_or_token)
+                  api_key=api_key)
 
 
-def create_data_source(cmd, grafana_name, definition, resource_group_name=None, api_key_or_token=None):
+def create_data_source(cmd, grafana_name, definition, resource_group_name=None, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", definition,
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
-def show_data_source(cmd, grafana_name, data_source, resource_group_name=None, api_key_or_token=None):
-    return _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key_or_token=api_key_or_token)
+def show_data_source(cmd, grafana_name, data_source, resource_group_name=None, api_key=None):
+    return _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key=api_key)
 
 
-def delete_data_source(cmd, grafana_name, data_source, resource_group_name=None, api_key_or_token=None):
+def delete_data_source(cmd, grafana_name, data_source, resource_group_name=None, api_key=None):
     data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/datasources/uid/" + data["uid"],
-                  api_key_or_token=api_key_or_token)
+                  api_key=api_key)
 
 
-def list_data_sources(cmd, grafana_name, resource_group_name=None, api_key_or_token=None):
+def list_data_sources(cmd, grafana_name, resource_group_name=None, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources",
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
-def update_data_source(cmd, grafana_name, data_source, definition, resource_group_name=None, api_key_or_token=None):
-    data = _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key_or_token=api_key_or_token)
+def update_data_source(cmd, grafana_name, data_source, definition, resource_group_name=None, api_key=None):
+    data = _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key=api_key)
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/datasources/" + str(data['id']),
-                             definition, api_key_or_token=api_key_or_token)
+                             definition, api_key=api_key)
     return json.loads(response.content)
 
 
-def list_notification_channels(cmd, grafana_name, resource_group_name=None, short=False, api_key_or_token=None):
+def list_notification_channels(cmd, grafana_name, resource_group_name=None, short=False, api_key=None):
     if short is False:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications",
-                                 api_key_or_token=api_key_or_token)
+                                 api_key=api_key)
     elif short is True:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup",
-                                 api_key_or_token=api_key_or_token)
+                                 api_key=api_key)
     return json.loads(response.content)
 
 
-def show_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None, api_key_or_token=None):
-    return _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel,
-                                      api_key_or_token=api_key_or_token)
+def show_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None, api_key=None):
+    return _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel, api_key=api_key)
 
 
-def create_notification_channel(cmd, grafana_name, definition, resource_group_name=None, api_key_or_token=None):
+def create_notification_channel(cmd, grafana_name, definition, resource_group_name=None, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications", definition,
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
 def update_notification_channel(cmd, grafana_name, notification_channel, definition, resource_group_name=None,
-                                api_key_or_token=None):
-    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel,
-                                      api_key_or_token=api_key_or_token)
+                                api_key=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel, api_key=api_key)
     definition['id'] = data['id']
     response = _send_request(cmd, resource_group_name, grafana_name, "put",
                              "/api/alert-notifications/" + str(data['id']),
-                             definition, api_key_or_token=api_key_or_token)
+                             definition, api_key=api_key)
     return json.loads(response.content)
 
 
-def delete_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None,
-                                api_key_or_token=None):
-    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel,
-                                      api_key_or_token=api_key_or_token)
+def delete_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None, api_key=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel, api_key=api_key)
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/alert-notifications/" + str(data["id"]),
-                  api_key_or_token=api_key_or_token)
+                  api_key=api_key)
 
 
-def test_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None, api_key_or_token=None):
-    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel,
-                                      api_key_or_token=api_key_or_token)
+def test_notification_channel(cmd, grafana_name, notification_channel, resource_group_name=None, api_key=None):
+    data = _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel, api_key=api_key)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/alert-notifications/test",
-                             data, api_key_or_token=api_key_or_token)
+                             data, api_key=api_key)
     return response
 
 
-def create_folder(cmd, grafana_name, title, resource_group_name=None, api_key_or_token=None):
+def create_folder(cmd, grafana_name, title, resource_group_name=None, api_key=None):
     payload = {
         "title": title
     }
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/folders", payload,
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
-def list_folders(cmd, grafana_name, resource_group_name=None, api_key_or_token=None):
+def list_folders(cmd, grafana_name, resource_group_name=None, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
-def update_folder(cmd, grafana_name, folder, title, resource_group_name=None, api_key_or_token=None):
-    f = show_folder(cmd, grafana_name, folder, resource_group_name, api_key_or_token=api_key_or_token)
+def update_folder(cmd, grafana_name, folder, title, resource_group_name=None, api_key=None):
+    f = show_folder(cmd, grafana_name, folder, resource_group_name, api_key=api_key)
     version = f['version']
     data = {
         "title": title,
         "version": int(version)
     }
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + f["uid"], data,
-                             api_key_or_token=api_key_or_token)
+                             api_key=api_key)
     return json.loads(response.content)
 
 
-def show_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_or_token=None):
-    return _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=api_key_or_token)
+def show_folder(cmd, grafana_name, folder, resource_group_name=None, api_key=None):
+    return _find_folder(cmd, resource_group_name, grafana_name, folder, api_key=api_key)
 
 
-def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_or_token=None):
+def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key=None):
     data = _find_folder(cmd, resource_group_name, grafana_name, folder)
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/folders/" + data['uid'],
-                  api_key_or_token=api_key_or_token)
+                  api_key=api_key)
 
 
-def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
+def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/id/" + folder,
-                             raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                             raise_for_error_status=False, api_key=api_key)
     if response.status_code >= 400 or not json.loads(response.content)['uid']:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
-                                 raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                                 raise_for_error_status=False, api_key=api_key)
         if response.status_code >= 400:
-            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                                     api_key_or_token=api_key_or_token)
+            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders", api_key=api_key)
             if response.status_code >= 400:
                 raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
             result = json.loads(response.content)
@@ -496,20 +450,6 @@ def delete_api_key(cmd, grafana_name, key, resource_group_name=None):
 
 
 def create_api_key(cmd, grafana_name, key, role=None, time_to_live=None, resource_group_name=None):
-    seconds = _convert_duration_to_seconds(time_to_live)
-
-    data = {
-        "name": key,
-        "role": role,
-        "secondsToLive": seconds
-    }
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/auth/keys", data)
-    content = json.loads(response.content)
-    logger.warning("You will only be able to view this key here once. Please save it in a secure place.")
-    return content
-
-
-def _convert_duration_to_seconds(time_to_live):
     unit_to_seconds = {
         "s": 1,
         "m": 60,
@@ -526,137 +466,33 @@ def _convert_duration_to_seconds(time_to_live):
         else:
             seconds = int(time_to_live)
     except ValueError:
-        raise ArgumentUsageError("Please provide valid time duration") from None
-
-    return seconds
-
-
-def create_service_account(cmd, grafana_name, service_account, role=None, is_disabled=None, resource_group_name=None):
-    data = {
-        "name": service_account,
-        "role": role
-    }
-    if is_disabled is not None:
-        data["isDisabled"] = is_disabled
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/serviceaccounts", data)
-    return json.loads(response.content)
-
-
-def update_service_account(cmd, grafana_name, service_account, new_name=None,
-                           role=None, is_disabled=None, resource_group_name=None):
-    data = {}
-    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
-    if new_name:
-        data['name'] = new_name
-
-    if role:
-        data['role'] = role
-
-    if is_disabled is not None:
-        data["isDisabled"] = is_disabled
-
-    response = _send_request(cmd, resource_group_name, grafana_name, "patch",
-                             "/api/serviceaccounts/" + service_account_id, data)
-    return json.loads(response.content)['serviceaccount']
-
-
-def list_service_accounts(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                             "/api/serviceaccounts/search")
-    return json.loads(response.content)['serviceAccounts']
-
-
-def show_service_account(cmd, grafana_name, service_account, resource_group_name=None):
-    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
-    response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                             "/api/serviceaccounts/" + service_account_id)
-    return json.loads(response.content)
-
-
-def delete_service_account(cmd, grafana_name, service_account, resource_group_name=None):
-    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
-    response = _send_request(cmd, resource_group_name, grafana_name, "delete",
-                             "/api/serviceaccounts/" + service_account_id)
-    return json.loads(response.content)
-
-
-def _get_service_account_id(cmd, resource_group_name, grafana_name, service_account):
-    try:
-        int(service_account)
-        return service_account
-    except ValueError:
-        accounts = list_service_accounts(cmd, grafana_name, resource_group_name)
-        match = next((a for a in accounts if a['name'].lower() == service_account.lower()), None)
-        # pylint: disable=raise-missing-from
-        if not match:
-            raise ArgumentUsageError(f"Could't find the service account '{service_account}'")
-        return str(match['id'])
-
-
-def create_service_account_token(cmd, grafana_name, service_account, token, time_to_live=None,
-                                 resource_group_name=None):
-    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
+        raise ArgumentUsageError("Please provide valid API key life duration") from None
 
     data = {
-        "name": token,
+        "name": key,
+        "role": role,
+        "secondsToLive": seconds
     }
-
-    if time_to_live:
-        data['secondsToLive'] = _convert_duration_to_seconds(time_to_live)
-
-    response = _send_request(cmd, resource_group_name, grafana_name, "post",
-                             "/api/serviceaccounts/" + service_account_id + '/tokens', data)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/auth/keys", data)
     content = json.loads(response.content)
-    logger.warning("You will only be able to view this token here once. Please save it in a secure place.")
+    logger.warning("You will only be able to view this key here once. Please save it in a secure place.")
     return content
 
 
-def list_service_account_tokens(cmd, grafana_name, service_account, resource_group_name=None):
-    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
-    response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                             "/api/serviceaccounts/" + service_account_id + '/tokens')
-    return json.loads(response.content)
-
-
-def delete_service_account_token(cmd, grafana_name, service_account, token, resource_group_name=None):
-    service_account_id = _get_service_account_id(cmd, resource_group_name, grafana_name, service_account)
-    token_id = _get_service_account_token_id(cmd, resource_group_name, grafana_name, service_account, token)
-
-    response = _send_request(cmd, resource_group_name, grafana_name, "delete",
-                             "/api/serviceaccounts/" + service_account_id + '/tokens' + '/' + token_id)
-    return json.loads(response.content)
-
-
-def _get_service_account_token_id(cmd, resource_group_name, grafana_name, service_account, token):
-    try:
-        int(token)
-        return token
-    except ValueError:
-        accounts = list_service_account_tokens(cmd, grafana_name, service_account, resource_group_name)
-        match = next((a for a in accounts if a['name'].lower() == token.lower()), None)
-        # pylint: disable=raise-missing-from
-        if not match:
-            raise ArgumentUsageError(f"Could't find the service account token '{token}'")
-        return str(match['id'])
-
-
-def get_actual_user(cmd, grafana_name, resource_group_name=None, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/user",
-                             api_key_or_token=api_key_or_token)
+def get_actual_user(cmd, grafana_name, resource_group_name=None, api_key=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/user", api_key=api_key)
     result = json.loads(response.content)
     result.pop('isGrafanaAdmin', None)
     return result
 
 
-def list_users(cmd, grafana_name, resource_group_name=None, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/org/users",
-                             api_key_or_token=api_key_or_token)
+def list_users(cmd, grafana_name, resource_group_name=None, api_key=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/org/users", api_key=api_key)
     return json.loads(response.content)
 
 
-def show_user(cmd, grafana_name, user, resource_group_name=None, api_key_or_token=None):
-    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name,
-                       api_key_or_token=api_key_or_token)
+def show_user(cmd, grafana_name, user, resource_group_name=None, api_key=None):
+    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name, api_key=api_key)
     match = next((u for u in users if u['name'].lower() == user.lower()), None)
 
     if match:
@@ -666,7 +502,7 @@ def show_user(cmd, grafana_name, user, resource_group_name=None, api_key_or_toke
 
 def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=None,
                       max_data_points=100, internal_ms=1000, query_format=None,
-                      conditions=None, resource_group_name=None, api_key_or_token=None):
+                      conditions=None, resource_group_name=None, api_key=None):
     import datetime
     import time
     from dateutil import parser
@@ -684,8 +520,7 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
         time_to = right_now
     time_to_epoch = str(time.mktime(time_to.timetuple()) * 1000)
 
-    data_source_id = _find_data_source(cmd, resource_group_name, grafana_name, data_source,
-                                       api_key_or_token=api_key_or_token)["id"]
+    data_source_id = _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key=api_key)["id"]
 
     data = {
         "from": time_from_epoch,
@@ -704,34 +539,33 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
             k, v = c.split("=", 1)
             data["queries"][0][k] = v
 
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/ds/query", data,
-                             api_key_or_token=api_key_or_token)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/ds/query", data, api_key=api_key)
     return json.loads(response.content)
 
 
-def _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key_or_token=None):
+def _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/name/" + data_source,
-                             raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                             raise_for_error_status=False, api_key=api_key)
     if response.status_code >= 400:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/" + data_source,
-                                 raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                                 raise_for_error_status=False, api_key=api_key)
         if response.status_code >= 400:
             response = _send_request(cmd, resource_group_name, grafana_name,
                                      "get", "/api/datasources/uid/" + data_source,
-                                     raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                                     raise_for_error_status=False, api_key=api_key)
     if response.status_code >= 400:
         raise ArgumentUsageError(f"Couldn't found data source {data_source}. Ex: {response.status_code}")
     return json.loads(response.content)
 
 
-def _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel, api_key_or_token=None):
+def _find_notification_channel(cmd, resource_group_name, grafana_name, notification_channel, api_key=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get",
                              "/api/alert-notifications/" + notification_channel,
-                             raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                             raise_for_error_status=False, api_key=api_key)
     if response.status_code >= 400:
         response = _send_request(cmd, resource_group_name, grafana_name,
                                  "get", "/api/alert-notifications/uid/" + notification_channel,
-                                 raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                                 raise_for_error_status=False, api_key=api_key)
     if response.status_code >= 400:
         raise ArgumentUsageError(
             f"Couldn't found notification channel {notification_channel}. Ex: {response.status_code}")
@@ -749,7 +583,7 @@ def _try_load_file_content(file_content):
 
 
 def _send_request(cmd, resource_group_name, grafana_name, http_method, path, body=None, raise_for_error_status=True,
-                  api_key_or_token=None):
+                  api_key=None):
     endpoint = grafana_endpoints.get(grafana_name)
     if not endpoint:
         grafana = show_grafana(cmd, grafana_name, resource_group_name)
@@ -763,8 +597,8 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     amg_first_party_app = ("7f525cdc-1f08-4afa-af7c-84709d42f5d3"
                            if "-ppe." in cmd.cli_ctx.cloud.endpoints.active_directory
                            else "ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")
-    if api_key_or_token:
-        creds = [None, api_key_or_token]
+    if api_key:
+        creds = [None, api_key]
     else:
         creds, _, _ = profile.get_raw_token(subscription=subscription,
                                             resource=amg_first_party_app)

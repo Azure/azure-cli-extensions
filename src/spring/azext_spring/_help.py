@@ -257,8 +257,6 @@ helps['spring app deploy'] = """
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
     - name: Deploy with Application Configuration Service config file patterns to an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --artifact-path app.jar
-    - name: Deploy a pre-built jar to an app with build env (For Enterprise tier only).
-      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --build-env BP_JVM_VERSION=11.*
 """
 
 helps['spring app scale'] = """
@@ -642,19 +640,6 @@ helps['spring service-registry'] = """
     short-summary: (Enterprise Tier Only) Commands to manage Service Registry in Azure Spring Apps.
 """
 
-helps['spring service-registry create'] = """
-    type: command
-    short-summary: Create Service Registry.
-    examples:
-        - name: Create Service Registry.
-          text: az spring service-registry create -s MyService -g MyResourceGroup
-"""
-
-helps['spring service-registry delete'] = """
-    type: command
-    short-summary: Delete Service Registry.
-"""
-
 helps['spring service-registry show'] = """
     type: command
     short-summary: Show the provisioning status and runtime status of Service Registry.
@@ -789,19 +774,6 @@ helps['spring application-configuration-service'] = """
     short-summary: (Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Apps.
 """
 
-helps['spring application-configuration-service create'] = """
-    type: command
-    short-summary: Create Application Configuration Service.
-    examples:
-        - name: Create Application Configuration Service.
-          text: az spring application-configuration-service create -s MyService -g MyResourceGroup
-"""
-
-helps['spring application-configuration-service delete'] = """
-    type: command
-    short-summary: Delete Application Configuration Service.
-"""
-
 helps['spring application-configuration-service show'] = """
     type: command
     short-summary: Show the provisioning status, runtime status, and settings of Application Configuration Service.
@@ -870,19 +842,6 @@ helps['spring application-configuration-service unbind'] = """
 helps['spring gateway'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage gateway in Azure Spring Apps.
-"""
-
-helps['spring gateway create'] = """
-    type: command
-    short-summary: Create Spring Cloud Gateway.
-    examples:
-        - name: Create Spring Cloud Gateway.
-          text: az spring gateway create -s MyService -g MyResourceGroup --instance-count 2
-"""
-
-helps['spring gateway delete'] = """
-    type: command
-    short-summary: Delete Spring Cloud Gateway.
 """
 
 helps['spring gateway clear'] = """
@@ -991,20 +950,6 @@ helps['spring api-portal'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage API portal in Azure Spring Apps.
 """
-
-helps['spring api-portal create'] = """
-    type: command
-    short-summary: Create API portal.
-    examples:
-        - name: Create API portal.
-          text: az spring api-portal create -s MyService -g MyResourceGroup --instance-count 1
-"""
-
-helps['spring api-portal delete'] = """
-    type: command
-    short-summary: Delete API portal.
-"""
-
 
 helps['spring api-portal clear'] = """
     type: command

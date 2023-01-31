@@ -3,11 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import threading
-
 from azure.cli.core import AzCommandsLoader
 
 from azext_next._help import helps  # pylint: disable=unused-import
+import threading
 
 
 class NextCommandsLoader(AzCommandsLoader):
@@ -15,7 +14,7 @@ class NextCommandsLoader(AzCommandsLoader):
     _instance_lock = threading.Lock()
     _has_reload_command_table = False
 
-    def __new__(cls, cli_ctx=None):  # pylint: disable=unused-argument
+    def __new__(cls, cli_ctx=None):
         if not hasattr(NextCommandsLoader, "_instance"):
             with NextCommandsLoader._instance_lock:
                 if not hasattr(NextCommandsLoader, "_instance"):
@@ -26,7 +25,8 @@ class NextCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         next_custom = CliCommandType(
             operations_tmpl='azext_next.custom#{}')
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=next_custom)
+        super(NextCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                 custom_command_type=next_custom)
 
     # Because the help content of other modules needs to be loaded when executing "az next"
     # So modify the environment variable AZURE_CORE_USE_COMMAND_INDEX=False, and then reload the command table

@@ -1059,11 +1059,8 @@ def safe_get(model, *keys, default=None):
     if not model:
         return default
     for k in keys[:-1]:
-        model = model.get(k)
-        if model is None:
-            return default
-    value = model.get(keys[-1], default)
-    return default if not value else value
+        model = model.get(k, {})
+    return model.get(keys[-1], default)
 
 
 def safe_set(model, *keys, value):
@@ -1389,7 +1386,10 @@ def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
         r = ContainerAppClient.update(cmd, resource_group_name, name, envelope)
     except CLIError as e:
         handle_raw_exception(e)
-    return safe_get(r, "properties", "configuration", "ingress", "customDomains", default=[])
+    if "customDomains" in r["properties"]["configuration"]["ingress"]:
+        return list(r["properties"]["configuration"]["ingress"]["customDomains"])
+    else:
+        return []
 
 
 def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
@@ -1401,7 +1401,10 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
         if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
-        custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
+        if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
+            custom_domains = app["properties"]["configuration"]["ingress"]["customDomains"]
+        else:
+            custom_domains = []
     except CLIError as e:
         handle_raw_exception(e)
     return custom_domains

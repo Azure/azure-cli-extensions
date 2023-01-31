@@ -2,14 +2,6 @@
 Release History
 ===============
 
-0.5.0
-++++++
-Support for hosting repair vm in existing resource group and fixing existing resource group logic 
-
-0.4.10
-++++++
-Support for hosting repair vm in existing resource group and fixing existing resource group logic 
-
 0.4.9
 ++++++
 Fix for encrypted vm's auto unlock feature 
