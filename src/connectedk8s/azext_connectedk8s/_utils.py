@@ -25,6 +25,8 @@ from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._precheckutils as precheckutils
+import azext_connectedk8s._troubleshootutils as troubleshootutils
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -69,27 +71,32 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents'):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location)
+    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
 
     # Exporting helm chart after cleanup
-    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+    chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_folder_name)
     try:
         if os.path.isdir(chart_export_path):
             shutil.rmtree(chart_export_path)
     except:
-        logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location)
+        logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_folder_name, chart_export_path))
+
+    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
 
     # Returning helm chart path
-    helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
-    chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
+    helm_chart_path = os.path.join(chart_export_path, chart_name)
+    if chart_folder_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
+        chart_path = helm_chart_path
+    else:
+        chart_path = os.getenv('HELMCHART') if os.getenv('HELMCHART') else helm_chart_path
+
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location):
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
@@ -99,11 +106,11 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
     _, error_helm_chart_pull = response_helm_chart_pull.communicate()
     if response_helm_chart_pull.returncode != 0:
         telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
-                                summary='Unable to pull helm chart from the registry')
-        raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+                                summary="Unable to pull {} helm charts from the registry".format(chart_name))
+        raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
+def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
@@ -113,8 +120,181 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     _, error_helm_chart_export = response_helm_chart_export.communicate()
     if response_helm_chart_export.returncode != 0:
         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export helm chart from the registry')
-        raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+                                summary='Unable to export {} helm chart from the registry'.format(chart_name))
+        raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
+
+
+def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
+
+    try:
+        if consts.DNS_Check_Result_String not in dns_check_log:
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
+        formatted_dns_log = dns_check_log.replace('\t', '')
+        # Validating if DNS is working or not and displaying proper result
+        if("NXDOMAIN" in formatted_dns_log or "connection timed out" in formatted_dns_log):
+            logger.warning("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+            diagnoser_output.append("Error: We found an issue with the DNS resolution on your cluster. For details about debugging DNS issues visit 'https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/'.\n")
+            if storage_space_available:
+                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
+                with open(dns_check_path, 'w+') as dns:
+                    dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
+            return consts.Diagnostic_Check_Failed, storage_space_available
+        else:
+            if storage_space_available:
+                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
+                with open(dns_check_path, 'w+') as dns:
+                    dns.write(formatted_dns_log + "\nCluster DNS check passed successfully.")
+            return consts.Diagnostic_Check_Passed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
+            diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_DNS_Check_Fault_Type, summary="Error occured while performing cluster DNS check")
+        diagnoser_output.append("An exception has occured while performing the DNS check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+    return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
+
+    try:
+        outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+        outbound_connectivity_response = outbound_connectivity_response[::-1]
+        if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+            return consts.Diagnostic_Check_Incomplete, storage_space_available
+        # Validating if outbound connectiivty is working or not and displaying proper result
+        if(outbound_connectivity_response != "000"):
+            if storage_space_available:
+                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                with open(outbound_connectivity_check_path, 'w+') as outbound:
+                    outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
+            return consts.Diagnostic_Check_Passed, storage_space_available
+        else:
+            logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+            diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server'.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \n")
+            if storage_space_available:
+                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                with open(outbound_connectivity_check_path, 'w+') as outbound:
+                    outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
+            return consts.Diagnostic_Check_Failed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
+            diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Outbound_Connectivity_Check_Fault_Type, summary="Error occured while performing outbound connectivity check in the cluster")
+        diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
+
+    return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+
+def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag, for_preonboarding_checks=False):
+
+    # This function is used to store the output that is obtained throughout the Diagnoser process
+    if for_preonboarding_checks:
+        diagnoser_output = precheckutils.diagnoser_output
+    else:
+        diagnoser_output = troubleshootutils.diagnoser_output
+
+    try:
+        # If storage space is available then only we store the output
+        if storage_space_available:
+            # Path to store the diagnoser results
+            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
+            # If any results are obtained during the process than we will add it to the text file.
+            if len(diagnoser_output) > 0:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    for output in diagnoser_output:
+                        cli_output_writer.write(output + "\n")
+                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
+                    if flag == 0:
+                        cli_output_writer.write("Process terminated externally.\n")
+
+            # If no issues was found during the whole troubleshoot execution
+            elif flag:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
+            # If process was terminated by user
+            else:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("Process terminated externally.\n")
+
+        return consts.Diagnostic_Check_Passed
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
+
+    return consts.Diagnostic_Check_Failed
+
+
+def create_folder_diagnosticlogs(time_stamp, folder_name):
+
+    try:
+        # Fetching path to user directory to create the arc diagnostic folder
+        home_dir = os.path.expanduser('~')
+        filepath = os.path.join(home_dir, '.azure', folder_name)
+        # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
+        try:
+            os.mkdir(filepath)
+        except FileExistsError:
+            pass
+        filepath_with_timestamp = os.path.join(filepath, time_stamp)
+        try:
+            os.mkdir(filepath_with_timestamp)
+        except FileExistsError:
+            # Deleting the folder if present with the same timestamp to prevent overriding in the same folder and then creating it again
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=True)
+            os.mkdir(filepath_with_timestamp)
+            pass
+
+        return filepath_with_timestamp, True
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            return "", False
+        else:
+            logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
+            return "", False
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
+        return "", False
 
 
 def add_helm_repo(kube_config, kube_context, helm_client_location):

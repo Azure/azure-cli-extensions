@@ -24,6 +24,7 @@ import websocket
 from websocket import create_connection, WebSocket
 
 from msrestazure.azure_exceptions import CloudError
+from .BastionServiceConstants import BastionSku
 
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import should_disable_connection_verify
@@ -38,7 +39,7 @@ logger = get_logger(__name__)
 
 # pylint: disable=no-member,too-many-instance-attributes,bare-except,no-self-use
 class TunnelServer:
-    def __init__(self, cli_ctx, local_addr, local_port, bastion, remote_host, remote_port):
+    def __init__(self, cli_ctx, local_addr, local_port, bastion, bastion_endpoint, remote_host, remote_port):
         self.local_addr = local_addr
         self.local_port = int(local_port)
         if self.local_port != 0 and not self.is_port_open():
@@ -46,10 +47,12 @@ class TunnelServer:
         self.bastion = bastion
         self.remote_host = remote_host
         self.remote_port = remote_port
+        self.bastion_endpoint = bastion_endpoint
         self.client = None
         self.ws = None
         self.last_token = None
         self.node_id = None
+        self.host_name = None
         self.cli_ctx = cli_ctx
         logger.info('Creating a socket on port: %s', self.local_port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -83,12 +86,14 @@ class TunnelServer:
             'aztoken': auth_token[1],
             'token': self.last_token,
         }
+        if self.host_name:
+            content['hostname'] = self.host_name
         if self.node_id:
             custom_header = {'X-Node-Id': self.node_id}
         else:
             custom_header = {}
 
-        web_address = f"https://{self.bastion['dnsName']}/api/tokens"
+        web_address = f"https://{self.bastion_endpoint}/api/tokens"
         response = requests.post(web_address, data=content, headers=custom_header,
                                  verify=(not should_disable_connection_verify()))
         response_json = None
@@ -115,7 +120,11 @@ class TunnelServer:
             self.client, _address = self.sock.accept()
 
             auth_token = self._get_auth_token()
-            host = f"wss://{self.bastion['dnsName']}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"
+            if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or self.bastion['sku']['name'] == BastionSku.Developer.name:
+                host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{auth_token}"
+            else:
+                host = f"wss://{self.bastion_endpoint}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"
+
             verify_mode = ssl.CERT_NONE if should_disable_connection_verify() else ssl.CERT_REQUIRED
             self.ws = create_connection(host,
                                         sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
@@ -192,7 +201,7 @@ class TunnelServer:
             else:
                 custom_header = {}
 
-            web_address = f"https://{self.bastion['dnsName']}/api/tokens/{self.last_token}"
+            web_address = f"https://{self.bastion_endpoint}/api/tokens/{self.last_token}"
             response = requests.delete(web_address, headers=custom_header,
                                        verify=(not should_disable_connection_verify()))
             if response.status_code == 404:
@@ -208,3 +217,6 @@ class TunnelServer:
 
     def get_port(self):
         return self.local_port
+
+    def set_host_name(self, hostname):
+        self.host_name = hostname

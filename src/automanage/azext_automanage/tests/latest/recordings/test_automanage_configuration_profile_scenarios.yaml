@@ -1,0 +1,777 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.configurationprofile.000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001","name":"clitest.rg.automanage.configurationprofile.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-01-20T06:12:49Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '381'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:12:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"configuration": {"Antimalware/Enable":
+      false, "Backup/Enable": false, "VMInsights/Enable": true, "AzureSecurityCenter/Enable":
+      true, "UpdateManagement/Enable": true, "ChangeTrackingAndInventory/Enable":
+      true, "GuestConfiguration/Enable": true, "LogAnalytics/Enable": true, "BootDiagnostics/Enable":
+      true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '350'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '843'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:12:59 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '843'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles?api-version=2022-05-04
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '855'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '843'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"configuration": {"Antimalware/Enable":
+      true, "VMInsights/Enable": false}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true,"VMInsights/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:07.0824346+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '626'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name -g -n --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.configurationprofile.000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001","name":"clitest.rg.automanage.configurationprofile.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-01-20T06:12:49Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '381'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"configuration": {"Antimalware/Enable":
+      false}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '91'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --profile-name -g -n --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '634'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:15 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name -g -n
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '634'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name -g
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions?api-version=2022-05-04
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name -g -n --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '634'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"configuration": {"Antimalware/Enable":
+      true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --profile-name -g -n --configuration
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:21.9365566+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --profile-name -g -n -y
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 20 Jan 2023 06:13:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile version list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --profile-name -g
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions?api-version=2022-05-04
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 20 Jan 2023 06:13:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:a4d240dc-d543-4b4e-a019-0a571290b85d
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automanage configuration-profile list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles?api-version=2022-05-04
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Jan 2023 06:13:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
