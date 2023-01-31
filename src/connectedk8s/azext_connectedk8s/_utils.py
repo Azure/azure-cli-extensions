@@ -536,6 +536,31 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
 
+def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
+    cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
+    if kube_config:
+        cmd_helm_release.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_release.extend(["--kube-context", kube_context])
+    response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
+    output_helm_release, error_helm_release = response_helm_release.communicate()
+    if response_helm_release.returncode != 0:
+        if 'forbidden' in error_helm_release.decode("ascii"):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
+                                summary='Unable to list helm release')
+        raise CLIInternalError("Helm list release failed: " + error_helm_release.decode("ascii"))
+    output_helm_release = output_helm_release.decode("ascii")
+    try:
+        output_helm_release = json.loads(output_helm_release)
+    except json.decoder.JSONDecodeError:
+        return None
+    for release in output_helm_release:
+        if release['name'] == release_name:
+            return release['namespace']
+    return None
+
+
 def flatten(dd, separator='.', prefix=''):
     try:
         if isinstance(dd, dict):

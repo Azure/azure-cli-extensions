@@ -240,7 +240,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             logger.warning("Error occured while checking the private link scope resource location: %s\n", ex)
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
 
     if release_namespace:
         # Loading config map
@@ -703,7 +703,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     helm_client_location = install_helm_client()
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
 
     # Check forced delete flag
     if(force_delete):
@@ -798,31 +798,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
-
-
-def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
-    cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
-    if kube_config:
-        cmd_helm_release.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_release.extend(["--kube-context", kube_context])
-    response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
-    output_helm_release, error_helm_release = response_helm_release.communicate()
-    if response_helm_release.returncode != 0:
-        if 'forbidden' in error_helm_release.decode("ascii"):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
-                                summary='Unable to list helm release')
-        raise CLIInternalError("Helm list release failed: " + error_helm_release.decode("ascii"))
-    output_helm_release = output_helm_release.decode("ascii")
-    try:
-        output_helm_release = json.loads(output_helm_release)
-    except json.decoder.JSONDecodeError:
-        return None
-    for release in output_helm_release:
-        if release['name'] == release_name:
-            return release['namespace']
-    return None
 
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
@@ -1075,7 +1050,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     helm_client_location = install_helm_client()
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api()
@@ -1224,7 +1199,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
 def validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location):
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api()

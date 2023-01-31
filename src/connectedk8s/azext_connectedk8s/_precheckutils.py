@@ -97,7 +97,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
-    release_namespace = custom.get_release_namespace(kube_config, kube_context, helm_client_location, "cluster-diagnostic-checks")
+    release_namespace = azext_utils.get_release_namespace(kube_config, kube_context, helm_client_location, "cluster-diagnostic-checks")
     cmd_helm_delete = [helm_client_location, "delete", "cluster-diagnostic-checks", "-n", "azure-arc-release"]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
@@ -114,7 +114,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
             # If any error occured while execution of delete command
-            if (response_kubectl_delete_helm != 0):
+            if (response_kubectl_delete_helm.returncode != 0):
                 # Converting the string of multiple errors to list
                 error_msg_list = error_kubectl_delete_helm.decode("ascii").split("\n")
                 error_msg_list.pop(-1)
