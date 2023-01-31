@@ -108,7 +108,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     try:
         # Executing the cluster diagnostic checks job yaml
         config.load_kube_config(kube_config, kube_context)
-        #checking existence of the release , if present we delete the stale release
+        #checking existence of the release and if present we delete the stale release
         if release_namespace is not None:
         # Attempting deletion of cluster diagnostic checks resources to handle the scenario if any stale resources are present
             response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
