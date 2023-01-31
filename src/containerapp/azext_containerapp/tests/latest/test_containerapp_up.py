@@ -21,6 +21,11 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerAppUpImageTest(ScenarioTest):
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_image_e2e(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"

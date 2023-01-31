@@ -26,8 +26,6 @@ def load_command_table(self, _):
         g.custom_command('add-identity-source', 'privatecloud_addidentitysource')
         g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud delete-identity-source', hide=True))
         g.custom_command('delete-identity-source', 'privatecloud_deleteidentitysource')
-        g.custom_command('add-availability-zone', 'privatecloud_addavailabilityzone')
-        g.custom_command('delete-availability-zone', 'privatecloud_deleteavailabilityzone')
         g.custom_command('add-cmk-encryption', 'privatecloud_addcmkencryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud enable-cmk-encryption', hide=True))
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')
@@ -45,6 +43,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'cluster_update')
         g.custom_command('list', 'cluster_list')
         g.custom_command('delete', 'cluster_delete')
+        g.custom_command('list-zones', 'cluster_list_zones')
         g.custom_show_command('show', 'cluster_show')
 
     with self.command_group('vmware authorization', vmware_sdk, client_factory=cf_vmware) as g:
@@ -60,8 +59,10 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'hcxenterprisesite_show')
 
     with self.command_group('vmware location', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('checkquotaavailability', 'check_quota_availability')
-        g.custom_command('checktrialavailability', 'check_trial_availability')
+        g.custom_command('checkquotaavailability', 'check_quota_availability', deprecate_info=g.deprecate(redirect='az vmware location check-quota-availability', hide=True))
+        g.custom_command('checktrialavailability', 'check_trial_availability', deprecate_info=g.deprecate(redirect='az vmware location check-trial-availability', hide=True))
+        g.custom_command('check-quota-availability', 'check_quota_availability')
+        g.custom_command('check-trial-availability', 'check_trial_availability')
 
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
@@ -95,6 +96,12 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'addon_srm_show')
         g.custom_command('update', 'addon_srm_update')
         g.custom_command('delete', 'addon_srm_delete')
+
+    with self.command_group('vmware addon arc', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'addon_arc_create')
+        g.custom_show_command('show', 'addon_arc_show')
+        g.custom_command('update', 'addon_arc_update')
+        g.custom_command('delete', 'addon_arc_delete')
 
     with self.command_group('vmware global-reach-connection', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'globalreachconnection_create')

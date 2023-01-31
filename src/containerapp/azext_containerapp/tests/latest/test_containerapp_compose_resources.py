@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import os
 import unittest  # pylint: disable=unused-import
 
 from azure.cli.testsdk import (ResourceGroupPreparer)
@@ -19,6 +19,11 @@ class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappCompose
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_service_cpus(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         compose_text = """
 services:
   foo:
@@ -51,6 +56,11 @@ services:
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_deploy_cpu(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         compose_text = """
 services:
   foo:
@@ -86,6 +96,11 @@ services:
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_both_cpus_and_deploy_cpu(self, resource_group):
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
+
         compose_text = """
 services:
   foo:

@@ -28,9 +28,13 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['azure-core', 'azure-communication-identity>=1.1.0',
-                'azure-communication-phonenumbers', 'azure-communication-sms',
-                'azure-communication-chat']
+DEPENDENCIES = ['azure-core',
+                'azure-communication-identity >= 1.2.0',
+                'azure-communication-phonenumbers',
+                'azure-communication-sms',
+                'azure-communication-chat',
+                'azure-communication-rooms',
+                ]
 
 try:
     from azext_communication.manual.dependency import DEPENDENCIES

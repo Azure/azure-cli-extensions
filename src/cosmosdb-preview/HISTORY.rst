@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.22.0
+* Add fix for restorable resources APIs.
+
+++++++
 0.21.0
 * Add support for mongo data transfer jobs.
 
