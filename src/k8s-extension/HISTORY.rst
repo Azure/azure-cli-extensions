@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.3.9
+++++++++++++++++++
+* Deprecating  --config-settings alias for --configuration-settings
+* Deprecating  --configuration-protected-settings alias for --config-protected-settings
+* Deprecating  --configuration-settings-file alias for --config-settings-file
+* Deprecating  --configuration-protected-settings-file alias for --config-protected-file
+
 1.3.8
 ++++++++++++++++++
 * Fixes to address the bug with msi auth mode for azuremonitor-containers extension version >= 3.0.0
