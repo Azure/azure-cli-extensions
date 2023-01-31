@@ -102,7 +102,7 @@ az communication chat thread create --topic "New Topic for Chat!" --idempotency-
 ```
 az communication chat thread delete --thread "19:xxxxxx"
 ```
-##### Update Topic #####
+##### Update-Topic #####
 ```
 az communication chat thread update-topic --thread "19:xxxxxx" --topic "New topic!"
 ```
@@ -145,4 +145,36 @@ az communication chat message receipt list --thread "19:xxxxxx" --skip "5"
 ##### Send-Read-Receipt #####
 ```
 az communication chat message receipt send --thread "19:xxxxxx" --message-id "1xxxxxxxxxxxx"
+```
+##### Get-Room #####
+```
+az communication rooms get --room "roomId"
+```
+##### Create-Room #####
+```
+az communication rooms create --valid-from "2022-07-14T10:20:30" --valid-to "2022-07-14T10:20:30" --join-policy "CommunicationServiceUsers" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Update-Room #####
+```
+az communication rooms update --room "roomId" --valid-from "2022-07-14T10:20:30" --valid-to "2022-07-14T10:20:30" --join-policy "InviteOnly" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Delete-Room #####
+```
+az communication rooms delete --room "roomId"
+```
+##### Get-Room-Participants #####
+```
+az communication rooms participant get --room "roomId"
+```
+##### Add-Room-Participants #####
+```
+az communication rooms participant add --room "roomId" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Update-Room-Participants #####
+```
+az communication rooms participant update --room "roomId" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Remove-Room-Participants #####
+```
+az communication rooms participant remove --room "roomId" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
 ```

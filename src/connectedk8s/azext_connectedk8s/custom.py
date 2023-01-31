@@ -48,6 +48,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
+import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
@@ -137,6 +138,55 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
+    # Pre onboarding checks
+    try:
+        kubectl_client_location = install_kubectl_client()
+        helm_client_location = install_helm_client()
+        diagnostic_checks = "Failed"
+        batchv1_api_instance = kube_client.BatchV1Api()
+        storage_space_available = True
+
+        current_time = time.ctime(time.time())
+        time_stamp = ""
+        for elements in current_time:
+            if(elements == ' '):
+                time_stamp += '-'
+                continue
+            elif(elements == ':'):
+                time_stamp += '.'
+                continue
+            time_stamp += elements
+        time_stamp = cluster_name + '-' + time_stamp
+
+        # Generate the diagnostic folder in a given location
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
+
+        if(diagnostic_folder_status is not True):
+            storage_space_available = False
+
+        # Performing cluster-diagnostic-checks
+        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
+        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+
+    except Exception as e:
+        telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
+                                fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+        raise CLIInternalError("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        try:
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+        except Exception as e:
+            pass
+        raise ManualInterrupt('Process terminated externally.')
+
+    # If the checks didnt pass then stop the onboarding
+    if diagnostic_checks != consts.Diagnostic_Check_Passed:
+        if storage_space_available:
+                logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -200,7 +250,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -235,36 +285,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                      "in the resource group {} ".format(resource_group_name) +
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
-
-    try:
-        k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
-        if kube_context:  # if custom kube-context is specified
-            if k8s_contexts[1].get('name') == kube_context:
-                current_k8s_context = k8s_contexts[1]
-            else:
-                for context in k8s_contexts[0]:
-                    if context.get('name') == kube_context:
-                        current_k8s_context = context
-                        break
-        else:
-            current_k8s_context = k8s_contexts[1]
-
-        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
-        namespace_exists = False
-        k8s_v1 = kube_client.CoreV1Api()
-        k8s_ns = k8s_v1.list_namespace()
-        for ns in k8s_ns.items:
-            if ns.metadata.name == current_k8s_namespace:
-                namespace_exists = True
-                break
-        if namespace_exists is False:
-            telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
-                                    summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
-            raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
-    except ValidationError as e:
-        raise e
-    except Exception as e:
-        logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
@@ -752,7 +772,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namepace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -1064,7 +1084,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -1213,7 +1233,7 @@ def validate_release_namespace(client, cluster_name, resource_group_name, kube_c
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -1692,11 +1712,6 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     cloud = send_cloud_telemetry(cmd)
-    if cloud == consts.Azure_USGovCloudName:
-        telemetry.set_debug_info('User tried proxy command in fairfax')
-        telemetry.set_exception(exception='Proxy command is not present yet in fairfax cloud.', fault_type=consts.ClusterConnect_Not_Present_Fault_Type,
-                                summary=f'User tried proxy command in fairfax.')
-        raise ClientRequestError(f'Cluster Connect feature is not yet available in {consts.Azure_USGovCloudName}')
 
     tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     client_proxy_port = consts.CLIENT_PROXY_PORT
@@ -1727,6 +1742,8 @@ def client_side_proxy_wrapper(cmd,
     CSP_Url = consts.CSP_Storage_Url
     if cloud == consts.Azure_ChinaCloudName:
         CSP_Url = consts.CSP_Storage_Url_Mooncake
+    elif cloud == consts.Azure_USGovCloudName:
+        CSP_Url = consts.CSP_Storage_Url_Fairfax
 
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1826,6 +1843,8 @@ def client_side_proxy_wrapper(cmd,
 
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
         if not utils.is_cli_using_msal_auth():
             # Fetching creds
@@ -1865,6 +1884,8 @@ def client_side_proxy_wrapper(cmd,
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
     telemetry.set_debug_info('User type is ', user_type)
 
@@ -2165,7 +2186,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             time_stamp += elements
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Arc_Diagnostic_Logs)
 
         if(diagnostic_folder_status is not True):
             storage_space_available = False
@@ -2245,7 +2266,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2266,7 +2287,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
