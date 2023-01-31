@@ -144,7 +144,7 @@ def app_create(cmd, client, resource_group, service, name,
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    banner_deployment_name=deployment_name or DEFAULT_DEPLOYMENT_NAME
+    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
     logger.warning('[2/3] Creating default deployment with name "{}"'.format(banner_deployment_name))
     deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
     poller = client.deployments.begin_create_or_update(resource_group,
