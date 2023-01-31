@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from datetime import timedelta
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
-from datetime import timedelta
 from .helper import get_project_arg
 
 # control plane commands (these will override the generated custom.py as they are imported second)
@@ -1149,13 +1149,12 @@ def devcenter_dev_box_delay_upcoming_action(
         upcoming_action_id=upcoming_action_id,
     )
     delayed_time = upcoming_action.scheduled_time + timedelta(hours=hours, minutes=minutes)
-    
     return cf_dataplane.dev_box.delay_upcoming_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
         upcoming_action_id=upcoming_action_id,
         delay_until=delayed_time,
-    ) 
+    )
 
 
 def devcenter_dev_box_list_upcoming_action(

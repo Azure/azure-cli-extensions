@@ -228,7 +228,7 @@ helps['devcenter dev dev-box delay-upcoming-action'] = """
         text: |-
                az devcenter dev dev-box delay-upcoming-action --dev-center-name "{devCenterName}" \
 --project-name "{projectName}" --delay-time "04:30" --name "myDevBox" \
---upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" 
+--upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7"
 """
 
 helps['devcenter dev dev-box show-upcoming-action'] = """
