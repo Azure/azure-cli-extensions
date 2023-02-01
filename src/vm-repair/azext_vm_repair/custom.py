@@ -59,7 +59,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
 
         is_linux = _is_linux_os(source_vm)
-        is_gen2 = _is_gen2(source_vm_instance_view)
+        vm_hypervgen = _is_gen2(source_vm_instance_view)
 
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
@@ -120,7 +120,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
             elif is_linux and hyperV_generation_linux == 'V2':
-                logger.info('The disk did not contian the info of gen2 , but the machine is created from gen2 image')
+                logger.info('The disk did not contain the information of gen2 , but the machine is created from gen2 image')
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
             # Set availability zone for vm when available
             if source_vm.zones:
@@ -209,7 +209,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
 
             run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
-                .format(g=repair_group_name, name=repair_vm_name, gen=is_gen2)
+                .format(g=repair_group_name, name=repair_vm_name, gen=vm_hypervgen)
             ret_enable_nested = _call_az_command(run_hyperv_command)
 
             logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
@@ -222,8 +222,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
                 # invoking hyperv script again
                 logger.info("Running win-enable-nested-hyperv.ps1 again to create nested VM")
-                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
-                    .format(g=repair_group_name, name=repair_vm_name)
+                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
+                    .format(g=repair_group_name, name=repair_vm_name, gen=vm_hypervgen)
                 ret_enable_nested_again = _call_az_command(run_hyperv_command)
 
                 logger.debug("stderr: %s", ret_enable_nested_again)

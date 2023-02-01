@@ -45,6 +45,9 @@ aks create:
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
+    node_os_upgrade_channel:
+      rule_exclusions:
+      - option_length_too_long
     nrg_lockdown_restriction_level:
       rule_exclusions:
       - option_length_too_long
@@ -102,6 +105,9 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    node_os_upgrade_channel:
       rule_exclusions:
       - option_length_too_long
     nrg_lockdown_restriction_level:
