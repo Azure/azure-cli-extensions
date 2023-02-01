@@ -2,6 +2,15 @@
 
 Release History
 ===============
+0.3.22
+++++++
+* Added 'az containerapp env certificate create' to create managed certificate in a container app environment
+* Added 'az containerapp hostname add' to add hostname to a container app without binding
+* 'az containerapp env certificate delete': add support for managed certificate deletion
+* 'az containerapp env certificate list': add optional parameters --managed-certificates-only and --private-key-certificates-only to list certificates by type
+* 'az containerapp hostname bind': change --thumbprint to an optional parameter to support managed certificate bindings
+* 'az containerapp ssl upload': log messages to indicate which step is in progress
+
 0.3.21
 ++++++
 * Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
