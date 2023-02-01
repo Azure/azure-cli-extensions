@@ -26,7 +26,7 @@ from azext_devcenter.action import (
     AddWebhookNotification,
 )
 
-from ._validators import validate_attached_network_or_dev_box_def, validate_dev_box_list
+from ._validators import validate_attached_network_or_dev_box_def, validate_dev_box_list, validate_time
 
 
 dev_center_type = CLIArgumentType(
@@ -291,7 +291,7 @@ def load_arguments(self, _):
             help="Optional parameter to hibernate the dev box.",
         )
 
-    with self.argument_context("devcenter dev dev-box delay-upcoming-action") as c:
+    with self.argument_context("devcenter dev dev-box delay-upcoming-action", validator=validate_time) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -313,7 +313,7 @@ def load_arguments(self, _):
             help="The name of a Dev " "Box.",
         )
         c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
-        c.argument("delay_time", help="The delayed timespan from the current scheduled time. Format HH:MM'")
+        c.argument("delay_time", help="The delayed timespan from the most recent scheduled time. Format HH:MM")
 
     with self.argument_context("devcenter dev dev-box list-upcoming-action") as c:
         c.argument(
