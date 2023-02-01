@@ -735,7 +735,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
     is_arm64_cluster = check_arm64_node(node_api_response)
-    
 
     # Check forced delete flag
     if(force_delete):
