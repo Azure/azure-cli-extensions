@@ -31,7 +31,7 @@ from .helper import (
 )
 
 
-#@record_only()
+@record_only()
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -1281,6 +1281,66 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_pool_dataplane_scenario(self):
+        self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
+
+        create_dev_center(self)
+        create_project(self)
+        add_dev_box_user_role_to_project(self)
+        create_pool_with_schedule(self)
+
+        self.cmd('az devcenter dev pool list '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                     self.check("[0].name", "{poolName}"),
+                 ]
+                 )
+        
+        self.cmd('az devcenter dev pool show '
+                 '--name "{poolName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check('name', "{poolName}"),
+                     self.check('storageProfile.osDisk.diskSizeGb', "1024"),
+                     self.check('hardwareProfile.skuName', "{skuName}"),
+                     self.check('localAdministrator', "Enabled"),
+                     self.check('osType', "Windows"),
+                     self.check('location', "{location}"),
+                     self.check('hibernateSupport', "Enabled"),
+                     self.check('imageReference.name', 'microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365')
+                 ]
+                 )
+
+        self.cmd('az devcenter dev schedule list '
+                 '--pool "{poolName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                     self.check("[0].name", "default"),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev schedule show '
+                 '-n "default" '
+                 '--pool "{poolName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('frequency', "Daily"),
+                     self.check('time', "{time}"),
+                     self.check('timeZone', "{timeZone}"),
+                     self.check('type', "StopDevBox"),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_dev_box_dataplane_scenario(self):
         self.kwargs.update({
             'devcenterName': self.create_random_name(prefix='cli', length=24),
         })
