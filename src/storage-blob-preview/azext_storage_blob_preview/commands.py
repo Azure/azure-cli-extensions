@@ -49,9 +49,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
             create_boolean_result_output_transformer, transform_blob_list_output
         from ._validators import (process_blob_download_batch_parameters, process_blob_delete_batch_parameters,
                                   process_blob_upload_batch_parameters)
-        g.storage_custom_command_oauth('list', 'list_blobs', client_factory=cf_container_client,
-                                       transform=transform_blob_list_output,
-                                       table_transformer=transform_blob_output)
         g.storage_command_oauth('delete', 'delete_blob')
         g.storage_custom_command_oauth('download', 'download_blob', transform=transform_blob_json_output)
         g.storage_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
