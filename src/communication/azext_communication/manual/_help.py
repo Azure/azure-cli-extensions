@@ -505,6 +505,16 @@ helps['communication rooms participant remove'] = """
                az communication rooms participant remove --room "12345678901234567" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
+helps['communication email'] = """
+    type: group
+    short-summary: Commands to send emails and get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email status'] = """
+    type: group
+    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
 helps['communication email send'] = """
     type: command
     short-summary: "Send an email."
