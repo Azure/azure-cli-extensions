@@ -48,6 +48,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
+import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
@@ -65,7 +66,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
@@ -137,6 +138,55 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
+    # Pre onboarding checks
+    try:
+        kubectl_client_location = install_kubectl_client()
+        helm_client_location = install_helm_client()
+        diagnostic_checks = "Failed"
+        batchv1_api_instance = kube_client.BatchV1Api()
+        storage_space_available = True
+
+        current_time = time.ctime(time.time())
+        time_stamp = ""
+        for elements in current_time:
+            if(elements == ' '):
+                time_stamp += '-'
+                continue
+            elif(elements == ':'):
+                time_stamp += '.'
+                continue
+            time_stamp += elements
+        time_stamp = cluster_name + '-' + time_stamp
+
+        # Generate the diagnostic folder in a given location
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
+
+        if(diagnostic_folder_status is not True):
+            storage_space_available = False
+
+        # Performing cluster-diagnostic-checks
+        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
+        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+
+    except Exception as e:
+        telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
+                                fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+        raise CLIInternalError("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        try:
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+        except Exception as e:
+            pass
+        raise ManualInterrupt('Process terminated externally.')
+
+    # If the checks didnt pass then stop the onboarding
+    if diagnostic_checks != consts.Diagnostic_Check_Passed:
+        if storage_space_available:
+                logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -151,14 +201,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
-    if distribution == 'auto':
-        kubernetes_distro = get_kubernetes_distro(node_api_response)  # (cluster heuristics)
-    else:
-        kubernetes_distro = distribution
-    if infrastructure == 'auto':
-        kubernetes_infra = get_kubernetes_infra(node_api_response)  # (cluster heuristics)
-    else:
-        kubernetes_infra = infrastructure
+    kubernetes_distro = distribution
+    kubernetes_infra = infrastructure
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -196,7 +240,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             logger.warning("Error occured while checking the private link scope resource location: %s\n", ex)
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
 
     if release_namespace:
         # Loading config map
@@ -493,64 +537,6 @@ def get_private_key(key_pair):
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
 
-def get_kubernetes_distro(api_response):  # Heuristic
-    if api_response is None:
-        return "generic"
-    try:
-        for node in api_response.items:
-            labels = node.metadata.labels
-            provider_id = str(node.spec.provider_id)
-            annotations = node.metadata.annotations
-            if labels.get("node.openshift.io/os_id"):
-                return "openshift"
-            if labels.get("kubernetes.azure.com/node-image-version"):
-                return "aks"
-            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
-                return "gke"
-            if labels.get("eks.amazonaws.com/nodegroup"):
-                return "eks"
-            if labels.get("minikube.k8s.io/version"):
-                return "minikube"
-            if provider_id.startswith("kind://"):
-                return "kind"
-            if provider_id.startswith("k3s://"):
-                return "k3s"
-            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
-                return "rancher_rke"
-        return "generic"
-    except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
-                                           raise_error=False)
-        return "generic"
-
-
-def get_kubernetes_infra(api_response):  # Heuristic
-    if api_response is None:
-        return "generic"
-    try:
-        for node in api_response.items:
-            provider_id = str(node.spec.provider_id)
-            infra = provider_id.split(':')[0]
-            if infra == "k3s" or infra == "kind":
-                return "generic"
-            if infra == "azure":
-                return "azure"
-            if infra == "gce":
-                return "gcp"
-            if infra == "aws":
-                return "aws"
-            k8s_infra = utils.validate_infrastructure_type(infra)
-            if k8s_infra is not None:
-                return k8s_infra
-        return "generic"
-    except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
-                                           raise_error=False)
-        return "generic"
-
-
 def check_linux_amd64_node(api_response):
     try:
         for item in api_response.items:
@@ -717,7 +703,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     helm_client_location = install_helm_client()
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
 
     # Check forced delete flag
     if(force_delete):
@@ -812,31 +798,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
-
-
-def get_release_namespace(kube_config, kube_context, helm_client_location):
-    cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
-    if kube_config:
-        cmd_helm_release.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_release.extend(["--kube-context", kube_context])
-    response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
-    output_helm_release, error_helm_release = response_helm_release.communicate()
-    if response_helm_release.returncode != 0:
-        if 'forbidden' in error_helm_release.decode("ascii"):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
-                                summary='Unable to list helm release')
-        raise CLIInternalError("Helm list release failed: " + error_helm_release.decode("ascii"))
-    output_helm_release = output_helm_release.decode("ascii")
-    try:
-        output_helm_release = json.loads(output_helm_release)
-    except json.decoder.JSONDecodeError:
-        return None
-    for release in output_helm_release:
-        if release['name'] == 'azure-arc':
-            return release['namespace']
-    return None
 
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
@@ -955,26 +916,17 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
+
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
@@ -1093,13 +1045,12 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
-    node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api()
@@ -1141,23 +1092,16 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
+
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
@@ -1255,7 +1199,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
 def validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location):
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api()
@@ -1373,8 +1317,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1384,23 +1326,16 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
+
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
@@ -1492,8 +1427,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1503,23 +1436,16 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
+
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     if disable_cluster_connect:
@@ -2235,7 +2161,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             time_stamp += elements
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Arc_Diagnostic_Logs)
 
         if(diagnostic_folder_status is not True):
             storage_space_available = False
@@ -2315,7 +2241,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2336,7 +2262,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')

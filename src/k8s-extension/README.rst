@@ -31,6 +31,10 @@ az k8s-extension create \
     --version versionNumber \
     --auto-upgrade-minor-version autoUpgrade \
     --configuration-settings exampleSetting=exampleValue \
+    --plan-name examplePlanName \
+    --plan-publisher examplePublisher \
+    --plan-product exampleOfferId \
+
 ```
 
 ##### Get a KubernetesExtension

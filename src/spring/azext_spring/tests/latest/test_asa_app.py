@@ -598,8 +598,8 @@ class TestAppCreate(BasicTest):
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(5, len(call_args[0][0]))
-        self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
         self.put_deployment_resource = call_args[0][0][4]
+        self.put_deployment_resource.name = call_args[0][0][3]
 
         call_args = client.apps.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -692,6 +692,11 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', instance_count=1)
         resource = self.patch_app_resource
         self.assertIsNone(resource.properties.ingress_settings)
+
+    def test_app_create_with_deployment_name(self):
+        self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1, deployment_name='hello')
+        resource = self.put_deployment_resource
+        self.assertEqual('hello', resource.name)
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):

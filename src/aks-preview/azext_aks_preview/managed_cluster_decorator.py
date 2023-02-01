@@ -595,6 +595,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return kube_proxy_config
 
+    def get_node_os_upgrade_channel(self) -> Union[str, None]:
+        """Obtain the value of node_os_upgrade_channel.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        node_os_upgrade_channel = self.raw_param.get("node_os_upgrade_channel")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.auto_upgrade_profile and
+                self.mc.auto_upgrade_profile.node_os_upgrade_channel is not None
+            ):
+                node_os_upgrade_channel = self.mc.auto_upgrade_profile.node_os_upgrade_channel
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return node_os_upgrade_channel
+
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
 
@@ -2228,6 +2248,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.node_resource_group_profile = node_resource_group_profile
         return mc
 
+    def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up auto upgrade profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_auto_upgrade_profile(mc)
+
+        node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
+        if node_os_upgrade_channel:
+            if mc.auto_upgrade_profile is None:
+                mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
+            mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2263,6 +2296,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_custom_ca_trust_certificates(mc)
         # set up node resource group profile
         mc = self.set_up_node_resource_group_profile(mc)
+        # set up auto upgrade profile
+        mc = self.set_up_auto_upgrade_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2781,6 +2816,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.node_resource_group_profile.restriction_level = nrg_lockdown_restriction_level
         return mc
 
+    def update_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update auto upgrade profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc = super().update_auto_upgrade_profile(mc)
+
+        node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
+        if node_os_upgrade_channel is not None:
+            if mc.auto_upgrade_profile is None:
+                mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
+            mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2820,5 +2868,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_custom_ca_trust_certificates(mc)
         # update node resource group profile
         mc = self.update_node_resource_group_profile(mc)
+        # update auto upgrade profile
+        mc = self.update_auto_upgrade_profile(mc)
 
         return mc

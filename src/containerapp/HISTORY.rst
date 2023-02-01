@@ -5,6 +5,7 @@ Release History
 0.3.21
 ++++++
 * Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
 
 0.3.20
 ++++++
