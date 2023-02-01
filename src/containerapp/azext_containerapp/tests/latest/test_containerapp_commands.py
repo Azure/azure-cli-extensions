@@ -615,7 +615,12 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('logLevel', "warn"),
             JMESPathCheck('enableApiLogging', True),
         ])
-
+        
+        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('appId', "containerapp1"),
+            JMESPathCheck('enabled', True)
+        ])
+        
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('properties.configuration.dapr.appId', "containerapp1"),
             JMESPathCheck('properties.configuration.dapr.appPort', 80),
