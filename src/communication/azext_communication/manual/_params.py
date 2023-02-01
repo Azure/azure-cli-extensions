@@ -271,6 +271,6 @@ def _load_email_arguments(self):
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
 
-    with self.argument_context('communication email send') as c:
+    with self.argument_context('communication email status get') as c:
         c.argument('message_id', options_list=['--message-id'], type=str,
                    help='System generated message id (GUID) returned from a previous call to send email')
