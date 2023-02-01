@@ -12,10 +12,7 @@ from msrestazure.tools import parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import send_raw_request
-from azure.cli.core.profiles import ResourceType
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
-from azure.cli.command_modules.role import graph_client_factory
 
 
 logger = get_logger(__name__)
@@ -159,7 +156,7 @@ class CosmosDbHandler(AbstractDbHandler):
         if connection_type == ConnectionType.CONNECTION_STRING:
             return client.list_connection_strings(resource_group, name).connection_strings[0].connection_string
         else:
-            return client.get(resource_group, name).document_endpoint
+            return f"AccountEndpoint={client.get(resource_group, name).document_endpoint};"
 
 
 class AzureSqlHandler(AbstractDbHandler):
@@ -190,10 +187,9 @@ class AzureSqlHandler(AbstractDbHandler):
 
         if connection_type == ConnectionType.CONNECTION_STRING:
             return (f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
-                    f"User ID={username};Password={password};Encrypt=true;Connection Timeout=30;")
+                    f"User ID={username};Password={password};")
         else:
-            return (f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
-                    f"Encrypt=true;Connection Timeout=30;")
+            return f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
 
 
 class MySqlFlexHandler(AbstractDbHandler):
@@ -222,9 +218,8 @@ class MySqlFlexHandler(AbstractDbHandler):
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         # only connection string auth supported
-        return (f'Server="{server}.mysql.database.azure.com";UserID = "{username}";'
-                f'Password="{password}";Database="{database_name}";SslMode=MySqlSslMode.Required;'
-                'SslCa="{path_to_CA_cert}"')
+        return (f'Server={server}.mysql.database.azure.com;UserID = {username};'
+                f'Password={password}";Database={database_name};')
 
     @classmethod
     def get_location(cls, cmd, resource_id: str) -> str:
@@ -256,33 +251,16 @@ class PgSqlSingleHandler(AbstractDbHandler):
         return cls._get_location_from_server(cmd, resource_id)
 
     @classmethod
-    def _get_client_id(cls, cmd, connection_type: 'ConnectionType', app=None, identity_rid=None) -> str:
-        # TODO does this need to handle managed identities outside the user's sub?
-        # It will almost surely fail in this case ^
-        if connection_type == ConnectionType.MANAGED_IDENTITY_USER_ASSIGNED:
-            parsed_rid = cls._parse_resource_id(identity_rid)
-            resource_group_name = parsed_rid["resource_group"]
-            name = parsed_rid["name"]
-            client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities
-            identity = client.get(resource_group_name, name)
-            return identity.client_id
-        else:
-            client = graph_client_factory(cmd.cli_ctx)
-            sp = client.service_principal_get(app.identity.principal_id)
-            return sp["appId"]
-
-    @classmethod
     def _get_connection_string(cls, cmd, sku: 'Sku', connection_type: 'ConnectionType', resource_id, database_name,
                                username=None, password=None, **kwargs) -> str:
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         if connection_type == ConnectionType.CONNECTION_STRING:
             return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
-                    f"User Id={username}@{server};Password={password};Ssl Mode=Require;")
+                    f"User Id={username}@{server};Password={password};")
         else:
-            client_id = cls._get_client_id(cmd, connection_type, kwargs["app"], kwargs["identity_rid"])
             return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
-                    f"User Id={client_id};Ssl Mode=Require;")
+                    f"User Id={username}@{server};")
 
 
 class PgSqlFlexHandler(AbstractDbHandler):
@@ -315,7 +293,7 @@ class PgSqlFlexHandler(AbstractDbHandler):
         parsed_rid = cls._parse_resource_id(resource_id)
         server = parsed_rid["name"]
         return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
-                f"User Id={username};Password={password};Ssl Mode=Require;")
+                f"User Id={username};Password={password};")
 
 
 # pylint: disable=line-too-long
