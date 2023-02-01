@@ -1015,7 +1015,7 @@ def devcenter_network_connection_show_health_detail(client,
 def devcenter_project_list_dp(cmd, dev_center):
     resource_graph_data = get_project_arg(cmd.cli_ctx, dev_center)
     if len(resource_graph_data) == 0:
-        return print("[]")
+        return []
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center)
     return cf_dataplane.project.list()
 
