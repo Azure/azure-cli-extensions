@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
+++++++
+* Fix for 'az containerapp dapr enable' cli command resulting in 'TypeError: 'NoneType' object does not support item assignment' exception.
+
 0.3.21
 ++++++
 * Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
