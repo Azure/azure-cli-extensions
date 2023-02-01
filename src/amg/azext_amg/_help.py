@@ -40,6 +40,9 @@ helps['grafana update'] = """
         - name: disable the public network access
           text: |
            az grafana update -g MyResourceGroup -n MyGrafana --public-network-access disabled
+        - name: enable mail notification through SMTP relay sevice of mailgun
+          text: |
+           az grafana update -g MyResourceGroup -n MyGrafana --smtp enabled --from-address johndoe@outlook.com --from-name john --host "smtp.mailgun.org:587" --user "postmaster@sandbox12345.mailgun.org" --password "password" --start-tls-policy OpportunisticStartTLS --skip-verify true
 """
 
 helps['grafana data-source'] = """
