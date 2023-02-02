@@ -20,6 +20,8 @@ LATEST_API_VERSION = "2022-10-01"
 MANAGED_CERTS_API_VERSION = '2022-11-01-preview'
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
+POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
+POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between requests
 
 
 class PollingAnimation():
@@ -698,7 +700,7 @@ class ManagedEnvironmentClient():
         return r.json()
 
     @classmethod
-    def create_or_update_managed_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate_envelop, no_wait=False):
+    def create_or_update_managed_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate_envelop, no_wait=False, is_TXT=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = MANAGED_CERTS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -712,19 +714,34 @@ class ManagedEnvironmentClient():
             api_version)
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate_envelop))
         
-        if no_wait:
+        if no_wait and not is_TXT:
             return r.json()
         elif r.status_code == 201:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                certificate_name,
-                api_version)
-            return poll(cmd, request_url, "inprogress")
-        
+            try:
+                start = time.time()
+                end = time.time() + POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE
+                animation = PollingAnimation()
+                animation.tick()
+                r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+                message_logged = False
+                while r.status_code in [200, 201] and start < end:
+                    time.sleep(POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE)
+                    animation.tick()
+                    r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+                    r2 = r.json()
+                    if is_TXT and not message_logged and "properties" in r2 and "validationToken" in r2["properties"]:
+                        logger.warning('\nPlease copy the token below for TXT record and enter it with your domain provider:\n{}\n'.format(r2["properties"]["validationToken"]))
+                        message_logged = True
+                        if no_wait:
+                            break
+                    if "properties" not in r2 or "provisioningState" not in r2["properties"] or r2["properties"]["provisioningState"].lower() in ["succeeded", "failed", "canceled"]:
+                        break
+                    start = time.time()
+                animation.flush()
+                return r.json()
+            except Exception as e:  # pylint: disable=broad-except
+                animation.flush()
+                raise e
         return r.json()
 
     @classmethod

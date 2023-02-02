@@ -23,7 +23,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
-from knack.prompting import prompt_y_n
+from knack.prompting import prompt_y_n, prompt
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
@@ -2747,7 +2747,7 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
             cert_name = None
     certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location)
     try:
-        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True)
+        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -2960,10 +2960,9 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
     if not thumbprint and not certificate:
         managed_certs = get_managed_certificates(cmd, env_name, resource_group_name, None, None)
         managed_cert = [cert for cert in managed_certs if cert["properties"]["subjectName"].lower() == standardized_hostname]
-        if len(managed_cert):
-            if managed_cert[0]["properties"]["provisioningState"] in [SUCCEEDED_STATUS, PENDING_STATUS]:
-                cert_id = managed_cert[0]["id"]
-                cert_name = managed_cert[0]["name"]
+        if len(managed_cert) > 0 and managed_cert[0]["properties"]["provisioningState"] in [SUCCEEDED_STATUS, PENDING_STATUS]:
+            cert_id = managed_cert[0]["id"]
+            cert_name = managed_cert[0]["name"]
         else:
             cert_name = None
             while not cert_name:
@@ -2971,14 +2970,20 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                 available = check_managed_cert_name_availability(cmd, resource_group_name, env_name, cert_name)
                 if available:
                     cert_name = random_name
-            logger.warning(f"Creating a managed certificate '{cert_name}' for {standardized_hostname}.\nIt may take up to 10 minutes to create and issue a managed certificate.")
-            certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, standardized_hostname, 'TXT', location)
+            logger.warning(f"Creating managed certificate '{cert_name}' for {standardized_hostname}.\nIt may take up to 20 minutes to create and issue a managed certificate.")
+
+            validation_method = None
+            while validation_method not in ["TXT", "CNAME", "HTTP"]:
+                validation_method = prompt('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+                
+            certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, standardized_hostname, validation_method, location)
             try:
-                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, False)
+                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, False, validation_method == 'TXT')
             except Exception as e:
                 handle_raw_exception(e)
             cert_id = managed_cert["id"]
-        logger.warning(f"Binding managed certificate '{cert_name}' to {standardized_hostname}")
+        
+        logger.warning(f"\nBinding managed certificate '{cert_name}' to {standardized_hostname}\n")
     
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
     new_custom_domains = list(filter(lambda c: safe_get(c, "name", default=[]) != standardized_hostname, custom_domains))
