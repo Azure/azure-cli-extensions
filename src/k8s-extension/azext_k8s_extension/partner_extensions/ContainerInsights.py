@@ -624,7 +624,9 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     except HttpResponseError as ex:
         raise ex
 
-    dataCollectionRuleName = f"MSCI-{cluster_name}-{cluster_region}"
+    dataCollectionRuleName = f"MSCI-{workspace_region}-{cluster_name}"
+    # Max length of the DCR name is 64 chars
+    dataCollectionRuleName = dataCollectionRuleName[0:64]
     dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
 
     # first get the association between region display names and region IDs (because for some reason
