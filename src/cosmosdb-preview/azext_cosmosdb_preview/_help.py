@@ -240,11 +240,22 @@ helps['managed-cassandra repair pause'] = """
 type: command
 short-summary: Pause a give repair_run_id.
 examples:
-  - name: Pause a give repair_run_id.
+  - name: Pause a given repair_run_id.
     text: |
       az managed-cassandra repair pause --repair-run-id "00000000-0000-0001-0000-000000000000" \\
         --cluster-name MyCluster --resource-group MyResourceGroup
 """
+
+helps['managed-cassandra repair resume'] = """
+type: command
+short-summary: Resume or start a a given repair_run_id.
+examples:
+  - name: Start a give repair_run_id.
+    text: |
+      az managed-cassandra repair resume --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
 
 helps['managed-cassandra repair delete'] = """
 type: command

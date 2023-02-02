@@ -50,7 +50,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CassandraClusterRepairPublicResource,
     CassandraClusterRepairPublicProperties,
     CassandraRepairRunStateEnum,
-    CassandraClusterRepairListFilter
+    CassandraClusterRepairListFilter,
+    CassandraReaperRunStatus
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -393,7 +394,8 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
                                                 nodes,
                                                 data_centers,
                                                 black_listed_tables,
-                                                repair_thread_count):
+                                                repair_thread_count,
+                                                repair_not_start):
        
     repair_properties = CassandraClusterRepairPublicProperties(
         keyspace=keyspace,
@@ -415,7 +417,6 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
     )
     
     return client.begin_create(resource_group_name, cluster_name, repair_resource)
-
 
 def cli_cosmosdb_managed_cassandra_repair_list(client,
                                                 resource_group_name,
@@ -457,7 +458,16 @@ def cli_cosmosdb_managed_cassandra_repair_update(client,
                                                 cluster_name,
                                                 repair_run_id,
                                                 intensity):
-    return client.begin_update(resource_group_name, cluster_name, repair_run_id, intensity)
+    intensityvalue = float(intensity)
+
+    if (intensityvalue <= 0):
+        intensityvalue = 0.1
+    elif (intensityvalue >= 1):
+        intensityvalue = 0.9
+    
+    logger.debug('intensity is being updated to ' + str(intensityvalue))
+
+    return client.begin_update(resource_group_name, cluster_name, repair_run_id, intensityvalue)
 
 
 def cli_cosmosdb_managed_cassandra_repair_resume(client,
