@@ -279,9 +279,9 @@ AzureFileProperties = {
 }
 
 ManagedCertificateEnvelop = {
-    "location": None, # str
+    "location": None,  # str
     "properties": {
-        "subjectName": None, # str
-        "validationMethod": None # str
+        "subjectName": None,  # str
+        "validationMethod": None  # str
     }
 }

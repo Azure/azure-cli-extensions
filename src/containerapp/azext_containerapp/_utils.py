@@ -1389,6 +1389,7 @@ def prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname
             handle_raw_exception(e)
     return certificate_envelop
 
+
 def check_managed_cert_name_availability(cmd, resource_group_name, name, cert_name):
     try:
         certs = ManagedEnvironmentClient.list_managed_certificates(cmd, resource_group_name, name)
@@ -1611,7 +1612,7 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
 
 
 def certificate_location_matches(certificate_object, location=None):
-        return certificate_object["location"] == location or not location
+    return certificate_object["location"] == location or not location
 
 
 def certificate_thumbprint_matches(certificate_object, thumbprint=None):

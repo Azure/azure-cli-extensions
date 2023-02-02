@@ -659,7 +659,7 @@ class ManagedEnvironmentClient():
             formatted = formatter(cert)
             certs_list.append(formatted)
         return certs_list
-    
+
     @classmethod
     def list_managed_certificates(cls, cmd, resource_group_name, name, formatter=lambda x: x):
         certs_list = []
@@ -713,7 +713,7 @@ class ManagedEnvironmentClient():
             certificate_name,
             api_version)
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate_envelop))
-        
+
         if no_wait and not is_TXT:
             return r.json()
         elif r.status_code == 201:
@@ -730,7 +730,7 @@ class ManagedEnvironmentClient():
                     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
                     r2 = r.json()
                     if is_TXT and not message_logged and "properties" in r2 and "validationToken" in r2["properties"]:
-                        logger.warning('\nPlease copy the token below for TXT record and enter it with your domain provider:\n{}\n'.format(r2["properties"]["validationToken"]))
+                        logger.warning('\nPlease copy the token below for TXT record and enter it with your domain provider:\n%s\n', r2["properties"]["validationToken"])
                         message_logged = True
                         if no_wait:
                             break

@@ -506,7 +506,7 @@ helps['containerapp env certificate create'] = """
     examples:
     - name: Create a managed certificate.
       text: |
-          az containerapp env certificate create -g MyResourceGroup --name MyEnvironment --certificate-name MyCertificate --hostname MyHostname
+          az containerapp env certificate create -g MyResourceGroup --name MyEnvironment --certificate-name MyCertificate --hostname MyHostname --validation-method CNAME
 """
 
 helps['containerapp env certificate list'] = """
@@ -527,7 +527,7 @@ helps['containerapp env certificate list'] = """
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
     - name: List managed certificates for an environment.
       text: |
-          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --managed_certificates_only
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --managed-certificates-only
     - name: List private key certificates for an environment.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --private-key-certificates-only

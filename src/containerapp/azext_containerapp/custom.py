@@ -23,7 +23,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
-from knack.prompting import prompt_y_n, prompt
+from knack.prompting import prompt_y_n, prompt as prompt_str
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
@@ -2032,7 +2032,7 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         except Exception as e:
             raise ValidationError("Ingress must be enabled to list ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
         return safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
-    except Exception as e:
+    except:
         return []
 
 
@@ -2759,30 +2759,29 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
         raise MutuallyExclusiveArgumentError("Use either '--managed-certificates-only' or '--private-key-certificates-only'.")
     if managed_certificates_only and thumbprint:
         raise MutuallyExclusiveArgumentError("'--thumbprint' not supported for managed certificates.")
-    
+
     if certificate and is_valid_resource_id(certificate):
         certificate_name = parse_resource_id(certificate)["resource_name"]
         certificate_type = parse_resource_id(certificate)["resource_type"]
     else:
         certificate_name = certificate
         certificate_type = PRIVATE_CERTIFICATE_RT if private_key_certificates_only or thumbprint else (MANAGED_CERTIFICATE_RT if managed_certificates_only else None)
-    
+
     if certificate_type == MANAGED_CERTIFICATE_RT:
         return get_managed_certificates(cmd, name, resource_group_name, certificate_name, location)
-    elif certificate_type == PRIVATE_CERTIFICATE_RT:
+    if certificate_type == PRIVATE_CERTIFICATE_RT:
         return get_private_certificates(cmd, name, resource_group_name, certificate_name, thumbprint, location)
-    else:
-        managed_certs = get_managed_certificates(cmd, name, resource_group_name, certificate_name, location)
-        private_certs = get_private_certificates(cmd, name, resource_group_name, certificate_name, thumbprint, location)
-        return managed_certs + private_certs
-        
+    managed_certs = get_managed_certificates(cmd, name, resource_group_name, certificate_name, location)
+    private_certs = get_private_certificates(cmd, name, resource_group_name, certificate_name, thumbprint, location)
+    return managed_certs + private_certs
+
 
 def get_private_certificates(cmd, name, resource_group_name, certificate_name=None, thumbprint=None, location=None):
     if certificate_name:
         try:
             r = ManagedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
             return [r] if certificate_matches(r, location, thumbprint) else []
-        except: # TODO: need to handle non-404 errors
+        except:  # TODO: handle non-404 errors
             return []
     else:
         try:
@@ -2869,13 +2868,13 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
         cert_name = parse_resource_id(certificate)["resource_name"]
     if thumbprint:
         cert_type = PRIVATE_CERTIFICATE_RT
-    
+
     if cert_type == PRIVATE_CERTIFICATE_RT:
         certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
         for cert in certs:
             try:
                 ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
-                logger.warning(f'Successfully deleted certificate: {cert["name"]}')
+                logger.warning('Successfully deleted certificate: %s', cert["name"])
             except Exception as e:
                 handle_raw_exception(e)
     elif cert_type == MANAGED_CERTIFICATE_RT:
@@ -2893,7 +2892,7 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
             raise RequiredArgumentMissingError(f"Found more than one certificates with name '{cert_name}':\n'{managed_certs[0]['id']}',\n'{private_certs[0]['id']}'.\nPlease specify the certificate id using --certificate.")
         try:
             ManagedEnvironmentClient.delete_managed_certificate(cmd, resource_group_name, name, cert_name)
-            logger.warning(f'Successfully deleted certificate: {cert_name}')
+            logger.warning('Successfully deleted certificate: %s', cert_name)
         except Exception as e:
             handle_raw_exception(e)
 
@@ -2909,7 +2908,7 @@ def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, ho
     new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
 
     env_name = _get_name(environment)
-    logger.warning(f'Uploading certificate to {env_name}.')
+    logger.warning('Uploading certificate to %s.', env_name)
     if is_valid_resource_id(environment):
         cert = upload_certificate(cmd, env_name, parse_resource_id(environment)["resource_group"], certificate_file, certificate_name, certificate_password, location)
     else:
@@ -2920,7 +2919,7 @@ def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, ho
     new_domain["name"] = hostname
     new_domain["certificateId"] = cert_id
     new_custom_domains.append(new_domain)
-    logger.warning(f'Adding hostname {hostname} and binding to {name}.')
+    logger.warning('Adding hostname %s and binding to %s.', hostname, name)
     return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
 
 
@@ -2931,7 +2930,7 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --environment')
     if certificate and not is_valid_resource_id(certificate) and not environment:
         raise RequiredArgumentMissingError('Please specify the parameter: --environment')
-    
+
     standardized_hostname = hostname.lower()
     passed, message = validate_hostname(cmd, resource_group_name, name, standardized_hostname)
     if not passed:
@@ -2952,10 +2951,9 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
         if len(certs) == 0:
             if thumbprint:
                 raise ResourceNotFoundError(f"The certificate with thumbprint '{thumbprint}' was not found.")
-            else:
-                raise ResourceNotFoundError(f"The certificate '{cert_name}' was not found.")
+            raise ResourceNotFoundError(f"The certificate '{cert_name}' was not found.")
         cert_id = certs[0]["id"]
-    
+
     # look for or create a managed certificate if no certificate info provided
     if not thumbprint and not certificate:
         managed_certs = get_managed_certificates(cmd, env_name, resource_group_name, None, None)
@@ -2970,21 +2968,21 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                 available = check_managed_cert_name_availability(cmd, resource_group_name, env_name, cert_name)
                 if available:
                     cert_name = random_name
-            logger.warning(f"Creating managed certificate '{cert_name}' for {standardized_hostname}.\nIt may take up to 20 minutes to create and issue a managed certificate.")
+            logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
             validation_method = None
             while validation_method not in ["TXT", "CNAME", "HTTP"]:
-                validation_method = prompt('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
-                
+                validation_method = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+
             certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, standardized_hostname, validation_method, location)
             try:
                 managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, False, validation_method == 'TXT')
             except Exception as e:
                 handle_raw_exception(e)
             cert_id = managed_cert["id"]
-        
-        logger.warning(f"\nBinding managed certificate '{cert_name}' to {standardized_hostname}\n")
-    
+
+        logger.warning("\nBinding managed certificate '%s' to %s\n", cert_name, standardized_hostname)
+
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
     new_custom_domains = list(filter(lambda c: safe_get(c, "name", default=[]) != standardized_hostname, custom_domains))
     new_domain = ContainerAppCustomDomainModel

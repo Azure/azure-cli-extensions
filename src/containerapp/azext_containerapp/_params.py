@@ -376,6 +376,7 @@ def load_arguments(self, _):
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
 
     with self.argument_context('containerapp hostname add') as c:
+        c.argument('hostname', help='The custom domain name.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('containerapp hostname list') as c:
