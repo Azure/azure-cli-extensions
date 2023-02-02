@@ -56,6 +56,7 @@ def delete_directory(client, container_name, directory_name):
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
 
+
 def list_directory(client, container_name, directory_path, prefix=None, num_results=None, include='mc',
                    delimiter=None, marker=None, timeout=None):
     '''

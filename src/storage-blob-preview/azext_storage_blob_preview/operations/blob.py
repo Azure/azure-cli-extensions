@@ -536,6 +536,7 @@ def generate_sas_container_uri(client, cmd, container_name, permission=None,
 
     return sas_token
 
+
 def list_containers(client, include_metadata=False, include_deleted=False, marker=None,
                     num_results=None, prefix=None, show_next_marker=None, **kwargs):
     from ..track2_util import list_generator
