@@ -52,23 +52,23 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config'],
+                   options_list=['--configuration-settings', '--config', c.deprecate(target='--config-settings', redirect='--configuration-settings')],
                    action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--config-protected-settings', '--config-protected'],
+                   options_list=['--config-protected-settings', '--config-protected', c.deprecate(target='--configuration-protected-settings', redirect='--config-protected-settings')],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--config-settings-file', '--config-file'],
+                   options_list=['--config-settings-file', '--config-file', c.deprecate(target='--configuration-settings-file', redirect='--config-settings-file')],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--config-protected-file', '--protected-settings-file'],
+                   options_list=['--config-protected-settings-file', '--config-protected-file', c.deprecate(target='--configuration-protected-settings-file', redirect='--config-protected-file')],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')

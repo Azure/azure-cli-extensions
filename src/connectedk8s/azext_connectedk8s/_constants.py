@@ -6,8 +6,8 @@
 
 # pylint: disable=line-too-long
 
-Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg", "canonical", "karbon"]
-Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
+Distribution_Enum_Values = ["generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg", "canonical", "karbon", "aks_edge_k3s", "aks_edge_k8s"]
+Infrastructure_Enum_Values = ["generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server", "Windows 11 Enterprise", "Windows 11 Enterprise N", "Windows 11 IoT Enterprise", "Windows 11 Pro", "Windows 10 Enterprise", "Windows 10 Enterprise N", "Windows 10 Enterprise LTSC 2021", "Windows 10 Enterprise N LTSC 2021", "Windows 10 IoT Enterprise", "Windows 10 IoT Enterprise LTSC 2021", "Windows 10 Pro", "Windows 10 Enterprise LTSC 2019", "Windows 10 Enterprise N LTSC 2019", "Windows 10 IoT Enterprise LTSC 2019", "Windows Server 2022", "Windows Server 2022 Datacenter", "Windows Server 2022 Standard", "Windows Server 2019", "Windows Server 2019 Datacenter", "Windows Server 2019 Standard"]
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com", "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com", "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com", "gitconfigs.clusterconfig.azure.com"]
