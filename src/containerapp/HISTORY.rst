@@ -10,10 +10,12 @@ Release History
 * 'az containerapp env certificate list': add optional parameters --managed-certificates-only and --private-key-certificates-only to list certificates by type
 * 'az containerapp hostname bind': change --thumbprint to an optional parameter to support managed certificate bindings
 * 'az containerapp ssl upload': log messages to indicate which step is in progress
+* Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
 
 0.3.21
 ++++++
 * Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
 
 0.3.20
 ++++++

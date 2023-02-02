@@ -74,7 +74,7 @@ class ContainerappIdentityTests(ScenarioTest):
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -388,7 +388,7 @@ class ContainerappIngressTests(ScenarioTest):
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
         sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
-        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs}").get_output_in_json()["customerId"]
+        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
 
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
@@ -648,6 +648,34 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.logLevel', "warn"),
             JMESPathCheck('properties.configuration.dapr.enableApiLogging', True),
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_dapr_e2e(self, resource_group):
+        """ Ensure that dapr can be enabled if the app has been created using containerapp up """
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+
+        self.cmd('configure --defaults location={}'.format(location))
+
+        image = 'mcr.microsoft.com/azuredocs/aks-helloworld:v1'
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd(
+            'containerapp up -g {} -n {} --environment {} --image {}'.format(
+                resource_group, ca_name, env_name, image))
+
+        self.cmd(
+            'containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 '
+            '--dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(
+                resource_group, ca_name, env_name), checks=[
+                JMESPathCheck('appId', "containerapp1"),
+                JMESPathCheck('enabled', True)
+            ])
 
 
 class ContainerappEnvStorageTests(ScenarioTest):

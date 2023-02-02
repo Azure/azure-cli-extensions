@@ -15,12 +15,21 @@ def k8s_extension_show_table_format(result):
 
 
 def __get_table_row(result):
+    plan_name, plan_publisher, plan_product = '', '', ''
+    if result['plan']:
+        plan_name = result['plan']['name']
+        plan_publisher = result['plan']['publisher']
+        plan_product = result['plan']['product']
     return OrderedDict([
         ('name', result['name']),
         ('extensionType', result.get('extensionType', '')),
         ('version', result.get('version', '')),
         ('provisioningState', result.get('provisioningState', '')),
         ('lastModifiedAt', result.get('systemData', {}).get('lastModifiedAt', '')),
+        ('plan_name', plan_name),
+        {'plan_publisher', plan_publisher},
+        ('plan_product', plan_product),
+        ('isSystemExtension', result.get('isSystemExtension', '')),
     ])
 
 
