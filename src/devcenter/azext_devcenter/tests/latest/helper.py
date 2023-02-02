@@ -221,3 +221,77 @@ def create_env_type(self):
                  self.check('tags.val1', "{tagKey1}"),
              ]
              )
+
+
+def add_dev_box_user_role_to_project(self):
+    project = self.cmd('az devcenter admin project show '
+                       '--name "{projectName}" '
+                       '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'projectId': project['id']
+    })
+
+    if (self.is_live):
+        user = self.cmd('az ad signed-in-user show').get_output_in_json()
+        self.kwargs.update({
+            'userId': user['id'],
+        })
+
+        self.cmd('az role assignment create --role "DevCenter Dev Box User" '
+                 '--assignee "{userId}" '
+                 '--scope "{projectId}"')
+
+def create_pool_with_schedule(self):
+    
+    create_network_connection(self)
+
+    self.kwargs.update({
+        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
+        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+        'osStorageType': "ssd_1024gb",
+        'skuName': "general_a_8c32gb_v1",
+        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
+        'time': "13:00",
+        'timeZone': "America/Los_Angeles"
+    })
+
+    self.cmd('az devcenter admin attached-network create '
+             '--dev-center "{devcenterName}" '
+             '--name "{attachedNetworkName}" '
+             '--network-connection-id "{networkConnectionId}" '
+             '--resource-group "{rg}" '
+             )
+
+    self.cmd('az devcenter admin devbox-definition create '
+             '--dev-center "{devcenterName}" '
+             '--name "{devBoxDefinitionName}" '
+             '--image-reference id="{imageRefId}" '
+             '--hibernate-support "Enabled" '
+             '--resource-group "{rg}" '
+             '--os-storage-type "{osStorageType}" '
+             '--sku name="{skuName}" '
+             '--location "{location}" '
+             )
+    
+    self.kwargs.update({
+            'poolName': self.create_random_name(prefix='c3', length=12)
+        })
+
+    self.cmd('az devcenter admin pool create '
+                 '-d "{devBoxDefinitionName}" '
+                 '--location "{location}" '
+                 '--local-administrator "Enabled" '
+                 '--name "{poolName}" '
+                 '-c "{attachedNetworkName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 )
+
+    self.cmd('az devcenter admin schedule create '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 '--time "{time}" '
+                 '--time-zone "{timeZone}" '
+                 )
