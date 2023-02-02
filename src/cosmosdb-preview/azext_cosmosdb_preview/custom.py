@@ -465,7 +465,7 @@ def cli_cosmosdb_managed_cassandra_repair_update(client,
     elif (intensityvalue >= 1):
         intensityvalue = 0.9
     
-    logger.debug('intensity is being updated to ' + str(intensityvalue))
+    logger.warning('intensity is being updated to ' + str(intensityvalue))
 
     return client.begin_update(resource_group_name, cluster_name, repair_run_id, intensityvalue)
 
