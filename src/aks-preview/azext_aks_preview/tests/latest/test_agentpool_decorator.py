@@ -81,7 +81,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_1.get_zones(), "test_node_zones")
+        self.assertEqual(ctx_1.get_zones(), None)
         agentpool_1 = self.create_initialized_agentpool_instance(
             availability_zones=["test_mc_zones1", "test_mc_zones2"]
         )
@@ -97,20 +97,6 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             self.agentpool_decorator_mode,
         )
         self.assertEqual(ctx_2.get_zones(), "test_zones")
-
-    def common_get_host_group_id(self):
-        # default
-        ctx_1 = AKSPreviewAgentPoolContext(
-            self.cmd,
-            AKSAgentPoolParamDict({"host_group_id": None}),
-            self.models,
-            DecoratorMode.CREATE,
-            self.agentpool_decorator_mode,
-        )
-        self.assertEqual(ctx_1.get_host_group_id(), None)
-        agentpool_1 = self.create_initialized_agentpool_instance(host_group_id="test_host_group_id")
-        ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_host_group_id(), "test_host_group_id")
 
     def common_get_crg_id(self):
         # default
@@ -271,9 +257,6 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(AKSPreviewAgentPoolContex
     def test_get_zones(self):
         self.common_get_zones()
 
-    def test_get_host_group_id(self):
-        self.common_get_host_group_id()
-
     def test_get_crg_id(self):
         self.common_get_crg_id()
 
@@ -305,9 +288,6 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(AKSPreviewAgentPoolCo
 
     def test_get_zones(self):
         self.common_get_zones()
-
-    def test_get_host_group_id(self):
-        self.common_get_host_group_id()
 
     def test_get_crg_id(self):
         self.common_get_crg_id()
@@ -373,7 +353,7 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
             self.client,
-            {"host_group_id": "test_host_group_id", "crg_id": "test_crg_id"},
+            {"crg_id": "test_crg_id"},
             self.resource_type,
             self.agentpool_decorator_mode,
         )
@@ -385,7 +365,7 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_1 = dec_1.set_up_preview_vm_properties(agentpool_1)
         dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
-            host_group_id="test_host_group_id", capacity_reservation_group_id="test_crg_id"
+            capacity_reservation_group_id="test_crg_id"
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 

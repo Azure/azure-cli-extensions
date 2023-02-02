@@ -2,6 +2,28 @@
 
 Release History
 ===============
+1.3.10
+++++++
+
+* Added CLI heuristics change
+* Added AKS IOT infra support 
+* Bug Fix in precheckutils
+
+1.3.9
+++++++
+
+* Added DNS and outbound connectivity prechecks in connect command
+
+1.3.8
+++++++
+
+* Added connectedk8s proxy support for fairfax
+
+1.3.7
+++++++
+
+* Install new helm release in azure-arc-release NS
+
 1.3.6
 ++++++
 
