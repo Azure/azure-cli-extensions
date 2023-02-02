@@ -5,6 +5,7 @@ Release History
 Upcoming
 +++++++
 * Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+* Update API version to stable "2022-10-01".
 
 0.3.21
 ++++++
