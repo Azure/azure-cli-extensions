@@ -15,7 +15,7 @@ from re import (search, match, compile)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_11_01_preview.models import _app_platform_management_client_enums as AppPlatformEnums
 from ._client_factory import cf_resource_groups
 
 
