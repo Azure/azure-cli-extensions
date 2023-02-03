@@ -7,7 +7,14 @@ import os
 import unittest
 import json
 import requests
+import platform
+import stat
 from knack.util import CLIError
+import azext_connectedk8s._constants as consts
+import urllib.request
+import shutil
+from azure.cli.core import get_default_cli
+from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 
@@ -15,58 +22,109 @@ from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_onl
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
 
+
+def install_helm_client():
+    # Return helm client path set by user
+    if os.getenv('HELM_CLIENT_PATH'):
+        return os.getenv('HELM_CLIENT_PATH')
+
+    # Fetch system related info
+    operating_system = platform.system().lower()
+    machine_type = platform.machine()
+
+
+    # Set helm binary download & install locations
+    if(operating_system == 'windows'):
+        download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+        install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
+        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+    elif(operating_system == 'linux' or operating_system == 'darwin'):
+        download_location_string = f'.azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+        install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
+        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+    else:
+        raise ClientRequestError(f'The {operating_system} platform is not currently supported for installing helm client.')
+
+    download_location = os.path.expanduser(os.path.join('~', download_location_string))
+    download_dir = os.path.dirname(download_location)
+    install_location = os.path.expanduser(os.path.join('~', install_location_string))
+
+    # Download compressed halm binary if not already present
+    if not os.path.isfile(download_location):
+        # Creating the helm folder if it doesnt exist
+        if not os.path.exists(download_dir):
+            try:
+                os.makedirs(download_dir)
+            except Exception as e:
+                raise ClientRequestError("Failed to create helm directory." + str(e))
+
+        # Downloading compressed helm client executable
+        try:
+            response = urllib.request.urlopen(requestUri)
+        except Exception as e:
+            raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+
+        responseContent = response.read()
+        response.close()
+
+        # Creating the compressed helm binaries
+        try:
+            with open(download_location, 'wb') as f:
+                f.write(responseContent)
+        except Exception as e:
+            raise ClientRequestError("Failed to create helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
+
+    # Extract compressed helm binary
+    if not os.path.isfile(install_location):
+        try:
+            shutil.unpack_archive(download_location, download_dir)
+            os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
+        except Exception as e:
+            raise ClientRequestError("Failed to extract helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
+
+    return install_location
+
+
+def install_kubectl_client():
+    # Return kubectl client path set by user
+    try:
+
+        # Fetching the current directory where the cli installs the kubectl executable
+        home_dir = os.path.expanduser('~')
+        kubectl_filepath = os.path.join(home_dir, '.azure', 'kubectl-client')
+
+        try:
+            os.mkdir(kubectl_filepath)
+        except FileExistsError:
+            pass
+
+        operating_system = platform.system().lower()
+        # Setting path depending on the OS being used
+        if operating_system == 'windows':
+            kubectl_path = os.path.join(kubectl_filepath, 'kubectl.exe')
+        elif operating_system == 'linux' or operating_system == 'darwin':
+            kubectl_path = os.path.join(kubectl_filepath, 'kubectl')
+        else:
+            raise ClientRequestError(f'The {operating_system} platform is not currently supported for installing kubectl client.')
+
+        if os.path.isfile(kubectl_path):
+            return kubectl_path
+
+        # Downloading kubectl executable if its not present in the machine
+        get_default_cli().invoke(['aks', 'install-cli', '--install-location', kubectl_path])
+        # Return the path of the kubectl executable
+        return kubectl_path
+
+    except Exception as e:
+        raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
+
+
 class Connectedk8sScenarioTest(LiveScenarioTest):
-
-    # @live_only()
-    # def test_connect_pvtlink(self):
-
-    #     managed_cluster_name = self.create_random_name(prefix='cli-test-aks-', length=24)
-    #     self.kwargs.update({
-    #         'name': self.create_random_name(prefix='cc-', length=12),
-    #         'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
-    #         'kubeconfigpls': "%s" % (_get_test_data_file('pls-config.yaml')),
-    #         'managed_cluster_name': managed_cluster_name
-    #     })
-    #     self.cmd('aks create -g akkeshar -n {} -s Standard_B4ms -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
-    #     self.cmd('aks get-credentials -g akkeshar -n {managed_cluster_name} -f {kubeconfig}')
-    #     self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig}', checks=[
-    #         self.check('tags.foo', 'doo'),
-    #         self.check('name', '{name}')
-    #     ])
-    #     self.cmd('connectedk8s show -g akkeshar -n {name}', checks=[
-    #         self.check('name', '{name}'),
-    #         self.check('resourceGroup', 'akkeshar'),
-    #         self.check('tags.foo', 'doo')
-    #     ])
-    #     self.cmd('connectedk8s delete -g akkeshar -n {name} --kube-config {kubeconfig} -y')
-
-    #     # Test 2022-10-01-preview api properties
-    #     self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus --distribution aks_management --infrastructure azure_stack_hci --distribution-version 1.0 --tags foo=doo --kube-config {kubeconfig}', checks=[
-    #         self.check('distributionVersion', '1.0'),
-    #         self.check('name', '{name}')
-    #     ])
-    #     self.cmd('connectedk8s update -g akkeshar -n {name} --azure-hybrid-benefit true --kube-config {kubeconfig} --yes', checks=[
-    #         self.check('azureHybridBenefit', 'True'),
-    #         self.check('name', '{name}')
-    #     ])
-
-    #     self.cmd('aks delete -g akkeshar -n {} -y'.format(managed_cluster_name))
-
-    #     # delete the kube config
-    #     os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
-
-    #     # Private link test
-    #     self.cmd('aks get-credentials -g akkeshar -n tempaks -f {kubeconfigpls}')
-    #     self.cmd('connectedk8s connect -g akkeshar -n cliplscc -l eastus2euap --tags foo=doo --kube-config {kubeconfigpls} --enable-private-link true --pls-arm-id /subscriptions/1bfbb5d0-917e-4346-9026-1d3b344417f5/resourceGroups/akkeshar/providers/Microsoft.HybridCompute/privateLinkScopes/temppls --yes', checks=[
-    #         self.check('name', 'cliplscc')
-    #     ])
-    #     self.cmd('connectedk8s delete -g akkeshar -n cliplscc --kube-config {kubeconfigpls} -y')
-
-    #     os.remove("%s" % (_get_test_data_file('pls-config.yaml')))
 
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
@@ -100,6 +158,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
+
+    @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_forcedelete(self,resource_group):
 
@@ -127,7 +187,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # Simulating the condition in which the azure-arc namespace got deleted
         # connectedk8s delete command fails in this case
-        subprocess.run(["kubectl", "delete", "namespace", "azure-arc","--kube-config", kubeconfig])
+        kubectl_client_location = install_kubectl_client()
+        subprocess.run([kubectl_client_location, "delete", "namespace", "azure-arc","--kube-config", kubeconfig])
 
         # Using the force delete command
         # -y to supress the prompts
@@ -137,6 +198,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
+
+    @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_enable_disable_features(self,resource_group):
 
@@ -162,7 +225,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ])
 
         os.environ.setdefault('KUBECONFIG', kubeconfig)
-        cmd = ['helm', 'get', 'values', 'azure-arc', "-ojson"]
+        helm_client_location = install_helm_client()
+        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "-ojson"]
 
         # scenario-1 : custom loc off , custom loc on  (no dependencies)
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
@@ -223,6 +287,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
+
+    @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connectedk8s_list(self,resource_group):
 
@@ -296,6 +362,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
         os.remove("%s" % (_get_test_data_file('pls-config.yaml')))
 
+
+    @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_upgrade(self,resource_group):
 
@@ -321,7 +389,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ])
 
         os.environ.setdefault('KUBECONFIG', kubeconfig)
-        cmd = ['helm', 'get', 'values', 'azure-arc', "-ojson"]
+        helm_client_location = install_helm_client()
+        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "-ojson"]
 
         # scenario - auto-upgrade is true , so implicit upgrade commands dont work
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
@@ -351,11 +420,11 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         response= requests.post('https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
         jsonData = json.loads(response.text)
         repo_path=jsonData['repositoryPath']
-        index_value=0
-        for index_value in range (0,len(repo_path)):
-            if  repo_path[index_value]==':':
+        index_value = 0
+        for ind in range (0,len(repo_path)):
+            if  repo_path[ind]==':':
                 break
-            ++index_value
+            index_value += 1
 
         self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
             self.check('agentVersion', jsonData['repositoryPath'][index_value+1:]),
@@ -370,6 +439,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
+
+    @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_update(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-update', length=24)
@@ -396,7 +467,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ])
 
         os.environ.setdefault('KUBECONFIG', kubeconfig)
-        cmd = ['helm', 'get', 'values', 'azure-arc', "-ojson"]
+        helm_client_location = install_helm_client()
+        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "-ojson"]
+        # cmd = ['helm', 'get', 'values', 'azure-arc', "-ojson"]
 
         # scenario - auto-upgrade is turned on
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
@@ -429,6 +502,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
         # os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-plsconfig.yaml')))
 
+
+    @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_troubleshoot(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-troubleshoot', length=24)
