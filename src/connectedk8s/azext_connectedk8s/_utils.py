@@ -323,13 +323,8 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
             release_train = release_train_dogfood
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
-    # Sending request
-    try:
-        r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource=resource)
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
-                                summary='Error while fetching helm chart registry path')
-        raise CLIInternalError("Error while fetching helm chart registry path: " + str(e))
+    # Sending request with retries
+    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
     if r.content:
         try:
             return r.json().get('repositoryPath')
@@ -341,6 +336,18 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
         telemetry.set_exception(exception='No content in response', fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='No content in acr path response')
         raise CLIInternalError("No content was found in helm registry path response.")
+
+def send_request_with_retries(cli_ctx, method, url, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3):
+    for i in range(retry_count):
+        try:
+            response = send_raw_request(cli_ctx, method, url, uri_parameters=uri_parameters, resource=resource)
+            if response.status_code == 200:
+                return response
+        except Exception as e:
+            if i == retry_count - 1:
+                telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
+                raise CLIInternalError("Error while fetching helm chart registry path: " + str(e))
+            time.sleep(retry_delay)
 
 
 def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
