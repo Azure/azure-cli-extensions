@@ -6,7 +6,6 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 import sys
 import requests
-import json
 from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
@@ -17,7 +16,6 @@ from msrestazure.azure_exceptions import CloudError
 from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 
 logger = get_logger(__name__)
 
