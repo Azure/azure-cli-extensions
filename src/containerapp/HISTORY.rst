@@ -5,6 +5,7 @@ Release History
 Upcoming
 +++++++
 * Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+* Add CLI support for ingress sticky-sessions'
 
 0.3.21
 ++++++
