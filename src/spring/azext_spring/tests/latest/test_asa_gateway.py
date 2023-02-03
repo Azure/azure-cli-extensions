@@ -5,6 +5,7 @@
 
 import os
 import json
+from azure.cli.core.mock import DummyCli
 from azure.cli.testsdk import (ScenarioTest, record_only)
 
 # pylint: disable=line-too-long
@@ -34,6 +35,7 @@ class GatewayTest(ScenarioTest):
                  '--assign-endpoint true --https-only true --cpu 1 --memory 2Gi --instance-count 3 '
                  '--api-title "Pet clinic" --api-description "Demo for pet clinic" --api-doc-location "doc" --api-version v1 '
                  '--server-url https://tx-enterprise-gateway-fd0c7.svc.asc-test.net '
+                 '--apm-types NewRelic ElasticAPM --properties a=b c=d --secrets e=f g=h '
                  '--allowed-origins "*" --allowed-methods "GET,PUT,DELETE" --allowed-headers "X-TEST,X-STAGING" --max-age 10 --allow-credentials true --exposed-headers "Access-Control-Request-Method,Access-Control-Request-Headers" '
                  '--client-id * --client-secret * --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"', checks=[
             self.check('properties.public', True),
@@ -58,6 +60,9 @@ class GatewayTest(ScenarioTest):
             self.check('properties.ssoProperties.clientSecret', "*"),
             self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
             self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
+            self.check('properties.apmTypes', ["NewRelic", "ElasticAPM"]),
+            self.check('properties.environmentVariables.properties', {'a': 'b', 'c': 'd'}),
+            self.check('properties.environmentVariables.secrets', None),
             self.check('properties.provisioningState', "Succeeded")
         ])
 
@@ -98,6 +103,13 @@ class GatewayTest(ScenarioTest):
             self.check('properties.httpsOnly', False),
             self.check('sku.capacity', 2),
             self.check('properties.ssoProperties', None),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring gateway delete -g {rg} -s {serviceName} --yes')
+
+        self.cmd('spring gateway create -g {rg} -s {serviceName}', checks=[
+            self.check('properties.public', False),
             self.check('properties.provisioningState', "Succeeded")
         ])
 

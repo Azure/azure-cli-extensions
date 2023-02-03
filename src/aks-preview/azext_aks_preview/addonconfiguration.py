@@ -61,7 +61,9 @@ def enable_addons(cmd,
                   rotation_poll_interval=None,
                   no_wait=False,
                   dns_zone_resource_id=None,
-                  enable_msi_auth_for_monitoring=False):
+                  enable_msi_auth_for_monitoring=False,
+                  enable_syslog=False,
+                  data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
     msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
@@ -76,7 +78,9 @@ def enable_addons(cmd,
                              appgw_watch_namespace=appgw_watch_namespace,
                              enable_sgxquotehelper=enable_sgxquotehelper,
                              enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                             dns_zone_resource_id=dns_zone_resource_id)
+                             dns_zone_resource_id=dns_zone_resource_id,
+                             enable_syslog=enable_syslog,
+                             data_collection_settings=data_collection_settings)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
        CONST_MONITORING_ADDON_NAME].enabled:
@@ -88,14 +92,37 @@ def enable_addons(cmd,
                     "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:
                 # create a Data Collection Rule (DCR) and associate it with the cluster
-                ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                                                         subscription_id, resource_group_name, name, instance.location,
-                                                         aad_route=True, create_dcr=True, create_dcra=True)
+                ensure_container_insights_for_monitoring(
+                    cmd,
+                    instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    subscription_id,
+                    resource_group_name,
+                    name,
+                    instance.location,
+                    aad_route=True,
+                    create_dcr=True,
+                    create_dcra=True,
+                    enable_syslog=enable_syslog,
+                    data_collection_settings=data_collection_settings
+                )
         else:
             # monitoring addon will use legacy path
-            ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                                                     subscription_id, resource_group_name, name, instance.location,
-                                                     aad_route=False)
+            if enable_syslog:
+                raise ArgumentUsageError(
+                    "--enable-syslog can not be used without MSI auth.")
+            if data_collection_settings is not None:
+                raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
+            ensure_container_insights_for_monitoring(
+                cmd,
+                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                subscription_id,
+                resource_group_name,
+                name,
+                instance.location,
+                aad_route=False,
+                enable_syslog=enable_syslog,
+                data_collection_settings=data_collection_settings
+            )
 
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled
@@ -162,7 +189,9 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   enable_secret_rotation=False,
                   rotation_poll_interval=None,
                   dns_zone_resource_id=None,
-                  no_wait=False):  # pylint: disable=unused-argument
+                  no_wait=False,  # pylint: disable=unused-argument
+                  enable_syslog=False,
+                  data_collection_settings=None):
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 

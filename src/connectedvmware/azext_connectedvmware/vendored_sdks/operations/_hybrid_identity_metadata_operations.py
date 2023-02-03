@@ -39,7 +39,7 @@ def build_create_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -81,7 +81,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -120,7 +120,7 @@ def build_delete_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -158,7 +158,7 @@ def build_list_by_vm_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -243,7 +243,7 @@ class HybridIdentityMetadataOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -316,7 +316,7 @@ class HybridIdentityMetadataOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_get_request(
@@ -382,7 +382,7 @@ class HybridIdentityMetadataOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         
         request = build_delete_request(
@@ -437,7 +437,7 @@ class HybridIdentityMetadataOperations(object):
          ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.HybridIdentityMetadataList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HybridIdentityMetadataList"]
         error_map = {

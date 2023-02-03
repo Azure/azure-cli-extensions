@@ -13,8 +13,10 @@ def load_arguments(self, _):
     from ._validators import process_missing_resource_group_parameter
     from azext_amg.vendored_sdks.models import ZoneRedundancy
     grafana_name_type = CLIArgumentType(options_list="--grafana-name",
-                                        help="Name of the Azure Managed Dashboard for Grafana.",
+                                        help="Name of the Azure Managed Grafana.",
                                         id_part="name")
+    grafana_role_type = CLIArgumentType(arg_type=get_enum_type(["Admin", "Editor", "Viewer"]), options_list=["--role", "-r"],
+                                        help="Grafana role name")
 
     with self.argument_context("grafana") as c:
         c.argument("tags", tags_type)
@@ -23,7 +25,8 @@ def load_arguments(self, _):
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
         c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
-        c.argument("api_key", help="api key, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
+        c.argument("api_key_or_token", options_list=["--api-key", "--token", '-t'],
+                   help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
@@ -32,11 +35,21 @@ def load_arguments(self, _):
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
         c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logon user as Grafana Admin")
 
-    # api_key=None, deterministic_outbound_ip=None, public_network_access=None
     with self.argument_context("grafana update") as c:
-        c.argument("api_key", get_enum_type(["Enabled", "Disabled"]), help="If enabled, you will be able to configur Grafana api keys")
+        c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
+                   help="If enabled, you will be able to configur Grafana api keys and service accounts")
         c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
                    help="if enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
+        c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
+                   help="allow public network access")
+        c.argument("smtp", get_enum_type(["Enabled", "Disabled"]), arg_group='SMTP', help="allow Grafana to send email")
+        c.argument("host", arg_group='SMTP', help="Smtp server url(port included)")
+        c.argument("user", arg_group='SMTP', help="Smtp server user name")
+        c.argument("password", arg_group='SMTP', help="Smtp server user password")
+        c.argument("from_address", arg_group='SMTP', help="Address used when sending out emails")
+        c.argument("from_name", arg_group='SMTP', help="Name to be used when sending out emails")
+        c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
+        c.argument("skip_verify", arg_group='SMTP', arg_type=get_three_state_flag(), help="Skip verifying SSL for SMTP server")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
@@ -52,9 +65,12 @@ def load_arguments(self, _):
     with self.argument_context("grafana dashboard import") as c:
         c.argument("definition", help="The complete dashboard model in json string, Grafana gallery id, a path or url to a file with such content")
 
+    with self.argument_context("grafana") as c:
+        c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
+
     with self.argument_context("grafana api-key") as c:
         c.argument("key_name", help="api key name")
-        c.argument("role", get_enum_type(["Admin", "Editor", "Viewer"]), help="Grafana role name", default="Viewer")
+        c.argument("role", grafana_role_type, default="Viewer")
         c.argument("time_to_live", default="1d", help="The API key life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
 
     with self.argument_context("grafana api-key create") as c:
@@ -85,3 +101,21 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana user") as c:
         c.argument("user", help="user login name or email")
+
+    with self.argument_context("grafana service-account") as c:
+        c.argument("service_account", help="id or name which can identify a service account")
+        c.argument("is_disabled", arg_type=get_three_state_flag(), help="disable the service account. default: false")
+
+    with self.argument_context("grafana service-account create") as c:
+        c.argument("role", grafana_role_type, default="Viewer")
+        c.argument("service_account", help="service account name")
+
+    with self.argument_context("grafana service-account update") as c:
+        c.argument("role", grafana_role_type)
+        c.argument("new_name", help="new name of the service account")
+
+    with self.argument_context("grafana service-account token") as c:
+        c.argument("token", help="id or name which can identify a service account token")
+
+    with self.argument_context("grafana service-account token create") as c:
+        c.argument("token", help="name of the new service account token")
