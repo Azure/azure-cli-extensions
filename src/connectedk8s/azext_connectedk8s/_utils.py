@@ -337,6 +337,7 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
                                 summary='No content in acr path response')
         raise CLIInternalError("No content was found in helm registry path response.")
 
+
 def send_request_with_retries(cli_ctx, method, url, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3):
     for i in range(retry_count):
         try:
