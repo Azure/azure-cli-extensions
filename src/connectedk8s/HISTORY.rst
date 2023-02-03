@@ -2,14 +2,6 @@
 
 Release History
 ===============
-1.3.11
-++++++
-
-* Removed ARM64 unsupported warning
-* Increased helm delete timeout for ARM64 clusters
-* Added multi-architectural images for troubleshoot
-* Delete azure-arc-release NS if exists as part of delete command
-
 1.3.10
 ++++++
 
