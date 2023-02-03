@@ -90,6 +90,9 @@ class Create(AAZCommand):
             options=["a2a"],
             help="A2A",
         )
+        provider_specific_input.hyper_v_replica_azure = AAZObjectArg(
+            options=["hyper-v-replica-azure"],
+        )
         provider_specific_input.v_mware_cbt = AAZObjectArg(
             options=["v-mware-cbt"],
         )
@@ -109,6 +112,12 @@ class Create(AAZCommand):
             help="A value indicating the type authentication to use for automation Account.",
             default="RunAsAccount",
             enum={"RunAsAccount": "RunAsAccount", "SystemAssignedIdentity": "SystemAssignedIdentity"},
+        )
+
+        hyper_v_replica_azure = cls._args_schema.provider_specific_input.hyper_v_replica_azure
+        hyper_v_replica_azure.location = AAZStrArg(
+            options=["location"],
+            help="The Location.",
         )
 
         v_mware_cbt = cls._args_schema.provider_specific_input.v_mware_cbt
@@ -269,8 +278,10 @@ class Create(AAZCommand):
             provider_specific_input = _builder.get(".properties.providerSpecificInput")
             if provider_specific_input is not None:
                 provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".v_mware_cbt", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.discriminate_by("instanceType", "A2A")
+                provider_specific_input.discriminate_by("instanceType", "HyperVReplicaAzure")
                 provider_specific_input.discriminate_by("instanceType", "VMwareCbt")
 
             disc_a2_a = _builder.get(".properties.providerSpecificInput{instanceType:A2A}")
@@ -278,6 +289,10 @@ class Create(AAZCommand):
                 disc_a2_a.set_prop("agentAutoUpdateStatus", AAZStrType, ".a2a.agent_auto_update_status")
                 disc_a2_a.set_prop("automationAccountArmId", AAZStrType, ".a2a.automation_account_arm_id")
                 disc_a2_a.set_prop("automationAccountAuthenticationType", AAZStrType, ".a2a.automation_account_authentication_type")
+
+            disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificInput{instanceType:HyperVReplicaAzure}")
+            if disc_hyper_v_replica_azure is not None:
+                disc_hyper_v_replica_azure.set_prop("location", AAZStrType, ".hyper_v_replica_azure.location")
 
             disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
             if disc_v_mware_cbt is not None:
