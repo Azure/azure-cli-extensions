@@ -76,7 +76,8 @@ def cf_communication_rooms(cli_ctx, kwargs):
         error_msg = 'Please specify --connection-string, or set AZURE_COMMUNICATION_CONNECTION_STRING.'
         raise RequiredArgumentMissingError(error_msg)
 
-    client = RoomsClient.from_connection_string(connection_string)
+    args = {'user_agent': cli_application_id()}
+    client = RoomsClient.from_connection_string(connection_string, **args)
     return client
 
 
@@ -88,5 +89,6 @@ def cf_communication_email(cli_ctx, kwargs):
         error_msg = 'Please specify --connection-string, or set AZURE_COMMUNICATION_CONNECTION_STRING.'
         raise RequiredArgumentMissingError(error_msg)
 
-    client = EmailClient.from_connection_string(connection_string)
+    args = {'user_agent': cli_application_id()}
+    client = EmailClient.from_connection_string(connection_string, **args)
     return client
