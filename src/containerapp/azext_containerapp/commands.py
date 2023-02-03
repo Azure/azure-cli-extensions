@@ -120,10 +120,10 @@ def load_command_table(self, _):
     with self.command_group('containerapp ingress traffic') as g:
         g.custom_command('set', 'set_ingress_traffic', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress_traffic')
-        
+
     with self.command_group('containerapp ingress sticky-sessions') as g:
         g.custom_command('set', 'set_ingress_sticky_session', exception_handler=ex_handler_factory())
-        g.custom_show_command('show', 'show_ingress_sticky_session')        
+        g.custom_show_command('show', 'show_ingress_sticky_session')
 
     with self.command_group('containerapp ingress access-restriction') as g:
         g.custom_command('set', 'set_ip_restriction', exception_handler=ex_handler_factory())
