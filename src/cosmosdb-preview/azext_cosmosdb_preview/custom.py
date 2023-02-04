@@ -93,7 +93,7 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
     if client_certificates is None:
         client_certificates = cluster_resource.properties.client_certificates
 
-    if external_gossip_certificates is not None:
+    if external_gossip_certificates is None:
         external_gossip_certificates = cluster_resource.properties.external_gossip_certificates
 
     if external_seed_nodes is None:
