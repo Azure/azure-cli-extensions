@@ -28,7 +28,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
 from ._github_oauth import get_github_access_token
 from ._models import (
@@ -2781,7 +2781,8 @@ def get_private_certificates(cmd, name, resource_group_name, certificate_name=No
         try:
             r = ManagedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
             return [r] if certificate_matches(r, location, thumbprint) else []
-        except:  # TODO: handle non-404 errors
+        except Exception as e:
+            handle_non_404_exception(e)
             return []
     else:
         try:
@@ -2796,7 +2797,8 @@ def get_managed_certificates(cmd, name, resource_group_name, certificate_name=No
         try:
             r = ManagedEnvironmentClient.show_managed_certificate(cmd, resource_group_name, name, certificate_name)
             return [r] if certificate_location_matches(r, location) else []
-        except:
+        except Exception as e:
+            handle_non_404_exception(e)
             return []
     else:
         try:
@@ -2871,6 +2873,9 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
 
     if cert_type == PRIVATE_CERTIFICATE_RT:
         certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+        if len(certs) == 0:
+            msg = "'{}'".format(cert_name) if cert_name else "with thumbprint '{}'".format(thumbprint)
+            raise ResourceNotFoundError(f"The certificate {msg} does not exist in Container app environment '{name}'.")
         for cert in certs:
             try:
                 ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
@@ -2885,7 +2890,7 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
             handle_raw_exception(e)
     else:
         managed_certs = list(filter(lambda c: c["name"] == cert_name, get_managed_certificates(cmd, name, resource_group_name, None, location)))
-        private_certs = list(filter(lambda c: c["name"] == cert_name, get_private_certificates(cmd, name, resource_group_name, None, location)))
+        private_certs = list(filter(lambda c: c["name"] == cert_name, get_private_certificates(cmd, name, resource_group_name, None, None, location)))
         if len(managed_certs) == 0 and len(private_certs) == 0:
             raise ResourceNotFoundError(f"The certificate '{cert_name}' does not exist in Container app environment '{name}'.")
         if len(managed_certs) > 0 and len(private_certs) > 0:
@@ -2923,7 +2928,7 @@ def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, ho
     return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
 
 
-def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None):
+def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None, validation_method=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not environment and not certificate:
@@ -2936,26 +2941,23 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
     if not passed:
         raise ValidationError(message or 'Please configure the DNS records before adding the hostname.')
 
-    env_name = None
-    cert_name = None
-    cert_id = None
+    env_name = _get_name(environment) if environment else None
+
     if certificate:
         if is_valid_resource_id(certificate):
             cert_id = certificate
         else:
-            cert_name = certificate
-    if environment:
-        env_name = _get_name(environment)
-    if not cert_id:
-        certs = list_certificates(cmd, env_name, resource_group_name, location, cert_name, thumbprint)
+            certs = list_certificates(cmd, env_name, resource_group_name, location, certificate, thumbprint)
+            if len(certs) == 0:
+                msg = "'{}' with thumbprint '{}'".format(certificate, thumbprint) if thumbprint else "'{}'".format(certificate)
+                raise ResourceNotFoundError(f"The certificate {msg} does not exist in Container app environment '{env_name}'.")
+            cert_id = certs[0]["id"]
+    elif thumbprint:
+        certs = list_certificates(cmd, env_name, resource_group_name, location, certificate, thumbprint)
         if len(certs) == 0:
-            if thumbprint:
-                raise ResourceNotFoundError(f"The certificate with thumbprint '{thumbprint}' was not found.")
-            raise ResourceNotFoundError(f"The certificate '{cert_name}' was not found.")
+            raise ResourceNotFoundError(f"The certificate with thumbprint '{thumbprint}' does not exist in Container app environment '{env_name}'.")
         cert_id = certs[0]["id"]
-
-    # look for or create a managed certificate if no certificate info provided
-    if not thumbprint and not certificate:
+    else:  # look for or create a managed certificate if no certificate info provided
         managed_certs = get_managed_certificates(cmd, env_name, resource_group_name, None, None)
         managed_cert = [cert for cert in managed_certs if cert["properties"]["subjectName"].lower() == standardized_hostname]
         if len(managed_cert) > 0 and managed_cert[0]["properties"]["provisioningState"] in [SUCCEEDED_STATUS, PENDING_STATUS]:
@@ -2970,13 +2972,13 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                     cert_name = random_name
             logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
-            validation_method = None
-            while validation_method not in ["TXT", "CNAME", "HTTP"]:
-                validation_method = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+            validation = validation_method
+            while validation not in ["TXT", "CNAME", "HTTP"]:
+                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
 
-            certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, standardized_hostname, validation_method, location)
+            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation_method, location)
             try:
-                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, False, validation_method == 'TXT')
+                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation_method == 'TXT')
             except Exception as e:
                 handle_raw_exception(e)
             cert_id = managed_cert["id"]
