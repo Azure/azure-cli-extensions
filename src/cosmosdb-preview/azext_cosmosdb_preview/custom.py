@@ -130,7 +130,7 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         client_certificates=client_certificates,
         external_gossip_certificates=external_gossip_certificates,
         gossip_certificates=cluster_resource.properties.gossip_certificates,
-        external_seed_nodes=cluster_resource.properties.external_seed_nodes,
+        external_seed_nodes=external_seed_nodes,
         seed_nodes=cluster_resource.properties.seed_nodes
     )
 
