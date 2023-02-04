@@ -208,7 +208,7 @@ def load_command_table(self, _):
         client_factory=cf_check_name_availability,
     )
 
-    with self.command_group("devcenter", is_experimental=True):
+    with self.command_group("devcenter", is_preview=True):
         pass
 
     with self.command_group("devcenter dev"):

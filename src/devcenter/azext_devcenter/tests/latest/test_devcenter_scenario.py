@@ -27,7 +27,10 @@ from .helper import (
     create_kv_policy,
     create_env_type,
     add_dev_box_user_role_to_project,
-    create_pool_with_schedule
+    create_pool_with_schedule,
+    create_catalog,
+    create_proj_env_type,
+    create_environment_dependencies
 )
 
 
@@ -1340,62 +1343,114 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  )
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
-    def test_dev_box_dataplane_scenario(self):
-        self.kwargs.update({
-            'devcenterName': self.create_random_name(prefix='cli', length=24),
-        })
+    def test_catalog_item_dataplane_scenario(self):
+        create_catalog(self)
 
-        create_dev_center(self)
-        create_project(self)
-        add_dev_box_user_role_to_project(self)
-        create_pool_with_schedule(self)
-
-        self.cmd('az devcenter dev pool list '
+        self.cmd('az devcenter dev catalog-item list '
                  '--dev-center "{devcenterName}" '
                  '--project "{projectName}" ',
                  checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "{poolName}"),
+                     self.check("length(@)", 3),
+                     self.check("[0].catalogName", "{catalogName}"),
+                     self.check("[0].name", "Empty")
                  ]
                  )
         
-        self.cmd('az devcenter dev pool show '
-                 '--name "{poolName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check('name', "{poolName}"),
-                     self.check('storageProfile.osDisk.diskSizeGb', "1024"),
-                     self.check('hardwareProfile.skuName', "{skuName}"),
-                     self.check('localAdministrator', "Enabled"),
-                     self.check('osType', "Windows"),
-                     self.check('location', "{location}"),
-                     self.check('hibernateSupport', "Enabled"),
-                     self.check('imageReference.name', 'microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365')
-                 ]
-                 )
+        if (self.is_live):
+            self.cmd('az devcenter dev catalog-item show '
+                    '--dev-center "{devcenterName}" '
+                    '--project "{projectName}" '
+                    '--catalog-item-id  "{catalogItemId}" ',
+                    checks=[
+                        self.check("id", "{catalogItemId}"),
+                        self.check("catalogName", "{catalogName}"),
+                        self.check("name", "Empty")
+                    ]
+                    )
+        
+            self.cmd('az devcenter dev catalog-item-version list '
+                    '--dev-center "{devcenterName}" '
+                    '--project "{projectName}" '
+                    '--catalog-item-id  "{catalogItemId}" ',
+                    checks=[
+                        self.check("length(@)", 1),
+                        self.check("[0].catalogName", "{catalogName}"),
+                        self.check("[0].catalogItemName", "Empty"),
+                        self.check("[0].description", "Deploys an empty environment"),
+                        self.check("[0].eligibleForLatestVersion", True),
+                        self.check("[0].runner", "ARM"),
+                        self.check("[0].status", "Enabled"),
+                        self.check("[0].summary", "Empty environment"),
+                        self.check("[0].templatePath", "Catalog_v2/Empty/azuredeploy.json"),
+                        self.check("[0].version", "1.0.0"),
+                    ]
+                    )
 
-        self.cmd('az devcenter dev schedule list '
-                 '--pool "{poolName}" '
+            self.cmd('az devcenter dev catalog-item-version show '
+                    '--dev-center "{devcenterName}" '
+                    '--project "{projectName}" '
+                    '--catalog-item-id  "{catalogItemId}" '
+                    '--version  "1.0.0" ',
+                    checks=[
+                        self.check("catalogName", "{catalogName}"),
+                        self.check("catalogItemName", "Empty"),
+                        self.check("description", "Deploys an empty environment"),
+                        self.check("eligibleForLatestVersion", True),
+                        self.check("runner", "ARM"),
+                        self.check("status", "Enabled"),
+                        self.check("summary", "Empty environment"),
+                        self.check("templatePath", "Catalog_v2/Empty/azuredeploy.json"),
+                        self.check("version", "1.0.0"),
+                    ]
+                    )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_env_type_dataplane_scenario(self):
+        create_proj_env_type(self)
+
+        self.cmd('az devcenter dev environment-type list '
                  '--dev-center "{devcenterName}" '
                  '--project "{projectName}" ',
                  checks=[
                      self.check("length(@)", 1),
-                     self.check("[0].name", "default"),
+                     self.check("[0].status", "Enabled"),
+                     self.check("[0].name", "{envTypeName}"),
+                     self.check("[0].deploymentTargetId", "/subscriptions/{subscriptionId}"),
                  ]
                  )
 
-        self.cmd('az devcenter dev schedule show '
-                 '-n "default" '
-                 '--pool "{poolName}" '
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_environment_dataplane_scenario(self):
+        self.kwargs.update({
+            'envName': self.create_random_name(prefix='cli', length=12),
+        })
+        create_environment_dependencies(self)
+
+        self.cmd('az devcenter dev environment list '
                  '--dev-center "{devcenterName}" '
                  '--project "{projectName}" ',
                  checks=[
-                     self.check('name', "default"),
-                     self.check('frequency', "Daily"),
-                     self.check('time', "{time}"),
-                     self.check('timeZone', "{timeZone}"),
-                     self.check('type', "StopDevBox"),
+                     self.check("length(@)", 0),
                  ]
                  )
-
+        
+        self.cmd('az devcenter dev environment create '
+                 '--catalog-item-name "Empty" '
+                 '--catalog-name "{catalogName}" '
+                 '--name "{envName}" '
+                 '--environment-type "{envTypeName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+        
+        self.cmd('az devcenter dev environment list '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                     self.check("[0].name", "{envName}")
+                 ]
+                 )

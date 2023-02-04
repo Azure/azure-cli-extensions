@@ -295,3 +295,86 @@ def create_pool_with_schedule(self):
                  '--time "{time}" '
                  '--time-zone "{timeZone}" '
                  )
+
+def add_deployment_env_user_role_to_project(self):
+    project = self.cmd('az devcenter admin project show '
+                       '--name "{projectName}" '
+                       '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'projectId': project['id']
+    })
+
+    if (self.is_live):
+        user = self.cmd('az ad signed-in-user show').get_output_in_json()
+        self.kwargs.update({
+            'userId': user['id'],
+        })
+
+        self.cmd('az role assignment create --role "/subscriptions/{subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/18e40d4e-8d2e-438d-97e1-9528336e149c" '
+                 '--assignee "{userId}" '
+                 '--scope "{projectId}"')
+
+def catalog_create_and_sync_cmds(self):
+    self.kwargs.update({
+        'catalogName': self.create_random_name(prefix='c2', length=12),
+        'branch': 'main',
+        'path': "/Catalog_v2",
+        'secretIdentifier': "https://clitesting.vault.azure.net/secrets/cli-secret2/eb08c2be51644082a5e56e2deaf76979",
+        'uri': "https://github.com/amandalim95/Project-Fidalgo-PrivatePreview.git"
+    })
+
+    self.cmd('az devcenter admin catalog create '
+                '--dev-center "{devcenterName}" '
+                '--name "{catalogName}" '
+                '--git-hub path="{path}" branch="{branch}" '
+                'secret-identifier="{secretIdentifier}" uri="{uri}" '
+                '--resource-group "{rg}" '
+                )
+    
+    self.cmd('az devcenter admin catalog sync '
+            '--dev-center "{devcenterName}" '
+            '--name "{catalogName}" '
+            '--resource-group "{rg}" '
+            )
+
+def create_catalog(self):
+    create_dev_center_with_identity(self)
+    create_kv_policy(self)
+    create_project(self)
+    add_deployment_env_user_role_to_project(self)
+    catalog_create_and_sync_cmds(self)
+
+    tenantId = self.cmd('az account show').get_output_in_json()['tenantId']
+    catalogItemId = f"{tenantId}:{self.kwargs.get('devcenterName', '')}:{self.kwargs.get('catalogName', '')}:empty"
+    self.kwargs.update({
+            'catalogItemId': catalogItemId,
+        })
+
+def create_proj_env_type(self):
+    self.kwargs.update({
+        'ownerRole': "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+    })
+
+    create_dev_center_with_identity(self)
+    create_project(self)
+    add_deployment_env_user_role_to_project(self)
+    create_env_type(self)
+
+    self.cmd('az devcenter admin project-environment-type create '
+                '--project "{projectName}" '
+                '--environment-type-name "{envTypeName}" '
+                '--deployment-target-id "/subscriptions/{subscriptionId}" '
+                '--status "Enabled" '
+                '--identity-type "SystemAssigned, UserAssigned" '
+                '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+                '--user-role-assignments "{{\\"{identityPrincipalId}\\":{{\\"roles\\":{{\\"{ownerRole}\\":{{}}}}}}}}" '
+                '--location "{location}" '
+                '--roles "{{\\"{ownerRole}\\":{{}}}}" '
+                '--resource-group "{rg}"'
+                )
+
+def create_environment_dependencies(self):
+    create_proj_env_type(self)
+    create_kv_policy(self)
+    catalog_create_and_sync_cmds(self)
