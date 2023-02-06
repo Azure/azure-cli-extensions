@@ -30,7 +30,8 @@ from .helper import (
     create_pool_with_schedule,
     create_catalog,
     create_proj_env_type,
-    create_environment_dependencies
+    create_environment_dependencies,
+    create_pool
 )
 
 
@@ -954,9 +955,9 @@ class DevcenterScenarioTest(ScenarioTest):
             'catalogName': self.create_random_name(prefix='c2', length=12),
             'branch': 'main',
             'path': "/Catalog_v2",
-            'secretIdentifier': "https://clitesting.vault.azure.net/secrets/cli-secret/8af094b2fcfb4f8bbca20a2abedac00f",
-            'secretIdentifier2': "https://clitesting.vault.azure.net/secrets/cli-secret/00000000000000000000000000000000",
-            'uri': "https://github.com/amandalim95/Project-Fidalgo-PrivatePreview.git"
+            'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+            'secretIdentifier2': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+            'uri': "https://github.com/gitHubUse/gitHubProj.git"
         })
 
         create_dev_center_with_identity(self)
@@ -1284,14 +1285,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_pool_dataplane_scenario(self):
-        self.kwargs.update({
-            'devcenterName': self.create_random_name(prefix='cli', length=24),
-        })
-
-        create_dev_center(self)
-        create_project(self)
-        add_dev_box_user_role_to_project(self)
-        create_pool_with_schedule(self)
+        create_pool(self)
 
         self.cmd('az devcenter dev pool list '
                  '--dev-center "{devcenterName}" '

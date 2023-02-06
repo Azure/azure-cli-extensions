@@ -29,7 +29,7 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
         "POST",
         request_url,
         body=json.dumps(content),
-        resource=cli_ctx.cloud.endpoints.resource_manager,
+        resource=cli_ctx.cloud.endpoints.active_directory_resource_id,
     )
     return response.json()["data"]
 

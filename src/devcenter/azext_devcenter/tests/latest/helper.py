@@ -118,9 +118,10 @@ def create_sig_role_assignments(self):
 
 
 def create_kv_policy(self):
-    self.cmd('az keyvault set-policy -n "clitesting" '
-             '--secret-permissions get list '
-             '--object-id "{identityPrincipalId}"')
+    if (self.is_live):
+        self.cmd('az keyvault set-policy -n "dummy" '
+                '--secret-permissions get list '
+                '--object-id "{identityPrincipalId}"')
 
 
 def create_project(self):
@@ -320,8 +321,8 @@ def catalog_create_and_sync_cmds(self):
         'catalogName': self.create_random_name(prefix='c2', length=12),
         'branch': 'main',
         'path': "/Catalog_v2",
-        'secretIdentifier': "https://clitesting.vault.azure.net/secrets/cli-secret2/eb08c2be51644082a5e56e2deaf76979",
-        'uri': "https://github.com/amandalim95/Project-Fidalgo-PrivatePreview.git"
+        'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+        'uri': "https://github.com/gitHubUse/gitHubProj.git"
     })
 
     self.cmd('az devcenter admin catalog create '
@@ -378,3 +379,13 @@ def create_environment_dependencies(self):
     create_proj_env_type(self)
     create_kv_policy(self)
     catalog_create_and_sync_cmds(self)
+
+def create_pool(self):
+    self.kwargs.update({
+        'devcenterName': self.create_random_name(prefix='cli', length=24),
+    })
+
+    create_dev_center(self)
+    create_project(self)
+    add_dev_box_user_role_to_project(self)
+    create_pool_with_schedule(self)
