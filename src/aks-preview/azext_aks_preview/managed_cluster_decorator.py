@@ -45,14 +45,16 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from azext_aks_preview._consts import (
+    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_NETWORK_PLUGIN_AZURE,
+    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_PRIVATE_DNS_ZONE_NONE,
-    CONST_PRIVATE_DNS_ZONE_SYSTEM,
-    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -249,6 +251,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
+        Note: Overwritten in aks-preview to support being updated.
+
         Note: All the external parameters involved in the validation are not verified in their own getters.
 
         When outbound_type is not assigned, dynamic completion will be triggerd. By default, the value is set to
@@ -400,12 +404,83 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
 
+    def _get_network_plugin(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of network_plugin.
+
+        Note: Overwritten in aks-preview to update the valiation.
+
+        Note: SDK provides default value "kubenet" for network_plugin.
+
+        This function supports the option of enable_validation. When enabled, in case network_plugin is assigned, if
+        pod_cidr is assigned, the value of network_plugin is "azure" and network_plugin_mode is not "overlay", an
+        InvalidArgumentValueError will be raised; otherwise, if any of pod_cidr, service_cidr, dns_service_ip,
+        docker_bridge_address or network_policy is assigned, a RequiredArgumentMissingError will be raised.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        network_plugin = self.raw_param.get("network_plugin")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.network_plugin is not None
+        ):
+            network_plugin = self.mc.network_profile.network_plugin
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            (
+                pod_cidr,
+                service_cidr,
+                dns_service_ip,
+                docker_bridge_address,
+                network_policy,
+            ) = self._get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(
+                enable_validation=False
+            )
+            if network_plugin:
+                if network_plugin == CONST_NETWORK_PLUGIN_AZURE and pod_cidr:
+                    if self.get_network_plugin_mode() != CONST_NETWORK_PLUGIN_MODE_OVERLAY:
+                        raise InvalidArgumentValueError(
+                            "Please specify network plugin mode `overlay` when using pod_cidr or "
+                            "use network plugin `kubenet`. For more information about Azure CNI "
+                            "Overlay please see https://aka.ms/aksoverlay"
+                        )
+            else:
+                if (
+                    pod_cidr or
+                    service_cidr or
+                    dns_service_ip or
+                    docker_bridge_address or
+                    network_policy
+                ):
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return network_plugin
+
     def get_network_plugin_mode(self) -> Union[str, None]:
-        """Get the value of network_plugin_mode
+        """Get the value of network_plugin_mode.
+
+        Note: Currently this parameter does not support being updated.
 
         :return: str or None
         """
-        return self.raw_param.get('network_plugin_mode')
+        # read the original value passed by the command
+        network_plugin_mode = self.raw_param.get("network_plugin_mode")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.network_plugin_mode is not None
+        ):
+            network_plugin_mode = self.mc.network_profile.network_plugin_mode
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return network_plugin_mode
 
     def get_enable_cilium_dataplane(self) -> bool:
         """Get the value of enable_cilium_dataplane
@@ -467,6 +542,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_backend_pool_type
 
+    def get_nrg_lockdown_restriction_level(self) -> Union[str, None]:
+        """Obtain the value of nrg_lockdown_restriction_level.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nrg_lockdown_restriction_level = self.raw_param.get("nrg_lockdown_restriction_level")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.node_resource_group_profile and
+                self.mc.node_resource_group_profile.restriction_level is not None
+            ):
+                nrg_lockdown_restriction_level = self.mc.node_resource_group_profile.restriction_level
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nrg_lockdown_restriction_level
+
     def get_kube_proxy_config(self) -> Union[Dict, ContainerServiceNetworkProfileKubeProxyConfig, None]:
         """Obtain the value of kube_proxy_config.
 
@@ -499,6 +594,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return kube_proxy_config
+
+    def get_node_os_upgrade_channel(self) -> Union[str, None]:
+        """Obtain the value of node_os_upgrade_channel.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        node_os_upgrade_channel = self.raw_param.get("node_os_upgrade_channel")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.auto_upgrade_profile and
+                self.mc.auto_upgrade_profile.node_os_upgrade_channel is not None
+            ):
+                node_os_upgrade_channel = self.mc.auto_upgrade_profile.node_os_upgrade_channel
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return node_os_upgrade_channel
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -2120,6 +2235,32 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
         return mc
 
+    def set_up_node_resource_group_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node resource group profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        node_resource_group_profile = None
+        nrg_lockdown_restriction_level = self.context.get_nrg_lockdown_restriction_level()
+        if nrg_lockdown_restriction_level:
+            node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile(restriction_level=nrg_lockdown_restriction_level)
+        mc.node_resource_group_profile = node_resource_group_profile
+        return mc
+
+    def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up auto upgrade profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_auto_upgrade_profile(mc)
+
+        node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
+        if node_os_upgrade_channel:
+            if mc.auto_upgrade_profile is None:
+                mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
+            mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2153,6 +2294,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
         mc = self.set_up_custom_ca_trust_certificates(mc)
+        # set up node resource group profile
+        mc = self.set_up_node_resource_group_profile(mc)
+        # set up auto upgrade profile
+        mc = self.set_up_auto_upgrade_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2658,6 +2803,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
+    def update_node_resource_group_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update node resource group profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        nrg_lockdown_restriction_level = self.context.get_nrg_lockdown_restriction_level()
+        if nrg_lockdown_restriction_level is not None:
+            if mc.node_resource_group_profile is None:
+                mc.node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile()
+            mc.node_resource_group_profile.restriction_level = nrg_lockdown_restriction_level
+        return mc
+
+    def update_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update auto upgrade profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc = super().update_auto_upgrade_profile(mc)
+
+        node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
+        if node_os_upgrade_channel is not None:
+            if mc.auto_upgrade_profile is None:
+                mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
+            mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2695,5 +2866,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
+        # update node resource group profile
+        mc = self.update_node_resource_group_profile(mc)
+        # update auto upgrade profile
+        mc = self.update_auto_upgrade_profile(mc)
 
         return mc

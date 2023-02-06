@@ -24,6 +24,9 @@ examples:
   - name: SSH to virtual machine using Azure Bastion using AAD.
     text: |
         az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --auth-type AAD
+  - name: SSH to virtual machine using Azure Bastion using AAD.
+    text: |
+        az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --auth-type AAD
 """
 
 helps['network bastion rdp'] = """
@@ -33,13 +36,19 @@ examples:
   - name: RDP to virtual machine using Azure Bastion.
     text: |
         az network bastion rdp --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId
+  - name: RDP to machine using reachable IP address.
+    text: |
+        az network bastion rdp --name MyBastionHost --resource-group MyResourceGroup --target-ip-address 10.0.0.1
 """
 
 helps['network bastion tunnel'] = """
 type: command
 short-summary: Open a tunnel through Azure Bastion to a target virtual machine.
 examples:
-  - name: Open a tunnel through Azure Bastion to a target virtual machine.
+  - name: Open a tunnel through Azure Bastion to a target virtual machine using resourceId.
     text: |
         az network bastion tunnel --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --resource-port 22 --port 50022
+  - name: Open a tunnel through Azure Bastion to a target virtual machine using its IP address.
+    text: |
+        az network bastion tunnel --name MyBastionHost --resource-group MyResourceGroup --target-ip-address 10.0.0.1 --resource-port 22 --port 50022
 """

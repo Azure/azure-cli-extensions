@@ -16,7 +16,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class AmgScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_amg_base(self, resource_group):
+    def test_amg_crud(self, resource_group):
 
         self.kwargs.update({
             'name': 'clitestamg2',

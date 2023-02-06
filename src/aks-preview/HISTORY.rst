@@ -12,6 +12,37 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Mark AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` deprecated
+
+0.5.128
++++++++
+* Fix option name `--duration` for command group `az aks maintenanceconfiguration`
+
+0.5.127
++++++++
+* Add `--node-os-upgrade-channel <node os upgrade channel>` option for specifying the manner in which the OS on your nodes is updated in `aks create` and `aks update`
+
+0.5.126
++++++++
+* Add `--nrg-lockdown-restriction-level <restriction level>` option for chosing the node resource group restriction level in `aks create` and `aks update`
+* Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
+
+0.5.125
++++++++
+* Update the minimum required cli core version to `2.44.0`.
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
+
+0.5.124
++++++++
+* Update command group `az aks maintenanceconfiguration` to support the creation of dedicated maintenance configurations:
+  * *aksManagedAutoUpgradeSchedule* for scheduled cluster auto-upgrade
+  * *aksManagedNodeOSUpgradeSchedule* for scheduled node os auto-upgrade
+
+0.5.123
++++++++
+* Add the KataMshvVmIsolation option to --workload-runtime.
+
 0.5.122
 +++++++
 * Vendor new SDK and bump API version to 2022-11-02-preview.
