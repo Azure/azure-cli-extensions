@@ -349,8 +349,8 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
     headers = None
     if os.getenv('AZURE_ACCESS_TOKEN'):
         headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
-        # Sending request with retries
-    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
+    # Sending request with retries
+    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
     if r.content:
         try:
             return r.json().get('repositoryPath')
@@ -364,10 +364,10 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
         raise CLIInternalError("No content was found in helm registry path response.")
 
 
-def send_request_with_retries(cli_ctx, method, url, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3):
+def send_request_with_retries(cli_ctx, method, url, headers, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3):
     for i in range(retry_count):
         try:
-            response = send_raw_request(cli_ctx, method, url, uri_parameters=uri_parameters, resource=resource)
+            response = send_raw_request(cli_ctx, method, url, headers=headers, uri_parameters=uri_parameters, resource=resource)
             if response.status_code == 200:
                 return response
         except Exception as e:
