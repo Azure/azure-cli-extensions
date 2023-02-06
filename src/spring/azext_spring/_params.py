@@ -217,7 +217,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='The name of app running within the specified Azure Spring Apps instance.')
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.')
 
     for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
         with self.argument_context(scope) as c:
@@ -318,10 +318,10 @@ def load_arguments(self, _):
                    validator=validate_remote_debugging_port)
 
     with self.argument_context('spring app unset-deployment') as c:
-        c.argument('name', name_type, help='The name of app running within the specified Azure Spring Apps instance.', validator=active_deployment_exist)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist)
 
     with self.argument_context('spring app identity') as c:
-        c.argument('name', name_type, help='The name of app running within the specified Azure Spring Apps instance.', validator=active_deployment_exist_or_warning)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring app identity assign') as c:
         c.argument('scope',
