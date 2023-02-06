@@ -391,7 +391,7 @@ helps[
       - name: Artifacts_Get
         text: |-
                az devcenter dev artifact list --artifact-path "{artifactPath}" --dev-center-name "{devCenterName}" \
-               --environment-name "{environmentName}" --project-name "{projectName}" \
+--environment-name "{environmentName}" --project-name "{projectName}" \
 --user-id "{userId}"
       - name: Artifacts_ListByEnvironment
         text: |-
