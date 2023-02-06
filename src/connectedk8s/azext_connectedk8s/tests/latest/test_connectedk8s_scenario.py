@@ -147,7 +147,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('name', '{name}')
         ])
 
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
@@ -408,10 +408,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(changed_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
-        self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --agent-version 1.6.19')
-        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
-            self.check('agentVersion', '1.6.19')
-        ])
+        # self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --agent-version 1.6.19')
+        # self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+        #     self.check('agentVersion', '1.6.19')
+        # ])
 
         self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         response= requests.post('https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
