@@ -462,7 +462,7 @@ class SiteRecoveryScenario(ScenarioTest):
             # 'vnet2_name': 'cli-test-vnet-A2A-2',
             # 'network_mapping1_name': 'cli-test-network-mapping-A2A-1',
             # 'network_mapping2_name': 'cli-test-network-mapping-A2A-2',
-            # 'protected_item_name': 'cli-test-protected-item-A2A-1',
+            'protected_item_name': 'cli-test-protected-item-H2A-B2A-1',
             # 'storage1_name': 'cliteststoragea2a1',
             # 'storage2_name': 'cliteststoragea2a2',
             # 'recovery_plan_name': 'cli-test-recovery-plan-A2A-1'
@@ -486,16 +486,36 @@ class SiteRecoveryScenario(ScenarioTest):
         self.kwargs.update({"policy_id": policy_id})
 
         # container is automatically created by server
-        container_id = self.cmd('az site-recovery fabric protection-container show -g {rg} '
-                                '--fabric-name {fabric1_name} -n {container1_name} '
-                                '--vault-name {vault_name}').get_output_in_json()["id"]
-        self.kwargs.update({"container_id": container_id})
 
         # container mapping
-        self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
-                 '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
-                 '--vault-name {vault_name} --policy-id {policy_id} --target-container {container_id} '
-                 '--provider-input {{hyper-v-replica-azure:{{}}}}')
+        # self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        #          '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
+        #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
+        #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
+
+        # # enable protection
+        self.cmd('az site-recovery protected-item create -g {rg} '
+                 '--fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} '
+                 '--vault-name {vault_name} --policy-id {policy_id} '
+                 '--provider-details {{hyper-v-replica-azure:{{}}}}')
+                 # 'fabric-object-id:{vm_id},'
+                 # 'vm-managed-disks:[{{disk-id:{os_disk},'
+                 # 'primary-staging-azure-storage-account-id:{storage1_id},'
+                 # 'recovery-resource-group-id:{rg_id}}}],recovery-azure-network-id:{vnet2_id},'
+                 # 'recovery-container-id:{container2_id},'
+                 # 'recovery-resource-group-id:{rg_id},'
+                 # 'recovery-subnet-name:{vnet2_subnet}}}}}')
+        # #
+        # # wait for protection to fully enabled
+        # while True:
+        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+        #                               '--fabric-name {fabric1_name} -n {protected_item_name} '
+        #                               '--protection-container {container1_name} '
+        #                               '--vault-name {vault_name}').get_output_in_json()
+        #     if protected_item["properties"]["protectionState"] == "Protected":
+        #         self.kwargs.update({"protected_item_id": protected_item["id"]})
+        #         break
+        #     time.sleep(300)
 
 
     def test_siterecovery_H2A_E2A_scenarios(self):
