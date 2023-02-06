@@ -209,6 +209,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd("extension update --name connectedk8s")
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -373,6 +374,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd("extension update --name connectedk8s")
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -451,6 +453,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd("extension update --name connectedk8s")
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -464,7 +467,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         os.environ.setdefault('KUBECONFIG', kubeconfig)
         helm_client_location = install_helm_client()
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
-        # cmd = ['helm', 'get', 'values', 'azure-arc', "-ojson"]
 
         # scenario - auto-upgrade is turned on
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
