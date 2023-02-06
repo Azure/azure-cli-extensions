@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "voice-services",
+    "voice-service",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage voice services

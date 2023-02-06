@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "voice-services test-line",
+    "voice-service gateway",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage gateway test line
+    """Manage communications gateway
     """
     pass
 

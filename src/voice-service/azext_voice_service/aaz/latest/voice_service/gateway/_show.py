@@ -12,13 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "voice-services gateway wait",
+    "voice-service gateway show",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Show a communications gateway
+
+    :example: Show a gateway
+        az voice-service gateway show -n gateway-name -g rg
     """
 
     _aaz_info = {
+        "version": "2023-01-31",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.voiceservices/communicationsgateways/{}", "2023-01-31"],
         ]
@@ -68,7 +72,7 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
     class CommunicationsGatewaysGet(AAZHttpOperation):
@@ -286,8 +290,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]

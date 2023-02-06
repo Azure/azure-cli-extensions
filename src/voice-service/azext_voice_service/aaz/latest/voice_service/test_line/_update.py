@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "voice-services test-line update",
+    "voice-service test-line update",
 )
 class Update(AAZCommand):
     """Update a test line
+
+    :example: Update test line
+        az voice-service test-line update -n test-line-name --gateway-name gateway-name -g rg --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {

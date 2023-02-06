@@ -12,11 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "voice-services gateway delete",
+    "voice-service gateway delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a communications gateway
+
+    :example: Delete gateway
+        az voice-service gateway delete -n gateway-name -g rg -y
     """
 
     _aaz_info = {

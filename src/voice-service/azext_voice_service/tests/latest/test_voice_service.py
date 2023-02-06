@@ -14,7 +14,7 @@ class VoiceServiceScenario(ScenarioTest):
         self.kwargs.update({
             'gateway': self.create_random_name('gateway', 15),
         })
-        self.cmd('voice-services gateway create -n {gateway} -g {rg} --service-locations [{{name:useast,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.1],allowedSignalingSourceAddressPrefixes:[10.1.1.0/24],allowedMediaSourceAddressPrefixes:[10.1.2.0/24]}}}},{{name:useast2,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.2],allowedSignalingSourceAddressPrefixes:[10.2.1.0/24],allowedMediaSourceAddressPrefixes:[10.2.2.0/24]}}}}] --connectivity PublicAddress --codecs [PCMA] --e911-type Standard --platforms [OperatorConnect]', checks=[
+        self.cmd('voice-service gateway create -n {gateway} -g {rg} --service-locations [{{name:useast,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.1],allowedSignalingSourceAddressPrefixes:[10.1.1.0/24],allowedMediaSourceAddressPrefixes:[10.1.2.0/24]}}}},{{name:useast2,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.2],allowedSignalingSourceAddressPrefixes:[10.2.1.0/24],allowedMediaSourceAddressPrefixes:[10.2.2.0/24]}}}}] --connectivity PublicAddress --codecs [PCMA] --e911-type Standard --platforms [OperatorConnect]', checks=[
             self.check('name', '{gateway}'),
             self.check('resourceGroup', '{rg}'),
             self.check('connectivity', 'PublicAddress'),
@@ -31,7 +31,7 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('serviceLocations[1].primaryRegionProperties.allowedSignalingSourceAddressPrefixes[0]', '10.2.1.0/24'),
             self.check('serviceLocations[1].primaryRegionProperties.operatorAddresses[0]', '198.51.100.2')
         ])
-        self.cmd('voice-services gateway update -n {gateway} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
+        self.cmd('voice-service gateway update -n {gateway} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
             self.check('name', '{gateway}'),
             self.check('resourceGroup', '{rg}'),
             self.check('connectivity', 'PublicAddress'),
@@ -50,7 +50,7 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
-        self.cmd('voice-services gateway list -g {rg}', checks=[
+        self.cmd('voice-service gateway list -g {rg}', checks=[
             self.check('[0].name', '{gateway}'),
             self.check('[0].resourceGroup', '{rg}'),
             self.check('[0].connectivity', 'PublicAddress'),
@@ -69,7 +69,7 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('[0].tags.tag', 'test'),
             self.check('[0].tags.tag2', 'test2')
         ])
-        self.cmd('voice-services gateway show -n {gateway} -g {rg}', checks=[
+        self.cmd('voice-service gateway show -n {gateway} -g {rg}', checks=[
             self.check('name', '{gateway}'),
             self.check('resourceGroup', '{rg}'),
             self.check('connectivity', 'PublicAddress'),
@@ -88,7 +88,7 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
-        self.cmd('voice-services gateway delete -n {gateway} -g {rg} -y')
+        self.cmd('voice-service gateway delete -n {gateway} -g {rg} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_voice_service_test_line', location='centraluseuap')
     def test_voice_service_test_line(self, resource_group):
@@ -96,7 +96,7 @@ class VoiceServiceScenario(ScenarioTest):
             'gateway': self.create_random_name('gateway', 15),
             'testline': self.create_random_name('line', 10)
         })
-        self.cmd('voice-services gateway create -n {gateway} -g {rg} --service-locations [{{name:useast,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.1],allowedSignalingSourceAddressPrefixes:[10.1.1.0/24],allowedMediaSourceAddressPrefixes:[10.1.2.0/24]}}}},{{name:useast2,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.2],allowedSignalingSourceAddressPrefixes:[10.2.1.0/24],allowedMediaSourceAddressPrefixes:[10.2.2.0/24]}}}}] --connectivity PublicAddress --codecs [PCMA] --e911-type Standard --platforms [OperatorConnect]', checks=[
+        self.cmd('voice-service gateway create -n {gateway} -g {rg} --service-locations [{{name:useast,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.1],allowedSignalingSourceAddressPrefixes:[10.1.1.0/24],allowedMediaSourceAddressPrefixes:[10.1.2.0/24]}}}},{{name:useast2,PrimaryRegionProperties:{{operatorAddresses:[198.51.100.2],allowedSignalingSourceAddressPrefixes:[10.2.1.0/24],allowedMediaSourceAddressPrefixes:[10.2.2.0/24]}}}}] --connectivity PublicAddress --codecs [PCMA] --e911-type Standard --platforms [OperatorConnect]', checks=[
             self.check('name', '{gateway}'),
             self.check('resourceGroup', '{rg}'),
             self.check('connectivity', 'PublicAddress'),
@@ -113,13 +113,13 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('serviceLocations[1].primaryRegionProperties.allowedSignalingSourceAddressPrefixes[0]', '10.2.1.0/24'),
             self.check('serviceLocations[1].primaryRegionProperties.operatorAddresses[0]', '198.51.100.2')
         ])
-        self.cmd('voice-services test-line create -n {testline} -g {rg} --gateway-name {gateway} --phone-number +1-555-1234 --purpose Automated', checks=[
+        self.cmd('voice-service test-line create -n {testline} -g {rg} --gateway-name {gateway} --phone-number +1-555-1234 --purpose Automated', checks=[
             self.check('name', '{testline}'),
             self.check('resourceGroup', '{rg}'),
             self.check('phoneNumber', '+1-555-1234'),
             self.check('purpose', 'Automated')
         ])
-        self.cmd('voice-services test-line update -n {testline} --gateway-name {gateway} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
+        self.cmd('voice-service test-line update -n {testline} --gateway-name {gateway} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
             self.check('name', '{testline}'),
             self.check('resourceGroup', '{rg}'),
             self.check('phoneNumber', '+1-555-1234'),
@@ -127,7 +127,7 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
-        self.cmd('voice-services test-line list --gateway-name {gateway} -g {rg}', checks=[
+        self.cmd('voice-service test-line list --gateway-name {gateway} -g {rg}', checks=[
             self.check('[0].name', '{testline}'),
             self.check('[0].resourceGroup', '{rg}'),
             self.check('[0].phoneNumber', '+1-555-1234'),
@@ -135,7 +135,7 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('[0].tags.tag', 'test'),
             self.check('[0].tags.tag2', 'test2')
         ])
-        self.cmd('voice-services test-line show -n {testline} -g {rg} --gateway-name {gateway}', checks=[
+        self.cmd('voice-service test-line show -n {testline} -g {rg} --gateway-name {gateway}', checks=[
             self.check('name', '{testline}'),
             self.check('resourceGroup', '{rg}'),
             self.check('phoneNumber', '+1-555-1234'),
@@ -143,10 +143,10 @@ class VoiceServiceScenario(ScenarioTest):
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
-        self.cmd('voice-services test-line delete -n {testline} -g {rg} --gateway-name {gateway} -y')
+        self.cmd('voice-service test-line delete -n {testline} -g {rg} --gateway-name {gateway} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_voice_check_name_availability', location='centraluseuap')
     def test_voice_service_check_name_availability(self, resource_group):
-        self.cmd('voice-services check-name-availability -l centraluseuap --name voicenametest --type microsoft.voiceservices/communicationsgateways/testlines', checks=[
+        self.cmd('voice-service check-name-availability -l centraluseuap --name voicenametest --type microsoft.voiceservices/communicationsgateways/testlines', checks=[
             self.check('nameAvailable', True)
         ])

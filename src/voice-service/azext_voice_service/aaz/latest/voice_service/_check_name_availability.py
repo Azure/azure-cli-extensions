@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "voice-services check-name-availability",
+    "voice-service check-name-availability",
 )
 class CheckNameAvailability(AAZCommand):
     """Check whether the resource name is available in the given region.
+
+    :example: check name availability
+        az voice-service check-name-availability -l centraluseuap --name voicenametest --type microsoft.voiceservices/communicationsgateways/testlines
     """
 
     _aaz_info = {

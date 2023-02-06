@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "voice-services gateway list",
+    "voice-service gateway list",
 )
 class List(AAZCommand):
-    """List communications gateway resources by subscription ID
+    """List communications gateway resources by resource group
+
+    :example: List gateway by resource group
+        az voice-service gateway list -g rg
     """
 
     _aaz_info = {
