@@ -119,19 +119,23 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_chart_pull.extend(["--kube-context", kube_context])
-    response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
-    _, error_helm_chart_pull = response_helm_chart_pull.communicate()
-    if response_helm_chart_pull.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
+    for i in range(retry_count):
+        response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
+         _, error_helm_chart_pull = response_helm_chart_pull.communicate()
+        if response_helm_chart_pull.returncode != 0:
+            if i == retry_count - 1;
+                telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
                                 summary="Unable to pull {} helm charts from the registry".format(chart_name))
-        raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_pull.decode("ascii"))
-
+                raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_pull.decode("ascii"))
+            time.sleep(retry_delay)
+        else:
+            break
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
@@ -350,7 +354,7 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
     if os.getenv('AZURE_ACCESS_TOKEN'):
         headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
     # Sending request with retries
-    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
+    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
     if r.content:
         try:
             return r.json().get('repositoryPath')
@@ -503,7 +507,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
                                 summary='Unable to delete helm release')
         raise CLIInternalError("Error occured while cleaning up arc agents. " +
                                "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
-                               " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
+                               " Please run 'helm delete azure-arc --namespace {}' to ensure that the release is deleted.".format(release_namespace))
     ensure_namespace_cleanup()
     # Cleanup azure-arc-release NS if present (created during helm installation)
     cleanup_release_install_namespace_if_exists()
