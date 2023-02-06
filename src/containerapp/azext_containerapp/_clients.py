@@ -16,7 +16,6 @@ logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2022-06-01-preview"
 CURRENT_API_VERSION = PREVIEW_API_VERSION
-LATEST_API_VERSION = "2022-10-01"
 MANAGED_CERTS_API_VERSION = '2022-11-01-preview'
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
@@ -106,7 +105,7 @@ class ContainerAppClient():
     def update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
 
-        api_version = LATEST_API_VERSION
+        api_version = CURRENT_API_VERSION
 
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
