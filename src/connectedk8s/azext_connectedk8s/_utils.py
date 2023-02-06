@@ -475,11 +475,13 @@ def ensure_namespace_cleanup():
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, no_hooks=False):
+def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, no_hooks=False):
     if(no_hooks):
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace, "--no-hooks"]
     else:
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
+    if is_arm64_cluster:
+        cmd_helm_delete.extend(["--timeout", "15m"])
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -495,6 +497,26 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
                                "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
                                " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
     ensure_namespace_cleanup()
+    # Cleanup azure-arc-release NS if present (created during helm installation)
+    cleanup_release_install_namespace_if_exists()
+
+
+def cleanup_release_install_namespace_if_exists():
+    api_instance = kube_client.CoreV1Api()
+    try:
+        api_instance.read_namespace(consts.Release_Install_Namespace)
+    except Exception as ex:
+        if ex.status == 404:
+            # Nothing to delete, exiting here
+            return
+        else:
+            kubernetes_exception_handler(ex, consts.Get_Kubernetes_Helm_Release_Namespace_Fault_Type, error_message='Unable to fetch details about existense of kubernetes namespace: {}'.format(consts.Release_Install_Namespace), summary='Unable to fetch kubernetes namespace: {}'.format(consts.Release_Install_Namespace))
+
+    # If namespace exists, delete it
+    try:
+        api_instance.delete_namespace(consts.Release_Install_Namespace)
+    except Exception as ex:
+        kubernetes_exception_handler(ex, consts.Delete_Kubernetes_Helm_Release_Namespace_Fault_Type, error_message='Unable to clean-up kubernetes namespace: {}'.format(consts.Release_Install_Namespace), summary='Unable to delete kubernetes namespace: {}'.format(consts.Release_Install_Namespace))
 
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS

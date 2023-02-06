@@ -649,6 +649,34 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.enableApiLogging', True),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_dapr_e2e(self, resource_group):
+        """ Ensure that dapr can be enabled if the app has been created using containerapp up """
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+
+        self.cmd('configure --defaults location={}'.format(location))
+
+        image = 'mcr.microsoft.com/azuredocs/aks-helloworld:v1'
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd(
+            'containerapp up -g {} -n {} --environment {} --image {}'.format(
+                resource_group, ca_name, env_name, image))
+
+        self.cmd(
+            'containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 '
+            '--dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(
+                resource_group, ca_name, env_name), checks=[
+                JMESPathCheck('appId', "containerapp1"),
+                JMESPathCheck('enabled', True)
+            ])
+
 
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
