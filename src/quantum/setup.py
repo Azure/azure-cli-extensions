@@ -34,6 +34,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
+    'azure-storage-blob~=12.14.1'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

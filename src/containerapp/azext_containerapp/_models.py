@@ -165,6 +165,7 @@ RegistryCredentials = {
 Template = {
     "revisionSuffix": None,
     "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
     "scale": Scale,
     "volumes": None  # [Volume]
 }
