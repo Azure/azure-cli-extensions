@@ -29,5 +29,5 @@ Release History
 
 1.1
 ++++++
-* `az grafana update`: support email thrugh SMTP configuration
+* `az grafana update`: support email through new SMTP configuration arguments
 
