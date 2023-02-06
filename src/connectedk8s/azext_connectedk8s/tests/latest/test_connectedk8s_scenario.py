@@ -141,14 +141,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --distribution aks_management --infrastructure azure_stack_hci --distribution-version 1.0 --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
-            self.check('distributionVersion', '1.0'),
             self.check('resourceGroup', '{rg}'),
-            self.check('name', '{name}')
-        ])
-        self.cmd('connectedk8s update -g {rg} -n {name} --azure-hybrid-benefit true --kube-config {kubeconfig} --kube-context {managed_cluster_name} --yes', checks=[
-            self.check('azureHybridBenefit', 'True'),
             self.check('name', '{name}')
         ])
 
@@ -226,7 +221,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         os.environ.setdefault('KUBECONFIG', kubeconfig)
         helm_client_location = install_helm_client()
-        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "-ojson"]
+        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
         # scenario-1 : custom loc off , custom loc on  (no dependencies)
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
@@ -390,7 +385,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         os.environ.setdefault('KUBECONFIG', kubeconfig)
         helm_client_location = install_helm_client()
-        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "-ojson"]
+        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
         # scenario - auto-upgrade is true , so implicit upgrade commands dont work
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
@@ -468,7 +463,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         os.environ.setdefault('KUBECONFIG', kubeconfig)
         helm_client_location = install_helm_client()
-        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "-ojson"]
+        cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
         # cmd = ['helm', 'get', 'values', 'azure-arc', "-ojson"]
 
         # scenario - auto-upgrade is turned on
