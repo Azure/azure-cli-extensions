@@ -6,7 +6,7 @@ Release History
 0.18.0
 ++++++
 * [2023-02-07] Version intended to work with QDK version 0.27.253010 and Azure CLI 2.41.0 or greater.
-* You can now submit QIR, QIO, and pass-through jobs using the CLI.
+* You can now submit QIR and pass-through jobs using the CLI. QIO jobs for solvers that expect gzip input compression are also supported.
 * Fixed Azure/azure-cli-extensions Issue #5831 to eliminate some workspace creation errors.
 
 0.17.0
