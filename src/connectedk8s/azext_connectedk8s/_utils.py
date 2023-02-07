@@ -127,15 +127,16 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
         cmd_helm_chart_pull.extend(["--kube-context", kube_context])
     for i in range(retry_count):
         response_helm_chart_pull = subprocess.Popen(cmd_helm_chart_pull, stdout=PIPE, stderr=PIPE)
-         _, error_helm_chart_pull = response_helm_chart_pull.communicate()
+        _, error_helm_chart_pull = response_helm_chart_pull.communicate()
         if response_helm_chart_pull.returncode != 0:
-            if i == retry_count - 1;
+            if i == retry_count - 1:
                 telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
                                 summary="Unable to pull {} helm charts from the registry".format(chart_name))
                 raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_pull.decode("ascii"))
             time.sleep(retry_delay)
         else:
             break
+
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
