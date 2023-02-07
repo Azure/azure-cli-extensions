@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a communications gateway
 
     :example: Update a gateway
-        az voice-service gateway update -n gateway-name -g rg --tags '{tag:test,tag2:test2}'
+        az voice-service gateway update -n gateway-name -g rg --tags "{tag:test,tag2:test2}"
     """
 
     _aaz_info = {
