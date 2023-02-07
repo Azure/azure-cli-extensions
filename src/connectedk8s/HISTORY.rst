@@ -5,6 +5,7 @@ Release History
 1.3.12
 ++++++
 * Added retries for helm chart pull and config DP POST call
+* Fix parameterizing for kid in csp method
 
 1.3.11
 ++++++
