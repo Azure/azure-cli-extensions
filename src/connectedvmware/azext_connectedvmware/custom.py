@@ -1763,7 +1763,7 @@ def connectedvmware_extension_update(
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
-                       machine_name=vm_name,
+                       name=vm_name,
                        extension_name=name,
                        extension_parameters=extension_parameters)
 
