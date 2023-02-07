@@ -150,7 +150,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    _validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
+    _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port)
@@ -346,7 +346,7 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    _validate_and_generate_resourceid(cmd, bastion, target_resource_id, target_ip_address)
+    _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port)
