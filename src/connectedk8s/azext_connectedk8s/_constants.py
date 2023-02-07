@@ -195,6 +195,9 @@ Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning
 Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
 Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
 Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while trying to execute pre-onboarding diagnostic checks'
+Outbound_Connectivity_Check_Failed = "Outbound network connectivity check failed"
+DNS_Check_Failed = "DNS Resolution failed"
+Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

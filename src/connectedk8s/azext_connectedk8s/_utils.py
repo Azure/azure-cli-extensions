@@ -161,6 +161,7 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
                 dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
                 with open(dns_check_path, 'w+') as dns:
                     dns.write(formatted_dns_log + "\nWe found an issue with the DNS resolution on your cluster.")
+            telemetry.set_exception(exception='DNS resolution check failed in the cluster', fault_type=consts.DNS_Check_Failed, summary="DNS check failed in the cluster")
             return consts.Diagnostic_Check_Failed, storage_space_available
         else:
             if storage_space_available:
@@ -210,6 +211,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
+            telemetry.set_exception(exception='Outbound network connectivity check failed', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed in the cluster")
             return consts.Diagnostic_Check_Failed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
