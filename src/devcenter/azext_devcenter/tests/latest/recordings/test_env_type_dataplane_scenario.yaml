@@ -556,7 +556,7 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/me
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity", "id":"17755109-de29-4032-8853-f390afd630a2"}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity", "id":"00000000-0000-0000-0000-000000000000"}'
     headers:
       cache-control:
       - no-cache
@@ -599,7 +599,7 @@ interactions:
       User-Agent:
       - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.44.1
     method: GET
-    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%2717755109-de29-4032-8853-f390afd630a2%27%29
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%2700000000-0000-0000-0000-000000000000%27%29
   response:
     body:
       string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[]}'
@@ -630,7 +630,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"ids": ["17755109-de29-4032-8853-f390afd630a2"], "types": ["user", "group",
+    body: '{"ids": ["00000000-0000-0000-0000-000000000000"], "types": ["user", "group",
       "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
@@ -653,7 +653,7 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.user","id":"17755109-de29-4032-8853-f390afd630a2"}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.user","id":"00000000-0000-0000-0000-000000000000"}]}'
     headers:
       cache-control:
       - no-cache
@@ -684,7 +684,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18e40d4e-8d2e-438d-97e1-9528336e149c",
-      "principalId": "17755109-de29-4032-8853-f390afd630a2", "principalType": "User"}}'
+      "principalId": "00000000-0000-0000-0000-000000000000", "principalType": "User"}}'
     headers:
       Accept:
       - application/json
@@ -709,7 +709,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004/providers/Microsoft.Authorization/roleAssignments/30ab56c6-482c-418c-99ff-df1650baade9?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18e40d4e-8d2e-438d-97e1-9528336e149c","principalId":"17755109-de29-4032-8853-f390afd630a2","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004","condition":null,"conditionVersion":null,"createdOn":"2023-02-04T01:13:17.6308241Z","updatedOn":"2023-02-04T01:13:18.4950412Z","createdBy":null,"updatedBy":"17755109-de29-4032-8853-f390afd630a2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004/providers/Microsoft.Authorization/roleAssignments/30ab56c6-482c-418c-99ff-df1650baade9","type":"Microsoft.Authorization/roleAssignments","name":"30ab56c6-482c-418c-99ff-df1650baade9"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18e40d4e-8d2e-438d-97e1-9528336e149c","principalId":"00000000-0000-0000-0000-000000000000","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004","condition":null,"conditionVersion":null,"createdOn":"2023-02-04T01:13:17.6308241Z","updatedOn":"2023-02-04T01:13:18.4950412Z","createdBy":null,"updatedBy":"00000000-0000-0000-0000-000000000000","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004/providers/Microsoft.Authorization/roleAssignments/30ab56c6-482c-418c-99ff-df1650baade9","type":"Microsoft.Authorization/roleAssignments","name":"30ab56c6-482c-418c-99ff-df1650baade9"}'
     headers:
       cache-control:
       - no-cache

@@ -388,4 +388,55 @@ def create_pool(self):
     create_dev_center(self)
     create_project(self)
     add_dev_box_user_role_to_project(self)
-    create_pool_with_schedule(self)
+    create_network_connection(self)
+
+    self.kwargs.update({
+        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+        'osStorageType': "ssd_1024gb",
+        'skuName': "general_a_8c32gb_v1",
+        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
+        'time': "18:30",
+        'timeZone': "America/Los_Angeles"
+    })
+
+    self.cmd('az devcenter admin attached-network create '
+             '--dev-center "{devcenterName}" '
+             '--name "{attachedNetworkName}" '
+             '--network-connection-id "{networkConnectionId}" '
+             '--resource-group "{rg}" '
+             )
+
+    self.cmd('az devcenter admin devbox-definition create '
+             '--dev-center "{devcenterName}" '
+             '--name "{devBoxDefinitionName}" '
+             '--image-reference id="{imageRefId}" '
+             '--hibernate-support "Enabled" '
+             '--resource-group "{rg}" '
+             '--os-storage-type "{osStorageType}" '
+             '--sku name="{skuName}" '
+             '--location "{location}" '
+             )
+    
+    self.kwargs.update({
+            'poolName': self.create_random_name(prefix='c3', length=12)
+        })
+
+    self.cmd('az devcenter admin pool create '
+                 '-d "{devBoxDefinitionName}" '
+                 '--location "{location}" '
+                 '--local-administrator "Enabled" '
+                 '--name "{poolName}" '
+                 '-c "{attachedNetworkName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 )
+
+    self.cmd('az devcenter admin schedule create '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 '--time "{time}" '
+                 '--time-zone "{timeZone}" '
+                 )
+
