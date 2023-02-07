@@ -1,5 +1,9 @@
 Release History
 ===============
+1.6.6
+---
+* Modify help text of name in command `az spring create` and `az spring app create`
+
 1.6.5
 ---
 * Add argument `--deployment-name` in command `az spring app create`.
