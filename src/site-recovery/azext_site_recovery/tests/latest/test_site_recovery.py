@@ -406,16 +406,14 @@ class SiteRecoveryScenario(ScenarioTest):
             # 'policy_name': 'cli-test-policy-V2ARCM-1',
             'policy_name': 'TF-TestPolicy-Harishcreated',
             'container_name': 'CLITeraforb551replicationcontainer',
-            # 'container2_name': 'cli-test-container-V2ARCM-2',
-            'container_mapping1_name': 'cli-test-container-mapping-V2ARCM-1',
+            'container_mapping1_name': 'TF-TestPolicy-HarishcreatedcloudMapping',
             # 'container_mapping2_name': 'cli-test-container-mapping-A2A-2',
-            # 'vnet1_name': 'cli-test-vnet-A2A-1',
-            # 'vnet2_name': 'cli-test-vnet-A2A-2',
-            # 'network_mapping1_name': 'cli-test-network-mapping-A2A-1',
-            # 'network_mapping2_name': 'cli-test-network-mapping-A2A-2',
             'protected_item_name': 'cli-test-protected-item-V2ARCM-1',
-            # 'storage1_name': 'cliteststoragea2a1',
-            # 'storage2_name': 'cliteststoragea2a2',
+            'vcenter_server': 'vcenter65',
+            'machine_name': 'RCMApplDec16Proxytest',
+            'machine_id': '/subscriptions/c89695cf-3a29-4ff0-86da-2696d2c5322b/resourceGroups/h2asignoff/'
+                          'providers/Microsoft.Compute/virtualMachines/RCMApplDec16Proxytest',
+            'ip_address/FQDN': 'WIN-18GKCVAMV9Q',
             # 'recovery_plan_name': 'cli-test-recovery-plan-A2A-1'
         })
         # set subscription and create a policy
@@ -430,17 +428,17 @@ class SiteRecoveryScenario(ScenarioTest):
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
+        # container and container-mapping already created
+
         # # enable protection
-        # self.cmd('az site-recovery protected-item create -g {rg} '
-        #          '--fabric-name {fabric_name} -n {protected_item_name} --protection-container {container_name} '
-        #          '--vault-name {vault_name} --policy-id {policy_id} '
-        #          '--provider-details {{in-mage-rcm:{{fabric-object-id:{vm_id},'
-        #          'vm-managed-disks:[{{disk-id:{os_disk},'
-        #          'primary-staging-azure-storage-account-id:{storage1_id},'
-        #          'recovery-resource-group-id:{rg_id}}}],recovery-azure-network-id:{vnet2_id},'
-        #          'recovery-container-id:{container2_id},'
-        #          'recovery-resource-group-id:{rg_id},'
-        #          'recovery-subnet-name:{vnet2_subnet}}}}}')
+        self.cmd('az site-recovery protected-item create -g {rg} '
+                 '--fabric-name {fabric_name} -n {protected_item_name} --protection-container {container_name} '
+                 '--vault-name {vault_name} --policy-id {policy_id} '
+                 '--provider-details {{in-mage-rcm:'
+                 '{{fabric-discovery-machine-id:{machine_id},'
+                 'process-server-id:{vcenter_server},'
+                 'target-resource-group-id:{rg}}}'
+                 '}}')
         #
 
 
