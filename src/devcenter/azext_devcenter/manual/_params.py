@@ -312,8 +312,10 @@ def load_arguments(self, _):
             type=str,
             help="The name of a Dev " "Box.",
         )
-        c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
-        c.argument("delay_time", help="The delayed timespan from the most recent scheduled time. Format HH:MM")
+        c.argument("upcoming_action_id", type=str,
+                   help="The upcoming action id.")
+        c.argument(
+            "delay_time", help="The delayed timespan from the most recent scheduled time. Format HH:MM")
 
     with self.argument_context("devcenter dev dev-box list-upcoming-action") as c:
         c.argument(
@@ -358,7 +360,8 @@ def load_arguments(self, _):
             type=str,
             help="The name of a Dev " "Box.",
         )
-        c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
+        c.argument("upcoming_action_id", type=str,
+                   help="The upcoming action id.")
 
     with self.argument_context("devcenter dev dev-box skip-upcoming-action") as c:
         c.argument(
@@ -381,7 +384,8 @@ def load_arguments(self, _):
             type=str,
             help="The name of a Dev " "Box.",
         )
-        c.argument("upcoming_action_id", type=str, help="The upcoming action id.")
+        c.argument("upcoming_action_id", type=str,
+                   help="The upcoming action id.")
 
     with self.argument_context("devcenter dev dev-box wait") as c:
         c.argument(
@@ -464,8 +468,10 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
-        c.argument("description", type=str, help="Description of the Environment.")
-        c.argument("catalog_name", type=str, required=True, help="Name of the catalog.")
+        c.argument("description", type=str,
+                   help="Description of the Environment.")
+        c.argument("catalog_name", type=str, required=True,
+                   help="Name of the catalog.")
         c.argument(
             "catalog_item_name",
             type=str,
@@ -511,9 +517,11 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
-        c.argument("description", type=str, help="Description of the Environment.")
+        c.argument("description", type=str,
+                   help="Description of the Environment.")
         c.argument("catalog_name", type=str, help="Name of the catalog.")
-        c.argument("catalog_item_name", type=str, help="Name of the catalog item.")
+        c.argument("catalog_item_name", type=str,
+                   help="Name of the catalog item.")
         c.argument(
             "parameters",
             type=validate_file_or_dict,
@@ -572,7 +580,6 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-
     with self.argument_context("devcenter dev environment deploy-action") as c:
         c.argument(
             "dev_center",
@@ -595,14 +602,14 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
-        c.argument("action_id", type=str, help="The Catalog Item action id to execute")
+        c.argument("action_id", type=str,
+                   help="The Catalog Item action id to execute")
         c.argument(
             "parameters",
             type=validate_file_or_dict,
             help="Parameters object for the Action Expected value: "
             "json-string/json-file/@json-file.",
         )
-
 
     with self.argument_context("devcenter dev catalog-item list") as c:
         c.argument(
@@ -652,7 +659,8 @@ def load_arguments(self, _):
         c.argument(
             "catalog_item_id", type=str, help="The unique id of the catalog item."
         )
-        c.argument("version", type=str, help="The version of the catalog item.")
+        c.argument("version", type=str,
+                   help="The version of the catalog item.")
 
     with self.argument_context("devcenter dev environment-type list") as c:
         c.argument(
@@ -958,7 +966,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "attached_network_connection_name",
-            options_list=["--name", "-n", "--attached-network-connection-name"],
+            options_list=["--name", "-n",
+                          "--attached-network-connection-name"],
             type=str,
             help="The name of the attached network connection.",
             id_part="child_name_1",
@@ -976,7 +985,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "attached_network_connection_name",
-            options_list=["--name", "-n", "--attached-network-connection-name"],
+            options_list=["--name", "-n",
+                          "--attached-network-connection-name"],
             type=str,
             help="The name of the attached network connection.",
         )
@@ -996,7 +1006,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "attached_network_connection_name",
-            options_list=["--name", "-n", "--attached-network-connection-name"],
+            options_list=["--name", "-n",
+                          "--attached-network-connection-name"],
             type=str,
             help="The name of the attached network connection.",
             id_part="child_name_1",
@@ -1011,7 +1022,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "attached_network_connection_name",
-            options_list=["--name", "-n", "--attached-network-connection-name"],
+            options_list=["--name", "-n",
+                          "--attached-network-connection-name"],
             type=str,
             help="The name of the attached network connection.",
             id_part="child_name_1",
@@ -1059,7 +1071,8 @@ def load_arguments(self, _):
             help="The name of the environment type.",
         )
         c.argument("tags", tags_type)
-        c.argument("description", type=str, help="Description of the environment type.")
+        c.argument("description", type=str,
+                   help="Description of the environment type.")
 
     with self.argument_context("devcenter admin environment-type update") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1075,7 +1088,8 @@ def load_arguments(self, _):
             id_part="child_name_1",
         )
         c.argument("tags", tags_type)
-        c.argument("description", type=str, help="Description of the environment type.")
+        c.argument("description", type=str,
+                   help="Description of the environment type.")
 
     with self.argument_context("devcenter admin environment-type delete") as c:
         c.argument("resource_group_name", resource_group_name_type)
@@ -1695,7 +1709,8 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("devcenter admin operation-statuses show") as c:
-        c.argument("location", arg_type=get_location_type(self.cli_ctx), id_part="name")
+        c.argument("location", arg_type=get_location_type(
+            self.cli_ctx), id_part="name")
         c.argument(
             "operation_id",
             type=str,
@@ -1979,7 +1994,8 @@ def load_arguments(self, _):
             type=str,
             help="The subnet to attach Virtual Machines to",
         )
-        c.argument("domain_name", type=str, help="Active Directory domain name")
+        c.argument("domain_name", type=str,
+                   help="Active Directory domain name")
         c.argument(
             "organization_unit",
             type=str,
@@ -2024,7 +2040,8 @@ def load_arguments(self, _):
         c.argument(
             "subnet_id", type=str, help="The subnet to attach Virtual Machines to"
         )
-        c.argument("domain_name", type=str, help="Active Directory domain name")
+        c.argument("domain_name", type=str,
+                   help="Active Directory domain name")
         c.argument(
             "organization_unit",
             type=str,
