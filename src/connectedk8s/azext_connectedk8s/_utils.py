@@ -131,7 +131,7 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
         if response_helm_chart_pull.returncode != 0:
             if i == retry_count - 1:
                 telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
-                                summary="Unable to pull {} helm charts from the registry".format(chart_name))
+                                        summary="Unable to pull {} helm charts from the registry".format(chart_name))
                 raise CLIInternalError("Unable to pull {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_pull.decode("ascii"))
             time.sleep(retry_delay)
         else:
