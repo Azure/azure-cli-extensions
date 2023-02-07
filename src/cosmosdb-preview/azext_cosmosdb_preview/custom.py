@@ -239,7 +239,6 @@ def cli_cosmosdb_mongocluster_list(client,
 
     return client.list_by_resource_group(resource_group_name)
 
-
 def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   resource_group_name,
                                                   cluster_name,

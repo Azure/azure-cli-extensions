@@ -233,15 +233,14 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_mongodb_collection_restore', is_preview=True)
 
-
     # Mongo cluster operations
-    cosmosdb_mongodb_cluster_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoClustersOperations.{}',
+    cosmosdb_mongocluster_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._mongo_clusters_operations#MongoClustersOperations.{}',
         client_factory=cf_mongocluster_job)
     
     # Mongo Cluster create operations
-    with self.command_group('cosmosdb mongocluster', cosmosdb_mongodb_cluster_sdk, client_factory=cf_mongocluster_job) as g:
-        g.custom_command('create', 'cli_cosmosdb_mongocluster_create')
+    with self.command_group('cosmosdb mongocluster', cosmosdb_mongocluster_sdk, client_factory=cf_mongocluster_job, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongocluster_create', is_preview=True)
         g.custom_command('update', 'cli_cosmosdb_mongocluster_update')
         g.custom_command('list', 'cli_cosmosdb_mongocluster_list')
         g.show_command('show', 'get')
