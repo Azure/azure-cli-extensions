@@ -373,8 +373,7 @@ def send_request_with_retries(cli_ctx, method, url, headers, fault_type, summary
     for i in range(retry_count):
         try:
             response = send_raw_request(cli_ctx, method, url, headers=headers, uri_parameters=uri_parameters, resource=resource)
-            if response.status_code == 200:
-                return response
+            return response
         except Exception as e:
             if i == retry_count - 1:
                 telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
