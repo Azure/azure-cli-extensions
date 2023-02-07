@@ -27,10 +27,6 @@ def load_command_table(self, _):
     local_connection_type = CliCommandType(
         operations_tmpl='azure.mgmt.servicelinker.operations._connector_operations#ConnectorOperations.{}',
         client_factory=cf_connector)
-    with self.command_group('psconnection',
-                            local_connection_type, client_factory=cf_connector) as ig:
-        ig.custom_command('create', 'local_connection_create_ext',
-                          supports_no_wait=True)
 
     for target in passwordless_target_resources:
         with self.command_group('connection create',
