@@ -23,7 +23,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_tables,
     cf_restorable_table_resources,
     cf_restorable_database_accounts,
-    cf_data_transfer_job
+    cf_data_transfer_job,
+    cf_mongocluster_job
 )
 
 
@@ -231,3 +232,17 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_mongodb_collection_restore', is_preview=True)
+
+
+    # Mongo cluster operations
+    cosmosdb_mongodb_cluster_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoClustersOperations.{}',
+        client_factory=cf_mongocluster_job)
+    
+    # Mongo Cluster create operations
+    with self.command_group('cosmosdb mongocluster', cosmosdb_mongodb_cluster_sdk, client_factory=cf_mongocluster_job) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongocluster_create')
+        g.custom_command('update', 'cli_cosmosdb_mongocluster_update')
+        g.custom_command('list', 'cli_cosmosdb_mongocluster_list')
+        g.show_command('show', 'get')
+        g.command('delete', 'begin_delete', confirmation=True)

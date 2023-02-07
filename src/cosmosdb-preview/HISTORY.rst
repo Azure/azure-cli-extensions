@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.23.0
+* Create and manage mongo clusters.
+
+++++++
 0.22.0
 * Add fix for restorable resources APIs.
 

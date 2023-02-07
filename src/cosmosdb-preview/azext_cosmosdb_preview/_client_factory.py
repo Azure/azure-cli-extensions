@@ -80,3 +80,6 @@ def cf_restorable_database_accounts(cli_ctx, _):
 
 def cf_data_transfer_job(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).data_transfer_jobs
+
+def cf_mongocluster_job(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).mongocluster_jobs

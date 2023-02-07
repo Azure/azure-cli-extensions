@@ -46,7 +46,11 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentity
+    ManagedServiceIdentityUserAssignedIdentity,
+    MongoCluster,
+    MongoClusterRestoreParameters,
+    NodeGroupSpec,
+    NodeKind
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -71,6 +75,169 @@ def _handle_exists_exception(cloud_error):
     if cloud_error.status_code == 404:
         return False
     raise cloud_error
+
+def cli_cosmosdb_mongocluster_create(client,
+                                    resource_group_name,
+                                    mongocluster_name,
+                                    administrator_login,
+                                    administrator_login_password,
+                                    location,
+                                    tags=None,
+                                    create_mode = CreateMode.CreateMode.DEFAULT,
+                                    restore_point_in_time_utc=None,
+                                    restore_source_resource_id=None,
+                                    server_version="5.0",
+                                    shard_node_sku=None,
+                                    shard_node_disk_size_gb=None, 
+                                    shard_enable_ha=None,
+                                    shard_node_name=None,
+                                    shard_kind= NodeKind.SHARD,
+                                    shard_node_count=1):
+
+    '''Creates an Azure Cosmos DB Mongo Cluster '''
+
+    if administrator_login is None:
+        raise InvalidArgumentValueError('Initial Mongo Cluster Admin user is required.')
+
+    if administrator_login_password is not None :
+        raise InvalidArgumentValueError('Initial Mongo CLuster Admin Password is required.')
+
+    if restore_point_in_time_utc is not None & restore_source_resource_id is None:
+        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
+
+    if restore_point_in_time_utc is None & restore_source_resource_id is not None:
+        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
+    
+    mongocluster_restore_parameters = MongoClusterRestoreParameters(
+        point_in_time_utc=restore_point_in_time_utc,
+        source_resource_id=restore_source_resource_id,
+    )
+
+    node_group_spec = NodeGroupSpec(
+        sku= shard_node_sku,
+        disk_size_gb= shard_node_disk_size_gb,
+        enable_ha=shard_enable_ha,
+        name= shard_node_name,
+        kind=shard_kind,
+        node_count= shard_node_count
+    )
+    
+    node_group_specs = list(node_group_spec)
+    mongodb_cluster = MongoCluster(
+        location=location,
+        tags=tags,
+        create_mode=create_mode,
+        restore_parameters= mongocluster_restore_parameters,
+        administrator_login=administrator_login,
+        administrator_login_password=administrator_login_password,
+        server_version=server_version,
+        node_group_specs=node_group_specs)
+
+    return client.begin_create_or_update(resource_group_name, mongocluster_name, mongodb_cluster)
+
+def cli_cosmosdb_mongocluster_update(client,
+                                        resource_group_name,
+                                        mongocluster_name,
+                                        administrator_login,
+                                        administrator_login_password,
+                                        tags=None,
+                                        create_mode = CreateMode.CreateMode.DEFAULT,
+                                        restore_point_in_time_utc=None,
+                                        restore_source_resource_id=None,
+                                        server_version="5.0",
+                                        shard_node_sku=None,
+                                        shard_node_disk_size_gb=None, 
+                                        shard_enable_ha=None,
+                                        shard_node_name=None,
+                                        shard_kind= NodeKind.SHARD,
+                                        shard_node_count=1):
+
+    '''Updates an Azure Cosmos DB Mongo Cluster '''
+
+    mongo_cluster_resource = client.get(resource_group_name, mongocluster_name)
+
+    if administrator_login is None:
+        administrator_login = mongo_cluster_resource.administrator_login
+    
+    # Ashwini: Do we need ?? test? 
+    # Ashwini: Add test for non existient cluster update.
+    if administrator_login is None:
+        administrator_login_password = mongo_cluster_resource.administrator_login_password
+
+    # Resource location is immutable
+    location = mongo_cluster_resource.location
+
+    if server_version is None:
+        server_version = mongo_cluster_resource.server_version
+
+    if tags is None:
+        tags = mongo_cluster_resource.tags
+    if create_mode is None:
+        create_mode= mongo_cluster_resource.create_mode
+    
+    if restore_point_in_time_utc is None:
+        restore_point_in_time_utc = mongo_cluster_resource.restore_parameters.point_in_time_utc
+    
+    if restore_source_resource_id is None:
+        restore_source_resource_id= mongo_cluster_resource.restore_parameters.source_resource_id
+
+    # Shard info update.
+    if shard_node_sku is None:
+        shard_node_sku= mongo_cluster_resource.node_group_specs[0].sku
+    if shard_node_disk_size_gb is None:
+        shard_node_disk_size_gb= mongo_cluster_resource.node_group_specs[0].disk_size_gb
+    if shard_enable_ha is None:
+        shard_enable_ha= mongo_cluster_resource.node_group_specs[0].enable_ha
+    if shard_node_name is None:
+        shard_node_name= mongo_cluster_resource.node_group_specs[0].name
+    if shard_kind is None:
+        shard_kind= mongo_cluster_resource.node_group_specs[0].kind
+    if shard_node_count is None:
+        shard_node_count= mongo_cluster_resource.node_group_specs[0].node_count
+
+    # Validate restore paremeters.
+    if restore_point_in_time_utc is not None & restore_source_resource_id is None:
+        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
+
+    if restore_point_in_time_utc is None & restore_source_resource_id is not None:
+        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
+
+    mongocluster_restore_parameters = MongoClusterRestoreParameters(
+        point_in_time_utc=restore_point_in_time_utc,
+        source_resource_id=restore_source_resource_id,
+    )
+
+    node_group_spec = NodeGroupSpec(
+        sku= shard_node_sku,
+        disk_size_gb= shard_node_disk_size_gb,
+        enable_ha=shard_enable_ha,
+        name= shard_node_name,
+        kind=shard_kind,
+        node_count= shard_node_count
+    )
+    
+    node_group_specs = list(node_group_spec)
+    mongodb_cluster = MongoCluster(
+        location=location,
+        tags=tags,
+        create_mode=create_mode,
+        restore_parameters= mongocluster_restore_parameters,
+        administrator_login=administrator_login,
+        administrator_login_password=administrator_login_password,
+        server_version=server_version,
+        node_group_specs=node_group_specs)
+
+    return client.begin_create_or_update(resource_group_name, mongocluster_name, mongodb_cluster)
+    
+def cli_cosmosdb_mongocluster_list(client,
+                                        resource_group_name=None):
+
+    """List Azure CosmosDB Mongo Clusters by resource group and subscription."""
+
+    if resource_group_name is None:
+        return client.list()
+
+    return client.list_by_resource_group(resource_group_name)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_create(client,

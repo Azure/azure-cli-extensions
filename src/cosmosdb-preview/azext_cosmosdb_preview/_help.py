@@ -7,6 +7,45 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+
+helps['cosmosdb mongocluster'] = """
+type: group
+short-summary: CosmosDB for MongoDB cluster.
+"""
+helps['cosmosdb mongocluster create'] = """
+type: command
+short-summary: Create a CosmosDB for MongoDB cluster.
+examples:
+  - name: Create a CosmosDB for MongoDB cluster.
+    text: |
+      az cosmosdb mongocluster create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --location MyLocation \\
+        --administrator-name MyAdminUser \\
+        --administrator-password MyAdminPassword \\
+        --server-version 5.0 \\
+        --shard-node-sku "M30" \\
+        --shard-node-ha true \\
+        --shard-node-disk-size-gb 128 \\
+        --shard-node-count 2
+  - name: Create a CosmosDB for MongoDB cluster with PITR option.
+    text: |
+      az cosmosdb mongocluster create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --location MyLocation \\
+        --administrator-name MyAdminUser \\
+        --administrator-password MyAdminPassword \\
+        --server-version 5.0 \\
+        --shard-node-sku "M30" \\
+        --shard-node-ha true \\
+        --shard-node-disk-size-gb 128 \\
+        --shard-node-count 2
+        --restore-point-in-time-utc "2023-01-13T20:07:35Z"
+        --restore-source-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/MyOtherMongoCluster
+"""
+
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
