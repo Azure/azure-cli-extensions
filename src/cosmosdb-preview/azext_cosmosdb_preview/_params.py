@@ -102,7 +102,7 @@ def load_arguments(self, _):
             c.argument('external_seed_nodes', nargs='+', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
             c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned']), help="Type of identity used for Customer Managed Disk Key.")
             c.argument("cluster_type",options_list=['--cluster-type'], help="Type of the cluster, can be Production or NonProduction. If set to Production, operations on cluster might have restrictions.", arg_type=get_enum_type(['Production', 'NonProduction']))
-            c.argument('extensions', help="A list of extensions that will be effective on the cluster. Available: cassandra-lucene-index.")
+            c.argument('extensions', nargs='*', help="A set of extensions that will be effective on the cluster. It will replace the entire set of extensions with new set. Use \"\" to remove all. Now Available: cassandra-lucene-index.")
             
     # Managed Cassandra Cluster
     with self.argument_context('managed-cassandra cluster create') as c:

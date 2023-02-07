@@ -183,6 +183,10 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
     if extensions is None:
         extensions = cluster_resource.properties.extensions
 
+    # to remove extension
+    if len(extensions) == 1 and extensions[0] is '':
+        extensions = None
+
     cluster_properties = ClusterResourceProperties(
         provisioning_state=cluster_resource.properties.provisioning_state,
         restore_from_backup_id=cluster_resource.properties.restore_from_backup_id,
