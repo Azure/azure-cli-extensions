@@ -12,9 +12,22 @@ from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
 from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
+
+
+def gateway_create(cmd, client, service, resource_group, instance_count=None):
+    sku = get_spring_sku(client, resource_group, service)
+    gateway_resource = models.GatewayResource()
+    if instance_count and sku:
+        gateway_resource.sku = models.Sku(name=sku.name, tier=sku.tier, capacity=instance_count)
+    return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
+
+
+def gateway_delete(cmd, client, service, resource_group):
+    return client.gateways.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
 def gateway_update(cmd, client, resource_group, service,

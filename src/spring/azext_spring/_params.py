@@ -267,6 +267,8 @@ def load_arguments(self, _):
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
                    help='A json file path indicates the certificates which would be loaded to app')
+        c.argument('deployment_name', default='default',
+                   help='Name of the default deployment.', validator=validate_name)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -698,6 +700,10 @@ def load_arguments(self, _):
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
+
+    for scope in ['gateway create', 'api-portal create']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['gateway update', 'api-portal update']:
         with self.argument_context('spring {}'.format(scope)) as c:

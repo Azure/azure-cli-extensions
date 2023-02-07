@@ -33,14 +33,14 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
 from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
-from azext_connectedk8s._client_factory import _resource_client_factory
-from azext_connectedk8s._client_factory import _resource_providers_client
+from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
@@ -48,6 +48,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
+import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
@@ -65,10 +66,13 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
+
+    # Validate custom token operation
+    custom_token_passed, location = utils.validate_custom_token(cmd, resource_group_name, location)
 
     # Prompt for confirmation for few parameters
     if enable_private_link is True:
@@ -81,15 +85,18 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         utils.user_confirmation(confirmation_message, yes)
 
     # Setting subscription id and tenant Id
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    account = Profile().get_subscription(subscription_id)
-    onboarding_tenant_id = account['homeTenantId']
+    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if custom_token_passed is True else get_subscription_id(cmd.cli_ctx)
+    if custom_token_passed is True:
+        onboarding_tenant_id = os.getenv('AZURE_TENANT_ID')
+    else:
+        account = Profile().get_subscription(subscription_id)
+        onboarding_tenant_id = account['homeTenantId']
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
 
     # Checking provider registration status
-    utils.check_provider_registrations(cmd.cli_ctx)
+    utils.check_provider_registrations(cmd.cli_ctx, subscription_id)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -137,12 +144,61 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
 
-    required_node_exists = check_linux_amd64_node(node_api_response)
+    required_node_exists = check_linux_node(node_api_response)
+    # Pre onboarding checks
+    try:
+        kubectl_client_location = install_kubectl_client()
+        helm_client_location = install_helm_client()
+        diagnostic_checks = "Failed"
+        batchv1_api_instance = kube_client.BatchV1Api()
+        storage_space_available = True
+
+        current_time = time.ctime(time.time())
+        time_stamp = ""
+        for elements in current_time:
+            if(elements == ' '):
+                time_stamp += '-'
+                continue
+            elif(elements == ':'):
+                time_stamp += '.'
+                continue
+            time_stamp += elements
+        time_stamp = cluster_name + '-' + time_stamp
+
+        # Generate the diagnostic folder in a given location
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
+
+        if(diagnostic_folder_status is not True):
+            storage_space_available = False
+
+        # Performing cluster-diagnostic-checks
+        diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
+        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+
+    except Exception as e:
+        telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
+                                fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+        raise CLIInternalError("An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
+
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        try:
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+        except Exception as e:
+            pass
+        raise ManualInterrupt('Process terminated externally.')
+
+    # If the checks didnt pass then stop the onboarding
+    if diagnostic_checks != consts.Diagnostic_Check_Passed:
+        if storage_space_available:
+                logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
+        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+
     if not required_node_exists:
         telemetry.set_user_fault()
-        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'", fault_type=consts.Linux_Amd64_Node_Not_Exists,
-                                summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
-        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the OS 'linux'", fault_type=consts.Linux_Node_Not_Exists,
+                                summary="Couldn't find any node on the kubernetes cluster with the OS 'linux'")
+        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
     crb_permission = utils.can_create_clusterrolebindings()
     if not crb_permission:
@@ -151,14 +207,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
-    if distribution == 'auto':
-        kubernetes_distro = get_kubernetes_distro(node_api_response)  # (cluster heuristics)
-    else:
-        kubernetes_distro = distribution
-    if infrastructure == 'auto':
-        kubernetes_infra = get_kubernetes_infra(node_api_response)  # (cluster heuristics)
-    else:
-        kubernetes_infra = infrastructure
+    kubernetes_distro = distribution
+    kubernetes_infra = infrastructure
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -177,7 +227,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Validate location
     utils.validate_location(cmd, location)
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+    resourceClient = cf_resource_groups(cmd.cli_ctx, subscription_id=subscription_id)
 
     # Validate location of private link scope resource. Throws error only if there is a location mismatch
     if enable_private_link is True:
@@ -193,10 +243,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except ArgumentUsageError as argex:
             raise(argex)
         except Exception as ex:
+            if isinstance(ex, HttpResponseError):
+                status_code = ex.response.status_code
+                if status_code == 404:
+                    telemetry.set_exception(exception='Private link scope resource does not exist',
+                                            fault_type=consts.Pls_Resource_Not_Found, summary='Pls resource does not exist')
+                    raise ArgumentUsageError("The private link scope resource '{}' does not exist. Please ensure that you pass a valid ARM Resource Id.".format(private_link_scope_resource_id))
             logger.warning("Error occured while checking the private link scope resource location: %s\n", ex)
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
 
     if release_namespace:
         # Loading config map
@@ -206,7 +262,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -242,43 +298,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
 
-    try:
-        k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
-        if kube_context:  # if custom kube-context is specified
-            if k8s_contexts[1].get('name') == kube_context:
-                current_k8s_context = k8s_contexts[1]
-            else:
-                for context in k8s_contexts[0]:
-                    if context.get('name') == kube_context:
-                        current_k8s_context = context
-                        break
-        else:
-            current_k8s_context = k8s_contexts[1]
-
-        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
-        namespace_exists = False
-        k8s_v1 = kube_client.CoreV1Api()
-        k8s_ns = k8s_v1.list_namespace()
-        for ns in k8s_ns.items:
-            if ns.metadata.name == current_k8s_namespace:
-                namespace_exists = True
-                break
-        if namespace_exists is False:
-            telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
-                                    summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
-            raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
-    except ValidationError as e:
-        raise e
-    except Exception as e:
-        logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
-
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
         from azure.cli.core.profiles import ResourceType
         ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
         parameters = ResourceGroup(location=location)
         try:
-            resourceClient.resource_groups.create_or_update(resource_group_name, parameters)
+            resourceClient.create_or_update(resource_group_name, parameters)
         except Exception as e:  # pylint: disable=broad-except
             utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type, 'Failed to create the resource group')
 
@@ -325,7 +351,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
-    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
+    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
@@ -523,74 +549,28 @@ def get_private_key(key_pair):
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
 
-def get_kubernetes_distro(api_response):  # Heuristic
-    if api_response is None:
-        return "generic"
+def check_linux_node(api_response):
     try:
-        for node in api_response.items:
-            labels = node.metadata.labels
-            provider_id = str(node.spec.provider_id)
-            annotations = node.metadata.annotations
-            if labels.get("node.openshift.io/os_id"):
-                return "openshift"
-            if labels.get("kubernetes.azure.com/node-image-version"):
-                return "aks"
-            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
-                return "gke"
-            if labels.get("eks.amazonaws.com/nodegroup"):
-                return "eks"
-            if labels.get("minikube.k8s.io/version"):
-                return "minikube"
-            if provider_id.startswith("kind://"):
-                return "kind"
-            if provider_id.startswith("k3s://"):
-                return "k3s"
-            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
-                return "rancher_rke"
-        return "generic"
+        for item in api_response.items:
+            node_os = item.metadata.labels.get("kubernetes.io/os")
+            if node_os == "linux":
+                return True
     except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
+        logger.debug("Error occured while trying to find a linux node: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault_OS, 'Unable to find a linux node',
                                            raise_error=False)
-        return "generic"
+    return False
 
 
-def get_kubernetes_infra(api_response):  # Heuristic
-    if api_response is None:
-        return "generic"
-    try:
-        for node in api_response.items:
-            provider_id = str(node.spec.provider_id)
-            infra = provider_id.split(':')[0]
-            if infra == "k3s" or infra == "kind":
-                return "generic"
-            if infra == "azure":
-                return "azure"
-            if infra == "gce":
-                return "gcp"
-            if infra == "aws":
-                return "aws"
-            k8s_infra = utils.validate_infrastructure_type(infra)
-            if k8s_infra is not None:
-                return k8s_infra
-        return "generic"
-    except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
-                                           raise_error=False)
-        return "generic"
-
-
-def check_linux_amd64_node(api_response):
+def check_arm64_node(api_response):
     try:
         for item in api_response.items:
             node_arch = item.metadata.labels.get("kubernetes.io/arch")
-            node_os = item.metadata.labels.get("kubernetes.io/os")
-            if node_arch == "amd64" and node_os == "linux":
+            if node_arch == "arm64":
                 return True
     except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
+        logger.debug("Error occured while trying to find an arm64 node: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault_Arch, 'Unable to find an arm64 node',
                                            raise_error=False)
     return False
 
@@ -747,7 +727,12 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     helm_client_location = install_helm_client()
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
+
+    utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api()
+    node_api_response = utils.validate_node_api_response(api_instance, None)
+    is_arm64_cluster = check_arm64_node(node_api_response)
 
     # Check forced delete flag
     if(force_delete):
@@ -801,7 +786,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                     _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
 
         return
 
@@ -810,15 +795,14 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         return
 
     # Loading config map
-    api_instance = kube_client.CoreV1Api()
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namepace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
-    subscription_id = get_subscription_id(cmd.cli_ctx)
+    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if os.getenv('AZURE_ACCESS_TOKEN') else get_subscription_id(cmd.cli_ctx)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
@@ -841,32 +825,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                  "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
-
-
-def get_release_namespace(kube_config, kube_context, helm_client_location):
-    cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
-    if kube_config:
-        cmd_helm_release.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_release.extend(["--kube-context", kube_context])
-    response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
-    output_helm_release, error_helm_release = response_helm_release.communicate()
-    if response_helm_release.returncode != 0:
-        if 'forbidden' in error_helm_release.decode("ascii"):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
-                                summary='Unable to list helm release')
-        raise CLIInternalError("Helm list release failed: " + error_helm_release.decode("ascii"))
-    output_helm_release = output_helm_release.decode("ascii")
-    try:
-        output_helm_release = json.loads(output_helm_release)
-    except json.decoder.JSONDecodeError:
-        return None
-    for release in output_helm_release:
-        if release['name'] == 'azure-arc':
-            return release['namespace']
-    return None
+    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
 
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
@@ -985,26 +944,17 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
+
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
@@ -1123,13 +1073,12 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
-    node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
 
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api()
@@ -1138,7 +1087,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -1171,23 +1120,16 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
+
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
@@ -1285,7 +1227,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
 def validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location):
     # Check Release Existance
-    release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
+    release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api()
@@ -1294,7 +1236,7 @@ def validate_release_namespace(client, cluster_name, resource_group_name, kube_c
         except Exception as e:  # pylint: disable=broad-except
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namespace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
@@ -1350,6 +1292,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
                     azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
     logger.warning("This operation might take a while...\n")
 
+    # Validate custom token operation
+    custom_token_passed, _ = utils.validate_custom_token(cmd, resource_group_name, "dummyLocation")
+
     features = [x.lower() for x in features]
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
@@ -1370,7 +1315,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
     if enable_cl:
-        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
+        subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if custom_token_passed is True else get_subscription_id(cmd.cli_ctx)
+        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
@@ -1403,8 +1349,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1414,23 +1358,16 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
+
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
@@ -1490,6 +1427,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
 def disable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
                      yes=False):
+
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
@@ -1522,8 +1460,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     kubernetes_version = check_kube_connection()
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api()
-    node_api_response = None
 
     # Install helm client
     helm_client_location = install_helm_client()
@@ -1533,23 +1469,16 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
+    kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
+
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_distro = get_kubernetes_distro(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesDistro'] = kubernetes_distro
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
-    else:
-        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
-        kubernetes_infra = get_kubernetes_infra(node_api_response)
+        kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     if disable_cluster_connect:
@@ -1791,11 +1720,6 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     cloud = send_cloud_telemetry(cmd)
-    if cloud == consts.Azure_USGovCloudName:
-        telemetry.set_debug_info('User tried proxy command in fairfax')
-        telemetry.set_exception(exception='Proxy command is not present yet in fairfax cloud.', fault_type=consts.ClusterConnect_Not_Present_Fault_Type,
-                                summary=f'User tried proxy command in fairfax.')
-        raise ClientRequestError(f'Cluster Connect feature is not yet available in {consts.Azure_USGovCloudName}')
 
     tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     client_proxy_port = consts.CLIENT_PROXY_PORT
@@ -1826,6 +1750,8 @@ def client_side_proxy_wrapper(cmd,
     CSP_Url = consts.CSP_Storage_Url
     if cloud == consts.Azure_ChinaCloudName:
         CSP_Url = consts.CSP_Storage_Url_Mooncake
+    elif cloud == consts.Azure_USGovCloudName:
+        CSP_Url = consts.CSP_Storage_Url_Fairfax
 
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1925,6 +1851,8 @@ def client_side_proxy_wrapper(cmd,
 
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
         if not utils.is_cli_using_msal_auth():
             # Fetching creds
@@ -1964,6 +1892,8 @@ def client_side_proxy_wrapper(cmd,
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
+        elif cloud == consts.Azure_USGovCloudName:
+            dict_file['cloud'] = 'AzureUSGovernmentCloud'
 
     telemetry.set_debug_info('User type is ', user_type)
 
@@ -2162,11 +2092,11 @@ def client_side_proxy(cmd,
     return expiry, clientproxy_process
 
 
-def check_cl_registration_and_get_oid(cmd, cl_oid):
+def check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id):
     enable_custom_locations = True
     custom_locations_oid = ""
     try:
-        rp_client = _resource_providers_client(cmd.cli_ctx)
+        rp_client = resource_providers_client(cmd.cli_ctx, subscription_id)
         cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
         if cl_registration_state != "Registered":
             enable_custom_locations = False
@@ -2264,7 +2194,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             time_stamp += elements
         time_stamp = cluster_name + '-' + time_stamp
         # Generate the diagnostic folder in a given location
-        filepath_with_timestamp, diagnostic_folder_status = troubleshootutils.create_folder_diagnosticlogs(time_stamp)
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Arc_Diagnostic_Logs)
 
         if(diagnostic_folder_status is not True):
             storage_space_available = False
@@ -2344,7 +2274,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2365,7 +2295,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
