@@ -477,7 +477,7 @@ def ensure_namespace_cleanup():
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, no_hooks=False):
+def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster=False, no_hooks=False):
     if(no_hooks):
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace, "--no-hooks"]
     else:
