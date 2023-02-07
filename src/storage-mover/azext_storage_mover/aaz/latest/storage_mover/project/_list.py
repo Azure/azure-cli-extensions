@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists all Projects in a Storage Mover.
+
+    :example: project list
+        az storage-mover project list -g {rg} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

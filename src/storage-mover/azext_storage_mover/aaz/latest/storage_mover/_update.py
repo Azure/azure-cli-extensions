@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Updates a top-level Storage Mover resource.
+
+    :example: storage-mover update
+        az storage-mover update -g {rg} -n {mover_name} -l eastus2 --tags {{key2:value2}} --description ExampleDesc2
     """
 
     _aaz_info = {

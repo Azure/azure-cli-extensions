@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists all Agents in a Storage Mover.
+
+    :example: agent list
+        az storage-mover agent list -g {rg} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

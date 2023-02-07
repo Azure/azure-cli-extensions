@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates a Project resource, which is a logical grouping of related jobs.
+
+    :example: project create
+        az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} --description ProjectDesc
     """
 
     _aaz_info = {

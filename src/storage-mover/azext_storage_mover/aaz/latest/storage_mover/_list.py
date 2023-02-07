@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists all Storage Movers in a subscription.
+
+    :example: storage-mover list
+        az storage-mover list -g {rg}
     """
 
     _aaz_info = {

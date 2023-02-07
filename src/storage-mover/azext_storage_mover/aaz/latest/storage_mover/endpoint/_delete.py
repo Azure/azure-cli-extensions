@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes an Endpoint resource.
+
+    :example: endpoint delete
+        az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}
     """
 
     _aaz_info = {

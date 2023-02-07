@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets a Project resource.
+
+    :example: project show
+        az storage-mover project show -g {rg} --storage-mover-name {mover_name} -n {project_name}
     """
 
     _aaz_info = {

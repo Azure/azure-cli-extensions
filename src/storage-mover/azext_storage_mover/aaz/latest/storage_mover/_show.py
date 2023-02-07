@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets a Storage Mover resource.
+
+    :example: storage-mover show
+        az storage-mover show -g {rg} -n {mover_name}
     """
 
     _aaz_info = {

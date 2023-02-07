@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Unregister(AAZCommand):
     """Unregisters an Agent resource.
+
+    :example: agent unregister
+        az storage-mover agent unregister -g {rg} -n {agent_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

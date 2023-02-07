@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes a Project resource.
+
+    :example: project delete
+        az storage-mover project delete -g {rg} --storage-mover-name {mover_name} -n {project_name}
     """
 
     _aaz_info = {

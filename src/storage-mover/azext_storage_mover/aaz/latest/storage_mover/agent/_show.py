@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets an Agent resource.
+
+    :example: agent show
+        az storage-mover agent show -g {rg} -n {agent_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

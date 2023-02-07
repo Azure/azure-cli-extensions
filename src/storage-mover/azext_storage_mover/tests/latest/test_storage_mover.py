@@ -33,9 +33,11 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
+    # az group create -n test-storagemover-rg-2 -l eastus2
+    # az storage-mover create -n teststoragemover -g test-storagemover-rg-2
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg",
+            "rg": "test-storagemover-rg-2",
             "mover_name": "teststoragemover",
             "agent_name": "testagent"
         })
@@ -86,7 +88,7 @@ class StorageMoverScenario(ScenarioTest):
                  '-n {endpoint_nfs} --description endpointDesc --export exportfolder --nfs-version NFSv4 --host '+vm_ip)
         self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}',
                        checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs', '')),
-                               JMESPathCheck('properties.export', "/exportfolder"),
+                               JMESPathCheck('properties.export', "exportfolder"),
                                JMESPathCheck('properties.endpointType', "NfsMount"),
                                JMESPathCheck('properties.host', vm_ip),
                                JMESPathCheck('properties.nfsVersion', "NFSv4"),

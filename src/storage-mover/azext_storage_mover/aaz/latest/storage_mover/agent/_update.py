@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Updates an Agent resource, which references a hybrid compute machine that can run jobs.
+
+    :example: agent update
+        az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} --description 123
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates a top-level Storage Mover resource.
+
+    :example: storage-mover create
+        az storage-mover create -g {rg} -n {mover_name} -l eastus2 --tags {{key1:value1}} --description ExampleDesc
     """
 
     _aaz_info = {

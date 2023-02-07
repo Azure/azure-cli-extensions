@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets an Endpoint resource.
+
+    :example: endpoint show
+        az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}
     """
 
     _aaz_info = {

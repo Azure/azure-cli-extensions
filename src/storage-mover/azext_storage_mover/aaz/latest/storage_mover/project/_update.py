@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Updates a Project resource, which is a logical grouping of related jobs.
+
+    :example: project update
+        az storage-mover project update -g {rg} --storage-mover-name {mover_name} -n {project_name} --description ProjectDesc2
     """
 
     _aaz_info = {

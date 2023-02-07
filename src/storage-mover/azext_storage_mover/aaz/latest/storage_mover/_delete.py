@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes a Storage Mover resource.
+
+    :example: storage-mover delete
+        az storage-mover delete -g {rg} -n {mover_name}
     """
 
     _aaz_info = {
