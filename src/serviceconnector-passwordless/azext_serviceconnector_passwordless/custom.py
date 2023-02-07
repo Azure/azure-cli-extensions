@@ -60,15 +60,15 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
     from azure.cli.command_modules.serviceconnector.custom import local_connection_create_func
     from ._credential_free import enable_mi_for_db_linker
     return local_connection_create_func(cmd, client,
-                                 resource_group_name,
-                                 connection_name,
-                                 location,
-                                 client_type,
-                                 target_resource_group, target_id,
-                                 secret_auth_info, secret_auth_info_auto,
-                                 user_account_auth_info,                      # new auth info
-                                 service_principal_auth_info_secret,
-                                 no_wait,
-                                 # Resource.*Postgres, Resource.*Sql*
-                                 server, database,
-                                 enable_mi_for_db_linker=enable_mi_for_db_linker)
+                                        resource_group_name,
+                                        connection_name,
+                                        location,
+                                        client_type,
+                                        target_resource_group, target_id,
+                                        secret_auth_info, secret_auth_info_auto,
+                                        user_account_auth_info,                      # new auth info
+                                        service_principal_auth_info_secret,
+                                        no_wait,
+                                        # Resource.*Postgres, Resource.*Sql*
+                                        server, database,
+                                        enable_mi_for_db_linker=enable_mi_for_db_linker)

@@ -14,7 +14,12 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
 from azure.cli.core._profile import Profile
-from azure.cli.command_modules.serviceconnector._utils import run_cli_cmd, generate_random_string, is_packaged_installed, get_object_id_of_current_user
+from azure.cli.command_modules.serviceconnector._utils import (
+    run_cli_cmd,
+    generate_random_string,
+    is_packaged_installed,
+    get_object_id_of_current_user
+)
 from azure.cli.command_modules.serviceconnector._resource_config import (
     RESOURCE,
     AUTH_TYPE
