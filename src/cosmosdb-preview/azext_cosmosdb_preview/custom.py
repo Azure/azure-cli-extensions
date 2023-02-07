@@ -184,7 +184,7 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         extensions = cluster_resource.properties.extensions
 
     # to remove extension
-    if len(extensions) == 1 and extensions[0] is '':
+    if len(extensions) == 1 and extensions[0] == '':
         extensions = None
 
     cluster_properties = ClusterResourceProperties(
@@ -225,14 +225,15 @@ def cli_cosmosdb_managed_cassandra_cluster_list(client,
 
     return client.list_by_resource_group(resource_group_name)
 
+
 def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
                                                       resource_group_name,
                                                       cluster_name,
                                                       force=False):
 
     """Deallocate Azure Managed Cassandra Cluster"""
-
     return client.begin_deallocate(resource_group_name, cluster_name, force)
+
 
 def cli_cosmosdb_managed_cassandra_cluster_list_backup(client,
                                                        resource_group_name,
