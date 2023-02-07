@@ -60,7 +60,6 @@ def test_path_exist(path):
         raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
 
 
-
 # -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to do console app setup (mkdir, download and extract)
 # -----------------------------------------------------------------------------------------------------------------
