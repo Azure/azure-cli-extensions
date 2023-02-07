@@ -30,8 +30,8 @@ from .helper import (
     create_catalog,
     create_proj_env_type,
     create_environment_dependencies,
-    create_pool_with_schedule,
-    create_pool,
+    create_pool_dataplane_dependencies,
+    create_dev_box_dependencies,
 )
 
 @record_only()
@@ -956,7 +956,7 @@ class DevcenterScenarioTest(ScenarioTest):
             'path': "/Catalog_v2",
             'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
             'secretIdentifier2': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-            'uri': "https://github.com/gitHubUse/gitHubProj.git"
+            'uri': "https://domain.com/dummy/dummy.git"
         })
 
         create_dev_center_with_identity(self)
@@ -1294,7 +1294,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         create_dev_center(self)
         create_project(self)
         add_dev_box_user_role_to_project(self)
-        create_pool_with_schedule(self)
+        create_pool_dataplane_dependencies(self)
 
         self.cmd('az devcenter dev pool list '
                  '--dev-center "{devcenterName}" '
@@ -1434,7 +1434,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             'location': 'eastus',
             'devBoxName': self.create_random_name(prefix='cli', length=24),
         })
-        create_pool(self)
+        create_dev_box_dependencies(self)
 
         self.cmd('az devcenter dev dev-box list '
                  '--dev-center "{devcenterName}" ',
@@ -1695,7 +1695,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_environment_dataplane_scenario(self):
         self.kwargs.update({
             'envName': self.create_random_name(prefix='cli', length=12),
-            'location': 'westus3',
+            'location': 'centraluseuap',
         })
         create_environment_dependencies(self)
 
