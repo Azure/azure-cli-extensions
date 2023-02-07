@@ -240,7 +240,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
 
     if platform.system() == "Windows":
         if disable_gateway or ip_connect:
-            tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, bastion_endpoint)
+            tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port)
             if ip_connect:
                 tunnel_server.set_host_name(target_ip_address)
             t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
@@ -278,7 +278,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
 
 
 def _is_ipconnect_request(cmd, bastion, target_ip_address):
-    if bastion['enableIpConnect'] is True and target_ip_address:
+    if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True and target_ip_address:
         return True
 
     return False
