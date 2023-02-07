@@ -14,7 +14,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
 from azure.cli.core._profile import Profile
-from azure.cli.command_modules.serviceconnector._utils import run_cli_cmd, generate_random_string, is_packaged_installed
+from azure.cli.command_modules.serviceconnector._utils import run_cli_cmd, generate_random_string, is_packaged_installed, get_object_id_of_current_user
 from azure.cli.command_modules.serviceconnector._resource_config import (
     RESOURCE,
     AUTH_TYPE
@@ -52,9 +52,8 @@ def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, c
 
     user_object_id = auth_info.get('principal_id')
     if user_object_id is None:
-        user_info = run_cli_cmd('az ad signed-in-user show')
-        user_object_id = user_info.get('objectId') if user_info.get(
-            'objectId') else user_info.get('id')
+        user_object_id = get_object_id_of_current_user()
+
     if user_object_id is None:
         raise Exception(
             "No object id for user {}".format(target_handler.login_username))
@@ -64,10 +63,16 @@ def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, c
         # enable source mi
         source_object_id = source_handler.get_identity_pid()
         target_handler.identity_object_id = source_object_id
-        identity_info = run_cli_cmd(
-            'az ad sp show --id {}'.format(source_object_id), 15, 10)
-        target_handler.identity_client_id = identity_info.get('appId')
-        target_handler.identity_name = identity_info.get('displayName')
+        try:
+            identity_info = run_cli_cmd(
+                'az ad sp show --id {}'.format(source_object_id), 15, 10)
+            target_handler.identity_client_id = identity_info.get('appId')
+            target_handler.identity_name = identity_info.get('displayName')
+        except CLIInternalError as e:
+            if 'AADSTS530003' in e.error_msg:
+                logger.warning(
+                    'Please ask your IT department for help to join this device to Azure Active Directory.')
+            raise e
 
     # enable target aad authentication and set login user as db aad admin
     target_handler.enable_target_aad_auth()
@@ -104,6 +109,7 @@ class TargetHandler:
     endpoint = ""
 
     login_username = ""
+    login_usertype = ""  # servicePrincipal, user
     user_object_id = ""
     aad_username = ""
 
@@ -123,6 +129,11 @@ class TargetHandler:
         self.auth_type = auth_type
         self.login_username = run_cli_cmd(
             'az account show').get("user").get("name")
+        self.login_usertype = run_cli_cmd(
+            'az account show').get("user").get("type")
+        if(self.login_usertype not in ['servicePrincipal', 'user']):
+            raise CLIInternalError(
+                f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
         self.aad_username = "aad_" + connection_name
 
     def enable_target_aad_auth(self):
@@ -252,12 +263,12 @@ class MysqlFlexibleHandler(TargetHandler):
                         logger.warning(
                             "Query %s, error: %s", q, str(e))
         except pymysql.Error as e:
-            raise AzureConnectionError("Fail to connect mysql. ") from e
+            raise AzureConnectionError("Fail to connect mysql. " + str(e)) from e
         if cursor is not None:
             try:
                 cursor.close()
             except Exception as e:  # pylint: disable=broad-except
-                raise CLIInternalError("connection close failed.") from e
+                raise CLIInternalError("connection close failed." + str(e)) from e
 
     def get_connection_string(self):
         password = run_cli_cmd(
@@ -298,10 +309,6 @@ class SqlHandler(TargetHandler):
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
-        if self.auth_type == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
-            self.aad_username = self.identity_name
-        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
-            self.aad_username = self.login_username
 
     def set_user_admin(self, user_object_id, **kwargs):
         # pylint: disable=not-an-iterable
@@ -380,7 +387,7 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
-            raise AzureConnectionError("Fail to connect sql.") from e
+            raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self):
         token_bytes = run_cli_cmd(
@@ -395,6 +402,10 @@ class SqlHandler(TargetHandler):
         return {'connection_string': conn_string, 'attrs_before': {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}
 
     def get_create_query(self):
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+            self.aad_username = self.identity_name
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+            self.aad_username = self.login_username
         role_q = "CREATE USER \"{}\" FROM EXTERNAL PROVIDER;".format(
             self.aad_username)
         grant_q = "GRANT CONTROL ON DATABASE::{} TO \"{}\";".format(
@@ -491,13 +502,13 @@ class PostgresFlexHandler(TargetHandler):
             conn = psycopg2.connect(conn_string)
         except (psycopg2.Error, psycopg2.OperationalError) as e:
             import re
-            logger.warning(e)
+            # logger.warning(e)
             search_ip = re.search(
                 'no pg_hba.conf entry for host "(.*)", user ', str(e))
             if search_ip is not None:
                 self.ip = search_ip.group(1)
             raise AzureConnectionError(
-                "Fail to connect to postgresql.") from e
+                "Fail to connect to postgresql. " + str(e)) from e
 
         conn.autocommit = True
         cursor = conn.cursor()
