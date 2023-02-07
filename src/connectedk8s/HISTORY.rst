@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.12
+++++++
+* Added retries for helm chart pull and config DP POST call
+
 1.3.11
 ++++++
 
