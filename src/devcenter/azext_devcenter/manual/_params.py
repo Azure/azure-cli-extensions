@@ -572,35 +572,6 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment custom-action") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            type=str,
-            help="The DevCenter Project upon which to execute operations.",
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The AAD object id of the user. If value is 'me', the identity is taken "
-            "from the authentication context",
-        )
-        c.argument(
-            "environment_name",
-            options_list=["--name", "-n", "--environment-name"],
-            type=str,
-            help="The name " "of the environment.",
-        )
-        c.argument("action_id", type=str, help="The Catalog Item action id to execute")
-        c.argument(
-            "parameters",
-            type=validate_file_or_dict,
-            help="Parameters object for the Action Expected value: "
-            "json-string/json-file/@json-file.",
-        )
 
     with self.argument_context("devcenter dev environment deploy-action") as c:
         c.argument(
@@ -632,23 +603,6 @@ def load_arguments(self, _):
             "json-string/json-file/@json-file.",
         )
 
-    with self.argument_context("devcenter dev artifact list") as c:
-        c.argument(
-            "dev_center",
-            arg_type=dev_center_type,
-        )
-        c.argument(
-            "project_name",
-            arg_type=project_type,
-        )
-        c.argument(
-            "user_id",
-            type=str,
-            help="The id of the user. If value is 'me', the identity is taken from the "
-            "authentication context",
-        )
-        c.argument("environment_name", type=str, help="The name of the environment.")
-        c.argument("artifact_path", type=str, help="The path of the artifact.")
 
     with self.argument_context("devcenter dev catalog-item list") as c:
         c.argument(

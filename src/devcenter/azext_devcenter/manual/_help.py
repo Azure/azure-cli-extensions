@@ -330,19 +330,6 @@ helps[
 """
 
 helps[
-    "devcenter dev environment custom-action"
-] = """
-    type: command
-    short-summary: "Executes a custom action."
-    examples:
-      - name: Environments_CustomAction
-        text: |-
-              az devcenter dev environment custom-action --action-id "someCustomActionId" --parameters \
-"{\\"functionAppRuntime\\":\\"node\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" \
---project-name "myProject" --user-id "me" --dev-center-name "{devCenterName}"
-"""
-
-helps[
     "devcenter dev environment deploy-action"
 ] = """
     type: command
@@ -373,30 +360,6 @@ helps[
         text: |-
               az devcenter dev environment wait --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --deleted
-"""
-
-helps[
-    "devcenter dev artifact"
-] = """
-    type: group
-    short-summary: Manage artifact with devcenter
-"""
-
-helps[
-    "devcenter dev artifact list"
-] = """
-    type: command
-    short-summary: "Lists the artifacts for an environment at a specified path, or returns the file at the path."
-    examples:
-      - name: Artifacts_Get
-        text: |-
-               az devcenter dev artifact list --artifact-path "{artifactPath}" --dev-center-name "{devCenterName}" \
---environment-name "{environmentName}" --project-name "{projectName}" \
---user-id "{userId}"
-      - name: Artifacts_ListByEnvironment
-        text: |-
-               az devcenter dev artifact list --dev-center-name "{devCenterName}" \
---environment-name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps[

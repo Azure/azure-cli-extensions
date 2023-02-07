@@ -1539,7 +1539,6 @@ class WebhookNotification(msrest.serialization.Model):
         self.enabled = kwargs['enabled']
         self.url = kwargs.get('url', None)
 
-##amlim: This is a customization DO NOT DELETE
 class LongRunningOperationErrorDetails(msrest.serialization.Model):
     """Image validation error details.
 

@@ -1635,7 +1635,7 @@ class WebhookNotification(msrest.serialization.Model):
         super(WebhookNotification, self).__init__(**kwargs)
         self.enabled = enabled
         self.url = url
-##amlim: This is a customization DO NOT DELETE
+
 class LongRunningOperationErrorDetails(msrest.serialization.Model):
     """Long running operation error details.
 

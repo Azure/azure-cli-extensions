@@ -1340,25 +1340,6 @@ def devcenter_environment_deploy_action(
     )
 
 
-def devcenter_artifact_list(
-    cmd, dev_center, project_name, environment_name, artifact_path=None, user_id='me'
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    if (
-        user_id is not None
-        and environment_name is not None
-        and artifact_path is not None
-    ):
-        return cf_dataplane.artifacts.list_by_path(
-            user_id=user_id,
-            environment_name=environment_name,
-            artifact_path=artifact_path,
-        )
-    return cf_dataplane.artifacts.list_by_environment(
-        user_id=user_id, environment_name=environment_name
-    )
-
-
 def devcenter_catalog_item_list(cmd, dev_center, project_name):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.catalog_items.list()
