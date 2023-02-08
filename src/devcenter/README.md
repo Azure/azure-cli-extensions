@@ -28,5 +28,5 @@ Run `az --version` to see the current verion of the extension.
 
 To remove the extension use the below CLI command
 ``` sh
-az extension remove --name vmware
+az extension remove --name devcenter
 ```
