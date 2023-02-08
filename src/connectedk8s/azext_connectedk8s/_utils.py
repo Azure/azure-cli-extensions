@@ -23,7 +23,7 @@ from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
+from azext_connectedk8s._client_factory import resource_providers_client, cf_resource_groups
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
@@ -53,11 +53,11 @@ class TimeoutHTTPAdapter(HTTPAdapter):
 
 
 def validate_location(cmd, location):
-    subscription_id = get_subscription_id(cmd.cli_ctx)
+    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if os.getenv('AZURE_ACCESS_TOKEN') else get_subscription_id(cmd.cli_ctx)
     rp_locations = []
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+    resourceClient = resource_providers_client(cmd.cli_ctx, subscription_id=subscription_id)
     try:
-        providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
+        providerDetails = resourceClient.get('Microsoft.Kubernetes')
     except Exception as e:  # pylint: disable=broad-except
         arm_exception_handler(e, consts.Get_ResourceProvider_Fault_Type, 'Failed to fetch resource provider details')
     for resourceTypes in providerDetails.resource_types:
@@ -69,6 +69,29 @@ def validate_location(cmd, location):
                 raise ArgumentUsageError("Connected cluster resource creation is supported only in the following locations: " +
                                          ', '.join(map(str, rp_locations)), recommendation="Use the --location flag to specify one of these locations.")
             break
+
+
+def validate_custom_token(cmd, resource_group_name, location):
+    if os.getenv('AZURE_ACCESS_TOKEN'):
+        if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
+            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+                                    summary='Required environment variables and parameters are not set')
+            raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token is enabled.")
+        if os.getenv('AZURE_TENANT_ID') is None:
+            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+                                    summary='Required environment variables and parameters are not set')
+            raise ValidationError("Environment variable 'AZURE_TENANT_ID' should be set when custom access token is enabled.")
+        if location is None:
+            try:
+                resource_client = cf_resource_groups(cmd.cli_ctx, os.getenv('AZURE_SUBSCRIPTION_ID'))
+                rg = resource_client.get(resource_group_name)
+                location = rg.location
+            except Exception as ex:
+                telemetry.set_exception(exception=ex, fault_type=consts.Location_Fetch_Fault_Type,
+                                        summary='Unable to fetch location from resource group')
+                raise ValidationError("Unable to fetch location from resource group: ".format(str(ex)))
+        return True, location
+    return False, location
 
 
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents'):
@@ -323,9 +346,12 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
             release_train = release_train_dogfood
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    headers = None
+    if os.getenv('AZURE_ACCESS_TOKEN'):
+        headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
     # Sending request
     try:
-        r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, uri_parameters=uri_parameters, resource=resource)
+        r = send_raw_request(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, uri_parameters=uri_parameters, resource=resource)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='Error while fetching helm chart registry path')
@@ -449,11 +475,13 @@ def ensure_namespace_cleanup():
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, no_hooks=False):
+def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, no_hooks=False):
     if(no_hooks):
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace, "--no-hooks"]
     else:
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
+    if is_arm64_cluster:
+        cmd_helm_delete.extend(["--timeout", "15m"])
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -469,6 +497,26 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_
                                "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
                                " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
     ensure_namespace_cleanup()
+    # Cleanup azure-arc-release NS if present (created during helm installation)
+    cleanup_release_install_namespace_if_exists()
+
+
+def cleanup_release_install_namespace_if_exists():
+    api_instance = kube_client.CoreV1Api()
+    try:
+        api_instance.read_namespace(consts.Release_Install_Namespace)
+    except Exception as ex:
+        if ex.status == 404:
+            # Nothing to delete, exiting here
+            return
+        else:
+            kubernetes_exception_handler(ex, consts.Get_Kubernetes_Helm_Release_Namespace_Fault_Type, error_message='Unable to fetch details about existense of kubernetes namespace: {}'.format(consts.Release_Install_Namespace), summary='Unable to fetch kubernetes namespace: {}'.format(consts.Release_Install_Namespace))
+
+    # If namespace exists, delete it
+    try:
+        api_instance.delete_namespace(consts.Release_Install_Namespace)
+    except Exception as ex:
+        kubernetes_exception_handler(ex, consts.Delete_Kubernetes_Helm_Release_Namespace_Fault_Type, error_message='Unable to clean-up kubernetes namespace: {}'.format(consts.Release_Install_Namespace), summary='Unable to delete kubernetes namespace: {}'.format(consts.Release_Install_Namespace))
 
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
@@ -616,9 +664,9 @@ def try_list_node_fix():
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
 
 
-def check_provider_registrations(cli_ctx):
+def check_provider_registrations(cli_ctx, subscription_id):
     try:
-        rp_client = _resource_providers_client(cli_ctx)
+        rp_client = resource_providers_client(cli_ctx, subscription_id)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
             telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
