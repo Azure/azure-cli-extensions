@@ -105,18 +105,18 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.storage_settings = AAZListArg(
-            options=["--storage-settings"],
+        _args_schema.storage_setting = AAZListArg(
+            options=["--storage-setting"],
             singular_options=["--storage-settings"],
             arg_group="Properties",
-            help={"short-summary": "Storage Settings.", "long-summary": "Usage: --storage-settings type=XX datastore-type=XX.\ndatastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument."},
+            help={"short-summary": "Storage Settings. Usage: --storage-settings type=XX datastore-type=XX.", "long-summary": "datastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument.\nUsage for --storage-setting: --storage-setting \"[{type:'XX',datastore-type:'XX'}]\""},
             required=True,
         )
 
-        storage_settings = cls._args_schema.storage_settings
-        storage_settings.Element = AAZObjectArg()
+        storage_setting = cls._args_schema.storage_setting
+        storage_setting.Element = AAZObjectArg()
 
-        _element = cls._args_schema.storage_settings.Element
+        _element = cls._args_schema.storage_setting.Element
         _element.datastore_type = AAZStrArg(
             options=["datastore-type"],
             help="Gets or sets the type of the datastore.",
@@ -274,7 +274,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("monitoringSettings", AAZObjectType)
                 properties.set_prop("securitySettings", AAZObjectType)
-                properties.set_prop("storageSettings", AAZListType, ".storage_settings", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("storageSettings", AAZListType, ".storage_setting", typ_kwargs={"flags": {"required": True}})
 
             monitoring_settings = _builder.get(".properties.monitoringSettings")
             if monitoring_settings is not None:
