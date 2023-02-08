@@ -1,5 +1,5 @@
-# Azure CLI for Mcirosoft Dev Box and Azure Deployment Environments Extension #
-This is the extension for [Microsoft Dev Box](https://learn.microsoft.com/azure/dev-box/) and [Azure Deployment Environments](https://learn.microsoft.com/azure/deployment-environments/)
+# Azure CLI Extension for Microsoft Dev Box and Azure Deployment Environments #
+This is the Azure CLI extension for [Microsoft Dev Box](https://learn.microsoft.com/azure/dev-box/) and [Azure Deployment Environments](https://learn.microsoft.com/azure/deployment-environments/)
 
 ### How to use ###
 Install this extension using the below CLI command
