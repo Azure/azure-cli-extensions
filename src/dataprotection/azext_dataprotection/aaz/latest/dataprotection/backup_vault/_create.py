@@ -71,7 +71,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.azure_monitor_alerts_for_job_failures = AAZStrArg(
-            options=["--azure-monitor-alerts-for-job-failures"],
+            options=["--job-failure-alerts", "--azure-monitor-alerts-for-job-failures"],
             arg_group="Monitoring Settings Azure Monitor Alert Settings",
             help="Property that specifies whether built-in Azure Monitor alerts should be fired for all failed jobs.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -142,7 +142,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.retention_duration_in_days = AAZFloatArg(
-            options=["--retention-duration-in-days"],
+            options=["--soft-delete-retention", "--retention-duration-in-days"],
             arg_group="SoftDeleteSettings",
             help="Soft delete retention duration",
         )
