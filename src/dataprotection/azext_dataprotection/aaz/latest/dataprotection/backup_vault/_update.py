@@ -106,6 +106,23 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Disabled": "Disabled", "Locked": "Locked", "Unlocked": "Unlocked"},
         )
+
+        # define Arg Group "SoftDeleteSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.retention_duration_in_days = AAZFloatArg(
+            options=["--retention-duration-in-days"],
+            arg_group="SoftDeleteSettings",
+            help="Soft delete retention duration",
+            nullable=True,
+        )
+        _args_schema.soft_delete_state = AAZStrArg(
+            options=["--soft-delete-state"],
+            arg_group="SoftDeleteSettings",
+            help="State of soft delete",
+            nullable=True,
+            enum={"AlwaysOn": "AlwaysOn", "Off": "Off", "On": "On"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -367,10 +384,16 @@ class Update(AAZCommand):
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:
                 security_settings.set_prop("immutabilitySettings", AAZObjectType)
+                security_settings.set_prop("softDeleteSettings", AAZObjectType)
 
             immutability_settings = _builder.get(".properties.securitySettings.immutabilitySettings")
             if immutability_settings is not None:
                 immutability_settings.set_prop("state", AAZStrType, ".immutability_state")
+
+            soft_delete_settings = _builder.get(".properties.securitySettings.softDeleteSettings")
+            if soft_delete_settings is not None:
+                soft_delete_settings.set_prop("retentionDurationInDays", AAZFloatType, ".retention_duration_in_days")
+                soft_delete_settings.set_prop("state", AAZStrType, ".soft_delete_state")
 
             tags = _builder.get(".tags")
             if tags is not None:
