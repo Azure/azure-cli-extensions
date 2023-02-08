@@ -27,13 +27,12 @@ from .helper import (
     create_kv_policy,
     create_env_type,
     add_dev_box_user_role_to_project,
-    create_pool_with_schedule,
     create_catalog,
     create_proj_env_type,
     create_environment_dependencies,
-    create_pool
+    create_pool_dataplane_dependencies,
+    create_dev_box_dependencies,
 )
-
 
 @record_only()
 @try_manual
@@ -957,7 +956,7 @@ class DevcenterScenarioTest(ScenarioTest):
             'path': "/Catalog_v2",
             'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
             'secretIdentifier2': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-            'uri': "https://github.com/gitHubUse/gitHubProj.git"
+            'uri': "https://domain.com/dummy/dummy.git"
         })
 
         create_dev_center_with_identity(self)
@@ -1253,6 +1252,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_project_dataplane_scenario(self):
         self.kwargs.update({
             'devcenterName': self.create_random_name(prefix='cli', length=24),
+            'location': 'westus3',
         })
 
         create_dev_center(self)
@@ -1274,7 +1274,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                      self.check("[0].name", "{projectName}"),
                  ]
                  )
-        
+
         self.cmd('az devcenter dev project show '
                  '--name "{projectName}" '
                  '--dev-center "{devcenterName}" ',
@@ -1285,7 +1285,16 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_pool_dataplane_scenario(self):
-        create_pool(self)
+        self.kwargs.update({
+            'location': 'westus3',
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+        })
+          
+
+        create_dev_center(self)
+        create_project(self)
+        add_dev_box_user_role_to_project(self)
+        create_pool_dataplane_dependencies(self)
 
         self.cmd('az devcenter dev pool list '
                  '--dev-center "{devcenterName}" '
@@ -1295,7 +1304,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                      self.check("[0].name", "{poolName}"),
                  ]
                  )
-        
+
         self.cmd('az devcenter dev pool show '
                  '--name "{poolName}" '
                  '--dev-center "{devcenterName}" '
@@ -1338,6 +1347,9 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_catalog_item_dataplane_scenario(self):
+        self.kwargs.update({
+            'location': 'westus3',
+        })
         create_catalog(self)
 
         self.cmd('az devcenter dev catalog-item list '
@@ -1349,7 +1361,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                      self.check("[0].name", "Empty")
                  ]
                  )
-        
+
         if (self.is_live):
             self.cmd('az devcenter dev catalog-item show '
                     '--dev-center "{devcenterName}" '
@@ -1361,7 +1373,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                         self.check("name", "Empty")
                     ]
                     )
-        
+
             self.cmd('az devcenter dev catalog-item-version list '
                     '--dev-center "{devcenterName}" '
                     '--project "{projectName}" '
@@ -1400,6 +1412,9 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_env_type_dataplane_scenario(self):
+        self.kwargs.update({
+            'location': 'westus3',
+        })
         create_proj_env_type(self)
 
         self.cmd('az devcenter dev environment-type list '
@@ -1414,9 +1429,273 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  )
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_dev_box_dataplane_scenario(self):
+        self.kwargs.update({
+            'location': 'eastus',
+            'devBoxName': self.create_random_name(prefix='cli', length=24),
+        })
+        create_dev_box_dependencies(self)
+
+        self.cmd('az devcenter dev dev-box list '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box create '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--pool "{poolName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("actionState", "Unknown"),
+                     self.check("hardwareProfile.memoryGb", 32),
+                     self.check("hardwareProfile.skuName", "{skuName}"),
+                     self.check("hardwareProfile.vCpUs", 8),
+                     self.check("hibernateSupport", "Enabled"),
+                     self.check(
+                         "imageReference.name", "microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"),
+                     self.check("imageReference.operatingSystem", "Windows11"),
+                     self.check("imageReference.osBuildNumber",
+                                "win11-22h2-ent-cpc-os"),
+                     self.check("imageReference.version", "1.0.0"),
+                     self.check("localAdministrator", "Enabled"),
+                     self.check("location", "{location}"),
+                     self.check("name", "{devBoxName}"),
+                     self.check("osType", "Windows"),
+                     self.check("poolName", "{poolName}"),
+                     self.check("powerState", "Running"),
+                     self.check("projectName", "{projectName}"),
+                     self.check("provisioningState", "Succeeded"),
+                     self.check("storageProfile.osDisk.diskSizeGb", 1024),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box show-remote-connection '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("contains(keys(@), 'rdpConnectionUrl')", True),
+                     self.check("contains(keys(@), 'webUrl')", True),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box list '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box show '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("actionState", "Unknown"),
+                     self.check("hardwareProfile.memoryGb", 32),
+                     self.check("hardwareProfile.skuName", "{skuName}"),
+                     self.check("hardwareProfile.vCpUs", 8),
+                     self.check("hibernateSupport", "Enabled"),
+                     self.check(
+                         "imageReference.name", "microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"),
+                     self.check("imageReference.operatingSystem", "Windows11"),
+                     self.check("imageReference.osBuildNumber",
+                                "win11-22h2-ent-cpc-os"),
+                     self.check("imageReference.version", "1.0.0"),
+                     self.check("localAdministrator", "Enabled"),
+                     self.check("location", "{location}"),
+                     self.check("name", "{devBoxName}"),
+                     self.check("osType", "Windows"),
+                     self.check("poolName", "{poolName}"),
+                     self.check("powerState", "Running"),
+                     self.check("projectName", "{projectName}"),
+                     self.check("provisioningState", "Succeeded"),
+                     self.check("storageProfile.osDisk.diskSizeGb", 1024),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box stop '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 )
+
+        self.cmd('az devcenter dev dev-box show '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("actionState", "Stopped"),
+                     self.check("powerState", "Deallocated"),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box start '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 )
+
+        self.cmd('az devcenter dev dev-box show '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("actionState", "Started"),
+                     self.check("powerState", "Running"),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box list-upcoming-action '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                     self.check("[0].actionType", "Stop"),
+                     self.check("[0].reason", "Schedule"),
+                     self.check(
+                         "[0].sourceId", "/projects/{projectName}/pools/{poolName}/schedules/default"),
+                 ]
+                 )
+
+        stopAction = self.cmd('az devcenter dev dev-box list-upcoming-action '
+                              '--name "{devBoxName}" '
+                              '--project "{projectName}" '
+                              '--dev-center "{devcenterName}" '
+                              ).get_output_in_json()
+
+        self.kwargs.update({
+            'actionId': stopAction[0]['id'],
+            'scheduledTime': stopAction[0]['scheduledTime'],
+            'delayTime': "2:30",
+        })
+
+        self.cmd('az devcenter dev dev-box show-upcoming-action '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--upcoming-action-id "{actionId}"',
+                 checks=[
+                     self.check("id", "{actionId}"),
+                     self.check("actionType", "Stop"),
+                     self.check("reason", "Schedule"),
+                     self.check("scheduledTime", "{scheduledTime}"),
+                     self.check(
+                         "sourceId", "/projects/{projectName}/pools/{poolName}/schedules/default"),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box delay-upcoming-action '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--delay-time "{delayTime}" '
+                 '--upcoming-action-id "{actionId}"',
+                 checks=[
+                     self.check("id", "{actionId}"),
+                     self.check("actionType", "Stop"),
+                     self.check("reason", "Schedule"),
+                     self.check("originalScheduledTime", "{scheduledTime}"),
+                     self.check("scheduledTime", "2023-02-08T05:00:00+00:00"),
+                     self.check(
+                         "sourceId", "/projects/{projectName}/pools/{poolName}/schedules/default"),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev dev-box skip-upcoming-action '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--upcoming-action-id "{actionId}"'
+                 )
+
+        self.cmd('az devcenter dev dev-box delete -y '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 )
+
+        self.cmd('az devcenter dev dev-box list '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_notification_setting_dataplane_scenario(self):
+        self.kwargs.update({
+            'devcenterName': self.create_random_name(prefix='cli', length=24),
+            'location': 'westus3'
+        })
+        create_dev_center(self)
+        create_project(self)
+        add_dev_box_user_role_to_project(self)
+
+        self.cmd('az devcenter dev notification-setting list-allowed-culture '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev notification-setting create '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--culture "en-us" '
+                 '--enabled "true" '
+                 '--boolean-enabled "true" '
+                 '--email-notification cc="fake@domain.com" enabled=true recipients="fake@domain.com" '
+                 '--webhook-notification enabled=false url="https://fake.domain/url/hook"',
+                 checks=[
+                     self.check("culture", "en-us"),
+                     self.check("enabled", True),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.enabled", True),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.cc", "fake@domain.com"),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.enabled", True),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.recipients", "fake@domain.com"),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.enabled", False),
+                     self.check("notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.url",
+                                "https://fake.domain/url/hook"),
+                 ]
+                 )
+
+        self.cmd('az devcenter dev notification-setting show '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("culture", "en-us"),
+                     self.check("enabled", True),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.enabled", True),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.cc", "fake@domain.com"),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.enabled", True),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.recipients", "fake@domain.com"),
+                     self.check(
+                         "notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.enabled", False),
+                     self.check("notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.url",
+                                "https://fake.domain/url/hook"),
+                 ]
+                 )
+
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_environment_dataplane_scenario(self):
         self.kwargs.update({
             'envName': self.create_random_name(prefix='cli', length=12),
+            'location': 'centraluseuap',
         })
         create_environment_dependencies(self)
 
@@ -1427,7 +1706,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                      self.check("length(@)", 0),
                  ]
                  )
-        
+
         self.cmd('az devcenter dev environment create '
                  '--catalog-item-name "Empty" '
                  '--catalog-name "{catalogName}" '
@@ -1436,15 +1715,53 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  '--dev-center "{devcenterName}" '
                  '--project "{projectName}" ',
                  checks=[
-                     self.check("length(@)", 0),
+                     self.check("catalogItemName", "Empty"),
+                     self.check("catalogName", "{catalogName}"),
+                     self.check("environmentType", "{envTypeName}"),
+                     self.check("name", "{envName}"),
+                     self.check("provisioningState", "Succeeded"),
                  ]
                  )
         
+        self.cmd('az devcenter dev environment show '
+                 '--name "{envName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("catalogItemName", "Empty"),
+                     self.check("catalogName", "{catalogName}"),
+                     self.check("environmentType", "{envTypeName}"),
+                     self.check("name", "{envName}"),
+                     self.check("provisioningState", "Succeeded"),
+                 ]
+                 )
+
         self.cmd('az devcenter dev environment list '
                  '--dev-center "{devcenterName}" '
                  '--project "{projectName}" ',
                  checks=[
                      self.check("length(@)", 1),
                      self.check("[0].name", "{envName}")
+                 ]
+                 )
+        
+        self.cmd('az devcenter dev environment deploy-action '
+                 '--action-id "deploy" '
+                 '--name "{envName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" '
+                 )
+        
+        self.cmd('az devcenter dev environment delete -y '
+                 '--name "{envName}" '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" '
+                 )
+        
+        self.cmd('az devcenter dev environment list '
+                 '--dev-center "{devcenterName}" '
+                 '--project "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
                  ]
                  )

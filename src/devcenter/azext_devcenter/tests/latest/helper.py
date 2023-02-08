@@ -243,20 +243,7 @@ def add_dev_box_user_role_to_project(self):
                  '--assignee "{userId}" '
                  '--scope "{projectId}"')
 
-def create_pool_with_schedule(self):
-    
-    create_network_connection(self)
-
-    self.kwargs.update({
-        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
-        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
-        'osStorageType': "ssd_1024gb",
-        'skuName': "general_a_8c32gb_v1",
-        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
-        'time': "13:00",
-        'timeZone': "America/Los_Angeles"
-    })
-
+def create_pool(self):
     self.cmd('az devcenter admin attached-network create '
              '--dev-center "{devcenterName}" '
              '--name "{attachedNetworkName}" '
@@ -295,7 +282,23 @@ def create_pool_with_schedule(self):
                  '--resource-group "{rg}" '
                  '--time "{time}" '
                  '--time-zone "{timeZone}" '
-                 )
+                 )    
+
+def create_pool_dataplane_dependencies(self):
+    
+    create_network_connection(self)
+
+    self.kwargs.update({
+        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
+        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+        'osStorageType': "ssd_1024gb",
+        'skuName': "general_a_8c32gb_v1",
+        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
+        'time': "13:00",
+        'timeZone': "America/Los_Angeles"
+    })
+
+    create_pool(self)
 
 def add_deployment_env_user_role_to_project(self):
     project = self.cmd('az devcenter admin project show '
@@ -322,7 +325,7 @@ def catalog_create_and_sync_cmds(self):
         'branch': 'main',
         'path': "/Catalog_v2",
         'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-        'uri': "https://github.com/gitHubUse/gitHubProj.git"
+        'uri': "https://domain.com/dummy/dummy.git"
     })
 
     self.cmd('az devcenter admin catalog create '
@@ -357,7 +360,7 @@ def create_proj_env_type(self):
         'ownerRole': "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
     })
 
-    create_dev_center_with_identity(self)
+    create_dev_center_with_identities(self)
     create_project(self)
     add_deployment_env_user_role_to_project(self)
     create_env_type(self)
@@ -375,12 +378,46 @@ def create_proj_env_type(self):
                 '--resource-group "{rg}"'
                 )
 
+def add_role_to_subscription(self):
+    if (self.is_live):
+        self.cmd('az role assignment create --role "Owner" '
+                 '--assignee "{identityPrincipalId}" '
+                 '--scope "/subscriptions/{subscriptionId}"')
+
+
+def create_dev_center_with_identities(self):
+    self.kwargs.update({
+        'devcenterName': self.create_random_name(prefix='cli', length=24),
+        'identityName': self.create_random_name(prefix='testid_', length=24)
+    })
+
+    test_identity = create_identity(self)
+
+    self.kwargs.update({
+        'userAssignedIdentity': test_identity['id'],
+        'identityPrincipalId': test_identity['principalId']
+    })
+
+    dev_center = self.cmd('az devcenter admin devcenter create '
+                          '--identity-type "SystemAssigned, UserAssigned" '
+                          '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+                          '--location "{location}" '
+                          '--tags CostCode="12345" '
+                          '--name "{devcenterName}" '
+                          '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'devCenterId': dev_center['id']
+    })
+
+
 def create_environment_dependencies(self):
     create_proj_env_type(self)
+    add_role_to_subscription(self)
     create_kv_policy(self)
     catalog_create_and_sync_cmds(self)
 
-def create_pool(self):
+def create_dev_box_dependencies(self):
     self.kwargs.update({
         'devcenterName': self.create_random_name(prefix='cli', length=24),
     })
@@ -388,4 +425,17 @@ def create_pool(self):
     create_dev_center(self)
     create_project(self)
     add_dev_box_user_role_to_project(self)
-    create_pool_with_schedule(self)
+    create_network_connection(self)
+
+    self.kwargs.update({
+        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+        'osStorageType': "ssd_1024gb",
+        'skuName': "general_a_8c32gb_v1",
+        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
+        'time': "18:30",
+        'timeZone': "America/Los_Angeles"
+    })
+
+    create_pool(self)
+

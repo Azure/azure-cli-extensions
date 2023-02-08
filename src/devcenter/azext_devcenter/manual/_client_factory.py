@@ -57,10 +57,6 @@ def cf_environment_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
 
-def cf_artifact_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).artifacts
-
-
 def cf_catalog_item_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_items
 

@@ -13,7 +13,6 @@ from azext_devcenter.manual._client_factory import (
     cf_schedule_dp,
     cf_dev_box_dp,
     cf_environment_dp,
-    cf_artifact_dp,
     cf_catalog_item_dp,
     cf_catalog_item_version_dp,
     cf_environment_type_dp,
@@ -44,12 +43,6 @@ from azext_devcenter.generated._client_factory import (
 def load_command_table(self, _):
 
     # data plane
-    devcenter_artifact_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._artifacts_operations#ArtifactsOperations.{}"
-        ),
-        client_factory=cf_artifact_dp,
-    )
 
     devcenter_pool_dp = CliCommandType(
         operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._pool_operations#PoolOperations.{}",
@@ -254,9 +247,6 @@ def load_command_table(self, _):
             "skip-upcoming-action", "devcenter_dev_box_skip_upcoming_action"
         )
 
-    with self.command_group("devcenter dev artifact", devcenter_artifact_dp) as g:
-        g.custom_command("list", "devcenter_artifact_list")
-
     with self.command_group(
         "devcenter dev catalog-item", devcenter_catalog_item_dp
     ) as g:
@@ -282,11 +272,6 @@ def load_command_table(self, _):
             "devcenter_environment_delete",
             supports_no_wait=True,
             confirmation=True,
-        )
-        g.custom_command(
-            "custom-action",
-            "devcenter_environment_custom_action",
-            supports_no_wait=True,
         )
         g.custom_command(
             "deploy-action",
