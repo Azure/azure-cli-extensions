@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.1.2
+++++++
+* Add exmaple for `az automanage configuration-profile create` of datetime array format
 
 0.1.1
 ++++++
