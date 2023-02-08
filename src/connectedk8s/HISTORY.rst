@@ -2,6 +2,26 @@
 
 Release History
 ===============
+1.3.11
+++++++
+
+* Added support for custom AAD token
+* Removed ARM64 unsupported warning
+* Increased helm delete timeout for ARM64 clusters
+* Added multi-architectural images for troubleshoot* Delete azure-arc-release NS if exists as part of delete command
+
+1.3.10
+++++++
+
+* Added CLI heuristics change
+* Added AKS IOT infra support 
+* Bug Fix in precheckutils
+
+1.3.9
+++++++
+
+* Added DNS and outbound connectivity prechecks in connect command
+
 1.3.8
 ++++++
 
