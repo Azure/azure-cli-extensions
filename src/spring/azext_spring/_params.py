@@ -34,12 +34,8 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
-
-from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
-from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
-from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType, BindingType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
