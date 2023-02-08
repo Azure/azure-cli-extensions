@@ -64,7 +64,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003?api-version=2022-01-31-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"077395a2-c8be-417e-affa-3fc42c1c243d","clientId":"be40e21f-f6e6-47d6-a323-2f6d6071355f"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"00000000-0000-0000-0000-000000000000","principalId":"077395a2-c8be-417e-affa-3fc42c1c243d","clientId":"be40e21f-f6e6-47d6-a323-2f6d6071355f"}}'
     headers:
       cache-control:
       - no-cache
@@ -262,7 +262,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-04T02:13:29.9558485Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-04T02:13:29.9558485Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"077395a2-c8be-417e-affa-3fc42c1c243d","clientId":"be40e21f-f6e6-47d6-a323-2f6d6071355f"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-04T02:13:29.9558485Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-04T02:13:29.9558485Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"077395a2-c8be-417e-affa-3fc42c1c243d","clientId":"be40e21f-f6e6-47d6-a323-2f6d6071355f"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -416,7 +416,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-04T02:14:36.2916507Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-04T02:14:36.2916507Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-04T02:14:36.2916507Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-04T02:14:36.2916507Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -464,7 +464,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-04T02:14:36.2916507Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-04T02:14:36.2916507Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"westus3","systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-04T02:14:36.2916507Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-04T02:14:36.2916507Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -973,7 +973,7 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
@@ -1025,14 +1025,14 @@ interactions:
       - AZURECLI/2.44.1 azsdk-python-devcenterdataplaneclient/unknown Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems?api-version=2022-11-11-preview
+    uri: https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems?api-version=2022-11-11-preview
   response:
     body:
-      string: "{\n  \"value\": [\n    {\n      \"id\": \"72f988bf-86f1-41af-91ab-2d7cd011db47:cli000002:c2000005:empty\",\n
+      string: "{\n  \"value\": [\n    {\n      \"id\": \"00000000-0000-0000-0000-000000000000:cli000002:c2000005:empty\",\n
         \     \"name\": \"Empty\",\n      \"catalogName\": \"c2000005\"\n    },\n
-        \   {\n      \"id\": \"72f988bf-86f1-41af-91ab-2d7cd011db47:cli000002:c2000005:functionapp\",\n
+        \   {\n      \"id\": \"00000000-0000-0000-0000-000000000000:cli000002:c2000005:functionapp\",\n
         \     \"name\": \"FunctionApp\",\n      \"catalogName\": \"c2000005\"\n    },\n
-        \   {\n      \"id\": \"72f988bf-86f1-41af-91ab-2d7cd011db47:cli000002:c2000005:webapp\",\n
+        \   {\n      \"id\": \"00000000-0000-0000-0000-000000000000:cli000002:c2000005:webapp\",\n
         \     \"name\": \"WebApp\",\n      \"catalogName\": \"c2000005\"\n    }\n
         \ ]\n}"
     headers:
@@ -1084,7 +1084,7 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
@@ -1136,10 +1136,10 @@ interactions:
       - AZURECLI/2.44.1 azsdk-python-devcenterdataplaneclient/unknown Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems/72f988bf-86f1-41af-91ab-2d7cd011db47%3Acli000002%3Ac2000005%3Aempty?api-version=2022-11-11-preview
+    uri: https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems/00000000-0000-0000-0000-000000000000%3Acli000002%3Ac2000005%3Aempty?api-version=2022-11-11-preview
   response:
     body:
-      string: "{\n  \"id\": \"72f988bf-86f1-41af-91ab-2d7cd011db47:cli000002:c2000005:empty\",\n
+      string: "{\n  \"id\": \"00000000-0000-0000-0000-000000000000:cli000002:c2000005:empty\",\n
         \ \"name\": \"Empty\",\n  \"catalogName\": \"c2000005\"\n}"
     headers:
       connection:
@@ -1188,7 +1188,7 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
@@ -1240,10 +1240,10 @@ interactions:
       - AZURECLI/2.44.1 azsdk-python-devcenterdataplaneclient/unknown Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems/72f988bf-86f1-41af-91ab-2d7cd011db47%3Acli000002%3Ac2000005%3Aempty/versions?api-version=2022-11-11-preview
+    uri: https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems/00000000-0000-0000-0000-000000000000%3Acli000002%3Ac2000005%3Aempty/versions?api-version=2022-11-11-preview
   response:
     body:
-      string: "{\n  \"value\": [\n    {\n      \"catalogItemId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47:cli000002:c2000005:empty:1.0.0\",\n
+      string: "{\n  \"value\": [\n    {\n      \"catalogItemId\": \"00000000-0000-0000-0000-000000000000:cli000002:c2000005:empty:1.0.0\",\n
         \     \"actions\": [],\n      \"catalogItemName\": \"Empty\",\n      \"catalogName\":
         \"c2000005\",\n      \"version\": \"1.0.0\",\n      \"summary\": \"Empty environment\",\n
         \     \"description\": \"Deploys an empty environment\",\n      \"templatePath\":
@@ -1299,7 +1299,7 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
+      string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
@@ -1351,10 +1351,10 @@ interactions:
       - AZURECLI/2.44.1 azsdk-python-devcenterdataplaneclient/unknown Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems/72f988bf-86f1-41af-91ab-2d7cd011db47%3Acli000002%3Ac2000005%3Aempty/versions/1.0.0?api-version=2022-11-11-preview
+    uri: https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/projects/cli000004/catalogItems/00000000-0000-0000-0000-000000000000%3Acli000002%3Ac2000005%3Aempty/versions/1.0.0?api-version=2022-11-11-preview
   response:
     body:
-      string: "{\n  \"catalogItemId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47:cli000002:c2000005:empty:1.0.0\",\n
+      string: "{\n  \"catalogItemId\": \"00000000-0000-0000-0000-000000000000:cli000002:c2000005:empty:1.0.0\",\n
         \ \"actions\": [],\n  \"catalogItemName\": \"Empty\",\n  \"catalogName\":
         \"c2000005\",\n  \"version\": \"1.0.0\",\n  \"summary\": \"Empty environment\",\n
         \ \"description\": \"Deploys an empty environment\",\n  \"templatePath\":

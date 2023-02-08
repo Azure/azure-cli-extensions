@@ -64,7 +64,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003?api-version=2022-01-31-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"b0602502-f9e7-479b-aad1-16b1f56e5886","clientId":"c8123681-886d-472d-b81f-863664637ddf"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"00000000-0000-0000-0000-000000000000","principalId":"b0602502-f9e7-479b-aad1-16b1f56e5886","clientId":"c8123681-886d-472d-b81f-863664637ddf"}}'
     headers:
       cache-control:
       - no-cache
@@ -262,7 +262,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-01-20T21:36:03.518699Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-20T21:36:03.518699Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"b0602502-f9e7-479b-aad1-16b1f56e5886","clientId":"c8123681-886d-472d-b81f-863664637ddf"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-01-20T21:36:03.518699Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-20T21:36:03.518699Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"b0602502-f9e7-479b-aad1-16b1f56e5886","clientId":"c8123681-886d-472d-b81f-863664637ddf"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -1083,7 +1083,7 @@ interactions:
         \ \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\":
         \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\",\r\n
         \   \"principalId\": \"9d421e0d-e323-47c0-938c-21194709630a\",\r\n    \"tenantId\":
-        \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"properties\": {\r\n
+        \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"vmId\": \"fcb3f993-1aaf-4b21-af31-db050c45e672\",\r\n    \"hardwareProfile\":
         {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n    \"storageProfile\":
         {\r\n      \"imageReference\": {\r\n        \"publisher\": \"MicrosoftWindowsDesktop\",\r\n
@@ -5416,7 +5416,7 @@ interactions:
         \ \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\":
         \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\",\r\n
         \   \"principalId\": \"9d421e0d-e323-47c0-938c-21194709630a\",\r\n    \"tenantId\":
-        \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"properties\": {\r\n
+        \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"vmId\": \"fcb3f993-1aaf-4b21-af31-db050c45e672\",\r\n    \"hardwareProfile\":
         {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n    \"storageProfile\":
         {\r\n      \"imageReference\": {\r\n        \"publisher\": \"MicrosoftWindowsDesktop\",\r\n
@@ -5668,7 +5668,7 @@ interactions:
         \ \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\":
         \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\",\r\n
         \   \"principalId\": \"9d421e0d-e323-47c0-938c-21194709630a\",\r\n    \"tenantId\":
-        \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"properties\": {\r\n
+        \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"vmId\": \"fcb3f993-1aaf-4b21-af31-db050c45e672\",\r\n    \"hardwareProfile\":
         {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n    \"storageProfile\":
         {\r\n      \"imageReference\": {\r\n        \"publisher\": \"MicrosoftWindowsDesktop\",\r\n
