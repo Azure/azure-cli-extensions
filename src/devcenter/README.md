@@ -8,7 +8,7 @@ az extension add --name devcenter
 ```
 
 ### Usage ###
-See the [Microsoft Dev Box Preview Azure CLI reference](https://learn.microsoft.com/azure/dev-box/cli-reference-subset) and the [Azure Deployment Environments Azure CLI reference](https://learn.microsoft.com/azure/deployment-environments/how-to-configure-use-cli).
+See [Microsoft Dev Box Preview Azure CLI reference](https://learn.microsoft.com/azure/dev-box/cli-reference-subset) and [Azure Deployment Environments Azure CLI reference](https://learn.microsoft.com/azure/deployment-environments/how-to-configure-use-cli).
  
 #### devcenter admin ####
 Manage admin resources with devcenter
@@ -22,9 +22,11 @@ az devcenter dev
 ```
 
 ### Uninstall ###
-You can see if the extension is installed by running `az extension list`.
-You can see the current version of your extension by running `az --version`.
-You can remove the extension by running:
+Run `az extension list` to see if the extension is installed.
+
+Run `az --version` to see the current verion of the extension. 
+
+To remove the extension use the below CLI command
 ``` sh
 az extension remove --name vmware
 ```
