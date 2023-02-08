@@ -179,4 +179,4 @@ class PoolOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/projects/{projectName}/pools/{poolName}'}  # type: ignore
+    get_pool.metadata = {'url': '/projects/{projectName}/pools/{poolName}'}  # type: ignore
