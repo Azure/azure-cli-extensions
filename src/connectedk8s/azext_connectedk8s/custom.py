@@ -22,7 +22,7 @@ import yaml
 import urllib.request
 import shutil
 from _thread import interrupt_main
-# from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
+from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
 from azure.cli.core import get_default_cli
 from knack.util import CLIError
 from knack.log import get_logger
