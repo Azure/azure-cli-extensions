@@ -31,7 +31,6 @@ from azext_devcenter.generated._client_factory import (
     cf_project_environment_type,
     cf_dev_box_definition,
     cf_operation_statuses,
-    cf_usage,
     cf_sku,
     cf_pool,
     cf_schedule,
@@ -189,11 +188,6 @@ def load_command_table(self, _):
     devcenter_sku = CliCommandType(
         operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._skus_operations#SkusOperations.{}",
         client_factory=cf_sku,
-    )
-
-    devcenter_usage = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._usages_operations#UsagesOperations.{}",
-        client_factory=cf_usage,
     )
 
     devcenter_check_name_availability = CliCommandType(
@@ -525,8 +519,3 @@ def load_command_table(self, _):
         "devcenter admin sku", devcenter_sku, client_factory=cf_sku
     ) as g:
         g.custom_command("list", "devcenter_sku_list")
-
-    with self.command_group(
-        "devcenter admin usage", devcenter_usage, client_factory=cf_usage
-    ) as g:
-        g.custom_command("list", "devcenter_usage_list")

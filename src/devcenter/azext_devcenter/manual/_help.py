@@ -1237,24 +1237,6 @@ helps[
 """
 
 helps[
-    "devcenter admin usage"
-] = """
-    type: group
-    short-summary: Manage usage with devcenter
-"""
-
-helps[
-    "devcenter admin usage list"
-] = """
-    type: command
-    short-summary: "Lists the current usages and limits in this location for the provided subscription."
-    examples:
-      - name: listUsages
-        text: |-
-               az devcenter admin usage list --location "westus"
-"""
-
-helps[
     "devcenter admin check-name-availability"
 ] = """
     type: group

@@ -702,11 +702,6 @@ def devcenter_operation_statuses_show(client,
                       operation_id=operation_id)
 
 
-def devcenter_usage_list(client,
-                         location):
-    return client.list_by_location(location=location)
-
-
 def devcenter_check_name_availability_execute(client,
                                               name=None,
                                               type_=None):
