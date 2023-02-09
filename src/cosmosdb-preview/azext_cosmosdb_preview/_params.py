@@ -173,6 +173,14 @@ def load_arguments(self, _):
         c.argument('restore_point_in_time_utc', options_list=['--restore-point-in-time-utc'], action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to.", arg_group='Restore')
         c.argument('restore_source_resource_id', options_list=['--restore-source-resource-id'], help="The restorable source Id of the source mongo cluster from which the cluster has to be restored", arg_group='Restore')
     
+    with self.argument_context('cosmosdb mongocluster show') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+    
+    with self.argument_context('cosmosdb mongocluster delete') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+
     # Services
     with self.argument_context('cosmosdb service') as c:
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)

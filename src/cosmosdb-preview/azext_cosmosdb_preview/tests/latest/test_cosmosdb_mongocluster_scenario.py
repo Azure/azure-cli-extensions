@@ -32,7 +32,10 @@ class MongoClusterScenarioTest(ScenarioTest):
         })
 
         # Create Cluster
-        created_cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}')
+        create_command = 'az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}'
+        print(create_command)
+        
+        created_cluster = self.cmd(create_command)
         print(created_cluster)
        
         cluster = self.cmd('az cosmosdb mongocluster  show -c {c} -g {rg}').get_output_in_json()

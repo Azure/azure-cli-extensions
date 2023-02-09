@@ -46,6 +46,15 @@ examples:
         --restore-source-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/MyOtherMongoCluster
 """
 
+helps['cosmosdb mongocluster show'] = """
+type: command
+short-summary: Get a Mongo Cluster Resource.
+examples:
+  - name: Gets a Mongo Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster doesnot exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
