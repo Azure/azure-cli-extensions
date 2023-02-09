@@ -91,7 +91,7 @@ def cli_cosmosdb_mongocluster_create(client,
                                     shard_node_disk_size_gb=None, 
                                     shard_enable_ha=None,
                                     shard_node_name=None,
-                                    shard_kind= NodeKind.SHARD,
+                                    shard_kind=NodeKind.SHARD,
                                     shard_node_count=1):
 
     '''Creates an Azure Cosmos DB Mongo Cluster '''
@@ -149,7 +149,7 @@ def cli_cosmosdb_mongocluster_update(client,
                                         shard_node_disk_size_gb=None, 
                                         shard_enable_ha=None,
                                         shard_node_name=None,
-                                        shard_kind= NodeKind.SHARD,
+                                        shard_kind=NodeKind.SHARD,
                                         shard_node_count=1):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
