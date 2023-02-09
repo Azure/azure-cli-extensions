@@ -109,7 +109,7 @@ class Create(AAZCommand):
             options=["--storage-setting"],
             singular_options=["--storage-settings"],
             arg_group="Properties",
-            help={"short-summary": "Storage Settings. Usage: --storage-setting \"[{type:'LocallyRedundant',datastore-type:'VaultStore'}]\"", "long-summary": "Multiple actions can be specified by using more than one --storage-setting argument.\nThe --storage-settings parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-settings: --storage-settings  type=XX datastore-type=XX."},
+            help={"short-summary": "Storage Settings. Usage: --storage-setting \"[{type:'LocallyRedundant',datastore-type:'VaultStore'}]\"", "long-summary": "Multiple actions can be specified by using more than one --storage-setting argument.\nThe \"--storage-settings\" parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-settings: --storage-settings type=XX datastore-type=XX."},
             required=True,
         )
 
