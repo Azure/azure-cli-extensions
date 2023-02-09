@@ -2172,6 +2172,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_enable_namespace_resource(self, mc: ManagedCluster) -> ManagedCluster:
+        """Sets the property to enable namespace as an ARM resource
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.raw_param.get("enable_namespace_resources"):
+            mc.enable_namespace_resources = True
+        
+        return mc
+
     def set_up_custom_ca_trust_certificates(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up Custom CA Trust Certificates for the ManagedCluster object.
 
@@ -2290,6 +2301,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
         mc = self.set_up_vpa(mc)
+        # set up the enableNamespaceResources properties
+        mc = self.set_up_enable_namespace_resource(mc)
         # set up kube-proxy config
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
@@ -2668,6 +2681,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.security_profile.custom_ca_trust_certificates = ca_certs
 
         return mc
+        
+    def update_enable_namespace_resources(self, mc: ManagedCluster) -> ManagedCluster:
+        """Sets the property to enable namespace as an ARM resource
+                :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+        if self.context.raw_param.get("enable_namespace_resources"):
+            mc.enable_namespace_resources = True
+
+        elif self.context.raw_param.get("disable_namespace_resources"):
+            mc.enable_namespace_resources = False
+        
+        return mc
+        
 
     def update_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure monitor profile for the ManagedCluster object.
@@ -2852,6 +2879,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
+        # update the enbaleNamespaceResources property
+        mc = self.update_enable_namespace_resources(mc)
         # update azure monitor metrics profile
         mc = self.update_azure_monitor_profile(mc)
         # update vpa

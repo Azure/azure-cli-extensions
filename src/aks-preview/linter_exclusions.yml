@@ -21,6 +21,9 @@ aks create:
     enable_workload_identity:
       rule_exclusions:
         - option_length_too_long
+    enable_namespace_resources:
+      rule_exclusions:
+        - option_length_too_long
     disable_snapshot_controller:
       rule_exclusions:
         - option_length_too_long
@@ -75,6 +78,12 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     enable_workload_identity:
+      rule_exclusions:
+        - option_length_too_long
+    enable_namespace_resources:
+      rule_exclusions:
+        - option_length_too_long
+    disable_namespace_resources:
       rule_exclusions:
         - option_length_too_long
     enable_snapshot_controller:

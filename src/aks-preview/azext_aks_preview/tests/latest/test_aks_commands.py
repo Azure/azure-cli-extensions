@@ -18,7 +18,7 @@ from azext_aks_preview._consts import (
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
-from azure.cli.core.azclierror import AzureInternalError, BadRequestError
+from azure.cli.core.azclierror import AzureInternalError, BadRequestError, MutuallyExclusiveArgumentError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
@@ -386,6 +386,62 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.232.0.0/16")
         ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_create_with_namespace_enabled(self, resource_group, resource_group_location="eastus"):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-namespace-resources --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('enableNamespaceResources', True)
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_update_enable_namespace(self, resource_group, resource_group_location="eastus"):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+        
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --enable-namespace-resources'
+        self.cmd(update_cmd, checks=[
+            self.check('enableNamespaceResources', True)
+        ])
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --disable-namespace-resources'
+        self.cmd(update_cmd, checks=[
+            self.check('enableNamespaceResources', False)
+        ])
+
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_get_credentials_at_namespace_scope(self, resource_group):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-namespace-resources --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd)
+        print("Cluster created, sleeping for 300 seconds")
+        time.sleep(300) # Sleep for 300 seconds to allow hydration of namespaces
+        get_credentials_command = 'aks get-credentials --resource-group={resource_group} --name={name} --namespace default'
+        with self.assertRaisesRegexp(HttpResponseError, ".* ListUserCredentials for Namespaces is not supported for non AAD clusters.*"): # ListUserCredential will fail for non-aad clusters. By verifying this error, we can verify that the call has reached the RP.
+            self.cmd(get_credentials_command) 
 
     @live_only()
     @AllowLargeResponse()

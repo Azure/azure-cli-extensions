@@ -701,6 +701,9 @@ def sanitize_resource_id(resource_id):
         resource_id = resource_id.rstrip("/")
     return resource_id.lower()
 
+def validate_enable_disable_namespace_resources(namespace):
+    if namespace.enable_namespace_resources and namespace.disable_namespace_resources:
+        raise ArgumentUsageError("Providing both --enable-namespace-resources and --disable-namespace-resources is invalid")
 
 def validate_azuremonitorworkspaceresourceid(namespace):
     resource_id = namespace.azure_monitor_workspace_resource_id

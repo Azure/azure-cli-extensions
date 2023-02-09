@@ -149,6 +149,7 @@ from azext_aks_preview._validators import (
     validate_disable_windows_outbound_nat,
     validate_allowed_host_ports,
     validate_application_security_groups,
+    validate_enable_disable_namespace_resources,
     validate_utc_offset,
     validate_start_date,
     validate_start_time,
@@ -396,6 +397,7 @@ def load_arguments(self, _):
         # no validation for aks create because it already only supports Linux.
         c.argument('message_of_the_day')
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        c.argument('enable_namespace_resources', action="store_true", help='Enable sync of namespaces as Azure Resource Manager resources')
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
         c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
@@ -512,6 +514,8 @@ def load_arguments(self, _):
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, is_preview=True, help="path to file containing list of new line separated CAs")
+        c.argument('enable_namespace_resources', action='store_true', help='Enable sync of namespaces as Azure Resource Manager resources', validator=validate_enable_disable_namespace_resources)
+        c.argument('disable_namespace_resources', action='store_true', help='Disable sync of namespaces as Azure Resource Manager resources')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -734,6 +738,7 @@ def load_arguments(self, _):
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
         c.argument('credential_format', options_list=['--format'], arg_type=get_enum_type(credential_formats))
+        c.argument('namespace_name', options_list=['--namespace'], help='User only having access to namespace resource can use this parameter to specify the namespace name.')
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', help='The cluster name.')
