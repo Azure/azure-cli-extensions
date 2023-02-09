@@ -109,7 +109,7 @@ class Create(AAZCommand):
             options=["--storage-setting"],
             singular_options=["--storage-settings"],
             arg_group="Properties",
-            help={"short-summary": "Storage Settings. Usage: --storage-settings type=XX datastore-type=XX.", "long-summary": "datastore-type: Gets or sets the type of the datastore.\ntype: Gets or sets the type\nMultiple actions can be specified by using more than one --storage-settings argument.\nUsage for --storage-setting: --storage-setting \"[{type:'XX',datastore-type:'XX'}]\""},
+            help={"short-summary": "Storage Settings. Usage: --storage-settings type=XX datastore-type=XX.", "long-summary": "Multiple actions can be specified by using more than one --storage-settings argument.\nThe --storage-settings parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-setting: --storage-setting \"[{type:'XX',datastore-type:'XX'}]\"."},
             required=True,
         )
 
