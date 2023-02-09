@@ -13,6 +13,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from knack.util import CLIError
 
+from azext_containerapp.tests.latest.common import TEST_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -21,10 +22,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerAppUpImageTest(ScenarioTest):
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_image_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
