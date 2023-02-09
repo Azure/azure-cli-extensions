@@ -198,7 +198,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             raise ValidationError("Execution of pre-onboarding checks failed and hence not proceeding with cluster onboarding. Please meet the prerequisites - 'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites' and try onboarding again.")
         else:
             raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
-		    
 
     if not required_node_exists:
         telemetry.set_user_fault()
