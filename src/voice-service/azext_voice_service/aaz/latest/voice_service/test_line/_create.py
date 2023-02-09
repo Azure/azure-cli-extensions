@@ -12,29 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "automanage configuration-profile create",
+    "voice-service test-line create",
 )
 class Create(AAZCommand):
-    """Create a configuration profile
+    """Create a test line
 
-    :example: create configuration-profile
-        az automanage configuration-profile create -n {profile_name} -g {rg} --configuration '{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}'
-
-    :example: create with datatime array
-        az automanage configuration-profile create -n {profile_name} -g {rg} --configuration '{"Backup/SchedulePolicy/ScheduleRunTimes":["2023-02-10T18:25:43.511Z", "2023-02-12T01:02:03.456Z"],"Backup/RetentionPolicy/DailySchedule/RetentionTimes":["2023-02-10T18:25:43.511Z", "2023-02-12T01:02:03.456Z"]}'
+    :example: Create test line
+        az voice-service test-line create -n test-line-name -g rg --gateway-name gateway-name --phone-number "+1-555-1234" --purpose Automated
     """
 
     _aaz_info = {
-        "version": "2022-05-04",
+        "version": "2023-01-31",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automanage/configurationprofiles/{}", "2022-05-04"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.voiceservices/communicationsgateways/{}/testlines/{}", "2023-01-31"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -47,20 +45,46 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_profile_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-profile-name"],
-            help="Name of the configuration profile.",
+        _args_schema.gateway_name = AAZStrArg(
+            options=["--gateway-name"],
+            help="Unique identifier for this deployment",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,24}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.test_line_name = AAZStrArg(
+            options=["-n", "--name", "--test-line-name"],
+            help="Unique identifier for this test line",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,24}$",
+            ),
+        )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.phone_number = AAZStrArg(
+            options=["--phone-number"],
+            arg_group="Properties",
+            help="The phone number",
+        )
+        _args_schema.purpose = AAZStrArg(
+            options=["--purpose"],
+            arg_group="Properties",
+            help="Purpose of this test line, e.g. automated or manual testing",
+            enum={"Automated": "Automated", "Manual": "Manual"},
+        )
+
+        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
+            arg_group="Resource",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
@@ -69,26 +93,17 @@ class Create(AAZCommand):
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Parameters",
+            arg_group="Resource",
             help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.configuration = AAZFreeFormDictArg(
-            options=["--configuration"],
-            arg_group="Properties",
-            help="configuration dictionary of the configuration profile.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ConfigurationProfilesCreateOrUpdate(ctx=self.ctx)()
+        yield self.TestLinesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -103,21 +118,37 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ConfigurationProfilesCreateOrUpdate(AAZHttpOperation):
+    class TestLinesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automanage/configurationProfiles/{configurationProfileName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VoiceServices/communicationsGateways/{communicationsGatewayName}/testLines/{testLineName}",
                 **self.url_parameters
             )
 
@@ -133,7 +164,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationProfileName", self.ctx.args.configuration_profile_name,
+                    "communicationsGatewayName", self.ctx.args.gateway_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -144,6 +175,10 @@ class Create(AAZCommand):
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
+                **self.serialize_url_param(
+                    "testLineName", self.ctx.args.test_line_name,
+                    required=True,
+                ),
             }
             return parameters
 
@@ -151,7 +186,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-04",
+                    "api-version", "2023-01-31",
                     required=True,
                 ),
             }
@@ -177,16 +212,13 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("configuration", AAZFreeFormDictType, ".configuration")
-
-            configuration = _builder.get(".properties.configuration")
-            if configuration is not None:
-                configuration.set_anytype_elements(".")
+                properties.set_prop("phoneNumber", AAZStrType, ".phone_number", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("purpose", AAZStrType, ".purpose", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -221,7 +253,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -232,7 +266,16 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.configuration = AAZFreeFormDictType()
+            properties.phone_number = AAZStrType(
+                serialized_name="phoneNumber",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            properties.purpose = AAZStrType(
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
