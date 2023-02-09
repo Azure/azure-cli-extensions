@@ -173,7 +173,7 @@ class AppCRUD(ScenarioTest):
         ])
 
 
-@record_only()
+#@record_only()
 class BlueGreenTest(ScenarioTest):
 
     def test_blue_green_deployment(self):

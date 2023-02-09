@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from time import time
 import unittest
 import os
 from azure.cli.core.azclierror import ResourceNotFoundError
@@ -84,7 +83,7 @@ class TestSetActiveDeploy(BasicTest):
         request = call_args[0][0][3]
         self.assertEqual(0, len(request.active_deployment_names))
 
-    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
+    @mock.patch('azext_spring._client_factory.cf_spring', autospec=True)
     def test_blue_green_standard(self, client_mock_factory):
         client_mock = self._get_basic_mock_client(sku='Standard')
         client_mock_factory.return_value = client_mock
@@ -96,7 +95,7 @@ class TestSetActiveDeploy(BasicTest):
         request = call_args[0][0][3]
         self.assertEqual('default', request.properties.active_deployment_name)
 
-    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
+    @mock.patch('azext_spring._client_factory.cf_spring', autospec=True)
     def test_unset_active_standard(self, client_mock_factory):
         client_mock = self._get_basic_mock_client(sku='Standard')
         client_mock_factory.return_value = client_mock
