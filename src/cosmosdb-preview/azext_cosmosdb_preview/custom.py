@@ -78,34 +78,36 @@ def _handle_exists_exception(cloud_error):
 
 def cli_cosmosdb_mongocluster_create(client,
                                     resource_group_name,
-                                    mongocluster_name,
+                                    cluster_name,
                                     administrator_login,
                                     administrator_login_password,
                                     location,
                                     tags=None,
-                                    create_mode=CreateMode.CreateMode.DEFAULT,
+                                    create_mode=CreateMode.DEFAULT.value,
                                     restore_point_in_time_utc=None,
                                     restore_source_resource_id=None,
                                     server_version="5.0",
                                     shard_node_sku=None,
                                     shard_node_disk_size_gb=None, 
-                                    shard_enable_ha=None,
+                                    shard_node_ha=None,
                                     shard_node_name=None,
-                                    shard_kind=NodeKind.SHARD,
+                                    shard_kind=NodeKind.SHARD.value,
                                     shard_node_count=1):
 
     '''Creates an Azure Cosmos DB Mongo Cluster '''
 
+    logger.debug("Ashwini")
+
     if administrator_login is None:
         raise InvalidArgumentValueError('Initial Mongo Cluster Admin user is required.')
 
-    if administrator_login_password is not None :
-        raise InvalidArgumentValueError('Initial Mongo CLuster Admin Password is required.')
+    if administrator_login_password is None :
+        raise InvalidArgumentValueError('Initial Mongo Cluster Admin Password is required.')
 
-    if restore_point_in_time_utc is not None & restore_source_resource_id is None:
+    if restore_point_in_time_utc is not None and restore_source_resource_id is None:
         raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
 
-    if restore_point_in_time_utc is None & restore_source_resource_id is not None:
+    if restore_point_in_time_utc is None and restore_source_resource_id is not None:
         raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
     
     mongocluster_restore_parameters = MongoClusterRestoreParameters(
@@ -116,13 +118,13 @@ def cli_cosmosdb_mongocluster_create(client,
     node_group_spec = NodeGroupSpec(
         sku= shard_node_sku,
         disk_size_gb= shard_node_disk_size_gb,
-        enable_ha=shard_enable_ha,
+        enable_ha=shard_node_ha,
         name= shard_node_name,
         kind=shard_kind,
         node_count= shard_node_count
     )
     
-    node_group_specs = list(node_group_spec)
+    node_group_specs = [node_group_spec]
     mongodb_cluster = MongoCluster(
         location=location,
         tags=tags,
@@ -133,15 +135,15 @@ def cli_cosmosdb_mongocluster_create(client,
         server_version=server_version,
         node_group_specs=node_group_specs)
 
-    return client.begin_create_or_update(resource_group_name, mongocluster_name, mongodb_cluster)
+    return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
 
 def cli_cosmosdb_mongocluster_update(client,
                                         resource_group_name,
-                                        mongocluster_name,
+                                        cluster_name,
                                         administrator_login,
                                         administrator_login_password,
                                         tags=None,
-                                        create_mode=CreateMode.CreateMode.DEFAULT,
+                                        create_mode=CreateMode.DEFAULT.value,
                                         restore_point_in_time_utc=None,
                                         restore_source_resource_id=None,
                                         server_version="5.0",
@@ -149,7 +151,7 @@ def cli_cosmosdb_mongocluster_update(client,
                                         shard_node_disk_size_gb=None, 
                                         shard_enable_ha=None,
                                         shard_node_name=None,
-                                        shard_kind=NodeKind.SHARD,
+                                        shard_kind=NodeKind.SHARD.value,
                                         shard_node_count=1):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
@@ -196,10 +198,10 @@ def cli_cosmosdb_mongocluster_update(client,
         shard_node_count= mongo_cluster_resource.node_group_specs[0].node_count
 
     # Validate restore paremeters.
-    if restore_point_in_time_utc is not None & restore_source_resource_id is None:
+    if restore_point_in_time_utc is not None and restore_source_resource_id is None:
         raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
 
-    if restore_point_in_time_utc is None & restore_source_resource_id is not None:
+    if restore_point_in_time_utc is None and restore_source_resource_id is not None:
         raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
 
     mongocluster_restore_parameters = MongoClusterRestoreParameters(
