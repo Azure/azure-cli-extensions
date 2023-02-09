@@ -19,10 +19,10 @@ class Create(AAZCommand):
     """Create a BackupVault resource belonging to a resource group.
 
     :example: Create BackupVault
-        az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+        az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 
     :example: Create BackupVault With MSI
-        az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+        az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
     """
 
     _aaz_info = {
@@ -109,7 +109,7 @@ class Create(AAZCommand):
             options=["--storage-setting"],
             singular_options=["--storage-settings"],
             arg_group="Properties",
-            help={"short-summary": "Storage Settings. Usage: --storage-settings type=XX datastore-type=XX.", "long-summary": "Multiple actions can be specified by using more than one --storage-settings argument.\nThe --storage-settings parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-setting: --storage-setting \"[{type:'XX',datastore-type:'XX'}]\"."},
+            help={"short-summary": "Storage Settings. Usage: --storage-setting \"[{type:'LocallyRedundant',datastore-type:'VaultStore'}]\"", "long-summary": "Multiple actions can be specified by using more than one --storage-setting argument.\nThe --storage-settings parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-settings: --storage-settings  type=XX datastore-type=XX."},
             required=True,
         )
 
