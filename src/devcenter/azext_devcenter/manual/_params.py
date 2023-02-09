@@ -1718,9 +1718,6 @@ def load_arguments(self, _):
             id_part="child_name_1",
         )
 
-    with self.argument_context("devcenter admin usage list") as c:
-        c.argument("location", arg_type=get_location_type(self.cli_ctx))
-
     with self.argument_context("devcenter admin check-name-availability execute") as c:
         c.argument(
             "name",
