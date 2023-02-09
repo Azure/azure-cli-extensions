@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.3.13
+++++++
+
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+* Additon of live mode e2e tests 
+
 1.3.12
 ++++++
 

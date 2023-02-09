@@ -194,7 +194,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
-        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+        if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
+            raise ValidationError("Execution of pre-onboarding checks failed and hence not proceeding with cluster onboarding. Please meet the prerequisites - 'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites' and try onboarding again.")
+        else:
+            raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+		    
 
     if not required_node_exists:
         telemetry.set_user_fault()
