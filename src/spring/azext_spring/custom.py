@@ -508,8 +508,7 @@ def deployment_generate_thread_dump(cmd, client, resource_group, service, app, a
 
 def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
                          deployment=None):
-    diagnostic_parameters = models.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
-                                                                        duration=duration)
+    diagnostic_parameters = models.DiagnosticParameters(app_instance=app_instance, file_path=file_path, duration=duration)
     logger.info("JFR is triggered.")
     return client.deployments.begin_start_jfr(resource_group, service, app, deployment.name, diagnostic_parameters)
 
