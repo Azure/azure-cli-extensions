@@ -83,7 +83,7 @@ class StorageMoverScenario(ScenarioTest):
                          ])
         # create for nfs
         vm_ip = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
-                 'NONE --admin-username ubuntuuser').get_output_in_json()["publicIpAddress"]
+                 'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_nfs} --description endpointDesc --export exportfolder --nfs-version NFSv4 --host '+vm_ip)
         self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}',
@@ -144,7 +144,7 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage container create -n {target_container} --account-name {account_name} '
                  '--account-key {account_key}')
         vm_ip = self.cmd('az vm create -n {source_vm} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
-                         'NONE --admin-username ubuntuuser').get_output_in_json()["publicIpAddress"]
+                         'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {source_endpoint} --description srcendpointDesc --export exportfolder --nfs-version NFSv4 '
                  '--host ' + vm_ip)

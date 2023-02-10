@@ -21,7 +21,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2022-09-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"creationTime":"2023-02-07T08:22:42.4763100Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2023-02-07T08:22:42.4763100Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2023-02-10T05:23:57.6281688Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2023-02-10T05:23:57.6281688Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Feb 2023 08:23:19 GMT
+      - Fri, 10 Feb 2023 05:24:35 GMT
       expires:
       - '-1'
       pragma:
@@ -70,7 +70,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2022-09-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-02-07T08:22:42.4763100Z","key2":"2023-02-07T08:22:42.4763100Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-02-07T08:22:43.2731475Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-02-07T08:22:43.2731475Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2023-02-07T08:22:42.3669001Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-02-10T05:23:57.6281688Z","key2":"2023-02-10T05:23:57.6281688Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-02-10T05:23:58.4875710Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-02-10T05:23:58.4875710Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2023-02-10T05:23:57.5033206Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 07 Feb 2023 08:23:19 GMT
+      - Fri, 10 Feb 2023 05:24:36 GMT
       expires:
       - '-1'
       pragma:
@@ -121,7 +121,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003","name":"storage-mover000003","type":"microsoft.storagemover/storagemovers","location":"eastus2","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:24.5419229Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:23:24.5419229Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003","name":"storage-mover000003","type":"microsoft.storagemover/storagemovers","location":"eastus2","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:41.1027144Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:24:41.1027144Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -130,13 +130,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:27 GMT
+      - Fri, 10 Feb 2023 05:24:43 GMT
       etag:
-      - '"f5063c6e-0000-0100-0000-63e20a7d0000"'
+      - '"0100f15d-0000-0100-0000-63e5d51a0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - ec779839-d55a-4b44-991b-c5e3668593a4
+      - 6dcf3fd6-f9e2-473d-953b-fe7b2fb9da85
       pragma:
       - no-cache
       strict-transport-security:
@@ -172,7 +172,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-storage-blob/12.12.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
       x-ms-date:
-      - Tue, 07 Feb 2023 08:23:27 GMT
+      - Fri, 10 Feb 2023 05:24:44 GMT
       x-ms-version:
       - '2021-06-08'
     method: PUT
@@ -184,11 +184,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 07 Feb 2023 08:23:28 GMT
+      - Fri, 10 Feb 2023 05:24:44 GMT
       etag:
-      - '"0x8DB08E4976D51DE"'
+      - '"0x8DB0B271EFC16E3"'
       last-modified:
-      - Tue, 07 Feb 2023 08:23:28 GMT
+      - Fri, 10 Feb 2023 05:24:45 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -220,7 +220,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:29.5318348Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:23:29.5318348Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:46.2230654Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:24:46.2230654Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -229,13 +229,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:30 GMT
+      - Fri, 10 Feb 2023 05:24:47 GMT
       etag:
-      - '"6106acde-0000-0100-0000-63e20a820000"'
+      - '"0000d31c-0000-0100-0000-63e5d51f0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - cf5987fc-ee39-492b-90ee-7c44587cd53a
+      - 0ca4de6a-d809-46e4-b496-a5818383798d
       pragma:
       - no-cache
       strict-transport-security:
@@ -272,7 +272,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:29.5318348Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:23:29.5318348Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:46.2230654Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:24:46.2230654Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -281,9 +281,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:33 GMT
+      - Fri, 10 Feb 2023 05:24:49 GMT
       etag:
-      - '"6106acde-0000-0100-0000-63e20a820000"'
+      - '"0000d31c-0000-0100-0000-63e5d51f0000"'
       expires:
       - '-1'
       pragma:
@@ -313,7 +313,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -321,18 +321,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-02-07T08:22:31Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-02-10T05:23:44Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
-      connection:
-      - close
       content-length:
       - '311'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:33 GMT
+      - Fri, 10 Feb 2023 05:24:51 GMT
       expires:
       - '-1'
       pragma:
@@ -423,13 +421,13 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:34 GMT
+      - Fri, 10 Feb 2023 05:24:51 GMT
       etag:
       - W/"41b202f4dc5098d126019dc00721a4c5e30df0c5196794514fadc3710ee2a5cb"
       expires:
-      - Tue, 07 Feb 2023 08:28:34 GMT
+      - Fri, 10 Feb 2023 05:29:51 GMT
       source-age:
-      - '285'
+      - '27094'
       strict-transport-security:
       - max-age=31536000
       vary:
@@ -443,15 +441,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-fastly-request-id:
-      - 53d9d3690eb1b9a9ff10ba45ddce3159f8e024ec
+      - a319ed9b1895142ba2faf5c36bb2aeba45fb7149
       x-frame-options:
       - deny
       x-github-request-id:
-      - 605A:5895:4EF0F:7FDA9:63E0D303
+      - 523C:6DCF:80C5E:C29DF:63E2283D
       x-served-by:
-      - cache-qpg1251-QPG
+      - cache-qpg1282-QPG
       x-timer:
-      - S1675758215.978935,VS0,VE0
+      - S1676006692.824246,VS0,VE0
       x-xss-protection:
       - 1; mode=block
     status:
@@ -469,7 +467,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -488,7 +486,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:35 GMT
+      - Fri, 10 Feb 2023 05:24:52 GMT
       expires:
       - '-1'
       pragma:
@@ -521,7 +519,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -550,7 +548,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:37 GMT
+      - Fri, 10 Feb 2023 05:24:54 GMT
       expires:
       - '-1'
       pragma:
@@ -583,7 +581,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-network/21.0.1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -600,7 +598,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:37 GMT
+      - Fri, 10 Feb 2023 05:24:55 GMT
       expires:
       - '-1'
       pragma:
@@ -626,7 +624,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -2260,6 +2258,24 @@ interactions:
         \   },\r\n    {\r\n      \"name\": \"Standard_L32s\",\r\n      \"numberOfCores\":
         32,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
         5765120,\r\n      \"memoryInMB\": 262144,\r\n      \"maxDataDiskCount\": 64\r\n
+        \   },\r\n    {\r\n      \"name\": \"Standard_NV6ads_A10_v5\",\r\n      \"numberOfCores\":
+        6,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
+        184320,\r\n      \"memoryInMB\": 56320,\r\n      \"maxDataDiskCount\": 4\r\n
+        \   },\r\n    {\r\n      \"name\": \"Standard_NV12ads_A10_v5\",\r\n      \"numberOfCores\":
+        12,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
+        368640,\r\n      \"memoryInMB\": 112640,\r\n      \"maxDataDiskCount\": 8\r\n
+        \   },\r\n    {\r\n      \"name\": \"Standard_NV18ads_A10_v5\",\r\n      \"numberOfCores\":
+        18,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
+        737280,\r\n      \"memoryInMB\": 225280,\r\n      \"maxDataDiskCount\": 16\r\n
+        \   },\r\n    {\r\n      \"name\": \"Standard_NV36adms_A10_v5\",\r\n      \"numberOfCores\":
+        36,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
+        2949120,\r\n      \"memoryInMB\": 901120,\r\n      \"maxDataDiskCount\": 32\r\n
+        \   },\r\n    {\r\n      \"name\": \"Standard_NV36ads_A10_v5\",\r\n      \"numberOfCores\":
+        36,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
+        1474560,\r\n      \"memoryInMB\": 450560,\r\n      \"maxDataDiskCount\": 32\r\n
+        \   },\r\n    {\r\n      \"name\": \"Standard_NV72ads_A10_v5\",\r\n      \"numberOfCores\":
+        72,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
+        2949120,\r\n      \"memoryInMB\": 901120,\r\n      \"maxDataDiskCount\": 32\r\n
         \   },\r\n    {\r\n      \"name\": \"Standard_M208ms_v2\",\r\n      \"numberOfCores\":
         208,\r\n      \"osDiskSizeInMB\": 1047552,\r\n      \"resourceDiskSizeInMB\":
         4194304,\r\n      \"memoryInMB\": 5836800,\r\n      \"maxDataDiskCount\":
@@ -2478,11 +2494,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '127511'
+      - '128812'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:40 GMT
+      - Fri, 10 Feb 2023 05:24:55 GMT
       expires:
       - '-1'
       pragma:
@@ -2580,13 +2596,13 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:40 GMT
+      - Fri, 10 Feb 2023 05:24:57 GMT
       etag:
       - W/"41b202f4dc5098d126019dc00721a4c5e30df0c5196794514fadc3710ee2a5cb"
       expires:
-      - Tue, 07 Feb 2023 08:28:40 GMT
+      - Fri, 10 Feb 2023 05:29:57 GMT
       source-age:
-      - '291'
+      - '27100'
       strict-transport-security:
       - max-age=31536000
       vary:
@@ -2596,19 +2612,19 @@ interactions:
       x-cache:
       - HIT
       x-cache-hits:
-      - '1'
+      - '2'
       x-content-type-options:
       - nosniff
       x-fastly-request-id:
-      - b40e194e44869a5de3e2293ebe126555109c51ff
+      - 04efa1c3d9f73240f2e29da80c01eb1517fa4810
       x-frame-options:
       - deny
       x-github-request-id:
-      - 605A:5895:4EF0F:7FDA9:63E0D303
+      - 523C:6DCF:80C5E:C29DF:63E2283D
       x-served-by:
       - cache-qpg1272-QPG
       x-timer:
-      - S1675758221.871523,VS0,VE2
+      - S1676006697.321473,VS0,VE0
       x-xss-protection:
       - 1; mode=block
     status:
@@ -2626,7 +2642,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -2645,7 +2661,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:42 GMT
+      - Fri, 10 Feb 2023 05:24:57 GMT
       expires:
       - '-1'
       pragma:
@@ -2678,7 +2694,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -2707,7 +2723,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:43 GMT
+      - Fri, 10 Feb 2023 05:24:58 GMT
       expires:
       - '-1'
       pragma:
@@ -2740,7 +2756,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -2759,7 +2775,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:44 GMT
+      - Fri, 10 Feb 2023 05:25:00 GMT
       expires:
       - '-1'
       pragma:
@@ -2792,7 +2808,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -2821,7 +2837,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:46 GMT
+      - Fri, 10 Feb 2023 05:25:02 GMT
       expires:
       - '-1'
       pragma:
@@ -2886,7 +2902,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -2894,18 +2910,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_dsL33kWV0beYYvOmF7HfbnYHve8jK9k8","name":"vm_deploy_dsL33kWV0beYYvOmF7HfbnYHve8jK9k8","type":"Microsoft.Resources/deployments","properties":{"templateHash":"3999745560677575866","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2023-02-07T08:23:55.1796104Z","duration":"PT0.0007915S","correlationId":"8877708f-cf60-4d68-b30e-65df85af9629","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2"]},{"resourceType":"networkSecurityGroups","locations":["eastus2"]},{"resourceType":"publicIPAddresses","locations":["eastus2"]},{"resourceType":"networkInterfaces","locations":["eastus2"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000007VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm000007VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000007NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000007PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000007"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_2eTNwjaszB9nu1zUY1GmfoNTw6j7TQXs","name":"vm_deploy_2eTNwjaszB9nu1zUY1GmfoNTw6j7TQXs","type":"Microsoft.Resources/deployments","properties":{"templateHash":"14027160394388709967","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2023-02-10T05:25:11.2929801Z","duration":"PT0.0006732S","correlationId":"159af0f4-8fdc-461a-87b3-2f0f5706efe9","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2"]},{"resourceType":"networkSecurityGroups","locations":["eastus2"]},{"resourceType":"publicIPAddresses","locations":["eastus2"]},{"resourceType":"networkInterfaces","locations":["eastus2"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000007VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm000007VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000007NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000007PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000007"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_dsL33kWV0beYYvOmF7HfbnYHve8jK9k8/operationStatuses/08585258486539157168?api-version=2021-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_2eTNwjaszB9nu1zUY1GmfoNTw6j7TQXs/operationStatuses/08585256001777328361?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
-      - '2394'
+      - '2395'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:23:56 GMT
+      - Fri, 10 Feb 2023 05:25:12 GMT
       expires:
       - '-1'
       pragma:
@@ -2931,12 +2947,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585258486539157168?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585256001777328361?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -2948,7 +2964,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:24:27 GMT
+      - Fri, 10 Feb 2023 05:25:43 GMT
       expires:
       - '-1'
       pragma:
@@ -2974,12 +2990,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585258486539157168?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585256001777328361?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -2991,7 +3007,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:24:57 GMT
+      - Fri, 10 Feb 2023 05:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -3017,7 +3033,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -3025,16 +3041,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_dsL33kWV0beYYvOmF7HfbnYHve8jK9k8","name":"vm_deploy_dsL33kWV0beYYvOmF7HfbnYHve8jK9k8","type":"Microsoft.Resources/deployments","properties":{"templateHash":"3999745560677575866","parameters":{},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2023-02-07T08:24:47.3546277Z","duration":"PT52.1758088S","correlationId":"8877708f-cf60-4d68-b30e-65df85af9629","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2"]},{"resourceType":"networkSecurityGroups","locations":["eastus2"]},{"resourceType":"publicIPAddresses","locations":["eastus2"]},{"resourceType":"networkInterfaces","locations":["eastus2"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000007VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm000007VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000007NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000007PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000007"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000007VNET"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/vm_deploy_2eTNwjaszB9nu1zUY1GmfoNTw6j7TQXs","name":"vm_deploy_2eTNwjaszB9nu1zUY1GmfoNTw6j7TQXs","type":"Microsoft.Resources/deployments","properties":{"templateHash":"14027160394388709967","parameters":{},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2023-02-10T05:26:06.2303297Z","duration":"PT54.9380228S","correlationId":"159af0f4-8fdc-461a-87b3-2f0f5706efe9","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["eastus2"]},{"resourceType":"networkSecurityGroups","locations":["eastus2"]},{"resourceType":"publicIPAddresses","locations":["eastus2"]},{"resourceType":"networkInterfaces","locations":["eastus2"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000007VNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"vm000007VNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"vm000007NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"vm000007PublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"vm000007VMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"vm000007"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vm000007VNET"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3189'
+      - '3190'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:24:57 GMT
+      - Fri, 10 Feb 2023 05:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -3060,7 +3076,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -3070,16 +3086,16 @@ interactions:
     body:
       string: "{\r\n  \"name\": \"vm000007\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/virtualMachines/vm000007\",\r\n
         \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus2\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"928cf69e-0d79-4bd7-8601-62560db83d36\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"dbc5327f-bf0e-4777-8a11-88673e78056c\",\r\n
         \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_D4s_v3\"\r\n    },\r\n
         \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
         \"Canonical\",\r\n        \"offer\": \"UbuntuServer\",\r\n        \"sku\":
         \"18.04-LTS\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
         \"18.04.202301310\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Linux\",\r\n        \"name\": \"vm000007_OsDisk_1_67a30c2111b740819c29f4106dd0bc21\",\r\n
+        \"Linux\",\r\n        \"name\": \"vm000007_OsDisk_1_2712104bc0dc48a8833f24dc64592921\",\r\n
         \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
         \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/disks/vm000007_OsDisk_1_67a30c2111b740819c29f4106dd0bc21\"\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Compute/disks/vm000007_OsDisk_1_2712104bc0dc48a8833f24dc64592921\"\r\n
         \       },\r\n        \"deleteOption\": \"Detach\",\r\n        \"diskSizeGB\":
         30\r\n      },\r\n      \"dataDisks\": []\r\n    },\r\n    \"osProfile\":
         {\r\n      \"computerName\": \"vm000007\",\r\n      \"adminUsername\": \"ubuntuuser\",\r\n
@@ -3099,18 +3115,18 @@ interactions:
         [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
         \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
         \           \"message\": \"Guest Agent is running\",\r\n            \"time\":
-        \"2023-02-07T08:24:49+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
-        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm000007_OsDisk_1_67a30c2111b740819c29f4106dd0bc21\",\r\n
+        \"2023-02-10T05:26:08+00:00\"\r\n          }\r\n        ],\r\n        \"extensionHandlers\":
+        []\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\": \"vm000007_OsDisk_1_2712104bc0dc48a8833f24dc64592921\",\r\n
         \         \"statuses\": [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
         \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
-        succeeded\",\r\n              \"time\": \"2023-02-07T08:24:17.1151347+00:00\"\r\n
+        succeeded\",\r\n              \"time\": \"2023-02-10T05:25:37.3873923+00:00\"\r\n
         \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\":
         \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
-        succeeded\",\r\n          \"time\": \"2023-02-07T08:24:44.4432317+00:00\"\r\n
+        succeeded\",\r\n          \"time\": \"2023-02-10T05:26:02.3721058+00:00\"\r\n
         \       },\r\n        {\r\n          \"code\": \"PowerState/running\",\r\n
         \         \"level\": \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n
-        \       }\r\n      ]\r\n    },\r\n    \"timeCreated\": \"2023-02-07T08:24:13.9120134+00:00\"\r\n
+        \       }\r\n      ]\r\n    },\r\n    \"timeCreated\": \"2023-02-10T05:25:32.6529525+00:00\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
@@ -3120,7 +3136,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:24:59 GMT
+      - Fri, 10 Feb 2023 05:26:16 GMT
       expires:
       - '-1'
       pragma:
@@ -3137,7 +3153,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3997,Microsoft.Compute/LowCostGet30Min;31997
+      - Microsoft.Compute/LowCostGet3Min;3996,Microsoft.Compute/LowCostGet30Min;31996
     status:
       code: 200
       message: OK
@@ -3153,7 +3169,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-network/21.0.1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -3162,12 +3178,12 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vm000007VMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic\",\r\n
-        \ \"etag\": \"W/\\\"1b0da40c-848e-4943-8cbe-54c986ab8612\\\"\",\r\n  \"tags\":
+        \ \"etag\": \"W/\\\"e8d61f23-198f-46d3-9921-0d3318f3080e\\\"\",\r\n  \"tags\":
         {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"81c19ed6-53ec-4455-a35f-708029a56d9b\",\r\n    \"ipConfigurations\":
+        \   \"resourceGuid\": \"2c9e0ad6-6ddf-4aad-a397-1712bca9c655\",\r\n    \"ipConfigurations\":
         [\r\n      {\r\n        \"name\": \"ipconfigvm000007\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic/ipConfigurations/ipconfigvm000007\",\r\n
-        \       \"etag\": \"W/\\\"1b0da40c-848e-4943-8cbe-54c986ab8612\\\"\",\r\n
+        \       \"etag\": \"W/\\\"e8d61f23-198f-46d3-9921-0d3318f3080e\\\"\",\r\n
         \       \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\":
@@ -3176,8 +3192,8 @@ interactions:
         \         },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\":
         \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n      \"dnsServers\":
         [],\r\n      \"appliedDnsServers\": [],\r\n      \"internalDomainNameSuffix\":
-        \"tjouqp2zbflerchcm2ocn40bja.cx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
-        \"60-45-BD-BD-BF-14\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
+        \"w1we0qzjloau3mpwlkflvduyzh.cx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
+        \"00-0D-3A-E3-0A-3C\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
         \   \"vnetEncryptionSupported\": false,\r\n    \"enableIPForwarding\": false,\r\n
         \   \"networkSecurityGroup\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkSecurityGroups/vm000007NSG\"\r\n
         \   },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n      \"id\":
@@ -3194,9 +3210,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:00 GMT
+      - Fri, 10 Feb 2023 05:26:18 GMT
       etag:
-      - W/"1b0da40c-848e-4943-8cbe-54c986ab8612"
+      - W/"e8d61f23-198f-46d3-9921-0d3318f3080e"
       expires:
       - '-1'
       pragma:
@@ -3213,7 +3229,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b297d025-51bd-48c2-9d90-e1ee096be3e0
+      - 9e1caa78-d8fb-4bb7-86fd-491de32bddd3
     status:
       code: 200
       message: OK
@@ -3229,7 +3245,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --image --size --nsg-rule --admin-username
+      - -n -g --image --size --nsg-rule --admin-username --generate-ssh-keys
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-network/21.0.1 Python/3.9.6
         (Windows-10-10.0.19045-SP0)
@@ -3238,10 +3254,10 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vm000007PublicIP\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/publicIPAddresses/vm000007PublicIP\",\r\n
-        \ \"etag\": \"W/\\\"a197eec0-f0e3-4114-a496-8b87123f1e71\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"92528cb5-5903-4bc7-87e7-9865a0296742\\\"\",\r\n  \"location\":
         \"eastus2\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"Succeeded\",\r\n    \"resourceGuid\": \"24ae9d9c-d6d8-44f7-97dc-c31023cb53b5\",\r\n
-        \   \"ipAddress\": \"172.177.118.85\",\r\n    \"publicIPAddressVersion\":
+        \"Succeeded\",\r\n    \"resourceGuid\": \"464bde94-4af6-4137-bd34-31577c85f210\",\r\n
+        \   \"ipAddress\": \"20.122.149.159\",\r\n    \"publicIPAddressVersion\":
         \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\":
         4,\r\n    \"ipTags\": [],\r\n    \"ipConfiguration\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/networkInterfaces/vm000007VMNic/ipConfigurations/ipconfigvm000007\"\r\n
         \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
@@ -3255,9 +3271,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:01 GMT
+      - Fri, 10 Feb 2023 05:26:18 GMT
       etag:
-      - W/"a197eec0-f0e3-4114-a496-8b87123f1e71"
+      - W/"92528cb5-5903-4bc7-87e7-9865a0296742"
       expires:
       - '-1'
       pragma:
@@ -3274,13 +3290,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d3f351f0-a116-4c86-8c6d-9b0ebe64af25
+      - 4d8231f6-0d63-4d63-bc9e-6b16d44b961a
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"description": "endpointDesc", "endpointType": "NfsMount",
-      "export": "exportfolder", "host": "172.177.118.85", "nfsVersion": "NFSv4"}}'
+      "export": "exportfolder", "host": "20.122.149.159", "nfsVersion": "NFSv4"}}'
     headers:
       Accept:
       - application/json
@@ -3302,7 +3318,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:25:02.14226Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:02.14226Z"},"properties":{"host":"172.177.118.85","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:26:19.73015Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:19.73015Z"},"properties":{"host":"20.122.149.159","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3311,13 +3327,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:03 GMT
+      - Fri, 10 Feb 2023 05:26:21 GMT
       etag:
-      - '"61066de4-0000-0100-0000-63e20adf0000"'
+      - '"0000d81c-0000-0100-0000-63e5d57d0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 3ceae596-a53a-4d00-880b-bd2cd3b71e42
+      - 6de0c29b-db51-495a-a2e3-36973559e36b
       pragma:
       - no-cache
       strict-transport-security:
@@ -3354,7 +3370,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:25:02.14226Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:02.14226Z"},"properties":{"host":"172.177.118.85","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:26:19.73015Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:19.73015Z"},"properties":{"host":"20.122.149.159","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3363,9 +3379,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:05 GMT
+      - Fri, 10 Feb 2023 05:26:23 GMT
       etag:
-      - '"61066de4-0000-0100-0000-63e20adf0000"'
+      - '"0000d81c-0000-0100-0000-63e5d57d0000"'
       expires:
       - '-1'
       pragma:
@@ -3402,7 +3418,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:29.5318348Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:23:29.5318348Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:25:02.14226Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:02.14226Z"},"properties":{"host":"172.177.118.85","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:46.2230654Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:24:46.2230654Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:26:19.73015Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:19.73015Z"},"properties":{"host":"20.122.149.159","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -3411,7 +3427,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:07 GMT
+      - Fri, 10 Feb 2023 05:26:25 GMT
       expires:
       - '-1'
       pragma:
@@ -3448,7 +3464,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:29.5318348Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:23:29.5318348Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:46.2230654Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:24:46.2230654Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3457,9 +3473,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:08 GMT
+      - Fri, 10 Feb 2023 05:26:27 GMT
       etag:
-      - '"6106acde-0000-0100-0000-63e20a820000"'
+      - '"0000d31c-0000-0100-0000-63e5d51f0000"'
       expires:
       - '-1'
       pragma:
@@ -3501,7 +3517,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:29.5318348Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:09.1568837Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:46.2230654Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:27.8602148Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3510,13 +3526,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:09 GMT
+      - Fri, 10 Feb 2023 05:26:28 GMT
       etag:
-      - '"6106ede4-0000-0100-0000-63e20ae50000"'
+      - '"0000d91c-0000-0100-0000-63e5d5840000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 80dc14c8-bf28-45d8-a24a-64ebfa9541af
+      - c2a484eb-b724-4a70-a2fb-47c901fb2b32
       pragma:
       - no-cache
       strict-transport-security:
@@ -3530,7 +3546,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -3553,7 +3569,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:25:02.14226Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:02.14226Z"},"properties":{"host":"172.177.118.85","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:26:19.73015Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:19.73015Z"},"properties":{"host":"20.122.149.159","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3562,9 +3578,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:11 GMT
+      - Fri, 10 Feb 2023 05:26:29 GMT
       etag:
-      - '"61066de4-0000-0100-0000-63e20adf0000"'
+      - '"0000d81c-0000-0100-0000-63e5d57d0000"'
       expires:
       - '-1'
       pragma:
@@ -3584,7 +3600,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"description": "endpointDescUpdate", "endpointType": "NfsMount",
-      "export": "exportfolder", "host": "172.177.118.85", "nfsVersion": "NFSv4"}}'
+      "export": "exportfolder", "host": "20.122.149.159", "nfsVersion": "NFSv4"}}'
     headers:
       Accept:
       - application/json
@@ -3606,7 +3622,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:25:02.14226Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:12.1708576Z"},"properties":{"host":"172.177.118.85","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000006","name":"endpoint_nfs000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:26:19.73015Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:30.6878814Z"},"properties":{"host":"20.122.149.159","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -3615,13 +3631,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:12 GMT
+      - Fri, 10 Feb 2023 05:26:30 GMT
       etag:
-      - '"61062ee5-0000-0100-0000-63e20ae80000"'
+      - '"0000da1c-0000-0100-0000-63e5d5870000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 505cefa6-a0e3-48ac-82d7-7f27651ea357
+      - 0e40a2a3-b51b-4f13-8f8e-759831c1cd13
       pragma:
       - no-cache
       strict-transport-security:
@@ -3667,7 +3683,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 07 Feb 2023 08:25:13 GMT
+      - Fri, 10 Feb 2023 05:26:33 GMT
       expires:
       - '-1'
       pragma:
@@ -3702,7 +3718,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2022-07-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-07T08:23:29.5318348Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-07T08:25:09.1568837Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-10T05:24:46.2230654Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-10T05:26:27.8602148Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","description":"endpointDescUpdate","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -3711,7 +3727,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 Feb 2023 08:25:16 GMT
+      - Fri, 10 Feb 2023 05:26:36 GMT
       expires:
       - '-1'
       pragma:
