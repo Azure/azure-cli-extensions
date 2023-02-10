@@ -135,8 +135,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
     create_deployment_kwargs['source_type'] = deployable.get_source_type(**create_deployment_kwargs, **basic_kwargs)
-    create_deployment_kwargs['deployable_path'] = deployable.build_deployable_path(**create_deployment_kwargs,
-                                                                                   **basic_kwargs)
+    create_deployment_kwargs['deployable_path'] = deployable.build_deployable_path(**create_deployment_kwargs, **basic_kwargs)
     deployment_factory = deployment_selector(**create_deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(sku)
     deployment_factory.validate_instance_count(instance_count)
