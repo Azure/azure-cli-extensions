@@ -783,7 +783,8 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
 
         # set the fields that are present in the container but not in the
         # config
-        container[config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES] = (
+        container[config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES] = container.get(
+            config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES, []) + (
             config.DEBUG_MODE_SETTINGS.get("execProcesses") if debug_mode else []
         )
         container[config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES] = []
