@@ -95,9 +95,7 @@ def cli_cosmosdb_mongocluster_create(client,
                                     shard_node_count=1):
 
     '''Creates an Azure Cosmos DB Mongo Cluster '''
-
-    logger.debug("Ashwini")
-
+    
     if administrator_login is None:
         raise InvalidArgumentValueError('Initial Mongo Cluster Admin user is required.')
 
