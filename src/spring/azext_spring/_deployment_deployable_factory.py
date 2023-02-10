@@ -6,7 +6,6 @@
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_uploadable_factory import FileUpload, FolderUpload
 from azure.core.exceptions import HttpResponseError
 from time import sleep
@@ -71,7 +70,7 @@ class UploadDeployableBuilder(EmptyDeployableBuilder):
         return upload_info.relative_path
 
     def _get_uploader(self, upload_url=None):
-        return FileUpload(upload_url=upload_url)
+        return FileUpload(upload_url=upload_url, cli_ctx=self.cmd.cli_ctx)
 
 
 class SourceBuildDeployableBuilder(UploadDeployableBuilder):
@@ -82,7 +81,7 @@ class SourceBuildDeployableBuilder(UploadDeployableBuilder):
         return relative_path
 
     def _get_uploader(self, upload_url=None):
-        return FolderUpload(upload_url=upload_url)
+        return FolderUpload(upload_url=upload_url, cli_ctx=self.cmd.cli_ctx)
 
     def get_source_type(self, **_):
         return 'Source'

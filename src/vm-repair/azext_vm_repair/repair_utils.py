@@ -200,6 +200,20 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
+def _check_existing_rg(rg_name):
+    # Check for existing dup name
+    try:
+        exists_rg_command = 'az group exists -n {resource_group_name} -o json'.format(resource_group_name=rg_name)
+        logger.info('Checking for existing resource groups with identical name within subscription...')
+        group_exists = loads(_call_az_command(exists_rg_command))
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        raise Exception('Unexpected error occured while fetching existing resource groups.')
+
+    logger.info('Resource group exists is \'%s\'', group_exists)
+    return group_exists
+
+
 def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
     """
     Checks if the VM is running and prompts to auto-start it.
@@ -356,17 +370,20 @@ def _check_linux_hyperV_gen(source_vm):
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
-    hyperVGen = loads(_call_az_command(show_disk_command))
-    if hyperVGen != 'V2':
-        logger.info('Trying to check on the source VM if it has the parameter of gen2')
+    disk_hyperVGen = loads(_call_az_command(show_disk_command))
+
+    if disk_hyperVGen != 'V2':
+        logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
-        hyperVGen = hyperVGen_list[0]
-        if hyperVGen != 'V2':
-            hyperVGen = 'V1'
+        vm_hyperVGen = hyperVGen_list[0]
+        if vm_hyperVGen != 'V2':
+            vm_hyperVGen = 'V1'
 
-    return hyperVGen
+        return vm_hyperVGen
+
+    return disk_hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
@@ -682,3 +699,19 @@ def _get_function_param_dict(frame):
         if param in values:
             values[param] = '********'
     return values
+
+
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+    logger.debug('Unlock script STDOUT:\n%s', stdout)
+    if stderr:
+        logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+
+
+def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+    if not fix_uuid:
+        create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+    logger.info('Validating VM template before continuing...')
+    _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
+    logger.info('Creating repair VM...')
+    _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])

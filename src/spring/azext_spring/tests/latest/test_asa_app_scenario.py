@@ -37,7 +37,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy fake file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
         deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
@@ -64,7 +64,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy change to .Net
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
         deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
@@ -92,7 +92,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # keep deploy .net
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3 --main-entry test3')
         self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
@@ -288,4 +288,26 @@ class VnetPublicEndpointTest(ScenarioTest):
 
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
             self.check('properties.vnetAddons.publicEndpoint', True)
+        ])
+
+
+@record_only()
+class ClientAuthTest(ScenarioTest):
+    def test_client_auth(self):
+        self.kwargs.update({
+            'cert': 'test-cert',
+            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
+            'kvCertName': 'cli-unittest',
+            'app': 'test-client-auth',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli',
+            'location': 'eastus'
+        })
+
+        cert_id = self.cmd(
+            'spring certificate add --name {cert} --vault-uri {keyVaultUri} --only-public-cert '
+            '--vault-certificate-name {kvCertName} -g {rg} -s {serviceName} --query "id" -o tsv').output.strip()
+        app_create_cmd_template = 'spring app update -n {{app}} -s {{serviceName}} -g {{rg}} --client-auth-certs {}'
+        self.cmd(app_create_cmd_template.format(cert_id), checks=[
+            self.check('properties.ingressSettings.clientAuth.certificates[0]', cert_id)
         ])

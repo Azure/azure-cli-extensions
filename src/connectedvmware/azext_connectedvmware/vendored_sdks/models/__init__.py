@@ -7,6 +7,7 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import AvailablePatchCountByClassification
     from ._models_py3 import Cluster
     from ._models_py3 import ClusterInventoryItem
     from ._models_py3 import ClustersList
@@ -34,6 +35,7 @@ try:
     from ._models_py3 import InventoryItemDetails
     from ._models_py3 import InventoryItemProperties
     from ._models_py3 import InventoryItemsList
+    from ._models_py3 import LinuxParameters
     from ._models_py3 import MachineExtension
     from ._models_py3 import MachineExtensionInstanceView
     from ._models_py3 import MachineExtensionInstanceViewStatus
@@ -50,6 +52,11 @@ try:
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationsList
     from ._models_py3 import OsProfile
+    from ._models_py3 import OsProfileLinuxConfiguration
+    from ._models_py3 import OsProfileUpdate
+    from ._models_py3 import OsProfileUpdateLinuxConfiguration
+    from ._models_py3 import OsProfileUpdateWindowsConfiguration
+    from ._models_py3 import OsProfileWindowsConfiguration
     from ._models_py3 import PlacementProfile
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
@@ -58,16 +65,21 @@ try:
     from ._models_py3 import ResourcePoolInventoryItem
     from ._models_py3 import ResourcePoolsList
     from ._models_py3 import ResourceStatus
+    from ._models_py3 import SecurityProfile
     from ._models_py3 import StopVirtualMachineOptions
     from ._models_py3 import StorageProfile
     from ._models_py3 import StorageProfileUpdate
     from ._models_py3 import SystemData
+    from ._models_py3 import UefiSettings
     from ._models_py3 import VCenter
     from ._models_py3 import VCentersList
     from ._models_py3 import VICredential
     from ._models_py3 import VirtualDisk
     from ._models_py3 import VirtualDiskUpdate
     from ._models_py3 import VirtualMachine
+    from ._models_py3 import VirtualMachineAssessPatchesResult
+    from ._models_py3 import VirtualMachineInstallPatchesParameters
+    from ._models_py3 import VirtualMachineInstallPatchesResult
     from ._models_py3 import VirtualMachineInventoryItem
     from ._models_py3 import VirtualMachineTemplate
     from ._models_py3 import VirtualMachineTemplateInventoryItem
@@ -78,7 +90,9 @@ try:
     from ._models_py3 import VirtualNetworkInventoryItem
     from ._models_py3 import VirtualNetworksList
     from ._models_py3 import VirtualSCSIController
+    from ._models_py3 import WindowsParameters
 except (SyntaxError, ImportError):
+    from ._models import AvailablePatchCountByClassification  # type: ignore
     from ._models import Cluster  # type: ignore
     from ._models import ClusterInventoryItem  # type: ignore
     from ._models import ClustersList  # type: ignore
@@ -106,6 +120,7 @@ except (SyntaxError, ImportError):
     from ._models import InventoryItemDetails  # type: ignore
     from ._models import InventoryItemProperties  # type: ignore
     from ._models import InventoryItemsList  # type: ignore
+    from ._models import LinuxParameters  # type: ignore
     from ._models import MachineExtension  # type: ignore
     from ._models import MachineExtensionInstanceView  # type: ignore
     from ._models import MachineExtensionInstanceViewStatus  # type: ignore
@@ -122,6 +137,11 @@ except (SyntaxError, ImportError):
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationsList  # type: ignore
     from ._models import OsProfile  # type: ignore
+    from ._models import OsProfileLinuxConfiguration  # type: ignore
+    from ._models import OsProfileUpdate  # type: ignore
+    from ._models import OsProfileUpdateLinuxConfiguration  # type: ignore
+    from ._models import OsProfileUpdateWindowsConfiguration  # type: ignore
+    from ._models import OsProfileWindowsConfiguration  # type: ignore
     from ._models import PlacementProfile  # type: ignore
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
@@ -130,16 +150,21 @@ except (SyntaxError, ImportError):
     from ._models import ResourcePoolInventoryItem  # type: ignore
     from ._models import ResourcePoolsList  # type: ignore
     from ._models import ResourceStatus  # type: ignore
+    from ._models import SecurityProfile  # type: ignore
     from ._models import StopVirtualMachineOptions  # type: ignore
     from ._models import StorageProfile  # type: ignore
     from ._models import StorageProfileUpdate  # type: ignore
     from ._models import SystemData  # type: ignore
+    from ._models import UefiSettings  # type: ignore
     from ._models import VCenter  # type: ignore
     from ._models import VCentersList  # type: ignore
     from ._models import VICredential  # type: ignore
     from ._models import VirtualDisk  # type: ignore
     from ._models import VirtualDiskUpdate  # type: ignore
     from ._models import VirtualMachine  # type: ignore
+    from ._models import VirtualMachineAssessPatchesResult  # type: ignore
+    from ._models import VirtualMachineInstallPatchesParameters  # type: ignore
+    from ._models import VirtualMachineInstallPatchesResult  # type: ignore
     from ._models import VirtualMachineInventoryItem  # type: ignore
     from ._models import VirtualMachineTemplate  # type: ignore
     from ._models import VirtualMachineTemplateInventoryItem  # type: ignore
@@ -150,6 +175,7 @@ except (SyntaxError, ImportError):
     from ._models import VirtualNetworkInventoryItem  # type: ignore
     from ._models import VirtualNetworksList  # type: ignore
     from ._models import VirtualSCSIController  # type: ignore
+    from ._models import WindowsParameters  # type: ignore
 
 from ._azure_arc_vmware_management_service_api_enums import (
     CreatedByType,
@@ -161,16 +187,25 @@ from ._azure_arc_vmware_management_service_api_enums import (
     InventoryType,
     NICType,
     OsType,
+    OsTypeUM,
+    PatchOperationStartedBy,
+    PatchOperationStatus,
+    PatchServiceUsed,
     PowerOnBootOption,
     ProvisioningAction,
     ProvisioningState,
     SCSIControllerType,
     StatusLevelTypes,
     StatusTypes,
+    VMGuestPatchClassificationLinux,
+    VMGuestPatchClassificationWindows,
+    VMGuestPatchRebootSetting,
+    VMGuestPatchRebootStatus,
     VirtualSCSISharing,
 )
 
 __all__ = [
+    'AvailablePatchCountByClassification',
     'Cluster',
     'ClusterInventoryItem',
     'ClustersList',
@@ -198,6 +233,7 @@ __all__ = [
     'InventoryItemDetails',
     'InventoryItemProperties',
     'InventoryItemsList',
+    'LinuxParameters',
     'MachineExtension',
     'MachineExtensionInstanceView',
     'MachineExtensionInstanceViewStatus',
@@ -214,6 +250,11 @@ __all__ = [
     'OperationDisplay',
     'OperationsList',
     'OsProfile',
+    'OsProfileLinuxConfiguration',
+    'OsProfileUpdate',
+    'OsProfileUpdateLinuxConfiguration',
+    'OsProfileUpdateWindowsConfiguration',
+    'OsProfileWindowsConfiguration',
     'PlacementProfile',
     'ProxyResource',
     'Resource',
@@ -222,16 +263,21 @@ __all__ = [
     'ResourcePoolInventoryItem',
     'ResourcePoolsList',
     'ResourceStatus',
+    'SecurityProfile',
     'StopVirtualMachineOptions',
     'StorageProfile',
     'StorageProfileUpdate',
     'SystemData',
+    'UefiSettings',
     'VCenter',
     'VCentersList',
     'VICredential',
     'VirtualDisk',
     'VirtualDiskUpdate',
     'VirtualMachine',
+    'VirtualMachineAssessPatchesResult',
+    'VirtualMachineInstallPatchesParameters',
+    'VirtualMachineInstallPatchesResult',
     'VirtualMachineInventoryItem',
     'VirtualMachineTemplate',
     'VirtualMachineTemplateInventoryItem',
@@ -242,6 +288,7 @@ __all__ = [
     'VirtualNetworkInventoryItem',
     'VirtualNetworksList',
     'VirtualSCSIController',
+    'WindowsParameters',
     'CreatedByType',
     'DiskMode',
     'DiskType',
@@ -251,11 +298,19 @@ __all__ = [
     'InventoryType',
     'NICType',
     'OsType',
+    'OsTypeUM',
+    'PatchOperationStartedBy',
+    'PatchOperationStatus',
+    'PatchServiceUsed',
     'PowerOnBootOption',
     'ProvisioningAction',
     'ProvisioningState',
     'SCSIControllerType',
     'StatusLevelTypes',
     'StatusTypes',
+    'VMGuestPatchClassificationLinux',
+    'VMGuestPatchClassificationWindows',
+    'VMGuestPatchRebootSetting',
+    'VMGuestPatchRebootStatus',
     'VirtualSCSISharing',
 ]

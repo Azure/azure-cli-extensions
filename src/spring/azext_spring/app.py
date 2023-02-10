@@ -35,6 +35,7 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def app_create(cmd, client, resource_group, service, name,
+               deployment_name=None,
                # deployment.settings
                cpu=None,
                memory=None,
@@ -60,7 +61,13 @@ def app_create(cmd, client, resource_group, service, name,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
                assign_public_endpoint=None,
-               loaded_public_certificate_file=None):
+               loaded_public_certificate_file=None,
+               ingress_read_timeout=None,
+               ingress_send_timeout=None,
+               session_affinity=None,
+               session_max_age=None,
+               backend_protocol=None,
+               client_auth_certs=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -88,7 +95,13 @@ def app_create(cmd, client, resource_group, service, name,
         'persistent_storage': persistent_storage,
         'public': assign_endpoint,
         'public_for_vnet': assign_public_endpoint,
-        'loaded_public_certificate_file': loaded_public_certificate_file
+        'loaded_public_certificate_file': loaded_public_certificate_file,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -110,7 +123,13 @@ def app_create(cmd, client, resource_group, service, name,
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
-        'public_for_vnet': assign_public_endpoint
+        'public_for_vnet': assign_public_endpoint,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs
     }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
@@ -125,12 +144,13 @@ def app_create(cmd, client, resource_group, service, name,
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    logger.warning('[2/3] Creating default deployment with name "{}"'.format(DEFAULT_DEPLOYMENT_NAME))
+    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
+    logger.warning('[2/3] Creating default deployment with name "{}"'.format(banner_deployment_name))
     deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
-                                                       DEFAULT_DEPLOYMENT_NAME,
+                                                       banner_deployment_name,
                                                        deployment_resource)
     logger.warning('[3/3] Updating app "{}" (this operation can take a while to complete)'.format(name))
     app_resource = app_factory.format_resource(**update_app_kwargs, **basic_kwargs)
@@ -151,6 +171,12 @@ def app_update(cmd, client, resource_group, service, name,
                https_only=None,
                persistent_storage=None,
                loaded_public_certificate_file=None,
+               ingress_read_timeout=None,
+               ingress_send_timeout=None,
+               session_affinity=None,
+               session_max_age=None,
+               backend_protocol=None,
+               client_auth_certs=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -210,6 +236,12 @@ def app_update(cmd, client, resource_group, service, name,
         'loaded_public_certificate_file': loaded_public_certificate_file,
         'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs,
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
@@ -258,6 +290,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                registry_password=None,
                container_command=None,
                container_args=None,
+               language_framework=None,
                build_env=None,
                builder=None,
                build_cpu=None,
@@ -311,6 +344,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'language_framework': language_framework,
         'build_env': build_env,
         'build_cpu': build_cpu,
         'build_memory': build_memory,
@@ -363,6 +397,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       registry_password=None,
                       container_command=None,
                       container_args=None,
+                      language_framework=None,
                       build_env=None,
                       builder=None,
                       # deployment.settings
@@ -416,6 +451,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'language_framework': language_framework,
         'cpu': cpu,
         'memory': memory,
         'instance_count': instance_count,
