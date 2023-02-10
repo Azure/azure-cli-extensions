@@ -33,14 +33,14 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
 from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
-from azext_connectedk8s._client_factory import _resource_client_factory
-from azext_connectedk8s._client_factory import _resource_providers_client
+from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
@@ -71,6 +71,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
 
+    # Validate custom token operation
+    custom_token_passed, location = utils.validate_custom_token(cmd, resource_group_name, location)
+
     # Prompt for confirmation for few parameters
     if enable_private_link is True:
         confirmation_message = "The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"
@@ -82,15 +85,18 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         utils.user_confirmation(confirmation_message, yes)
 
     # Setting subscription id and tenant Id
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    account = Profile().get_subscription(subscription_id)
-    onboarding_tenant_id = account['homeTenantId']
+    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if custom_token_passed is True else get_subscription_id(cmd.cli_ctx)
+    if custom_token_passed is True:
+        onboarding_tenant_id = os.getenv('AZURE_TENANT_ID')
+    else:
+        account = Profile().get_subscription(subscription_id)
+        onboarding_tenant_id = account['homeTenantId']
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
 
     # Checking provider registration status
-    utils.check_provider_registrations(cmd.cli_ctx)
+    utils.check_provider_registrations(cmd.cli_ctx, subscription_id)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -137,7 +143,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
+    is_arm64_cluster = check_arm64_node(node_api_response)
 
+    required_node_exists = check_linux_node(node_api_response)
     # Pre onboarding checks
     try:
         kubectl_client_location = install_kubectl_client()
@@ -183,16 +191,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # If the checks didnt pass then stop the onboarding
     if diagnostic_checks != consts.Diagnostic_Check_Passed:
+        telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
-    required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
         telemetry.set_user_fault()
-        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'", fault_type=consts.Linux_Amd64_Node_Not_Exists,
-                                summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
-        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the OS 'linux'", fault_type=consts.Linux_Node_Not_Exists,
+                                summary="Couldn't find any node on the kubernetes cluster with the OS 'linux'")
+        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
     crb_permission = utils.can_create_clusterrolebindings()
     if not crb_permission:
@@ -221,7 +229,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Validate location
     utils.validate_location(cmd, location)
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+    resourceClient = cf_resource_groups(cmd.cli_ctx, subscription_id=subscription_id)
 
     # Validate location of private link scope resource. Throws error only if there is a location mismatch
     if enable_private_link is True:
@@ -237,6 +245,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except ArgumentUsageError as argex:
             raise(argex)
         except Exception as ex:
+            if isinstance(ex, HttpResponseError):
+                status_code = ex.response.status_code
+                if status_code == 404:
+                    telemetry.set_exception(exception='Private link scope resource does not exist',
+                                            fault_type=consts.Pls_Resource_Not_Found, summary='Pls resource does not exist')
+                    raise ArgumentUsageError("The private link scope resource '{}' does not exist. Please ensure that you pass a valid ARM Resource Id.".format(private_link_scope_resource_id))
             logger.warning("Error occured while checking the private link scope resource location: %s\n", ex)
 
     # Check Release Existance
@@ -276,7 +290,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -292,7 +306,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
         parameters = ResourceGroup(location=location)
         try:
-            resourceClient.resource_groups.create_or_update(resource_group_name, parameters)
+            resourceClient.create_or_update(resource_group_name, parameters)
         except Exception as e:  # pylint: disable=broad-except
             utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type, 'Failed to create the resource group')
 
@@ -339,7 +353,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
-    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
+    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
@@ -537,16 +551,28 @@ def get_private_key(key_pair):
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
 
-def check_linux_amd64_node(api_response):
+def check_linux_node(api_response):
+    try:
+        for item in api_response.items:
+            node_os = item.metadata.labels.get("kubernetes.io/os")
+            if node_os == "linux":
+                return True
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug("Error occured while trying to find a linux node: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault_OS, 'Unable to find a linux node',
+                                           raise_error=False)
+    return False
+
+
+def check_arm64_node(api_response):
     try:
         for item in api_response.items:
             node_arch = item.metadata.labels.get("kubernetes.io/arch")
-            node_os = item.metadata.labels.get("kubernetes.io/os")
-            if node_arch == "amd64" and node_os == "linux":
+            if node_arch == "arm64":
                 return True
     except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
-        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
+        logger.debug("Error occured while trying to find an arm64 node: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault_Arch, 'Unable to find an arm64 node',
                                            raise_error=False)
     return False
 
@@ -705,6 +731,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Check Release Existance
     release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
 
+    utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api()
+    node_api_response = utils.validate_node_api_response(api_instance, None)
+    is_arm64_cluster = check_arm64_node(node_api_response)
+
     # Check forced delete flag
     if(force_delete):
 
@@ -757,7 +788,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                     _, error_helm_delete = output_patch_cmd.communicate()
 
         if(release_namespace):
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, True)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
 
         return
 
@@ -766,7 +797,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         return
 
     # Loading config map
-    api_instance = kube_client.CoreV1Api()
     try:
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
@@ -774,7 +804,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
                                            message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --namepace {} --no-hooks' to cleanup the release before onboarding the cluster again.".format(release_namespace))
 
-    subscription_id = get_subscription_id(cmd.cli_ctx)
+    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if os.getenv('AZURE_ACCESS_TOKEN') else get_subscription_id(cmd.cli_ctx)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
@@ -797,7 +827,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                  "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
-    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+    utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
 
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
@@ -1264,6 +1294,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
                     azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
     logger.warning("This operation might take a while...\n")
 
+    # Validate custom token operation
+    custom_token_passed, _ = utils.validate_custom_token(cmd, resource_group_name, "dummyLocation")
+
     features = [x.lower() for x in features]
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
@@ -1284,7 +1317,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
     if enable_cl:
-        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
+        subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if custom_token_passed is True else get_subscription_id(cmd.cli_ctx)
+        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
@@ -1395,6 +1429,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
 def disable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
                      yes=False):
+
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
@@ -2001,7 +2036,7 @@ def client_side_proxy(cmd,
     if token is None:
         if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
             kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
-            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, "gTYVsmkQfNwajR0w-v6A3ekPkiI7Wcz2T5ZCb7hwHTU", clientproxy_process)
+            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
 
             if post_at_response.status_code != 200:
                 if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
@@ -2059,11 +2094,11 @@ def client_side_proxy(cmd,
     return expiry, clientproxy_process
 
 
-def check_cl_registration_and_get_oid(cmd, cl_oid):
+def check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id):
     enable_custom_locations = True
     custom_locations_oid = ""
     try:
-        rp_client = _resource_providers_client(cmd.cli_ctx)
+        rp_client = resource_providers_client(cmd.cli_ctx, subscription_id)
         cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
         if cl_registration_state != "Registered":
             enable_custom_locations = False

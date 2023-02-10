@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* Mark AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` deprecated
+
 0.5.128
 +++++++
 * Fix option name `--duration` for command group `az aks maintenanceconfiguration`
