@@ -36,6 +36,10 @@ def get_image_info(progress, message_queue, client, tar_mapping, image):
     image_info = None
     raw_image = None
     image_name = f"{image.base}:{image.tag}"
+    if len(image.tag.split(":")) > 1:
+        eprint(
+            f"The image name: {image.tag} cannot have the digest present to use a tarball as the image source"
+        )
     # only try to grab the info locally if that's absolutely what
     # we want to do
     if tar_mapping:
