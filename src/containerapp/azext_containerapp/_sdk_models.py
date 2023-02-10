@@ -3217,6 +3217,7 @@ class Template(Model):
     _attribute_map = {
         'revision_suffix': {'key': 'revisionSuffix', 'type': 'str'},
         'containers': {'key': 'containers', 'type': '[Container]'},
+        'initContainers': {'key': 'initContainers', 'type': '[Container]'},
         'scale': {'key': 'scale', 'type': 'Scale'},
         'volumes': {'key': 'volumes', 'type': '[Volume]'},
     }
