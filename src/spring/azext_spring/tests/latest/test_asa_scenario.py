@@ -211,7 +211,7 @@ class CustomImageTest(ScenarioTest):
 
         self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
             self.check('name', 'default'),
-            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.type', None),
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
             self.check('properties.source.customContainer.languageFramework', None),
         ])
