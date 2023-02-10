@@ -16,7 +16,7 @@ from ._deployment_factory import (deployment_selector,
 from ._app_factory import app_selector
 from ._deployment_deployable_factory import deployable_selector
 from ._app_validator import _get_active_deployment
-from .custom import app_tail_log
+from .custom import app_tail_log_internal
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -374,19 +374,18 @@ def app_deploy(cmd, client, resource_group, service, name,
     deployment_factory = deployment_selector(**kwargs)
     kwargs.update(deployment_factory.get_fulfill_options(**kwargs))
     deployment_resource = deployment_factory.format_resource(**kwargs)
-    logger.warning('[{}/{}] Updating deployment lalala in app "{}" (this operation can take a '
+    logger.warning('[{}/{}] Updating deployment in app "{}" (this operation can take a '
                    'while to complete)'.format(kwargs['total_steps'],
                                                kwargs['total_steps'],
                                                name))
     poller = sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
                          resource_group, service, name, deployment.name,
                          deployment_resource)
-    _log_application_for_failed_deployment(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
+    _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
     return poller
 
 
-def _log_application_for_failed_deployment(cmd, client, no_wait, poller, resource_group, service, app_name,
-                                           deployment_name):
+def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
     if no_wait:
         return
     try:
@@ -395,19 +394,20 @@ def _log_application_for_failed_deployment(cmd, client, no_wait, poller, resourc
         # ignore
         pass
     try:
-        if "succeeded" != poller.status().lower():
-            deployment_resource = client.deployments.get(resource_group, service, app_name, deployment_name)
-            instances = deployment_resource.properties.instances
-            start_time = instances[0].start_time
-            instance_name = instances[0].name
+        deployment_resource = client.deployments.get(resource_group, service, app_name, deployment_name)
+        instances = deployment_resource.properties.instances
+        start_time = instances[0].start_time
+        instance_name = instances[0].name
 
-            # print the newly created instance log
-            for temp_instance in instances:
-                if temp_instance.start_time > start_time:
-                    start_time = temp_instance.start_time
-                    instance_name = temp_instance.name
-            logger.warning('Application logs:')
-            app_tail_log(cmd, client, resource_group, service, app_name, deployment_resource, instance_name, lines=500)
+        # print the newly created instance log
+        for temp_instance in instances:
+            if temp_instance.start_time > start_time:
+                start_time = temp_instance.start_time
+                instance_name = temp_instance.name
+
+        logger.warning('Application logs:')
+        app_tail_log_internal(cmd, client, resource_group, service, app_name, deployment_resource, instance_name,
+                              lines=500, ignore_exception=True)
     except Exception:
         # ignore
         return
@@ -512,9 +512,9 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                                                kwargs['total_steps'],
                                                app))
     poller = sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
-                       resource_group, service, app, name,
-                       deployment_resource)
-    _log_application_for_failed_deployment(cmd, client, no_wait, poller, resource_group, service, app, name)
+                         resource_group, service, app, name,
+                         deployment_resource)
+    _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
     return poller
 
 

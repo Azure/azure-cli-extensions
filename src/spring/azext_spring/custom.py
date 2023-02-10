@@ -400,6 +400,13 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
+    app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
+                          format_json)
+
+
+def app_tail_log_internal(cmd, client, resource_group, service, name,
+                          deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048,
+                          format_json=None, ignore_exception=False):
     if not instance:
         if not deployment.properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -429,7 +436,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
-    t = Thread(target=_get_app_log, args=(
+    t = Thread(target=_get_app_log_ignore_exception if ignore_exception else _get_app_log, args=(
         streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
@@ -1116,6 +1123,13 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         except CLIError as e:
             exceptions.append(e)
+
+
+def _get_app_log_ignore_exception(url, user_name, password, format_json, exceptions):
+    try:
+        _get_app_log(url, user_name, password, format_json, exceptions)
+    except Exception:
+        pass
 
 
 def storage_callback(pipeline_response, deserialized, headers):
