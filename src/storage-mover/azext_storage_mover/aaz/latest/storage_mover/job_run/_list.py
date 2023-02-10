@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists all Job Runs in a Job Definition.
+
+    :example: job-run list
+        az storage-mover job-run list -g {rg} --job-definition-name {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

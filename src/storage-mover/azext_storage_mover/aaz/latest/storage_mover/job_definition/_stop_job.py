@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class StopJob(AAZCommand):
     """Requests the Agent of any active instance of this Job Definition to stop.
+
+    :example: job-definition stop-job
+        az storage-mover job-definition stop-job -g {rg} --job-definition-name {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

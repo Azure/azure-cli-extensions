@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Lists all Job Definitions in a Project.
+
+    :example: job-definition list
+        az storage-mover job-definition list -g {rg} --project-name {project_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

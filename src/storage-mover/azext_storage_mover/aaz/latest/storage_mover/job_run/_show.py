@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Gets a Job Run resource.
+
+    :example: job-run show
+        az storage-mover job-run show -n {job_name} -g {rg} --job-definition-name {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

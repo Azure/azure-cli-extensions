@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update properties for a Job Definition resource. Properties not specified in the request body will be unchanged.
+
+    :example: job-definition update
+        az storage-mover job-definition update -g {rg} -n {job_definition} --project-name {project_name} --storage-mover-name {mover_name} --copy-mode Mirror --agent-name {agent_name} --description JobDefinitionDescription2
     """
 
     _aaz_info = {

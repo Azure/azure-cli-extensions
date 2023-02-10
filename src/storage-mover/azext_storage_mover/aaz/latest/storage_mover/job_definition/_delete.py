@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Deletes a Job Definition resource.
+
+    :example: job-definition delete
+        az storage-mover job-definition delete -g {rg} -n {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {

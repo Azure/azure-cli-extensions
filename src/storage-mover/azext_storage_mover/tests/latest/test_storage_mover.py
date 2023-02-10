@@ -114,6 +114,80 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
 
+    @record_only()
+    # need to manually register agent, first create the rg and the storagemover
+    # az group create -n test-storagemover-rg-2 -l eastus2
+    # az storage-mover create -n teststoragemover -g test-storagemover-rg-2
+    def test_storage_mover_job_definition_scenarios(self):
+        self.kwargs.update({
+            "rg": "test-storagemover-rg-2",
+            "mover_name": "teststoragemover",
+            "agent_name": "testagent",
+            "project_name": "testproject",
+            "job_definition": "testdefinition",
+            "account_name": "testjobdefinitionsa",
+            "source_vm": "sourcevm",
+            "target_container": "targetcontainer",
+            "source_endpoint": "sourceendpoint",
+            "target_endpoint": "targetendpoint"
+        })
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+        self.cmd('az storage account create -n {account_name} -g {rg}')
+        account_key = self.cmd('az storage account keys list -n {account_name} -g {rg} --query "[0].value" '
+                               '-otsv').output.strip()
+        account_id = self.cmd('az storage account show -n {account_name} -g {rg} --query id -otsv').output.strip()
+        self.kwargs.update({
+            "account_key": account_key,
+            "account_id": account_id
+        })
+        self.cmd('az storage container create -n {target_container} --account-name {account_name} '
+                 '--account-key {account_key}')
+        vm_ip = self.cmd('az vm create -n {source_vm} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
+                         'NONE --admin-username ubuntuuser').get_output_in_json()["publicIpAddress"]
+        self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
+                 '-n {source_endpoint} --description srcendpointDesc --export exportfolder --nfs-version NFSv4 '
+                 '--host ' + vm_ip)
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {target_endpoint} --container-name {target_container} --storage-account-id {account_id} '
+                 '--description tgtendpointDesc')
+        self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} --project-name {project_name} '
+                 '--storage-mover-name {mover_name} --copy-mode Additive --source-name {source_endpoint} '
+                 '--target-name {target_endpoint} --agent-name {agent_name} --description JobDefinitionDescription '
+                 '--source-subpath path1 --target-subpath path2')
+        self.cmd('az storage-mover job-definition show -g {rg} -n {job_definition} --project-name {project_name} '
+                 '--storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('copyMode', 'Additive'),
+                         JMESPathCheck('description ', "JobDefinitionDescription"),
+                         JMESPathCheck('sourceName', self.kwargs.get('source_endpoint')),
+                         JMESPathCheck('targetName', self.kwargs.get('target_endpoint')),
+                         JMESPathCheck('sourceSubpath', "path1"),
+                         JMESPathCheck('targetSubpath', "path2")])
+        self.cmd('az storage-mover job-definition update -g {rg} -n {job_definition} --project-name {project_name} '
+                 '--storage-mover-name {mover_name} --copy-mode Mirror '
+                 '--agent-name {agent_name} --description JobDefinitionDescription2',
+                 checks=[JMESPathCheck('copyMode', 'Mirror'),
+                         JMESPathCheck('description ', "JobDefinitionDescription2")])
+        self.cmd('az storage-mover job-definition list -g {rg} --project-name {project_name} '
+                 '--storage-mover-name {mover_name}', checks=[JMESPathCheck('length(@)', 1)])
+
+        # job run
+        self.cmd('az storage-mover job-definition start-job -g {rg} --job-definition-name {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name}')
+        job_runs = self.cmd('az storage-mover job-run list -g {rg} --job-definition-name {job_definition} '
+                            '--project-name {project_name} --storage-mover-name {mover_name}').get_output_in_json()
+        self.kwargs.update({"job_name": job_runs[0]["name"]})
+        self.cmd('az storage-mover job-definition stop-job -g {rg} --job-definition-name {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name}')
+        self.cmd('az storage-mover job-run show -n {job_name} -g {rg} --job-definition-name {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name}')
+
+        self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} --project-name {project_name} '
+                 '--storage-mover-name {mover_name} -y')
+        self.cmd('az storage-mover job-definition list -g {rg} --project-name {project_name} '
+                 '--storage-mover-name {mover_name}', checks=[JMESPathCheck('length(@)', 0)])
+
+
     @ResourceGroupPreparer(location='eastus2')
     def test_storage_mover_project_scenarios(self, resource_group):
         self.kwargs.update({

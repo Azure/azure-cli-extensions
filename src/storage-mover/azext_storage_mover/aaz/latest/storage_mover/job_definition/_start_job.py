@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class StartJob(AAZCommand):
     """Requests an Agent to start a new instance of this Job Definition, generating a new Job Run resource.
+
+    :example: job-definition start-job
+        az storage-mover job-definition start-job -g {rg} --job-definition-name {job_definition} --project-name {project_name} --storage-mover-name {mover_name}
     """
 
     _aaz_info = {
