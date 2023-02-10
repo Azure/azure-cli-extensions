@@ -188,7 +188,7 @@ K8s_Cluster_Info = "k8s_cluster_info.txt"
 Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
-Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.0"
+Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.1"
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
 Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
@@ -198,6 +198,7 @@ Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while try
 Outbound_Connectivity_Check_Failed = "Outbound network connectivity check failed"
 DNS_Check_Failed = "DNS Resolution failed"
 Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
+Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"
