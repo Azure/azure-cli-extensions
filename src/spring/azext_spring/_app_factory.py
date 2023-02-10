@@ -5,16 +5,13 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
-from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
-from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
-from .vendored_sdks.appplatform.v2022_09_01_preview import models as models_20220901preview
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from azure.cli.core.util import get_file_json
 
 
 class DefaultApp:
     def format_resource(self, **kwargs):
-        return models_20220901preview.AppResource(
+        return models.AppResource(
             properties=self._format_properties(**kwargs),
             identity=self._format_identity(**kwargs)
         )
@@ -26,26 +23,26 @@ class DefaultApp:
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
-        return models_20220901preview.AppResourceProperties(**kwargs)
+        return models.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
         target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
         user_identity_payload = self._get_user_identity_payload(user_assigned)
         identity_props = None
-        if target_identity_type != models_20220301preview.ManagedIdentityType.NONE:
-            identity_props = models_20220301preview.ManagedIdentityProperties()
+        if target_identity_type != models.ManagedIdentityType.NONE:
+            identity_props = models.ManagedIdentityProperties()
             identity_props.type = target_identity_type
             identity_props.user_assigned_identities = user_identity_payload
         return identity_props
 
     def _get_identity_assign_type(self, system_assigned=None, user_assigned=None):
-        target_identity_type = models_20220301preview.ManagedIdentityType.NONE
+        target_identity_type = models.ManagedIdentityType.NONE
         if system_assigned and user_assigned:
-            target_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+            target_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
         elif system_assigned:
-            target_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+            target_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED
         elif user_assigned:
-            target_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+            target_identity_type = models.ManagedIdentityType.USER_ASSIGNED
         return target_identity_type
 
     def _get_user_identity_payload(self, user_assigned=None):
@@ -53,7 +50,7 @@ class DefaultApp:
             return None
         user_identity_payload = {}
         for user_identity_resource_id in user_assigned:
-            user_identity_payload[user_identity_resource_id] = models_20220301preview.UserAssignedManagedIdentity()
+            user_identity_payload[user_identity_resource_id] = models.UserAssignedManagedIdentity()
         if len(user_identity_payload) == 0:
             user_identity_payload = None
         return user_identity_payload
@@ -124,7 +121,7 @@ class DefaultApp:
 
     def _load_vnet_addons(self, public_for_vnet=None, **_):
         if public_for_vnet is not None:
-            return models_20220501preview.AppVNetAddons(
+            return models.AppVNetAddons(
                 public_endpoint=public_for_vnet
             )
         else:
@@ -134,13 +131,13 @@ class DefaultApp:
         if (ingress_read_timeout is not None) or (ingress_send_timeout is not None) or \
                 (session_affinity is not None) or (session_max_age is not None) or (backend_protocol is not None) or \
                 (client_auth_certs is not None):
-            return models_20220901preview.IngressSettings(
+            return models.IngressSettings(
                 read_timeout_in_seconds=ingress_read_timeout,
                 send_timeout_in_seconds=ingress_send_timeout,
                 session_affinity=session_affinity,
                 session_cookie_max_age=session_max_age,
                 backend_protocol=backend_protocol,
-                client_auth=models_20220901preview.IngressSettingsClientAuth(
+                client_auth=models.IngressSettingsClientAuth(
                     certificates=client_auth_certs
                 ) if client_auth_certs is not None else None
             )
