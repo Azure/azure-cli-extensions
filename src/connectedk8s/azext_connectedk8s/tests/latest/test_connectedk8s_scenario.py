@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError
 import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 
-from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only, serial_test)  # pylint: disable=import-error
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -127,7 +127,6 @@ def install_kubectl_client():
 class Connectedk8sScenarioTest(LiveScenarioTest):
 
     @live_only()
-    @serial_test()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connect(self,resource_group):
         
@@ -196,7 +195,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @serial_test()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_enable_disable_features(self,resource_group):
 
@@ -286,7 +284,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @serial_test()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connectedk8s_list(self,resource_group):
 
@@ -362,7 +359,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @serial_test()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_upgrade(self,resource_group):
 
@@ -441,7 +437,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @serial_test()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_update(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-update', length=24)
@@ -504,7 +499,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
 
     @live_only()
-    @serial_test()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_troubleshoot(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-troubleshoot', length=24)
