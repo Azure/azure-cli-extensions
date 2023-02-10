@@ -241,7 +241,7 @@ def load_command_table(self, _):
     # Mongo Cluster create operations
     with self.command_group('cosmosdb mongocluster', cosmosdb_mongocluster_sdk, client_factory=cf_mongo_cluster_job, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_mongocluster_create', is_preview=True)
-        g.custom_command('update', 'cli_cosmosdb_mongocluster_update')
-        g.custom_command('list', 'cli_cosmosdb_mongocluster_list')
-        g.show_command('show', 'get')
-        g.command('delete', 'begin_delete', confirmation=True)
+        g.custom_command('update', 'cli_cosmosdb_mongocluster_update', is_preview=True)
+        g.custom_command('list', 'cli_cosmosdb_mongocluster_list', is_preview=True)
+        g.custom_command('show', 'cli_cosmosdb_mongocluster_get', is_preview=True)
+        g.custom_command('delete', 'cli_cosmosdb_mongocluster_delete', confirmation=True)

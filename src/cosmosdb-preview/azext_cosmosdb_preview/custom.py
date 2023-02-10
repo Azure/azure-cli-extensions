@@ -138,21 +138,21 @@ def cli_cosmosdb_mongocluster_create(client,
     return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
 
 def cli_cosmosdb_mongocluster_update(client,
-                                        resource_group_name,
-                                        cluster_name,
-                                        administrator_login,
-                                        administrator_login_password,
-                                        tags=None,
-                                        create_mode=CreateMode.DEFAULT.value,
-                                        restore_point_in_time_utc=None,
-                                        restore_source_resource_id=None,
-                                        server_version="5.0",
-                                        shard_node_sku=None,
-                                        shard_node_disk_size_gb=None, 
-                                        shard_enable_ha=None,
-                                        shard_node_name=None,
-                                        shard_kind=NodeKind.SHARD.value,
-                                        shard_node_count=1):
+                                    resource_group_name,
+                                    cluster_name,
+                                    administrator_login,
+                                    administrator_login_password,
+                                    tags=None,
+                                    create_mode=CreateMode.DEFAULT.value,
+                                    restore_point_in_time_utc=None,
+                                    restore_source_resource_id=None,
+                                    server_version="5.0",
+                                    shard_node_sku=None,
+                                    shard_node_disk_size_gb=None, 
+                                    shard_enable_ha=None,
+                                    shard_node_name=None,
+                                    shard_kind=NodeKind.SHARD.value,
+                                    shard_node_count=1):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
 
@@ -232,7 +232,7 @@ def cli_cosmosdb_mongocluster_update(client,
     return client.begin_create_or_update(resource_group_name, mongocluster_name, mongodb_cluster)
     
 def cli_cosmosdb_mongocluster_list(client,
-                                        resource_group_name=None):
+                                   resource_group_name=None):
 
     """List Azure CosmosDB Mongo Clusters by resource group and subscription."""
 
@@ -240,6 +240,21 @@ def cli_cosmosdb_mongocluster_list(client,
         return client.list()
 
     return client.list_by_resource_group(resource_group_name)
+
+
+def cli_cosmosdb_mongocluster_get(client,
+                                   resource_group_name, cluster_name):
+
+    """Gets Azure CosmosDB Mongo Cluster"""
+
+    return client.get(resource_group_name, cluster_name)
+
+def cli_cosmosdb_mongocluster_delete(client,
+                                   resource_group_name, cluster_name):
+
+    """Delete Azure CosmosDB Mongo Cluster"""
+
+    return client.begin_delete(resource_group_name, cluster_name)
 
 def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   resource_group_name,

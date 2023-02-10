@@ -174,8 +174,8 @@ def load_arguments(self, _):
         c.argument('restore_source_resource_id', options_list=['--restore-source-resource-id'], help="The restorable source Id of the source mongo cluster from which the cluster has to be restored", arg_group='Restore')
     
     with self.argument_context('cosmosdb mongocluster show') as c:
-        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
-        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)
     
     with self.argument_context('cosmosdb mongocluster delete') as c:
         c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
