@@ -23,9 +23,9 @@ class CalculateRefund(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/calculaterefund", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/calculaterefund", "2022-11-01"],
         ]
     }
 
@@ -89,11 +89,11 @@ class CalculateRefund(AAZCommand):
         self.CalculateRefundPost(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -141,7 +141,7 @@ class CalculateRefund(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -209,14 +209,14 @@ class CalculateRefund(AAZCommand):
             properties.billing_refund_amount = AAZObjectType(
                 serialized_name="billingRefundAmount",
             )
-            _build_schema_price_read(properties.billing_refund_amount)
+            _CalculateRefundHelper._build_schema_price_read(properties.billing_refund_amount)
             properties.policy_result = AAZObjectType(
                 serialized_name="policyResult",
             )
             properties.pricing_refund_amount = AAZObjectType(
                 serialized_name="pricingRefundAmount",
             )
-            _build_schema_price_read(properties.pricing_refund_amount)
+            _CalculateRefundHelper._build_schema_price_read(properties.pricing_refund_amount)
             properties.quantity = AAZIntType()
             properties.session_id = AAZStrType(
                 serialized_name="sessionId",
@@ -226,15 +226,15 @@ class CalculateRefund(AAZCommand):
             billing_information.billing_currency_prorated_amount = AAZObjectType(
                 serialized_name="billingCurrencyProratedAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_prorated_amount)
+            _CalculateRefundHelper._build_schema_price_read(billing_information.billing_currency_prorated_amount)
             billing_information.billing_currency_remaining_commitment_amount = AAZObjectType(
                 serialized_name="billingCurrencyRemainingCommitmentAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
+            _CalculateRefundHelper._build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
             billing_information.billing_currency_total_paid_amount = AAZObjectType(
                 serialized_name="billingCurrencyTotalPaidAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_total_paid_amount)
+            _CalculateRefundHelper._build_schema_price_read(billing_information.billing_currency_total_paid_amount)
             billing_information.billing_plan = AAZStrType(
                 serialized_name="billingPlan",
             )
@@ -252,11 +252,11 @@ class CalculateRefund(AAZCommand):
             properties.consumed_refunds_total = AAZObjectType(
                 serialized_name="consumedRefundsTotal",
             )
-            _build_schema_price_read(properties.consumed_refunds_total)
+            _CalculateRefundHelper._build_schema_price_read(properties.consumed_refunds_total)
             properties.max_refund_limit = AAZObjectType(
                 serialized_name="maxRefundLimit",
             )
-            _build_schema_price_read(properties.max_refund_limit)
+            _CalculateRefundHelper._build_schema_price_read(properties.max_refund_limit)
             properties.policy_errors = AAZListType(
                 serialized_name="policyErrors",
             )
@@ -271,26 +271,28 @@ class CalculateRefund(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_price_read = None
+class _CalculateRefundHelper:
+    """Helper class for CalculateRefund"""
 
+    _schema_price_read = None
 
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
 
-    _schema_price_read = AAZObjectType()
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
 
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
 
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
 
 
 __all__ = ["CalculateRefund"]

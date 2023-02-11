@@ -1,10 +1,9 @@
 interactions:
 - request:
-    body: '{"sku": {"name": "standard_b1ls"}, "location": "westus", "properties":
-      {"reservedResourceType": "VirtualMachines", "billingScopeId": "d3ae48e5-dbb2-4618-afd4-fb1b8559cb80",
-      "term": "P1Y", "billingPlan": "Monthly", "quantity": 2, "displayName": "test",
-      "appliedScopeType": "Shared", "renew": false, "reservedResourceProperties":
-      {}}}'
+    body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
+      "Monthly", "billingScopeId": "00000000-0000-0000-0000-000000000000", "displayName":
+      "clitest", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
+      "term": "P1Y"}, "sku": {"name": "standard_b1ls"}}'
     headers:
       Accept:
       - application/json
@@ -15,22 +14,19 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '332'
+      - '301'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - --sku --location --reserved-resource-type --scope --term --billing-plan --display-name
-        --quantity --applied-scope-type
+      - --sku --location --reserved-resource-type --billing-scope --term --billing-plan
+        --display-name --quantity --applied-scope-type
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-reservations/0.6.0 Azure-SDK-For-Python AZURECLI/2.0.76
-      accept-language:
-      - en-US
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-11-01
   response:
     body:
-      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"USD","amount":63.84},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2019-11-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"billingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2019-12-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-01-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-02-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-03-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-04-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-05-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-06-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-07-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-08-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-09-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-10-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"}],"reservationOrderId":"d4ef7ec2-941c-4da7-8ec9-2f148255a0dc","skuTitle":"Reserved
+      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"USD","amount":63.84},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2023-02-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"billingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-03-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-04-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-05-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-06-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-07-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-08-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-09-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-10-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-11-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2023-12-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2024-01-10","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"}],"reservationOrderId":"2c6ebb2a-c8af-49f9-b1ad-fb72b8396bb1","skuTitle":"Reserved
         VM Instance, Standard_B1ls, US West, 1 Year","skuDescription":"standard_b1ls","pricingCurrencyTotal":{"currencyCode":"USD","amount":63.84}}}'
     headers:
       cache-control:
@@ -40,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Nov 2019 05:04:31 GMT
+      - Fri, 10 Feb 2023 01:44:18 GMT
       expires:
       - '-1'
       pragma:
@@ -49,17 +45,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-test:
-      - '{"contact":"kgautam","scenarios":"v6-recurrence-test,time-scale:35040,AcceleratedPayment","retention":"2/13/2020
-        5:04:30 AM"}'
+      - '{"contact":"yunga","scenarios":"time-scale:17520,days-until-time-stop:365,CSZ,Inv-v7,crs-vnext,GtmRiPurchase","retention":"5/11/2023
+        1:44:16 AM"}'
     status:
       code: 200
       message: OK

@@ -22,16 +22,17 @@ class Return(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/return", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/return", "2022-11-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -86,14 +87,14 @@ class Return(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReturnPost(ctx=self.ctx)()
+        yield self.ReturnPost(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -108,7 +109,14 @@ class Return(AAZCommand):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
-                return self.on_202(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -141,7 +149,7 @@ class Return(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -152,9 +160,6 @@ class Return(AAZCommand):
             parameters = {
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
                 ),
             }
             return parameters
@@ -182,116 +187,9 @@ class Return(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_202(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_202
-            )
 
-        _schema_on_202 = None
-
-        @classmethod
-        def _build_schema_on_202(cls):
-            if cls._schema_on_202 is not None:
-                return cls._schema_on_202
-
-            cls._schema_on_202 = AAZObjectType()
-
-            _schema_on_202 = cls._schema_on_202
-            _schema_on_202.id = AAZStrType()
-            _schema_on_202.properties = AAZObjectType()
-
-            properties = cls._schema_on_202.properties
-            properties.billing_information = AAZObjectType(
-                serialized_name="billingInformation",
-            )
-            properties.billing_refund_amount = AAZObjectType(
-                serialized_name="billingRefundAmount",
-            )
-            _build_schema_price_read(properties.billing_refund_amount)
-            properties.policy_result = AAZObjectType(
-                serialized_name="policyResult",
-            )
-            properties.pricing_refund_amount = AAZObjectType(
-                serialized_name="pricingRefundAmount",
-            )
-            _build_schema_price_read(properties.pricing_refund_amount)
-            properties.quantity = AAZIntType()
-            properties.session_id = AAZStrType(
-                serialized_name="sessionId",
-            )
-
-            billing_information = cls._schema_on_202.properties.billing_information
-            billing_information.billing_currency_prorated_amount = AAZObjectType(
-                serialized_name="billingCurrencyProratedAmount",
-            )
-            _build_schema_price_read(billing_information.billing_currency_prorated_amount)
-            billing_information.billing_currency_remaining_commitment_amount = AAZObjectType(
-                serialized_name="billingCurrencyRemainingCommitmentAmount",
-            )
-            _build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
-            billing_information.billing_currency_total_paid_amount = AAZObjectType(
-                serialized_name="billingCurrencyTotalPaidAmount",
-            )
-            _build_schema_price_read(billing_information.billing_currency_total_paid_amount)
-            billing_information.billing_plan = AAZStrType(
-                serialized_name="billingPlan",
-            )
-            billing_information.completed_transactions = AAZIntType(
-                serialized_name="completedTransactions",
-            )
-            billing_information.total_transactions = AAZIntType(
-                serialized_name="totalTransactions",
-            )
-
-            policy_result = cls._schema_on_202.properties.policy_result
-            policy_result.properties = AAZObjectType()
-
-            properties = cls._schema_on_202.properties.policy_result.properties
-            properties.consumed_refunds_total = AAZObjectType(
-                serialized_name="consumedRefundsTotal",
-            )
-            _build_schema_price_read(properties.consumed_refunds_total)
-            properties.max_refund_limit = AAZObjectType(
-                serialized_name="maxRefundLimit",
-            )
-            _build_schema_price_read(properties.max_refund_limit)
-            properties.policy_errors = AAZListType(
-                serialized_name="policyErrors",
-            )
-
-            policy_errors = cls._schema_on_202.properties.policy_result.properties.policy_errors
-            policy_errors.Element = AAZObjectType()
-
-            _element = cls._schema_on_202.properties.policy_result.properties.policy_errors.Element
-            _element.code = AAZStrType()
-            _element.message = AAZStrType()
-
-            return cls._schema_on_202
-
-
-_schema_price_read = None
-
-
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
-
-    _schema_price_read = AAZObjectType()
-
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
-
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+class _ReturnHelper:
+    """Helper class for Return"""
 
 
 __all__ = ["Return"]

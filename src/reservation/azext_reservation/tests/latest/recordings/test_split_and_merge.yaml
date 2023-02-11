@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e?api-version=2022-11-01
   response:
     body:
       string: '{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/646d427e-a133-4cb6-9f28-3de6157de83e","etag":11,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-06-20T01:33:19.8872827Z","lastUpdatedDateTime":"2022-06-20T01:33:19.9809872Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
@@ -68,7 +68,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/split?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/split?api-version=2022-11-01
   response:
     body:
       string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725/2","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
@@ -88,7 +88,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/splitoperationresults/646d427e-a133-4cb6-9f28-3de6157de83e_12?api-version=2022-03-01
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/splitoperationresults/646d427e-a133-4cb6-9f28-3de6157de83e_12?api-version=2022-11-01
       pragma:
       - no-cache
       server:
@@ -127,7 +127,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/splitoperationresults/646d427e-a133-4cb6-9f28-3de6157de83e_12?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/splitoperationresults/646d427e-a133-4cb6-9f28-3de6157de83e_12?api-version=2022-11-01
   response:
     body:
       string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
@@ -184,7 +184,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/merge?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/merge?api-version=2022-11-01
   response:
     body:
       string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725/revisions/5","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725/5","etag":5,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
@@ -205,7 +205,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/mergeoperationresults/851e573e-664c-47e8-ab29-243ac1dd3725_3?api-version=2022-03-01
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/mergeoperationresults/851e573e-664c-47e8-ab29-243ac1dd3725_3?api-version=2022-11-01
       pragma:
       - no-cache
       server:
@@ -244,7 +244,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/mergeoperationresults/851e573e-664c-47e8-ab29-243ac1dd3725_3?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/mergeoperationresults/851e573e-664c-47e8-ab29-243ac1dd3725_3?api-version=2022-11-01
   response:
     body:
       string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725","etag":5,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","extendedStatusInfo":{"statusCode":"Merged","message":"This

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations", "2022-11-01"],
         ]
     }
 
@@ -55,11 +55,11 @@ class List(AAZCommand):
         self.ReservationList(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -108,7 +108,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -161,7 +161,7 @@ class List(AAZCommand):
             )
             _element.properties = AAZObjectType()
             _element.sku = AAZObjectType()
-            _build_schema_sku_name_read(_element.sku)
+            _ListHelper._build_schema_sku_name_read(_element.sku)
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -174,13 +174,14 @@ class List(AAZCommand):
             properties.applied_scope_properties = AAZObjectType(
                 serialized_name="appliedScopeProperties",
             )
+            _ListHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _build_schema_applied_scopes_read(properties.applied_scopes)
+            _ListHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.archived = AAZBoolType()
             properties.benefit_start_time = AAZStrType(
                 serialized_name="benefitStartTime",
@@ -205,6 +206,9 @@ class List(AAZCommand):
             properties.expiry_date = AAZStrType(
                 serialized_name="expiryDate",
             )
+            properties.expiry_date_time = AAZStrType(
+                serialized_name="expiryDateTime",
+            )
             properties.extended_status_info = AAZObjectType(
                 serialized_name="extendedStatusInfo",
             )
@@ -228,6 +232,9 @@ class List(AAZCommand):
             properties.purchase_date = AAZStrType(
                 serialized_name="purchaseDate",
             )
+            properties.purchase_date_time = AAZStrType(
+                serialized_name="purchaseDateTime",
+            )
             properties.quantity = AAZIntType()
             properties.renew = AAZBoolType()
             properties.renew_destination = AAZStrType(
@@ -241,6 +248,9 @@ class List(AAZCommand):
             )
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
+            )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
             )
             properties.sku_description = AAZStrType(
                 serialized_name="skuDescription",
@@ -262,17 +272,6 @@ class List(AAZCommand):
             )
             properties.utilization = AAZObjectType(
                 flags={"read_only": True},
-            )
-
-            applied_scope_properties = cls._schema_on_200.value.Element.properties.applied_scope_properties
-            applied_scope_properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            applied_scope_properties.management_group_id = AAZStrType(
-                serialized_name="managementGroupId",
-            )
-            applied_scope_properties.tenant_id = AAZStrType(
-                serialized_name="tenantId",
             )
 
             extended_status_info = cls._schema_on_200.value.Element.properties.extended_status_info
@@ -321,16 +320,20 @@ class List(AAZCommand):
                 flags={"client_flatten": True},
             )
             purchase_properties.sku = AAZObjectType()
-            _build_schema_sku_name_read(purchase_properties.sku)
+            _ListHelper._build_schema_sku_name_read(purchase_properties.sku)
 
             properties = cls._schema_on_200.value.Element.properties.renew_properties.purchase_properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _ListHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _build_schema_applied_scopes_read(properties.applied_scopes)
+            _ListHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.billing_plan = AAZStrType(
                 serialized_name="billingPlan",
             )
@@ -347,6 +350,9 @@ class List(AAZCommand):
             )
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
+            )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
             )
             properties.term = AAZStrType()
 
@@ -375,17 +381,13 @@ class List(AAZCommand):
             )
 
             utilization = cls._schema_on_200.value.Element.properties.utilization
-            utilization.aggregates = AAZListType(
-                flags={"read_only": True},
-            )
+            utilization.aggregates = AAZListType()
             utilization.trend = AAZStrType(
                 flags={"read_only": True},
             )
 
             aggregates = cls._schema_on_200.value.Element.properties.utilization.aggregates
-            aggregates.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            aggregates.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.utilization.aggregates.Element
             _element.grain = AAZFloatType(
@@ -406,64 +408,95 @@ class List(AAZCommand):
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200
 
 
-_schema_applied_scopes_read = None
+class _ListHelper:
+    """Helper class for List"""
 
+    _schema_applied_scope_properties_read = None
 
-def _build_schema_applied_scopes_read(_schema):
-    global _schema_applied_scopes_read
-    if _schema_applied_scopes_read is not None:
-        _schema.Element = _schema_applied_scopes_read.Element
-        return
+    @classmethod
+    def _build_schema_applied_scope_properties_read(cls, _schema):
+        if cls._schema_applied_scope_properties_read is not None:
+            _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+            _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+            _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+            _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+            _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+            return
 
-    _schema_applied_scopes_read = AAZListType()
+        cls._schema_applied_scope_properties_read = _schema_applied_scope_properties_read = AAZObjectType()
 
-    applied_scopes_read = _schema_applied_scopes_read
-    applied_scopes_read.Element = AAZStrType()
+        applied_scope_properties_read = _schema_applied_scope_properties_read
+        applied_scope_properties_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        applied_scope_properties_read.management_group_id = AAZStrType(
+            serialized_name="managementGroupId",
+        )
+        applied_scope_properties_read.resource_group_id = AAZStrType(
+            serialized_name="resourceGroupId",
+        )
+        applied_scope_properties_read.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
+        applied_scope_properties_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    _schema.Element = _schema_applied_scopes_read.Element
+        _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+        _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+        _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+        _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+        _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
 
+    _schema_applied_scopes_read = None
 
-_schema_sku_name_read = None
+    @classmethod
+    def _build_schema_applied_scopes_read(cls, _schema):
+        if cls._schema_applied_scopes_read is not None:
+            _schema.Element = cls._schema_applied_scopes_read.Element
+            return
 
+        cls._schema_applied_scopes_read = _schema_applied_scopes_read = AAZListType()
 
-def _build_schema_sku_name_read(_schema):
-    global _schema_sku_name_read
-    if _schema_sku_name_read is not None:
-        _schema.name = _schema_sku_name_read.name
-        return
+        applied_scopes_read = _schema_applied_scopes_read
+        applied_scopes_read.Element = AAZStrType()
 
-    _schema_sku_name_read = AAZObjectType()
+        _schema.Element = cls._schema_applied_scopes_read.Element
 
-    sku_name_read = _schema_sku_name_read
-    sku_name_read.name = AAZStrType()
+    _schema_sku_name_read = None
 
-    _schema.name = _schema_sku_name_read.name
+    @classmethod
+    def _build_schema_sku_name_read(cls, _schema):
+        if cls._schema_sku_name_read is not None:
+            _schema.name = cls._schema_sku_name_read.name
+            return
+
+        cls._schema_sku_name_read = _schema_sku_name_read = AAZObjectType()
+
+        sku_name_read = _schema_sku_name_read
+        sku_name_read.name = AAZStrType()
+
+        _schema.name = cls._schema_sku_name_read.name
 
 
 __all__ = ["List"]
