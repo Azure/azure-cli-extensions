@@ -307,7 +307,7 @@ def app_stop(cmd, client,
 
 
 def deployment_enable_remote_debugging(cmd, client, resource_group, service, name, remote_debugging_port=None, deployment=None, no_wait=False):
-    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    logger.warning("Enable remote debugging for the app '{}' deployment '{}'".format(name, deployment.name))
     remote_debugging_payload = models.RemoteDebuggingPayload(port=remote_debugging_port)
     return sdk_no_wait(no_wait, client.deployments.begin_enable_remote_debugging,
                        resource_group, service, name, deployment.name, remote_debugging_payload)
