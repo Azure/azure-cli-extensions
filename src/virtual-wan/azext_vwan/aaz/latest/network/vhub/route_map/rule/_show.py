@@ -60,6 +60,7 @@ class Show(AAZCommand):
         )
         _args_schema.rule_index = AAZIntArg(
             options=["--rule-index"],
+            help="The index of the route map rule",
             required=True,
         )
         return cls._args_schema
