@@ -67,8 +67,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="List of connections which have this RoutMap associated for inbound traffic.",
         )
-        _args_schema.associated_outbound_connections = AAZListArg(
-            options=["--associated-outbound-connections"],
+        _args_schema.outbound_connections = AAZListArg(
+            options=["--outbound-connections"],
             arg_group="Properties",
             help="List of connections which have this RoutMap associated for outbound traffic.",
         )
@@ -81,8 +81,8 @@ class Create(AAZCommand):
         inbound_connection = cls._args_schema.inbound_connection
         inbound_connection.Element = AAZStrArg()
 
-        associated_outbound_connections = cls._args_schema.associated_outbound_connections
-        associated_outbound_connections.Element = AAZStrArg()
+        outbound_connections = cls._args_schema.outbound_connections
+        outbound_connections.Element = AAZStrArg()
 
         rules = cls._args_schema.rules
         rules.Element = AAZObjectArg()
@@ -293,7 +293,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("associatedInboundConnections", AAZListType, ".inbound_connection")
-                properties.set_prop("associatedOutboundConnections", AAZListType, ".associated_outbound_connections")
+                properties.set_prop("associatedOutboundConnections", AAZListType, ".outbound_connections")
                 properties.set_prop("rules", AAZListType, ".rules")
 
             associated_inbound_connections = _builder.get(".properties.associatedInboundConnections")

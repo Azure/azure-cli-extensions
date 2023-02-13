@@ -72,8 +72,8 @@ class Update(AAZCommand):
             help="List of connections which have this RoutMap associated for inbound traffic.",
             nullable=True,
         )
-        _args_schema.associated_outbound_connections = AAZListArg(
-            options=["--associated-outbound-connections"],
+        _args_schema.outbound_connections = AAZListArg(
+            options=["--outbound-connections"],
             arg_group="Properties",
             help="List of connections which have this RoutMap associated for outbound traffic.",
             nullable=True,
@@ -90,8 +90,8 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        associated_outbound_connections = cls._args_schema.associated_outbound_connections
-        associated_outbound_connections.Element = AAZStrArg(
+        outbound_connections = cls._args_schema.outbound_connections
+        outbound_connections.Element = AAZStrArg(
             nullable=True,
         )
 
@@ -470,7 +470,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("associatedInboundConnections", AAZListType, ".inbound_connection")
-                properties.set_prop("associatedOutboundConnections", AAZListType, ".associated_outbound_connections")
+                properties.set_prop("associatedOutboundConnections", AAZListType, ".outbound_connections")
                 properties.set_prop("rules", AAZListType, ".rules")
 
             associated_inbound_connections = _builder.get(".properties.associatedInboundConnections")
