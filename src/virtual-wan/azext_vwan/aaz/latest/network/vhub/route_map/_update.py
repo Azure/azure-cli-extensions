@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a route map.
+
+    :example: Update route map
+        az network vhub route-map update -n route-map-name -g rg --vhub-name vhub-name --rules "[{name:rule1,matchCriteria:[{matchCondition:Contains,routePrefix:[10.0.0.0/8]}],actions:[{type:Add,parameters:[{asPath:[22334]}]}]}]"
     """
 
     _aaz_info = {
@@ -53,8 +56,8 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.virtual_hub_name = AAZStrArg(
-            options=["--virtual-hub-name"],
+        _args_schema.vhub_name = AAZStrArg(
+            options=["--vhub-name"],
             help="The name of the VirtualHub containing the RouteMap.",
             required=True,
             id_part="name",
@@ -291,7 +294,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "virtualHubName", self.ctx.args.virtual_hub_name,
+                    "virtualHubName", self.ctx.args.vhub_name,
                     required=True,
                 ),
             }
@@ -394,7 +397,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "virtualHubName", self.ctx.args.virtual_hub_name,
+                    "virtualHubName", self.ctx.args.vhub_name,
                     required=True,
                 ),
             }

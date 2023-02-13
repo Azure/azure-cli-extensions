@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List routem maps by resource group.
+
+    :example: List route maps by resource group
+        az network vhub route-map list -g rg --vhub-name vhub-name
     """
 
     _aaz_info = {
@@ -43,8 +46,8 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.virtual_hub_name = AAZStrArg(
-            options=["--virtual-hub-name"],
+        _args_schema.vhub_name = AAZStrArg(
+            options=["--vhub-name"],
             help="The name of the VirtualHub containing the RouteMap.",
             required=True,
         )
@@ -106,7 +109,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "virtualHubName", self.ctx.args.virtual_hub_name,
+                    "virtualHubName", self.ctx.args.vhub_name,
                     required=True,
                 ),
             }

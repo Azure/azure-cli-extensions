@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of a route map.
+
+    :example: Sho a route map
+        az network vhub route-map show -n route-map-name -g rg --vhub-name vhub-name
     """
 
     _aaz_info = {
@@ -50,8 +53,8 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.virtual_hub_name = AAZStrArg(
-            options=["--virtual-hub-name"],
+        _args_schema.vhub_name = AAZStrArg(
+            options=["--vhub-name"],
             help="The name of the VirtualHub containing the RouteMap.",
             required=True,
             id_part="name",
@@ -117,7 +120,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "virtualHubName", self.ctx.args.virtual_hub_name,
+                    "virtualHubName", self.ctx.args.vhub_name,
                     required=True,
                 ),
             }

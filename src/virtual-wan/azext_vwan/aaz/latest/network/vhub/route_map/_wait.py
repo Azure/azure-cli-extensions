@@ -49,8 +49,8 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.virtual_hub_name = AAZStrArg(
-            options=["--virtual-hub-name"],
+        _args_schema.vhub_name = AAZStrArg(
+            options=["--vhub-name"],
             help="The name of the VirtualHub containing the RouteMap.",
             required=True,
             id_part="name",
@@ -116,7 +116,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "virtualHubName", self.ctx.args.virtual_hub_name,
+                    "virtualHubName", self.ctx.args.vhub_name,
                     required=True,
                 ),
             }

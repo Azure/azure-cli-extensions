@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a route map.
+
+    :example: Create route map
+        az network vhub route-map create -n route-map-name -g rg --vhub-name vhub-name
     """
 
     _aaz_info = {
@@ -50,8 +53,8 @@ class Create(AAZCommand):
             help="The name of the RouteMap.",
             required=True,
         )
-        _args_schema.virtual_hub_name = AAZStrArg(
-            options=["--virtual-hub-name"],
+        _args_schema.vhub_name = AAZStrArg(
+            options=["--vhub-name"],
             help="The name of the VirtualHub containing the RouteMap.",
             required=True,
         )
@@ -250,7 +253,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "virtualHubName", self.ctx.args.virtual_hub_name,
+                    "virtualHubName", self.ctx.args.vhub_name,
                     required=True,
                 ),
             }
