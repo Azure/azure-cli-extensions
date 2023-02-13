@@ -8,12 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._get_inbound_routes import *
-from ._get_outbound_routes import *
-from ._list import *
-from ._show import *
-from ._update import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "network vhub route-map rule",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage route map rule
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

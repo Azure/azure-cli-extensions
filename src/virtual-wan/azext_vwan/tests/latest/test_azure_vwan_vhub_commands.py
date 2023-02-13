@@ -869,12 +869,51 @@ class RouteMapScenario(ScenarioTest):
             self.check('[0].rules[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
             self.check('[0].rules[0].name', 'rule1')
         ])
+        self.cmd('network vhub route-map rule add --name rule2 -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name} --match-criteria "[{{matchCondition:Contains,routePrefix:[10.0.0.1/8]}}]" --actions "[{{type:Add,parameters:[{{asPath:[22335]}}]}}]" --next-step Continue', checks=[
+            self.check('actions[0].parameters[0].asPath[0]', '22335'),
+            self.check('actions[0].type', 'Add'),
+            self.check('matchCriteria[0].matchCondition', 'Contains'),
+            self.check('matchCriteria[0].routePrefix[0]', '10.0.0.1/8'),
+            self.check('name', 'rule2'),
+            self.check('nextStepIfMatched', 'Continue')
+        ])
+        self.cmd('network vhub route-map rule show -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name} --rule-index 0', checks=[
+            self.check('actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('actions[0].type', 'Add'),
+            self.check('matchCriteria[0].matchCondition', 'Contains'),
+            self.check('matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('name', 'rule1')
+        ])
+        self.cmd('network vhub route-map rule list -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name}', checks=[
+            self.check('[0].actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('[0].actions[0].type', 'Add'),
+            self.check('[0].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('[0].name', 'rule1'),
+            self.check('[1].actions[0].parameters[0].asPath[0]', '22335'),
+            self.check('[1].actions[0].type', 'Add'),
+            self.check('[1].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('[1].matchCriteria[0].routePrefix[0]', '10.0.0.1/8'),
+            self.check('[1].name', 'rule2'),
+            self.check('[1].nextStepIfMatched', 'Continue')
+        ])
         self.cmd("network vhub route-map show -n {route_map_name} -g {rg} --vhub-name {vhub_name}", checks=[
             self.check('name', '{route_map_name}'),
             self.check('rules[0].actions[0].parameters[0].asPath[0]', '22334'),
             self.check('rules[0].actions[0].type', 'Add'),
             self.check('rules[0].matchCriteria[0].matchCondition', 'Contains'),
             self.check('rules[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
-            self.check('rules[0].name', 'rule1')
+            self.check('rules[0].name', 'rule1'),
+            self.check('rules[1].actions[0].parameters[0].asPath[0]', '22335'),
+            self.check('rules[1].actions[0].type', 'Add'),
+            self.check('rules[1].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('rules[1].matchCriteria[0].routePrefix[0]', '10.0.0.1/8'),
+            self.check('rules[1].name', 'rule2'),
+            self.check('rules[1].nextStepIfMatched', 'Continue')
         ])
-        self.cmd("network vhub route-map delete -n {route_map_name} -g {rg} --vhub-name {vhub_name}")
+        self.cmd('network vhub route-map rule delete -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name} --rule-index 1 -y')
+        self.cmd("network vhub route-map show -n {route_map_name} -g {rg} --vhub-name {vhub_name}", checks=[
+            self.check('name', '{route_map_name}'),
+            self.check('length(rules)', 1)
+        ])
+        self.cmd("network vhub route-map delete -n {route_map_name} -g {rg} --vhub-name {vhub_name} -y")
