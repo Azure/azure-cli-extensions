@@ -34,12 +34,8 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
-
-from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
-from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
-from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType, BindingType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -47,7 +43,7 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 build_env_type = CLIArgumentType(
     validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
-service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Apps, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
+service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
@@ -66,7 +62,7 @@ def load_arguments(self, _):
     with self.argument_context('spring') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
         c.argument('name', options_list=[
-            '--name', '-n'], help='Name of Azure Spring Apps.')
+            '--name', '-n'], help='The name of Azure Spring Apps instance.')
 
     # A refactoring work item to move validators to command level to reduce the duplications.
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
@@ -217,7 +213,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='Name of app.')
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.')
 
     for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
         with self.argument_context(scope) as c:
@@ -318,10 +314,10 @@ def load_arguments(self, _):
                    validator=validate_remote_debugging_port)
 
     with self.argument_context('spring app unset-deployment') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist)
 
     with self.argument_context('spring app identity') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring app identity assign') as c:
         c.argument('scope',
