@@ -135,5 +135,4 @@ class DbConnectionClient():
                 connection_name,
                 api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
-        return r.json()
+        send_raw_request(cmd.cli_ctx, "DELETE", request_url)
