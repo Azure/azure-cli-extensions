@@ -73,3 +73,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'dataprotection_resource_guard_list')
         g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')
         g.custom_command('update', 'dataprotection_resource_guard_update')
+
+    with self.command_group('dataprotection', is_experimental=False):
+        pass
