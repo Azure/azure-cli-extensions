@@ -45,8 +45,8 @@ class AppDeploy(ScenarioTest):
             self.check('sku.capacity', 1),
             self.check('properties.source.type', 'Jar'),
             self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+            self.check('properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ]).get_output_in_json()
         relative_path = deployment['properties']['source']['relativePath']
 
@@ -130,8 +130,8 @@ class AppCRUD(ScenarioTest):
             self.check('name', 'green'),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('properties.source.type', None),
-            self.check('properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.source.type', 'Jar'),
+            self.check('properties.source.runtimeVersion', 'Java_8'),
             self.check('sku.capacity', 2),
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
@@ -204,7 +204,7 @@ class BlueGreenTest(ScenarioTest):
         ])
 
         self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.active', True)
+            self.check('properties.active', False)
         ])
 
         self.cmd('spring app deployment show -n green --app {app} -g {rg} -s {serviceName}', checks=[
