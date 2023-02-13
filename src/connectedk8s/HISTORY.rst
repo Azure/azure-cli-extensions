@@ -2,6 +2,19 @@
 
 Release History
 ===============
+1.3.13
+++++++
+
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+
+1.3.12
+++++++
+
+* Added retries for helm chart pull and config DP POST call
+* Fix parameterizing for kid in csp method
+* Bug fix in delete_arc_agents for arm64 parameter
+* Added specific exception messages for pre-checks
+
 1.3.11
 ++++++
 

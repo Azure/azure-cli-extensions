@@ -61,5 +61,5 @@ setup(
     packages=find_packages(),
     install_requires=DEPENDENCIES,
     package_data={
-        'azext_serviceconnector-passwordless': ['azext_metadata.json']},
+        'azext_serviceconnector_passwordless': ['azext_metadata.json']},
 )
