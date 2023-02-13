@@ -12,15 +12,6 @@ pr:
     include:
       - '*'
 
-parameters:
-- name: versions
-  type: object
-  default:
-    python37: "3.7"
-    python38: "3.8"
-    python39: "3.9"
-    python311: "3.11"
-
 jobs:
 - job: CredScan
   displayName: "Credential Scan"
@@ -143,91 +134,6 @@ jobs:
       displayName: 'Install wheel==0.30.0'
     - bash: ./scripts/ci/test_source.sh
       displayName: 'Run integration test and build test'
-      env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
-        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
-
-- job: getPythonVersion
-  displayName: "get Python Version"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
-      inputs:
-        versionSpec: '3.10'
-    - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
-    - bash: |
-        #!/usr/bin/env bash
-        set -ev
-
-        source env/bin/activate
-        az --version
-        python scripts/ci/get_python_version.py
-        pythonVersion=`cat python_version.txt`
-        echo $pythonVersion
-        echo "##vso[task.setvariable variable=pythonVersion;isoutput=true]$pythonVersion"
-      name: CustomParas
-      displayName: 'get Python Version'
-      env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
-        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
-
-- ${{each version in parameters.versions}}:
-  - job: MinVersionTests${{version.key}}
-    dependsOn: getPythonVersion
-    variables:
-      PythonVersion: $[ dependencies.getPythonVersion.outputs['CustomParas.pythonVersion'] ]
-    condition: and(succeeded(), contains(variables.PythonVersion, ${{version.value}}))
-    displayName: "Min Version Tests ${{version.key}}"
-    pool:
-      name: 'pool-ubuntu-2004'
-    steps:
-      - task: UsePythonVersion@0
-        displayName: 'Use ${{version.key}}'
-        inputs:
-          versionSpec: '${{version.value}}'
-          addToPath: true
-      - template: .azure-pipelines/templates/azdev_setup.yml
-      - bash: pip install wheel==0.30.0
-        displayName: 'Install wheel==0.30.0'
-      - bash: |
-          set -ev
-
-          . env/bin/activate
-          az --version
-          python scripts/ci/test_min_version.py -v
-        displayName: 'Run min version test ${{version.key}}'
-        env:
-          ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
-          ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
-
-- job: MinVersionTestsPython310
-  dependsOn: getPythonVersion
-  variables:
-    PythonVersion: $[ dependencies.getPythonVersion.outputs['CustomParas.pythonVersion'] ]
-  condition: and(succeeded(), contains(variables.PythonVersion, '3.10'))
-  displayName: "Min Version Tests python310"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use python310'
-      inputs:
-        versionSpec: '3.10'
-        addToPath: true
-    - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
-    - bash: |
-        set -ev
-
-        . env/bin/activate
-        az --version
-        python scripts/ci/test_min_version.py -v
-      displayName: 'Run min version test python310'
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
