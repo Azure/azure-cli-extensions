@@ -50,7 +50,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoCluster,
     MongoClusterRestoreParameters,
     NodeGroupSpec,
-    NodeKind
+    NodeKind,
+    FirewallRule
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -75,6 +76,58 @@ def _handle_exists_exception(cloud_error):
     if cloud_error.status_code == 404:
         return False
     raise cloud_error
+
+def cli_cosmosdb_mongocluster_firewall_rule_create(client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    firewall_rule_name,
+                                    firewall_rule_start_ip_address,
+                                    firewall_rule_end_ip_address):
+
+    '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
+        
+    firewall_rule =  FirewallRule(start_ip_address=firewall_rule_start_ip_address, end_ip_address=firewall_rule_end_ip_address)
+    
+    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, firewall_rule_name, firewall_rule)
+
+def cli_cosmosdb_mongocluster_firewall_rule_update(client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    firewall_rule_name,
+                                    firewall_rule_start_ip_address,
+                                    firewall_rule_end_ip_address):
+
+    '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
+    
+    mongo_cluster_firewallRule = client.get_firewall_rule(resource_group_name, cluster_name, firewall_rule_name)
+
+    if firewall_rule_start_ip_address is None:
+        firewall_rule_start_ip_address = mongo_cluster_firewallRule.firewall_rule_start_ip_address
+    
+    if firewall_rule_end_ip_address is None:
+        firewall_rule_end_ip_address = mongo_cluster_firewallRule.firewall_rule_end_ip_address
+    
+    firewall_rule =  FirewallRule(start_ip_address=firewall_rule_start_ip_address, end_ip_address=firewall_rule_end_ip_address)
+    
+    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, firewall_rule_name, firewall_rule)
+
+def cli_cosmosdb_mongocluster_firewall_rule_list(client, resource_group_name, cluster_name):
+
+    """List Azure CosmosDB Mongo Cluster Firewall Rule."""
+
+    return client.list_firewall_rules(resource_group_name, cluster_name)
+
+def cli_cosmosdb_mongocluster_firewall_rule_get(client, resource_group_name, cluster_name, firewall_rule_name):
+
+    """Gets Azure CosmosDB Mongo Cluster Firewall rule"""
+
+    return client.get_firewall_rule(resource_group_name, cluster_name, firewall_rule_name)
+
+def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, cluster_name, firewall_rule_name):
+
+    """Delete Azure CosmosDB Mongo Cluster Firewall Rule"""
+
+    return client.begin_delete_firewall_rule(resource_group_name, cluster_name, firewall_rule_name)
 
 def cli_cosmosdb_mongocluster_create(client,
                                     resource_group_name,
@@ -156,12 +209,17 @@ def cli_cosmosdb_mongocluster_update(client,
 
     mongo_cluster_resource = client.get(resource_group_name, mongocluster_name)
 
-    if administrator_login is None:
-        administrator_login = mongo_cluster_resource.administrator_login
+    # user name and password should be updated together
+    if administrator_login is None and administrator_login_password is not None:
+          raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
     
-    # Ashwini: Do we need ?? test? 
-    # Ashwini: Add test for non existient cluster update.
-    if administrator_login is None:
+    if administrator_login is not None and administrator_login_password is None:
+          raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
+  
+    if administrator_login_password is None:
+        administrator_login_password = mongo_cluster_resource.administrator_login_password
+
+    if administrator_login_password is None:
         administrator_login_password = mongo_cluster_resource.administrator_login_password
 
     # Resource location is immutable
@@ -169,7 +227,6 @@ def cli_cosmosdb_mongocluster_update(client,
 
     if server_version is None:
         server_version = mongo_cluster_resource.server_version
-
     if tags is None:
         tags = mongo_cluster_resource.tags
     if create_mode is None:
