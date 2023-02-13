@@ -1,5 +1,9 @@
 Release History
 ===============
+1.7.0
+---
+* Add Azure Spring Apps StandardGen2 tier.
+
 1.6.7
 ---
 * Change all Azure Spring Apps API version to 2022-11-01-preview.

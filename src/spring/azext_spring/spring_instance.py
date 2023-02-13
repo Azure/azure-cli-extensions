@@ -67,6 +67,8 @@ class DefaultSpringCloud:
                        tags=None,
                        ingress_read_timeout=None,
                        marketplace_plan_id=None,
+                       managed_environment=None,
+                       infra_resource_group=None,
                        **_):
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
@@ -102,6 +104,11 @@ class DefaultSpringCloud:
                 properties.network_profile.ingress_config = ingress_configuration
             else:
                 properties.network_profile = models.NetworkProfile(ingress_config=ingress_configuration)
+
+        if sku.tier.upper() == 'STANDARDGEN2':
+            properties.managed_environment_id = managed_environment
+            if infra_resource_group is not None:
+                properties.infra_resource_group = infra_resource_group
 
         resource = models.ServiceResource(location=self.location, sku=sku, properties=properties, tags=tags)
         poller = self.client.services.begin_create_or_update(
@@ -170,6 +177,8 @@ def spring_create(cmd, client, resource_group, name,
                   enable_log_stream_public_endpoint=None,
                   ingress_read_timeout=None,
                   marketplace_plan_id=None,
+                  managed_environment=None,
+                  infra_resource_group=None,
                   no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -203,6 +212,8 @@ def spring_create(cmd, client, resource_group, name,
         'enable_application_accelerator': enable_application_accelerator,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
         'marketplace_plan_id': marketplace_plan_id,
+        'managed_environment': managed_environment,
+        'infra_resource_group': infra_resource_group,
         'no_wait': no_wait
     }
 

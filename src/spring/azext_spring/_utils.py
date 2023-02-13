@@ -225,6 +225,8 @@ def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'S0'
     if tier == 'ENTERPRISE':
         return 'E0'
+    if tier == 'STANDARDGEN2':
+        return 'S0'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 
