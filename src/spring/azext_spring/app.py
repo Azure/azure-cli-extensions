@@ -384,7 +384,7 @@ def app_deploy(cmd, client, resource_group, service, name,
     if "succeeded" != poller.status().lower():
         return poller
     else:
-        return client.deployments.get(resource_group, service, app, name)
+        return client.deployments.get(resource_group, service, name, deployment.name)
 
 
 def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
