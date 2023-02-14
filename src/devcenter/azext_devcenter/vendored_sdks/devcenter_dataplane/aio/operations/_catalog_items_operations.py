@@ -70,7 +70,7 @@ class CatalogItemsOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_catalog_items.metadata['url']  # type: ignore
+                url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),

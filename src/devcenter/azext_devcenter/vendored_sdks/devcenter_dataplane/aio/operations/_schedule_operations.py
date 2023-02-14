@@ -76,7 +76,7 @@ class ScheduleOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_schedules_by_pool.metadata['url']  # type: ignore
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
@@ -154,7 +154,7 @@ class ScheduleOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self.get_schedule_by_pool.metadata['url']  # type: ignore
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
             'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
