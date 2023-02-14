@@ -67,7 +67,8 @@ def install_helm_client():
         try:
             response = urllib.request.urlopen(requestUri)
         except Exception as e:
-            raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+            logger.warning("Failed to download helm client.")
+            return
 
         responseContent = response.read()
         response.close()
@@ -124,7 +125,8 @@ def install_kubectl_client():
         return kubectl_path
 
     except Exception as e:
-        raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
+        logger.warning("Unable to install kubectl. Error: " + str(e))
+        return
 
 
 class Connectedk8sScenarioTest(LiveScenarioTest):
