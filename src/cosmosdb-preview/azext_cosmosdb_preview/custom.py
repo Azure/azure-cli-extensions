@@ -78,11 +78,11 @@ def _handle_exists_exception(cloud_error):
     raise cloud_error
 
 def cli_cosmosdb_mongocluster_firewall_rule_create(client,
-                                    resource_group_name,
-                                    cluster_name,
-                                    firewall_rule_name,
-                                    firewall_rule_start_ip_address,
-                                    firewall_rule_end_ip_address):
+                                                   resource_group_name,
+                                                   cluster_name,
+                                                   firewall_rule_name,
+                                                   firewall_rule_start_ip_address,
+                                                   firewall_rule_end_ip_address):
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
         

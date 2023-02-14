@@ -158,35 +158,6 @@ def load_arguments(self, _):
         c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
         c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
         c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True) 
-
-    with self.argument_context('cosmosdb mongocluster firewall rule create') as c:
-        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
-        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
-        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
-        c.argument('start_ip_address', options_list=['--start-ip-address'], help="Start IP address of the firewall rule", required=True)
-        c.argument('end_ip_address', options_list=['--end-ip-address'], help="End IP address of the firewall rule", required=True)
-    
-    with self.argument_context('cosmosdb mongocluster firewall rule update') as c:
-        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
-        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
-        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
-        c.argument('start_ip_address', options_list=['--start-ip-address'], help="Start IP address of the firewall rule")
-        c.argument('end_ip_address', options_list=['--end-ip-address'], help="End IP address of the firewall rule")
-    
-    with self.argument_context('cosmosdb mongocluster firewall rule list') as c:
-        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
-        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)   
-
-    with self.argument_context('cosmosdb mongocluster firewall rule show') as c:
-        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
-        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)
-        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
-       
-    with self.argument_context('cosmosdb mongocluster firewall rule delete') as c:
-        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
-        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
-        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
-
     with self.argument_context('cosmosdb mongocluster create') as c:
         c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
         c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
@@ -225,6 +196,38 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb mongocluster delete') as c:
         c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
         c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule create') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+        c.argument('start_ip_address', options_list=['--start-ip-address'], help="Start IP address of the firewall rule", required=True)
+        c.argument('end_ip_address', options_list=['--end-ip-address'], help="End IP address of the firewall rule", required=True)
+    
+    with self.argument_context('cosmosdb mongocluster firewall rule update') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+        c.argument('start_ip_address', options_list=['--start-ip-address'], help="Start IP address of the firewall rule")
+        c.argument('end_ip_address', options_list=['--end-ip-address'], help="End IP address of the firewall rule")
+    
+    with self.argument_context('cosmosdb mongocluster firewall rule list') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)   
+
+    with self.argument_context('cosmosdb mongocluster firewall rule show') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+       
+    with self.argument_context('cosmosdb mongocluster firewall rule delete') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
 
     # Services
     with self.argument_context('cosmosdb service') as c:
