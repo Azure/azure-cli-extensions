@@ -13,6 +13,7 @@ from knack.util import CLIError
 import azext_connectedk8s._constants as consts
 import urllib.request
 import shutil
+from knack.log import get_logger
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 import subprocess
@@ -21,6 +22,7 @@ from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+logger = get_logger(__name__)
 
 
 def _get_test_data_file(filename):
@@ -29,14 +31,10 @@ def _get_test_data_file(filename):
 
 
 def install_helm_client():
-    # Return helm client path set by user
-    if os.getenv('HELM_CLIENT_PATH'):
-        return os.getenv('HELM_CLIENT_PATH')
 
     # Fetch system related info
     operating_system = platform.system().lower()
     machine_type = platform.machine()
-
 
     # Set helm binary download & install locations
     if(operating_system == 'windows'):
@@ -48,7 +46,8 @@ def install_helm_client():
         install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
         requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
     else:
-        raise ClientRequestError(f'The {operating_system} platform is not currently supported for installing helm client.')
+        logger.warning(f'The {operating_system} platform is not currently supported for installing helm client.')
+        return
 
     download_location = os.path.expanduser(os.path.join('~', download_location_string))
     download_dir = os.path.dirname(download_location)
@@ -61,7 +60,8 @@ def install_helm_client():
             try:
                 os.makedirs(download_dir)
             except Exception as e:
-                raise ClientRequestError("Failed to create helm directory." + str(e))
+                logger.warning("Failed to create helm directory." + str(e))
+                return
 
         # Downloading compressed helm client executable
         try:
@@ -77,7 +77,8 @@ def install_helm_client():
             with open(download_location, 'wb') as f:
                 f.write(responseContent)
         except Exception as e:
-            raise ClientRequestError("Failed to create helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
+            logger.warning("Failed to extract helm executable" + str(e))
+            return
 
     # Extract compressed helm binary
     if not os.path.isfile(install_location):
@@ -85,7 +86,8 @@ def install_helm_client():
             shutil.unpack_archive(download_location, download_dir)
             os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         except Exception as e:
-            raise ClientRequestError("Failed to extract helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
+            logger.warning("Failed to extract helm executable" + str(e))
+            return
 
     return install_location
 
@@ -110,7 +112,8 @@ def install_kubectl_client():
         elif operating_system == 'linux' or operating_system == 'darwin':
             kubectl_path = os.path.join(kubectl_filepath, 'kubectl')
         else:
-            raise ClientRequestError(f'The {operating_system} platform is not currently supported for installing kubectl client.')
+            logger.warning(f'The {operating_system} platform is not currently supported for installing kubectl client.')
+            return
 
         if os.path.isfile(kubectl_path):
             return kubectl_path
