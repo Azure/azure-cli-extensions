@@ -314,7 +314,7 @@ class ContainerImage:
     ) -> None:
         self.containerImage = containerImage
         if ":" in containerImage:
-            self.base, self.tag = containerImage.split(":")
+            self.base, self.tag = containerImage.split(":", 1)
         else:
             self.base, self.tag = containerImage, "latest"
         self._environmentRules = environmentRules
