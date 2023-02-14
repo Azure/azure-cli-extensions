@@ -51,11 +51,13 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         rego_fragments: Any = config.DEFAULT_REGO_FRAGMENTS,
         existing_rego_fragments: Any = None,
         debug_mode: bool = False,
+        disable_stdio: bool = False,
     ) -> None:
         self._docker_client = None
         self._rootfs_proxy = None
         self._policy_str = None
         self._policy_str_pp = None
+        self._disable_stdio = disable_stdio
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
         if debug_mode:
@@ -374,6 +376,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         if not is_sidecars:
             # add in the default containers that have their hashes pre-computed
             policy += config.DEFAULT_CONTAINERS
+            if self._disable_stdio:
+                for container in policy:
+                    container[config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = False
 
         # default output is rego policy
         if use_json:
@@ -632,6 +637,7 @@ def load_policy_from_arm_template_str(
                     config.ACI_FIELD_CONTAINERS: containers,
                     config.ACI_FIELD_TEMPLATE_CCE_POLICY: existing_containers,
                 },
+                disable_stdio=disable_stdio,
                 rego_fragments=rego_fragments,
                 # fallback to default fragments if the policy is not present
                 existing_rego_fragments=fragments,
