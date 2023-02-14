@@ -169,7 +169,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'rg': resource_group,
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
-            # 'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
 
@@ -350,11 +349,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             assert(cluster_name_list[i] == managed_cluster_list[i])
 
         # deleting the clusters
-        # self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name_second} -f {kubeconfigpls}')
         self.cmd('connectedk8s delete -g {rg} -n {name_second} --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second} -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name_second} -y')
 
-        # self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
@@ -412,11 +409,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(changed_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
-        # self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --agent-version 1.6.19')
-        # self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
-        #     self.check('agentVersion', '1.6.19')
-        # ])
-
         self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         response= requests.post('https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
         jsonData = json.loads(response.text)
@@ -446,12 +438,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     def test_update(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-update', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
-        # kubeconfigpls="%s" % (_get_test_data_file(managed_cluster_name + '-plsconfig.yaml')) 
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
             'rg':resource_group,
-            # 'kubeconfigpls': kubeconfigpls,
             'managed_cluster_name': managed_cluster_name
         })
 
@@ -500,20 +490,17 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
-        # os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-plsconfig.yaml')))
 
 
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_troubleshoot(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-troubleshoot', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
-        # kubeconfigpls="%s" % (_get_test_data_file(managed_cluster_name + '-plsconfig.yaml')) 
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': kubeconfig,
             'rg':resource_group,
-            # 'kubeconfigpls': kubeconfigpls,
             'managed_cluster_name': managed_cluster_name
         })
 
