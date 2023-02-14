@@ -228,7 +228,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         helm_client_location = install_helm_client()
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
-        # scenario-1 : custom loc off , custom loc on  (no dependencies)
+        # scenario-1 : custom loc disabled and custom loc enabled (should be successfull as there is no dependency)
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         cmd_output = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output.communicate()
@@ -243,11 +243,11 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(changed_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
 
-        # scenario-2 : custom loc on , check if cluster connect gets off that results in an error
+        # scenario-2 : custom loc is enabled , check if disabling cluster connect results in an error
         with self.assertRaisesRegexp(CLIError, "Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled."):
             self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
 
-        # scenario-3 : off custom location and cluster connect , then on custom loc and check if cluster connect gets on
+        # scenario-3 : disable custom location and cluster connect , then enable custom loc and check if cluster connect also gets on
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
@@ -270,7 +270,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(changed_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
         assert(changed_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(1))
 
-        # scenario-4: azure rbac off , azure rbac on using app id and app secret
+        # scenario-4: azure rbac turned off and turning azure rbac on again using app id and app secret
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
@@ -311,7 +311,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name,
             'managed_cluster_name_second': managed_cluster_name_second
         })
-
+        # create two clusters and then list the cluster names
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
@@ -404,7 +404,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false"):
             self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
 
-        # scenario - auto upgrade is off , changing agent version to 1.6.19(older) ,then updating version to latest
+        # scenario - auto upgrade is off ,then updating agnets to latest and check if the version of agents matches with latest version
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
