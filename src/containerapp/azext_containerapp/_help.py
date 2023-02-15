@@ -516,7 +516,7 @@ helps['containerapp env certificate list'] = """
     - name: List certificates for an environment.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment
-    - name: List certificate by certificate id.
+    - name: Show a certificate by certificate id.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
     - name: List certificates by certificate name.
