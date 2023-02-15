@@ -239,8 +239,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
+        enabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(enabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
 
         # scenario-2 : custom loc is enabled , check if disabling cluster connect results in an error
         with self.assertRaisesRegexp(CLIError, "Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled."):
@@ -251,31 +251,31 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(0))
+        disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(disabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(0))
 
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(0))
+        disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(disabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(0))
 
         self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
-        assert(changed_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(1))
+        enabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(enabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
+        assert(enabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(1))
 
         # scenario-4: azure rbac turned off and turning azure rbac on again using app id and app secret
         self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
+        disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
         self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
 
@@ -395,19 +395,19 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
+        updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
 
         with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false"):
             self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
 
-        # scenario - auto upgrade is off ,then updating agnets to latest and check if the version of agents matches with latest version
+        # scenario - Turning off auto upgrade ,then updating agnets to latest and check if the version of agents matches with latest version
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
+        updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
         self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         response= requests.post('https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
@@ -466,16 +466,16 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
+        updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
 
         # scenario - auto-upgrade is turned off
         self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
-        changed_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(changed_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
+        updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
         #scenario - updating the tags
         self.cmd('connectedk8s update -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --tags foo=moo')
