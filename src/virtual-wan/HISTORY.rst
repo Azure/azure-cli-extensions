@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.2.16
+++++++
+* `az network vhub`: Add new subgroup `route-map` to support managing virtual hub route map.
+* Bump api version from 2021-08-01 to 2022-07-01.
+* `az network vhub connection create`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network vhub connection update`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network p2s-vpn-gateway create`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network p2s-vpn-gateway update`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network vpn-gateway connection create`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network vpn-gateway connection update`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+
 0.2.15
 ++++++
 * Deprecate route table v2 parameters.
