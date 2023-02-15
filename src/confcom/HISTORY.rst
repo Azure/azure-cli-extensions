@@ -2,6 +2,19 @@
 
 Release History
 ===============
+0.2.10
+* dmverity-vhd tool fixes
+* changing startup checks to errors rather than warnings
+* can specify image name in arm template by its SHA256 hash
+* disabling stdio in pause container
+* adding another README.md with omre descriptive information
+
+0.2.9
+* adding support for exec_processes for non-arm template input
+* adding --disable-stdio flag to disable stdio for containers
+* changing print behavior by not needing both --print-policy in conjunction with --outraw or --outraw-pretty-print
+* adding flag for --print-existing-policy that decodes and pretty prints the base64 encoded policy in the ARM template
+
 0.2.8
 * adding secureValue as a valid input for environment variables
 

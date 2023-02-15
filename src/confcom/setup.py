@@ -21,7 +21,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "0.2.8"
+VERSION = "0.2.10"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -49,13 +49,13 @@ if not os.path.exists(bin_folder):
 
 exe_path = dir_path + "/bin/dmverity-vhd.exe"
 if not os.path.exists(exe_path):
-    r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.4/dmverity-vhd.exe")
+    r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.6/dmverity-vhd.exe")
     with open(exe_path, "wb") as f:
         f.write(r.content)
 
 bin_path = dir_path + "/bin/dmverity-vhd"
 if not os.path.exists(bin_path):
-    r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.4/dmverity-vhd")
+    r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.6/dmverity-vhd")
     with open(bin_path, "wb") as f:
         f.write(r.content)
     # add executable permissions for the current user

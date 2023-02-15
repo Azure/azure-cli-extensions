@@ -39,23 +39,23 @@ def acipolicygen_confcom(
 ):
 
     if sum(map(bool, [input_path, arm_template, image_name])) != 1:
-        logger.warning("Can only generate CCE policy from one source at a time")
+        logger.error("Can only generate CCE policy from one source at a time")
         sys.exit(1)
     if sum(map(bool, [print_policy_to_terminal, outraw, outraw_pretty_print])) > 1:
-        logger.warning("Can only print in one format at a time")
+        logger.error("Can only print in one format at a time")
         sys.exit(1)
     elif (diff and input_path) or (diff and image_name):
-        logger.warning("Can only diff CCE policy from ARM Template")
+        logger.error("Can only diff CCE policy from ARM Template")
         sys.exit(1)
     elif arm_template_parameters and not arm_template:
-        logger.warning(
+        logger.error(
             "Can only use ARM Template Parameters if ARM Template is also present"
         )
         sys.exit(1)
 
     if print_existing_policy:
         if not arm_template:
-            logger.warning("Can only print existing policy from ARM Template")
+            logger.error("Can only print existing policy from ARM Template")
             sys.exit(1)
         else:
             print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
