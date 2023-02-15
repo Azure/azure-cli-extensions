@@ -7,7 +7,8 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
-from azext_devcenter.manual._client_factory import (
+
+from azext_devcenter._client_factory import (
     cf_project_dp,
     cf_pool_dp,
     cf_schedule_dp,
@@ -17,8 +18,6 @@ from azext_devcenter.manual._client_factory import (
     cf_catalog_item_version_dp,
     cf_environment_type_dp,
     cf_notification_setting_dp,
-)
-from azext_devcenter.generated._client_factory import (
     cf_dev_center,
     cf_project,
     cf_attached_network,
@@ -259,8 +258,7 @@ def load_command_table(self, _):
         g.custom_command(
             "create", "devcenter_environment_create", supports_no_wait=True
         )
-        g.custom_command(
-            "update", "devcenter_environment_update")
+        g.custom_command("update", "devcenter_environment_update")
         g.custom_command(
             "delete",
             "devcenter_environment_delete",

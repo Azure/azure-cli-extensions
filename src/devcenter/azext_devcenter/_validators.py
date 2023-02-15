@@ -3,7 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import re
-from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    RequiredArgumentMissingError,
+    InvalidArgumentValueError,
+)
 
 
 def validate_attached_network_or_dev_box_def(namespace):
