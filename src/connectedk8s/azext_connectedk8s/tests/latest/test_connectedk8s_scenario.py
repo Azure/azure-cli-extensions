@@ -172,7 +172,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
