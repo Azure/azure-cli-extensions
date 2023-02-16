@@ -144,13 +144,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('resourceGroup', '{rg}'),
             self.check('name', '{name}')
         ])
 
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
@@ -211,7 +211,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -226,14 +226,14 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
         # scenario-1 : custom loc disabled and custom loc enabled (should be successfull as there is no dependency)
-        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         cmd_output = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output.communicate()
         assert(cmd_output.returncode == 0)
         changed_cmd = json.loads(cmd_output.communicate()[0].strip())
         assert(changed_cmd["systemDefaultValues"]['customLocations']['enabled'] == bool(0))
 
-        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
@@ -242,24 +242,24 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # scenario-2 : custom loc is enabled , check if disabling cluster connect results in an error
         with self.assertRaisesRegexp(CLIError, "Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled."):
-            self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+            self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
 
         # scenario-3 : disable custom location and cluster connect , then enable custom loc and check if cluster connect also gets on
-        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(0))
 
-        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(0))
 
-        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s enable-features -n {name} -g {rg} --features custom-locations --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
@@ -268,17 +268,17 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(enabled_cmd1["systemDefaultValues"]['clusterconnect-agent']['enabled'] == bool(1))
 
         # scenario-4: azure rbac turned off and turning azure rbac on again using app id and app secret
-        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s disable-features -n {name} -g {rg} --features azure-rbac --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
         disabled_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(disabled_cmd1["systemDefaultValues"]['guard']['enabled'] == bool(0))
 
-        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
+        self.cmd('az connectedk8s enable-features -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --features azure-rbac --app-id ffba4043-836e-4dcc-906c-fbf60bf54eef --app-secret="6a6ae7a7-4260-40d3-ba00-af909f2ca8f0"')
 
         # deleting the cluster
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
@@ -311,7 +311,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # create two clusters and then list the cluster names
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -323,7 +323,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name_second} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name_second} -f {kubeconfigpls} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name_second} -l eastus --tags foo=doo --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name_second} -l eastus --tags foo=doo --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name_second}')
         ])
@@ -347,10 +347,10 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             assert(cluster_name_list[i] == managed_cluster_list[i])
 
         # deleting the clusters
-        self.cmd('connectedk8s delete -g {rg} -n {name_second} --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name_second} --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name_second} -y')
 
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
@@ -372,9 +372,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
 
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -397,17 +397,17 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
 
         with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false"):
-            self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+            self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
 
         # scenario - Turning off auto upgrade ,then updating agnets to latest and check if the version of agents matches with latest version
-        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
         updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
         assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
-        self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
         response= requests.post('https://eastus.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
         jsonData = json.loads(response.text)
         repo_path=jsonData['repositoryPath']
@@ -422,9 +422,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ])
 
         # scenario : changing the upgrade timeout
-        self.cmd('connectedk8s upgrade -g {rg} -n {name} --upgrade-timeout 650 --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s upgrade -g {rg} -n {name} --upgrade-timeout 650 --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
 
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
@@ -445,7 +445,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -460,7 +460,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
         # scenario - auto-upgrade is turned on
-        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
@@ -468,7 +468,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
 
         # scenario - auto-upgrade is turned off
-        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade false --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
         cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
         _, error_helm_delete = cmd_output1.communicate()
         assert(cmd_output1.returncode == 0)
@@ -476,14 +476,14 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
         #scenario - updating the tags
-        self.cmd('connectedk8s update -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name} --tags foo=moo')
+        self.cmd('connectedk8s update -n {name} -g {rg} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin --tags foo=moo')
         self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
             self.check('name', '{name}'),
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'moo')
         ])
 
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
@@ -503,8 +503,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
-        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -514,9 +514,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('tags.foo', 'doo')
         ])
 
-        self.cmd('connectedk8s troubleshoot -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        self.cmd('connectedk8s troubleshoot -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
 
-        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
         # delete the kube config
