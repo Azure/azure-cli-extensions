@@ -15,10 +15,8 @@ import urllib.request
 import shutil
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
-from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
-
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -53,7 +51,7 @@ def install_helm_client():
     download_dir = os.path.dirname(download_location)
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
 
-    # Download compressed halm binary if not already present
+    # Download compressed helm binary if not already present
     if not os.path.isfile(download_location):
         # Creating the helm folder if it doesnt exist
         if not os.path.exists(download_dir):
@@ -144,8 +142,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('resourceGroup', '{rg}'),
@@ -172,8 +170,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -211,8 +209,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -311,8 +309,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name_second': managed_cluster_name_second
         })
         # create two clusters and then list the cluster names
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -324,7 +322,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ])
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name_second} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name_second} -f {kubeconfigpls}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name_second} -f {kubeconfigpls} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name_second} -l eastus --tags foo=doo --kube-config {kubeconfigpls} --kube-context {managed_cluster_name_second}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name_second}')
@@ -373,8 +371,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
 
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -390,13 +388,13 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         helm_client_location = install_helm_client()
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
-        # scenario - auto-upgrade is true , so implicit upgrade commands dont work
-        self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
-        cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        _, error_helm_delete = cmd_output1.communicate()
-        assert(cmd_output1.returncode == 0)
-        updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
+        # scenario - auto-upgrade is auto enabled in a new connected cluster , so implicit upgrade commands dont work
+        # self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
+        # cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
+        # _, error_helm_delete = cmd_output1.communicate()
+        # assert(cmd_output1.returncode == 0)
+        # updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
+        # assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
 
         with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false"):
             self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
@@ -423,7 +421,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('agentVersion', jsonData['repositoryPath'][index_value+1:]),
         ])
 
-        # scenario : testing the onboarding timeout change
+        # scenario : changing the upgrade timeout
         self.cmd('connectedk8s upgrade -g {rg} -n {name} --upgrade-timeout 650 --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
 
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name} -y')
@@ -445,8 +443,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
@@ -504,8 +502,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
-        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
