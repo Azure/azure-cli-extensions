@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.3.14
+++++++
+
+* Added a spinner which runs while ARM resource is being provisioned
+* Added additional logging to indicate which step is running
+
 1.3.13
 ++++++
 
