@@ -36,6 +36,13 @@ helps['grafana show'] = """
 helps['grafana update'] = """
     type: command
     short-summary: Update a Azure Managed Grafana instance.
+    examples:
+        - name: disable the public network access
+          text: |
+           az grafana update -g MyResourceGroup -n MyGrafana --public-network-access disabled
+        - name: enable mail notification through SMTP relay sevice of mailgun
+          text: |
+           az grafana update -g MyResourceGroup -n MyGrafana --smtp enabled --from-address johndoe@outlook.com --from-name john --host "smtp.mailgun.org:587" --user "postmaster@sandbox12345.mailgun.org" --password "password" --start-tls-policy OpportunisticStartTLS --skip-verify true
 """
 
 helps['grafana data-source'] = """
@@ -94,6 +101,7 @@ helps['grafana data-source query'] = """
 helps['grafana notification-channel'] = """
     type: group
     short-summary: Commands to manage notification channels of an instance.
+    long-summary: as part of legacy alerting, this command group will be deprecated in a future release
 """
 
 helps['grafana notification-channel list'] = """

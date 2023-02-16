@@ -1,5 +1,48 @@
 Release History
 ===============
+1.6.7
+---
+* Change all Azure Spring Apps API version to 2022-11-01-preview.
+
+1.6.6
+---
+* Modify help text of name in command `az spring create` and `az spring app create`
+
+1.6.5
+---
+* Add argument `--deployment-name` in command `az spring app create`.
+
+1.6.4
+---
+* Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
+* Add new commands `az spring service-registry create` and `az spring service-registry delete`.
+* Add new commands `az spring gateway create` and `az spring gateway delete`.
+* Add new commands `az spring api-portal create` and `az spring api-portal delete`.
+
+1.6.3
+---
+* Deprecate the subcommand 'spring app binding'.
+
+1.6.2
+---
+* Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
+
+1.6.1
+---
+* Add type check for argument `--artifact-path`.
+
+1.6.0
+---
+* Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.
+
+1.5.0
+---
+* Add the validator for `--build-env`.
+
+1.4.2
+---
+* Fix the missing echo in `bash` after exiting from `az spring app connect`.
+
 1.4.1
 ---
 * Fix enabling dev tool failed when creating Azure Spring Apps Enterprise in command `az spring create --sku Enterprise --enable-application-live-view --enable-application-accelerator`.

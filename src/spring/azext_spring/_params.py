@@ -14,7 +14,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
-                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn, validate_remote_debugging_port)
+                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
+                          validate_remote_debugging_port, validate_ingress_client_auth_certificates)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
@@ -33,13 +34,8 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
-
-from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
-from .vendored_sdks.appplatform.v2022_01_01_preview.models \
-    import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
-from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
-from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -47,7 +43,7 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 build_env_type = CLIArgumentType(
     validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
-service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Apps, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
+service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
@@ -66,7 +62,7 @@ def load_arguments(self, _):
     with self.argument_context('spring') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
         c.argument('name', options_list=[
-            '--name', '-n'], help='Name of Azure Spring Apps.')
+            '--name', '-n'], help='The name of Azure Spring Apps instance.')
 
     # A refactoring work item to move validators to command level to reduce the duplications.
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
@@ -125,7 +121,7 @@ def load_arguments(self, _):
                    help='Ingress read timeout value in seconds. Default 300, Minimum is 1, maximum is 1800.',
                    validator=validate_ingress_timeout)
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    validator=validate_build_pool_size,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
@@ -200,7 +196,7 @@ def load_arguments(self, _):
                                               redirect='az spring app-insights update --disable',
                                               hide=True))
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
@@ -217,7 +213,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='Name of app.')
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.')
 
     for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
         with self.argument_context(scope) as c:
@@ -267,6 +263,8 @@ def load_arguments(self, _):
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
                    help='A json file path indicates the certificates which would be loaded to app')
+        c.argument('deployment_name', default='default',
+                   help='Name of the default deployment.', validator=validate_name)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -316,10 +314,10 @@ def load_arguments(self, _):
                    validator=validate_remote_debugging_port)
 
     with self.argument_context('spring app unset-deployment') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist)
 
     with self.argument_context('spring app identity') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring app identity assign') as c:
         c.argument('scope',
@@ -393,7 +391,7 @@ def load_arguments(self, _):
                        validator=validate_ingress_send_timeout)
             c.argument('session_affinity',
                        arg_type=get_enum_type(SessionAffinity),
-                       help='Ingress session afiinity of app.',
+                       help='Ingress session affinity of app.',
                        validator=validate_ingress_timeout)
             c.argument('session_max_age',
                        type=int,
@@ -402,6 +400,9 @@ def load_arguments(self, _):
             c.argument('backend_protocol',
                        arg_type=get_enum_type(BackendProtocol),
                        help='Ingress backend protocol of app.')
+            c.argument('client_auth_certs',
+                       validator=validate_ingress_client_auth_certificates,
+                       help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
@@ -696,6 +697,10 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
+    for scope in ['gateway create', 'api-portal create']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('instance_count', type=int, help='Number of instance.')
+
     for scope in ['gateway update', 'api-portal update']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('instance_count', type=int, help='Number of instance.')
@@ -714,6 +719,13 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
+        c.argument('apm_types', nargs='*',
+                   help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(ApmType)))
+        c.argument('properties', nargs='*',
+                   help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
+        c.argument('secrets', nargs='*',
+                   help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
+                        'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
@@ -752,7 +764,7 @@ def load_arguments(self, _):
                   'spring build-service builder buildpack-binding set']:
         with self.argument_context(scope) as c:
             c.argument('type',
-                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       arg_type=get_enum_type(BindingType),
                        help='Required type for buildpack binding.')
             c.argument('properties',
                        help='Non-sensitive properties for launchProperties. Format "key[=value]".',

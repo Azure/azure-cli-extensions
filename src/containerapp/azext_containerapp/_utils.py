@@ -29,8 +29,8 @@ from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
-                         LOGS_STRING)
-from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
+                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
 
 logger = get_logger(__name__)
 
@@ -1059,8 +1059,11 @@ def safe_get(model, *keys, default=None):
     if not model:
         return default
     for k in keys[:-1]:
-        model = model.get(k, {})
-    return model.get(keys[-1], default)
+        model = model.get(k)
+        if model is None:
+            return default
+    value = model.get(keys[-1], default)
+    return default if not value else value
 
 
 def safe_set(model, *keys, value):
@@ -1090,6 +1093,15 @@ def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
     cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
     for c in cert_name:
         if not (c.isalnum() or c == '-' or c == '.'):
+            cert_name = cert_name.replace(c, '-')
+    return cert_name.lower()
+
+
+def generate_randomized_managed_cert_name(hostname, env_name):
+    from random import randint
+    cert_name = "mc-{}-{}-{:04}".format(env_name[:14], hostname[:16].lower(), randint(0, 9999))
+    for c in cert_name:
+        if not (c.isalnum() or c == '-'):
             cert_name = cert_name.replace(c, '-')
     return cert_name.lower()
 
@@ -1364,6 +1376,29 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     return r
 
 
+def prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location=None):
+    certificate_envelop = ManagedCertificateEnvelopModel
+    certificate_envelop["location"] = location
+    certificate_envelop["properties"]["subjectName"] = hostname
+    certificate_envelop["properties"]["validationMethod"] = validation_method
+    if not location:
+        try:
+            managed_env = ManagedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate_envelop["location"] = managed_env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+    return certificate_envelop
+
+
+def check_managed_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    try:
+        certs = ManagedEnvironmentClient.list_managed_certificates(cmd, resource_group_name, name)
+        r = any(cert["name"] == cert_name and cert["properties"]["provisioningState"] in [PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS] for cert in certs)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return not r
+
+
 def validate_hostname(cmd, resource_group_name, name, hostname):
     passed = False
     message = None
@@ -1386,10 +1421,7 @@ def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
         r = ContainerAppClient.update(cmd, resource_group_name, name, envelope)
     except CLIError as e:
         handle_raw_exception(e)
-    if "customDomains" in r["properties"]["configuration"]["ingress"]:
-        return list(r["properties"]["configuration"]["ingress"]["customDomains"])
-    else:
-        return []
+    return safe_get(r, "properties", "configuration", "ingress", "customDomains", default=[])
 
 
 def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
@@ -1401,10 +1433,7 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
         if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
-        if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
-            custom_domains = app["properties"]["configuration"]["ingress"]["customDomains"]
-        else:
-            custom_domains = []
+        custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
     except CLIError as e:
         handle_raw_exception(e)
     return custom_domains
@@ -1580,3 +1609,15 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
         logger.warning("Azure Monitor diagnastic settings created successfully.")
     except Exception as ex:
         handle_raw_exception(ex)
+
+
+def certificate_location_matches(certificate_object, location=None):
+    return certificate_object["location"] == location or not location
+
+
+def certificate_thumbprint_matches(certificate_object, thumbprint=None):
+    return certificate_object["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+
+def certificate_matches(certificate_object, location=None, thumbprint=None):
+    return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
