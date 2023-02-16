@@ -77,6 +77,7 @@ def load_command_table(self, _):
         g.custom_command('remove', 'remove_dapr_component')
 
     with self.command_group('containerapp env certificate') as g:
+        g.custom_command('create', 'create_managed_certificate')
         g.custom_command('list', 'list_certificates')
         g.custom_command('upload', 'upload_certificate')
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
@@ -179,6 +180,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp hostname') as g:
+        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory())
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())

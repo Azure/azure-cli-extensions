@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.13
+++++++
+
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+
 1.3.12
 ++++++
 

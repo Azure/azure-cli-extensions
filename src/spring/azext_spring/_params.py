@@ -34,12 +34,8 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
-
-from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
-from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
-from .vendored_sdks.appplatform.v2022_09_01_preview.models._app_platform_management_client_enums import BackendProtocol, SessionAffinity
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType, BindingType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -125,7 +121,7 @@ def load_arguments(self, _):
                    help='Ingress read timeout value in seconds. Default 300, Minimum is 1, maximum is 1800.',
                    validator=validate_ingress_timeout)
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    validator=validate_build_pool_size,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
@@ -200,7 +196,7 @@ def load_arguments(self, _):
                                               redirect='az spring app-insights update --disable',
                                               hide=True))
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
