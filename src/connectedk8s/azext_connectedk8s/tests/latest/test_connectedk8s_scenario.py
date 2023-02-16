@@ -142,7 +142,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -170,7 +170,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -209,7 +209,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -309,7 +309,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name_second': managed_cluster_name_second
         })
         # create two clusters and then list the cluster names
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -371,7 +371,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
 
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
@@ -443,7 +443,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -502,7 +502,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'managed_cluster_name': managed_cluster_name
         })
 
-        self.cmd('aks create -g {rg} -n {managed_cluster_name}')
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}', checks=[
             self.check('tags.foo', 'doo'),
@@ -521,3 +521,4 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+
