@@ -388,14 +388,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         helm_client_location = install_helm_client()
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
-        # scenario - auto-upgrade is auto enabled in a new connected cluster , so implicit upgrade commands dont work
-        # self.cmd('connectedk8s update -n {name} -g {rg} --auto-upgrade true --kube-config {kubeconfig} --kube-context {managed_cluster_name}')
-        # cmd_output1 = subprocess.Popen(cmd, stdout=PIPE, stderr=PIPE)
-        # _, error_helm_delete = cmd_output1.communicate()
-        # assert(cmd_output1.returncode == 0)
-        # updated_cmd1 = json.loads(cmd_output1.communicate()[0].strip())
-        # assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(1))
-
         with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false"):
             self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
 
