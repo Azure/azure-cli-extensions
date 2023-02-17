@@ -67,7 +67,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                               only_show_errors=only_show_errors)
                 run_cli_command(cli_cmd)
             except:
-                raise CLIError('Unable to find the source OS disk. Please make sure the source OS disk is not deleted.\n'
+                raise ResourceNotFoundError('Unable to find the source OS disk. Please make sure the source OS disk is not deleted.\n'
                                'If you deleted the source disk where the image was created (or chose to delete the VM while creating the image). Please refer to https://github.com/Azure/azure-cli/issues/25431 for temporary solution.')
         source_os_disk_type = "DISK"
         logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
