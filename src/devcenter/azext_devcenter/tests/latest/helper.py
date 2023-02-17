@@ -51,13 +51,17 @@ def create_dev_center_with_identity(self):
 def create_virtual_network_with_subnet(self):
     self.kwargs.update({
         'vNetName': self.create_random_name(prefix='cli', length=24),
-        'subnetName': self.create_random_name(prefix='cli', length=24)
+        'subnetName': self.create_random_name(prefix='cli', length=24),
+        'nsgName': self.create_random_name(prefix='cli', length=12),
     })
 
     self.cmd(
         'az network vnet create -n "{vNetName}" --location "{location}" -g "{rg}"')
+    
+    self.cmd(
+        'az network nsg create -n "{nsgName}" --location "{location}" -g "{rg}"')
 
-    return self.cmd('az network vnet subnet create -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"').get_output_in_json()
+    return self.cmd('az network vnet subnet create --nsg "{nsgName}" -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"').get_output_in_json()
 
 
 def create_sig(self):
