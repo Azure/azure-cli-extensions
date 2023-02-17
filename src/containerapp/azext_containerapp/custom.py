@@ -344,6 +344,7 @@ def create_containerapp(cmd,
                         scale_rule_name=None,
                         scale_rule_type=None,
                         scale_rule_http_concurrency=None,
+                        scale_rule_tcp_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
                         target_port=None,
@@ -516,6 +517,9 @@ def create_containerapp(cmd,
         if scale_rule_http_concurrency:
             if scale_rule_type in ('http', 'tcp'):
                 curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        if scale_rule_tcp_concurrency:
+            if scale_rule_type in ('http', 'tcp'):
+                curr_metadata["concurrentRequests"] = str(scale_rule_tcp_concurrency)
         metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
         auth_def = parse_auth_flags(scale_rule_auth)
         if scale_rule_type == "http":
@@ -637,6 +641,7 @@ def update_containerapp_logic(cmd,
                               scale_rule_name=None,
                               scale_rule_type="http",
                               scale_rule_http_concurrency=None,
+                              scale_rule_tcp_concurrency=None,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
                               set_env_vars=None,
@@ -910,6 +915,9 @@ def update_containerapp_logic(cmd,
         if scale_rule_http_concurrency:
             if scale_rule_type in ('http', 'tcp'):
                 curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        if scale_rule_tcp_concurrency:
+            if scale_rule_type in ('http', 'tcp'):
+                curr_metadata["concurrentRequests"] = str(scale_rule_tcp_concurrency)
         metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
         auth_def = parse_auth_flags(scale_rule_auth)
         if scale_rule_type == "http":
@@ -1021,6 +1029,7 @@ def update_containerapp(cmd,
                         scale_rule_name=None,
                         scale_rule_type=None,
                         scale_rule_http_concurrency=None,
+                        scale_rule_tcp_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
                         set_env_vars=None,
@@ -1049,6 +1058,7 @@ def update_containerapp(cmd,
                                      scale_rule_name=scale_rule_name,
                                      scale_rule_type=scale_rule_type,
                                      scale_rule_http_concurrency=scale_rule_http_concurrency,
+                                     scale_rule_tcp_concurrency=scale_rule_tcp_concurrency,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
                                      set_env_vars=set_env_vars,
@@ -1729,6 +1739,7 @@ def copy_revision(cmd,
                   scale_rule_name=None,
                   scale_rule_type=None,
                   scale_rule_http_concurrency=None,
+                  scale_rule_tcp_concurrency=None,
                   scale_rule_metadata=None,
                   scale_rule_auth=None,
                   set_env_vars=None,
@@ -1762,6 +1773,7 @@ def copy_revision(cmd,
                                      scale_rule_name=scale_rule_name,
                                      scale_rule_type=scale_rule_type,
                                      scale_rule_http_concurrency=scale_rule_http_concurrency,
+                                     scale_rule_tcp_concurrency=scale_rule_tcp_concurrency,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
                                      set_env_vars=set_env_vars,

@@ -535,8 +535,10 @@ def load_arguments(self, _):
             c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'],
                        help="The type of the scale rule. Default: http.")
             c.argument('scale_rule_http_concurrency', type=int,
-                       options_list=['--scale-rule-http-concurrency', '--srhc', '--srtc',
-                                     '--scale-rule-tcp-concurrency'],
+                       options_list=['--scale-rule-http-concurrency', '--srhc'],
+                       help="The maximum number of concurrent requests before scale out. Only supported for http and tcp scale rules.")
+            c.argument('scale_rule_tcp_concurrency', type=int,
+                       options_list=['--srtc', '--scale-rule-tcp-concurrency'],
                        help="The maximum number of concurrent requests before scale out. Only supported for http and tcp scale rules.")
             c.argument('scale_rule_metadata', nargs="+", options_list=['--scale-rule-metadata', '--srm'],
                        help='Scale rule metadata. Format "key[=value]" and separated by space.')

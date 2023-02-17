@@ -385,6 +385,7 @@ def app_scale(cmd, client, resource_group, service, name,
               scale_rule_name=None,
               scale_rule_type=None,
               scale_rule_http_concurrency=None,
+              scale_rule_tcp_concurrency=None,
               scale_rule_metadata=None,
               scale_rule_auth=None,
               no_wait=False):
@@ -396,7 +397,7 @@ def app_scale(cmd, client, resource_group, service, name,
 
     resource_requests = models.ResourceRequests(cpu=cpu, memory=memory)
     scale_def = format_scale(min_replicas, max_replicas, scale_rule_name, scale_rule_type, scale_rule_http_concurrency,
-                             scale_rule_metadata, scale_rule_auth)
+                             scale_rule_tcp_concurrency, scale_rule_metadata, scale_rule_auth)
     deployment_settings = models.DeploymentSettings(resource_requests=resource_requests, scale=scale_def)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
@@ -407,7 +408,7 @@ def app_scale(cmd, client, resource_group, service, name,
 
 
 def format_scale(min_replicas=None, max_replicas=None, scale_rule_name=None, scale_rule_type=None,
-                 scale_rule_http_concurrency=None, scale_rule_metadata=None, scale_rule_auth=None, **_):
+                 scale_rule_http_concurrency=None, scale_rule_tcp_concurrency=None, scale_rule_metadata=None, scale_rule_auth=None, **_):
     scale_def = None
     if min_replicas is None and max_replicas is None and scale_rule_name is None:
         return scale_def
@@ -421,6 +422,9 @@ def format_scale(min_replicas=None, max_replicas=None, scale_rule_name=None, sca
         if scale_rule_http_concurrency:
             if scale_rule_type in ('http', 'tcp'):
                 curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        if scale_rule_tcp_concurrency:
+            if scale_rule_type in ('http', 'tcp'):
+                curr_metadata["concurrentRequests"] = str(scale_rule_tcp_concurrency)
         metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
         auth_def = parse_auth_flags(scale_rule_auth)
 
