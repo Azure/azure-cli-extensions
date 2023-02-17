@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.0
+++++++++++++++++++
+* microsoft.dapr: Update version comparison logic to use semver based comparison
+
 1.3.9
 ++++++++++++++++++
 * Deprecating  --config-settings alias for --configuration-settings

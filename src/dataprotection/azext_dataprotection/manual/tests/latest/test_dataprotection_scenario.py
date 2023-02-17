@@ -9,10 +9,10 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def setup(test):
     test.kwargs.update({
-        "vaultName": "cli-test-new-vault",
+        "vaultName": "cli-test-new-vault1",
         "rg": "sarath-rg",
-        "diskname": "cli-test-disk-new",
-        "restorediskname": "cli-test-disk-new-restored",
+        "diskname": "cli-test-disk-new1",
+        "restorediskname": "cli-test-disk-new1-restored",
         "policyname": "diskpolicy",
         "storagepolicyname": "storagepolicy",
         "resourceGuardName": "cli-test-resource-guard",
@@ -32,7 +32,8 @@ def setup(test):
     account_res = test.cmd('az account show').get_output_in_json()
     vault_res = test.cmd('az dataprotection backup-vault create '
                          '-g "{rg}" --vault-name "{vaultName}" -l centraluseuap '
-                         '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned',
+                         '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type SystemAssigned '
+                         '--soft-delete-state Off',
                          checks=[]).get_output_in_json()
 
     # Update DPP Alerts
@@ -110,7 +111,7 @@ def create_policy(test):
 
 
 def initialize_backup_instance(test):
-    backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fae"
+    backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fa1"
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDisk'
                                     ' -l centraluseuap --policy-id "{policyid}" --datasource-id "{diskid}" --snapshot-rg "{rg}" --tags Owner=dppclitest').get_output_in_json()
     backup_instance_json["backup_instance_name"] = test.kwargs['diskname'] + "-" + test.kwargs['diskname'] + "-" + backup_instance_guid
@@ -127,7 +128,7 @@ def initialize_backup_instance(test):
         "storage_backup_instance_name": backup_instance_json["backup_instance_name"]
     })
 
-    backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
+    backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92761"
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDatabaseForPostgreSQL'
                                     ' -l centraluseuap --policy-id "{serverpolicyid}" --datasource-id "{ossdbid}" --secret-store-type AzureKeyVault --secret-store-uri "{secretstoreuri}"').get_output_in_json()
     backup_instance_json["backup_instance_name"] = test.kwargs['ossserver'] + "-" + test.kwargs['ossdb'] + "-" + backup_instance_guid
@@ -138,13 +139,13 @@ def initialize_backup_instance(test):
 
 
 def assign_permissions_and_validate(test):
-    # run only in record mode - grant permission
+    # uncomment when running live, run only in record mode - grant permission
 
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}" --yes').get_output_in_json()
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}" --yes').get_output_in_json()
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{serverrgname}" --vault-name "{servervaultname}" --operation Backup --backup-instance "{server_backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
-    # time.sleep(120) # Wait for permissions to propagate
+    time.sleep(120) # Wait for permissions to propagate
 
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
         test.check('objectType', 'OperationJobExtendedInfo')
@@ -156,7 +157,7 @@ def assign_permissions_and_validate(test):
         test.check('objectType', 'OperationJobExtendedInfo')
     ])
 
-    # run only in record mode - reset firewall rule
+    # uncomment when running live, run only in record mode - reset firewall rule
 
     # test.cmd('az postgres server firewall-rule delete -g "{serverrgname}" -s "{ossserver}" -n AllowAllWindowsAzureIps --yes')
 
