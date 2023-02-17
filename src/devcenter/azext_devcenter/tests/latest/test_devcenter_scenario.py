@@ -412,7 +412,7 @@ class DevcenterScenarioTest(ScenarioTest):
     #     create_project(self)
 
     #     self.kwargs.update({
-    #         'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
+    #         'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
     #         'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
     #         'osStorageType': "ssd_1024gb",
     #         'skuName': "general_a_8c32gb_v1"
@@ -775,147 +775,147 @@ class DevcenterScenarioTest(ScenarioTest):
     #              ]
     #              )
 
-    # @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
-    # def test_pool_scenario(self):
-    #     create_attached_network_dev_box_definition(self)
-    #     self.kwargs.update({
-    #         'poolName': self.create_random_name(prefix='c3', length=12)
-    #     })
+    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    def test_pool_scenario(self):
+        create_attached_network_dev_box_definition(self)
+        self.kwargs.update({
+            'poolName': self.create_random_name(prefix='c3', length=12)
+        })
 
-    #     self.cmd('az devcenter admin pool list '
-    #              '--resource-group "{rg}" '
-    #              '--project-name "{projectName}" ',
-    #              checks=[
-    #                  self.check("length(@)", 0),
-    #              ]
-    #              )
+        self.cmd('az devcenter admin pool list '
+                 '--resource-group "{rg}" '
+                 '--project-name "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin pool create '
-    #              '-d "{devBoxDefinitionName}" '
-    #              '--location "{location}" '
-    #              '--local-administrator "Disabled" '
-    #              '--name "{poolName}" '
-    #              '-c "{attachedNetworkName}" '
-    #              '--project-name "{projectName}" '
-    #              '--resource-group "{rg}" ',
-    #              checks=[
-    #                  self.check('name', "{poolName}"),
-    #                  self.check('resourceGroup', "{rg}"),
-    #                  self.check('devBoxDefinitionName',
-    #                             "{devBoxDefinitionName}"),
-    #                  self.check('localAdministrator', "Disabled"),
-    #                  self.check('networkConnectionName',
-    #                             "{attachedNetworkName}"),
-    #                  self.check('location', "{location}")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin pool create '
+                 '-d "{devBoxDefinitionName}" '
+                 '--location "{location}" '
+                 '--local-administrator "Disabled" '
+                 '--name "{poolName}" '
+                 '-c "{attachedNetworkName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{poolName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('devBoxDefinitionName',
+                                "{devBoxDefinitionName}"),
+                     self.check('localAdministrator', "Disabled"),
+                     self.check('networkConnectionName',
+                                "{attachedNetworkName}"),
+                     self.check('location', "{location}")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin pool list '
-    #              '--resource-group "{rg}" '
-    #              '--project-name "{projectName}" ',
-    #              checks=[
-    #                  self.check("length(@)", 1),
-    #                  self.check("[0].name", "{poolName}")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin pool list '
+                 '--resource-group "{rg}" '
+                 '--project-name "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 1),
+                     self.check("[0].name", "{poolName}")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin pool update '
-    #              '--local-administrator "Enabled" '
-    #              '-d "{devBoxDefinitionName2}" '
-    #              '--name "{poolName}" '
-    #              '--project-name "{projectName}" '
-    #              '--resource-group "{rg}" ',
-    #              checks=[
-    #                  self.check('name', "{poolName}"),
-    #                  self.check('resourceGroup', "{rg}"),
-    #                  self.check('devBoxDefinitionName',
-    #                             "{devBoxDefinitionName2}"),
-    #                  self.check('localAdministrator', "Enabled"),
-    #                  self.check('networkConnectionName',
-    #                             "{attachedNetworkName}"),
-    #                  self.check('location', "{location}")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin pool update '
+                 '--local-administrator "Enabled" '
+                 '-d "{devBoxDefinitionName2}" '
+                 '--name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{poolName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('devBoxDefinitionName',
+                                "{devBoxDefinitionName2}"),
+                     self.check('localAdministrator', "Enabled"),
+                     self.check('networkConnectionName',
+                                "{attachedNetworkName}"),
+                     self.check('location', "{location}")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin pool show '
-    #              '--name "{poolName}" '
-    #              '--project-name "{projectName}" '
-    #              '--resource-group "{rg}" ',
-    #              checks=[
-    #                  self.check('name', "{poolName}"),
-    #                  self.check('resourceGroup', "{rg}"),
-    #                  self.check('devBoxDefinitionName',
-    #                             "{devBoxDefinitionName2}"),
-    #                  self.check('localAdministrator', "Enabled"),
-    #                  self.check('networkConnectionName',
-    #                             "{attachedNetworkName}"),
-    #                  self.check('location', "{location}")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin pool show '
+                 '--name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "{poolName}"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('devBoxDefinitionName',
+                                "{devBoxDefinitionName2}"),
+                     self.check('localAdministrator', "Enabled"),
+                     self.check('networkConnectionName',
+                                "{attachedNetworkName}"),
+                     self.check('location', "{location}")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin schedule create '
-    #              '--pool-name "{poolName}" '
-    #              '--project-name "{projectName}" '
-    #              '--resource-group "{rg}" '
-    #              '--time "13:00" '
-    #              '--time-zone "America/Los_Angeles" ',
-    #              checks=[
-    #                  self.check('name', "default"),
-    #                  self.check('resourceGroup', "{rg}"),
-    #                  self.check('timeZone', "America/Los_Angeles"),
-    #                  self.check('time', "13:00"),
-    #                  self.check('frequency', "Daily"),
-    #                  self.check('typePropertiesType', "StopDevBox")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin schedule create '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 '--time "13:00" '
+                 '--time-zone "America/Los_Angeles" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('timeZone', "America/Los_Angeles"),
+                     self.check('time', "13:00"),
+                     self.check('frequency', "Daily"),
+                     self.check('typePropertiesType', "StopDevBox")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin schedule update '
-    #              '--pool-name "{poolName}" '
-    #              '--project-name "{projectName}" '
-    #              '--resource-group "{rg}" '
-    #              '--time "17:30" '
-    #              '--time-zone "America/New_York" ',
-    #              checks=[
-    #                  self.check('name', "default"),
-    #                  self.check('resourceGroup', "{rg}"),
-    #                  self.check('timeZone', "America/New_York"),
-    #                  self.check('time', "17:30"),
-    #                  self.check('frequency', "Daily"),
-    #                  self.check('typePropertiesType', "StopDevBox")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin schedule update '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" '
+                 '--time "17:30" '
+                 '--time-zone "America/New_York" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('timeZone', "America/New_York"),
+                     self.check('time', "17:30"),
+                     self.check('frequency', "Daily"),
+                     self.check('typePropertiesType', "StopDevBox")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin schedule show '
-    #              '--pool-name "{poolName}" '
-    #              '--project-name "{projectName}" '
-    #              '--resource-group "{rg}" ',
-    #              checks=[
-    #                  self.check('name', "default"),
-    #                  self.check('resourceGroup', "{rg}"),
-    #                  self.check('timeZone', "America/New_York"),
-    #                  self.check('time', "17:30"),
-    #                  self.check('frequency', "Daily"),
-    #                  self.check('typePropertiesType', "StopDevBox")
-    #              ]
-    #              )
+        self.cmd('az devcenter admin schedule show '
+                 '--pool-name "{poolName}" '
+                 '--project-name "{projectName}" '
+                 '--resource-group "{rg}" ',
+                 checks=[
+                     self.check('name', "default"),
+                     self.check('resourceGroup', "{rg}"),
+                     self.check('timeZone', "America/New_York"),
+                     self.check('time', "17:30"),
+                     self.check('frequency', "Daily"),
+                     self.check('typePropertiesType', "StopDevBox")
+                 ]
+                 )
 
-    #     self.cmd('az devcenter admin schedule delete --yes '
-    #              '--project-name "{projectName}" '
-    #              '--pool-name "{poolName}" '
-    #              '--resource-group "{rg}"')
+        self.cmd('az devcenter admin schedule delete --yes '
+                 '--project-name "{projectName}" '
+                 '--pool-name "{poolName}" '
+                 '--resource-group "{rg}"')
 
-    #     self.cmd('az devcenter admin pool delete --yes '
-    #              '--project-name "{projectName}" '
-    #              '--name "{poolName}" '
-    #              '--resource-group "{rg}"')
+        self.cmd('az devcenter admin pool delete --yes '
+                 '--project-name "{projectName}" '
+                 '--name "{poolName}" '
+                 '--resource-group "{rg}"')
 
-    #     self.cmd('az devcenter admin pool list '
-    #              '--resource-group "{rg}" '
-    #              '--project-name "{projectName}" ',
-    #              checks=[
-    #                  self.check("length(@)", 0),
-    #              ]
-    #              )
+        self.cmd('az devcenter admin pool list '
+                 '--resource-group "{rg}" '
+                 '--project-name "{projectName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
+                 )
 
     # @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     # def test_check_name_avail_scenario(self):
@@ -1125,118 +1125,118 @@ class DevcenterScenarioTest(ScenarioTest):
     #              ]
     #              )
 
-    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
-    def test_proj_env_type_scenario(self):
+    # @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    # def test_proj_env_type_scenario(self):
 
-        self.kwargs.update({
-            'ownerRole': "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-        })
+    #     self.kwargs.update({
+    #         'ownerRole': "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+    #     })
 
-        create_dev_center_with_identity(self)
-        create_project(self)
-        create_env_type(self)
+    #     create_dev_center_with_identity(self)
+    #     create_project(self)
+    #     create_env_type(self)
 
-        self.cmd('az devcenter admin project-environment-type list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 0),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-environment-type list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 0),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-environment-type create '
-                 '--project "{projectName}" '
-                 '--environment-type-name "{envTypeName}" '
-                 '--deployment-target-id "/subscriptions/{subscriptionId}" '
-                 '--status "Enabled" '
-                 '--identity-type "SystemAssigned, UserAssigned" '
-                 '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
-                 '--user-role-assignments "{{\\"{identityPrincipalId}\\":{{\\"roles\\":{{\\"{ownerRole}\\":{{}}}}}}}}" '
-                 '--location "{location}" '
-                 '--roles "{{\\"{ownerRole}\\":{{}}}}" '
-                 '--resource-group "{rg}"',
-                 checks=[
-                     self.check('name', "{envTypeName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('location', "{location}"),
-                     self.check('deploymentTargetId',
-                                "/subscriptions/{subscriptionId}"),
-                     self.check('identity.type',
-                                "SystemAssigned, UserAssigned"),
-                     self.check('status', "Enabled"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-environment-type create '
+    #              '--project "{projectName}" '
+    #              '--environment-type-name "{envTypeName}" '
+    #              '--deployment-target-id "/subscriptions/{subscriptionId}" '
+    #              '--status "Enabled" '
+    #              '--identity-type "SystemAssigned, UserAssigned" '
+    #              '--user-assigned-identities "{{\\"{userAssignedIdentity}\\":{{}}}}" '
+    #              '--user-role-assignments "{{\\"{identityPrincipalId}\\":{{\\"roles\\":{{\\"{ownerRole}\\":{{}}}}}}}}" '
+    #              '--location "{location}" '
+    #              '--roles "{{\\"{ownerRole}\\":{{}}}}" '
+    #              '--resource-group "{rg}"',
+    #              checks=[
+    #                  self.check('name', "{envTypeName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('location', "{location}"),
+    #                  self.check('deploymentTargetId',
+    #                             "/subscriptions/{subscriptionId}"),
+    #                  self.check('identity.type',
+    #                             "SystemAssigned, UserAssigned"),
+    #                  self.check('status', "Enabled"),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-environment-type list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-environment-type list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-allowed-environment-type list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-allowed-environment-type list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-allowed-environment-type show '
-                 '--resource-group "{rg}" '
-                 '--environment-type-name "{envTypeName}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check('name', "{envTypeName}"),
-                     self.check('resourceGroup', "{rg}"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-allowed-environment-type show '
+    #              '--resource-group "{rg}" '
+    #              '--environment-type-name "{envTypeName}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check('name', "{envTypeName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-environment-type update '
-                 '--project "{projectName}" '
-                 '--environment-type-name "{envTypeName}" '
-                 '--status "Disabled" '
-                 '--identity-type "UserAssigned" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check('name', "{envTypeName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('location', "{location}"),
-                     self.check('deploymentTargetId',
-                                "/subscriptions/{subscriptionId}"),
-                     self.check('identity.type', "UserAssigned"),
-                     self.check('status', "Disabled"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-environment-type update '
+    #              '--project "{projectName}" '
+    #              '--environment-type-name "{envTypeName}" '
+    #              '--status "Disabled" '
+    #              '--identity-type "UserAssigned" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check('name', "{envTypeName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('location', "{location}"),
+    #                  self.check('deploymentTargetId',
+    #                             "/subscriptions/{subscriptionId}"),
+    #                  self.check('identity.type', "UserAssigned"),
+    #                  self.check('status', "Disabled"),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-environment-type show '
-                 '--project "{projectName}" '
-                 '--environment-type-name "{envTypeName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check('name', "{envTypeName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('location', "{location}"),
-                     self.check('deploymentTargetId',
-                                "/subscriptions/{subscriptionId}"),
-                     self.check('identity.type', "UserAssigned"),
-                     self.check('status', "Disabled"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-environment-type show '
+    #              '--project "{projectName}" '
+    #              '--environment-type-name "{envTypeName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check('name', "{envTypeName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('location', "{location}"),
+    #                  self.check('deploymentTargetId',
+    #                             "/subscriptions/{subscriptionId}"),
+    #                  self.check('identity.type', "UserAssigned"),
+    #                  self.check('status', "Disabled"),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin project-environment-type delete --yes '
-                 '--project "{projectName}" '
-                 '--environment-type-name "{envTypeName}" '
-                 '--resource-group "{rg}"')
+    #     self.cmd('az devcenter admin project-environment-type delete --yes '
+    #              '--project "{projectName}" '
+    #              '--environment-type-name "{envTypeName}" '
+    #              '--resource-group "{rg}"')
 
-        self.cmd('az devcenter admin project-environment-type list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 0),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin project-environment-type list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 0),
+    #              ]
+    #              )
 
 # @record_only()
 # @try_manual
