@@ -65,14 +65,6 @@ class Update(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
@@ -84,6 +76,23 @@ class Update(AAZCommand):
         tags.Element = AAZStrArg(
             nullable=True,
         )
+
+        # define Arg Group "CreatorRoleAssignment"
+
+        _args_schema = cls._args_schema
+        _args_schema.roles = AAZDictArg(
+            options=["--roles"],
+            arg_group="CreatorRoleAssignment",
+            help="A map of roles to assign to the environment creator.",
+            nullable=True,
+        )
+
+        roles = cls._args_schema.roles
+        roles.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
+        )
+        cls._build_args_environment_role_update(roles.Element)
 
         # define Arg Group "Identity"
 
@@ -110,12 +119,6 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.creator_role_assignment = AAZObjectArg(
-            options=["--creator-role-assignment"],
-            arg_group="Properties",
-            help="The role definition assigned to the environment creator on backing resources.",
-            nullable=True,
-        )
         _args_schema.deployment_target_id = AAZStrArg(
             options=["--deployment-target-id"],
             arg_group="Properties",
@@ -135,20 +138,6 @@ class Update(AAZCommand):
             help="Role Assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.",
             nullable=True,
         )
-
-        creator_role_assignment = cls._args_schema.creator_role_assignment
-        creator_role_assignment.roles = AAZDictArg(
-            options=["roles"],
-            help="A map of roles to assign to the environment creator.",
-            nullable=True,
-        )
-
-        roles = cls._args_schema.creator_role_assignment.roles
-        roles.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
-        cls._build_args_environment_role_update(roles.Element)
 
         user_role_assignments = cls._args_schema.user_role_assignments
         user_role_assignments.Element = AAZObjectArg(
@@ -426,7 +415,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("creatorRoleAssignment", AAZObjectType, ".creator_role_assignment")
+                properties.set_prop("creatorRoleAssignment", AAZObjectType)
                 properties.set_prop("deploymentTargetId", AAZStrType, ".deployment_target_id")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("userRoleAssignments", AAZDictType, ".user_role_assignments")

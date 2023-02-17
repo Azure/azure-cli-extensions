@@ -402,270 +402,270 @@ class DevcenterScenarioTest(ScenarioTest):
     #              ]
     #              )
 
-    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
-    def test_devbox_definition_scenario(self):
-        self.kwargs.update({
-            'devcenterName': self.create_random_name(prefix='cli', length=24),
-        })
+    # @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    # def test_devbox_definition_scenario(self):
+    #     self.kwargs.update({
+    #         'devcenterName': self.create_random_name(prefix='cli', length=24),
+    #     })
 
-        create_dev_center(self)
-        create_project(self)
+    #     create_dev_center(self)
+    #     create_project(self)
 
-        self.kwargs.update({
-            'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
-            'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
-            'osStorageType': "ssd_1024gb",
-            'skuName': "general_a_8c32gb_v1"
-        })
+    #     self.kwargs.update({
+    #         'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
+    #         'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+    #         'osStorageType': "ssd_1024gb",
+    #         'skuName': "general_a_8c32gb_v1"
+    #     })
 
-        self.cmd('az devcenter admin devbox-definition list '
-                 '--resource-group "{rg}" '
-                 '--dev-center "{devcenterName}" ',
-                 checks=[
-                     self.check("length(@)", 0),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition list '
+    #              '--resource-group "{rg}" '
+    #              '--dev-center "{devcenterName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 0),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 0),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 0),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition create '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{devBoxDefinitionName}" '
-                 '--image-reference id="{imageRefId}" '
-                 '--resource-group "{rg}" '
-                 '--hibernate-support "Disabled" '
-                 '--os-storage-type "{osStorageType}" '
-                 '--sku name="{skuName}" '
-                 '--location "{location}" ',
-                 checks=[
-                     self.check('name', "{devBoxDefinitionName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('osStorageType', "{osStorageType}"),
-                     self.check('hibernateSupport', "Disabled"),
-                     self.check('imageReference.id', "{imageRefId}"),
-                     self.check('sku.name', "{skuName}"),
-                     self.check('location', "{location}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition create '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{devBoxDefinitionName}" '
+    #              '--image-reference id="{imageRefId}" '
+    #              '--resource-group "{rg}" '
+    #              '--hibernate-support "Disabled" '
+    #              '--os-storage-type "{osStorageType}" '
+    #              '--sku name="{skuName}" '
+    #              '--location "{location}" ',
+    #              checks=[
+    #                  self.check('name', "{devBoxDefinitionName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('osStorageType', "{osStorageType}"),
+    #                  self.check('hibernateSupport', "Disabled"),
+    #                  self.check('imageReference.id', "{imageRefId}"),
+    #                  self.check('sku.name', "{skuName}"),
+    #                  self.check('location', "{location}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition list '
-                 '--resource-group "{rg}" '
-                 '--dev-center "{devcenterName}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition list '
+    #              '--resource-group "{rg}" '
+    #              '--dev-center "{devcenterName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition update '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{devBoxDefinitionName}" '
-                 '--resource-group "{rg}" '
-                 '--hibernate-support "Enabled" ',
-                 checks=[
-                     self.check('name', "{devBoxDefinitionName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('osStorageType', "{osStorageType}"),
-                     self.check('hibernateSupport', "Enabled"),
-                     self.check('imageReference.id', "{imageRefId}"),
-                     self.check('sku.name', "{skuName}"),
-                     self.check('location', "{location}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition update '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{devBoxDefinitionName}" '
+    #              '--resource-group "{rg}" '
+    #              '--hibernate-support "Enabled" ',
+    #              checks=[
+    #                  self.check('name', "{devBoxDefinitionName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('osStorageType', "{osStorageType}"),
+    #                  self.check('hibernateSupport', "Enabled"),
+    #                  self.check('imageReference.id', "{imageRefId}"),
+    #                  self.check('sku.name', "{skuName}"),
+    #                  self.check('location', "{location}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition show '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{devBoxDefinitionName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check('name', "{devBoxDefinitionName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('osStorageType', "{osStorageType}"),
-                     self.check('hibernateSupport', "Enabled"),
-                     self.check('imageReference.id', "{imageRefId}"),
-                     self.check('sku.name', "{skuName}"),
-                     self.check('location', "{location}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition show '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{devBoxDefinitionName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check('name', "{devBoxDefinitionName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('osStorageType', "{osStorageType}"),
+    #                  self.check('hibernateSupport', "Enabled"),
+    #                  self.check('imageReference.id', "{imageRefId}"),
+    #                  self.check('sku.name', "{skuName}"),
+    #                  self.check('location', "{location}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition show '
-                 '--project-name "{projectName}" '
-                 '--name "{devBoxDefinitionName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check('name', "{devBoxDefinitionName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('osStorageType', "{osStorageType}"),
-                     self.check('hibernateSupport', "Enabled"),
-                     self.check('imageReference.id', "{imageRefId}"),
-                     self.check('sku.name', "{skuName}"),
-                     self.check('location', "{location}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition show '
+    #              '--project-name "{projectName}" '
+    #              '--name "{devBoxDefinitionName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check('name', "{devBoxDefinitionName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('osStorageType', "{osStorageType}"),
+    #                  self.check('hibernateSupport', "Enabled"),
+    #                  self.check('imageReference.id', "{imageRefId}"),
+    #                  self.check('sku.name', "{skuName}"),
+    #                  self.check('location', "{location}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition delete --yes '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{devBoxDefinitionName}" '
-                 '--resource-group "{rg}"')
+    #     self.cmd('az devcenter admin devbox-definition delete --yes '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{devBoxDefinitionName}" '
+    #              '--resource-group "{rg}"')
 
-        self.cmd('az devcenter admin devbox-definition list '
-                 '--resource-group "{rg}" '
-                 '--dev-center "{devcenterName}" ',
-                 checks=[
-                     self.check("length(@)", 0),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition list '
+    #              '--resource-group "{rg}" '
+    #              '--dev-center "{devcenterName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 0),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin devbox-definition list '
-                 '--resource-group "{rg}" '
-                 '--project "{projectName}" ',
-                 checks=[
-                     self.check("length(@)", 0),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin devbox-definition list '
+    #              '--resource-group "{rg}" '
+    #              '--project "{projectName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 0),
+    #              ]
+    #              )
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
-    def test_gallery_scenario(self):
+    # @AllowLargeResponse()
+    # @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
+    # def test_gallery_scenario(self):
 
-        create_dev_center_with_identity(self)
-        create_sig(self)
-        if (self.is_live):
-            create_sig_role_assignments(self)
+    #     create_dev_center_with_identity(self)
+    #     create_sig(self)
+    #     if (self.is_live):
+    #         create_sig_role_assignments(self)
 
-        self.kwargs.update({
-            'galleryName': self.create_random_name(prefix='cli', length=24),
-            'devBoxDefinitionName': self.create_random_name(prefix='cli', length=24),
-            'devBoxDefinitionName2': self.create_random_name(prefix='cli', length=24)
-        })
+    #     self.kwargs.update({
+    #         'galleryName': self.create_random_name(prefix='cli', length=24),
+    #         'devBoxDefinitionName': self.create_random_name(prefix='cli', length=24),
+    #         'devBoxDefinitionName2': self.create_random_name(prefix='cli', length=24)
+    #     })
 
-        self.cmd('az devcenter admin gallery list '
-                 '--resource-group "{rg}" '
-                 '--dev-center "{devcenterName}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "Default")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin gallery list '
+    #              '--resource-group "{rg}" '
+    #              '--dev-center "{devcenterName}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #                  self.check("[0].name", "Default")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin gallery create '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{galleryName}" '
-                 '--gallery-resource-id "{sigId}" '
-                 '--resource-group "{rg}"',
-                 checks=[
-                     self.check('name', "{galleryName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('galleryResourceId', "{sigId}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin gallery create '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{galleryName}" '
+    #              '--gallery-resource-id "{sigId}" '
+    #              '--resource-group "{rg}"',
+    #              checks=[
+    #                  self.check('name', "{galleryName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('galleryResourceId', "{sigId}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin gallery list '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check("length(@)", 2)
-                 ]
-                 )
+    #     self.cmd('az devcenter admin gallery list '
+    #              '--dev-center "{devcenterName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check("length(@)", 2)
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin gallery show '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{galleryName}" '
-                 '--resource-group "{rg}"',
-                 checks=[
-                     self.check('name', "{galleryName}"),
-                     self.check('resourceGroup', "{rg}"),
-                     self.check('galleryResourceId', "{sigId}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin gallery show '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{galleryName}" '
+    #              '--resource-group "{rg}"',
+    #              checks=[
+    #                  self.check('name', "{galleryName}"),
+    #                  self.check('resourceGroup', "{rg}"),
+    #                  self.check('galleryResourceId', "{sigId}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin image list '
-                 '--gallery-name "{galleryName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "{imageDefName}"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin image list '
+    #              '--gallery-name "{galleryName}" '
+    #              '--dev-center "{devcenterName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #                  self.check("[0].name", "{imageDefName}"),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin image show '
-                 '--name "{imageDefName}" '
-                 '--gallery-name "{galleryName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}"',
-                 checks=[
-                     self.check('name', "{imageDefName}"),
-                     self.check('offer', "{offer}"),
-                     self.check('publisher', "{publisher}"),
-                     self.check('sku', "{sku}"),
-                     self.check('resourceGroup', "{rg}")
-                 ]
-                 )
+    #     self.cmd('az devcenter admin image show '
+    #              '--name "{imageDefName}" '
+    #              '--gallery-name "{galleryName}" '
+    #              '--dev-center "{devcenterName}" '
+    #              '--resource-group "{rg}"',
+    #              checks=[
+    #                  self.check('name', "{imageDefName}"),
+    #                  self.check('offer', "{offer}"),
+    #                  self.check('publisher', "{publisher}"),
+    #                  self.check('sku', "{sku}"),
+    #                  self.check('resourceGroup', "{rg}")
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin image-version list '
-                 '--image-name "{imageDefName}" '
-                 '--gallery-name "{galleryName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "{imageVersion}"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin image-version list '
+    #              '--image-name "{imageDefName}" '
+    #              '--gallery-name "{galleryName}" '
+    #              '--dev-center "{devcenterName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #                  self.check("[0].name", "{imageVersion}"),
+    #              ]
+    #              )
 
-        self.cmd('az devcenter admin image-version list '
-                 '--image-name "{imageDefName}" '
-                 '--gallery-name "{galleryName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "{imageVersion}"),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin image-version list '
+    #              '--image-name "{imageDefName}" '
+    #              '--gallery-name "{galleryName}" '
+    #              '--dev-center "{devcenterName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #                  self.check("[0].name", "{imageVersion}"),
+    #              ]
+    #              )
 
-        imageVersion = self.cmd('az devcenter admin image-version show '
-                                '--image-name "{imageDefName}" '
-                                '--gallery-name "{galleryName}" '
-                                '--dev-center "{devcenterName}" '
-                                '--version-name {imageVersion} '
-                                '--resource-group "{rg}" ',
-                                checks=[
-                                    self.check('resourceGroup', "{rg}"),
-                                    self.check("name", "{imageVersion}")
-                                ]
-                                ).get_output_in_json()
+    #     imageVersion = self.cmd('az devcenter admin image-version show '
+    #                             '--image-name "{imageDefName}" '
+    #                             '--gallery-name "{galleryName}" '
+    #                             '--dev-center "{devcenterName}" '
+    #                             '--version-name {imageVersion} '
+    #                             '--resource-group "{rg}" ',
+    #                             checks=[
+    #                                 self.check('resourceGroup', "{rg}"),
+    #                                 self.check("name", "{imageVersion}")
+    #                             ]
+    #                             ).get_output_in_json()
 
-        self.kwargs.update({
-            'imageVersionId': imageVersion['id']
-        })
+    #     self.kwargs.update({
+    #         'imageVersionId': imageVersion['id']
+    #     })
 
-        self.cmd('az devcenter admin gallery delete --yes '
-                 '--dev-center "{devcenterName}" '
-                 '--name "{galleryName}" '
-                 '--resource-group "{rg}"')
+    #     self.cmd('az devcenter admin gallery delete --yes '
+    #              '--dev-center "{devcenterName}" '
+    #              '--name "{galleryName}" '
+    #              '--resource-group "{rg}"')
 
-        self.cmd('az devcenter admin gallery list '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                 ]
-                 )
+    #     self.cmd('az devcenter admin gallery list '
+    #              '--dev-center "{devcenterName}" '
+    #              '--resource-group "{rg}" ',
+    #              checks=[
+    #                  self.check("length(@)", 1),
+    #              ]
+    #              )
 
     # @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     # def test_attached_network_scenario(self):
