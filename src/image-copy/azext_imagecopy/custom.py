@@ -30,7 +30,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                       only_show_errors=only_show_errors)
         cmd_output = run_cli_command(cli_cmd)
         if 'true' in cmd_output:
-            raise CLIError('You have an existing resource group named {temporary_resource_group_name}. Please delete the resouce group or specify a new resource group by --temporary-resource-group-name.'.format(temporary_resource_group_name=temporary_resource_group_name))
+            raise ArgumentUsageError('You already have an resource group named {temporary_resource_group_name}, the existing resource group cannot be used as --temporary-resource-group-name when --cleanup is set. Please delete the resouce group or specify a new resource group by --temporary-resource-group-name.'.format(temporary_resource_group_name=temporary_resource_group_name))
 
     if not target_subscription:
         from azure.cli.core.commands.client_factory import get_subscription_id
