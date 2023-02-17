@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+Upcoming
+++++++
+* Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
+
 0.3.22
 ++++++
 * BREAKING CHANGE: 'az containerapp env certificate list' returns [] if certificate not found, instead of raising an error.
