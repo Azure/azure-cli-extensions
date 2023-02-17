@@ -381,20 +381,17 @@ def app_deploy(cmd, client, resource_group, service, name,
                          resource_group, service, name, deployment.name,
                          deployment_resource)
     _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
-    if "succeeded" != poller.status().lower():
-        return poller
-    else:
-        return client.deployments.get(resource_group, service, name, deployment.name)
+    return poller
 
 
 def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
     if no_wait:
         return
+    deployment_error = None
     try:
         poller.result()
-    except Exception:
-        # ignore
-        pass
+    except Exception as err:
+        deployment_error = err
     try:
         deployment_resource = client.deployments.get(resource_group, service, app_name, deployment_name)
         instances = deployment_resource.properties.instances
@@ -413,6 +410,8 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
     except Exception:
         # ignore
         return
+    if deployment_error:
+        raise deployment_error
 
 
 def deployment_create(cmd, client, resource_group, service, app, name,
@@ -517,11 +516,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                          resource_group, service, app, name,
                          deployment_resource)
     _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
-
-    if "succeeded" != poller.status().lower():
-        return poller
-    else:
-        return client.deployments.get(resource_group, service, app, name)
+    return poller
 
 
 def _ensure_app_not_exist(client, resource_group, service, name):

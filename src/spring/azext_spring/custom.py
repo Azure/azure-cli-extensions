@@ -977,7 +977,7 @@ def _get_redis_primary_key(cli_ctx, resource_id):
 
 
 # pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, user_name, password, format_json, exceptions):
+def _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=None):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
 
     def build_log_shortener(length):
@@ -1046,14 +1046,14 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         return format_line
 
-    def iter_lines(response, limit=2 ** 20):
+    def iter_lines(response, limit=2 ** 20, chunk_size=None):
         '''
         Returns a line iterator from the response content. If no line ending was found and the buffered content size is
         larger than the limit, the buffer will be yielded directly.
         '''
         buffer = []
         total = 0
-        for content in response.iter_content(chunk_size=None):
+        for content in response.iter_content(chunk_size=chunk_size):
             if not content:
                 if len(buffer) > 0:
                     yield b''.join(buffer)
@@ -1088,7 +1088,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
             formatter = build_formatter()
 
-            for line in iter_lines(response):
+            for line in iter_lines(response, chunk_size=chunk_size):
                 decoded = (line.decode(encoding='utf-8', errors='replace')
                            .encode(std_encoding, errors='replace')
                            .decode(std_encoding, errors='replace'))
@@ -1100,7 +1100,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
 def _get_app_log_ignore_exception(url, user_name, password, format_json, exceptions):
     try:
-        _get_app_log(url, user_name, password, format_json, exceptions)
+        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10*1024)
     except Exception:
         pass
 

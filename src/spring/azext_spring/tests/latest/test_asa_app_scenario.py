@@ -45,7 +45,7 @@ class AppDeploy(ScenarioTest):
             self.check('sku.capacity', 1),
             self.check('properties.source.type', 'Jar'),
             self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
+            self.check('properties.source.runtimeVersion', 'Java_11'),
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ]).get_output_in_json()
         relative_path = deployment['properties']['source']['relativePath']
