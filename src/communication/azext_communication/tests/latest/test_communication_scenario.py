@@ -81,7 +81,10 @@ def call_scenario(test, rg_2, rg):
 class CommunicationScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
-        super(CommunicationScenarioTest, self).__init__(recording_processors=[], *args, **kwargs)
+        super(CommunicationScenarioTest, self).__init__(recording_processors=[
+            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy"])
+        ], *args, **kwargs)
+        
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })

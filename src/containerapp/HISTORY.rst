@@ -2,6 +2,38 @@
 
 Release History
 ===============
+0.3.22
+++++++
+* BREAKING CHANGE: 'az containerapp env certificate list' returns [] if certificate not found, instead of raising an error.
+* Added 'az containerapp env certificate create' to create managed certificate in a container app environment
+* Added 'az containerapp hostname add' to add hostname to a container app without binding
+* 'az containerapp env certificate delete': add support for managed certificate deletion
+* 'az containerapp env certificate list': add optional parameters --managed-certificates-only and --private-key-certificates-only to list certificates by type
+* 'az containerapp hostname bind': change --thumbprint to an optional parameter and add optional parameter --validation-method to support managed certificate bindings
+* 'az containerapp ssl upload': log messages to indicate which step is in progress
+* Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+
+0.3.21
+++++++
+* Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
+* Added model mapping to support add/update of init Containers via `az containerapp create` & `az containerapp update` commands.
+
+0.3.20
+++++++
+* Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
+
+0.3.19
+++++++
+* Fix "'NoneType' object is not iterable" error in `az containerapp hostname bind` command
+
+0.3.18
+++++++
+* Fix "'NoneType' object has no attribute 'get'" error in `az containerapp up` with no ingress arguments
+
+0.3.17
+++++++
+* Fix polling logic for long running operations.
 
 0.3.16
 ++++++

@@ -5,7 +5,7 @@
 
 
 from azure.cli.testsdk import (ScenarioTest, record_only)
-from ....vendored_sdks.appplatform.v2022_03_01_preview.models import ManagedIdentityType
+from ....vendored_sdks.appplatform.v2022_11_01_preview.models import ManagedIdentityType
 
 
 @record_only()

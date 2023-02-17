@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-
 from azure.cli.testsdk import (ScenarioTest, record_only)
 
 # pylint: disable=line-too-long
@@ -48,6 +46,13 @@ class ApiPortalTest(ScenarioTest):
             self.check('properties.public', False),
             self.check('properties.httpsOnly', False),
             self.check('sku.capacity', 1),
+            self.check('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('spring api-portal delete -g {rg} -s {serviceName} --yes')
+
+        self.cmd('spring api-portal create -g {rg} -s {serviceName}', checks=[
+            self.check('properties.public', False),
             self.check('properties.provisioningState', "Succeeded")
         ])
 

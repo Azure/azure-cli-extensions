@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2020_07_01 import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -245,6 +245,11 @@ def validate_ingress_session_max_age(namespace):
     if namespace.session_max_age is not None \
             and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
         raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
+
+
+def validate_ingress_client_auth_certificates(namespace):
+    if namespace.client_auth_certs is not None:
+        namespace.client_auth_certs = namespace.client_auth_certs.split()
 
 
 def validate_tracing_parameters_asc_create(namespace):

@@ -34,7 +34,11 @@ class FileUpload:
     def upload_and_build(self, artifact_path, **_):
         if not artifact_path:
             raise InvalidArgumentValueError('--artifact-path is not set.')
-        self._upload(artifact_path)
+        artifact_type_list = {'.zip', '.tar.gz', '.tar', '.jar', '.war'}
+        if os.path.splitext(artifact_path)[-1] in artifact_type_list:
+            self._upload(artifact_path)
+        else:
+            raise InvalidArgumentValueError('Unexpected artifact file type, must be one of .zip, .tar.gz, .tar, .jar, .war.')
 
     def _upload(self, artifact_path):
         FileService = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, 'file#FileService')

@@ -118,7 +118,7 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
                 # Don't duplicate a provider/sku if it was also specified in the command's -r parameter
                 provider_already_added = False
                 for already_selected_provider in providers_selected:
-                    if already_selected_provider['provider_id'] == provider.id and already_selected_provider['sku'] == sku.id:
+                    if already_selected_provider['provider_id'] == provider.id:
                         provider_already_added = True
                         break
                 if not provider_already_added:
