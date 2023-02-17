@@ -16,7 +16,7 @@ class NginxScenarioTest(ScenarioTest):
             'deployment_name': 'azclitest-deployment',
             'location': 'eastus2euap',
             'rg': resource_group,
-            'sku': 'standard_Monthly',
+            'sku': 'preview_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
             'vnet_name': 'azclitest-vnet',
             'subnet_name': 'azclitest-subnet',

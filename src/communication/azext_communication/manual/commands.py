@@ -9,7 +9,6 @@ from azext_communication.manual._client_factory import cf_communication_sms
 from azext_communication.manual._client_factory import cf_communication_phonenumbers
 from azext_communication.manual._client_factory import cf_communication_chat
 from azext_communication.manual._client_factory import cf_communication_rooms
-from azext_communication.manual._client_factory import cf_communication_email
 
 
 def load_command_table(self, _):
@@ -18,7 +17,6 @@ def load_command_table(self, _):
     _load_phonenumber_command_table(self)
     _load_chat_command_table(self)
     _load_rooms_command_table(self)
-    _load_email_command_table(self)
 
 
 def _load_identity_command_table(self):
@@ -104,13 +102,3 @@ def _load_rooms_command_table(self):
         g.communication_custom_command('add', 'communication_rooms_add_participants', rooms_arguments)
         g.communication_custom_command('update', 'communication_rooms_update_participants', rooms_arguments)
         g.communication_custom_command('remove', 'communication_rooms_remove_participants', rooms_arguments, confirmation=True)
-
-
-def _load_email_command_table(self):
-    rooms_arguments = ['connection_string']
-    self.command_group('communication email', is_preview=True)
-
-    with self.command_group('communication email', client_factory=cf_communication_email, is_preview=True) as g:
-        g.communication_custom_command('send', 'communication_email_send', rooms_arguments)
-    with self.command_group('communication email', client_factory=cf_communication_email, is_preview=True) as g:
-        g.communication_custom_command('status get', 'communication_email_get_status', rooms_arguments)

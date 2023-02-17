@@ -34,7 +34,6 @@ DEPENDENCIES = ['azure-core',
                 'azure-communication-sms',
                 'azure-communication-chat',
                 'azure-communication-rooms',
-                'azure-communication-email >= 1.0.0b1',
                 ]
 
 try:

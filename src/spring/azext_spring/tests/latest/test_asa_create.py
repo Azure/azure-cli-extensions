@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+from azure.cli.core.azclierror import ResourceNotFoundError
+from knack.util import CLIError
+from msrestazure.tools import resource_id
 from ...vendored_sdks.appplatform.v2022_11_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)

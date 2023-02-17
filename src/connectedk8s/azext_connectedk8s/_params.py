@@ -26,10 +26,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedk8s connect') as c:
         c.argument('tags', tags_type)
-        if os.getenv('AZURE_ACCESS_TOKEN'):
-            c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        else:
-            c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')

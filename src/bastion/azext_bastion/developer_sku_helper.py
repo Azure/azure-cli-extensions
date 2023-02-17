@@ -15,7 +15,7 @@ def _get_data_pod(cmd, resource_port, target_resource_id, bastion):
     auth_token, _, _ = profile.get_raw_token()
     content = {
         'resourceId': target_resource_id,
-        'bastionResourceId': bastion['id'],
+        'bastionResourceId': bastion.id,
         'vmPort': resource_port,
         'azToken': auth_token[1],
         'connectionType': 'nativeclient'

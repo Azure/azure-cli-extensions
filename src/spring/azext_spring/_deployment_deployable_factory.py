@@ -6,6 +6,7 @@
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_uploadable_factory import FileUpload, FolderUpload
 from azure.core.exceptions import HttpResponseError
 from time import sleep

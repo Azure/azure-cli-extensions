@@ -64,6 +64,11 @@ def load_command_table(self, _):
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
 
+    with self.command_group('dataprotection backup-vault', exception_handler=exception_handler, client_factory=cf_backup_vault) as g:
+        g.custom_command('list', 'dataprotection_backup_vault_list')
+        g.custom_command('create', 'dataprotection_backup_vault_create', supports_no_wait=True)
+        g.custom_command('update', 'dataprotection_backup_vault_update', supports_no_wait=True)
+
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler, client_factory=cf_resource_guard) as g:
         g.custom_command('list', 'dataprotection_resource_guard_list')
         g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')

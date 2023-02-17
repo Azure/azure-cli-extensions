@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-import re
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
 from msrestazure.tools import is_valid_resource_id
 from knack.log import get_logger
+import re
 
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app

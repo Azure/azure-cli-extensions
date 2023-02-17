@@ -104,6 +104,15 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         msg += " https://github.com/Azure/azure-cli/blob/dev/src/azure-cli/azure/cli/command_modules/storage/docs/ADLS%20Gen2.md"
         return msg
 
+    # Change existing Blob Commands
+    with self.command_group('storage blob', command_type=adls_base_blob_sdk) as g:
+        from ._format import transform_blob_output
+        from ._transformers import transform_storage_list_output
+        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
+                                table_transformer=transform_blob_output,
+                                deprecate_info=self.deprecate(redirect="az storage fs file list", hide=True,
+                                                              message_func=_adls_deprecate_message))
+
     # New Blob Commands
     with self.command_group('storage blob', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,

@@ -2,12 +2,13 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from time import time
 import unittest
 import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_11_01_preview import models
+from ...vendored_sdks.appplatform.v2022_09_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment)
@@ -83,23 +84,29 @@ class TestSetActiveDeploy(BasicTest):
         request = call_args[0][0][3]
         self.assertEqual(0, len(request.active_deployment_names))
 
-    def test_blue_green_standard(self):
+    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
+    def test_blue_green_standard(self, client_mock_factory):
+        client_mock = self._get_basic_mock_client(sku='Standard')
+        client_mock_factory.return_value = client_mock
         client = self._get_basic_mock_client(sku='Standard')
         app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
-        call_args = client.apps.begin_set_active_deployments.call_args_list
+        call_args = client_mock.apps.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
-        active_deployment_collection = call_args[0][0][3]
-        self.assertEqual('default', active_deployment_collection.active_deployment_names[0])
+        request = call_args[0][0][3]
+        self.assertEqual('default', request.properties.active_deployment_name)
 
-    def test_unset_active_standard(self):
+    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
+    def test_unset_active_standard(self, client_mock_factory):
+        client_mock = self._get_basic_mock_client(sku='Standard')
+        client_mock_factory.return_value = client_mock
         client = self._get_basic_mock_client(sku='Standard')
         app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
-        call_args = client.apps.begin_set_active_deployments.call_args_list
+        call_args = client_mock.apps.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
-        active_deployment_collection = call_args[0][0][3]
-        self.assertEqual(0, len(active_deployment_collection.active_deployment_names))
+        request = call_args[0][0][3]
+        self.assertEqual('', request.properties.active_deployment_name)
 
 
 class TestAppDeploy_Patch(BasicTest):
@@ -591,8 +598,8 @@ class TestAppCreate(BasicTest):
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(5, len(call_args[0][0]))
+        self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
         self.put_deployment_resource = call_args[0][0][4]
-        self.put_deployment_resource.name = call_args[0][0][3]
 
         call_args = client.apps.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -685,11 +692,6 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', instance_count=1)
         resource = self.patch_app_resource
         self.assertIsNone(resource.properties.ingress_settings)
-
-    def test_app_create_with_deployment_name(self):
-        self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1, deployment_name='hello')
-        resource = self.put_deployment_resource
-        self.assertEqual('hello', resource.name)
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):

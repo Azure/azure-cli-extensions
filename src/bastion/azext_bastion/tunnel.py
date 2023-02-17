@@ -213,7 +213,7 @@ class TunnelServer:
             self.last_token = None
             self.node_id = None
         else:
-            logger.debug('Nothing to clean up.')
+            logger.debug('Nothing to clean up')
 
     def get_port(self):
         return self.local_port

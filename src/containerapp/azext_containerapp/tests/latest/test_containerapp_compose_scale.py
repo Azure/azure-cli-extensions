@@ -7,11 +7,10 @@ import unittest  # pylint: disable=unused-import
 
 from azure.cli.testsdk import (ResourceGroupPreparer)
 from azure.cli.testsdk.decorators import serial_test
-from azext_containerapp.tests.latest.common import (
-    ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
-    write_test_file,
-    clean_up_test_file,
-    TEST_DIR, TEST_LOCATION)
+from azext_containerapp.tests.latest.common import (ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
+                                                    write_test_file,
+                                                    clean_up_test_file,
+                                                    TEST_DIR)
 
 from .utils import create_containerapp_env
 
@@ -20,7 +19,10 @@ class ContainerappComposePreviewReplicasScenarioTest(ContainerappComposePreviewS
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_replicas_global_scale(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
 
         compose_text = """
 services:
@@ -58,7 +60,10 @@ services:
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_replicas_replicated_mode(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = os.getenv("CLITestLocation")
+        if not location:
+            location = 'eastus'
+        self.cmd('configure --defaults location={}'.format(location))
 
         compose_text = """
 services:

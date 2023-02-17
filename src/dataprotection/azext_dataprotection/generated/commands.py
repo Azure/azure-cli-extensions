@@ -69,6 +69,15 @@ dataprotection_resource_guard = CliCommandType(
 def load_command_table(self, _):
 
     with self.command_group(
+        'dataprotection backup-vault', dataprotection_backup_vault, client_factory=cf_backup_vault
+    ) as g:
+        g.custom_show_command('show', 'dataprotection_backup_vault_show')
+        g.custom_command('create', 'dataprotection_backup_vault_create', supports_no_wait=True)
+        g.custom_command('update', 'dataprotection_backup_vault_update', supports_no_wait=True)
+        g.custom_command('delete', 'dataprotection_backup_vault_delete', confirmation=True)
+        g.custom_wait_command('wait', 'dataprotection_backup_vault_show')
+
+    with self.command_group(
         'dataprotection backup-policy', dataprotection_backup_policy, client_factory=cf_backup_policy
     ) as g:
         g.custom_command('list', 'dataprotection_backup_policy_list')

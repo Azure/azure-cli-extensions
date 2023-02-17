@@ -22,6 +22,66 @@ from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 logger = get_logger(__name__)
 
 
+def dataprotection_backup_vault_list(client, resource_group_name=None):
+    if resource_group_name is not None:
+        return client.get_in_resource_group(resource_group_name=resource_group_name)
+    return client.get_in_subscription()
+
+
+def dataprotection_backup_vault_create(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       storage_settings,
+                                       e_tag=None,
+                                       location=None,
+                                       tags=None,
+                                       type_=None,
+                                       alerts_for_all_job_failures=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    parameters['properties']['storage_settings'] = storage_settings
+    if alerts_for_all_job_failures is not None:
+        parameters['properties']['monitoring_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_backup_vault_update(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       tags=None,
+                                       alerts_for_all_job_failures=None,
+                                       type_=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['tags'] = tags
+    if alerts_for_all_job_failures is not None:
+        parameters['properties'] = {}
+        parameters['properties']['monitoring_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings'] = {}
+        parameters['properties']['monitoring_settings']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    if type_ is not None:
+        parameters['identity'] = {}
+        parameters['identity']['type'] = type_
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
 def dataprotection_resource_guard_list(client, resource_group_name=None):
     if resource_group_name is not None:
         return client.get_resources_in_resource_group(resource_group_name=resource_group_name)

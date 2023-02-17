@@ -48,16 +48,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         prefix = upgrade_version[:upgrade_version.rfind('.')]
         create_version = next(x for x in versions if not x.startswith(prefix))
         return create_version, upgrade_version
-    
-    def _get_version_in_range(self, location: str, min_version: str, max_version: str) -> str:
-        """Return the version which is greater than min_version and less than max_version."""
-        versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
-        versions = sorted(versions, key=version_to_tuple, reverse=True)
-        for version in versions:
-            if version > min_version and version < max_version:
-                return version
-        return ""
 
     @classmethod
     def generate_ssh_keys(cls):
@@ -309,21 +299,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_node_restriction(self, resource_group, resource_group_location):
-        specific_version = self._get_version_in_range(resource_group_location, "1.22.0", "1.24.0")
-        if specific_version == "":
-            # supported versions do not meet test requirements, skip
-            return
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'k8s_version': specific_version
+            'ssh_key_value': self.generate_ssh_keys()
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--vm-set-type VirtualMachineScaleSets -c 1 ' \
-                     '-k {k8s_version} --enable-node-restriction ' \
+                     '--enable-node-restriction ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -4098,7 +4083,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--network-plugin azure --network-plugin-mode overlay --ssh-key-value={ssh_key_value} ' \
                      '--pod-cidr 10.244.0.0/16 --node-count 1 ' \
                      '--enable-cilium-dataplane ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CiliumDataplanePreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureOverlayPreview'
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CiliumDataplanePreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.podCidr', '10.244.0.0/16'),

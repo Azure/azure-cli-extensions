@@ -10,11 +10,7 @@ TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
 TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft/Basic"
-TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft"
-
-TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "microsoft-qc/learn-and-develop"
-TEST_TARGET_DEFAULT_PROVIDER = "microsoft-qc"
-TEST_TARGET_DEFAULT_TARGET = "microsoft.estimator"
+TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft" 
 
 def get_from_os_environment(env_name, default):
     import os
@@ -43,15 +39,6 @@ def get_test_workspace_provider_sku_list():
 
 def get_test_capabilities():
     return get_from_os_environment("AZURE_QUANTUM_CAPABILITIES", TEST_CAPABILITIES_DEFAULT).lower()
-
-def get_test_target_provider_sku_list():
-    return get_from_os_environment("AZURE_QUANTUM_TARGET_PROVIDER_SKU_LIST", TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST)
-
-def get_test_target_provider():
-    return get_from_os_environment("AZURE_QUANTUM_PROVIDER", TEST_TARGET_DEFAULT_PROVIDER)
-
-def get_test_target_target():
-    return get_from_os_environment("AZURE_QUANTUM_TARGET", TEST_TARGET_DEFAULT_TARGET)
 
 def get_test_workspace_random_name():
     import random

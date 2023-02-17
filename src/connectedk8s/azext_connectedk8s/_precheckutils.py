@@ -23,9 +23,9 @@ from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
+from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
-import azext_connectedk8s.custom as custom
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -96,8 +96,8 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
-    release_namespace = azext_utils.get_release_namespace(kube_config, kube_context, helm_client_location, "cluster-diagnostic-checks")
-    cmd_helm_delete = [helm_client_location, "delete", "cluster-diagnostic-checks", "-n", "azure-arc-release"]
+
+    cmd_helm_delete = [helm_client_location, "uninstall", "cluster-diagnostic-checks", "-n", "azure-arc-release"]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -107,30 +107,28 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
     try:
         # Executing the cluster diagnostic checks job yaml
         config.load_kube_config(kube_config, kube_context)
-        # checking existence of the release and if present we delete the stale release
-        if release_namespace is not None:
-            # Attempting deletion of cluster diagnostic checks resources to handle the scenario if any stale resources are present
-            response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-            output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
-            # If any error occured while execution of delete command
-            if (response_kubectl_delete_helm.returncode != 0):
-                # Converting the string of multiple errors to list
-                error_msg_list = error_kubectl_delete_helm.decode("ascii").split("\n")
-                error_msg_list.pop(-1)
-                valid_exception_list = []
-                # Checking if any exception occured or not
-                exception_occured_counter = 0
-                for ind_errors in error_msg_list:
-                    if('not found' in ind_errors or 'deleted' in ind_errors):
-                        pass
-                    else:
-                        valid_exception_list.append(ind_errors)
-                        exception_occured_counter = 1
-                # If any exception occured we will print the exception and return
-                if exception_occured_counter == 1:
-                    logger.warning("Cleanup of previous diagnostic checks helm release failed and hence couldn't install the new helm release. Please cleanup older release using \"helm delete cluster-diagnostic-checks -n azure-arc-release\" and try onboarding again")
-                    telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
-                    return
+        # Attempting deletion of cluster diagnostic checks resources to handle the scenario if any stale resources are present
+        response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+        output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
+        # If any error occured while execution of delete command
+        if (response_kubectl_delete_helm != 0):
+            # Converting the string of multiple errors to list
+            error_msg_list = error_kubectl_delete_helm.decode("ascii").split("\n")
+            error_msg_list.pop(-1)
+            valid_exception_list = []
+            # Checking if any exception occured or not
+            exception_occured_counter = 0
+            for ind_errors in error_msg_list:
+                if('not found' in ind_errors or 'deleted' in ind_errors):
+                    pass
+                else:
+                    valid_exception_list.append(ind_errors)
+                    exception_occured_counter = 1
+            # If any exception occured we will print the exception and return
+            if exception_occured_counter == 1:
+                logger.warning("Cleanup of previous diagnostic checks helm release failed and hence couldn't install the new helm release. Please cleanup older release using \"helm delete cluster-diagnostic-checks -n azuer-arc-release\" and try onboarding again")
+                telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
+                return
 
         chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name, consts.Pre_Onboarding_Helm_Charts_Release_Name)
 

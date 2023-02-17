@@ -12,7 +12,7 @@ from azure.cli.command_modules.appservice._params import AUTH_TYPES
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD
 
-UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'Return401', 'Return404', 'Return403']
+UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
 FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 CLOUD_NAMES = [AZURE_PUBLIC_CLOUD.name, AZURE_CHINA_CLOUD.name, AZURE_US_GOV_CLOUD.name, AZURE_GERMAN_CLOUD.name]
 

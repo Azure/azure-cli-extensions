@@ -5,6 +5,8 @@
 import json
 import unittest
 from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.core.azclierror import ResourceNotFoundError
+from knack.util import CLIError
 from ...vendored_sdks.appplatform.v2022_11_01_preview import models
 from ...application_live_view import (create, delete)
 try:

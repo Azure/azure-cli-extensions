@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import unittest
 
+from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
 
 # pylint: disable=line-too-long

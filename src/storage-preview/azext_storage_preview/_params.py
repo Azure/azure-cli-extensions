@@ -532,6 +532,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
                    'octal notation (e.g. 0766) are supported.')
 
+    with self.argument_context('storage blob list') as c:
+        c.argument('include', validator=validate_included_datasets, default='mc')
+        c.argument('num_results', arg_type=num_results_type)
+
     with self.argument_context('storage blob move') as c:
         from ._validators import validate_move_file
         c.argument('source_path', options_list=['--source-blob', '-s'], validator=validate_move_file,

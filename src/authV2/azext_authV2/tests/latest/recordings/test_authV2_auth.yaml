@@ -13,12 +13,13 @@ interactions:
       ParameterSetName:
       - -g -n --sku
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_authV2000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001","name":"cli_test_authV2000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-12T00:06:21Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001","name":"cli_test_authV2000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-03T03:31:52Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,13 +28,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 00:06:55 GMT
+      - Tue, 03 Jan 2023 03:31:52 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -59,13 +62,14 @@ interactions:
       ParameterSetName:
       - -g -n --sku
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003","name":"webapp-authentication-plan000003","type":"Microsoft.Web/serverfarms","kind":"app","location":"westus","properties":{"serverFarmId":13355,"name":"webapp-authentication-plan000003","sku":{"name":"S1","tier":"Standard","size":"S1","family":"S","capacity":1},"workerSize":"Default","workerSizeId":0,"workerTierName":null,"numberOfWorkers":1,"currentWorkerSize":"Default","currentWorkerSizeId":0,"currentNumberOfWorkers":1,"status":"Ready","webSpace":"cli_test_authV2000001-WestUSwebspace","subscription":"0043ac27-403a-4a41-85b6-c4751acd3610","adminSiteName":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"maximumNumberOfWorkers":0,"planName":"VirtualDedicatedPlan","adminRuntimeSiteName":null,"computeMode":"Dedicated","siteMode":null,"geoRegion":"West
-        US","perSiteScaling":false,"elasticScaleEnabled":false,"maximumElasticWorkerCount":1,"numberOfSites":0,"hostingEnvironmentId":null,"isSpot":false,"spotExpirationTime":null,"freeOfferExpirationTime":null,"tags":null,"kind":"app","resourceGroup":"cli_test_authV2000001","reserved":false,"isXenon":false,"hyperV":false,"mdmId":"waws-prod-bay-231_13355","targetWorkerCount":0,"targetWorkerSizeId":0,"provisioningState":"Succeeded","webSiteId":null,"existingServerFarmIds":null,"kubeEnvironmentProfile":null,"zoneRedundant":false},"sku":{"name":"S1","tier":"Standard","size":"S1","family":"S","capacity":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003","name":"webapp-authentication-plan000003","type":"Microsoft.Web/serverfarms","kind":"app","location":"westus","properties":{"serverFarmId":36707,"name":"webapp-authentication-plan000003","sku":{"name":"S1","tier":"Standard","size":"S1","family":"S","capacity":1},"workerSize":"Default","workerSizeId":0,"workerTierName":null,"numberOfWorkers":1,"currentWorkerSize":"Default","currentWorkerSizeId":0,"currentNumberOfWorkers":1,"status":"Ready","webSpace":"cli_test_authV2000001-WestUSwebspace","subscription":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","adminSiteName":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"maximumNumberOfWorkers":0,"planName":"VirtualDedicatedPlan","adminRuntimeSiteName":null,"computeMode":"Dedicated","siteMode":null,"geoRegion":"West
+        US","perSiteScaling":false,"elasticScaleEnabled":false,"maximumElasticWorkerCount":1,"numberOfSites":0,"hostingEnvironmentId":null,"isSpot":false,"spotExpirationTime":null,"freeOfferExpirationTime":null,"tags":null,"kind":"app","resourceGroup":"cli_test_authV2000001","reserved":false,"isXenon":false,"hyperV":false,"mdmId":"waws-prod-bay-173_36707","targetWorkerCount":0,"targetWorkerSizeId":0,"provisioningState":"Succeeded","webSiteId":null,"existingServerFarmIds":null,"kubeEnvironmentProfile":null,"zoneRedundant":false},"sku":{"name":"S1","tier":"Standard","size":"S1","family":"S","capacity":1}}'
     headers:
       cache-control:
       - no-cache
@@ -74,9 +78,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:01 GMT
+      - Tue, 03 Jan 2023 03:31:59 GMT
       etag:
-      - '"1D92619CB4BFE55"'
+      - '"1D91F23EFB463B5"'
       expires:
       - '-1'
       pragma:
@@ -94,7 +98,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -114,14 +118,15 @@ interactions:
       ParameterSetName:
       - -g -n --plan
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003","name":"webapp-authentication-plan000003","type":"Microsoft.Web/serverfarms","kind":"app","location":"West
-        US","properties":{"serverFarmId":13355,"name":"webapp-authentication-plan000003","workerSize":"Default","workerSizeId":0,"workerTierName":null,"numberOfWorkers":1,"currentWorkerSize":"Default","currentWorkerSizeId":0,"currentNumberOfWorkers":1,"status":"Ready","webSpace":"cli_test_authV2000001-WestUSwebspace","subscription":"0043ac27-403a-4a41-85b6-c4751acd3610","adminSiteName":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"maximumNumberOfWorkers":10,"planName":"VirtualDedicatedPlan","adminRuntimeSiteName":null,"computeMode":"Dedicated","siteMode":null,"geoRegion":"West
-        US","perSiteScaling":false,"elasticScaleEnabled":false,"maximumElasticWorkerCount":1,"numberOfSites":0,"hostingEnvironmentId":null,"isSpot":false,"spotExpirationTime":null,"freeOfferExpirationTime":null,"tags":null,"kind":"app","resourceGroup":"cli_test_authV2000001","reserved":false,"isXenon":false,"hyperV":false,"mdmId":"waws-prod-bay-231_13355","targetWorkerCount":0,"targetWorkerSizeId":0,"provisioningState":"Succeeded","webSiteId":null,"existingServerFarmIds":null,"kubeEnvironmentProfile":null,"zoneRedundant":false},"sku":{"name":"S1","tier":"Standard","size":"S1","family":"S","capacity":1}}'
+        US","properties":{"serverFarmId":36707,"name":"webapp-authentication-plan000003","workerSize":"Default","workerSizeId":0,"workerTierName":null,"numberOfWorkers":1,"currentWorkerSize":"Default","currentWorkerSizeId":0,"currentNumberOfWorkers":1,"status":"Ready","webSpace":"cli_test_authV2000001-WestUSwebspace","subscription":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","adminSiteName":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"maximumNumberOfWorkers":10,"planName":"VirtualDedicatedPlan","adminRuntimeSiteName":null,"computeMode":"Dedicated","siteMode":null,"geoRegion":"West
+        US","perSiteScaling":false,"elasticScaleEnabled":false,"maximumElasticWorkerCount":1,"numberOfSites":0,"hostingEnvironmentId":null,"isSpot":false,"spotExpirationTime":null,"freeOfferExpirationTime":null,"tags":null,"kind":"app","resourceGroup":"cli_test_authV2000001","reserved":false,"isXenon":false,"hyperV":false,"mdmId":"waws-prod-bay-173_36707","targetWorkerCount":0,"targetWorkerSizeId":0,"provisioningState":"Succeeded","webSiteId":null,"existingServerFarmIds":null,"kubeEnvironmentProfile":null,"zoneRedundant":false},"sku":{"name":"S1","tier":"Standard","size":"S1","family":"S","capacity":1}}'
     headers:
       cache-control:
       - no-cache
@@ -130,7 +135,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:03 GMT
+      - Tue, 03 Jan 2023 03:32:00 GMT
       expires:
       - '-1'
       pragma:
@@ -170,7 +175,8 @@ interactions:
       ParameterSetName:
       - -g -n --plan
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Web/checknameavailability?api-version=2022-03-01
   response:
@@ -184,7 +190,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:04 GMT
+      - Tue, 03 Jan 2023 03:32:01 GMT
       expires:
       - '-1'
       pragma:
@@ -220,7 +226,8 @@ interactions:
       ParameterSetName:
       - -g -n --plan
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/providers/Microsoft.Web/webAppStacks?api-version=2022-03-01
   response:
@@ -457,7 +464,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:05 GMT
+      - Tue, 03 Jan 2023 03:32:01 GMT
       expires:
       - '-1'
       pragma:
@@ -466,6 +473,10 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-aspnet-version:
       - 4.0.30319
       x-content-type-options:
@@ -497,26 +508,27 @@ interactions:
       ParameterSetName:
       - -g -n --plan
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002","name":"webapp-authentication-test000002","type":"Microsoft.Web/sites","kind":"app","location":"West
-        US","properties":{"name":"webapp-authentication-test000002","state":"Running","hostNames":["webapp-authentication-test000002.azurewebsites.net"],"webSpace":"cli_test_authV2000001-WestUSwebspace","selfLink":"https://waws-prod-bay-231.api.azurewebsites.windows.net:454/subscriptions/00000000-0000-0000-0000-000000000000/webspaces/cli_test_authV2000001-WestUSwebspace/sites/webapp-authentication-test000002","repositorySiteName":"webapp-authentication-test000002","owner":null,"usageState":"Normal","enabled":true,"adminEnabled":true,"enabledHostNames":["webapp-authentication-test000002.azurewebsites.net","webapp-authentication-test000002.scm.azurewebsites.net"],"siteProperties":{"metadata":null,"properties":[{"name":"LinuxFxVersion","value":""},{"name":"WindowsFxVersion","value":null}],"appSettings":null},"availabilityState":"Normal","sslCertificates":null,"csrs":[],"cers":null,"siteMode":null,"hostNameSslStates":[{"name":"webapp-authentication-test000002.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"thumbprint":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Standard"},{"name":"webapp-authentication-test000002.scm.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"thumbprint":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Repository"}],"computeMode":null,"serverFarm":null,"serverFarmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003","reserved":false,"isXenon":false,"hyperV":false,"lastModifiedTimeUtc":"2023-01-12T00:07:10.23","storageRecoveryDefaultState":"Running","contentAvailabilityState":"Normal","runtimeAvailabilityState":"Normal","dnsConfiguration":{},"vnetRouteAllEnabled":false,"containerAllocationSubnet":null,"useContainerLocalhostBindings":null,"vnetImagePullEnabled":false,"vnetContentShareEnabled":false,"siteConfig":{"numberOfWorkers":1,"defaultDocuments":null,"netFrameworkVersion":null,"phpVersion":null,"pythonVersion":null,"nodeVersion":null,"powerShellVersion":null,"linuxFxVersion":"","windowsFxVersion":null,"windowsConfiguredStacks":null,"requestTracingEnabled":null,"remoteDebuggingEnabled":null,"remoteDebuggingVersion":null,"httpLoggingEnabled":null,"azureMonitorLogCategories":null,"acrUseManagedIdentityCreds":false,"acrUserManagedIdentityID":null,"logsDirectorySizeLimit":null,"detailedErrorLoggingEnabled":null,"publishingUsername":null,"publishingPassword":null,"appSettings":null,"metadata":null,"connectionStrings":null,"machineKey":null,"handlerMappings":null,"documentRoot":null,"scmType":null,"use32BitWorkerProcess":null,"webSocketsEnabled":null,"alwaysOn":false,"javaVersion":null,"javaContainer":null,"javaContainerVersion":null,"appCommandLine":null,"managedPipelineMode":null,"virtualApplications":null,"winAuthAdminState":null,"winAuthTenantState":null,"customAppPoolIdentityAdminState":null,"customAppPoolIdentityTenantState":null,"runtimeADUser":null,"runtimeADUserPassword":null,"loadBalancing":null,"routingRules":null,"experiments":null,"limits":null,"autoHealEnabled":null,"autoHealRules":null,"tracingOptions":null,"vnetName":null,"vnetRouteAllEnabled":null,"vnetPrivatePortsCount":null,"publicNetworkAccess":null,"cors":null,"push":null,"apiDefinition":null,"apiManagementConfig":null,"autoSwapSlotName":null,"localMySqlEnabled":null,"managedServiceIdentityId":null,"xManagedServiceIdentityId":null,"keyVaultReferenceIdentity":null,"ipSecurityRestrictions":[{"ipAddress":"Any","action":"Allow","priority":2147483647,"name":"Allow
+        US","properties":{"name":"webapp-authentication-test000002","state":"Running","hostNames":["webapp-authentication-test000002.azurewebsites.net"],"webSpace":"cli_test_authV2000001-WestUSwebspace","selfLink":"https://waws-prod-bay-173.api.azurewebsites.windows.net:454/subscriptions/00000000-0000-0000-0000-000000000000/webspaces/cli_test_authV2000001-WestUSwebspace/sites/webapp-authentication-test000002","repositorySiteName":"webapp-authentication-test000002","owner":null,"usageState":"Normal","enabled":true,"adminEnabled":true,"enabledHostNames":["webapp-authentication-test000002.azurewebsites.net","webapp-authentication-test000002.scm.azurewebsites.net"],"siteProperties":{"metadata":null,"properties":[{"name":"LinuxFxVersion","value":""},{"name":"WindowsFxVersion","value":null}],"appSettings":null},"availabilityState":"Normal","sslCertificates":null,"csrs":[],"cers":null,"siteMode":null,"hostNameSslStates":[{"name":"webapp-authentication-test000002.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"thumbprint":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Standard"},{"name":"webapp-authentication-test000002.scm.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"thumbprint":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Repository"}],"computeMode":null,"serverFarm":null,"serverFarmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/serverfarms/webapp-authentication-plan000003","reserved":false,"isXenon":false,"hyperV":false,"lastModifiedTimeUtc":"2023-01-03T03:32:05.8166667","storageRecoveryDefaultState":"Running","contentAvailabilityState":"Normal","runtimeAvailabilityState":"Normal","dnsConfiguration":{},"vnetRouteAllEnabled":false,"containerAllocationSubnet":null,"useContainerLocalhostBindings":null,"vnetImagePullEnabled":false,"vnetContentShareEnabled":false,"siteConfig":{"numberOfWorkers":1,"defaultDocuments":null,"netFrameworkVersion":null,"phpVersion":null,"pythonVersion":null,"nodeVersion":null,"powerShellVersion":null,"linuxFxVersion":"","windowsFxVersion":null,"windowsConfiguredStacks":null,"requestTracingEnabled":null,"remoteDebuggingEnabled":null,"remoteDebuggingVersion":null,"httpLoggingEnabled":null,"azureMonitorLogCategories":null,"acrUseManagedIdentityCreds":false,"acrUserManagedIdentityID":null,"logsDirectorySizeLimit":null,"detailedErrorLoggingEnabled":null,"publishingUsername":null,"publishingPassword":null,"appSettings":null,"metadata":null,"connectionStrings":null,"machineKey":null,"handlerMappings":null,"documentRoot":null,"scmType":null,"use32BitWorkerProcess":null,"webSocketsEnabled":null,"alwaysOn":false,"javaVersion":null,"javaContainer":null,"javaContainerVersion":null,"appCommandLine":null,"managedPipelineMode":null,"virtualApplications":null,"winAuthAdminState":null,"winAuthTenantState":null,"customAppPoolIdentityAdminState":null,"customAppPoolIdentityTenantState":null,"runtimeADUser":null,"runtimeADUserPassword":null,"loadBalancing":null,"routingRules":null,"experiments":null,"limits":null,"autoHealEnabled":null,"autoHealRules":null,"tracingOptions":null,"vnetName":null,"vnetRouteAllEnabled":null,"vnetPrivatePortsCount":null,"publicNetworkAccess":null,"cors":null,"push":null,"apiDefinition":null,"apiManagementConfig":null,"autoSwapSlotName":null,"localMySqlEnabled":null,"managedServiceIdentityId":null,"xManagedServiceIdentityId":null,"keyVaultReferenceIdentity":null,"ipSecurityRestrictions":[{"ipAddress":"Any","action":"Allow","priority":2147483647,"name":"Allow
         all","description":"Allow all access"}],"ipSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictions":[{"ipAddress":"Any","action":"Allow","priority":2147483647,"name":"Allow
-        all","description":"Allow all access"}],"scmIpSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictionsUseMain":null,"http20Enabled":false,"minTlsVersion":null,"minTlsCipherSuite":null,"supportedTlsCipherSuites":null,"scmMinTlsVersion":null,"ftpsState":null,"preWarmedInstanceCount":null,"functionAppScaleLimit":null,"elasticWebAppScaleLimit":0,"healthCheckPath":null,"fileChangeAuditEnabled":null,"functionsRuntimeScaleMonitoringEnabled":null,"websiteTimeZone":null,"minimumElasticInstanceCount":0,"azureStorageAccounts":null,"http20ProxyFlag":null,"sitePort":null,"antivirusScanEnabled":null,"storageType":null},"deploymentId":"webapp-authentication-test000002","slotName":null,"trafficManagerHostNames":null,"sku":"Standard","scmSiteAlsoStopped":false,"targetSwapSlot":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"clientAffinityEnabled":true,"clientCertEnabled":false,"clientCertMode":"Required","clientCertExclusionPaths":null,"hostNamesDisabled":false,"domainVerificationIdentifiers":null,"customDomainVerificationId":"4258A33882AF3095031C5D864E4B0C79A6F92AB06F52E299B7E0AFE399706945","kind":"app","inboundIpAddress":"40.112.243.108","possibleInboundIpAddresses":"40.112.243.108","ftpUsername":"webapp-authentication-test000002\\$webapp-authentication-test000002","ftpsHostName":"ftps://waws-prod-bay-231.ftp.azurewebsites.windows.net/site/wwwroot","outboundIpAddresses":"20.245.176.70,20.228.95.95,20.228.95.96,20.228.95.227,20.237.175.247,20.66.45.207,40.112.243.108","possibleOutboundIpAddresses":"20.245.176.70,20.228.95.95,20.228.95.96,20.228.95.227,20.237.175.247,20.66.45.207,20.66.42.149,20.66.44.155,20.66.56.187,20.237.171.11,20.66.58.18,20.66.58.57,20.66.58.64,20.245.177.80,20.66.58.66,20.66.45.209,20.66.58.181,20.66.59.64,20.66.59.71,20.66.46.96,20.66.59.224,20.66.60.135,20.66.60.232,20.66.61.53,20.237.242.142,20.245.177.92,20.66.61.170,20.66.61.223,20.66.62.19,20.237.171.198,40.112.243.108","containerSize":0,"dailyMemoryTimeQuota":0,"suspendedTill":null,"siteDisabledReason":0,"functionExecutionUnitsCache":null,"maxNumberOfWorkers":null,"homeStamp":"waws-prod-bay-231","cloningInfo":null,"hostingEnvironmentId":null,"tags":null,"resourceGroup":"cli_test_authV2000001","defaultHostName":"webapp-authentication-test000002.azurewebsites.net","slotSwapStatus":null,"httpsOnly":false,"redundancyMode":"None","inProgressOperationId":null,"geoDistributions":null,"privateEndpointConnections":null,"publicNetworkAccess":null,"buildVersion":null,"targetBuildVersion":null,"migrationState":null,"eligibleLogCategories":"AppServiceAppLogs,AppServiceAuditLogs,AppServiceConsoleLogs,AppServiceHTTPLogs,AppServiceIPSecAuditLogs,AppServicePlatformLogs,ScanLogs","storageAccountRequired":false,"virtualNetworkSubnetId":null,"keyVaultReferenceIdentity":"SystemAssigned","defaultHostNameScope":"Global","privateLinkIdentifiers":null}}'
+        all","description":"Allow all access"}],"scmIpSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictionsUseMain":null,"http20Enabled":false,"minTlsVersion":null,"minTlsCipherSuite":null,"supportedTlsCipherSuites":null,"scmMinTlsVersion":null,"ftpsState":null,"preWarmedInstanceCount":null,"functionAppScaleLimit":null,"elasticWebAppScaleLimit":0,"healthCheckPath":null,"fileChangeAuditEnabled":null,"functionsRuntimeScaleMonitoringEnabled":null,"websiteTimeZone":null,"minimumElasticInstanceCount":0,"azureStorageAccounts":null,"http20ProxyFlag":null,"sitePort":null,"antivirusScanEnabled":null,"storageType":null},"deploymentId":"webapp-authentication-test000002","slotName":null,"trafficManagerHostNames":null,"sku":"Standard","scmSiteAlsoStopped":false,"targetSwapSlot":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"clientAffinityEnabled":true,"clientCertEnabled":false,"clientCertMode":"Required","clientCertExclusionPaths":null,"hostNamesDisabled":false,"domainVerificationIdentifiers":null,"customDomainVerificationId":"253001F2FCF5A7B1CD759EB861E9BB1596370BE27E47A991F72184277B3D12F2","kind":"app","inboundIpAddress":"40.112.243.54","possibleInboundIpAddresses":"40.112.243.54","ftpUsername":"webapp-authentication-test000002\\$webapp-authentication-test000002","ftpsHostName":"ftps://waws-prod-bay-173.ftp.azurewebsites.windows.net/site/wwwroot","outboundIpAddresses":"104.45.231.244,23.99.66.110,137.117.16.198,104.40.59.38,23.100.34.88,104.40.81.14,40.112.243.54","possibleOutboundIpAddresses":"104.45.231.244,23.99.66.110,137.117.16.198,104.40.59.38,23.100.34.88,104.40.81.14,104.40.48.42,104.40.63.71,104.40.92.138,104.40.53.9,23.101.205.4,104.40.89.194,23.100.44.42,104.40.77.1,23.101.202.141,23.99.69.83,104.40.84.253,104.40.82.141,23.100.36.113,23.101.203.68,137.117.13.177,104.40.57.193,104.40.49.42,23.100.42.180,104.40.49.141,104.40.49.176,104.45.232.236,137.117.21.10,104.40.48.210,104.40.48.219,40.112.243.54","containerSize":0,"dailyMemoryTimeQuota":0,"suspendedTill":null,"siteDisabledReason":0,"functionExecutionUnitsCache":null,"maxNumberOfWorkers":null,"homeStamp":"waws-prod-bay-173","cloningInfo":null,"hostingEnvironmentId":null,"tags":null,"resourceGroup":"cli_test_authV2000001","defaultHostName":"webapp-authentication-test000002.azurewebsites.net","slotSwapStatus":null,"httpsOnly":false,"redundancyMode":"None","inProgressOperationId":null,"geoDistributions":null,"privateEndpointConnections":null,"publicNetworkAccess":null,"buildVersion":null,"targetBuildVersion":null,"migrationState":null,"eligibleLogCategories":"AppServiceAppLogs,AppServiceAuditLogs,AppServiceConsoleLogs,AppServiceHTTPLogs,AppServiceIPSecAuditLogs,AppServicePlatformLogs,ScanLogs","storageAccountRequired":false,"virtualNetworkSubnetId":null,"keyVaultReferenceIdentity":"SystemAssigned","defaultHostNameScope":"Global","privateLinkIdentifiers":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6986'
+      - '7005'
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:27 GMT
+      - Tue, 03 Jan 2023 03:32:22 GMT
       etag:
-      - '"1D92619D11006EB"'
+      - '"1D91F23F419788B"'
       expires:
       - '-1'
       pragma:
@@ -558,7 +570,8 @@ interactions:
       ParameterSetName:
       - -g -n --plan
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/publishxml?api-version=2022-03-01
   response:
@@ -566,18 +579,18 @@ interactions:
       string: <publishData><publishProfile profileName="webapp-authentication-test000002
         - Web Deploy" publishMethod="MSDeploy" publishUrl="webapp-authentication-test000002.scm.azurewebsites.net:443"
         msdeploySite="webapp-authentication-test000002" userName="$webapp-authentication-test000002"
-        userPWD="K9gTKEYNDoj6lWH6nHHyC7bin42tYQmoJ6bYM7AnAd5vcFw9tmxMoFrK7lZl" destinationAppUrl="http://webapp-authentication-test000002.azurewebsites.net"
+        userPWD="tQHZfwuXpWDFLyvAKWANqlL7dRPTXBCuL4g5lbxG1PL5QwYACAwRvxSSBpHR" destinationAppUrl="http://webapp-authentication-test000002.azurewebsites.net"
         SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink=""
         controlPanelLink="http://windows.azure.com" webSystem="WebSites"><databases
         /></publishProfile><publishProfile profileName="webapp-authentication-test000002
-        - FTP" publishMethod="FTP" publishUrl="ftp://waws-prod-bay-231.ftp.azurewebsites.windows.net/site/wwwroot"
+        - FTP" publishMethod="FTP" publishUrl="ftp://waws-prod-bay-173.ftp.azurewebsites.windows.net/site/wwwroot"
         ftpPassiveMode="True" userName="webapp-authentication-test000002\$webapp-authentication-test000002"
-        userPWD="K9gTKEYNDoj6lWH6nHHyC7bin42tYQmoJ6bYM7AnAd5vcFw9tmxMoFrK7lZl" destinationAppUrl="http://webapp-authentication-test000002.azurewebsites.net"
+        userPWD="tQHZfwuXpWDFLyvAKWANqlL7dRPTXBCuL4g5lbxG1PL5QwYACAwRvxSSBpHR" destinationAppUrl="http://webapp-authentication-test000002.azurewebsites.net"
         SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink=""
         controlPanelLink="http://windows.azure.com" webSystem="WebSites"><databases
         /></publishProfile><publishProfile profileName="webapp-authentication-test000002
         - Zip Deploy" publishMethod="ZipDeploy" publishUrl="webapp-authentication-test000002.scm.azurewebsites.net:443"
-        userName="$webapp-authentication-test000002" userPWD="K9gTKEYNDoj6lWH6nHHyC7bin42tYQmoJ6bYM7AnAd5vcFw9tmxMoFrK7lZl"
+        userName="$webapp-authentication-test000002" userPWD="tQHZfwuXpWDFLyvAKWANqlL7dRPTXBCuL4g5lbxG1PL5QwYACAwRvxSSBpHR"
         destinationAppUrl="http://webapp-authentication-test000002.azurewebsites.net"
         SQLServerDBConnectionString="" mySQLDBConnectionString="" hostingProviderForumLink=""
         controlPanelLink="http://windows.azure.com" webSystem="WebSites"><databases
@@ -590,7 +603,7 @@ interactions:
       content-type:
       - application/xml
       date:
-      - Thu, 12 Jan 2023 00:07:27 GMT
+      - Tue, 03 Jan 2023 03:32:23 GMT
       expires:
       - '-1'
       pragma:
@@ -626,7 +639,8 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
+      - python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31) AZURECLI/2.43.0
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/config/authSettings/list?api-version=2020-12-01
   response:
@@ -641,7 +655,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:28 GMT
+      - Tue, 03 Jan 2023 03:32:24 GMT
       expires:
       - '-1'
       pragma:
@@ -679,7 +693,8 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
+      - python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31) AZURECLI/2.43.0
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/config/authSettingsV2/list?api-version=2020-12-01
   response:
@@ -694,7 +709,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:28 GMT
+      - Tue, 03 Jan 2023 03:32:24 GMT
       expires:
       - '-1'
       pragma:
@@ -730,7 +745,8 @@ interactions:
       ParameterSetName:
       - -g -n --enabled --runtime-version
       User-Agent:
-      - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
+      - python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31) AZURECLI/2.43.0
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/config/authSettingsV2/list?api-version=2020-12-01
   response:
@@ -745,7 +761,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:30 GMT
+      - Tue, 03 Jan 2023 03:32:25 GMT
       expires:
       - '-1'
       pragma:
@@ -783,7 +799,8 @@ interactions:
       ParameterSetName:
       - -g -n --enabled --runtime-version
       User-Agent:
-      - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
+      - python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31) AZURECLI/2.43.0
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/config/authSettings/list?api-version=2020-12-01
   response:
@@ -798,7 +815,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:30 GMT
+      - Tue, 03 Jan 2023 03:32:26 GMT
       expires:
       - '-1'
       pragma:
@@ -836,7 +853,8 @@ interactions:
       ParameterSetName:
       - -g -n --enabled --runtime-version
       User-Agent:
-      - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
+      - python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31) AZURECLI/2.43.0
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/config/authSettingsV2/list?api-version=2020-12-01
   response:
@@ -851,7 +869,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:31 GMT
+      - Tue, 03 Jan 2023 03:32:26 GMT
       expires:
       - '-1'
       pragma:
@@ -892,7 +910,8 @@ interactions:
       ParameterSetName:
       - -g -n --enabled --runtime-version
       User-Agent:
-      - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.43.0
+      - python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31) AZURECLI/2.43.0
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_authV2000001/providers/Microsoft.Web/sites/webapp-authentication-test000002/config/authSettingsV2?api-version=2020-12-01
   response:
@@ -907,9 +926,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 12 Jan 2023 00:07:32 GMT
+      - Tue, 03 Jan 2023 03:32:50 GMT
       etag:
-      - '"1D92619DDBB8975"'
+      - '"1D91F2400E50635"'
       expires:
       - '-1'
       pragma:
@@ -927,7 +946,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:

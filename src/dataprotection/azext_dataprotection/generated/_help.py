@@ -17,6 +17,86 @@ helps['dataprotection'] = '''
     short-summary: Manage Data Protection
 '''
 
+helps['dataprotection backup-vault'] = """
+    type: group
+    short-summary: Manage backup vault with dataprotection
+"""
+
+helps['dataprotection backup-vault show'] = """
+    type: command
+    short-summary: "Returns a resource belonging to a resource group."
+    examples:
+      - name: Get BackupVault
+        text: |-
+               az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vault-name \
+"swaggerExample"
+      - name: Get BackupVault With MSI
+        text: |-
+               az dataprotection backup-vault show --resource-group "SampleResourceGroup" --vault-name \
+"swaggerExample"
+"""
+
+helps['dataprotection backup-vault create'] = """
+    type: command
+    short-summary: "Create a BackupVault resource belonging to a resource group."
+    parameters:
+      - name: --storage-settings
+        short-summary: "Storage Settings"
+        long-summary: |
+            Usage: --storage-settings datastore-type=XX type=XX
+
+            datastore-type: Gets or sets the type of the datastore.
+            type: Gets or sets the type.
+
+            Multiple actions can be specified by using more than one --storage-settings argument.
+    examples:
+      - name: Create BackupVault
+        text: |-
+               az dataprotection backup-vault create --type "None" --location "WestUS" --azure-monitor-alerts-for-job-f\
+ailures "Enabled" --storage-settings type="LocallyRedundant" datastore-type="VaultStore" --tags key1="val1" \
+--resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+      - name: Create BackupVault With MSI
+        text: |-
+               az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" \
+--azure-monitor-alerts-for-job-failures "Enabled" --storage-settings type="LocallyRedundant" \
+datastore-type="VaultStore" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+"""
+
+helps['dataprotection backup-vault update'] = """
+    type: command
+    short-summary: "Updates a BackupVault resource belonging to a resource group. For example, updating tags for a \
+resource."
+    examples:
+      - name: Patch BackupVault
+        text: |-
+               az dataprotection backup-vault update --azure-monitor-alerts-for-job-failures "Enabled" --tags \
+newKey="newVal" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+"""
+
+helps['dataprotection backup-vault delete'] = """
+    type: command
+    short-summary: "Deletes a BackupVault resource from the resource group."
+    examples:
+      - name: Delete BackupVault
+        text: |-
+               az dataprotection backup-vault delete --resource-group "SampleResourceGroup" --vault-name \
+"swaggerExample"
+"""
+
+helps['dataprotection backup-vault wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the dataprotection backup-vault is met.
+    examples:
+      - name: Pause executing next line of CLI script until the dataprotection backup-vault is successfully created.
+        text: |-
+               az dataprotection backup-vault wait --resource-group "SampleResourceGroup" --vault-name \
+"swaggerExample" --created
+      - name: Pause executing next line of CLI script until the dataprotection backup-vault is successfully updated.
+        text: |-
+               az dataprotection backup-vault wait --resource-group "SampleResourceGroup" --vault-name \
+"swaggerExample" --updated
+"""
+
 helps['dataprotection backup-policy'] = """
     type: group
     short-summary: Manage backup policy with dataprotection

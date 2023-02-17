@@ -500,15 +500,6 @@ helps['containerapp env certificate'] = """
     short-summary: Commands to manage certificates for the Container Apps environment.
 """
 
-helps['containerapp env certificate create'] = """
-    type: command
-    short-summary: Create a managed certificate.
-    examples:
-    - name: Create a managed certificate.
-      text: |
-          az containerapp env certificate create -g MyResourceGroup --name MyEnvironment --certificate-name MyCertificate --hostname MyHostname --validation-method CNAME
-"""
-
 helps['containerapp env certificate list'] = """
     type: command
     short-summary: List certificates for an environment.
@@ -516,7 +507,7 @@ helps['containerapp env certificate list'] = """
     - name: List certificates for an environment.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment
-    - name: Show a certificate by certificate id.
+    - name: List certificates by certificate id.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
     - name: List certificates by certificate name.
@@ -525,12 +516,6 @@ helps['containerapp env certificate list'] = """
     - name: List certificates by certificate thumbprint.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
-    - name: List managed certificates for an environment.
-      text: |
-          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --managed-certificates-only
-    - name: List private key certificates for an environment.
-      text: |
-          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --private-key-certificates-only
 """
 
 helps['containerapp env certificate upload'] = """
@@ -555,7 +540,7 @@ helps['containerapp env certificate delete'] = """
     - name: Delete a certificate from the Container Apps environment by certificate id
       text: |
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
-    - name: Delete all certificates that have a matching thumbprint from the Container Apps environment
+    - name: Delete a certificate from the Container Apps environment by certificate thumbprint
       text: |
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
 """
@@ -899,25 +884,13 @@ helps['containerapp hostname'] = """
     short-summary: Commands to manage hostnames of a container app.
 """
 
-helps['containerapp hostname add'] = """
-    type: command
-    short-summary: Add the hostname to a container app without binding.
-    examples:
-    - name: Add hostname without binding.
-      text: |
-          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname --location MyLocation
-"""
-
 helps['containerapp hostname bind'] = """
     type: command
-    short-summary: Add or update the hostname and binding with a certificate.
+    short-summary: Add or update the hostname and binding with an existing certificate.
     examples:
-    - name: Add or update hostname and binding with a provided certificate.
+    - name: Add or update hostname and binding.
       text: |
           az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
-    - name: Look for or create a managed certificate and bind with the hostname if no certificate or thumbprint is provided.
-      text: |
-          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname
 """
 
 helps['containerapp hostname delete'] = """

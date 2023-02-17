@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import json
+from azure.cli.core.mock import DummyCli
 from azure.cli.testsdk import (ScenarioTest, record_only)
 
 # pylint: disable=line-too-long

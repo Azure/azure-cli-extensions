@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+import copy
 from argparse import Namespace
 from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError

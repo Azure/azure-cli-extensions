@@ -107,7 +107,7 @@ class TestDeployPath(unittest.TestCase):
 
 
 class TestActiveDeploymentExist(unittest.TestCase):
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_found(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = [
@@ -119,7 +119,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
         active_deployment_exist(_get_test_cmd(), ns)
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_without_active_exist(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = [
@@ -132,7 +132,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
             active_deployment_exist(_get_test_cmd(), ns)
         self.assertEqual('This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment.', str(context.exception))
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_no_deployments(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = []
@@ -143,7 +143,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
             active_deployment_exist(_get_test_cmd(), ns)
         self.assertEqual('This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment.', str(context.exception))
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_app_not_found(self, client_factory_mock):
         client = mock.MagicMock()
         resp = mock.MagicMock()
@@ -159,7 +159,7 @@ class TestActiveDeploymentExist(unittest.TestCase):
 
 
 class TestFulfillDeploymentParameter(unittest.TestCase):
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_provide(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.get.return_value = _get_deployment('rg1', 'asc1', 'app1', 'green1', False)
@@ -172,7 +172,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         self.assertFalse(ns.deployment.properties.active)
 
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_provide_but_not_found(self, client_factory_mock):
         client = mock.MagicMock()
         resp = mock.MagicMock()
@@ -186,7 +186,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
             fulfill_deployment_param(_get_test_cmd(), ns)
         self.assertEqual('Deployment green1 not found under app app1', str(context.exception))
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_with_active_deployment(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = [
@@ -201,7 +201,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
                           ns.deployment.id)
         self.assertTrue(ns.deployment.properties.active)
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_with_active_deployment_for_app_parameter(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = [
@@ -216,7 +216,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
                           ns.deployment.id)
         self.assertTrue(ns.deployment.properties.active)
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_without_active_deployment(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = [
@@ -229,7 +229,7 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
             fulfill_deployment_param(_get_test_cmd(), ns)
         self.assertEqual('No production deployment found, use --deployment to specify deployment or create deployment with: az spring app deployment create', str(context.exception))
 
-    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    @mock.patch('azext_spring._app_validator.cf_spring_20220501preview', autospec=True)
     def test_deployment_without_deployment(self, client_factory_mock):
         client = mock.MagicMock()
         client.deployments.list.return_value = []

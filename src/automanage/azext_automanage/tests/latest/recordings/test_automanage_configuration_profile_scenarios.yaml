@@ -19,7 +19,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.configurationprofile.000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001","name":"clitest.rg.automanage.configurationprofile.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-02-03T03:47:09Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001","name":"clitest.rg.automanage.configurationprofile.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-01-20T06:12:49Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:47:15 GMT
+      - Fri, 20 Jan 2023 06:12:53 GMT
       expires:
       - '-1'
       pragma:
@@ -69,620 +69,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"error":{"code":"MissingSubscriptionRegistration","message":"The subscription
-        is not registered to use namespace ''Microsoft.Automanage''. See https://aka.ms/rps-not-found
-        for how to register subscriptions.","details":[{"code":"MissingSubscriptionRegistration","target":"Microsoft.Automanage","message":"The
-        subscription is not registered to use namespace ''Microsoft.Automanage''.
-        See https://aka.ms/rps-not-found for how to register subscriptions."}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '451'
+      - '843'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:47:16 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 409
-      message: Conflict
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      User-Agent:
-      - python-requests/2.26.0
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage/register?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:47:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:47:32 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:47:42 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:47:51 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:48:01 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:48:11 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registering"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3603'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:48:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage?api-version=2016-02-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Automanage","namespace":"Microsoft.Automanage","authorizations":[{"applicationId":"9ae330ab-d710-466b-851c-c828e7340846"},{"applicationId":"d828acde-4b48-47f5-a6e8-52460104a052","roleDefinitionId":"111e90e1-c9ec-40f6-b898-c0964578da58"}],"resourceTypes":[{"resourceType":"configurationProfileAssignments","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview","2020-06-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"configurationProfileAssignmentIntents","locations":["Central
-        US","East US","East US 2","South Central US","West US","West US 2","West Central
-        US","North Europe","West Europe","Canada Central","Japan East","UK South","Australia
-        Southeast","Australia East","Southeast Asia","Central US EUAP","East US 2
-        EUAP"],"apiVersions":["2021-03-30-preview"],"capabilities":"SupportsExtension"},{"resourceType":"accounts","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity"},{"resourceType":"configurationProfilePreferences","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2020-06-30-preview"],"capabilities":"CrossResourceGroupResourceMove,
-        CrossSubscriptionResourceMove"},{"resourceType":"configurationProfiles","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"configurationProfiles/versions","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","West Europe","North Europe","Canada Central","Japan
-        East","UK South","Australia Southeast","Australia East","Southeast Asia","Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"],"capabilities":"None"},{"resourceType":"bestPractices","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"bestPractices/versions","locations":["Central
-        US EUAP","East US 2 EUAP"],"apiVersions":["2022-05-04","2021-04-30-preview"]},{"resourceType":"operations","locations":["Central
-        US","East US 2","East US","North Central US","South Central US","West US 2","West
-        Central US","West US","Central US EUAP","East US 2 EUAP"],"apiVersions":["2022-06-01-preview","2022-05-04","2022-03-30-preview","2021-04-30-preview","2020-06-30-preview"]},{"resourceType":"servicePrincipals","locations":[],"apiVersions":["2022-05-04","2021-04-30-preview"]}],"registrationState":"Registered"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '3602'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:48:31 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap", "properties": {"configuration": {"Antimalware/Enable":
-      false, "Backup/Enable": false, "VMInsights/Enable": true, "AzureSecurityCenter/Enable":
-      true, "UpdateManagement/Enable": true, "ChangeTrackingAndInventory/Enable":
-      true, "GuestConfiguration/Enable": true, "LogAnalytics/Enable": true, "BootDiagnostics/Enable":
-      true}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - automanage configuration-profile create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '350'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -n -g --configuration
-      User-Agent:
-      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-02-03T03:48:37.5613409+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:37.5613409+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '845'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 03 Feb 2023 03:48:39 GMT
+      - Fri, 20 Jan 2023 06:12:59 GMT
       expires:
       - '-1'
       location:
@@ -721,16 +117,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-02-03T03:48:37.5613409+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:37.5613409+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '845'
+      - '843'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:48:41 GMT
+      - Fri, 20 Jan 2023 06:13:01 GMT
       expires:
       - '-1'
       pragma:
@@ -769,16 +165,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-02-03T03:48:37.5613409+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:37.5613409+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '857'
+      - '855'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:48:42 GMT
+      - Fri, 20 Jan 2023 06:13:04 GMT
       expires:
       - '-1'
       pragma:
@@ -817,16 +213,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-02-03T03:48:37.5613409+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:37.5613409+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:12:56.251165+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '845'
+      - '843'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:48:44 GMT
+      - Fri, 20 Jan 2023 06:13:06 GMT
       expires:
       - '-1'
       pragma:
@@ -870,16 +266,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true,"VMInsights/Enable":false}},"systemData":{"createdAt":"2023-02-03T03:48:37.5613409+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:46.5323376+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002","name":"profile000002","type":"Microsoft.Automanage/configurationProfiles","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true,"VMInsights/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:12:56.251165+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:07.0824346+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '627'
+      - '626'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:48:46 GMT
+      - Fri, 20 Jan 2023 06:13:07 GMT
       expires:
       - '-1'
       pragma:
@@ -897,7 +293,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -921,7 +317,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.automanage.configurationprofile.000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001","name":"clitest.rg.automanage.configurationprofile.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-02-03T03:47:09Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001","name":"clitest.rg.automanage.configurationprofile.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-01-20T06:12:49Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -930,7 +326,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:48:47 GMT
+      - Fri, 20 Jan 2023 06:13:07 GMT
       expires:
       - '-1'
       pragma:
@@ -968,16 +364,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-02-03T03:48:54.054399+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:54.054399+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '632'
+      - '634'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:48:59 GMT
+      - Fri, 20 Jan 2023 06:13:15 GMT
       expires:
       - '-1'
       location:
@@ -1016,16 +412,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-02-03T03:48:54.054399+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:54.054399+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '632'
+      - '634'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:49:01 GMT
+      - Fri, 20 Jan 2023 06:13:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1064,16 +460,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions?api-version=2022-05-04
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-02-03T03:48:54.054399+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:54.054399+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '644'
+      - '646'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:49:03 GMT
+      - Fri, 20 Jan 2023 06:13:18 GMT
       expires:
       - '-1'
       pragma:
@@ -1112,16 +508,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-02-03T03:48:54.054399+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:48:54.054399+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":false}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:12.7728436+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '632'
+      - '634'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:49:05 GMT
+      - Fri, 20 Jan 2023 06:13:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1165,16 +561,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003?api-version=2022-05-04
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2023-02-03T03:48:54.054399+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-02-03T03:49:06.9340496+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.automanage.configurationprofile.000001/providers/Microsoft.Automanage/configurationProfiles/profile000002/versions/version000003","name":"version000003","type":"Microsoft.Automanage/configurationProfiles/versions","location":"eastus2euap","properties":{"configuration":{"Antimalware/Enable":true}},"systemData":{"createdAt":"2023-01-20T06:13:12.7728436+00:00","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-20T06:13:21.9365566+00:00","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '632'
+      - '633'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:49:06 GMT
+      - Fri, 20 Jan 2023 06:13:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1224,7 +620,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 03 Feb 2023 03:49:14 GMT
+      - Fri, 20 Jan 2023 06:13:29 GMT
       expires:
       - '-1'
       pragma:
@@ -1270,7 +666,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:49:17 GMT
+      - Fri, 20 Jan 2023 06:13:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1318,7 +714,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 03 Feb 2023 03:49:23 GMT
+      - Fri, 20 Jan 2023 06:13:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1364,7 +760,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 03:49:25 GMT
+      - Fri, 20 Jan 2023 06:13:43 GMT
       expires:
       - '-1'
       pragma:

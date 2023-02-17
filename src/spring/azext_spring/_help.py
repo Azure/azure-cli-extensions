@@ -13,7 +13,7 @@ helps['spring'] = """
 
 helps['spring create'] = """
     type: command
-    short-summary: Create an Azure Spring Apps instance.
+    short-summary: Create an Azure Spring Apps.
     examples:
     - name: Create a new Azure Spring Apps in westus.
       text: az spring create -n MyService -g MyResourceGroup -l westus
@@ -169,7 +169,7 @@ helps['spring app'] = """
 
 helps['spring app create'] = """
     type: command
-    short-summary: Create a new app with a default deployment in the Azure Spring Apps instance.
+    short-summary: Create a new app with a default deployment in the Azure Spring Apps.
     examples:
     - name: Create an app with the default configuration.
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup

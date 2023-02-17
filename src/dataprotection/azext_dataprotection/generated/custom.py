@@ -14,6 +14,67 @@ from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
 
+def dataprotection_backup_vault_show(client,
+                                     resource_group_name,
+                                     vault_name):
+    return client.get(resource_group_name=resource_group_name,
+                      vault_name=vault_name)
+
+
+def dataprotection_backup_vault_create(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       storage_settings,
+                                       e_tag=None,
+                                       location=None,
+                                       tags=None,
+                                       type_=None,
+                                       alerts_for_all_job_failures=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['e_tag'] = e_tag
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    parameters['properties'] = {}
+    parameters['properties']['storage_settings'] = storage_settings
+    parameters['properties']['azure_monitor_alert_settings'] = {}
+    parameters['properties']['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_backup_vault_update(client,
+                                       resource_group_name,
+                                       vault_name,
+                                       tags=None,
+                                       alerts_for_all_job_failures=None,
+                                       type_=None,
+                                       no_wait=False):
+    parameters = {}
+    parameters['tags'] = tags
+    parameters['azure_monitor_alert_settings'] = {}
+    parameters['azure_monitor_alert_settings']['alerts_for_all_job_failures'] = alerts_for_all_job_failures
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       parameters=parameters)
+
+
+def dataprotection_backup_vault_delete(client,
+                                       resource_group_name,
+                                       vault_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         vault_name=vault_name)
+
+
 def dataprotection_backup_policy_list(client,
                                       resource_group_name,
                                       vault_name):

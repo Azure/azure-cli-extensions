@@ -35,7 +35,6 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def app_create(cmd, client, resource_group, service, name,
-               deployment_name=None,
                # deployment.settings
                cpu=None,
                memory=None,
@@ -144,13 +143,12 @@ def app_create(cmd, client, resource_group, service, name,
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
-    logger.warning('[2/3] Creating default deployment with name "{}"'.format(banner_deployment_name))
+    logger.warning('[2/3] Creating default deployment with name "{}"'.format(DEFAULT_DEPLOYMENT_NAME))
     deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
-                                                       banner_deployment_name,
+                                                       DEFAULT_DEPLOYMENT_NAME,
                                                        deployment_resource)
     logger.warning('[3/3] Updating app "{}" (this operation can take a while to complete)'.format(name))
     app_resource = app_factory.format_resource(**update_app_kwargs, **basic_kwargs)
