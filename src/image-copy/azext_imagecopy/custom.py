@@ -6,6 +6,7 @@
 from multiprocessing import Pool
 
 from knack.util import CLIError
+from azure.cli.core.azclierror import ResourceNotFoundError, ArgumentUsageError
 from knack.log import get_logger
 
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
