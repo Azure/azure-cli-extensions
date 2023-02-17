@@ -55,18 +55,12 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Body",
-            help="Managed identity properties",
-        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
             help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
@@ -80,25 +74,28 @@ class Create(AAZCommand):
             help="Resource tags.",
         )
 
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity_type = AAZStrArg(
+            options=["--identity-type"],
+            arg_group="Identity",
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
+            arg_group="Identity",
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
 
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities = cls._args_schema.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
             blank={},
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -259,14 +256,14 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("type", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")

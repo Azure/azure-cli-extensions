@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "devcenter admin check-name-availability execute",
     is_preview=True,
 )
-class CheckNameAvailability(AAZCommand):
+class Execute(AAZCommand):
     """Check the availability of name for resource
 
     :example: Check name availability
@@ -173,8 +173,8 @@ class CheckNameAvailability(AAZCommand):
             return cls._schema_on_200
 
 
-class _CheckNameAvailabilityHelper:
-    """Helper class for CheckNameAvailability"""
+class _ExecuteHelper:
+    """Helper class for Execute"""
 
 
-__all__ = ["CheckNameAvailability"]
+__all__ = ["Execute"]
