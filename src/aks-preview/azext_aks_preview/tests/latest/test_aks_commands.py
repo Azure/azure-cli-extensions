@@ -4098,7 +4098,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--network-plugin azure --network-plugin-mode overlay --ssh-key-value={ssh_key_value} ' \
                      '--pod-cidr 10.244.0.0/16 --node-count 1 ' \
                      '--enable-cilium-dataplane ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CiliumDataplanePreview'
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CiliumDataplanePreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureOverlayPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.podCidr', '10.244.0.0/16'),
