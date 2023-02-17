@@ -116,7 +116,7 @@ def transform_output(results):
                     ('Description', entry['description'])
                 ]))
         return table
-    
+
     elif isinstance(results, list) and len(results) > 0 and 'reportData' in results[0]:
         table = []
 
