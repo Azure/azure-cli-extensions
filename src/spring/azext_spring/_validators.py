@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2020_07_01 import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)

@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_03_01_preview import models
-from azure.cli.core.azclierror import (ArgumentUsageError)
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from azure.cli.core.azclierror import ArgumentUsageError
 from ._utils import convert_argument_to_parameter_list
 
 import shlex

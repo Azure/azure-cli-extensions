@@ -3,6 +3,16 @@
 Release History
 ===============
 
+1.5.1
+++++++
+ * Add AzureCli to the user-agent header for Rooms and Email service clients
+ 
+
+1.5.0
+++++++
+ * Add communication email command group in preview mode
+
+
 1.4.1
 ++++++
  * Update version missed in previous release
