@@ -76,9 +76,7 @@ from .vendored_sdks.models import (
     GuestCredential,
     PlacementProfile,
     HttpProxyConfiguration,
-    MachineExtensionInstanceView,
     MachineExtension,
-    
 )
 
 from .vendored_sdks.operations import (
@@ -1702,12 +1700,10 @@ def connectedvmware_extension_create(
     publisher=None,
     type_=None,
     type_handler_version=None,
-    enable_automatic_upgrade=None,
+    enable_auto_upgrade=None,
     auto_upgrade_minor=None,
     settings=None,
     protected_settings=None,
-    instance_view_type=None,
-    inst_handler_version=None,
     no_wait=False
 ):
     """
@@ -1724,13 +1720,6 @@ def connectedvmware_extension_create(
         name
     )
 
-    extension_instance_view = MachineExtensionInstanceView(
-        name=name,
-        type=instance_view_type,
-        type_handler_version=inst_handler_version
-
-    )
-
     machine_extension = MachineExtension(
         location=location,
         tags=tags,
@@ -1740,11 +1729,10 @@ def connectedvmware_extension_create(
         publisher=publisher,
         type_properties_type=type_,
         type_handler_version=type_handler_version,
-        enable_automatic_upgrade=enable_automatic_upgrade,
+        enable_automatic_upgrade=enable_auto_upgrade,
         auto_upgrade_minor_version=auto_upgrade_minor,
         settings=settings,
         protected_settings=protected_settings,
-        instance_view=extension_instance_view,
     )
 
     return sdk_no_wait(no_wait,
@@ -1765,7 +1753,7 @@ def connectedvmware_extension_update(
     publisher=None,
     type_=None,
     type_handler_version=None,
-    enable_automatic_upgrade=None,
+    enable_auto_upgrade=None,
     auto_upgrade_minor=None,
     settings=None,
     protected_settings=None,
@@ -1781,7 +1769,7 @@ def connectedvmware_extension_update(
         publisher=publisher,
         type=type_,
         type_handler_version=type_handler_version,
-        enable_automatic_upgrade=enable_automatic_upgrade,
+        enable_automatic_upgrade=enable_auto_upgrade,
         auto_upgrade_minor_version=auto_upgrade_minor,
         settings=settings,
         protected_settings=protected_settings,

@@ -28,7 +28,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'cluster_name': 'azcli-test-cluster',
                 'datastore_inventory_item': 'datastore-563660',
                 'datastore_name': 'azcli-test-datastore',
-                'host_inventory_item': 'host-713902',
+                'host_inventory_item': 'host-1147546',
                 'host_name': 'azcli-test-host',
                 'vnet_inventory_item': 'network-563661',
                 'vnet_name': 'azcli-test-virtual-network',
@@ -37,6 +37,10 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'vm_name': 'azcli-test-vm',
                 'nic_name': 'nic_1',
                 'disk_name': 'disk_1',
+                'extension_name': 'AzureMonitorLinuxAgent',
+                'extension_type': 'AzureMonitorLinuxAgent',
+                'type_handler_version': '1.10',
+                'publisher': 'Microsoft.Azure.Monitor',
             }
         )
 
@@ -236,6 +240,22 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         ).get_output_in_json()
         # At least 1 disk should be there for the vm resource.
         assert len(resource_list) >= 1
+
+        # Enable guest agent on the vm resource.
+        self.cmd(
+            'az connectedvmware vm guest-agent enable -g {rg} --vm-name {vm_name} --username {username} --password {password}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        # Create extension on the vm resource.
+        self.cmd(
+            'az connectedvmware vm extension create -l {loc} -g {rg} --vm-name {vm_name} --name {extension_name} --type {extension_type} --publisher {publisher} --type-handler-version {type_handler_version}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
 
         # Update VM.
         self.cmd(
