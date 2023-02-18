@@ -1,5 +1,17 @@
 Release History
 ===============
+1.6.7
+---
+* Change all Azure Spring Apps API version to 2022-11-01-preview.
+
+1.6.6
+---
+* Modify help text of name in command `az spring create` and `az spring app create`
+
+1.6.5
+---
+* Add argument `--deployment-name` in command `az spring app create`.
+
 1.6.4
 ---
 * Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
