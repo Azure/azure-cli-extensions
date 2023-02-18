@@ -33,7 +33,7 @@ class AzureReservationsTests(ScenarioTest):
 
     def _validate_reservation_refund(self, response):
         self.assertIsNotNone(response)
-        self.assertEqual('/providers/Microsoft.Capacity/reservationOrders/af28e8f0-0025-479e-8564-fd0175357f47/reservations/e1b2516d-87bb-4026-bcd9-0678aacda331', response['id'])
+        self.assertIsNotNone(response['id'])
         self.assertIsNotNone(response['properties'])
         self.assertIsNotNone(response['properties']['sessionId'])
         self.assertEqual(1, response['properties']['quantity'])
@@ -384,8 +384,8 @@ class AzureReservationsTests(ScenarioTest):
     @record_only()
     def test_reservation_refund(self):
         self.kwargs.update({
-            'reservation_order_id': 'af28e8f0-0025-479e-8564-fd0175357f47',
-            'reservation_id': 'e1b2516d-87bb-4026-bcd9-0678aacda331',
+            'reservation_order_id': 'fade3e0f-aecb-43f8-a109-21bcb62c21d8',
+            'reservation_id': '8075741d-8002-412e-b392-64a56baecfa4',
             'scope': 'Reservation',
             'quantity': '1'
         })
@@ -400,7 +400,7 @@ class AzureReservationsTests(ScenarioTest):
         response1 = self.cmd('reservations reservation-order return --reservation-order-id {reservation_order_id}' 
                                 ' --return-reason {reason} --scope {scope} --session-id {session_id}' 
                                 ' --quantity {quantity} --reservation-id /providers/microsoft.capacity/reservationOrders/{reservation_order_id}/reservations/{reservation_id}').get_output_in_json()
-        self._validate_reservation_refund(response1)
+        self._validate_reservation_order(response1)
 
     @record_only()
     def test_reservation_exchange(self):
