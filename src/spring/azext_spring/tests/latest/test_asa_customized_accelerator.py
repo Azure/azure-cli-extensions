@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-
 from azure.cli.testsdk import (ScenarioTest, record_only)
 
 # pylint: disable=line-too-long
