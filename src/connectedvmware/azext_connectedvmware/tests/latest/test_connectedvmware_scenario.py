@@ -32,14 +32,16 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'host_name': 'azcli-test-host',
                 'vnet_inventory_item': 'network-563661',
                 'vnet_name': 'azcli-test-virtual-network',
-                'vmtpl_inventory_item': 'vmtpl-vm-651858',
+                'vmtpl_inventory_item': 'vmtpl-vm-1184288',
                 'vmtpl_name': 'azcli-test-vm-template',
                 'vm_name': 'azcli-test-vm',
+                'guest_username': 'azcli-user',
+                'guest_password': 'azcli-password',
                 'nic_name': 'nic_1',
                 'disk_name': 'disk_1',
                 'extension_name': 'AzureMonitorLinuxAgent',
                 'extension_type': 'AzureMonitorLinuxAgent',
-                'type_handler_version': '1.10',
+                'type_handler_version': '1.15.3',
                 'publisher': 'Microsoft.Azure.Monitor',
             }
         )
@@ -243,17 +245,27 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Enable guest agent on the vm resource.
         self.cmd(
-            'az connectedvmware vm guest-agent enable -g {rg} --vm-name {vm_name} --username {username} --password {password}',
+            'az connectedvmware vm guest-agent enable -g {rg} --vm-name {vm_name} --username {guest_username} --password {guest_password}',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
             ],
         )
 
-        # Create extension on the vm resource.
+        # Create VM extension.
         self.cmd(
             'az connectedvmware vm extension create -l {loc} -g {rg} --vm-name {vm_name} --name {extension_name} --type {extension_type} --publisher {publisher} --type-handler-version {type_handler_version}',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
+                self.check('typeHandlerVersion', '{type_handler_version}'),
+            ],
+        )
+
+        # Update VM extension.
+        self.cmd(
+            'az connectedvmware vm extension update -g {rg} --vm-name {vm_name} --name {extension_name} --enable-auto-upgrade false',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('enableAutomaticUpgrade', False),
             ],
         )
 
