@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name -n
       User-Agent:
-      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/cli-test-policy-H2A-B2A-1?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/testpolicy?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/cli-test-policy-H2A-B2A-1","name":"cli-test-policy-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"cli-test-policy-H2A-B2A-1","providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","recoveryPointHistoryDurationInHours":24,"applicationConsistentSnapshotFrequencyInHours":1,"replicationInterval":24,"encryption":"Disabled","activeStorageAccountId":null}}}'
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/testpolicy","name":"testpolicy","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"testpolicy","providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","recoveryPointHistoryDurationInHours":2,"applicationConsistentSnapshotFrequencyInHours":1,"replicationInterval":300,"encryption":"Disabled","activeStorageAccountId":null}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '589'
+      - '544'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 08:23:30 GMT
+      - Mon, 13 Feb 2023 06:18:53 GMT
       expires:
       - '-1'
       pragma:
@@ -46,45 +46,143 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"policyId": "/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/cli-test-policy-H2A-B2A-1",
-      "providerSpecificInput": {"instanceType": "HyperVReplicaAzure"}, "targetProtectionContainerId":
-      "Microsoft Azure"}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - site-recovery fabric protection-container mapping create
+      - site-recovery fabric protection-container protectable-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --fabric-name --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectableItems/dc96e7d5-1dae-4c8b-a79a-fda64e40888f?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectableItems/dc96e7d5-1dae-4c8b-a79a-fda64e40888f","name":"dc96e7d5-1dae-4c8b-a79a-fda64e40888f","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectableItems","properties":{"friendlyName":"clivm1","protectionStatus":"Protected","replicationProtectedItemId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1","recoveryServicesProviderId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationRecoveryServicesProviders/6d0274d7-ae0a-4a1b-bf8e-daac037ee100","protectionReadinessErrors":[],"supportedReplicationProviders":["HyperVReplicaAzure"],"customDetails":{"instanceType":"HyperVVirtualMachine","sourceItemId":"dc96e7d5-1dae-4c8b-a79a-fda64e40888f","generation":"1","osDetails":null,"diskDetails":[{"maxSizeMB":130048,"vhdType":"Data","vhdId":"1bec3e57-fdb6-42d0-924b-007af0fa1b12","vhdName":"clivm1"}],"hasPhysicalDisk":"NotPresent","hasFibreChannelAdapter":"NotPresent","hasSharedVhd":"Unknown","hyperVHostId":"idclab-a498_fareast_corp_microsoft_com"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:18:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1","name":"cli-test-protected-item-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectedItems","properties":{"friendlyName":"clivm1","protectedItemType":"HyperVVirtualMachine","protectableItemId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectableItems/dc96e7d5-1dae-4c8b-a79a-fda64e40888f","recoveryServicesProviderId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationRecoveryServicesProviders/6d0274d7-ae0a-4a1b-bf8e-daac037ee100","primaryFabricFriendlyName":"cli-test-fabric-H2A-B2A-1","primaryFabricProvider":"SingleHostHyperVFabric","recoveryFabricFriendlyName":"Microsoft
+        Azure","recoveryFabricId":"Microsoft Azure","primaryProtectionContainerFriendlyName":"cli-test-fabric-H2A-B2A-1","recoveryProtectionContainerFriendlyName":"Microsoft
+        Azure","protectionState":"Protected","protectionStateDescription":"Protected","activeLocation":"Primary","testFailoverState":"None","testFailoverStateDescription":"None","switchProviderState":"None","switchProviderStateDescription":null,"allowedOperations":["PlannedFailover","UnplannedFailover","DisableProtection","TestFailover"],"replicationHealth":"Normal","failoverHealth":"Warning","healthErrors":[{"innerHealthErrors":[],"errorSource":"ReplicationUnitFailoverValidatorError","errorType":"8010","errorLevel":"Warning","errorCategory":"TestFailover","errorCode":"161011","summaryMessage":"","errorMessage":"No
+        successful test failover has been done on the virtual machine ''clivm1''.","possibleCauses":"No
+        successful test failover has been done on the virtual machine after it was
+        replicated.","recommendedAction":"Do a test failover on the virtual machine.","creationTimeUtc":"2023-02-13T06:00:41.6563974Z","recoveryProviderErrorMessage":null,"entityId":"dc96e7d5-1dae-4c8b-a79a-fda64e40888f","errorId":"6:8010","customerResolvability":"NotAllowed"}],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/testpolicy","policyFriendlyName":"testpolicy","currentScenario":{"scenarioName":"None","jobId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationJobs/None","startTime":"1753-01-01T01:01:01Z"},"failoverRecoveryPointId":null,"providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","azureVmDiskDetails":[{"vhdType":"OperatingSystem","vhdId":"1bec3e57-fdb6-42d0-924b-007af0fa1b12","diskId":"DC96E7D5-1DAE-4C8B-A79A-FDA64E40888F_83F8638B-8DCA-4152-9EDA-2CA8B33039B4_0_0","vhdName":"clivm1_544CB04C-D129-4804-8CEC-268E6EB9893C","maxSizeMB":"130048","targetDiskLocation":null,"targetDiskName":null,"lunId":"0","diskEncryptionSetId":null,"customTargetDiskName":null}],"recoveryAzureVmName":"clivm1","recoveryAzureVMSize":"Standard_B1s","recoveryAzureStorageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CliTeraformVaultRG/providers/Microsoft.Storage/storageAccounts/cliteststoragea2a1","recoveryAzureLogStorageAccountId":null,"lastReplicatedTime":"2023-02-13T06:12:55Z","rpoInSeconds":5,"lastRpoCalculatedTime":"2023-02-13T06:13:00.5354302Z","vmId":"dc96e7d5-1dae-4c8b-a79a-fda64e40888f","vmProtectionState":"Protected","vmProtectionStateDescription":"Protected","initialReplicationDetails":{"initialReplicationType":"InitialReplication","initialReplicationProgressPercentage":"64"},"vmNics":[{"nicId":"TWljcm9zb2Z0OkRDOTZFN0Q1LTFEQUUtNEM4Qi1BNzlBLUZEQTY0RTQwODg4Rlw1NkM2OUYwMi1BRjFDLTQ3NjMtQkY5RC1BOTUxODI0QUJGMTk=","replicaNicId":null,"sourceNicArmId":null,"vMNetworkName":"Intel(R)
+        Ethernet Connection (5) I219-LM - Virtual Switch","recoveryVMNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CliTerraformVMRG/providers/Microsoft.Network/virtualNetworks/CliTerraformVMRG-vnet","ipConfigs":[{"name":null,"isPrimary":true,"subnetName":"Intel(R)
+        Ethernet Connection (5) I219-LM - Virtual Switch","staticIPAddress":null,"ipAddressType":"Static","isSeletedForFailover":true,"recoverySubnetName":"default","recoveryStaticIPAddress":"","recoveryIPAddressType":"Dynamic","recoveryPublicIPAddressId":null,"recoveryLBBackendAddressPoolIds":null,"tfoSubnetName":null,"tfoStaticIPAddress":null,"tfoPublicIPAddressId":null,"tfoLBBackendAddressPoolIds":null}],"selectionType":"SelectedByUser","recoveryNetworkSecurityGroupId":null,"enableAcceleratedNetworkingOnRecovery":null,"tfoVMNetworkId":null,"tfoNetworkSecurityGroupId":null,"enableAcceleratedNetworkingOnTfo":null,"recoveryNicName":null,"recoveryNicResourceGroupName":null,"reuseExistingNic":false,"tfoRecoveryNicName":null,"tfoRecoveryNicResourceGroupName":null,"tfoReuseExistingNic":false,"targetNicName":"nic-clivm1-00"}],"selectedRecoveryAzureNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CliTerraformVMRG/providers/Microsoft.Network/virtualNetworks/CliTerraformVMRG-vnet","selectedSourceNicId":"TWljcm9zb2Z0OkRDOTZFN0Q1LTFEQUUtNEM4Qi1BNzlBLUZEQTY0RTQwODg4Rlw1NkM2OUYwMi1BRjFDLTQ3NjMtQkY5RC1BOTUxODI0QUJGMTk=","encryption":"Disabled","oSDetails":{"osType":"Windows","productType":"UNKNOWN","osEdition":"Standard","oSVersion":"1.1.1.1","oSMajorVersion":"0","oSMinorVersion":"0"},"sourceVmRamSizeInMB":1024,"sourceVmCpuCount":1,"enableRdpOnTargetOption":"Never","recoveryAzureResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ASRTesting","recoveryAvailabilitySetId":null,"targetAvailabilityZone":null,"targetProximityPlacementGroupId":null,"useManagedDisks":"false","licenseType":"NotSpecified","sqlServerLicenseType":"NotSpecified","lastRecoveryPointReceived":"2023-02-13T06:12:55.2374607Z","targetVmTags":{},"seedManagedDiskTags":null,"targetManagedDiskTags":null,"targetNicTags":{},"protectedManagedDisks":[]},"recoveryContainerId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/d49858f157601230a6ac5862fbbc6e63bf38d23ecd96cf953767945d457fe9d5/replicationProtectionContainers/d38048d4-b460-4791-8ece-108395ee8478","eventCorrelationId":"404b66fe-f3a9-401e-aa72-20cf44711e67"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6945'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:19:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"failoverDirection": "PrimaryToRecovery", "providerSpecificDetails":
+      {"instanceType": "HyperVReplicaAzure"}, "sourceSiteOperations": "NotRequired"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
       Connection:
       - keep-alive
       Content-Length:
-      - '337'
+      - '164'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g --fabric-name -n --protection-container --vault-name --policy-id --target-container
-        --provider-input
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
       User-Agent:
-      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectionContainerMappings/cli-test-container-mapping-H2A-B2A-1?api-version=2022-08-01
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1/unplannedFailover?api-version=2022-08-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/e37fc8a1-80c4-4ce7-a378-c0bf0fab8825?api-version=2022-08-01
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Fri, 03 Feb 2023 08:23:35 GMT
+      - Mon, 13 Feb 2023 06:19:02 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectionContainerMappings/cli-test-container-mapping-H2A-B2A-1/operationresults/e37fc8a1-80c4-4ce7-a378-c0bf0fab8825?api-version=2022-08-01
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1/operationresults/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
       pragma:
       - no-cache
       server:
@@ -106,28 +204,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - site-recovery fabric protection-container mapping create
+      - site-recovery protected-item unplanned-failover
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g --fabric-name -n --protection-container --vault-name --policy-id --target-container
-        --provider-input
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
       User-Agent:
-      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/e37fc8a1-80c4-4ce7-a378-c0bf0fab8825?api-version=2022-08-01
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
   response:
     body:
-      string: '{"error":null,"id":null,"name":"e37fc8a1-80c4-4ce7-a378-c0bf0fab8825","properties":null,"status":"Succeeded","startTime":"2023-02-03T08:23:35.3841606Z","endTime":"2023-02-03T08:23:35.0000000Z","percentComplete":null}'
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '216'
+      - '191'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 08:24:06 GMT
+      - Mon, 13 Feb 2023 06:19:33 GMT
       expires:
       - '-1'
       pragma:
@@ -153,30 +251,1062 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - site-recovery fabric protection-container mapping create
+      - site-recovery protected-item unplanned-failover
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g --fabric-name -n --protection-container --vault-name --policy-id --target-container
-        --provider-input
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
       User-Agent:
-      - AZURECLI/2.44.1 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectionContainerMappings/cli-test-container-mapping-H2A-B2A-1?api-version=2022-08-01
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
   response:
     body:
-      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationFabrics/cli-test-fabric-H2A-B2A-1/replicationProtectionContainers/cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a/replicationProtectionContainerMappings/cli-test-container-mapping-H2A-B2A-1","name":"cli-test-container-mapping-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings","properties":{"targetProtectionContainerId":"Microsoft
-        Azure","targetProtectionContainerFriendlyName":"Microsoft Azure","providerSpecificDetails":null,"health":"Normal","healthErrorDetails":[],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationPolicies/cli-test-policy-H2A-B2A-1","state":"Paired","sourceProtectionContainerFriendlyName":"cli-test-fabric-H2A-B2A-1","sourceFabricFriendlyName":"cli-test-fabric-H2A-B2A-1","targetFabricFriendlyName":"Microsoft
-        Azure","policyFriendlyName":"cli-test-policy-H2A-B2A-1"}}'
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1160'
+      - '191'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 03 Feb 2023 08:24:06 GMT
+      - Mon, 13 Feb 2023 06:20:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:20:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:21:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:21:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:22:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:22:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:23:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:23:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:24:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:24:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:25:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:25:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:26:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:26:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:27:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:27:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:28:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:28:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:29:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:29:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:30:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"InProgress","startTime":"2023-02-13T06:19:02.8278489Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:30:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item unplanned-failover
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --fabric-name --protection-container -n -g --vault-name --failover-direction
+        --provider-details --source-site-operations
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/h2asignoff/providers/Microsoft.RecoveryServices/vaults/CLITerraFormH2ATesting/replicationOperationStatus/6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"6ad77d0e-fd17-4b6d-86b6-58d38cd6d1b8","properties":null,"status":"Succeeded","startTime":"2023-02-13T06:19:02.8278489Z","endTime":"2023-02-13T06:30:57.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Feb 2023 06:31:20 GMT
       expires:
       - '-1'
       pragma:

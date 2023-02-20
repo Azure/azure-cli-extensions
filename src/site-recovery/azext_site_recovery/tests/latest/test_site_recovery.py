@@ -451,7 +451,8 @@ class SiteRecoveryScenario(ScenarioTest):
             # 'vm_rg': 'CliTerraformVMRG',
             'fabric1_name': 'cli-test-fabric-H2A-B2A-1',
             # 'fabric2_name': 'cli-test-fabric-H2A-B2A-2',
-            'policy_name': 'cli-test-policy-H2A-B2A-1',
+            # 'policy_name': 'cli-test-policy-H2A-B2A-1',
+            'policy_name': 'testpolicy',
             'container1_name': 'cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a',
             # 'container2_name': 'cli-test-container-A2A-2',
             'container_mapping1_name': 'cli-test-container-mapping-H2A-B2A-1',
@@ -461,6 +462,7 @@ class SiteRecoveryScenario(ScenarioTest):
             # 'network_mapping1_name': 'cli-test-network-mapping-A2A-1',
             # 'network_mapping2_name': 'cli-test-network-mapping-A2A-2',
             'protected_item_name': 'cli-test-protected-item-H2A-B2A-1',
+            'protectable_item_name': 'dc96e7d5-1dae-4c8b-a79a-fda64e40888f',
             # 'storage1_name': 'cliteststoragea2a1',
             # 'storage2_name': 'cliteststoragea2a2',
             # 'recovery_plan_name': 'cli-test-recovery-plan-A2A-1'
@@ -491,20 +493,29 @@ class SiteRecoveryScenario(ScenarioTest):
         #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
         #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
 
+        protectable_item_id = self.cmd('az site-recovery fabric protection-container protectable-item show -n {protectable_item_name} '
+                                       '-g {rg} --fabric-name {fabric1_name} --protection-container {container1_name} '
+                                       '--vault-name {vault_name}').get_output_in_json()["id"]
+        self.kwargs.update({"protectable_item_id": protectable_item_id})
+
         # # enable protection
-        self.cmd('az site-recovery protected-item create -g {rg} '
-                 '--fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} '
-                 '--vault-name {vault_name} --policy-id {policy_id} '
-                 '--provider-details {{hyper-v-replica-azure:{{}}}}')
-                 # 'fabric-object-id:{vm_id},'
-                 # 'vm-managed-disks:[{{disk-id:{os_disk},'
-                 # 'primary-staging-azure-storage-account-id:{storage1_id},'
-                 # 'recovery-resource-group-id:{rg_id}}}],recovery-azure-network-id:{vnet2_id},'
-                 # 'recovery-container-id:{container2_id},'
-                 # 'recovery-resource-group-id:{rg_id},'
-                 # 'recovery-subnet-name:{vnet2_subnet}}}}}')
-        # #
-        # # wait for protection to fully enabled
+        # self.cmd('az site-recovery protected-item create -g {rg} '
+        #          '--fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} '
+        #          '--vault-name {vault_name} --policy-id {policy_id} '
+        #          '--protectable-item-id {protectable_item_id}'
+        #          '--provider-details {{hyper-v-replica-azure:{{'
+        #          'disks-to-include:[1bec3e57-fdb6-42d0-924b-007af0fa1b12],'
+        #          'enable-rdp-on-target-option:Never,'
+        #          'os-type:Windows,'
+        #          'target-azure-network-id:/subscriptions/7c943c1b-5122-4097-90c8-861411bdd574/resourceGroups/CliTerraformVMRG/providers/Microsoft.Network/virtualNetworks/CliTerraformVMRG-vnet,'
+        #          'target-azure-subnet-id:default,'
+        #          'target-azure-v2-resource-group-id:/subscriptions/7c943c1b-5122-4097-90c8-861411bdd574/resourceGroups/ASRTesting,'
+        #          'target-azure-vm-name:clivm1,'
+        #          'target-storage-account-id:/subscriptions/7c943c1b-5122-4097-90c8-861411bdd574/resourceGroups/CliTeraformVaultRG/providers/Microsoft.Storage/storageAccounts/cliteststoragea2a1,'
+        #          'use-managed-disks:false,'
+        #          'vhd-id:1bec3e57-fdb6-42d0-924b-007af0fa1b12}}}}')
+        #
+        # wait for protection to fully enabled
         # while True:
         #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
         #                               '--fabric-name {fabric1_name} -n {protected_item_name} '
@@ -514,6 +525,18 @@ class SiteRecoveryScenario(ScenarioTest):
         #         self.kwargs.update({"protected_item_id": protected_item["id"]})
         #         break
         #     time.sleep(300)
+
+        # failover
+        # self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric1_name} '
+        #          '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
+        #          '--failover-direction PrimaryToRecovery --provider-details {{hyper-v-replica-azure:{{}}}} '
+        #          '--source-site-operations NotRequired')
+
+        # reprotect
+        self.cmd('az site-recovery protected-item re-protect --fabric-name {fabric1_name} '
+                 '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
+                 '--failover-direction RecoveryToPrimary --provider-details {{hyper-v-replica-azure:{{}}}}')
+
 
 
     def test_siterecovery_H2A_E2A_scenarios(self):
