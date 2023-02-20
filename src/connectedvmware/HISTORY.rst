@@ -3,6 +3,9 @@
 Release History
 ===============
 
+0.1.12
+++++++
+* Fixed VM extension issue.
 
 0.1.11
 ++++++
