@@ -381,7 +381,9 @@ def app_deploy(cmd, client, resource_group, service, name,
                          resource_group, service, name, deployment.name,
                          deployment_resource)
     _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
-    return poller
+    if "succeeded" != poller.status().lower():
+        return poller
+    return client.deployments.get(resource_group, service, name, deployment.name)
 
 
 def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
@@ -516,7 +518,9 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                          resource_group, service, app, name,
                          deployment_resource)
     _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
-    return poller
+    if "succeeded" != poller.status().lower():
+        return poller
+    return client.deployments.get(resource_group, service, app, name)
 
 
 def _ensure_app_not_exist(client, resource_group, service, name):

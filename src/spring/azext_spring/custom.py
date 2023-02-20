@@ -1100,7 +1100,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=N
 
 def _get_app_log_ignore_exception(url, user_name, password, format_json, exceptions):
     try:
-        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10*1024)
+        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10 * 1024)
     except Exception:
         pass
 
