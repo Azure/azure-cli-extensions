@@ -180,7 +180,7 @@ ADDONS_DESCRIPTIONS = {
     CONST_INGRESS_APPGW_ADDON_NAME: '- enable Application Gateway Ingress Controller addon (PREVIEW).',
     CONST_CONFCOM_ADDON_NAME: '- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).',
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: '- enable Open Service Mesh addon (PREVIEW).',
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon (PREVIEW).',
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon.',
     CONST_GITOPS_ADDON_NAME: '- enable GitOps (PREVIEW).',
     CONST_WEB_APPLICATION_ROUTING_KEY_NAME: '- enable web application routing (PREVIEW).'
 }
