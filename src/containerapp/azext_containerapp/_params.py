@@ -176,6 +176,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
+    with self.argument_context('containerapp env certificate create') as c:
+        c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
+        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the managed certificate which should be unique within the Container Apps environment.')
+        c.argument('location', get_location_type(self.cli_ctx), help='Location of the managed certificate which can be different from the location of the Container Apps environment.')
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
+
     with self.argument_context('containerapp env certificate upload') as c:
         c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
@@ -186,6 +192,8 @@ def load_arguments(self, _):
         c.argument('name', id_part=None)
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+        c.argument('managed_certificates_only', options_list=['--managed-certificates-only', '-m'], help='List managed certificates only.')
+        c.argument('private_key_certificates_only', options_list=['--private-key-certificates-only', '-p'], help='List private-key certificates only.')
 
     with self.argument_context('containerapp env certificate delete') as c:
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
@@ -366,6 +374,11 @@ def load_arguments(self, _):
         c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
+
+    with self.argument_context('containerapp hostname add') as c:
+        c.argument('hostname', help='The custom domain name.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('containerapp hostname list') as c:
         c.argument('name', id_part=None)
