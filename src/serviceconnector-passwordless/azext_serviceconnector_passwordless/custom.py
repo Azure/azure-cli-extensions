@@ -42,7 +42,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   site,
                                   spring, app, deployment,
                                   server, database,
-                                  enable_mi_for_db_linker=enable_mi_for_db_linker, 
+                                  enable_mi_for_db_linker=enable_mi_for_db_linker,
                                   **kwargs)
 
 
