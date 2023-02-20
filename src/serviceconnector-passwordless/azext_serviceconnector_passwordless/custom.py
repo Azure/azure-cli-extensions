@@ -22,6 +22,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
+                          **kwargs,
                           ):
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
     from ._credential_free import enable_mi_for_db_linker
@@ -41,7 +42,8 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   site,
                                   spring, app, deployment,
                                   server, database,
-                                  enable_mi_for_db_linker=enable_mi_for_db_linker)
+                                  enable_mi_for_db_linker=enable_mi_for_db_linker, 
+                                  **kwargs)
 
 
 def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
@@ -56,6 +58,7 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 no_wait=False,
                                 # Resource.*Postgres, Resource.*Sql*
                                 server=None, database=None,
+                                **kwargs
                                 ):
     from azure.cli.command_modules.serviceconnector.custom import local_connection_create_func
     from ._credential_free import enable_mi_for_db_linker
@@ -71,4 +74,5 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                         no_wait,
                                         # Resource.*Postgres, Resource.*Sql*
                                         server, database,
-                                        enable_mi_for_db_linker=enable_mi_for_db_linker)
+                                        enable_mi_for_db_linker=enable_mi_for_db_linker,
+                                        **kwargs)
