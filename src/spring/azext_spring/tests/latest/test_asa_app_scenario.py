@@ -106,6 +106,7 @@ class AppDeploy(ScenarioTest):
         ])
 
 
+@record_only()
 class AppCRUD(ScenarioTest):
     def test_app_crud(self):
         self.kwargs.update({
