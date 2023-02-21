@@ -138,21 +138,33 @@ def process_env_vars_from_template(image_properties: dict) -> List[Dict[str, str
     )
 
     if template_env_vars:
-        env_vars = [
-            {
-                config.ACI_FIELD_CONTAINERS_ENVS_NAME: case_insensitive_dict_get(
-                    x, "name"
-                ),
-                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: case_insensitive_dict_get(
-                    x, "value"
-                ) or
-                case_insensitive_dict_get(
-                    x, "secureValue"
-                ),
-                config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
-            }
-            for x in template_env_vars
-        ]
+        for env_var in template_env_vars:
+            name = case_insensitive_dict_get(env_var, "name")
+            value = case_insensitive_dict_get(env_var, "value") or case_insensitive_dict_get(env_var, "secureValue")
+
+            if not name:
+                eprint(
+                    f"Environment variable with value: {value} is missing a name"
+                )
+
+            if value:
+                if config.ACI_FIELD_TEMPLATE_PARAMETERS in value:
+                    response = input(f'Create a wildcard policy for the environment variable {name} (y/n): ')
+                    if response.lower() == 'y':
+                        env_vars.append({
+                            config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                            config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                        })
+                else:
+                    env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                    })
+            else:
+                eprint(f'Environment variable {name} does not have a value. Please check the template file.')
+
     return env_vars
 
 
@@ -329,7 +341,7 @@ def change_key_names(dictionary) -> Dict:
     return dictionary
 
 
-def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str) -> str:
+def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str, ignore_undefined_parameters=False) -> str:
     """Utility function: either returns the input search value,
     or replaces it with the defined value in either params or vars of the ARM template"""
     # this pattern might need to be updated for more naming options in the future
@@ -352,7 +364,7 @@ def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str) ->
 
         if not param_value:
             eprint(
-                f"""Field ["{param_name}"] not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
+                f"""Field "{param_name}" not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
                  or ["{config.ACI_FIELD_TEMPLATE_VARIABLES}"]"""
             )
         # fallback to default value
@@ -362,16 +374,16 @@ def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str) ->
     else:
         match = case_insensitive_dict_get(vars_dict, param_name)
 
-    if not match:
+    if not match and not ignore_undefined_parameters:
         eprint(
-            f"""Field ["{param_name}"] not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
+            f"""Field "{param_name}"'s value not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
              or ["{config.ACI_FIELD_TEMPLATE_VARIABLES}"]"""
         )
 
-    return match
+    return match or search
 
 
-def parse_template(params: dict, vars_dict: dict, template) -> Any:
+def parse_template(params: dict, vars_dict: dict, template, ignore_undefined_parameters=False) -> Any:
     """Utility function: replace all instances of variable and parameter references in an ARM template
     current limitations:
         - object values for parameters and variables
@@ -382,12 +394,17 @@ def parse_template(params: dict, vars_dict: dict, template) -> Any:
     if isinstance(template, dict):
         for key, value in template.items():
             if isinstance(value, str):
-                template[key] = find_value_in_params_and_vars(params, vars_dict, value)
+                # we want to ignore undefined parameters for only env var values, not names
+                template[key] = find_value_in_params_and_vars(params, vars_dict, value,
+                                                              ignore_undefined_parameters=ignore_undefined_parameters
+                                                              and key.lower() in ("value", "securevalue"))
             elif isinstance(value, dict):
                 parse_template(params, vars_dict, value)
             elif isinstance(value, list):
                 for i, _ in enumerate(value):
-                    template[key][i] = parse_template(params, vars_dict, value[i])
+                    template[key][i] = parse_template(params, vars_dict, value[i],
+                                                      ignore_undefined_parameters=key
+                                                      == config.ACI_FIELD_CONTAINERS_ENVS)
     return template
 
 
