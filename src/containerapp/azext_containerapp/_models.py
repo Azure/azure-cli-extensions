@@ -191,7 +191,8 @@ JobConfiguration = {
     "replicaRetryLimit": None,
     "manualTriggerConfig": None,  # ManualTriggerConfig
     "scheduleTriggerConfig": None,  # ScheduleTriggerConfig
-    "registries": None  # [RegistryCredentials]
+    "registries": None,  # [RegistryCredentials]
+    "dapr": None
 }
 
 ManualTriggerConfig = {

@@ -1083,8 +1083,8 @@ class ContainerAppsJob(TrackedResource):
         self.identity = kwargs.get('identity', None)
         self.provisioning_state = None
         self.managed_environment_id = kwargs.get('managed_environment_id', None)
-        self.configuration = kwargs.get('jobConfiguration', None)
-        self.template = kwargs.get('jobTemplate', None)
+        self.configuration = kwargs.get('configuration', None)
+        self.template = kwargs.get('template', None)
         self.outbound_ip_addresses = None
 
 class ContainerAppCollection(Model):

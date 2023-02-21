@@ -14,9 +14,10 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-11-01-preview"
+PREVIEW_API_VERSION = "2022-06-01-preview"
 CURRENT_API_VERSION = PREVIEW_API_VERSION
 MANAGED_CERTS_API_VERSION = '2022-11-01-preview'
+JOBS_API_VERSION = "2022-11-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -810,9 +811,8 @@ class ManagedEnvironmentClient():
 class ContainerAppsJobClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
-        print("[Test] | In Container Apps Job Client - create or update", containerapp_job_envelope)
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
         request_url = url_fmt.format(
@@ -840,10 +840,9 @@ class ContainerAppsJobClient():
     
     @classmethod
     def update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
-        print("[Test] | In Container Apps Job Client - update", containerapp_job_envelope)
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
 
-        api_version = CURRENT_API_VERSION
+        api_version = JOBS_API_VERSION
 
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
@@ -873,7 +872,7 @@ class ContainerAppsJobClient():
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
         request_url = url_fmt.format(
@@ -891,7 +890,7 @@ class ContainerAppsJobClient():
         app_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/jobs?api-version={}".format(
             management_hostname.strip('/'),
@@ -919,7 +918,7 @@ class ContainerAppsJobClient():
         app_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs?api-version={}"
         request_url = url_fmt.format(
@@ -947,7 +946,7 @@ class ContainerAppsJobClient():
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
+        api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
         request_url = url_fmt.format(
