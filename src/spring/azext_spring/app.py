@@ -407,8 +407,11 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
                 instance_name = temp_instance.name
 
         logger.warning('Application logs:')
+        # For failed deployment we need to print logs as much as possible, we use follow=true to print enough logs
+        # for troubleshooting. We add a timeout to force stop logs then the cli can be exited.
         app_tail_log_internal(cmd, client, resource_group, service, app_name, deployment_resource, instance_name,
-                              lines=500, ignore_exception=True)
+                              follow=False if deployment_error is None else True, lines=500, limit=1024 * 1024,
+                              since=300, ignore_exception=True, timeout=None if deployment_error is None else 10)
     except Exception:
         # ignore
         return

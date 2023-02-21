@@ -396,7 +396,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
 def app_tail_log_internal(cmd, client, resource_group, service, name,
                           deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048,
-                          format_json=None, ignore_exception=False):
+                          format_json=None, ignore_exception=False, timeout=None):
     if not instance:
         if not deployment.properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -430,6 +430,9 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
         streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
+
+    if timeout:
+        t.join(timeout=timeout)
 
     while t.is_alive():
         sleep(5)  # so that ctrl+c can stop the command
