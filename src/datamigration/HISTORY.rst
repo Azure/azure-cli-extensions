@@ -5,7 +5,7 @@ Release History
 
 0.4.0
 ++++++
-* [NEW COMMAND] `az datamigration login-migration` - Migrate logins from the source Sql Servers to the target Azure Sql Servers.
+* [NEW COMMAND] `az datamigration login-migration` : Migrate logins from the source Sql Servers to the target Azure Sql Servers.
 
 0.3.1
 ++++++

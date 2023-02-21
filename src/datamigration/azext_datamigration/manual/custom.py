@@ -287,7 +287,10 @@ def datamigration_login_migration(src_sql_connection_str=None,
 
         # Printing log file path
         logFilePath = os.path.join(defaultOutputFolder, "LoginsMigrationLogs")
-        print(f"If outputFolder parameter is not provided, the default event and error logs folder path: {logFilePath}")
+        from knack.log import get_logger
+        logger = get_logger(__name__)
+        
+        logger.warning(f"If outputFolder parameter is not provided, the default event and error logs folder path: {logFilePath}")
 
     except Exception as e:
         raise e

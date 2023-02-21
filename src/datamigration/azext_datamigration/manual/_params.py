@@ -55,7 +55,7 @@ def load_arguments(self, _):
     with self.argument_context('datamigration login-migration') as c:
         c.argument('src_sql_connection_str', nargs='+', help='Connection string(s) for the source SQL instance(s), using the formal connection string format.')
         c.argument('tgt_sql_connection_str', type=str, help='Connection string(s) for the target SQL instance(s), using the formal connection string format.')
-        c.argument('csv_file_path', type=str, help='Location of CSV file of logins. Use only one parameter between this and listOfLogin.')
+        c.argument('csv_file_path', type=file_type, completer=FilesCompleter(), help='Location of CSV file of logins. Use only one parameter between this and listOfLogin.')
         c.argument('list_of_login', nargs='+', help='List of logins in string format. If large number of logins need to be migrated, use CSV file option.')
         c.argument('output_folder', type=str, help='Default: %LocalAppData%/Microsoft/SqlLoginMigrations) Folder where logs will be written.')
         c.argument('aad_domain_name', type=str, help='Required if Windows logins are included in the list of logins to be migrated.')
