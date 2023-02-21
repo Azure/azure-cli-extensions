@@ -29,7 +29,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception, handle_non_404_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, ContainerAppsJobClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -38,9 +38,14 @@ from ._models import (
     LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
     Ingress as IngressModel,
     Configuration as ConfigurationModel,
+    JobConfiguration as JobConfigurationModel,
+    ManualTriggerConfig as ManualTriggerModel,
+    ScheduleTriggerConfig as ScheduleTriggerModel,
     Template as TemplateModel,
+    JobTemplate as JobTemplateModel,
     RegistryCredentials as RegistryCredentialsModel,
     ContainerApp as ContainerAppModel,
+    ContainerAppsJob as ContainerAppsJobModel,
     Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
     Scale as ScaleModel,
@@ -1189,6 +1194,234 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
 
     try:
         return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def create_containerappsjob(cmd,
+                        name,
+                        resource_group_name,
+                        yaml=None,
+                        image=None,
+                        container_name=None,
+                        managed_env=None,
+                        trigger_type=None,
+                        replica_timeout=None,
+                        replica_retry_limit=None,
+                        replica_completion_count=None,
+                        parallelism=None,
+                        cron_expression=None,
+                        target_port=None,
+                        exposed_port=None,
+                        transport="auto",
+                        secrets=None,
+                        env_vars=None,
+                        cpu=None,
+                        memory=None,
+                        registry_server=None,
+                        registry_user=None,
+                        registry_pass=None,
+                        revision_suffix=None,
+                        startup_command=None,
+                        args=None,
+                        tags=None,
+                        no_wait=False,
+                        system_assigned=False,
+                        disable_warnings=False,
+                        user_assigned=None,
+                        registry_identity=None):
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    validate_container_app_name(name)
+    validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
+    validate_revision_suffix(revision_suffix)
+
+    print("[Test] | In Container Apps Job - create")
+    
+    if registry_identity and not is_registry_msi_system(registry_identity):
+        logger.info("Creating an acrpull role assignment for the registry identity")
+        create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)
+
+    if yaml:
+        if image or managed_env or trigger_type or replica_timeout or replica_retry_limit or target_port or\
+            replica_completion_count or parallelism or cron_expression or cpu or memory or registry_server or\
+            registry_user or registry_pass or secrets or env_vars or\
+                startup_command or args or tags:
+            not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+
+    if not image:
+        image = HELLO_WORLD_IMAGE
+
+    if managed_env is None:
+        raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
+
+    # Validate managed environment
+    parsed_managed_env = parse_resource_id(managed_env)
+    managed_env_name = parsed_managed_env['name']
+    managed_env_rg = parsed_managed_env['resource_group']
+    managed_env_info = None
+
+    try:
+        managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+    except:
+        pass
+
+    if not managed_env_info:
+        raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
+
+    location = managed_env_info["location"]
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "jobs")
+
+    manualTriggerConfig_def = None
+    if trigger_type is not None and trigger_type.lower() == "manual":
+        manualTriggerConfig_def = ManualTriggerModel
+        manualTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
+        manualTriggerConfig_def["Parallelism"] = parallelism
+        
+    scheduleTriggerConfig_def = None
+    if trigger_type is not None and trigger_type.lower() == "schedule":
+        scheduleTriggerConfig_def = ScheduleTriggerModel
+        scheduleTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
+        scheduleTriggerConfig_def["Parallelism"] = parallelism
+        scheduleTriggerConfig_def["cronExpression"] = cron_expression
+
+    secrets_def = None
+    if secrets is not None:
+        secrets_def = parse_secret_flags(secrets)
+
+    registries_def = None
+    if registry_server is not None and not is_registry_msi_system(registry_identity):
+        registries_def = RegistryCredentialsModel
+        registries_def["server"] = registry_server
+
+        # Infer credentials if not supplied and its azurecr
+        if (registry_user is None or registry_pass is None) and registry_identity is None:
+            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server, disable_warnings)
+
+        if not registry_identity:
+            registries_def["username"] = registry_user
+
+            if secrets_def is None:
+                secrets_def = []
+            registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, disable_warnings=disable_warnings)
+        else:
+            registries_def["identity"] = registry_identity
+
+    config_def = JobConfigurationModel
+    config_def["secrets"] = secrets_def
+    config_def["triggerType"] = trigger_type
+    config_def["replicaTimeout"] = replica_timeout
+    config_def["replicaRetryLimit"] = replica_retry_limit
+    config_def["manualTriggerConfig"] = manualTriggerConfig_def if manualTriggerConfig_def is not None else None
+    config_def["scheduleTriggerConfig"] = scheduleTriggerConfig_def if scheduleTriggerConfig_def is not None else None
+    config_def["registries"] = [registries_def] if registries_def is not None else None
+
+    # Identity actions
+    identity_def = ManagedServiceIdentityModel
+    identity_def["type"] = "None"
+
+    assign_system_identity = system_assigned
+    if user_assigned:
+        assign_user_identities = [x.lower() for x in user_assigned]
+    else:
+        assign_user_identities = []
+
+    if assign_system_identity and assign_user_identities:
+        identity_def["type"] = "SystemAssigned, UserAssigned"
+    elif assign_system_identity:
+        identity_def["type"] = "SystemAssigned"
+    elif assign_user_identities:
+        identity_def["type"] = "UserAssigned"
+
+    if assign_user_identities:
+        identity_def["userAssignedIdentities"] = {}
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
+            identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+    resources_def = None
+    if cpu is not None or memory is not None:
+        resources_def = ContainerResourcesModel
+        resources_def["cpu"] = cpu
+        resources_def["memory"] = memory
+
+    container_def = ContainerModel
+    container_def["name"] = container_name if container_name else name
+    container_def["image"] = image if not is_registry_msi_system(registry_identity) else HELLO_WORLD_IMAGE
+    if env_vars is not None:
+        container_def["env"] = parse_env_var_flags(env_vars)
+    if startup_command is not None:
+        container_def["command"] = startup_command
+    if args is not None:
+        container_def["args"] = args
+    if resources_def is not None:
+        container_def["resources"] = resources_def
+
+    template_def = JobTemplateModel
+    template_def["containers"] = [container_def]
+
+    containerappjob_def = ContainerAppsJobModel
+    containerappjob_def["location"] = location
+    containerappjob_def["identity"] = identity_def
+    containerappjob_def["properties"]["managedEnvironmentId"] = managed_env
+    containerappjob_def["properties"]["configuration"] = config_def
+    containerappjob_def["properties"]["template"] = template_def
+    containerappjob_def["tags"] = tags
+
+    if registry_identity:
+        if is_registry_msi_system(registry_identity):
+            set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=True)
+        else:
+            set_managed_identity(cmd, resource_group_name, containerapp_def, user_assigned=[registry_identity])
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+
+        if is_registry_msi_system(registry_identity):
+            while r["properties"]["provisioningState"] == "InProgress":
+                r = ContainerAppClient.show(cmd, resource_group_name, name)
+                time.sleep(10)
+            logger.info("Creating an acrpull role assignment for the system identity")
+            system_sp = r["identity"]["principalId"]
+            create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=system_sp)
+            container_def["image"] = image
+
+            registries_def = RegistryCredentialsModel
+            registries_def["server"] = registry_server
+            registries_def["identity"] = registry_identity
+            config_def["registries"] = [registries_def]
+
+            r = ContainerAppsJobClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            not disable_warnings and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+def show_containerappsjob(cmd, name, resource_group_name):
+    print("[Test] | In Container Apps Job - show")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+def list_containerappsjob(cmd, resource_group_name=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        managed_envs = []
+        if resource_group_name is None:
+            managed_envs = ContainerAppsJobClient.list_by_subscription(cmd=cmd)
+        else:
+            managed_envs = ContainerAppsJobClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
+
+        return managed_envs
     except CLIError as e:
         handle_raw_exception(e)
 

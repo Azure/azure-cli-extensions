@@ -14,7 +14,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-06-01-preview"
+PREVIEW_API_VERSION = "2022-11-01-preview"
 CURRENT_API_VERSION = PREVIEW_API_VERSION
 MANAGED_CERTS_API_VERSION = '2022-11-01-preview'
 POLLING_TIMEOUT = 600  # how many seconds before exiting
@@ -806,6 +806,52 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+class ContainerAppsJobClient():
+    @classmethod
+    def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
+        print("[Test] | In Container Apps Job Client - create or update", containerapp_job_envelope)
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(containerapp_job_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            return poll(cmd, request_url, "inprogress")
+
+        return r.json()
+        
+    @classmethod
+    def show(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
 
 class GitHubActionClient():
     @classmethod

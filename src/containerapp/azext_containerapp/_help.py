@@ -494,6 +494,75 @@ helps['containerapp env storage remove'] = """
           az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
 """
 
+# Container Apps Job Commands
+helps['containerapp job'] = """
+    type: group
+    short-summary: Commands to manage Container Apps jobs.
+"""
+
+helps['containerapp job create'] = """
+    type: command
+    short-summary: Create a container apps job.
+    examples:
+    - name: Create a container apps job with Trigger Type as Manual.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1
+    - name: Create a container apps job with Trigger Type as Schedule.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1
+              --cron-expression */1 * * * *
+"""
+
+helps['containerapp job update'] = """
+    type: command
+    short-summary: Update a Container Apps Job.
+    examples:
+    - name: Update a job's replica timeout.
+      text: |
+          az containerapp job update -n MyContainerappsjob -g MyResourceGroup \\
+              --replica-timeout 10
+"""
+
+helps['containerapp job delete'] = """
+    type: command
+    short-summary: Delete a Container Apps Job.
+    examples:
+    - name: Delete a job.
+      text: az containerapp job delete -n MyContainerappjob -g MyResourceGroup
+"""
+
+helps['containerapp job show'] = """
+    type: command
+    short-summary: Show details of a Container Apps Job.
+    examples:
+    - name: Show the details of a job.
+      text: |
+          az containerapp job show -n MyContainerappjob -g MyResourceGroup
+"""
+
+helps['containerapp job list'] = """
+    type: command
+    short-summary: List Container Apps Job by subscription or resource group.
+    examples:
+    - name: List jobs in the current subscription.
+      text: |
+          az containerapp job list
+    - name: List environments by resource group.
+      text: |
+          az containerapp job list -g MyResourceGroup
+"""
+
+
 # Certificates Commands
 helps['containerapp env certificate'] = """
     type: group

@@ -69,6 +69,13 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        
+    with self.command_group('containerapp job') as g:
+        g.custom_show_command('show', 'show_containerappsjob')
+        g.custom_command('list', 'list_containerappsjob')
+        g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+        #g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        #g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('list', 'list_dapr_components')

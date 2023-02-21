@@ -178,6 +178,33 @@ Configuration = {
     "registries": None  # [RegistryCredentials]
 }
 
+JobTemplate = {
+    "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
+    "volumes": None  # [Volume]
+}
+
+JobConfiguration = {
+    "secrets": None,  # [Secret]
+    "triggerType": None,  # 'manual' or 'schedule' or 'event'
+    "replicaTimeout": None,
+    "replicaRetryLimit": None,
+    "manualTriggerConfig": None,  # ManualTriggerConfig
+    "scheduleTriggerConfig": None,  # ScheduleTriggerConfig
+    "registries": None  # [RegistryCredentials]
+}
+
+ManualTriggerConfig = {
+    "replicaCompletionCount": None,
+    "Parallelism": None
+}
+
+ScheduleTriggerConfig = {
+    "replicaCompletionCount": None,
+    "Parallelism": None,
+    "cronExpression": None
+}
+
 UserAssignedIdentity = {
 
 }
@@ -194,6 +221,17 @@ ContainerApp = {
         "managedEnvironmentId": None,
         "configuration": None,  # Configuration
         "template": None  # Template
+    },
+    "tags": None
+}
+
+ContainerAppsJob = {
+    "location": None,
+    "identity": None,  # ManagedServiceIdentity
+    "properties": {
+        "managedEnvironmentId": None,
+        "configuration": None,  # JobConfiguration
+        "template": None  # JobTemplate
     },
     "tags": None
 }
