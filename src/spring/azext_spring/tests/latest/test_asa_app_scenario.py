@@ -106,7 +106,6 @@ class AppDeploy(ScenarioTest):
         ])
 
 
-@record_only()
 class AppCRUD(ScenarioTest):
     def test_app_crud(self):
         self.kwargs.update({
@@ -121,7 +120,7 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.activeDeployment.sku.capacity', 1),
             self.check('properties.activeDeployment.properties.source.type', 'Jar'),
-            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_8'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
@@ -131,7 +130,7 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('properties.source.type', 'Jar'),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
+            self.check('properties.source.runtimeVersion', 'Java_11'),
             self.check('sku.capacity', 2),
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
@@ -161,7 +160,7 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.name', 'default'),
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '1'),
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '2Gi'),
-            self.check('properties.url', 'https://{serviceName}-{app}.asc-test.net')
+            self.check('properties.url', 'https://{serviceName}-{app}.azuremicroservices.io')
         ])
 
         # green deployment not copy settings from active
