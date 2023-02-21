@@ -196,12 +196,12 @@ JobConfiguration = {
 
 ManualTriggerConfig = {
     "replicaCompletionCount": None,
-    "Parallelism": None
+    "parallelism": None
 }
 
 ScheduleTriggerConfig = {
     "replicaCompletionCount": None,
-    "Parallelism": None,
+    "parallelism": None,
     "cronExpression": None
 }
 
