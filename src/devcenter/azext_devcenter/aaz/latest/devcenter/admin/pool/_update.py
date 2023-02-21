@@ -84,7 +84,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["--dev-box-definition-name"],
+            options=["-d", "--dev-box-definition-name"],
             arg_group="Properties",
             help="Name of a Dev Box definition in parent Project of this Pool",
         )
@@ -92,6 +92,7 @@ class Update(AAZCommand):
             options=["--license-type"],
             arg_group="Properties",
             help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
+            default="Windows_Client",
             enum={"Windows_Client": "Windows_Client"},
         )
         _args_schema.local_administrator = AAZStrArg(
@@ -101,7 +102,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.network_connection_name = AAZStrArg(
-            options=["--network-connection-name"],
+            options=["-c", "--network-connection-name"],
             arg_group="Properties",
             help="Name of a Network Connection in parent Project of this Pool",
         )
