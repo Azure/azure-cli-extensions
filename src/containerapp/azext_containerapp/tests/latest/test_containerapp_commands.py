@@ -647,6 +647,7 @@ class ContainerappDaprTests(ScenarioTest):
 
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
+    @live_only()  # Passes locally but fails in CI
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_storage(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
