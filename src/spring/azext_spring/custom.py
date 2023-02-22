@@ -391,12 +391,12 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
-                          format_json)
+                          format_json, get_app_log=_get_app_log)
 
 
 def app_tail_log_internal(cmd, client, resource_group, service, name,
                           deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048,
-                          format_json=None, ignore_exception=False, timeout=None):
+                          format_json=None, timeout=None, get_app_log=None):
     if not instance:
         if not deployment.properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -426,7 +426,7 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
 
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
-    t = Thread(target=_get_app_log_ignore_exception if ignore_exception else _get_app_log, args=(
+    t = Thread(target=get_app_log, args=(
         streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
@@ -980,7 +980,7 @@ def _get_redis_primary_key(cli_ctx, resource_id):
 
 
 # pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=None):
+def _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=None, stderr=False):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
 
     def build_log_shortener(length):
@@ -1095,17 +1095,12 @@ def _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=N
                 decoded = (line.decode(encoding='utf-8', errors='replace')
                            .encode(std_encoding, errors='replace')
                            .decode(std_encoding, errors='replace'))
-                print(formatter(decoded), end='')
-
+                if stderr:
+                    print(formatter(decoded), end='', file=sys.stderr)
+                else:
+                    print(formatter(decoded), end='')
         except CLIError as e:
             exceptions.append(e)
-
-
-def _get_app_log_ignore_exception(url, user_name, password, format_json, exceptions):
-    try:
-        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10 * 1024)
-    except Exception:
-        pass
 
 
 def storage_callback(pipeline_response, deserialized, headers):

@@ -7,7 +7,7 @@
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
-from .custom import app_get
+from .custom import app_get, _get_app_log
 from ._utils import (get_spring_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
@@ -411,12 +411,19 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
         # for troubleshooting. We add a timeout to force stop logs then the cli can be exited.
         app_tail_log_internal(cmd, client, resource_group, service, app_name, deployment_resource, instance_name,
                               follow=False if deployment_error is None else True, lines=500, limit=1024 * 1024,
-                              since=300, ignore_exception=True, timeout=None if deployment_error is None else 10)
+                              since=300, timeout=10, get_app_log=_get_app_log_deploy_phase)
     except Exception:
         # ignore
         return
     if deployment_error:
         raise deployment_error
+
+
+def _get_app_log_deploy_phase(url, user_name, password, format_json, exceptions):
+    try:
+        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+    except Exception:
+        pass
 
 
 def deployment_create(cmd, client, resource_group, service, app, name,
