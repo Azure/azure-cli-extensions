@@ -808,6 +808,7 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+
 class ContainerAppsJobClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
@@ -837,7 +838,7 @@ class ContainerAppsJobClient():
             return poll(cmd, request_url, "inprogress")
 
         return r.json()
-    
+
     @classmethod
     def update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -868,7 +869,7 @@ class ContainerAppsJobClient():
             return poll(cmd, request_url, "inprogress")
 
         return r.json()
-        
+
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager

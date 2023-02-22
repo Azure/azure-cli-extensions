@@ -1014,6 +1014,7 @@ class ContainerApp(TrackedResource):
         self.template = kwargs.get('template', None)
         self.outbound_ip_addresses = None
 
+
 class ContainerAppsJob(TrackedResource):
     """Container Apps Job.
 
@@ -1086,6 +1087,7 @@ class ContainerAppsJob(TrackedResource):
         self.configuration = kwargs.get('configuration', None)
         self.template = kwargs.get('template', None)
         self.outbound_ip_addresses = None
+
 
 class ContainerAppCollection(Model):
     """Container App collection ARM resource.

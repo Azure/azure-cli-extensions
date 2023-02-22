@@ -496,6 +496,7 @@ def get_container_app_if_exists(cmd, resource_group_name, name):
         pass
     return app
 
+
 def get_containerapps_job_if_exists(cmd, resource_group_name, name):
     app = None
     try:
@@ -503,6 +504,7 @@ def get_containerapps_job_if_exists(cmd, resource_group_name, name):
     except:  # pylint: disable=bare-except
         pass
     return app
+
 
 def _get_name(name_or_rid):
     if is_valid_resource_id(name_or_rid):

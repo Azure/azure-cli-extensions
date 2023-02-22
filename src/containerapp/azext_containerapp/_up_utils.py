@@ -259,6 +259,7 @@ class ContainerAppEnvironment(Resource):
             )
         return rid
 
+
 class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -276,7 +277,7 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
         trigger_type=None,
         replica_timeout=None,
         replica_retry_limit=None,
-        replica_completion_count=None,
+        replica_count=None,
         parallelism=None,
         cron_expression=None,
     ):
@@ -290,11 +291,11 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
         self.registry_pass = registry_pass
         self.env_vars = env_vars
         self.trigger_type = trigger_type,
-        self.replica_timeout=replica_timeout,
-        self.replica_retry_limit=replica_retry_limit
-        self.replica_completion_count=replica_completion_count
-        self.parallelism=parallelism
-        self.cron_expression=cron_expression
+        self.replica_timeout = replica_timeout,
+        self.replica_retry_limit = replica_retry_limit
+        self.replica_count = replica_count
+        self.parallelism = parallelism
+        self.cron_expression = cron_expression
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
 
@@ -326,7 +327,7 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
             trigger_type=self.trigger_type,
             replica_timeout=self.replica_timeout,
             replica_retry_limit=self.replica_retry_limit,
-            replica_completion_count=self.replica_completion_count,
+            replica_count=self.replica_count,
             parallelism=self.parallelism,
             cron_expression=self.cron_expression
         )
