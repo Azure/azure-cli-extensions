@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage-mover agent unregister",
-    confirmation="WARNING: Unregistering this agent will stop ongoing migrations on this agent. Job definitions that reference this agent can’t be started until their agent reference is updated to a working agent. Registering this agent again will result in a new identity and not fix existing job definitions. Note that the Azure ARC trust is not broken. The Hybrid Compute resource must be manually removed to invalidate the agent identity that may still be allowed access to target storage containers. \nAre you sure you want to unregister this storage mover agent?",
+    confirmation="WARNING: Deleting this agent will stop ongoing migrations on this agent. Job definitions that reference this agent can’t be started until their agent reference is updated to a working agent. Registering this agent again will result in a new identity and not fix existing job definitions. Note that the Azure ARC trust is not broken. The Hybrid Compute resource must be manually removed to invalidate the agent identity that may still be allowed access to target storage containers. \nAre you sure you want to delete this storage mover agent?",
 )
 class Unregister(AAZCommand):
     """Unregisters an Agent resource.
@@ -23,9 +23,9 @@ class Unregister(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2023-03-01"],
         ]
     }
 
@@ -153,7 +153,7 @@ class Unregister(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }

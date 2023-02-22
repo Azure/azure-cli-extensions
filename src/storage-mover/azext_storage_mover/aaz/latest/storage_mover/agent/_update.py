@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2023-03-01"],
         ]
     }
 
@@ -65,16 +65,6 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.arc_resource_id = AAZStrArg(
-            options=["--arc-resource-id"],
-            arg_group="Properties",
-            help="The fully qualified resource ID of the Hybrid Compute resource for the Agent.",
-        )
-        _args_schema.arc_vm_uuid = AAZStrArg(
-            options=["--arc-vm-uuid"],
-            arg_group="Properties",
-            help="The VM UUID of the Hybrid Compute resource for the Agent.",
-        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -165,7 +155,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -252,7 +242,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -314,8 +304,6 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("arcResourceId", AAZStrType, ".arc_resource_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("arcVmUuid", AAZStrType, ".arc_vm_uuid", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
 
             return _instance_value
@@ -412,37 +400,27 @@ class _UpdateHelper:
         )
 
         error_details = _schema_agent_read.properties.error_details
-        error_details.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_details.message = AAZStrType(
-            flags={"read_only": True},
-        )
+        error_details.code = AAZStrType()
+        error_details.message = AAZStrType()
 
         system_data = _schema_agent_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
-            flags={"read_only": True},
         )
         system_data.created_by = AAZStrType(
             serialized_name="createdBy",
-            flags={"read_only": True},
         )
         system_data.created_by_type = AAZStrType(
             serialized_name="createdByType",
-            flags={"read_only": True},
         )
         system_data.last_modified_at = AAZStrType(
             serialized_name="lastModifiedAt",
-            flags={"read_only": True},
         )
         system_data.last_modified_by = AAZStrType(
             serialized_name="lastModifiedBy",
-            flags={"read_only": True},
         )
         system_data.last_modified_by_type = AAZStrType(
             serialized_name="lastModifiedByType",
-            flags={"read_only": True},
         )
 
         _schema.id = cls._schema_agent_read.id

@@ -24,7 +24,7 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('tags', {"key1":"value1"}),
                          JMESPathCheck('description', "ExampleDesc")])
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
-        self.cmd('az storage-mover update -g {rg} -n {mover_name} -l eastus2 '
+        self.cmd('az storage-mover update -g {rg} -n {mover_name} '
                  '--tags {{key2:value2}} --description ExampleDesc2',
                  checks=[JMESPathCheck('tags', {"key2":"value2"}),
                          JMESPathCheck('description', "ExampleDesc2")])
@@ -33,11 +33,11 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
-    # az group create -n test-storagemover-rg-2 -l eastus2
-    # az storage-mover create -n teststoragemover -g test-storagemover-rg-2
+    # az group create -n test-storagemover-rg -l eastus
+    # az storage-mover create -n teststoragemover -g test-storagemover-rg
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg-2",
+            "rg": "test-storagemover-rg",
             "mover_name": "teststoragemover",
             "agent_name": "testagent"
         })
@@ -116,16 +116,17 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
-    # az group create -n test-storagemover-rg-2 -l eastus2
-    # az storage-mover create -n teststoragemover -g test-storagemover-rg-2
+    # az group create -n test-storagemover-rg -l eastus
+    # az storage-mover create -n teststoragemover -g test-storagemover-rg
+    @AllowLargeResponse()
     def test_storage_mover_job_definition_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg-2",
+            "rg": "test-storagemover-rg",
             "mover_name": "teststoragemover",
             "agent_name": "testagent",
             "project_name": "testproject",
             "job_definition": "testdefinition",
-            "account_name": "testjobdefinitionsa",
+            "account_name": "testjobdefinitionsa2",
             "source_vm": "sourcevm",
             "target_container": "targetcontainer",
             "source_endpoint": "sourceendpoint",
@@ -171,7 +172,7 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover job-definition list -g {rg} --project-name {project_name} '
                  '--storage-mover-name {mover_name}', checks=[JMESPathCheck('length(@)', 1)])
 
-        # job run
+        # # job run
         self.cmd('az storage-mover job-definition start-job -g {rg} --job-definition-name {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name}')
         job_runs = self.cmd('az storage-mover job-run list -g {rg} --job-definition-name {job_definition} '

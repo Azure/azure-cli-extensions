@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints", "2023-03-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -161,9 +161,7 @@ class List(AAZCommand):
             )
 
             value = cls._schema_on_200.value
-            value.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
             _element.id = AAZStrType(
@@ -173,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -184,12 +182,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.description = AAZStrType(
-                flags={"read_only": True},
-            )
+            properties.description = AAZStrType()
             properties.endpoint_type = AAZStrType(
                 serialized_name="endpointType",
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -199,49 +195,42 @@ class List(AAZCommand):
             disc_azure_storage_blob_container = cls._schema_on_200.value.Element.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
             disc_azure_storage_blob_container.blob_container_name = AAZStrType(
                 serialized_name="blobContainerName",
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
                 serialized_name="storageAccountResourceId",
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
 
             disc_nfs_mount = cls._schema_on_200.value.Element.properties.discriminate_by("endpoint_type", "NfsMount")
             disc_nfs_mount.export = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             disc_nfs_mount.host = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
-                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200

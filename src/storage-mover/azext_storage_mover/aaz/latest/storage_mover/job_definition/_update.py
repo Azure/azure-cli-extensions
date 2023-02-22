@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "storage-mover job-definition update",
 )
 class Update(AAZCommand):
-    """Update properties for a Job Definition resource. Properties not specified in the request body will be unchanged.
+    """Updates a Job Definition resource, which contains configuration for a single unit of managed data transfer.
 
     :example: job-definition update
         az storage-mover job-definition update -g {rg} -n {job_definition} --project-name {project_name} --storage-mover-name {mover_name} --copy-mode Mirror --agent-name {agent_name} --description JobDefinitionDescription2
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2023-03-01"],
         ]
     }
 
@@ -160,7 +160,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }

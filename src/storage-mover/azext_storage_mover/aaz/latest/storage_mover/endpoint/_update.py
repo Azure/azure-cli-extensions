@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-03-01"],
         ]
     }
 
@@ -64,10 +64,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Storage Blob Container Object",
         )
-        _args_schema.nfs_mount = AAZObjectArg(
-            options=["--nfs-mount"],
-            arg_group="Properties",
-        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -76,23 +72,9 @@ class Update(AAZCommand):
         )
 
         storage_blob_container = cls._args_schema.storage_blob_container
-        storage_blob_container.blob_container_name = AAZStrArg(
-            options=["blob-container-name"],
-            help="The name of the Storage blob container that is the target destination.",
-        )
         storage_blob_container.storage_account_resource_id = AAZStrArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
-        )
-
-        nfs_mount = cls._args_schema.nfs_mount
-        nfs_mount.export = AAZStrArg(
-            options=["export"],
-            help="The directory being exported from the server.",
-        )
-        nfs_mount.host = AAZStrArg(
-            options=["host"],
-            help="The host name or IP address of the server exporting the file system.",
         )
         return cls._args_schema
 
@@ -178,7 +160,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -265,7 +247,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -328,20 +310,11 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".storage_blob_container", typ_kwargs={"flags": {"required": True}})
-                properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
-                properties.discriminate_by("endpointType", "NfsMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
-                disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
                 disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
-            if disc_nfs_mount is not None:
-                disc_nfs_mount.set_prop("export", AAZStrType, ".nfs_mount.export", typ_kwargs={"flags": {"required": True}})
-                disc_nfs_mount.set_prop("host", AAZStrType, ".nfs_mount.host", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -424,27 +397,21 @@ class _UpdateHelper:
         system_data = _schema_endpoint_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
-            flags={"read_only": True},
         )
         system_data.created_by = AAZStrType(
             serialized_name="createdBy",
-            flags={"read_only": True},
         )
         system_data.created_by_type = AAZStrType(
             serialized_name="createdByType",
-            flags={"read_only": True},
         )
         system_data.last_modified_at = AAZStrType(
             serialized_name="lastModifiedAt",
-            flags={"read_only": True},
         )
         system_data.last_modified_by = AAZStrType(
             serialized_name="lastModifiedBy",
-            flags={"read_only": True},
         )
         system_data.last_modified_by_type = AAZStrType(
             serialized_name="lastModifiedByType",
-            flags={"read_only": True},
         )
 
         _schema.id = cls._schema_endpoint_read.id

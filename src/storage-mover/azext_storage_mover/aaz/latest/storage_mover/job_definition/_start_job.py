@@ -22,9 +22,9 @@ class StartJob(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}/startjob", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}/startjob", "2023-03-01"],
         ]
     }
 
@@ -48,11 +48,13 @@ class StartJob(AAZCommand):
             options=["--job-definition-name"],
             help="The name of the Job Definition resource.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project-name"],
             help="The name of the Project resource.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -61,6 +63,7 @@ class StartJob(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
@@ -137,7 +140,7 @@ class StartJob(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
