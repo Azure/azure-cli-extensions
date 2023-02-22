@@ -321,7 +321,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                             "be pre-configured with a route table with egress rules"
                         )
 
-                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                if self.decorator_mode == DecoratorMode.CREATE and outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
                     if load_balancer_profile:
                         if (
                             load_balancer_profile.managed_outbound_i_ps or
