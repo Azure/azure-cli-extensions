@@ -277,6 +277,14 @@ def load_arguments(self, _):
         c.argument('show_values', help='Show the secret values.')
         c.ignore('disable_max_length')
 
+    with self.argument_context('containerapp secret set') as c:
+        c.argument('yaml', type=file_type, help='Path to a .yaml file with the secrets configuration of a container app. All other parameters will be ignored. For an example, see  https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples')
+        c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format (where 'key' cannot be longer than 20 characters).")
+        c.argument('secret_name', help="The name of the secret to show.")
+        c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
+        c.argument('show_values', help='Show the secret values.')
+        c.ignore('disable_max_length')
+
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
         c.argument('dapr_app_port', help="The port of your app.")

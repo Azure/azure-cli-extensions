@@ -56,7 +56,7 @@ from ._models import (
     CustomDomainConfiguration as CustomDomainConfigurationModel,
     ScaleRule as ScaleRuleModel)
 
-from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
+from ._utils import (_validate_subscription_registered, _ensure_location_allowed, parse_yaml_secret_flags,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                      _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
@@ -2292,35 +2292,37 @@ def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
     except Exception as e:
         handle_raw_exception(e)
 
-
-def set_secrets(cmd, name, resource_group_name, secrets,
-                # yaml=None,
+def set_secrets(cmd, name, resource_group_name, secrets=None,
+                yaml=None,
                 disable_max_length=False,
                 no_wait=False):
+    if not yaml and not secrets:
+        raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
+
+    if yaml and secrets:
+        raise RequiredArgumentMissingError('Usage error: --secrets and --yaml could not be used simultaneously')
+
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    for s in secrets:
-        if s:
-            parsed = s.split("=")
-            if parsed:
-                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH and not disable_max_length:
-                    raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
-                                          f"Please shorten {parsed[0]}")
+    secret_list = []
 
-    # if not yaml and not secrets:
-    #     raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
+    if secrets is not None:
+        for s in secrets:
+            if s:
+                parsed = s.split("=")
+                if parsed:
+                    if len(parsed[0]) > MAXIMUM_SECRET_LENGTH and not disable_max_length:
+                        raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
+                                            f"Please shorten {parsed[0]}")
 
-    # if not secrets:
-    #     secrets = []
+        secret_list = parse_secret_flags(secrets)
 
-    # if yaml:
-    #     yaml_secrets = load_yaml_file(yaml).split(' ')
-    #     try:
-    #         parse_secret_flags(yaml_secrets)
-    #     except:
-    #         raise ValidationError("YAML secrets must be a list of secrets in key=value format, delimited by new line.")
-    #     for secret in yaml_secrets:
-    #         secrets.append(secret.strip())
+    if yaml:
+        yaml_secrets = load_yaml_file(yaml).split(' ')
+        try:
+            secret_list = parse_yaml_secret_flags(yaml_secrets)
+        except:
+            raise ValidationError("YAML secrets must be a list of secrets in formats \"name,value,keyvaulturl,identity ...\, \"name,value ...\ or \"name,keyvaulturl,identity ...\", delimited by new line.")
 
     containerapp_def = None
     try:
@@ -2332,7 +2334,7 @@ def set_secrets(cmd, name, resource_group_name, secrets,
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-    _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
+    _add_or_update_secrets(containerapp_def, secret_list)
 
     try:
         r = ContainerAppClient.create_or_update(

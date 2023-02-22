@@ -361,6 +361,42 @@ def parse_secret_flags(secret_list):
 
     return secret_var_def
 
+def parse_yaml_secret_flags(secret_list):
+    secret_entries = []
+    secret_var_def = []
+
+    for secret in secret_list:
+        properties = secret.split(',', 3)
+        if len(properties) < 2 or len(properties) > 4:
+            raise ValidationError("Secrets must be in formats \"name,value,keyvaulturl,identity ...\, \"name,value ...\ or \"name,keyvaulturl,identity ...\".")
+        if properties[0] in secret_entries:
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=properties[0]))
+        secret_entries.append(properties[0])
+
+        name = properties[0]
+        value = ""
+        key_vault_url = ""
+        identity = ""
+
+        if len(properties) == 2 or len(properties) == 4:
+            value = properties[1]
+
+        if len(properties) == 3:
+            key_vault_url = properties[1]
+            identity = properties[2]
+
+        if len(properties) == 4:
+            key_vault_url = properties[2]
+            identity = properties[3]
+
+        secret_var_def.append({
+            "name": name,
+            "value": value,
+            "keyVaultUrl": key_vault_url,
+            "identity": identity
+        })
+
+    return secret_var_def
 
 def parse_metadata_flags(metadata_list, metadata_def={}):  # pylint: disable=dangerous-default-value
     if not metadata_list:
@@ -669,7 +705,7 @@ def _add_or_update_secrets(containerapp_def, add_secrets):
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
-                existing_secret["value"] = new_secret["value"]
+                existing_secret = new_secret
                 break
 
         if not is_existing:
