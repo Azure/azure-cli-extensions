@@ -55,3 +55,13 @@ class ToolbarLexer(RegexLexer):
             (r'.', Operator),
         ]
     }
+
+
+class ScenarioLexer(RegexLexer):
+    """ Lexer for the recommended scenarios """
+    tokens = {
+        'root': [
+            (r' .', Number),
+            (r'.', Number),
+        ]
+    }

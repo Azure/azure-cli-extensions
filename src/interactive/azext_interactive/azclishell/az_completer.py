@@ -6,6 +6,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
+import re
 
 from azure.cli.core.parser import AzCliCommandParser
 from azure.cli.core.commands.events import (
@@ -55,6 +56,8 @@ class AzCompleter(Completer):
     def __init__(self, shell_ctx, commands, global_params=True):
         self.shell_ctx = shell_ctx
         self.started = False
+
+        self.scenario_recommender_enabled = True
 
         # dictionary of command to descriptions
         self.command_description = {}
@@ -149,6 +152,18 @@ class AzCompleter(Completer):
         if self.validate_completion(completion):
             yield Completion(completion, -len(self.unfinished_word))
 
+    def reset(self):
+        """ reset the state cache """
+        self.unfinished_word = ''
+        self.complete_command = ''
+        self.leftover_args = ''
+        self.current_command = ''
+        self.subtree = None
+
+    def enable_scenario_recommender(self, enable):
+        """ enable or disable the scenario display in completer """
+        self.scenario_recommender_enabled = enable
+
     def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
         if not self.started:
             return
@@ -171,8 +186,15 @@ class AzCompleter(Completer):
         self.shell_ctx.cli_ctx.raise_event(EVENT_INTERACTIVE_POST_SUB_TREE_CREATE, subtree=self.subtree)
         self.complete_command = not self.subtree.children
 
+        for comp in self.gen_recommend_completion(text):
+            yield comp
+
         for comp in sort_completions(self.gen_cmd_and_param_completions()):
             yield comp
+
+        if self.scenario_recommender_enabled:
+            for comp in self.gen_recommended_scenario(text):
+                yield comp
 
         for comp in sort_completions(self.gen_global_params_and_arg_completions()):
             yield comp
@@ -259,6 +281,44 @@ class AzCompleter(Completer):
         except Exception:  # pylint: disable=broad-except
             pass
 
+    def gen_recommend_completion(self, text):
+        """ generates recommended commands """
+        recommend_result = self.shell_ctx.recommender.get_commands() or []
+        if not recommend_result:
+            default_recommendations = self.shell_ctx.recommender.get_default_recommendations()
+            for rec in default_recommendations:
+                description = default_recommendations[rec]
+                description = description or self.command_description.get(rec, '')
+                if text.strip() == '':
+                    # generate default recommendation if no recommendation result
+                    yield Completion(rec, 0, display_meta=description)
+        for rec in recommend_result:
+            description = self.command_description.get(rec['command'], 'Commonly used command by other users')
+            if text == '':
+                # generate all recommendation if user inputs space or `az `
+                yield Completion(rec['command'], 0, display_meta=description)
+            elif text == 'a':
+                # start all recommendation with 'az ' if the user inputs 'a'
+                yield Completion('az ' + rec['command'], -1, display_meta=description)
+            else:
+                # recommend items that match the user's input if the user inputs other
+                formatted_text = re.sub(r'\s+', ' ', text).strip()
+                if rec['command'].startswith(formatted_text) and rec['command'] != formatted_text:
+                    yield Completion(rec['command'], -len(text.lstrip()), display_meta=description)
+
+    def gen_recommended_scenario(self, text):
+        """ generates recommended scenarios """
+        # only gen scenarios when inputting command part
+        if '-' in text or not re.fullmatch(r'[a-zA-Z\s]+', text):
+            return
+        recommend_result = self.shell_ctx.recommender.get_scenarios() or []
+        for idx, rec in enumerate(recommend_result):
+            # '::[num]' is the statement to select the recommended scenarios. The Completion will replace the input with '::[num]', which will execute the specific scenario
+            yield Completion(
+                '::' + str(idx + 1), -len(text),
+                display_meta=f'{rec["scenario"]} ({len(rec["nextCommandSet"])} Commands)',
+                display=f'* command set {str(idx + 1)}')
+
     def yield_param_completion(self, param, last_word):
         """ yields a parameter """
         return Completion(param, -len(last_word), display_meta=self.param_description.get(
@@ -266,6 +326,11 @@ class AzCompleter(Completer):
 
     def gen_cmd_and_param_completions(self):
         """ generates command and parameter completions """
+        # if the user inputs space or 'az', provide recommendation instead of
+        # default completion when recommender is enabled
+        has_user_input = self.current_command or self.unfinished_word.strip()
+        if not has_user_input and self.shell_ctx.recommender.enabled:
+            return
         if self.complete_command:
             for param in self.command_param_info.get(self.current_command, []):
                 if self.validate_param_completion(param, self.leftover_args):
@@ -273,7 +338,9 @@ class AzCompleter(Completer):
         elif not self.leftover_args:
             for child_command in self.subtree.children:
                 if self.validate_completion(child_command):
-                    yield Completion(child_command, -len(self.unfinished_word))
+                    full_command = f'{self.current_command} {child_command}'.strip()
+                    yield Completion(child_command, -len(self.unfinished_word),
+                                     display_meta=self.command_description.get(full_command))
 
     def gen_global_params_and_arg_completions(self):
         # global parameters

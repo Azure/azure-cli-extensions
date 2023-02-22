@@ -28,6 +28,7 @@ GESTURE_INFO = {
     "[cmd] + [param] +" + "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Inject jmespath query from previous command",
     "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Jmespath query of the previous command",
     "[cmd] " + SELECT_SYMBOL['example'] + " [num]": "do a step by step tutorial of example",
+    SELECT_SYMBOL['example'] + " [num]": "complete a recommended scenario step by step",
     SELECT_SYMBOL['exit_code']: "get the exit code of the previous command",
     SELECT_SYMBOL['scope'] + '[cmd]': "set a scope, and scopes can be chained with spaces",
     SELECT_SYMBOL['scope'] + ' ' + SELECT_SYMBOL['unscope']: "go back a scope",
@@ -66,10 +67,12 @@ class Configuration(object):
         self.config.add_section('Layout')
         self.config.set('Help Files', 'command', 'help_dump.json')
         self.config.set('Help Files', 'history', 'history.txt')
+        self.config.set('Help Files', 'recommend_path', 'recommend_path.txt')
         self.config.set('Help Files', 'frequency', 'frequency.json')
         self.config.set('Layout', 'command_description', 'yes')
         self.config.set('Layout', 'param_description', 'yes')
         self.config.set('Layout', 'examples', 'yes')
+        self.config.set('Layout', 'scenarios', 'no')
         self.config_dir = os.getenv('AZURE_CONFIG_DIR') or os.path.expanduser(os.path.join('~', '.azure-shell'))
 
         if not os.path.exists(self.config_dir):
@@ -88,6 +91,10 @@ class Configuration(object):
     def get_history(self):
         """ returns the history """
         return self.config.get('Help Files', 'history')
+
+    def get_recommend_path(self):
+        """ returns the history """
+        return self.config.get('Help Files', 'recommend_path')
 
     def get_help_files(self):
         """ returns where the command table is cached """

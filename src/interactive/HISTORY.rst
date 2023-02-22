@@ -3,6 +3,13 @@
 Release History
 ===============
 
+0.4.7
++++++
+* Support command recommendations that predicts the next commands users might need.
+* Support scenario recommendations to help users complete the complex scenarios more smoothly and simply.
+* Support new config `az config set interactive.enable_recommender=False` to disable these new recommenders.
+* Fix display offset in toolbar.
+
 0.4.6
 +++++
 * Compatible with argcomplete 2.0.0
