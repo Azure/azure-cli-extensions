@@ -517,7 +517,23 @@ def _parse_blob_url(url):
     }
 
 
-def output(cmd, job_id, resource_group_name, workspace_name, location):
+def _validate_item(provided_value, num_items):
+    valid_item = 0
+    error_message = f"--item parameter is not valid: {provided_value}"
+    error_recommendation = f"Must be a non-negative number less than {num_items}"
+
+    try:
+        valid_item = int(provided_value)
+    except ValueError as e:
+        raise InvalidArgumentValueError(error_message, error_recommendation) from e
+
+    if valid_item >= num_items:
+        raise InvalidArgumentValueError(error_message, error_recommendation)
+
+    return valid_item
+
+
+def output(cmd, job_id, resource_group_name, workspace_name, location, item=None):
     """
     Get the results of running a Q# job.
     """
@@ -572,6 +588,13 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
         else:
             json_file.seek(0)  # Reset the file pointer before loading
             data = json.load(json_file)
+
+        # Consider item if it's a batch job, otherwise ignore
+        import builtins  # list has been overriden as a function above
+        if item and isinstance(data, builtins.list):
+            item = _validate_item(item, len(data))
+            return data[item]
+
         return data
 
 
