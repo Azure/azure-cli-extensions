@@ -9,35 +9,6 @@
 import msrest.serialization
 
 
-class ActionRequest(msrest.serialization.Model):
-    """Action request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param action_id: Required. The Catalog Item action id to execute.
-    :type action_id: str
-    :param parameters: Parameters object for the Action.
-    :type parameters: object
-    """
-
-    _validation = {
-        'action_id': {'required': True},
-    }
-
-    _attribute_map = {
-        'action_id': {'key': 'actionId', 'type': 'str'},
-        'parameters': {'key': 'parameters', 'type': 'object'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ActionRequest, self).__init__(**kwargs)
-        self.action_id = kwargs['action_id']
-        self.parameters = kwargs.get('parameters', None)
-
-
 class Artifact(msrest.serialization.Model):
     """Properties of an Artifact.
 
@@ -122,108 +93,38 @@ class ArtifactListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class CatalogItem(msrest.serialization.Model):
-    """A catalog item.
+class Catalog(msrest.serialization.Model):
+    """A catalog.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Unique identifier of the catalog item.
-    :vartype id: str
-    :ivar name: Name of the catalog item.
-    :vartype name: str
-    :ivar catalog_name: Name of the catalog.
-    :vartype catalog_name: str
+    :param name: Required. Name of the catalog.
+    :type name: str
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'catalog_name': {'readonly': True},
+        'name': {'required': True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'catalog_name': {'key': 'catalogName', 'type': 'str'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(CatalogItem, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.catalog_name = None
+        super(Catalog, self).__init__(**kwargs)
+        self.name = kwargs['name']
 
 
-class CatalogItemAction(msrest.serialization.Model):
-    """An action that can be taken on a catalog item.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Unique identifier of the action.
-    :vartype id: str
-    :ivar name: Display name of the action.
-    :vartype name: str
-    :ivar description: Description of the action.
-    :vartype description: str
-    :ivar parameters_schema: JSON schema defining the parameters specific to the custom action.
-    :vartype parameters_schema: str
-    :ivar parameters: Input parameters passed to the action.
-    :vartype parameters: list[~dev_center_dataplane_client.models.CatalogItemParameter]
-    :ivar type: The action type. Possible values include: "Custom", "Deploy", "Delete".
-    :vartype type: str or ~dev_center_dataplane_client.models.ActionType
-    :ivar type_name: Name of the custom action type.
-    :vartype type_name: str
-    :ivar runner: The container image to use to execute the action.
-    :vartype runner: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'description': {'readonly': True},
-        'parameters_schema': {'readonly': True},
-        'parameters': {'readonly': True},
-        'type': {'readonly': True},
-        'type_name': {'readonly': True},
-        'runner': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
-        'parameters_schema': {'key': 'parametersSchema', 'type': 'str'},
-        'parameters': {'key': 'parameters', 'type': '[CatalogItemParameter]'},
-        'type': {'key': 'type', 'type': 'str'},
-        'type_name': {'key': 'typeName', 'type': 'str'},
-        'runner': {'key': 'runner', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CatalogItemAction, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.description = None
-        self.parameters_schema = None
-        self.parameters = None
-        self.type = None
-        self.type_name = None
-        self.runner = None
-
-
-class CatalogItemListResult(msrest.serialization.Model):
-    """Results of the catalog item list operation.
+class CatalogListResult(msrest.serialization.Model):
+    """Results of the catalog list operation.
 
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. Current page of results.
-    :type value: list[~dev_center_dataplane_client.models.CatalogItem]
+    :type value: list[~dev_center_dataplane_client.models.Catalog]
     :param next_link: URL to get the next set of results if there are any.
     :type next_link: str
     """
@@ -233,7 +134,7 @@ class CatalogItemListResult(msrest.serialization.Model):
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[CatalogItem]'},
+        'value': {'key': 'value', 'type': '[Catalog]'},
         'next_link': {'key': 'nextLink', 'type': 'str'},
     }
 
@@ -241,183 +142,7 @@ class CatalogItemListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(CatalogItemListResult, self).__init__(**kwargs)
-        self.value = kwargs['value']
-        self.next_link = kwargs.get('next_link', None)
-
-
-class CatalogItemParameter(msrest.serialization.Model):
-    """Properties of an Catalog Item parameter.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Unique ID of the parameter.
-    :vartype id: str
-    :ivar name: Display name of the parameter.
-    :vartype name: str
-    :ivar description: Description of the parameter.
-    :vartype description: str
-    :ivar default: Default value of the parameter.
-    :vartype default: object
-    :ivar type: A string of one of the basic JSON types (number, integer, null, array, object,
-     boolean, string). Possible values include: "array", "boolean", "integer", "null", "number",
-     "object", "string".
-    :vartype type: str or ~dev_center_dataplane_client.models.ParameterType
-    :ivar read_only: Whether or not this parameter is read-only.  If true, default should have a
-     value.
-    :vartype read_only: bool
-    :ivar required: Whether or not this parameter is required.
-    :vartype required: bool
-    :ivar allowed: An array of allowed values.
-    :vartype allowed: list[object]
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'description': {'readonly': True},
-        'default': {'readonly': True},
-        'type': {'readonly': True},
-        'read_only': {'readonly': True},
-        'required': {'readonly': True},
-        'allowed': {'readonly': True, 'min_items': 1, 'unique': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
-        'default': {'key': 'default', 'type': 'object'},
-        'type': {'key': 'type', 'type': 'str'},
-        'read_only': {'key': 'readOnly', 'type': 'bool'},
-        'required': {'key': 'required', 'type': 'bool'},
-        'allowed': {'key': 'allowed', 'type': '[object]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CatalogItemParameter, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.description = None
-        self.default = None
-        self.type = None
-        self.read_only = None
-        self.required = None
-        self.allowed = None
-
-
-class CatalogItemVersion(msrest.serialization.Model):
-    """A catalog item version.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar catalog_item_id: Unique identifier of the catalog item.
-    :vartype catalog_item_id: str
-    :ivar catalog_item_name: Name of the catalog item.
-    :vartype catalog_item_name: str
-    :ivar catalog_name: Name of the catalog.
-    :vartype catalog_name: str
-    :ivar version: The version of the catalog item.
-    :vartype version: str
-    :ivar summary: A short summary of the catalog item.
-    :vartype summary: str
-    :ivar description: A long description of the catalog item.
-    :vartype description: str
-    :ivar template_path: Path to the catalog item entrypoint file.
-    :vartype template_path: str
-    :ivar parameters_schema: JSON schema defining the parameters object passed to actions.
-    :vartype parameters_schema: str
-    :ivar parameters: Input parameters passed to actions.
-    :vartype parameters: list[~dev_center_dataplane_client.models.CatalogItemParameter]
-    :ivar actions: Custom actions for the catalog item.
-    :vartype actions: list[~dev_center_dataplane_client.models.CatalogItemAction]
-    :ivar runner: The default container image to use to execute actions.
-    :vartype runner: str
-    :param status: Defines whether the specific catalog item version can be used. Possible values
-     include: "Enabled", "Disabled".
-    :type status: str or ~dev_center_dataplane_client.models.EnableStatus
-    :param eligible_for_latest_version: Whether the version is eligible to be the latest version.
-    :type eligible_for_latest_version: bool
-    """
-
-    _validation = {
-        'catalog_item_id': {'readonly': True},
-        'catalog_item_name': {'readonly': True},
-        'catalog_name': {'readonly': True},
-        'version': {'readonly': True},
-        'summary': {'readonly': True},
-        'description': {'readonly': True},
-        'template_path': {'readonly': True},
-        'parameters_schema': {'readonly': True},
-        'parameters': {'readonly': True},
-        'actions': {'readonly': True},
-        'runner': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'catalog_item_id': {'key': 'catalogItemId', 'type': 'str'},
-        'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
-        'catalog_name': {'key': 'catalogName', 'type': 'str'},
-        'version': {'key': 'version', 'type': 'str'},
-        'summary': {'key': 'summary', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
-        'template_path': {'key': 'templatePath', 'type': 'str'},
-        'parameters_schema': {'key': 'parametersSchema', 'type': 'str'},
-        'parameters': {'key': 'parameters', 'type': '[CatalogItemParameter]'},
-        'actions': {'key': 'actions', 'type': '[CatalogItemAction]'},
-        'runner': {'key': 'runner', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
-        'eligible_for_latest_version': {'key': 'eligibleForLatestVersion', 'type': 'bool'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CatalogItemVersion, self).__init__(**kwargs)
-        self.catalog_item_id = None
-        self.catalog_item_name = None
-        self.catalog_name = None
-        self.version = None
-        self.summary = None
-        self.description = None
-        self.template_path = None
-        self.parameters_schema = None
-        self.parameters = None
-        self.actions = None
-        self.runner = None
-        self.status = kwargs.get('status', None)
-        self.eligible_for_latest_version = kwargs.get('eligible_for_latest_version', None)
-
-
-class CatalogItemVersionListResult(msrest.serialization.Model):
-    """Results of the catalog item list operation.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param value: Required. Current page of results.
-    :type value: list[~dev_center_dataplane_client.models.CatalogItemVersion]
-    :param next_link: URL to get the next set of results if there are any.
-    :type next_link: str
-    """
-
-    _validation = {
-        'value': {'required': True},
-    }
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[CatalogItemVersion]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CatalogItemVersionListResult, self).__init__(**kwargs)
+        super(CatalogListResult, self).__init__(**kwargs)
         self.value = kwargs['value']
         self.next_link = kwargs.get('next_link', None)
 
@@ -464,7 +189,7 @@ class CloudErrorBody(msrest.serialization.Model):
 
 
 class DevBox(msrest.serialization.Model):
-    """A DevBox Dev Box.
+    """A Dev Box.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -477,7 +202,7 @@ class DevBox(msrest.serialization.Model):
     :param pool_name: Required. The name of the Dev Box pool this machine belongs to.
     :type pool_name: str
     :ivar hibernate_support: Indicates whether hibernate is enabled/disabled or unknown. Possible
-     values include: "Disabled", "Enabled".
+     values include: "Enabled", "Disabled", "OsUnsupported".
     :vartype hibernate_support: str or ~dev_center_dataplane_client.models.HibernateSupport
     :ivar provisioning_state: The current provisioning state of the Dev Box.
     :vartype provisioning_state: str
@@ -485,13 +210,13 @@ class DevBox(msrest.serialization.Model):
      action performed by user.
     :vartype action_state: str
     :ivar power_state: The current power state of the Dev Box. Possible values include: "Unknown",
-     "Deallocated", "PoweredOff", "Running", "Hibernated".
+     "Running", "Deallocated", "PoweredOff", "Hibernated".
     :vartype power_state: str or ~dev_center_dataplane_client.models.PowerState
     :ivar unique_id: A unique identifier for the Dev Box. This is a GUID-formatted string (e.g.
      00000000-0000-0000-0000-000000000000).
     :vartype unique_id: str
-    :ivar error_details: Provisioning or action error details. Populated only for error states.
-    :vartype error_details: ~dev_center_dataplane_client.models.ProvisioningError
+    :ivar error: Provisioning or action error details. Populated only for error states.
+    :vartype error: ~dev_center_dataplane_client.models.CloudErrorBody
     :ivar location: Azure region where this Dev Box is located. This will be the same region as the
      Virtual Network it is attached to.
     :vartype location: str
@@ -521,7 +246,7 @@ class DevBox(msrest.serialization.Model):
         'action_state': {'readonly': True},
         'power_state': {'readonly': True},
         'unique_id': {'readonly': True},
-        'error_details': {'readonly': True},
+        'error': {'readonly': True},
         'location': {'readonly': True},
         'os_type': {'readonly': True},
         'user': {'readonly': True},
@@ -540,7 +265,7 @@ class DevBox(msrest.serialization.Model):
         'action_state': {'key': 'actionState', 'type': 'str'},
         'power_state': {'key': 'powerState', 'type': 'str'},
         'unique_id': {'key': 'uniqueId', 'type': 'str'},
-        'error_details': {'key': 'errorDetails', 'type': 'ProvisioningError'},
+        'error': {'key': 'error', 'type': 'CloudErrorBody'},
         'location': {'key': 'location', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'user': {'key': 'user', 'type': 'str'},
@@ -564,7 +289,7 @@ class DevBox(msrest.serialization.Model):
         self.action_state = None
         self.power_state = None
         self.unique_id = None
-        self.error_details = None
+        self.error = None
         self.location = None
         self.os_type = None
         self.user = None
@@ -573,6 +298,146 @@ class DevBox(msrest.serialization.Model):
         self.image_reference = None
         self.created_time = None
         self.local_administrator = kwargs.get('local_administrator', None)
+
+
+class DevBoxAction(msrest.serialization.Model):
+    """An action which will take place on a Dev Box.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. The name of the action.
+    :type name: str
+    :param action_type: Required. The action that will be taken. Possible values include: "Stop".
+    :type action_type: str or ~dev_center_dataplane_client.models.DevBoxActionType
+    :param source_id: Required. The id of the resource which triggered this action.
+    :type source_id: str
+    :param suspended_until: The earliest time that the action could occur (UTC).
+    :type suspended_until: ~datetime.datetime
+    :param next: Details about the next run of this action.
+    :type next: ~dev_center_dataplane_client.models.DevBoxNextAction
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'action_type': {'required': True},
+        'source_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'action_type': {'key': 'actionType', 'type': 'str'},
+        'source_id': {'key': 'sourceId', 'type': 'str'},
+        'suspended_until': {'key': 'suspendedUntil', 'type': 'iso-8601'},
+        'next': {'key': 'next', 'type': 'DevBoxNextAction'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DevBoxAction, self).__init__(**kwargs)
+        self.name = kwargs['name']
+        self.action_type = kwargs['action_type']
+        self.source_id = kwargs['source_id']
+        self.suspended_until = kwargs.get('suspended_until', None)
+        self.next = kwargs.get('next', None)
+
+
+class DevBoxActionDelayResult(msrest.serialization.Model):
+    """The action delay result.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. The name of the action.
+    :type name: str
+    :param result: Required. The result of the delay operation on this action. Possible values
+     include: "Succeeded", "Failed".
+    :type result: str or ~dev_center_dataplane_client.models.DevBoxActionDelayResultStatus
+    :param action: The delayed action.
+    :type action: ~dev_center_dataplane_client.models.DevBoxAction
+    :param error: Information about the error that occurred. Only populated on error.
+    :type error: ~dev_center_dataplane_client.models.CloudErrorBody
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'result': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'result': {'key': 'result', 'type': 'str'},
+        'action': {'key': 'action', 'type': 'DevBoxAction'},
+        'error': {'key': 'error', 'type': 'CloudErrorBody'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DevBoxActionDelayResult, self).__init__(**kwargs)
+        self.name = kwargs['name']
+        self.result = kwargs['result']
+        self.action = kwargs.get('action', None)
+        self.error = kwargs.get('error', None)
+
+
+class DevBoxActionsDelayMultipleResult(msrest.serialization.Model):
+    """The actions list result.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. Current page of results.
+    :type value: list[~dev_center_dataplane_client.models.DevBoxActionDelayResult]
+    :param next_link: The URL to get the next set of results.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[DevBoxActionDelayResult]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DevBoxActionsDelayMultipleResult, self).__init__(**kwargs)
+        self.value = kwargs['value']
+        self.next_link = kwargs.get('next_link', None)
+
+
+class DevBoxActionsListResult(msrest.serialization.Model):
+    """The actions list result.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. Current page of results.
+    :type value: list[~dev_center_dataplane_client.models.DevBoxAction]
+    :param next_link: The URL to get the next set of results.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[DevBoxAction]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DevBoxActionsListResult, self).__init__(**kwargs)
+        self.value = kwargs['value']
+        self.next_link = kwargs.get('next_link', None)
 
 
 class DevBoxListResult(msrest.serialization.Model):
@@ -602,6 +467,31 @@ class DevBoxListResult(msrest.serialization.Model):
         super(DevBoxListResult, self).__init__(**kwargs)
         self.value = kwargs['value']
         self.next_link = kwargs.get('next_link', None)
+
+
+class DevBoxNextAction(msrest.serialization.Model):
+    """Details about the next run of an action.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param scheduled_time: Required. The time the action will be triggered (UTC).
+    :type scheduled_time: ~datetime.datetime
+    """
+
+    _validation = {
+        'scheduled_time': {'required': True},
+    }
+
+    _attribute_map = {
+        'scheduled_time': {'key': 'scheduledTime', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DevBoxNextAction, self).__init__(**kwargs)
+        self.scheduled_time = kwargs['scheduled_time']
 
 
 class DevBoxProvisioningNotification(msrest.serialization.Model):
@@ -670,28 +560,12 @@ class EmailNotification(msrest.serialization.Model):
 class EnvironmentUpdateProperties(msrest.serialization.Model):
     """Properties of an environment. These properties can be updated after the resource has been created.
 
-    :param description: Description of the Environment.
-    :type description: str
-    :param catalog_name: Name of the catalog.
-    :type catalog_name: str
-    :param catalog_item_name: Name of the catalog item.
-    :type catalog_item_name: str
-    :param parameters: Parameters object for the deploy action.
+    :param parameters: Parameters object for the environment.
     :type parameters: object
-    :param scheduled_tasks: Set of supported scheduled tasks to help manage cost.
-    :type scheduled_tasks: dict[str, ~dev_center_dataplane_client.models.ScheduledTask]
-    :param tags: A set of tags. Key value pairs that will be applied to resources deployed in this
-     environment as tags.
-    :type tags: dict[str, str]
     """
 
     _attribute_map = {
-        'description': {'key': 'description', 'type': 'str'},
-        'catalog_name': {'key': 'catalogName', 'type': 'str'},
-        'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': 'object'},
-        'scheduled_tasks': {'key': 'scheduledTasks', 'type': '{ScheduledTask}'},
-        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
     def __init__(
@@ -699,12 +573,7 @@ class EnvironmentUpdateProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(EnvironmentUpdateProperties, self).__init__(**kwargs)
-        self.description = kwargs.get('description', None)
-        self.catalog_name = kwargs.get('catalog_name', None)
-        self.catalog_item_name = kwargs.get('catalog_item_name', None)
         self.parameters = kwargs.get('parameters', None)
-        self.scheduled_tasks = kwargs.get('scheduled_tasks', None)
-        self.tags = kwargs.get('tags', None)
 
 
 class Environment(EnvironmentUpdateProperties):
@@ -714,51 +583,48 @@ class Environment(EnvironmentUpdateProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param description: Description of the Environment.
-    :type description: str
-    :param catalog_name: Name of the catalog.
-    :type catalog_name: str
-    :param catalog_item_name: Name of the catalog item.
-    :type catalog_item_name: str
-    :param parameters: Parameters object for the deploy action.
+    :param parameters: Parameters object for the environment.
     :type parameters: object
-    :param scheduled_tasks: Set of supported scheduled tasks to help manage cost.
-    :type scheduled_tasks: dict[str, ~dev_center_dataplane_client.models.ScheduledTask]
-    :param tags: A set of tags. Key value pairs that will be applied to resources deployed in this
-     environment as tags.
-    :type tags: dict[str, str]
     :ivar name: Environment name.
     :vartype name: str
     :param environment_type: Required. Environment type.
     :type environment_type: str
-    :param user: The AAD object id of the owner of this Environment.
-    :type user: str
+    :ivar user: The AAD object id of the owner of this Environment.
+    :vartype user: str
     :ivar provisioning_state: The provisioning state of the environment.
     :vartype provisioning_state: str
     :ivar resource_group_id: The identifier of the resource group containing the environment's
      resources.
     :vartype resource_group_id: str
+    :param catalog_name: Required. Name of the catalog.
+    :type catalog_name: str
+    :param environment_definition_name: Required. Name of the environment definition.
+    :type environment_definition_name: str
+    :ivar error: Provisioning error details. Populated only for error states.
+    :vartype error: ~dev_center_dataplane_client.models.CloudErrorBody
     """
 
     _validation = {
         'name': {'readonly': True},
         'environment_type': {'required': True},
+        'user': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'resource_group_id': {'readonly': True},
+        'catalog_name': {'required': True},
+        'environment_definition_name': {'required': True},
+        'error': {'readonly': True},
     }
 
     _attribute_map = {
-        'description': {'key': 'description', 'type': 'str'},
-        'catalog_name': {'key': 'catalogName', 'type': 'str'},
-        'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': 'object'},
-        'scheduled_tasks': {'key': 'scheduledTasks', 'type': '{ScheduledTask}'},
-        'tags': {'key': 'tags', 'type': '{str}'},
         'name': {'key': 'name', 'type': 'str'},
         'environment_type': {'key': 'environmentType', 'type': 'str'},
         'user': {'key': 'user', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'resource_group_id': {'key': 'resourceGroupId', 'type': 'str'},
+        'catalog_name': {'key': 'catalogName', 'type': 'str'},
+        'environment_definition_name': {'key': 'environmentDefinitionName', 'type': 'str'},
+        'error': {'key': 'error', 'type': 'CloudErrorBody'},
     }
 
     def __init__(
@@ -768,9 +634,151 @@ class Environment(EnvironmentUpdateProperties):
         super(Environment, self).__init__(**kwargs)
         self.name = None
         self.environment_type = kwargs['environment_type']
-        self.user = kwargs.get('user', None)
+        self.user = None
         self.provisioning_state = None
         self.resource_group_id = None
+        self.catalog_name = kwargs['catalog_name']
+        self.environment_definition_name = kwargs['environment_definition_name']
+        self.error = None
+
+
+class EnvironmentDefinition(msrest.serialization.Model):
+    """An environment definition.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param id: Required. The ID of the environment definition.
+    :type id: str
+    :param name: Required. Name of the environment definition.
+    :type name: str
+    :param catalog_name: Required. Name of the catalog.
+    :type catalog_name: str
+    :param description: A short description of the environment definition.
+    :type description: str
+    :param parameters: Input parameters passed to an environment.
+    :type parameters: list[~dev_center_dataplane_client.models.EnvironmentDefinitionParameter]
+    :param parameters_schema: JSON schema defining the parameters object passed to an environment.
+    :type parameters_schema: str
+    :param template_path: Path to the Environment Definition entrypoint file.
+    :type template_path: str
+    """
+
+    _validation = {
+        'id': {'required': True},
+        'name': {'required': True},
+        'catalog_name': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'catalog_name': {'key': 'catalogName', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'parameters': {'key': 'parameters', 'type': '[EnvironmentDefinitionParameter]'},
+        'parameters_schema': {'key': 'parametersSchema', 'type': 'str'},
+        'template_path': {'key': 'templatePath', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(EnvironmentDefinition, self).__init__(**kwargs)
+        self.id = kwargs['id']
+        self.name = kwargs['name']
+        self.catalog_name = kwargs['catalog_name']
+        self.description = kwargs.get('description', None)
+        self.parameters = kwargs.get('parameters', None)
+        self.parameters_schema = kwargs.get('parameters_schema', None)
+        self.template_path = kwargs.get('template_path', None)
+
+
+class EnvironmentDefinitionListResult(msrest.serialization.Model):
+    """Results of the environment definition list operation.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. Current page of results.
+    :type value: list[~dev_center_dataplane_client.models.EnvironmentDefinition]
+    :param next_link: URL to get the next set of results if there are any.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[EnvironmentDefinition]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(EnvironmentDefinitionListResult, self).__init__(**kwargs)
+        self.value = kwargs['value']
+        self.next_link = kwargs.get('next_link', None)
+
+
+class EnvironmentDefinitionParameter(msrest.serialization.Model):
+    """Properties of an Environment Definition parameter.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param id: Required. Unique ID of the parameter.
+    :type id: str
+    :param name: Display name of the parameter.
+    :type name: str
+    :param description: Description of the parameter.
+    :type description: str
+    :param default: Default value of the parameter.
+    :type default: str
+    :param type: Required. A string of one of the basic JSON types (number, integer, array, object,
+     boolean, string). Possible values include: "array", "boolean", "integer", "number", "object",
+     "string".
+    :type type: str or ~dev_center_dataplane_client.models.ParameterType
+    :param read_only: Whether or not this parameter is read-only.  If true, default should have a
+     value.
+    :type read_only: bool
+    :param required: Required. Whether or not this parameter is required.
+    :type required: bool
+    :param allowed: An array of allowed values.
+    :type allowed: list[str]
+    """
+
+    _validation = {
+        'id': {'required': True},
+        'type': {'required': True},
+        'required': {'required': True},
+        'allowed': {'min_items': 1, 'unique': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'default': {'key': 'default', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'read_only': {'key': 'readOnly', 'type': 'bool'},
+        'required': {'key': 'required', 'type': 'bool'},
+        'allowed': {'key': 'allowed', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(EnvironmentDefinitionParameter, self).__init__(**kwargs)
+        self.id = kwargs['id']
+        self.name = kwargs.get('name', None)
+        self.description = kwargs.get('description', None)
+        self.default = kwargs.get('default', None)
+        self.type = kwargs['type']
+        self.read_only = kwargs.get('read_only', None)
+        self.required = kwargs['required']
+        self.allowed = kwargs.get('allowed', None)
 
 
 class EnvironmentListResult(msrest.serialization.Model):
@@ -805,23 +813,23 @@ class EnvironmentListResult(msrest.serialization.Model):
 class EnvironmentType(msrest.serialization.Model):
     """Properties of an environment type.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Name of the environment type.
-    :vartype name: str
-    :ivar deployment_target_id: Id of a subscription or management group that the environment type
-     will be mapped to. The environment's resources will be deployed into this subscription or
-     management group.
-    :vartype deployment_target_id: str
-    :ivar status: Defines whether this Environment Type can be used in this Project. Possible
-     values include: "Enabled", "Disabled".
-    :vartype status: str or ~dev_center_dataplane_client.models.EnableStatus
+    :param name: Required. Name of the environment type.
+    :type name: str
+    :param deployment_target_id: Required. Id of a subscription or management group that the
+     environment type will be mapped to. The environment's resources will be deployed into this
+     subscription or management group.
+    :type deployment_target_id: str
+    :param status: Required. Indicates whether this environment type is enabled for use in this
+     project. Possible values include: "Enabled", "Disabled".
+    :type status: str or ~dev_center_dataplane_client.models.EnvironmentTypeEnableStatus
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'deployment_target_id': {'readonly': True},
-        'status': {'readonly': True},
+        'name': {'required': True},
+        'deployment_target_id': {'required': True},
+        'status': {'required': True},
     }
 
     _attribute_map = {
@@ -835,9 +843,9 @@ class EnvironmentType(msrest.serialization.Model):
         **kwargs
     ):
         super(EnvironmentType, self).__init__(**kwargs)
-        self.name = None
-        self.deployment_target_id = None
-        self.status = None
+        self.name = kwargs['name']
+        self.deployment_target_id = kwargs['deployment_target_id']
+        self.status = kwargs['status']
 
 
 class EnvironmentTypeListResult(msrest.serialization.Model):
@@ -1074,6 +1082,87 @@ class NotificationType(msrest.serialization.Model):
         self.dev_box_provisioning_notification = kwargs['dev_box_provisioning_notification']
 
 
+class OperationStatus(msrest.serialization.Model):
+    """The current status of an async operation.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param id: Fully qualified ID for the operation status.
+    :type id: str
+    :param name: The operation id name.
+    :type name: str
+    :param status: Required. Provisioning state of the resource.
+    :type status: str
+    :param resource_id: The id of the resource.
+    :type resource_id: str
+    :param start_time: The start time of the operation.
+    :type start_time: ~datetime.datetime
+    :param end_time: The end time of the operation.
+    :type end_time: ~datetime.datetime
+    :param percent_complete: Percent of the operation that is complete.
+    :type percent_complete: float
+    :param properties: Custom operation properties, populated only for a successful operation.
+    :type properties: object
+    :param error: Operation Error message.
+    :type error: ~dev_center_dataplane_client.models.OperationStatusError
+    """
+
+    _validation = {
+        'status': {'required': True},
+        'percent_complete': {'maximum': 100, 'minimum': 0},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
+        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
+        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
+        'percent_complete': {'key': 'percentComplete', 'type': 'float'},
+        'properties': {'key': 'properties', 'type': 'object'},
+        'error': {'key': 'error', 'type': 'OperationStatusError'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OperationStatus, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+        self.status = kwargs['status']
+        self.resource_id = kwargs.get('resource_id', None)
+        self.start_time = kwargs.get('start_time', None)
+        self.end_time = kwargs.get('end_time', None)
+        self.percent_complete = kwargs.get('percent_complete', None)
+        self.properties = kwargs.get('properties', None)
+        self.error = kwargs.get('error', None)
+
+
+class OperationStatusError(msrest.serialization.Model):
+    """Operation Error message.
+
+    :param code: The error code.
+    :type code: str
+    :param message: The error message.
+    :type message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OperationStatusError, self).__init__(**kwargs)
+        self.code = kwargs.get('code', None)
+        self.message = kwargs.get('message', None)
+
+
 class OsDisk(msrest.serialization.Model):
     """Settings for the operating system disk.
 
@@ -1102,37 +1191,40 @@ class OsDisk(msrest.serialization.Model):
 class Pool(msrest.serialization.Model):
     """A pool of Dev Boxes.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Pool name.
-    :vartype name: str
-    :ivar location: Azure region where Dev Boxes in the pool are located.
-    :vartype location: str
-    :ivar os_type: The operating system type of Dev Boxes in this pool. Possible values include:
+    :param name: Required. Pool name.
+    :type name: str
+    :param location: Required. Azure region where Dev Boxes in the pool are located.
+    :type location: str
+    :param os_type: The operating system type of Dev Boxes in this pool. Possible values include:
      "Windows".
-    :vartype os_type: str or ~dev_center_dataplane_client.models.OsType
-    :ivar hardware_profile: Hardware settings for the Dev Boxes created in this pool.
-    :vartype hardware_profile: ~dev_center_dataplane_client.models.HardwareProfile
-    :ivar hibernate_support: Indicates whether hibernate is enabled/disabled or unknown. Possible
-     values include: "Disabled", "Enabled".
-    :vartype hibernate_support: str or ~dev_center_dataplane_client.models.HibernateSupport
-    :ivar storage_profile: Storage settings for Dev Box created in this pool.
-    :vartype storage_profile: ~dev_center_dataplane_client.models.StorageProfile
-    :ivar image_reference: Image settings for Dev Boxes create in this pool.
-    :vartype image_reference: ~dev_center_dataplane_client.models.ImageReference
+    :type os_type: str or ~dev_center_dataplane_client.models.OsType
+    :param hardware_profile: Hardware settings for the Dev Boxes created in this pool.
+    :type hardware_profile: ~dev_center_dataplane_client.models.HardwareProfile
+    :param hibernate_support: Indicates whether hibernate is enabled/disabled or unknown. Possible
+     values include: "Enabled", "Disabled", "OsUnsupported".
+    :type hibernate_support: str or ~dev_center_dataplane_client.models.HibernateSupport
+    :param storage_profile: Storage settings for Dev Box created in this pool.
+    :type storage_profile: ~dev_center_dataplane_client.models.StorageProfile
+    :param image_reference: Image settings for Dev Boxes create in this pool.
+    :type image_reference: ~dev_center_dataplane_client.models.ImageReference
     :param local_administrator: Indicates whether owners of Dev Boxes in this pool are local
      administrators on the Dev Boxes. Possible values include: "Enabled", "Disabled".
     :type local_administrator: str or ~dev_center_dataplane_client.models.LocalAdminStatus
+    :param stop_on_disconnect: Stop on disconnect configuration settings for Dev Boxes created in
+     this pool.
+    :type stop_on_disconnect: ~dev_center_dataplane_client.models.StopOnDisconnectConfiguration
+    :param health_status: Required. Overall health status of the Pool. Indicates whether or not the
+     Pool is available to create Dev Boxes. Possible values include: "Unknown", "Pending",
+     "Healthy", "Warning", "Unhealthy".
+    :type health_status: str or ~dev_center_dataplane_client.models.PoolHealthStatus
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'location': {'readonly': True},
-        'os_type': {'readonly': True},
-        'hardware_profile': {'readonly': True},
-        'hibernate_support': {'readonly': True},
-        'storage_profile': {'readonly': True},
-        'image_reference': {'readonly': True},
+        'name': {'required': True},
+        'location': {'required': True},
+        'health_status': {'required': True},
     }
 
     _attribute_map = {
@@ -1144,6 +1236,8 @@ class Pool(msrest.serialization.Model):
         'storage_profile': {'key': 'storageProfile', 'type': 'StorageProfile'},
         'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
         'local_administrator': {'key': 'localAdministrator', 'type': 'str'},
+        'stop_on_disconnect': {'key': 'stopOnDisconnect', 'type': 'StopOnDisconnectConfiguration'},
+        'health_status': {'key': 'healthStatus', 'type': 'str'},
     }
 
     def __init__(
@@ -1151,14 +1245,16 @@ class Pool(msrest.serialization.Model):
         **kwargs
     ):
         super(Pool, self).__init__(**kwargs)
-        self.name = None
-        self.location = None
-        self.os_type = None
-        self.hardware_profile = None
-        self.hibernate_support = None
-        self.storage_profile = None
-        self.image_reference = None
+        self.name = kwargs['name']
+        self.location = kwargs['location']
+        self.os_type = kwargs.get('os_type', None)
+        self.hardware_profile = kwargs.get('hardware_profile', None)
+        self.hibernate_support = kwargs.get('hibernate_support', None)
+        self.storage_profile = kwargs.get('storage_profile', None)
+        self.image_reference = kwargs.get('image_reference', None)
         self.local_administrator = kwargs.get('local_administrator', None)
+        self.stop_on_disconnect = kwargs.get('stop_on_disconnect', None)
+        self.health_status = kwargs['health_status']
 
 
 class PoolListResult(msrest.serialization.Model):
@@ -1193,22 +1289,26 @@ class PoolListResult(msrest.serialization.Model):
 class Project(msrest.serialization.Model):
     """Project details.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Name of the project.
-    :vartype name: str
-    :ivar description: Description of the project.
-    :vartype description: str
+    :param name: Required. Name of the project.
+    :type name: str
+    :param description: Description of the project.
+    :type description: str
+    :param max_dev_boxes_per_user: When specified, indicates the maximum number of Dev Boxes a
+     single user can create across all pools in the project.
+    :type max_dev_boxes_per_user: int
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'description': {'readonly': True},
+        'name': {'required': True},
+        'max_dev_boxes_per_user': {'minimum': 0},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
+        'max_dev_boxes_per_user': {'key': 'maxDevBoxesPerUser', 'type': 'int'},
     }
 
     def __init__(
@@ -1216,8 +1316,9 @@ class Project(msrest.serialization.Model):
         **kwargs
     ):
         super(Project, self).__init__(**kwargs)
-        self.name = None
-        self.description = None
+        self.name = kwargs['name']
+        self.description = kwargs.get('description', None)
+        self.max_dev_boxes_per_user = kwargs.get('max_dev_boxes_per_user', None)
 
 
 class ProjectListResult(msrest.serialization.Model):
@@ -1249,44 +1350,14 @@ class ProjectListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
-class ProvisioningError(msrest.serialization.Model):
-    """Error details.
-
-    :param code: The error code.
-    :type code: str
-    :param message: The error message.
-    :type message: str
-    """
-
-    _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ProvisioningError, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
-
-
 class RemoteConnection(msrest.serialization.Model):
-    """Provides RDP connection information.
+    """Provides remote connection information for a Dev Box.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar web_url: URL to open a browser based RDP session.
-    :vartype web_url: str
-    :ivar rdp_connection_url: Link to open a Remote Desktop session.
-    :vartype rdp_connection_url: str
+    :param web_url: URL to open a browser based RDP session.
+    :type web_url: str
+    :param rdp_connection_url: Link to open a Remote Desktop session.
+    :type rdp_connection_url: str
     """
-
-    _validation = {
-        'web_url': {'readonly': True},
-        'rdp_connection_url': {'readonly': True},
-    }
 
     _attribute_map = {
         'web_url': {'key': 'webUrl', 'type': 'str'},
@@ -1298,34 +1369,35 @@ class RemoteConnection(msrest.serialization.Model):
         **kwargs
     ):
         super(RemoteConnection, self).__init__(**kwargs)
-        self.web_url = None
-        self.rdp_connection_url = None
+        self.web_url = kwargs.get('web_url', None)
+        self.rdp_connection_url = kwargs.get('rdp_connection_url', None)
 
 
 class Schedule(msrest.serialization.Model):
     """A Schedule to execute action.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Display name for the Schedule.
-    :vartype name: str
-    :ivar type: Supported type this scheduled task represents. Possible values include:
+    :param name: Required. Display name for the Schedule.
+    :type name: str
+    :param type: Required. Supported type this scheduled task represents. Possible values include:
      "StopDevBox".
-    :vartype type: str or ~dev_center_dataplane_client.models.ScheduledType
-    :ivar frequency: The frequency of this scheduled task. Possible values include: "Daily".
-    :vartype frequency: str or ~dev_center_dataplane_client.models.ScheduledFrequency
-    :ivar time: The target time to trigger the action. The format is HH:MM.
-    :vartype time: str
-    :ivar time_zone: The IANA timezone id at which the schedule should execute.
-    :vartype time_zone: str
+    :type type: str or ~dev_center_dataplane_client.models.ScheduledType
+    :param frequency: Required. The frequency of this scheduled task. Possible values include:
+     "Daily".
+    :type frequency: str or ~dev_center_dataplane_client.models.ScheduledFrequency
+    :param time: Required. The target time to trigger the action. The format is HH:MM.
+    :type time: str
+    :param time_zone: Required. The IANA timezone id at which the schedule should execute.
+    :type time_zone: str
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'frequency': {'readonly': True},
-        'time': {'readonly': True},
-        'time_zone': {'readonly': True},
+        'name': {'required': True},
+        'type': {'required': True},
+        'frequency': {'required': True},
+        'time': {'required': True},
+        'time_zone': {'required': True},
     }
 
     _attribute_map = {
@@ -1341,47 +1413,11 @@ class Schedule(msrest.serialization.Model):
         **kwargs
     ):
         super(Schedule, self).__init__(**kwargs)
-        self.name = None
-        self.type = None
-        self.frequency = None
-        self.time = None
-        self.time_zone = None
-
-
-class ScheduledTask(msrest.serialization.Model):
-    """Scheduled task to auto-expire an environment.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param type: Required. Supported type this scheduled task represents. Possible values include:
-     "AutoExpire".
-    :type type: str or ~dev_center_dataplane_client.models.ScheduledTaskType
-    :param enabled: Indicates whether or not this scheduled task is enabled. Possible values
-     include: "Enabled", "Disabled".
-    :type enabled: str or ~dev_center_dataplane_client.models.EnableStatus
-    :param start_time: Required. Date/time by which the environment should expire.
-    :type start_time: ~datetime.datetime
-    """
-
-    _validation = {
-        'type': {'required': True},
-        'start_time': {'required': True},
-    }
-
-    _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'enabled': {'key': 'enabled', 'type': 'str'},
-        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ScheduledTask, self).__init__(**kwargs)
+        self.name = kwargs['name']
         self.type = kwargs['type']
-        self.enabled = kwargs.get('enabled', None)
-        self.start_time = kwargs['start_time']
+        self.frequency = kwargs['frequency']
+        self.time = kwargs['time']
+        self.time_zone = kwargs['time_zone']
 
 
 class ScheduleListResult(msrest.serialization.Model):
@@ -1413,6 +1449,37 @@ class ScheduleListResult(msrest.serialization.Model):
         self.next_link = kwargs.get('next_link', None)
 
 
+class StopOnDisconnectConfiguration(msrest.serialization.Model):
+    """Stop on disconnect configuration settings for Dev Boxes created in this pool.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param status: Required. Indicates whether the feature to stop the devbox on disconnect once
+     the grace period has lapsed is enabled. Possible values include: "Enabled", "Disabled".
+    :type status: str or ~dev_center_dataplane_client.models.StopOnDisconnectEnableStatus
+    :param grace_period_minutes: The specified time in minutes to wait before stopping a Dev Box
+     once disconnect is detected.
+    :type grace_period_minutes: int
+    """
+
+    _validation = {
+        'status': {'required': True},
+    }
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'grace_period_minutes': {'key': 'gracePeriodMinutes', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(StopOnDisconnectConfiguration, self).__init__(**kwargs)
+        self.status = kwargs['status']
+        self.grace_period_minutes = kwargs.get('grace_period_minutes', None)
+
+
 class StorageProfile(msrest.serialization.Model):
     """Storage settings for the Dev Box's disks.
 
@@ -1430,85 +1497,6 @@ class StorageProfile(msrest.serialization.Model):
     ):
         super(StorageProfile, self).__init__(**kwargs)
         self.os_disk = kwargs.get('os_disk', None)
-
-
-class UpcomingAction(msrest.serialization.Model):
-    """An upcoming Action.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Uniquely identifies the action.
-    :vartype id: str
-    :ivar action_type: The action that will be taken. Possible values include: "Stop".
-    :vartype action_type: str or ~dev_center_dataplane_client.models.UpcomingActionType
-    :ivar reason: The reason for this action. Possible values include: "Schedule".
-    :vartype reason: str or ~dev_center_dataplane_client.models.UpcomingActionReason
-    :ivar scheduled_time: The target time the action will be triggered (UTC).
-    :vartype scheduled_time: ~datetime.datetime
-    :ivar original_scheduled_time: The original scheduled time for the action (UTC).
-    :vartype original_scheduled_time: ~datetime.datetime
-    :ivar source_id: The id of the resource which triggered this action.
-    :vartype source_id: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'action_type': {'readonly': True},
-        'reason': {'readonly': True},
-        'scheduled_time': {'readonly': True},
-        'original_scheduled_time': {'readonly': True},
-        'source_id': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'action_type': {'key': 'actionType', 'type': 'str'},
-        'reason': {'key': 'reason', 'type': 'str'},
-        'scheduled_time': {'key': 'scheduledTime', 'type': 'iso-8601'},
-        'original_scheduled_time': {'key': 'originalScheduledTime', 'type': 'iso-8601'},
-        'source_id': {'key': 'sourceId', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(UpcomingAction, self).__init__(**kwargs)
-        self.id = None
-        self.action_type = None
-        self.reason = None
-        self.scheduled_time = None
-        self.original_scheduled_time = None
-        self.source_id = None
-
-
-class UpcomingActionsListResult(msrest.serialization.Model):
-    """The Upcoming Action list result.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param value: Required. Current page of results.
-    :type value: list[~dev_center_dataplane_client.models.UpcomingAction]
-    :param next_link: The URL to get the next set of results.
-    :type next_link: str
-    """
-
-    _validation = {
-        'value': {'required': True},
-    }
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[UpcomingAction]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(UpcomingActionsListResult, self).__init__(**kwargs)
-        self.value = kwargs['value']
-        self.next_link = kwargs.get('next_link', None)
 
 
 class WebhookNotification(msrest.serialization.Model):
@@ -1538,73 +1526,3 @@ class WebhookNotification(msrest.serialization.Model):
         super(WebhookNotification, self).__init__(**kwargs)
         self.enabled = kwargs['enabled']
         self.url = kwargs.get('url', None)
-
-class LongRunningOperationErrorDetails(msrest.serialization.Model):
-    """Image validation error details.
-
-    :param code: An identifier for the error.
-    :type code: str
-    :param message: A message describing the error.
-    :type message: str
-    """
-
-    _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(LongRunningOperationErrorDetails, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
-
-
-class LongRunningOperationStatus(msrest.serialization.Model):
-    """Operation status from a LRO
-
-    :ivar status: The status of the operation.
-    :vartype status: str
-    :ivar id: The id of the operation.
-    :vartype id: str
-    :ivar start_time: Start time of operation.
-    :vartype start_time: ~datetime.datetime
-    :ivar end_time: End time of the operation.
-    :vartype end_time: ~datetime.datetime
-    :ivar name: The name of the operation
-    :vartype name: str
-    :ivar error: The error message of the opeartion.
-    :vartype error:  ~dev_center_dataplane_client.models.LongRunningOperationErrorDetails
-    """
-
-    _validation = {
-        'status': {'readonly': True},
-        'id': {'readonly': True},
-        'start_time': {'readonly': True},
-        'end_time': {'readonly': True},
-        'name': {'readonly': True},
-        'error': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'status': {'key': 'status', 'type': 'str'},
-        'id': {'key': 'id', 'type': 'str'},
-        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
-        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
-        'error': {'key': 'properties.error', 'type': 'LongRunningOperationErrorDetails'},
-        'name': {'key': 'name', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(LongRunningOperationStatus, self).__init__(**kwargs)
-        self.status = None
-        self.id = None
-        self.start_time = None
-        self.end_time = None
-        self.error = None
-        self.name = None

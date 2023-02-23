@@ -18,13 +18,13 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class CatalogItemVersionsOperations(object):
-    """CatalogItemVersionsOperations operations.
+class CatalogsOperations(object):
+    """CatalogsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -44,31 +44,28 @@ class CatalogItemVersionsOperations(object):
         self._serialize = serializer
         self._deserialize = deserializer
         self._config = config
-
+    
     def list(
         self,
-        catalog_item_id,  # type: str
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.CatalogItemVersionListResult"]
-        """List all versions of a catalog item from a project.
+        # type: (...) -> Iterable["models.CatalogListResult"]
+        """Lists all of the catalogs available for a project.
 
-        :param catalog_item_id: The unique id of the catalog item.
-        :type catalog_item_id: str
         :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either CatalogItemVersionListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~dev_center_dataplane_client.models.CatalogItemVersionListResult]
+        :return: An iterator like instance of either CatalogListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~dev_center_dataplane_client.models.CatalogListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CatalogItemVersionListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CatalogListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-01-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -82,7 +79,6 @@ class CatalogItemVersionsOperations(object):
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-                    'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str', max_length=216, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.:]{2,216}$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -98,14 +94,13 @@ class CatalogItemVersionsOperations(object):
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-                    'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str', max_length=216, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.:]{2,216}$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('CatalogItemVersionListResult', pipeline_response)
+            deserialized = self._deserialize('CatalogListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -126,32 +121,29 @@ class CatalogItemVersionsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/projects/{projectName}/catalogItems/{catalogItemId}/versions'}  # type: ignore
+    list.metadata = {'url': '/projects/{projectName}/catalogs'}  # type: ignore
 
     def get(
         self,
-        catalog_item_id,  # type: str
-        version,  # type: str
+        catalog_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CatalogItemVersion"
-        """Get a specific catalog item version from a project.
+        # type: (...) -> "models.Catalog"
+        """Gets the specified catalog within the project.
 
-        :param catalog_item_id: The unique id of the catalog item.
-        :type catalog_item_id: str
-        :param version: The version of the catalog item.
-        :type version: str
+        :param catalog_name: The name of the catalog.
+        :type catalog_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CatalogItemVersion, or the result of cls(response)
-        :rtype: ~dev_center_dataplane_client.models.CatalogItemVersion
+        :return: Catalog, or the result of cls(response)
+        :rtype: ~dev_center_dataplane_client.models.Catalog
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CatalogItemVersion"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Catalog"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-01-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -159,8 +151,7 @@ class CatalogItemVersionsOperations(object):
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
             'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-            'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str', max_length=216, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.:]{2,216}$'),
-            'version': self._serialize.url("version", version, 'str', max_length=63, min_length=3, pattern=r'^[0-9]{1,20}.[0-9]{1,20}.[0-9]{1,20}$|^latest$'),
+            'catalogName': self._serialize.url("catalog_name", catalog_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -180,10 +171,10 @@ class CatalogItemVersionsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CatalogItemVersion', pipeline_response)
+        deserialized = self._deserialize('Catalog', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/projects/{projectName}/catalogItems/{catalogItemId}/versions/{version}'}  # type: ignore
+    get.metadata = {'url': '/projects/{projectName}/catalogs/{catalogName}'}  # type: ignore

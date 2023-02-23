@@ -1,3 +1,4 @@
+
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -9,22 +10,22 @@ from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.core.paging import ItemPaged
 
 from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class CatalogItemsOperations(object):
-    """CatalogItemsOperations operations.
+class EnvironmentDefinitionsOperations(object):
+    """EnvironmentDefinitionsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -50,22 +51,22 @@ class CatalogItemsOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.CatalogItemListResult"]
-        """Lists latest version of all catalog items available for a project.
+        # type: (...) -> Iterable["models.EnvironmentDefinitionListResult"]
+        """Lists all environment definitions available for a project.
 
         :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either CatalogItemListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~dev_center_dataplane_client.models.CatalogItemListResult]
+        :return: An iterator like instance of either EnvironmentDefinitionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~dev_center_dataplane_client.models.EnvironmentDefinitionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CatalogItemListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentDefinitionListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-01-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -100,7 +101,7 @@ class CatalogItemsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('CatalogItemListResult', pipeline_response)
+            deserialized = self._deserialize('EnvironmentDefinitionListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -121,29 +122,115 @@ class CatalogItemsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/projects/{projectName}/catalogItems'}  # type: ignore
+    list.metadata = {'url': '/projects/{projectName}/environmentDefinitions'}  # type: ignore
 
-    def get(
+    def list_by_catalog(
         self,
-        catalog_item_id,  # type: str
+        catalog_name,  # type: str
+        top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CatalogItem"
-        """Get a catalog item from a project.
+        # type: (...) -> Iterable["models.EnvironmentDefinitionListResult"]
+        """Lists all environment definitions available within a catalog.
 
-        :param catalog_item_id: The unique id of the catalog item.
-        :type catalog_item_id: str
+        :param catalog_name: The name of the catalog.
+        :type catalog_name: str
+        :param top: The maximum number of resources to return from the operation. Example: 'top=10'.
+        :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CatalogItem, or the result of cls(response)
-        :rtype: ~dev_center_dataplane_client.models.CatalogItem
+        :return: An iterator like instance of either EnvironmentDefinitionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~dev_center_dataplane_client.models.EnvironmentDefinitionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CatalogItem"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentDefinitionListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-01-01-preview"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_catalog.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                    'catalogName': self._serialize.url("catalog_name", catalog_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if top is not None:
+                    query_parameters['top'] = self._serialize.query("top", top, 'int')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                path_format_arguments = {
+                    'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                    'catalogName': self._serialize.url("catalog_name", catalog_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('EnvironmentDefinitionListResult', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_by_catalog.metadata = {'url': '/projects/{projectName}/catalogs/{catalogName}/environmentDefinitions'}  # type: ignore
+
+    def get(
+        self,
+        catalog_name,  # type: str
+        definition_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.EnvironmentDefinition"
+        """Get an environment definition from a catalog.
+
+        :param catalog_name: The name of the catalog.
+        :type catalog_name: str
+        :param definition_name: The name of the environment definition.
+        :type definition_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: EnvironmentDefinition, or the result of cls(response)
+        :rtype: ~dev_center_dataplane_client.models.EnvironmentDefinition
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentDefinition"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2023-01-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -151,7 +238,8 @@ class CatalogItemsOperations(object):
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
             'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-            'catalogItemId': self._serialize.url("catalog_item_id", catalog_item_id, 'str', max_length=216, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.:]{2,216}$'),
+            'catalogName': self._serialize.url("catalog_name", catalog_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+            'definitionName': self._serialize.url("definition_name", definition_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -171,10 +259,10 @@ class CatalogItemsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CatalogItem', pipeline_response)
+        deserialized = self._deserialize('EnvironmentDefinition', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/projects/{projectName}/catalogItems/{catalogItemId}'}  # type: ignore
+    get.metadata = {'url': '/projects/{projectName}/catalogs/{catalogName}/environmentDefinitions/{definitionName}'}  # type: ignore
