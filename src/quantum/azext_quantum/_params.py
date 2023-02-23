@@ -57,7 +57,7 @@ def load_arguments(self, _):
     job_output_format_type = CLIArgumentType(help='The expected job output format. Ignored on Q# jobs.')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR. Ignored on Q# jobs.')
     item_type = CLIArgumentType(help='The item index in a batching job.')
-    skip_autoadd_type = CLIArgumentType(help='If specified, the plans flagged "autoAdd" will not be added.')
+    skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
