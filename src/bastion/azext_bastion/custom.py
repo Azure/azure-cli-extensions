@@ -150,7 +150,11 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
+    ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
+    if ip_connect:
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+
+    _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port)
@@ -235,7 +239,10 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
-    _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
+    if ip_connect:
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+
+    _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     if platform.system() == "Windows":
@@ -284,12 +291,8 @@ def _is_ipconnect_request(cmd, bastion, target_ip_address):
     return False
 
 
-def _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address):
-    if target_ip_address:
-        if bastion['enableIpConnect'] is not True:
-            raise InvalidArgumentValueError("Bastion does not have IP Connect feature enabled, please enable and try again")
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
-    elif not is_valid_resource_id(target_resource_id):
+def _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address):
+    if not is_valid_resource_id(target_resource_id):
         err_msg = "Please enter a valid resource ID. If this is not working, " \
                   "try opening the JSON view of your resource (in the Overview tab), and copying the full resource ID."
         raise InvalidArgumentValueError(err_msg)
@@ -346,7 +349,11 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
     if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and bastion['enableTunneling'] is not True:
         raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
 
-    _validate_and_generate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
+    ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
+    if ip_connect:
+        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
+
+    _validate_resourceid(cmd, bastion, resource_group_name, target_resource_id, target_ip_address)
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port)

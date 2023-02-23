@@ -399,7 +399,7 @@ def load_arguments(self, _):
                        validator=validate_ingress_session_max_age)
             c.argument('backend_protocol',
                        arg_type=get_enum_type(BackendProtocol),
-                       help='Ingress backend protocol of app.')
+                       help='Ingress backend protocol of app. Default means HTTP/HTTPS/WebSocket.')
             c.argument('client_auth_certs',
                        validator=validate_ingress_client_auth_certificates,
                        help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")

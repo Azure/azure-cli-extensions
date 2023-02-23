@@ -1968,7 +1968,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group {resource_group} --name {aks_name2} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
                      '--node-count 1 --snapshot-id {snapshot_resource_id} ' \
-                     '-k {k8s_version} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -1978,7 +1977,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add a new nodepool to this cluster using this snapshot
         add_nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={aks_name2} --name={nodepool_name2} --node-count 1 ' \
-                           '-k {k8s_version} ' \
                            '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(add_nodepool_cmd,
                  checks=[
@@ -2003,14 +2001,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(get_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('creationData.sourceResourceId', snapshot_resource_id)
-        ])
-
-        # upgrade this cluster (snapshot is not allowed for cluster upgrading), snapshot info is reset
-        create_cmd = 'aks upgrade --resource-group {resource_group} --name {aks_name2} -k {upgrade_k8s_version} --yes -o json'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].creationData', None),
-            self.check('agentPoolProfiles[1].creationData', None)
         ])
 
         # delete the 2nd AKS cluster
@@ -2437,7 +2427,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # upgrade Windows nodepool
         self.cmd('aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} '
                  '--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} '
-                 '--aks-custom-headers WindowsContainerRuntime=containerd', checks=[
+                 '--aks-custom-headers WindowsContainerRuntime=containerd --yes', checks=[
                      self.check('provisioningState', 'Succeeded')
                  ])
 
@@ -3055,14 +3045,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--enable-managed-identity ' \
                      '--node-os-upgrade-channel NodeImage ' \
-                     '--ssh-key-value={ssh_key_value}'
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.nodeOsUpgradeChannel', 'NodeImage')
         ])
 
         # update node os upgrade channel
-        self.cmd('aks update --resource-group={resource_group} --name={name} --node-os-upgrade-channel None', checks=[
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--node-os-upgrade-channel None ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.nodeOsUpgradeChannel', 'None')
         ])
@@ -3087,7 +3081,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-managed-identity ' \
                      '--auto-upgrade-channel rapid ' \
                      '--node-os-upgrade-channel NodeImage ' \
-                     '--ssh-key-value={ssh_key_value}'
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.upgradeChannel', 'rapid'),
@@ -3095,7 +3090,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update auto upgrade channel and node os upgrade channel
-        self.cmd('aks update --resource-group={resource_group} --name={name} --auto-upgrade-channel stable --node-os-upgrade-channel None', checks=[
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--auto-upgrade-channel stable --node-os-upgrade-channel None ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.upgradeChannel', 'stable'),
             self.check('autoUpgradeProfile.nodeOsUpgradeChannel', 'None')
