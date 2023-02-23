@@ -218,6 +218,34 @@ def load_arguments(self, _):
     with self.argument_context('managed-cassandra segment abort') as c:
         c.argument('segment_id', options_list=['--segment-id', '-s'], help="Guid identifying the segment to be aborted.", required=True)
 
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule create',
+        'managed-cassandra backup schedule update',
+        'managed-cassandra backup schedule show',
+        'managed-cassandra backup schedule delete',
+        'managed-cassandra backup schedule list']:
+        with self.argument_context(scope) as c:
+            c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule create',
+        'managed-cassandra backup schedule update',
+        'managed-cassandra backup schedule show',
+        'managed-cassandra backup schedule delete']:
+        with self.argument_context(scope) as c:
+            c.argument('schedule_name', options_list=['--schedule-name', '-s'], help="Schedule Name", required=True)
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule create',
+        'managed-cassandra backup schedule update']:
+        with self.argument_context(scope) as c:
+            c.argument('cron_expression', options_list=['--cron-expression', '-e'], help="Cron Expression", required=False)
+            c.argument('retention_in_hours', options_list=['--retention-in-hours', '-r'], help="Retention in hours", required=False)
+
     # Services
     with self.argument_context('cosmosdb service') as c:
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)

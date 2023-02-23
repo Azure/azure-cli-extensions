@@ -290,6 +290,78 @@ examples:
         --resource-group MyResourceGroup
 """
 
+helps['managed-cassandra backup'] = """
+type: group
+short-summary: Backup feature of Azure Managed Cassandra.
+"""
+
+helps['managed-cassandra backup schedule create'] = """
+type: command
+short-summary: Create a schedule of how frequent the backup should be scheduled.
+examples:
+  - name: Create a backup schedule.
+    text: |
+      az managed-cassandra backup schedule create \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule \\
+        --cron-expressions "0 19 * * *" \\
+        --retention-in-hours 48
+        
+"""
+
+helps['managed-cassandra backup schedule update'] = """
+type: command
+short-summary: Update a given backupshcedule identified by --schedule-name.
+examples:
+  - name: Update a backup schedule.
+    text: |
+      az managed-cassandra backup schedule update \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule \\
+        --cron-expressions "0 18 * * *" \\
+        --retention-in-hours 24
+"""
+
+
+helps['managed-cassandra backup schedule list'] = """
+type: command
+short-summary: List all backup schedules of the cluster.
+examples:
+  - name: List backup schedule.
+    text: |
+      az managed-cassandra backup schedule list \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster
+"""
+
+
+helps['managed-cassandra backup schedule show'] = """
+type: command
+short-summary: Returns details of backup schedule identified by --schedule-name.
+examples:
+  - name: Show a backup schedule.
+    text: |
+      az managed-cassandra backup schedule show \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule
+"""
+
+
+helps['managed-cassandra backup schedule delete'] = """
+type: command
+short-summary: Delete a given backup schedule identified by --schedule-name
+examples:
+  - name: Delete a backup schedule.
+    text: |
+      az managed-cassandra backup schedule delete \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule
+"""
+
 helps['cosmosdb service'] = """
 type: group
 short-summary: Commands to perform operations on Service.

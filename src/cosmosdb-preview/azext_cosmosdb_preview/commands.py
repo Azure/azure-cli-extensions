@@ -77,6 +77,14 @@ def load_command_table(self, _):
         g.custom_command('segment list', 'cli_cosmosdb_managed_cassandra_repair_segment_list')
         g.custom_command('segment abort', 'cli_cosmosdb_managed_cassandra_repair_segment_abort')
 
+    with self.command_group('managed-cassandra backup schedule', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_managed_cassandra_backup_create', supports_no_wait=True, is_preview=True)
+        g.custom_command('update', 'cli_cosmosdb_managed_cassandra_backup_update', supports_no_wait=True, is_preview=True)
+        g.custom_command('delete', 'cli_cosmosdb_managed_cassandra_backup_delete', supports_no_wait=True, is_preview=True)
+        g.custom_command('list', 'cli_cosmosdb_managed_cassandra_backup_list', supports_no_wait=True, is_preview=True)
+        g.custom_command('show', 'cli_cosmosdb_managed_cassandra_backup_show', supports_no_wait=True, is_preview=True)
+       
+
     with self.command_group('cosmosdb service', cosmosdb_service_sdk, client_factory=cf_service, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_service_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_service_update', supports_no_wait=True)
