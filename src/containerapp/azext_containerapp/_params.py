@@ -118,7 +118,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
-        c.argument('workload_profile', options_list=['--workload-profile', '-w'], help="Name of the workload profile to run the app on. Environment must be premium.", )
+        c.argument('workload-profile', options_list=['--workload-profile-type', '-w'], help="Name of the workload profile to run the app on.", )
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -166,15 +166,15 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('plan', help="The sku of the containerapp environment. --infrastructure-subnet-resource-id/-s is required for premium sku", arg_type=get_enum_type(['consumption', 'premium'], default="consumption"))
+        c.argument('enableWorkloadProfiles', options_list=["--enableWorkloadProfiles", "-w"], help="Allow    this environment to have workload profiles --infrastructure-subnet-resource-id/-s is required for workload profiles to be enabled")
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
         c.argument('tags', arg_type=tags_type)
         # c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
-        c.ignore('workload_name')
-        c.ignore('min_nodes')
-        c.ignore('max_nodes')
+        c.argument('workload_profile', options_list=['--workload-profile-type','-w'], help='The type of workload profile to add or update in this environment')
+        c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-type required')
+        c.argument('max_nodes',  help='The maximum nodes for this workload profile, --workload-profile-type required')
 
     with self.argument_context('containerapp env delete') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')

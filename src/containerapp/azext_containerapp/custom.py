@@ -387,9 +387,10 @@ def create_containerapp(cmd,
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
-    sku = managed_env_info["sku"]["name"].lower()
+    #sku = managed_env_info["sku"]["name"].lower()
+    sku = "premium"
     if workload_profile and sku != "premium":
-        raise ValidationError("--workload-profile: only allowed on premium sku managed environments")
+        raise ValidationError("--workload_profile: only allowed on premium sku managed environments")
     if not workload_profile and sku == "premium":
         workload_profile = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
 
@@ -1061,12 +1062,11 @@ def create_managed_environment(cmd,
 
     managed_env_def = ManagedEnvironmentModel
     managed_env_def["location"] = location
-    managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
-    managed_env_def["sku"]["name"] = plan
 
-    if plan == "premium":
+    if enableWorkloadProfiles == True:
+        managed_env_def["sku"]["name"] = "Premium"
         managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
 
     if hostname:
@@ -1141,7 +1141,7 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                #plan=None,
-                               workload_name=None,
+                               workload_profile=None,
                                min_nodes=None,
                                max_nodes=None,
                                no_wait=False):
@@ -1184,19 +1184,19 @@ def update_managed_environment(cmd,
     #     safe_set(env_def, "properties", "workloadProfiles", value=get_default_workload_profiles(cmd, r["location"]))
     #     safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
 
-    if workload_name:
-        if not r["sku"]["name"].lower() == "premium": #and not (plan and plan.lower() == "premium"):
-            raise ValidationError("Environment is not a premium sku environment.")
+    if workload_profile:
+        if not r["properties"]["workloadProfiles"]: #and not (plan and plan.lower() == "premium"):
+            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
-        workload_name = get_workload_profile_type(cmd, workload_name, r["location"])
+        workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
         workload_profiles = r["properties"]["workloadProfiles"]
-        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_name.lower()]
+        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_profile.lower()]
         update = False  # flag for updating an existing profile
         if profile:
             profile = profile[0]
             update = True
         else:
-            profile = {"workloadProfileType": workload_name}
+            profile = {"workloadProfileType": workload_profile}
 
         profile["maximumCount"] = max_nodes
         profile["minimumCount"] = min_nodes
@@ -1204,11 +1204,11 @@ def update_managed_environment(cmd,
         if not update:
             workload_profiles.append(profile)
         else:
-            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_name.lower()][0]
+            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_profile.lower()][0]
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
-        safe_set(env_def, "sku", "name", value=r["sku"]["name"])
+        #safe_set(env_def, "sku", "name", value="premium")
         safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
         if safe_get(r, "properties", "appLogsConfiguration"):
             safe_set(env_def, "properties", "appLogsConfiguration", value=safe_get(r, "properties", "appLogsConfiguration"))
