@@ -1190,7 +1190,7 @@ def update_managed_environment(cmd,
 
         workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
         workload_profiles = r["properties"]["workloadProfiles"]
-        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_profile.lower()]
+        profile = [p for p in workload_profiles if p["workloadProfileType"] == workload_profile]
         update = False  # flag for updating an existing profile
         if profile:
             profile = profile[0]
@@ -1204,7 +1204,7 @@ def update_managed_environment(cmd,
         if not update:
             workload_profiles.append(profile)
         else:
-            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_profile.lower()][0]
+            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"] == workload_profile][0]
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
