@@ -8,20 +8,13 @@
 # --------------------------------------------------------------------------
 
 import datetime
-import sys
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from .. import _serialization
 
-if sys.version_info >= (3, 9):
-    from collections.abc import MutableMapping
-else:
-    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
-
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from .. import models as _models
-JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 
 class AccountKeyMetadata(_serialization.Model):
@@ -2305,13 +2298,14 @@ class ClientEncryptionPolicy(_serialization.Model):
     :ivar included_paths: Paths of the item that need encryption along with path-specific settings.
      Required.
     :vartype included_paths: list[~azure.mgmt.cosmosdb.models.ClientEncryptionIncludedPath]
-    :ivar policy_format_version: Version of the client encryption policy definition. Please note,
-     user passed value is ignored. Default policy version is 1.
+    :ivar policy_format_version: Version of the client encryption policy definition. Supported
+     versions are 1 and 2. Version 2 supports id and partition key path encryption. Required.
     :vartype policy_format_version: int
     """
 
     _validation = {
         "included_paths": {"required": True},
+        "policy_format_version": {"required": True, "maximum": 2, "minimum": 1},
     }
 
     _attribute_map = {
@@ -2320,18 +2314,14 @@ class ClientEncryptionPolicy(_serialization.Model):
     }
 
     def __init__(
-        self,
-        *,
-        included_paths: List["_models.ClientEncryptionIncludedPath"],
-        policy_format_version: int = 1,
-        **kwargs: Any
+        self, *, included_paths: List["_models.ClientEncryptionIncludedPath"], policy_format_version: int, **kwargs: Any
     ) -> None:
         """
         :keyword included_paths: Paths of the item that need encryption along with path-specific
          settings. Required.
         :paramtype included_paths: list[~azure.mgmt.cosmosdb.models.ClientEncryptionIncludedPath]
-        :keyword policy_format_version: Version of the client encryption policy definition. Please
-         note, user passed value is ignored. Default policy version is 1.
+        :keyword policy_format_version: Version of the client encryption policy definition. Supported
+         versions are 1 and 2. Version 2 supports id and partition key path encryption. Required.
         :paramtype policy_format_version: int
         """
         super().__init__(**kwargs)
@@ -3592,6 +3582,10 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
     :ivar enable_partition_merge: Flag to indicate enabling/disabling of Partition Merge feature on
      the account.
     :vartype enable_partition_merge: bool
+    :ivar minimal_tls_version: Indicates the minimum allowed Tls version. The default is Tls 1.0,
+     except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are: "Tls",
+     "Tls11", and "Tls12".
+    :vartype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
     """
 
     _validation = {
@@ -3648,6 +3642,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         "enable_materialized_views": {"key": "properties.enableMaterializedViews", "type": "bool"},
         "keys_metadata": {"key": "properties.keysMetadata", "type": "DatabaseAccountKeysMetadata"},
         "enable_partition_merge": {"key": "properties.enablePartitionMerge", "type": "bool"},
+        "minimal_tls_version": {"key": "properties.minimalTlsVersion", "type": "str"},
     }
 
     database_account_offer_type = "Standard"
@@ -3688,6 +3683,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         capacity: Optional["_models.Capacity"] = None,
         enable_materialized_views: Optional[bool] = None,
         enable_partition_merge: Optional[bool] = None,
+        minimal_tls_version: Optional[Union[str, "_models.MinimalTlsVersion"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3784,6 +3780,10 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         :keyword enable_partition_merge: Flag to indicate enabling/disabling of Partition Merge feature
          on the account.
         :paramtype enable_partition_merge: bool
+        :keyword minimal_tls_version: Indicates the minimum allowed Tls version. The default is Tls
+         1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are:
+         "Tls", "Tls11", and "Tls12".
+        :paramtype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -3817,6 +3817,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):  # pylint: d
         self.enable_materialized_views = enable_materialized_views
         self.keys_metadata = None
         self.enable_partition_merge = enable_partition_merge
+        self.minimal_tls_version = minimal_tls_version
 
 
 class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-many-instance-attributes
@@ -3953,6 +3954,10 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
     :ivar enable_partition_merge: Flag to indicate enabling/disabling of Partition Merge feature on
      the account.
     :vartype enable_partition_merge: bool
+    :ivar minimal_tls_version: Indicates the minimum allowed Tls version. The default is Tls 1.0,
+     except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are: "Tls",
+     "Tls11", and "Tls12".
+    :vartype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
     """
 
     _validation = {
@@ -4028,6 +4033,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         "enable_materialized_views": {"key": "properties.enableMaterializedViews", "type": "bool"},
         "keys_metadata": {"key": "properties.keysMetadata", "type": "DatabaseAccountKeysMetadata"},
         "enable_partition_merge": {"key": "properties.enablePartitionMerge", "type": "bool"},
+        "minimal_tls_version": {"key": "properties.minimalTlsVersion", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -4065,6 +4071,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         capacity: Optional["_models.Capacity"] = None,
         enable_materialized_views: Optional[bool] = None,
         enable_partition_merge: Optional[bool] = None,
+        minimal_tls_version: Optional[Union[str, "_models.MinimalTlsVersion"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4158,6 +4165,10 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         :keyword enable_partition_merge: Flag to indicate enabling/disabling of Partition Merge feature
          on the account.
         :paramtype enable_partition_merge: bool
+        :keyword minimal_tls_version: Indicates the minimum allowed Tls version. The default is Tls
+         1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are:
+         "Tls", "Tls11", and "Tls12".
+        :paramtype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
         """
         super().__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -4200,6 +4211,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):  # pylint: disable=too-m
         self.enable_materialized_views = enable_materialized_views
         self.keys_metadata = None
         self.enable_partition_merge = enable_partition_merge
+        self.minimal_tls_version = minimal_tls_version
 
 
 class DatabaseAccountKeysMetadata(_serialization.Model):
@@ -4476,6 +4488,10 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
     :ivar enable_partition_merge: Flag to indicate enabling/disabling of Partition Merge feature on
      the account.
     :vartype enable_partition_merge: bool
+    :ivar minimal_tls_version: Indicates the minimum allowed Tls version. The default is Tls 1.0,
+     except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are: "Tls",
+     "Tls11", and "Tls12".
+    :vartype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
     """
 
     _validation = {
@@ -4520,6 +4536,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         "enable_materialized_views": {"key": "properties.enableMaterializedViews", "type": "bool"},
         "keys_metadata": {"key": "properties.keysMetadata", "type": "DatabaseAccountKeysMetadata"},
         "enable_partition_merge": {"key": "properties.enablePartitionMerge", "type": "bool"},
+        "minimal_tls_version": {"key": "properties.minimalTlsVersion", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -4555,6 +4572,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         capacity: Optional["_models.Capacity"] = None,
         enable_materialized_views: Optional[bool] = None,
         enable_partition_merge: Optional[bool] = None,
+        minimal_tls_version: Optional[Union[str, "_models.MinimalTlsVersion"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4643,6 +4661,10 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         :keyword enable_partition_merge: Flag to indicate enabling/disabling of Partition Merge feature
          on the account.
         :paramtype enable_partition_merge: bool
+        :keyword minimal_tls_version: Indicates the minimum allowed Tls version. The default is Tls
+         1.0, except for Cassandra and Mongo API's, which only work with Tls 1.2. Known values are:
+         "Tls", "Tls11", and "Tls12".
+        :paramtype minimal_tls_version: str or ~azure.mgmt.cosmosdb.models.MinimalTlsVersion
         """
         super().__init__(**kwargs)
         self.tags = tags
@@ -4676,6 +4698,7 @@ class DatabaseAccountUpdateParameters(_serialization.Model):  # pylint: disable=
         self.enable_materialized_views = enable_materialized_views
         self.keys_metadata = None
         self.enable_partition_merge = enable_partition_merge
+        self.minimal_tls_version = minimal_tls_version
 
 
 class DatabaseRestoreResource(_serialization.Model):
@@ -5190,7 +5213,7 @@ class ServiceResourceProperties(_serialization.Model):
 
     :ivar additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :vartype additional_properties: dict[str, JSON]
+    :vartype additional_properties: dict[str, any]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :ivar instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
@@ -5234,7 +5257,7 @@ class ServiceResourceProperties(_serialization.Model):
     def __init__(
         self,
         *,
-        additional_properties: Optional[Dict[str, JSON]] = None,
+        additional_properties: Optional[Dict[str, Any]] = None,
         instance_size: Optional[Union[str, "_models.ServiceSize"]] = None,
         instance_count: Optional[int] = None,
         **kwargs: Any
@@ -5242,7 +5265,7 @@ class ServiceResourceProperties(_serialization.Model):
         """
         :keyword additional_properties: Unmatched properties from the message are deserialized to this
          collection.
-        :paramtype additional_properties: dict[str, JSON]
+        :paramtype additional_properties: dict[str, any]
         :keyword instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
          "Cosmos.D8s", and "Cosmos.D16s".
         :paramtype instance_size: str or ~azure.mgmt.cosmosdb.models.ServiceSize
@@ -5267,7 +5290,7 @@ class DataTransferServiceResourceProperties(ServiceResourceProperties):
 
     :ivar additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :vartype additional_properties: dict[str, JSON]
+    :vartype additional_properties: dict[str, any]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :ivar instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
@@ -5306,7 +5329,7 @@ class DataTransferServiceResourceProperties(ServiceResourceProperties):
     def __init__(
         self,
         *,
-        additional_properties: Optional[Dict[str, JSON]] = None,
+        additional_properties: Optional[Dict[str, Any]] = None,
         instance_size: Optional[Union[str, "_models.ServiceSize"]] = None,
         instance_count: Optional[int] = None,
         **kwargs: Any
@@ -5314,7 +5337,7 @@ class DataTransferServiceResourceProperties(ServiceResourceProperties):
         """
         :keyword additional_properties: Unmatched properties from the message are deserialized to this
          collection.
-        :paramtype additional_properties: dict[str, JSON]
+        :paramtype additional_properties: dict[str, any]
         :keyword instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
          "Cosmos.D8s", and "Cosmos.D16s".
         :paramtype instance_size: str or ~azure.mgmt.cosmosdb.models.ServiceSize
@@ -5715,7 +5738,7 @@ class GraphAPIComputeServiceResourceProperties(ServiceResourceProperties):
 
     :ivar additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :vartype additional_properties: dict[str, JSON]
+    :vartype additional_properties: dict[str, any]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :ivar instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
@@ -5757,7 +5780,7 @@ class GraphAPIComputeServiceResourceProperties(ServiceResourceProperties):
     def __init__(
         self,
         *,
-        additional_properties: Optional[Dict[str, JSON]] = None,
+        additional_properties: Optional[Dict[str, Any]] = None,
         instance_size: Optional[Union[str, "_models.ServiceSize"]] = None,
         instance_count: Optional[int] = None,
         graph_api_compute_endpoint: Optional[str] = None,
@@ -5766,7 +5789,7 @@ class GraphAPIComputeServiceResourceProperties(ServiceResourceProperties):
         """
         :keyword additional_properties: Unmatched properties from the message are deserialized to this
          collection.
-        :paramtype additional_properties: dict[str, JSON]
+        :paramtype additional_properties: dict[str, any]
         :keyword instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
          "Cosmos.D8s", and "Cosmos.D16s".
         :paramtype instance_size: str or ~azure.mgmt.cosmosdb.models.ServiceSize
@@ -7466,7 +7489,7 @@ class MaterializedViewsBuilderServiceResourceProperties(ServiceResourcePropertie
 
     :ivar additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :vartype additional_properties: dict[str, JSON]
+    :vartype additional_properties: dict[str, any]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :ivar instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
@@ -7506,7 +7529,7 @@ class MaterializedViewsBuilderServiceResourceProperties(ServiceResourcePropertie
     def __init__(
         self,
         *,
-        additional_properties: Optional[Dict[str, JSON]] = None,
+        additional_properties: Optional[Dict[str, Any]] = None,
         instance_size: Optional[Union[str, "_models.ServiceSize"]] = None,
         instance_count: Optional[int] = None,
         **kwargs: Any
@@ -7514,7 +7537,7 @@ class MaterializedViewsBuilderServiceResourceProperties(ServiceResourcePropertie
         """
         :keyword additional_properties: Unmatched properties from the message are deserialized to this
          collection.
-        :paramtype additional_properties: dict[str, JSON]
+        :paramtype additional_properties: dict[str, any]
         :keyword instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
          "Cosmos.D8s", and "Cosmos.D16s".
         :paramtype instance_size: str or ~azure.mgmt.cosmosdb.models.ServiceSize
@@ -13542,7 +13565,7 @@ class SqlDedicatedGatewayServiceResourceProperties(ServiceResourceProperties):
 
     :ivar additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :vartype additional_properties: dict[str, JSON]
+    :vartype additional_properties: dict[str, any]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :ivar instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
@@ -13585,7 +13608,7 @@ class SqlDedicatedGatewayServiceResourceProperties(ServiceResourceProperties):
     def __init__(
         self,
         *,
-        additional_properties: Optional[Dict[str, JSON]] = None,
+        additional_properties: Optional[Dict[str, Any]] = None,
         instance_size: Optional[Union[str, "_models.ServiceSize"]] = None,
         instance_count: Optional[int] = None,
         sql_dedicated_gateway_endpoint: Optional[str] = None,
@@ -13594,7 +13617,7 @@ class SqlDedicatedGatewayServiceResourceProperties(ServiceResourceProperties):
         """
         :keyword additional_properties: Unmatched properties from the message are deserialized to this
          collection.
-        :paramtype additional_properties: dict[str, JSON]
+        :paramtype additional_properties: dict[str, any]
         :keyword instance_size: Instance type for the service. Known values are: "Cosmos.D4s",
          "Cosmos.D8s", and "Cosmos.D16s".
         :paramtype instance_size: str or ~azure.mgmt.cosmosdb.models.ServiceSize

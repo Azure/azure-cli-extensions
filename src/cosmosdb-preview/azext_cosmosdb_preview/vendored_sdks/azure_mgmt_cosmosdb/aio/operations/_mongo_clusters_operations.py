@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
@@ -86,8 +87,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoClusterListResult] = kwargs.pop("cls", None)
 
@@ -113,7 +114,18 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -160,8 +172,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoClusterListResult] = kwargs.pop("cls", None)
 
@@ -188,7 +200,18 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -240,8 +263,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
@@ -386,7 +409,7 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         :param mongo_cluster_name: The name of the Mongo cluster. Required.
         :type mongo_cluster_name: str
         :param parameters: The required parameters for creating or updating a Mongo cluster. Is either
-         a model type or a IO type. Required.
+         a MongoCluster type or a IO type. Required.
         :type parameters: ~azure.mgmt.cosmosdb.models.MongoCluster or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -407,8 +430,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
@@ -482,8 +505,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
 
@@ -535,8 +558,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -600,8 +623,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -662,8 +685,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.MongoCluster]] = kwargs.pop("cls", None)
@@ -809,8 +832,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         :type resource_group_name: str
         :param mongo_cluster_name: The name of the Mongo cluster. Required.
         :type mongo_cluster_name: str
-        :param parameters: The parameters for updating a Mongo cluster. Is either a model type or a IO
-         type. Required.
+        :param parameters: The parameters for updating a Mongo cluster. Is either a MongoClusterUpdate
+         type or a IO type. Required.
         :type parameters: ~azure.mgmt.cosmosdb.models.MongoClusterUpdate or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -831,8 +854,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
@@ -899,8 +922,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FirewallRule] = kwargs.pop("cls", None)
@@ -1052,7 +1075,7 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         :param firewall_rule_name: The name of the mongo cluster firewall rule. Required.
         :type firewall_rule_name: str
         :param parameters: The required parameters for creating or updating a firewall rule. Is either
-         a model type or a IO type. Required.
+         a FirewallRule type or a IO type. Required.
         :type parameters: ~azure.mgmt.cosmosdb.models.FirewallRule or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -1073,8 +1096,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FirewallRule] = kwargs.pop("cls", None)
@@ -1138,8 +1161,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -1206,8 +1229,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1280,8 +1303,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.FirewallRule] = kwargs.pop("cls", None)
 
@@ -1339,8 +1362,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.FirewallRuleListResult] = kwargs.pop("cls", None)
 
@@ -1368,7 +1391,18 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -1416,8 +1450,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -1481,8 +1515,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1539,8 +1573,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -1604,8 +1638,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1651,6 +1685,7 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
     @overload
     async def check_name_availability(
         self,
+        location: str,
         parameters: _models.CheckNameAvailabilityParameters,
         *,
         content_type: str = "application/json",
@@ -1658,6 +1693,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
     ) -> _models.CheckNameAvailabilityResult:
         """Check the availability of name for resource.
 
+        :param location: The name of Azure region. Required.
+        :type location: str
         :param parameters: The required parameters for checking if resource name is available.
          Required.
         :type parameters: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityParameters
@@ -1672,10 +1709,12 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
 
     @overload
     async def check_name_availability(
-        self, parameters: IO, *, content_type: str = "application/json", **kwargs: Any
+        self, location: str, parameters: IO, *, content_type: str = "application/json", **kwargs: Any
     ) -> _models.CheckNameAvailabilityResult:
         """Check the availability of name for resource.
 
+        :param location: The name of Azure region. Required.
+        :type location: str
         :param parameters: The required parameters for checking if resource name is available.
          Required.
         :type parameters: IO
@@ -1690,12 +1729,14 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
 
     @distributed_trace_async
     async def check_name_availability(
-        self, parameters: Union[_models.CheckNameAvailabilityParameters, IO], **kwargs: Any
+        self, location: str, parameters: Union[_models.CheckNameAvailabilityParameters, IO], **kwargs: Any
     ) -> _models.CheckNameAvailabilityResult:
         """Check the availability of name for resource.
 
+        :param location: The name of Azure region. Required.
+        :type location: str
         :param parameters: The required parameters for checking if resource name is available. Is
-         either a model type or a IO type. Required.
+         either a CheckNameAvailabilityParameters type or a IO type. Required.
         :type parameters: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -1716,8 +1757,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.CheckNameAvailabilityResult] = kwargs.pop("cls", None)
@@ -1731,6 +1772,7 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
             _json = self._serialize.body(parameters, "CheckNameAvailabilityParameters")
 
         request = build_check_name_availability_request(
+            location=location,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -1762,7 +1804,7 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         return deserialized
 
     check_name_availability.metadata = {
-        "url": "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/checkMongoClusterNameAvailability"
+        "url": "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/checkMongoClusterNameAvailability"
     }
 
     @distributed_trace_async
@@ -1792,8 +1834,8 @@ class MongoClustersOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-10-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-10-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ListConnectionStringsResult] = kwargs.pop("cls", None)
 

@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
@@ -105,8 +106,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountGetResults] = kwargs.pop("cls", None)
 
@@ -161,8 +162,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.DatabaseAccountGetResults] = kwargs.pop("cls", None)
@@ -301,7 +302,7 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param update_parameters: The parameters to provide for the current database account. Is either
-         a model type or a IO type. Required.
+         a DatabaseAccountUpdateParameters type or a IO type. Required.
         :type update_parameters: ~azure.mgmt.cosmosdb.models.DatabaseAccountUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -323,8 +324,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.DatabaseAccountGetResults] = kwargs.pop("cls", None)
@@ -388,8 +389,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.DatabaseAccountGetResults] = kwargs.pop("cls", None)
@@ -534,7 +535,7 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param create_update_parameters: The parameters to provide for the current database account. Is
-         either a model type or a IO type. Required.
+         either a DatabaseAccountCreateUpdateParameters type or a IO type. Required.
         :type create_update_parameters:
          ~azure.mgmt.cosmosdb.models.DatabaseAccountCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -557,8 +558,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.DatabaseAccountGetResults] = kwargs.pop("cls", None)
@@ -618,8 +619,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -645,8 +646,15 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}"
@@ -676,8 +684,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -700,7 +708,9 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -736,8 +746,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -775,8 +785,15 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _failover_priority_change_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/failoverPriorityChange"
@@ -877,7 +894,7 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param failover_parameters: The new failover policies for the database account. Is either a
-         model type or a IO type. Required.
+         FailoverPolicies type or a IO type. Required.
         :type failover_parameters: ~azure.mgmt.cosmosdb.models.FailoverPolicies or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -897,8 +914,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -924,7 +941,9 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -956,8 +975,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountsListResult] = kwargs.pop("cls", None)
 
@@ -983,7 +1002,18 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -1033,8 +1063,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountsListResult] = kwargs.pop("cls", None)
 
@@ -1061,7 +1091,18 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -1121,8 +1162,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountListKeysResult] = kwargs.pop("cls", None)
 
@@ -1186,8 +1227,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountListConnectionStringsResult] = kwargs.pop("cls", None)
 
@@ -1242,8 +1283,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -1282,8 +1323,15 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _offline_region_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/offlineRegion"
@@ -1377,7 +1425,7 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param region_parameter_for_offline: Cosmos DB region to offline for the database account. Is
-         either a model type or a IO type. Required.
+         either a RegionForOnlineOffline type or a IO type. Required.
         :type region_parameter_for_offline: ~azure.mgmt.cosmosdb.models.RegionForOnlineOffline or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -1397,8 +1445,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -1424,7 +1472,9 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1460,8 +1510,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -1500,8 +1550,15 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _online_region_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/onlineRegion"
@@ -1595,7 +1652,7 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param region_parameter_for_online: Cosmos DB region to online for the database account. Is
-         either a model type or a IO type. Required.
+         either a RegionForOnlineOffline type or a IO type. Required.
         :type region_parameter_for_online: ~azure.mgmt.cosmosdb.models.RegionForOnlineOffline or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -1615,8 +1672,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -1642,7 +1699,9 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1687,8 +1746,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountListReadOnlyKeysResult] = kwargs.pop("cls", None)
 
@@ -1752,8 +1811,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.DatabaseAccountListReadOnlyKeysResult] = kwargs.pop("cls", None)
 
@@ -1808,8 +1867,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -1847,8 +1906,15 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _regenerate_key_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/regenerateKey"
@@ -1939,8 +2005,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         :type resource_group_name: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param key_to_regenerate: The name of the key to regenerate. Is either a model type or a IO
-         type. Required.
+        :param key_to_regenerate: The name of the key to regenerate. Is either a
+         DatabaseAccountRegenerateKeyParameters type or a IO type. Required.
         :type key_to_regenerate: ~azure.mgmt.cosmosdb.models.DatabaseAccountRegenerateKeyParameters or
          IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1961,8 +2027,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[None] = kwargs.pop("cls", None)
@@ -1988,7 +2054,9 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2030,8 +2098,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -2084,8 +2152,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MetricListResult] = kwargs.pop("cls", None)
 
@@ -2114,7 +2182,18 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -2170,8 +2249,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.UsagesResult] = kwargs.pop("cls", None)
 
@@ -2200,7 +2279,18 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -2252,8 +2342,8 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MetricDefinitionsListResult] = kwargs.pop("cls", None)
 
@@ -2281,7 +2371,18 @@ class DatabaseAccountsOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"

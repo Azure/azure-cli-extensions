@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
@@ -86,8 +87,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.NotebookWorkspaceListResult] = kwargs.pop("cls", None)
 
@@ -115,7 +116,18 @@ class NotebookWorkspacesOperations:
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -183,8 +195,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.NotebookWorkspace] = kwargs.pop("cls", None)
 
@@ -242,8 +254,8 @@ class NotebookWorkspacesOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.NotebookWorkspace] = kwargs.pop("cls", None)
@@ -397,7 +409,8 @@ class NotebookWorkspacesOperations:
          Required.
         :type notebook_workspace_name: str or ~azure.mgmt.cosmosdb.models.NotebookWorkspaceName
         :param notebook_create_update_parameters: The notebook workspace to create for the current
-         database account. Is either a model type or a IO type. Required.
+         database account. Is either a NotebookWorkspaceCreateUpdateParameters type or a IO type.
+         Required.
         :type notebook_create_update_parameters:
          ~azure.mgmt.cosmosdb.models.NotebookWorkspaceCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -419,8 +432,8 @@ class NotebookWorkspacesOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.NotebookWorkspace] = kwargs.pop("cls", None)
@@ -485,8 +498,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -554,8 +567,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -631,8 +644,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.NotebookWorkspaceConnectionInfoResult] = kwargs.pop("cls", None)
 
@@ -689,8 +702,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -758,8 +771,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -819,8 +832,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -888,8 +901,8 @@ class NotebookWorkspacesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)

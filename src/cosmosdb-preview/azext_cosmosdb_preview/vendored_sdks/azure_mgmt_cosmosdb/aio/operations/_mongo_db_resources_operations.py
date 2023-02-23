@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
@@ -111,8 +112,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoDBDatabaseListResult] = kwargs.pop("cls", None)
 
@@ -140,7 +141,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -203,8 +215,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoDBDatabaseGetResults] = kwargs.pop("cls", None)
 
@@ -261,8 +273,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.MongoDBDatabaseGetResults]] = kwargs.pop("cls", None)
@@ -304,11 +316,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("MongoDBDatabaseGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -418,7 +437,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param database_name: Cosmos DB database name. Required.
         :type database_name: str
         :param create_update_mongo_db_database_parameters: The parameters to provide for the current
-         MongoDB database. Is either a model type or a IO type. Required.
+         MongoDB database. Is either a MongoDBDatabaseCreateUpdateParameters type or a IO type.
+         Required.
         :type create_update_mongo_db_database_parameters:
          ~azure.mgmt.cosmosdb.models.MongoDBDatabaseCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -441,8 +461,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoDBDatabaseGetResults] = kwargs.pop("cls", None)
@@ -471,7 +491,10 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -503,8 +526,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -531,8 +554,15 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_mongo_db_database_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/mongodbDatabases/{databaseName}"
@@ -566,8 +596,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -591,7 +621,9 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -639,8 +671,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
 
@@ -697,8 +729,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
@@ -738,11 +770,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -852,7 +891,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param database_name: Cosmos DB database name. Required.
         :type database_name: str
         :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current MongoDB database. Is either a model type or a IO type. Required.
+         current MongoDB database. Is either a ThroughputSettingsUpdateParameters type or a IO type.
+         Required.
         :type update_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -875,8 +915,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
@@ -905,7 +945,10 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -937,8 +980,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -966,11 +1009,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1008,8 +1058,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1035,7 +1085,9 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1067,8 +1119,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -1096,11 +1148,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1138,8 +1197,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1165,7 +1224,9 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1202,8 +1263,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.PhysicalPartitionThroughputInfoResult]] = kwargs.pop("cls", None)
@@ -1243,11 +1304,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("PhysicalPartitionThroughputInfoResult", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1356,7 +1424,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param database_name: Cosmos DB database name. Required.
         :type database_name: str
         :param retrieve_throughput_parameters: The parameters to provide for retrieving throughput
-         distribution for the current MongoDB database. Is either a model type or a IO type. Required.
+         distribution for the current MongoDB database. Is either a RetrieveThroughputParameters type or
+         a IO type. Required.
         :type retrieve_throughput_parameters: ~azure.mgmt.cosmosdb.models.RetrieveThroughputParameters
          or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1379,8 +1448,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.PhysicalPartitionThroughputInfoResult] = kwargs.pop("cls", None)
@@ -1448,8 +1517,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.PhysicalPartitionThroughputInfoResult]] = kwargs.pop("cls", None)
@@ -1489,11 +1558,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("PhysicalPartitionThroughputInfoResult", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1603,7 +1679,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param database_name: Cosmos DB database name. Required.
         :type database_name: str
         :param redistribute_throughput_parameters: The parameters to provide for redistributing
-         throughput for the current MongoDB database. Is either a model type or a IO type. Required.
+         throughput for the current MongoDB database. Is either a RedistributeThroughputParameters type
+         or a IO type. Required.
         :type redistribute_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.RedistributeThroughputParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1626,8 +1703,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.PhysicalPartitionThroughputInfoResult] = kwargs.pop("cls", None)
@@ -1696,8 +1773,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.PhysicalPartitionThroughputInfoResult]] = kwargs.pop("cls", None)
@@ -1738,11 +1815,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("PhysicalPartitionThroughputInfoResult", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1860,7 +1944,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param collection_name: Cosmos DB collection name. Required.
         :type collection_name: str
         :param retrieve_throughput_parameters: The parameters to provide for retrieving throughput
-         distribution for the current MongoDB container. Is either a model type or a IO type. Required.
+         distribution for the current MongoDB container. Is either a RetrieveThroughputParameters type
+         or a IO type. Required.
         :type retrieve_throughput_parameters: ~azure.mgmt.cosmosdb.models.RetrieveThroughputParameters
          or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1883,8 +1968,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.PhysicalPartitionThroughputInfoResult] = kwargs.pop("cls", None)
@@ -1954,8 +2039,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.PhysicalPartitionThroughputInfoResult]] = kwargs.pop("cls", None)
@@ -1996,11 +2081,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("PhysicalPartitionThroughputInfoResult", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -2119,7 +2211,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param collection_name: Cosmos DB collection name. Required.
         :type collection_name: str
         :param redistribute_throughput_parameters: The parameters to provide for redistributing
-         throughput for the current MongoDB container. Is either a model type or a IO type. Required.
+         throughput for the current MongoDB container. Is either a RedistributeThroughputParameters type
+         or a IO type. Required.
         :type redistribute_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.RedistributeThroughputParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -2142,8 +2235,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.PhysicalPartitionThroughputInfoResult] = kwargs.pop("cls", None)
@@ -2216,8 +2309,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoDBCollectionListResult] = kwargs.pop("cls", None)
 
@@ -2246,7 +2339,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -2310,8 +2414,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoDBCollectionGetResults] = kwargs.pop("cls", None)
 
@@ -2370,8 +2474,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.MongoDBCollectionGetResults]] = kwargs.pop("cls", None)
@@ -2414,11 +2518,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("MongoDBCollectionGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -2537,7 +2648,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param collection_name: Cosmos DB collection name. Required.
         :type collection_name: str
         :param create_update_mongo_db_collection_parameters: The parameters to provide for the current
-         MongoDB Collection. Is either a model type or a IO type. Required.
+         MongoDB Collection. Is either a MongoDBCollectionCreateUpdateParameters type or a IO type.
+         Required.
         :type create_update_mongo_db_collection_parameters:
          ~azure.mgmt.cosmosdb.models.MongoDBCollectionCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -2560,8 +2672,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoDBCollectionGetResults] = kwargs.pop("cls", None)
@@ -2591,7 +2703,10 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2623,8 +2738,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -2652,8 +2767,15 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_mongo_db_collection_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/mongodbDatabases/{databaseName}/collections/{collectionName}"
@@ -2689,8 +2811,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -2715,7 +2837,9 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2753,8 +2877,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.PhysicalPartitionStorageInfoCollection]] = kwargs.pop("cls", None)
@@ -2795,11 +2919,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("PhysicalPartitionStorageInfoCollection", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -2914,8 +3045,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :type database_name: str
         :param collection_name: Cosmos DB collection name. Required.
         :type collection_name: str
-        :param merge_parameters: The parameters for the merge operation. Is either a model type or a IO
-         type. Required.
+        :param merge_parameters: The parameters for the merge operation. Is either a MergeParameters
+         type or a IO type. Required.
         :type merge_parameters: ~azure.mgmt.cosmosdb.models.MergeParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -2937,8 +3068,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.PhysicalPartitionStorageInfoCollection] = kwargs.pop("cls", None)
@@ -3020,8 +3151,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
 
@@ -3080,8 +3211,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
@@ -3122,11 +3253,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -3245,7 +3383,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param collection_name: Cosmos DB collection name. Required.
         :type collection_name: str
         :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current MongoDB collection. Is either a model type or a IO type. Required.
+         current MongoDB collection. Is either a ThroughputSettingsUpdateParameters type or a IO type.
+         Required.
         :type update_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -3268,8 +3407,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
@@ -3299,7 +3438,10 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -3331,8 +3473,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -3361,11 +3503,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -3405,8 +3554,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -3433,7 +3582,9 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -3465,8 +3616,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -3495,11 +3646,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -3539,8 +3697,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -3567,7 +3725,9 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -3615,8 +3775,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoRoleDefinitionGetResults] = kwargs.pop("cls", None)
 
@@ -3673,8 +3833,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.MongoRoleDefinitionGetResults]] = kwargs.pop("cls", None)
@@ -3830,7 +3990,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param create_update_mongo_role_definition_parameters: The properties required to create or
-         update a Role Definition. Is either a model type or a IO type. Required.
+         update a Role Definition. Is either a MongoRoleDefinitionCreateUpdateParameters type or a IO
+         type. Required.
         :type create_update_mongo_role_definition_parameters:
          ~azure.mgmt.cosmosdb.models.MongoRoleDefinitionCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -3853,8 +4014,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoRoleDefinitionGetResults] = kwargs.pop("cls", None)
@@ -3915,8 +4076,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -3978,8 +4139,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -4042,8 +4203,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoRoleDefinitionListResult] = kwargs.pop("cls", None)
 
@@ -4071,7 +4232,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -4134,8 +4306,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoUserDefinitionGetResults] = kwargs.pop("cls", None)
 
@@ -4192,8 +4364,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.MongoUserDefinitionGetResults]] = kwargs.pop("cls", None)
@@ -4349,7 +4521,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
         :param create_update_mongo_user_definition_parameters: The properties required to create or
-         update a User Definition. Is either a model type or a IO type. Required.
+         update a User Definition. Is either a MongoUserDefinitionCreateUpdateParameters type or a IO
+         type. Required.
         :type create_update_mongo_user_definition_parameters:
          ~azure.mgmt.cosmosdb.models.MongoUserDefinitionCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -4372,8 +4545,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.MongoUserDefinitionGetResults] = kwargs.pop("cls", None)
@@ -4434,8 +4607,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -4497,8 +4670,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -4561,8 +4734,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.MongoUserDefinitionListResult] = kwargs.pop("cls", None)
 
@@ -4590,7 +4763,18 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -4643,8 +4827,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.BackupInformation]] = kwargs.pop("cls", None)
@@ -4802,8 +4986,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         :type database_name: str
         :param collection_name: Cosmos DB collection name. Required.
         :type collection_name: str
-        :param location: The name of the continuous backup restore location. Is either a model type or
-         a IO type. Required.
+        :param location: The name of the continuous backup restore location. Is either a
+         ContinuousBackupRestoreLocation type or a IO type. Required.
         :type location: ~azure.mgmt.cosmosdb.models.ContinuousBackupRestoreLocation or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -4824,8 +5008,8 @@ class MongoDBResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.BackupInformation] = kwargs.pop("cls", None)

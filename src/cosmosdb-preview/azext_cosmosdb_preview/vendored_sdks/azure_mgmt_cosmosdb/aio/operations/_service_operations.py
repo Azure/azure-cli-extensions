@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
@@ -83,8 +84,8 @@ class ServiceOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ServiceResourceListResult] = kwargs.pop("cls", None)
 
@@ -112,7 +113,18 @@ class ServiceOperations:
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -164,8 +176,8 @@ class ServiceOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.ServiceResource]] = kwargs.pop("cls", None)
@@ -205,11 +217,18 @@ class ServiceOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ServiceResource", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -314,8 +333,8 @@ class ServiceOperations:
         :type account_name: str
         :param service_name: Cosmos DB service name. Required.
         :type service_name: str
-        :param create_update_parameters: The Service resource parameters. Is either a model type or a
-         IO type. Required.
+        :param create_update_parameters: The Service resource parameters. Is either a
+         ServiceResourceCreateUpdateParameters type or a IO type. Required.
         :type create_update_parameters:
          ~azure.mgmt.cosmosdb.models.ServiceResourceCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -337,8 +356,8 @@ class ServiceOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.ServiceResource] = kwargs.pop("cls", None)
@@ -414,8 +433,8 @@ class ServiceOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ServiceResource] = kwargs.pop("cls", None)
 
@@ -467,8 +486,8 @@ class ServiceOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -495,8 +514,15 @@ class ServiceOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/services/{serviceName}"
@@ -530,8 +556,8 @@ class ServiceOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)

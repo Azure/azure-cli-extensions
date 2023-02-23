@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 import sys
 from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import (
@@ -105,8 +106,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.CassandraKeyspaceListResult] = kwargs.pop("cls", None)
 
@@ -134,7 +135,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -197,8 +209,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.CassandraKeyspaceGetResults] = kwargs.pop("cls", None)
 
@@ -255,8 +267,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.CassandraKeyspaceGetResults]] = kwargs.pop("cls", None)
@@ -298,11 +310,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("CassandraKeyspaceGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -412,7 +431,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         :param keyspace_name: Cosmos DB keyspace name. Required.
         :type keyspace_name: str
         :param create_update_cassandra_keyspace_parameters: The parameters to provide for the current
-         Cassandra keyspace. Is either a model type or a IO type. Required.
+         Cassandra keyspace. Is either a CassandraKeyspaceCreateUpdateParameters type or a IO type.
+         Required.
         :type create_update_cassandra_keyspace_parameters:
          ~azure.mgmt.cosmosdb.models.CassandraKeyspaceCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -435,8 +455,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.CassandraKeyspaceGetResults] = kwargs.pop("cls", None)
@@ -465,7 +485,10 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -497,8 +520,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -525,8 +548,15 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_cassandra_keyspace_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/cassandraKeyspaces/{keyspaceName}"
@@ -560,8 +590,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -585,7 +615,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -633,8 +665,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
 
@@ -691,8 +723,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
@@ -732,11 +764,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -846,7 +885,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         :param keyspace_name: Cosmos DB keyspace name. Required.
         :type keyspace_name: str
         :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current Cassandra Keyspace. Is either a model type or a IO type. Required.
+         current Cassandra Keyspace. Is either a ThroughputSettingsUpdateParameters type or a IO type.
+         Required.
         :type update_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -869,8 +909,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
@@ -899,7 +939,10 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -931,8 +974,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -960,11 +1003,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1002,8 +1052,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1029,7 +1079,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1061,8 +1113,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -1090,11 +1142,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1132,8 +1191,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1159,7 +1218,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1200,8 +1261,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.CassandraTableListResult] = kwargs.pop("cls", None)
 
@@ -1230,7 +1291,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -1294,8 +1366,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.CassandraTableGetResults] = kwargs.pop("cls", None)
 
@@ -1354,8 +1426,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.CassandraTableGetResults]] = kwargs.pop("cls", None)
@@ -1398,11 +1470,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("CassandraTableGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1521,7 +1600,7 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         :param table_name: Cosmos DB table name. Required.
         :type table_name: str
         :param create_update_cassandra_table_parameters: The parameters to provide for the current
-         Cassandra Table. Is either a model type or a IO type. Required.
+         Cassandra Table. Is either a CassandraTableCreateUpdateParameters type or a IO type. Required.
         :type create_update_cassandra_table_parameters:
          ~azure.mgmt.cosmosdb.models.CassandraTableCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1544,8 +1623,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.CassandraTableGetResults] = kwargs.pop("cls", None)
@@ -1575,7 +1654,10 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1607,8 +1689,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -1636,8 +1718,15 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_cassandra_table_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/cassandraKeyspaces/{keyspaceName}/tables/{tableName}"
@@ -1673,8 +1762,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -1699,7 +1788,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1749,8 +1840,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
 
@@ -1809,8 +1900,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
@@ -1851,11 +1942,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -1974,7 +2072,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         :param table_name: Cosmos DB table name. Required.
         :type table_name: str
         :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current Cassandra table. Is either a model type or a IO type. Required.
+         current Cassandra table. Is either a ThroughputSettingsUpdateParameters type or a IO type.
+         Required.
         :type update_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1997,8 +2096,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
@@ -2028,7 +2127,10 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2060,8 +2162,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -2090,11 +2192,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -2134,8 +2243,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -2162,7 +2271,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2194,8 +2305,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -2224,11 +2335,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -2268,8 +2386,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -2296,7 +2414,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2337,8 +2457,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.CassandraViewListResult] = kwargs.pop("cls", None)
 
@@ -2367,7 +2487,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
                 request.url = self._client.format_url(request.url)
 
             else:
-                request = HttpRequest("GET", next_link)
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
                 request.method = "GET"
@@ -2431,8 +2562,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.CassandraViewGetResults] = kwargs.pop("cls", None)
 
@@ -2491,8 +2622,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.CassandraViewGetResults]] = kwargs.pop("cls", None)
@@ -2533,11 +2664,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("CassandraViewGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -2654,7 +2792,7 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         :param view_name: Cosmos DB view name. Required.
         :type view_name: str
         :param create_update_cassandra_view_parameters: The parameters to provide for the current
-         Cassandra View. Is either a model type or a IO type. Required.
+         Cassandra View. Is either a CassandraViewCreateUpdateParameters type or a IO type. Required.
         :type create_update_cassandra_view_parameters:
          ~azure.mgmt.cosmosdb.models.CassandraViewCreateUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -2676,8 +2814,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.CassandraViewGetResults] = kwargs.pop("cls", None)
@@ -2707,7 +2845,10 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2739,8 +2880,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -2768,8 +2909,15 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_cassandra_view_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/cassandraKeyspaces/{keyspaceName}/views/{viewName}"
@@ -2805,8 +2953,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -2831,7 +2979,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -2881,8 +3031,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
 
@@ -2941,8 +3091,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
@@ -2983,11 +3133,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -3106,7 +3263,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         :param view_name: Cosmos DB view name. Required.
         :type view_name: str
         :param update_throughput_parameters: The RUs per second of the parameters to provide for the
-         current Cassandra view. Is either a model type or a IO type. Required.
+         current Cassandra view. Is either a ThroughputSettingsUpdateParameters type or a IO type.
+         Required.
         :type update_throughput_parameters:
          ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -3129,8 +3287,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
@@ -3160,7 +3318,10 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -3192,8 +3353,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -3222,11 +3383,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -3266,8 +3434,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -3294,7 +3462,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -3326,8 +3496,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[Optional[_models.ThroughputSettingsGetResults]] = kwargs.pop("cls", None)
 
@@ -3356,11 +3526,18 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize("ThroughputSettingsGetResults", pipeline_response)
 
+        if response.status_code == 202:
+            response_headers["azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("azure-AsyncOperation")
+            )
+            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -3400,8 +3577,8 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: Literal["2022-08-15-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", "2022-08-15-preview")
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
         )
         cls: ClsType[_models.ThroughputSettingsGetResults] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -3428,7 +3605,9 @@ class CassandraResourcesOperations:  # pylint: disable=too-many-public-methods
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:

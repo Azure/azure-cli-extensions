@@ -351,6 +351,7 @@ from ._cosmos_db_management_client_enums import IndexingMode
 from ._cosmos_db_management_client_enums import KeyKind
 from ._cosmos_db_management_client_enums import ManagedCassandraProvisioningState
 from ._cosmos_db_management_client_enums import ManagedCassandraResourceIdentityType
+from ._cosmos_db_management_client_enums import MinimalTlsVersion
 from ._cosmos_db_management_client_enums import MongoClusterProvisioningState
 from ._cosmos_db_management_client_enums import MongoClusterStatus
 from ._cosmos_db_management_client_enums import MongoRoleDefinitionType
@@ -726,6 +727,7 @@ __all__ = [
     "KeyKind",
     "ManagedCassandraProvisioningState",
     "ManagedCassandraResourceIdentityType",
+    "MinimalTlsVersion",
     "MongoClusterProvisioningState",
     "MongoClusterStatus",
     "MongoRoleDefinitionType",
