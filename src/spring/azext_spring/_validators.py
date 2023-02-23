@@ -697,3 +697,13 @@ def validate_config_server_ssh_or_warn(namespace):
     if private_key or host_key or host_key_algorithm or strict_host_key_checking:
         logger.warning("SSH authentication only supports SHA-1 signature under Config Server restriction. "
                        "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use SSH under this restriction.")
+
+
+def validate_managed_environment(namespace):
+    managed_environment_id = namespace.managed_environment
+    if managed_environment_id:
+        if not is_valid_resource_id(managed_environment_id):
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))
+        managed_environment = parse_resource_id(managed_environment_id)
+        if managed_environment['namespace'].lower() != 'microsoft.app' or managed_environment['type'].lower() != 'managedenvironments':
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))

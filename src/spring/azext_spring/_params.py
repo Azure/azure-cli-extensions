@@ -15,7 +15,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
-                          validate_remote_debugging_port, validate_ingress_client_auth_certificates)
+                          validate_remote_debugging_port, validate_ingress_client_auth_certificates,
+                          validate_managed_environment)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
@@ -167,6 +168,7 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Enable Application Accelerator.')
         c.argument('managed_environment',
                    arg_group='StandardGen2',
+                   validator=validate_managed_environment,
                    help="The resource Id of the Container App Environment that the Spring Apps instance builds on")
         c.argument('infra_resource_group',
                    arg_group='StandardGen2',
@@ -261,8 +263,8 @@ def load_arguments(self, _):
                    nargs='+',
                    validator=validate_create_app_with_user_identity_or_warning,
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
-        c.argument('cpu', arg_type=cpu_type, default="1")
-        c.argument('memory', arg_type=memory_type, default="1Gi")
+        c.argument('cpu', arg_type=cpu_type)
+        c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
         c.argument('persistent_storage', type=str,
