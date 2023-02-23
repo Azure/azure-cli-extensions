@@ -13,11 +13,13 @@
 
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
+    file_type
 )
 from azext_datamigration.action import (
     AddSourceSqlConnection,
     AddTargetSqlConnection
 )
+from argcomplete.completers import FilesCompleter
 
 
 def load_arguments(self, _):
@@ -59,7 +61,7 @@ def load_arguments(self, _):
         c.argument('list_of_login', nargs='+', help='List of logins in string format. If large number of logins need to be migrated, use CSV file option.')
         c.argument('output_folder', type=str, help='Default: %LocalAppData%/Microsoft/SqlLoginMigrations) Folder where logs will be written.')
         c.argument('aad_domain_name', type=str, help='Required if Windows logins are included in the list of logins to be migrated.')
-        c.argument('config_file_path', type=str, help='Path of the ConfigFile')
+        c.argument('config_file_path', type=file_type, completer=FilesCompleter(), help='Path of the ConfigFile')
 
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
