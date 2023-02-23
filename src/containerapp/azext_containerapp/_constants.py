@@ -14,6 +14,13 @@ ACR_IMAGE_SUFFIX = ".azurecr.io"
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 
+MANAGED_CERTIFICATE_RT = "managedCertificates"
+PRIVATE_CERTIFICATE_RT = "certificates"
+
+PENDING_STATUS = "Pending"
+SUCCEEDED_STATUS = "Succeeded"
+UPDATING_STATUS = "Updating"
+
 MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
 FACEBOOK_SECRET_SETTING_NAME = "facebook-provider-authentication-secret"
 GITHUB_SECRET_SETTING_NAME = "github-provider-authentication-secret"

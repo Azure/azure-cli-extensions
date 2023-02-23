@@ -1,5 +1,13 @@
 Release History
 ===============
+1.6.8
+---
+* Add detail description to Default for argument `--backend-protocol`.
+
+1.6.7
+---
+* Change all Azure Spring Apps API version to 2022-11-01-preview.
+
 1.6.6
 ---
 * Modify help text of name in command `az spring create` and `az spring app create`

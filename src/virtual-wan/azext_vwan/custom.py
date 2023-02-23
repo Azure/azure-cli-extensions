@@ -163,16 +163,21 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
     )
 
 
-def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None):
+def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None,
+                               associated_inbound_routemap=None, associated_outbound_routemap=None):
     SubResource = cmd.get_models('SubResource')
 
     ids = [SubResource(id=propagated_route_table) for propagated_route_table in
            propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
     associated_route_table = SubResource(id=associated_route_table) if associated_route_table else None
+    associated_inbound_routemap = SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None
+    associated_outbound_routemap = SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     with UpdateContext(instance) as c:
         c.set_param('routing_configuration.associated_route_table', associated_route_table, False)
         c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
         c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
+        c.set_param('routing_configuration.inbound_route_map', associated_inbound_routemap, False)
+        c.set_param('routing_configuration.outbound_route_map', associated_outbound_routemap, False)
 
     return instance
 
@@ -182,7 +187,8 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
                                remote_virtual_network, allow_hub_to_remote_vnet_transit=None,
                                allow_remote_vnet_to_use_hub_vnet_gateways=None, enable_internet_security=None,
                                associated_route_table=None, propagated_route_tables=None, labels=None,
-                               route_name=None, address_prefixes=None, next_hop_ip_address=None, no_wait=False):
+                               route_name=None, address_prefixes=None, next_hop_ip_address=None,
+                               associated_inbound_routemap=None, associated_outbound_routemap=None, no_wait=False):
     (HubVirtualNetworkConnection,
      SubResource,
      RoutingConfiguration,
@@ -202,7 +208,9 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
 
     routing_configuration = RoutingConfiguration(
         associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables
+        propagated_route_tables=propagated_route_tables,
+        inbound_route_map=SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None,
+        outbound_route_map=SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     )
 
     if route_name is not None:
@@ -438,16 +446,20 @@ def _v3_route_table_client(cli_ctx):
 
 # region VpnGateways
 def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None,
-                                  labels=None):
+                                  labels=None, associated_inbound_routemap=None, associated_outbound_routemap=None):
     SubResource = cmd.get_models('SubResource')
 
     ids = [SubResource(id=propagated_route_table) for propagated_route_table in
            propagated_route_tables] if propagated_route_tables else None
     associated_route_table = SubResource(id=associated_route_table) if associated_route_table else None
+    associated_inbound_routemap = SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None
+    associated_outbound_routemap = SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     with UpdateContext(instance) as c:
         c.set_param('routing_configuration.associated_route_table', associated_route_table, False)
         c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
         c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
+        c.set_param('routing_configuration.inbound_route_map', associated_inbound_routemap, False)
+        c.set_param('routing_configuration.outbound_route_map', associated_outbound_routemap, False)
 
     return instance
 
@@ -456,7 +468,8 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
                                   remote_vpn_site, vpn_site_link=None, routing_weight=None, protocol_type=None,
                                   connection_bandwidth=None, shared_key=None, enable_bgp=None,
                                   enable_rate_limiting=None, enable_internet_security=None, no_wait=False,
-                                  associated_route_table=None, propagated_route_tables=None, with_link=None, labels=None):
+                                  associated_route_table=None, propagated_route_tables=None, with_link=None, labels=None,
+                                  associated_inbound_routemap=None, associated_outbound_routemap=None):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     (VpnConnection,
      SubResource,
@@ -474,7 +487,9 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
     )
     routing_configuration = RoutingConfiguration(
         associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables
+        propagated_route_tables=propagated_route_tables,
+        inbound_route_map=SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None,
+        outbound_route_map=SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     )
 
     conn = VpnConnection(
@@ -942,7 +957,8 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
 def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                            scale_unit, location=None, tags=None, p2s_conn_config_name='P2SConnectionConfigDefault',
                            vpn_server_config=None, address_space=None, associated_route_table=None,
-                           propagated_route_tables=None, labels=None, no_wait=False):
+                           propagated_route_tables=None, labels=None, associated_inbound_routemap=None,
+                           associated_outbound_routemap=None, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).p2_svpn_gateways
     (P2SVpnGateway,
      SubResource,
@@ -962,7 +978,9 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
     )
     routing_configuration = RoutingConfiguration(
         associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables
+        propagated_route_tables=propagated_route_tables,
+        inbound_route_map=SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None,
+        outbound_route_map=SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     )
     gateway = P2SVpnGateway(
         location=location,
@@ -986,8 +1004,11 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
 
 def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
                            vpn_server_config=None, address_space=None, p2s_conn_config_name=None,
-                           associated_route_table=None, propagated_route_tables=None, labels=None):
+                           associated_route_table=None, propagated_route_tables=None, labels=None,
+                           associated_inbound_routemap=None, associated_outbound_routemap=None):
     SubResource = cmd.get_models('SubResource')
+    associated_inbound_routemap = SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None
+    associated_outbound_routemap = SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     with UpdateContext(instance) as c:
         c.set_param('tags', tags, True)
         c.set_param('vpn_gateway_scale_unit', scale_unit, False)
@@ -1003,6 +1024,8 @@ def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
             c.set_param('routing_configuration.propagated_route_tables.ids',
                         [SubResource(id=propagated_route_table) for propagated_route_table in
                          propagated_route_tables] if propagated_route_tables else None, False)
+            c.set_param('routing_configuration.inbound_route_map', associated_inbound_routemap, False)
+            c.set_param('routing_configuration.outbound_route_map', associated_outbound_routemap, False)
 
     return instance
 

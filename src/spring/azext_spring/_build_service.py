@@ -7,7 +7,7 @@
 
 import json
 from azure.cli.core.util import sdk_no_wait
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from knack.log import get_logger
 
 logger = get_logger(__name__)
