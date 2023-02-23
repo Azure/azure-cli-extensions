@@ -208,7 +208,7 @@ def _get_rdp_path(rdp_command="mstsc"):
         system_root = os.environ["SystemRoot"]
         system32_path = os.path.join(system_root, sys_path)
         rdp_path = os.path.join(system32_path, (rdp_command + ".exe"))
-        logger.debug("PPPPlatform architecture: %s", str(arch_data))
+        logger.debug("Platform architecture: %s", str(arch_data))
         logger.debug("System Root: %s", system_root)
         logger.debug("Attempting to run rdp from path %s", rdp_path)
 
