@@ -4,13 +4,13 @@ This is an extension to Azure CLI to manage Automanage resources.
 ## How to use ##
 # configuration-profile
 Create a configuration-profile  
-`az automanage configuration-profile create -n {profile_name} -g {rg} --configuration {"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}`  
+`az automanage configuration-profile create -n {profile_name} -g {rg} --configuration '{"Antimalware/Enable":false,"Backup/Enable":false,"VMInsights/Enable":true,"AzureSecurityCenter/Enable":true,"UpdateManagement/Enable":true,"ChangeTrackingAndInventory/Enable":true,"GuestConfiguration/Enable":true,"LogAnalytics/Enable":true,"BootDiagnostics/Enable":true}'`  
 
 Show a configuration-profile  
 `az automanage configuration-profile show -n {profile_name} -g {rg}`
 
 Update a configuration-profile  
-`az automanage configuration-profile update -n {profile_name} -g {rg} --configuration {"Antimalware/Enable":true,"VMInsights/Enable":false}`
+`az automanage configuration-profile update -n {profile_name} -g {rg} --configuration '{"Antimalware/Enable":true,"VMInsights/Enable":false}'`
 
 List configuration-profiles  
 `az automanage configuration-profile list -g {rg}`

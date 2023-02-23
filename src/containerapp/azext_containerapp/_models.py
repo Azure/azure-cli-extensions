@@ -152,7 +152,8 @@ Ingress = {
     "transport": None,  # 'auto', 'http', 'http2', 'tcp'
     "exposedPort": None,
     "traffic": None,  # TrafficWeight
-    "customDomains": None  # [CustomDomain]
+    "customDomains": None,  # [CustomDomain]
+    "ipSecurityRestrictions": None  # [IPSecurityRestrictions]
 }
 
 RegistryCredentials = {
@@ -164,6 +165,7 @@ RegistryCredentials = {
 Template = {
     "revisionSuffix": None,
     "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
     "scale": Scale,
     "volumes": None  # [Volume]
 }

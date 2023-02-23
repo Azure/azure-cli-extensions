@@ -10,6 +10,8 @@ import yaml
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
+from .common import TEST_LOCATION
+
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 from .utils import create_containerapp_env
@@ -18,15 +20,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -55,15 +54,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="australiaeast")
     def test_containerapp_env_logs_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -132,16 +128,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_dapr_components(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         dapr_comp_name = self.create_random_name(prefix='dapr-component', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -202,15 +195,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_certificate_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -283,15 +273,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_custom_domains(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -332,15 +319,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_update_custom_domains(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -381,10 +365,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
     def test_containerapp_env_internal_only_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
@@ -393,7 +374,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
         sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
-        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs}").get_output_in_json()["customerId"]
+        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
         logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
 
         self.cmd(f'containerapp env create -g {resource_group} -n {env} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
