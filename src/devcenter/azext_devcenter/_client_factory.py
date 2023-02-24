@@ -13,7 +13,6 @@ from .helper import get_project_data
 
 
 def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None):
-
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
@@ -59,12 +58,12 @@ def cf_environment_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
 
-def cf_catalog_item_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_items
+def cf_catalog_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).catalogs
 
 
-def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item_versions
+def cf_environment_definition_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_definitions
 
 
 def cf_environment_type_dp(cli_ctx, dev_center, *_):

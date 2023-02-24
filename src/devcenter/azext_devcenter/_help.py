@@ -154,7 +154,7 @@ helps[
     "devcenter dev dev-box create"
 ] = """
     type: command
-    short-summary: "Creates or updates a dev box."
+    short-summary: "Creates a dev box."
     examples:
       - name: createDevBox
         text: |-
@@ -192,9 +192,21 @@ helps[
     type: command
     short-summary: "Starts a dev box."
     examples:
-      - name: startDevBoxForUser
+      - name: DevBoxes_StartDevBox
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}" --user-id "me"
+"""
+
+helps[
+    "devcenter dev dev-box restart"
+] = """
+    type: command
+    short-summary: "Restarts a Dev Box."
+    examples:
+      - name: DevBoxes_StartDevBox
+        text: |-
+               az devcenter dev dev-box restart --name "MyDevBox" --dev-center-name "{devCenterName}" \
                --project-name "{projectName}" --user-id "me"
 """
 
@@ -204,61 +216,74 @@ helps[
     type: command
     short-summary: "Stops a dev box."
     examples:
-      - name: stopDevBoxForUser
+      - name: DevBoxes_StopDevBox
         text: |-
                az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               --project-name "{projectName}" --user-id "me" --hibernate "true"
 """
 
 helps[
-    "devcenter dev dev-box list-upcoming-action"
+    "devcenter dev dev-box list-action"
 ] = """
     type: command
-    short-summary: "Lists upcoming actions on a Dev Box."
+    short-summary: "Lists actions on a Dev Box."
     examples:
-      - name: DevBoxes_ListUpcomingActions
+      - name: DevBoxes_ListActions
         text: |-
-               az devcenter dev dev-box list-upcoming-action --dev-center-name "{devCenterName}" \
+               az devcenter dev dev-box list-action --dev-center-name "{devCenterName}" \
 --project-name "{projectName}" --name "myDevBox" --user-id "me"
 """
 
 helps[
-    "devcenter dev dev-box delay-upcoming-action"
+    "devcenter dev dev-box delay-action"
 ] = """
     type: command
-    short-summary: "Delays an Upcoming Action."
+    short-summary: "Delays an action."
     examples:
-      - name: DevBoxes_DelayUpcomingAction
+      - name: DevBoxes_DelayAction
         text: |-
-               az devcenter dev dev-box delay-upcoming-action --dev-center-name "{devCenterName}" \
+               az devcenter dev dev-box delay-action --dev-center-name "{devCenterName}" \
 --project-name "{projectName}" --delay-time "04:30" --name "myDevBox" \
---upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7 --user-id "00000000-0000-0000-0000-000000000000""
+--action-name "schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev dev-box show-upcoming-action"
+    "devcenter dev dev-box delay-all-actions"
 ] = """
     type: command
-    short-summary: "Gets an Upcoming Action."
+    short-summary: "Delays all action."
     examples:
-      - name: DevBoxes_GetUpcomingAction
+      - name: DevBoxes_DelayActions
         text: |-
-               az devcenter dev dev-box show-upcoming-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --upcoming-action-id \
-"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+               az devcenter dev dev-box delay-all-actions --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --until "2022-09-30T17:00:00Z" --name "myDevBox" \
+--user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev dev-box skip-upcoming-action"
+    "devcenter dev dev-box show-action"
 ] = """
     type: command
-    short-summary: "Skips an Upcoming Action."
+    short-summary: "Gets an action."
     examples:
-      - name: DevBoxes_SkipUpcomingAction
+      - name: DevBoxes_GetAction
         text: |-
-               az devcenter dev dev-box skip-upcoming-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --upcoming-action-id \
-"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+               az devcenter dev dev-box show-action --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --name "myDevBox" --action-name \
+"schedule-default" --user-id "me"
+"""
+
+helps[
+    "devcenter dev dev-box skip-action"
+] = """
+    type: command
+    short-summary: "Skips an action."
+    examples:
+      - name: DevBoxes_SkipAction
+        text: |-
+               az devcenter dev dev-box skip-action --dev-center-name "{devCenterName}" \
+--project-name "{projectName}" --name "myDevBox" --action-name \
+"schedule-default" --user-id "me"
 """
 
 helps[
@@ -272,11 +297,15 @@ helps[
     "devcenter dev environment list"
 ] = """
     type: command
-    short-summary: "Lists the environments for a project."
+    short-summary: "Lists the environments for a project or lists the environments for a user within a project."
     examples:
       - name: Environments_ListByProject
         text: |-
               az devcenter dev environment list --dev-center-name "{devCenterName}" \
+--project-name "{projectName}"
+      - name: Environments_ListEnvironmentsByUser
+        text: |-
+               az devcenter dev environment list --dev-center-name "{devCenterName}" \
 --project-name "{projectName}" --user-id "me"
 """
 
@@ -298,38 +327,18 @@ helps[
     type: command
     short-summary: "Create an environment."
     examples:
-      - name: Environments_CreateByCatalogItem
+      - name: Environments_CreateByEnvironmentDefinition
         text: |-
-              az devcenter dev environment create --description "Personal Dev Environment" --catalog-item-name \
-"helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
-torageAccountType\\":\\"Standard_LRS\\"}" --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
-      - name: Environments_CreateWithAutoExpire
-        text: |-
-              az devcenter dev environment create --description "Personal Dev Environment" --catalog-item-name \
-"helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
-torageAccountType\\":\\"Standard_LRS\\"}" --scheduled-tasks "{\\"autoExpire\\":{\\"type\\":\\"AutoExpire\\",\\"startTim\
-e\\":\\"2022-01-01T00:01:00Z\\"}}" --dev-center-name "{devCenterName}" --name \
-"{environmentName}" --project-name "{projectName}" --user-id "{userId}"
-"""
-
-helps[
-    "devcenter dev environment update"
-] = """
-    type: command
-    short-summary: "Partially updates an environment."
-    examples:
-      - name: Environments_Update
-        text: |-
-              az devcenter dev environment update --description "Personal Dev Environment 2" --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+               az devcenter dev environment create --dev-center-name "{devCenterName}" --project-name "{projectName}" \
+--catalog-name "main" --environment-definition-name "helloworld" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "me"
 """
 
 helps[
     "devcenter dev environment delete"
 ] = """
     type: command
-    short-summary: "Deletes an environment and all it's associated resources."
+    short-summary: "Deletes an environment and all its associated resources."
     examples:
       - name: Environments_Delete
         text: |-
@@ -338,105 +347,34 @@ helps[
 """
 
 helps[
-    "devcenter dev environment deploy-action"
-] = """
-    type: command
-    short-summary: "Executes a deploy action."
-    examples:
-      - name: Environments_DeployAction
-        text: |-
-              az devcenter dev environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
-ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me" --dev-center-name "{devCenterName}"
-"""
-
-helps[
-    "devcenter dev environment wait"
-] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter environment is met.
-    examples:
-      - name: Pause executing next line of CLI script until the devcenter environment is successfully created.
-        text: |-
-              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --created
-      - name: Pause executing next line of CLI script until the devcenter environment is successfully updated.
-        text: |-
-              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --updated
-      - name: Pause executing next line of CLI script until the devcenter environment is successfully deleted.
-        text: |-
-              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --deleted
-"""
-
-helps[
-    "devcenter dev catalog-item"
+    "devcenter dev catalog"
 ] = """
     type: group
-    short-summary: Manage catalog item with devcenter
+    short-summary: Manage catalog with devcenter
 """
 
 helps[
-    "devcenter dev catalog-item list"
+    "devcenter dev catalog list"
 ] = """
     type: command
-    short-summary: "Lists latest version of all catalog items available for a project."
+    short-summary: "Lists all of the catalogs available for a project."
     examples:
-      - name: CatalogItems_ListByProject
+      - name: Environments_ListCatalogsByProject
         text: |-
-               az devcenter dev catalog-item list --dev-center-name "{devCenterName}" \
+               az devcenter dev catalog list --dev-center-name "{devCenterName}" \
                --project-name "{projectName}"
 """
 
 helps[
-    "devcenter dev catalog-item"
-] = """
-    type: group
-    short-summary: Manage catalog item with devcenter
-"""
-
-helps[
-    "devcenter dev catalog-item show"
+    "devcenter dev catalog show"
 ] = """
     type: command
-    short-summary: "Get a catalog item from a project."
+    short-summary: "Gets the specified catalog within the project."
     examples:
-      - name: CatalogItems_Get
+      - name: Environments_GetCatalog
         text: |-
-               az devcenter dev catalog-item show --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
-"""
-
-helps[
-    "devcenter dev catalog-item-version"
-] = """
-    type: group
-    short-summary: Manage catalog item version with devcenter
-"""
-
-helps[
-    "devcenter dev catalog-item-version list"
-] = """
-    type: command
-    short-summary: "List all versions of a catalog item from a project."
-    examples:
-      - name: CatalogItemVersions_ListByProject
-        text: |-
-               az devcenter dev catalog-item-version list --dev-center-name "{devCenterName}"  \
-                --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
-"""
-
-helps[
-    "devcenter dev catalog-item-version show"
-] = """
-    type: command
-    short-summary: "Get a specific catalog item version from a project."
-    examples:
-      - name: CatalogItemVersion_Get
-        text: |-
-               az devcenter dev catalog-item-version show --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --catalog-item-id "{catalogItemId}" --version "1.0.0"
+               az devcenter dev catalog show --dev-center-name "{devCenterName}" \
+               --project-name "{projectName}" --catalog-name "foo"
 """
 
 helps[
@@ -517,6 +455,42 @@ helps[
         text: |-
               az devcenter dev notification-setting list-allowed-culture --dev-center-name "{devCenterName}"  \
 --project-name "{projectName}" --user-id "me"
+"""
+
+helps[
+    "devcenter dev environment-definition"
+] = """
+    type: group
+    short-summary: Manage environment definition with devcenter
+"""
+
+helps[
+    "devcenter dev environment-definition list"
+] = """
+    type: command
+    short-summary: "Lists all environment definitions available within a catalog. And Lists all environment \
+definitions available for a project."
+    examples:
+      - name: Environments_ListEnvironmentDefinitionsByCatalog
+        text: |-
+               az devcenter dev environment-definition list --dev-center-name "{devCenterName}"  \
+--project-name "{projectName}" --catalog-name "myCatalog"
+      - name: Environments_ListEnvironmentDefinitions
+        text: |-
+               az devcenter dev environment-definition list --dev-center-name "{devCenterName}"  \
+--project-name "{projectName}"
+"""
+
+helps[
+    "devcenter dev environment-definition show"
+] = """
+    type: command
+    short-summary: "Get an environment definition from a catalog."
+    examples:
+      - name: Environments_GetEnvironmentDefinition
+        text: |-
+               az devcenter dev environment-definition show --dev-center-name "{devCenterName}"  \
+--project-name "{projectName}" --catalog-name "myCatalog" --definition-name "foo"
 """
 
 # control plane
