@@ -61,41 +61,6 @@ logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                f'ALL_TESTS: {ALL_TESTS}.')
 
 
-# class TestExtensionSourceMeta(type):
-#     def __new__(mcs, name, bases, _dict):
-#
-#         def gen_test(ext_path):
-#             def test(self):
-#                 ext_install_dir = os.path.join(self.ext_dir, 'ext')
-#                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
-#                             ext_install_dir, ext_path]
-#                 check_call(pip_args)
-#                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
-#                 logger.warning(f'unittest_args: {unittest_args}')
-#                 env = os.environ.copy()
-#                 env['PYTHONPATH'] = ext_install_dir
-#                 env['AZURE_CORE_USE_COMMAND_INDEX'] = 'false'
-#                 check_call(unittest_args, env=env)
-#             return test
-#
-#         for tname, ext_path in ALL_TESTS:
-#             test_name = "test_%s" % tname
-#             _dict[test_name] = gen_test(ext_path)
-#         return type.__new__(mcs, name, bases, _dict)
-#
-#
-# class TestExtensionSource(with_metaclass(TestExtensionSourceMeta, unittest.TestCase)):
-#
-#     def setUp(self):
-#         self.ext_dir = tempfile.mkdtemp()
-#         self.mock_env = mock.patch.dict(os.environ, {'AZURE_EXTENSION_DIR': self.ext_dir})
-#         self.mock_env.start()
-#
-#     def tearDown(self):
-#         self.mock_env.stop()
-#         shutil.rmtree(self.ext_dir)
-
-
 class TestExtensionRecordingMode(unittest.TestCase):
 
     def run_command(self, cmd, check_return_code=False, cwd=None):
