@@ -7,6 +7,7 @@ Release History
 ++++++
 * [2023-02-27] Version intended to work with QDK version 0.27.253010
 * You can specify --skip-autoadd when creating a workspace to only add the providers listed after the -r parameter, so provider plans in the "Credits for All" program will not be automatically added.
+* Adding batching job support to az quantum.
 
 0.18.0
 ++++++
