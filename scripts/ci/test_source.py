@@ -14,10 +14,9 @@ import tempfile
 import unittest
 import shutil
 import shlex
-from subprocess import check_output, check_call, CalledProcessError
+from subprocess import check_output, check_call, CalledProcessError, run
 
 from unittest import mock
-from wheel.install import WHEEL_INFO_RE
 from six import with_metaclass
 
 from util import SRC_PATH
@@ -62,38 +61,61 @@ logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                f'ALL_TESTS: {ALL_TESTS}.')
 
 
-class TestExtensionSourceMeta(type):
-    def __new__(mcs, name, bases, _dict):
+# class TestExtensionSourceMeta(type):
+#     def __new__(mcs, name, bases, _dict):
+#
+#         def gen_test(ext_path):
+#             def test(self):
+#                 ext_install_dir = os.path.join(self.ext_dir, 'ext')
+#                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
+#                             ext_install_dir, ext_path]
+#                 check_call(pip_args)
+#                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
+#                 logger.warning(f'unittest_args: {unittest_args}')
+#                 env = os.environ.copy()
+#                 env['PYTHONPATH'] = ext_install_dir
+#                 env['AZURE_CORE_USE_COMMAND_INDEX'] = 'false'
+#                 check_call(unittest_args, env=env)
+#             return test
+#
+#         for tname, ext_path in ALL_TESTS:
+#             test_name = "test_%s" % tname
+#             _dict[test_name] = gen_test(ext_path)
+#         return type.__new__(mcs, name, bases, _dict)
+#
+#
+# class TestExtensionSource(with_metaclass(TestExtensionSourceMeta, unittest.TestCase)):
+#
+#     def setUp(self):
+#         self.ext_dir = tempfile.mkdtemp()
+#         self.mock_env = mock.patch.dict(os.environ, {'AZURE_EXTENSION_DIR': self.ext_dir})
+#         self.mock_env.start()
+#
+#     def tearDown(self):
+#         self.mock_env.stop()
+#         shutil.rmtree(self.ext_dir)
 
-        def gen_test(ext_path):
-            def test(self):
-                ext_install_dir = os.path.join(self.ext_dir, 'ext')
-                pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
-                            ext_install_dir, ext_path]
-                check_call(pip_args)
-                unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
-                env = os.environ.copy()
-                env['PYTHONPATH'] = ext_install_dir
-                env['AZURE_CORE_USE_COMMAND_INDEX'] = 'false'
-                check_call(unittest_args, env=env)
-            return test
 
+class TestExtensionRecordingMode(unittest.TestCase):
+
+    def run_command(self, cmd, check_return_code=False, cwd=None):
+        logger.info(f'cmd: {cmd}')
+        out = run(cmd, check=True, cwd=cwd)
+        if check_return_code and out.returncode:
+            raise RuntimeError(f"{cmd} failed")
+
+    def test_extension(self):
         for tname, ext_path in ALL_TESTS:
-            test_name = "test_%s" % tname
-            _dict[test_name] = gen_test(ext_path)
-        return type.__new__(mcs, name, bases, _dict)
-
-
-class TestExtensionSource(with_metaclass(TestExtensionSourceMeta, unittest.TestCase)):
-
-    def setUp(self):
-        self.ext_dir = tempfile.mkdtemp()
-        self.mock_env = mock.patch.dict(os.environ, {'AZURE_EXTENSION_DIR': self.ext_dir})
-        self.mock_env.start()
-
-    def tearDown(self):
-        self.mock_env.stop()
-        shutil.rmtree(self.ext_dir)
+            ext_name = ext_path.split('/')[-1]
+            logger.info(f'installing extension: {ext_name}')
+            cmd = ['azdev', 'extension', 'add', ext_name]
+            self.run_command(cmd, check_return_code=True)
+            test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', ext_name]
+            logger.warning(f'test_args: {test_args}')
+            self.run_command(test_args, check_return_code=True)
+            logger.info(f'uninstalling extension: {ext_name}')
+            cmd = ['azdev', 'extension', 'remove', ext_name]
+            self.run_command(cmd, check_return_code=True)
 
 
 class TestSourceWheels(unittest.TestCase):
