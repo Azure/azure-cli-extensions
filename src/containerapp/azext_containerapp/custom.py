@@ -4068,3 +4068,49 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 max_replicas=replicas,)
         )
     return containerapps_from_compose
+
+def list_supported_workload_profiles(cmd, location):
+    return WorkloadProfileClient.list_supported(cmd, location)
+
+
+def list_workload_profiles(cmd, resource_group_name, env_name):
+    return WorkloadProfileClient.list(cmd, resource_group_name, env_name)
+
+
+def show_workload_profile(cmd, resource_group_name, env_name, workload_profile):
+    env_location = show_managed_environment(cmd, env_name, resource_group_name)["location"]
+    workload_profile = get_workload_profile_type(cmd, workload_profile, env_location)
+    workload_profiles = WorkloadProfileClient.list(cmd, resource_group_name, env_name)
+    profile = [p for p in workload_profiles if p["name"].lower() == workload_profile.lower()]
+    if not profile:
+        raise ValidationError(f"No such workload profile found on the environment. The workload profile(s) on the environment are: {','.join([p['name'] for p in workload_profiles])}")
+    return profile[0]
+
+
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile, min_nodes, max_nodes):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile=workload_profile, min_nodes=min_nodes, max_nodes=max_nodes)
+
+def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    if not r["properties"]["workloadProfiles"]:
+        raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
+
+    if workload_profile.lower() == "consumption":
+        raise ValidationError("Cannot delete the 'Consumption' workload profile")
+
+    workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
+    workload_profiles = [p for p in r["properties"]["workloadProfiles"] if p["workloadProfileType"].lower() != workload_profile.lower()]
+
+    r["properties"]["workloadProfiles"] = workload_profiles
+
+    try:
+        r = ManagedEnvironmentClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=env_name, managed_environment_envelope=r)
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
