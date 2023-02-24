@@ -67,7 +67,15 @@ def app_create(cmd, client, resource_group, service, name,
                session_affinity=None,
                session_max_age=None,
                backend_protocol=None,
-               client_auth_certs=None):
+               client_auth_certs=None,
+               # StandardGen2
+               min_replicas=None,
+               max_replicas=None,
+               scale_rule_name=None,
+               scale_rule_type=None,
+               scale_rule_http_concurrency=None,
+               scale_rule_metadata=None,
+               scale_rule_auth=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -426,6 +434,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       readiness_probe_config=None,
                       startup_probe_config=None,
                       termination_grace_period_seconds=None,
+                      # StandardGen2
+                      min_replicas=None,
+                      max_replicas=None,
+                      scale_rule_name=None,
+                      scale_rule_type=None,
+                      scale_rule_http_concurrency=None,
+                      scale_rule_metadata=None,
+                      scale_rule_auth=None,
                       # general
                       no_wait=False):
     '''deployment_create
