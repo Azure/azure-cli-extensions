@@ -7,9 +7,33 @@ from datetime import timedelta
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
 from .helper import get_project_arg
+from .aaz.latest.devcenter.admin.pool import (Create as _PoolCreate, List as _PoolList)
 
 # control plane
 
+class PoolCreate(_PoolCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.license_type._registered=False
+        return args_schema
+    
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        for arg_name, arg in args:
+            if arg_name == "project_name":
+                arg.configured_default = "project"
+        return args
+    
+class PoolList(_PoolList):
+    
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        for arg_name, arg in args:
+            if arg_name == "project_name":
+                arg.configured_default = "project"
+        return args
+        
 
 
 # data plane

@@ -7,6 +7,7 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
+from .custom import(PoolCreate, PoolList)
 
 from azext_devcenter._client_factory import (
     cf_project_dp,
@@ -22,6 +23,11 @@ from azext_devcenter._client_factory import (
 
 
 def load_command_table(self, _):
+    # control plane
+
+
+    self.command_table['devcenter admin pool list'] = PoolList(loader=self)
+    self.command_table['devcenter admin pool create'] = PoolCreate(loader=self)
 
     # data plane
 
