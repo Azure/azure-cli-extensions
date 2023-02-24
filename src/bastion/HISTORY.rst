@@ -2,7 +2,6 @@
 
 Release History
 ===============
-
 0.2.3
 ++++++
 * Fixes for IP address connect
