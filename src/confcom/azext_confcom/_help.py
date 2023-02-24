@@ -82,10 +82,12 @@ helps[
           short-summary: 'When enabled, the generated security policy is printed to the command line instead of injected into the input ARM Template'
 
     examples:
-        - name: Input a policy.json file to create a base64 encoded Confidential Container Security Policy
-          text: az confcom acipolicygen --input "./policy.json"
-        - name: Input a policy.json file to create a human-readable Confidential Container Security Policy
-          text: az confcom acipolicygen --input "./policy.json" --outraw-pretty-print
-        - name: Input a policy.json file to save a Confidential Container Security Policy to a file
-          text: az confcom acipolicygen --input "./policy.json" -s "./output-file.txt"
+        - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
+          text: az confcom acipolicygen --template-file "./template.json"
+        - name: Input an ARM Template file to create a human-readable Confidential Container Security Policy
+          text: az confcom acipolicygen --template-file "./template.json" --outraw-pretty-print
+        - name: Input an ARM Template file to save a Confidential Container Security Policy to a file
+          text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt"
+        - name: Input an ARM Template file and use a tar file as the image source instead of the Docker daemon
+          text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
 """

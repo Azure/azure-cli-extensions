@@ -139,8 +139,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def _close_docker_client(self) -> None:
         if self._docker_client:
             self._get_docker_client().close()
-        else:
-            docker.from_env().close()
 
     def close(self) -> None:
         self._close_docker_client()
@@ -375,7 +373,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         if not is_sidecars:
             # add in the default containers that have their hashes pre-computed
-            policy += config.DEFAULT_CONTAINERS
+            policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = False
@@ -706,6 +704,7 @@ def load_policy_from_image_name(
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS: config.DEFAULT_REGO_FRAGMENTS,
         },
         debug_mode=debug_mode,
+        disable_stdio=disable_stdio,
     )
 
 
