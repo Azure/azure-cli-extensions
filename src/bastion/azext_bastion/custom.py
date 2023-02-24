@@ -158,6 +158,8 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port)
+    if ip_connect:
+        tunnel_server.set_host_name(target_ip_address)
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
     t.daemon = True
     t.start()
@@ -337,8 +339,6 @@ def _tunnel_close_handler(tunnel):
 
 def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name, resource_port, port,
                           timeout=None):
-    if not is_valid_resource_id(target_resource_id):
-        raise InvalidArgumentValueError("Please enter a valid VM resource ID.")
 
     from .aaz.latest.network.bastion import Show
     bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
@@ -357,6 +357,8 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
     bastion_endpoint = _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id)
 
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, resource_port, port)
+    if ip_connect:
+        tunnel_server.set_host_name(target_ip_address)
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
     t.daemon = True
     t.start()
