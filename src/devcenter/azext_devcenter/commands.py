@@ -18,23 +18,6 @@ from azext_devcenter._client_factory import (
     cf_catalog_item_version_dp,
     cf_environment_type_dp,
     cf_notification_setting_dp,
-    cf_dev_center,
-    cf_project,
-    cf_attached_network,
-    cf_gallery,
-    cf_image,
-    cf_image_version,
-    cf_catalog,
-    cf_environment_type,
-    cf_project_allowed_environment_type,
-    cf_project_environment_type,
-    cf_dev_box_definition,
-    cf_operation_statuses,
-    cf_sku,
-    cf_pool,
-    cf_schedule,
-    cf_network_connection,
-    cf_check_name_availability,
 )
 
 
@@ -99,108 +82,12 @@ def load_command_table(self, _):
         client_factory=cf_notification_setting_dp,
     )
 
-    # control plane
-
-    devcenter_attached_network = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._attached_networks_operations#AttachedNetworksOperations.{}"
-        ),
-        client_factory=cf_attached_network,
-    )
-
-    devcenter_catalog = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._catalogs_operations#CatalogsOperations.{}",
-        client_factory=cf_catalog,
-    )
-
-    devcenter_dev_box_definition = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._dev_box_definitions_operations#DevBoxDefinitionsOperations.{}",
-        client_factory=cf_dev_box_definition,
-    )
-
-    devcenter_dev_center = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._dev_centers_operations#DevCentersOperations.{}"
-        ),
-        client_factory=cf_dev_center,
-    )
-
-    devcenter_environment_type = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._environment_types_operations#EnvironmentTypesOperations.{}"
-        ),
-        client_factory=cf_environment_type,
-    )
-
-    devcenter_gallery = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._galleries_operations#GalleriesOperations.{}",
-        client_factory=cf_gallery,
-    )
-
-    devcenter_image = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._images_operations#ImagesOperations.{}",
-        client_factory=cf_image,
-    )
-
-    devcenter_image_version = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._image_versions_operations#ImageVersionsOperations.{}"
-        ),
-        client_factory=cf_image_version,
-    )
-
-    devcenter_network_connection = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._network_connections_operations#NetworkConnectionsOperations.{}",
-        client_factory=cf_network_connection,
-    )
-
-    devcenter_operation_statuses = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._operation_statuses_operations#OperationStatusesOperations.{}",
-        client_factory=cf_operation_statuses,
-    )
-
-    devcenter_pool = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._pools_operations#PoolsOperations.{}",
-        client_factory=cf_pool,
-    )
-
-    devcenter_project = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._projects_operations#ProjectsOperations.{}",
-        client_factory=cf_project,
-    )
-
-    devcenter_project_allowed_environment_type = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._project_allowed_environment_types_operations#ProjectAllowedEnvironmentTypesOperations.{}",
-        client_factory=cf_project_allowed_environment_type,
-    )
-
-    devcenter_project_environment_type = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._project_environment_types_operations#ProjectEnvironmentTypesOperations.{}",
-        client_factory=cf_project_environment_type,
-    )
-
-    devcenter_schedule = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._schedules_operations#SchedulesOperations.{}",
-        client_factory=cf_schedule,
-    )
-
-    devcenter_sku = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._skus_operations#SkusOperations.{}",
-        client_factory=cf_sku,
-    )
-
-    devcenter_check_name_availability = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._check_name_availability_operations#CheckNameAvailabilityOperations.{}",
-        client_factory=cf_check_name_availability,
-    )
-
     with self.command_group("devcenter", is_preview=True):
         pass
 
     with self.command_group("devcenter dev"):
         pass
 
-    # data plane
     with self.command_group("devcenter dev project", devcenter_project_dp) as g:
         g.custom_command("list", "devcenter_project_list_dp")
         g.custom_show_command("show", "devcenter_project_show_dp")

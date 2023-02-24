@@ -9,24 +9,18 @@
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     get_enum_type,
-    resource_group_name_type,
-    get_location_type,
     tags_type,
     get_three_state_flag,
 )
 from azure.cli.core.commands.validators import (
-    get_default_location_from_resource_group,
     validate_file_or_dict,
 )
 from azext_devcenter.action import (
-    AddRepo,
-    AddImageReference,
-    AddSku,
     AddEmailNotification,
     AddWebhookNotification,
 )
 
-from ._validators import validate_attached_network_or_dev_box_def, validate_dev_box_list, validate_time
+from ._validators import validate_dev_box_list, validate_time
 
 
 dev_center_type = CLIArgumentType(
