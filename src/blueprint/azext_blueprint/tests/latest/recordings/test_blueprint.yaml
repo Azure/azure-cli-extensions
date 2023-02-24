@@ -19,10 +19,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-msi/7.0.0 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005?api-version=2023-01-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004?api-version=2023-01-31
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005","name":"testid_000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"be89cd7c-4480-4fd6-bc5c-2007991a9873","clientId":"11dfd7c9-96e3-497d-bfa4-60f0efddef2f"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004","name":"testid_000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb","clientId":"b40500e0-12a2-4a47-b724-2229864fb76e"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,11 +31,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:17 GMT
+      - Fri, 24 Feb 2023 02:53:14 GMT
       expires:
       - '-1'
       location:
-      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004
       pragma:
       - no-cache
       strict-transport-security:
@@ -43,7 +43,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -68,15 +68,15 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {},\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n      \"timeCreated\":
-        \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\": \"2023-02-22T11:48:19.3135613+00:00\"\r\n
+        \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\": \"2023-02-24T02:53:16.0046382+00:00\"\r\n
         \   },\r\n    \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:18 GMT
+      - Fri, 24 Feb 2023 02:53:15 GMT
       expires:
       - '-1'
       pragma:
@@ -97,7 +97,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -710,13 +710,36 @@ interactions:
         \"2023-02-22T11:39:14.1042757+00:00\"\r\n        },\r\n        \"description\":
         \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-gv5gwrcpn2zonmxa\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-gv5gwrcpn2zonmxa\"\r\n
-        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
-        \       \"resourceGroups\": {},\r\n        \"targetScope\": \"subscription\",\r\n
-        \       \"status\": {\r\n          \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n
-        \         \"lastModified\": \"2023-02-22T11:48:19.3135613+00:00\"\r\n        },\r\n
-        \       \"description\": \"An example blueprint.\"\r\n      },\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-000003\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"reader\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
+        {\r\n              \"displayName\": \"[User group or application name] ([User
+        group or application name] : Reader)\",\r\n              \"strongType\": \"PrincipalId\"\r\n
+        \           }\r\n          },\r\n          \"audit\": {\r\n            \"type\":
+        \"string\",\r\n            \"metadata\": {\r\n              \"displayName\":
+        \"Members\"\r\n            },\r\n            \"allowedValues\": []\r\n          }\r\n
+        \       },\r\n        \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n
+        \           \"metadata\": {\r\n              \"displayName\": \"Resource Group
+        1\"\r\n            },\r\n            \"dependsOn\": []\r\n          }\r\n
+        \       },\r\n        \"targetScope\": \"subscription\",\r\n        \"status\":
+        {\r\n          \"timeCreated\": \"2023-02-23T03:53:25+00:00\",\r\n          \"lastModified\":
+        \"2023-02-23T03:53:40.8548386+00:00\"\r\n        },\r\n        \"description\":
+        \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-nedbxf4payzlrfba\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-nedbxf4payzlrfba\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"reader\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
+        {\r\n              \"displayName\": \"[User group or application name] ([User
+        group or application name] : Reader)\",\r\n              \"strongType\": \"PrincipalId\"\r\n
+        \           }\r\n          },\r\n          \"audit\": {\r\n            \"type\":
+        \"string\",\r\n            \"metadata\": {\r\n              \"displayName\":
+        \"Members\"\r\n            },\r\n            \"allowedValues\": []\r\n          }\r\n
+        \       },\r\n        \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n
+        \           \"metadata\": {\r\n              \"displayName\": \"Resource Group
+        1\"\r\n            },\r\n            \"dependsOn\": []\r\n          }\r\n
+        \       },\r\n        \"targetScope\": \"subscription\",\r\n        \"status\":
+        {\r\n          \"timeCreated\": \"2023-02-23T04:56:11+00:00\",\r\n          \"lastModified\":
+        \"2023-02-23T04:56:27.8278254+00:00\"\r\n        },\r\n        \"description\":
+        \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-vlgtpckubvmtqfo6\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-vlgtpckubvmtqfo6\"\r\n
         \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
         \       \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n            \"metadata\":
         {\r\n              \"displayName\": \"Resource Group 1\"\r\n            },\r\n
@@ -798,16 +821,53 @@ interactions:
         \       \"description\": \"An example blueprint.\"\r\n      },\r\n      \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-rlalt562qtccpu6f\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-rlalt562qtccpu6f\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"reader\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
+        {\r\n              \"displayName\": \"[User group or application name] ([User
+        group or application name] : Reader)\",\r\n              \"strongType\": \"PrincipalId\"\r\n
+        \           }\r\n          },\r\n          \"audit\": {\r\n            \"type\":
+        \"string\",\r\n            \"metadata\": {\r\n              \"displayName\":
+        \"Members\"\r\n            },\r\n            \"allowedValues\": []\r\n          }\r\n
+        \       },\r\n        \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n
+        \           \"metadata\": {\r\n              \"displayName\": \"Resource Group
+        1\"\r\n            },\r\n            \"dependsOn\": []\r\n          }\r\n
+        \       },\r\n        \"targetScope\": \"subscription\",\r\n        \"status\":
+        {\r\n          \"timeCreated\": \"2023-02-24T02:30:00+00:00\",\r\n          \"lastModified\":
+        \"2023-02-24T02:30:13.3908594+00:00\"\r\n        },\r\n        \"description\":
+        \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-dubuynoxlehx4rwt\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-dubuynoxlehx4rwt\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"reader\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
+        {\r\n              \"displayName\": \"[User group or application name] ([User
+        group or application name] : Reader)\",\r\n              \"strongType\": \"PrincipalId\"\r\n
+        \           }\r\n          },\r\n          \"audit\": {\r\n            \"type\":
+        \"string\",\r\n            \"metadata\": {\r\n              \"displayName\":
+        \"Members\"\r\n            },\r\n            \"allowedValues\": []\r\n          }\r\n
+        \       },\r\n        \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n
+        \           \"metadata\": {\r\n              \"displayName\": \"Resource Group
+        1\"\r\n            },\r\n            \"dependsOn\": []\r\n          }\r\n
+        \       },\r\n        \"targetScope\": \"subscription\",\r\n        \"status\":
+        {\r\n          \"timeCreated\": \"2023-02-24T02:36:04+00:00\",\r\n          \"lastModified\":
+        \"2023-02-24T02:36:17.8447592+00:00\"\r\n        },\r\n        \"description\":
+        \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-gsst5qmp6gecstr6\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-gsst5qmp6gecstr6\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
+        \       \"resourceGroups\": {},\r\n        \"targetScope\": \"subscription\",\r\n
+        \       \"status\": {\r\n          \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n
+        \         \"lastModified\": \"2023-02-24T02:53:16.0046382+00:00\"\r\n        },\r\n
+        \       \"description\": \"An example blueprint.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-000002\"\r\n
         \   }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '54108'
+      - '58876'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:20 GMT
+      - Fri, 24 Feb 2023 02:53:17 GMT
       expires:
       - '-1'
       pragma:
@@ -841,15 +901,15 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {},\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n      \"timeCreated\":
-        \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\": \"2023-02-22T11:48:19.3135613+00:00\"\r\n
+        \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\": \"2023-02-24T02:53:16.0046382+00:00\"\r\n
         \   },\r\n    \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -858,7 +918,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:22 GMT
+      - Fri, 24 Feb 2023 02:53:18 GMT
       expires:
       - '-1'
       pragma:
@@ -898,17 +958,17 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:22.9725927+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \     \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:19.2817339+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -917,7 +977,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:22 GMT
+      - Fri, 24 Feb 2023 02:53:18 GMT
       expires:
       - '-1'
       pragma:
@@ -929,7 +989,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -949,17 +1009,17 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:22.9725927+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \     \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:19.2817339+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -968,7 +1028,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:24 GMT
+      - Fri, 24 Feb 2023 02:53:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1002,17 +1062,17 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:22.9725927+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \     \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:19.2817339+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1021,7 +1081,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:25 GMT
+      - Fri, 24 Feb 2023 02:53:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1062,14 +1122,14 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/reader-role-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/reader-role-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"roleDefinitionId\": \"/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\r\n
         \   \"principalIds\": \"[parameters('reader')]\",\r\n    \"dependsOn\": [],\r\n
         \   \"resourceGroup\": \"myRgArt\",\r\n    \"displayName\": \"[User group
         or application name] : Reader\"\r\n  },\r\n  \"kind\": \"roleAssignment\",\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/reader-role-art\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/reader-role-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"reader-role-art\"\r\n}"
     headers:
       cache-control:
@@ -1079,7 +1139,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:26 GMT
+      - Fri, 24 Feb 2023 02:53:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1091,7 +1151,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -1120,7 +1180,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"policyDefinitionId\": \"/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b\",\r\n
@@ -1128,7 +1188,7 @@ interactions:
         \     }\r\n    },\r\n    \"dependsOn\": [],\r\n    \"resourceGroup\": \"myRgArt\",\r\n
         \   \"displayName\": \"Audit Windows VMs in which the Administrators group
         does not contain only the specified members\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"policy-audit-win-vm-art\"\r\n}"
     headers:
       cache-control:
@@ -1138,7 +1198,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:29 GMT
+      - Fri, 24 Feb 2023 02:53:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1150,7 +1210,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -1170,7 +1230,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"policyDefinitionId\": \"/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b\",\r\n
@@ -1178,7 +1238,7 @@ interactions:
         \     }\r\n    },\r\n    \"dependsOn\": [],\r\n    \"resourceGroup\": \"myRgArt\",\r\n
         \   \"displayName\": \"Audit Windows VMs in which the Administrators group
         does not contain only the specified members\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"policy-audit-win-vm-art\"\r\n}"
     headers:
       cache-control:
@@ -1188,7 +1248,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:31 GMT
+      - Fri, 24 Feb 2023 02:53:25 GMT
       expires:
       - '-1'
       pragma:
@@ -1222,17 +1282,17 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:22.9725927+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \     \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:19.2817339+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1241,7 +1301,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:32 GMT
+      - Fri, 24 Feb 2023 02:53:26 GMT
       expires:
       - '-1'
       pragma:
@@ -1275,17 +1335,17 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:22.9725927+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \     \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:19.2817339+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1294,7 +1354,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:34 GMT
+      - Fri, 24 Feb 2023 02:53:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1337,7 +1397,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {\r\n      \"reader\":
@@ -1349,10 +1409,10 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:35.4826197+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:29.7790397+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1361,7 +1421,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:35 GMT
+      - Fri, 24 Feb 2023 02:53:29 GMT
       expires:
       - '-1'
       pragma:
@@ -1373,12 +1433,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
 - request:
-    body: '{"properties": {"blueprintName": "test-bp-000003", "changeNotes": "First
+    body: '{"properties": {"blueprintName": "test-bp-000002", "changeNotes": "First
       release"}}'
     headers:
       Accept:
@@ -1398,10 +1458,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0?api-version=2018-11-01-preview
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"blueprintName\": \"test-bp-000003\",\r\n
+      string: "{\r\n  \"properties\": {\r\n    \"blueprintName\": \"test-bp-000002\",\r\n
         \   \"changeNotes\": \"First release\",\r\n    \"parameters\": {\r\n      \"reader\":
         {\r\n        \"type\": \"array\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"[User group or application name] ([User group or application name] : Reader)\",\r\n
@@ -1411,9 +1471,9 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:37.2905813+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:37.2905813+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:31.3455282+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:31.3455282+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n  \"name\": \"1.0\"\r\n}"
     headers:
       cache-control:
@@ -1423,7 +1483,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:36 GMT
+      - Fri, 24 Feb 2023 02:53:30 GMT
       expires:
       - '-1'
       pragma:
@@ -1456,11 +1516,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"error\": {\r\n    \"code\": \"AssignmentNotFound\",\r\n    \"message\":
-        \"Assignment 'Assignment-test-bp000004' could not be found in subscription
+        \"Assignment 'Assignment-test-bp000003' could not be found in subscription
         '0b1f6471-1bf0-4dda-aec3-cb9272f09590'.\"\r\n  }\r\n}"
     headers:
       cache-control:
@@ -1470,7 +1530,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:38 GMT
+      - Fri, 24 Feb 2023 02:53:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1503,7 +1563,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004/whoIsBlueprint?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003/whoIsBlueprint?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"objectId\": \"39029da9-0fef-42a9-b478-2fe4e19b8c7b\"\r\n}"
@@ -1515,7 +1575,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:39 GMT
+      - Fri, 24 Feb 2023 02:53:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1564,11 +1624,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:40 GMT
+      - Fri, 24 Feb 2023 02:53:33 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 73cf38a5-4ae3-440f-9ad9-cc95e0d83b53
+      - 15dd00d3-da99-490a-9d17-76279d74a442
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -1576,7 +1636,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"002","RoleInstance":"SG1PEPF00004F23"}}'
+      - '{"ServerInfo":{"DataCenter":"Japan East","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"TY1PEPF0000604F"}}'
       x-ms-resource-unit:
       - '1'
     status:
@@ -1618,13 +1678,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:41 GMT
+      - Fri, 24 Feb 2023 02:53:33 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - 51fb6dd1-95bc-49a4-b692-67dff9828a48
+      - ae969151-8068-4248-8b12-839d6a534e13
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -1632,7 +1692,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"002","RoleInstance":"SG1PEPF00001302"}}'
+      - '{"ServerInfo":{"DataCenter":"Japan East","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"TY1PEPF00006055"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -1668,7 +1728,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:42 GMT
+      - Fri, 24 Feb 2023 02:53:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1720,7 +1780,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:42 GMT
+      - Fri, 24 Feb 2023 02:53:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1768,7 +1828,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:43 GMT
+      - Fri, 24 Feb 2023 02:53:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1814,7 +1874,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"39029da9-0fef-42a9-b478-2fe4e19b8c7b","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2023-02-22T11:48:43.5928047Z","updatedOn":"2023-02-22T11:48:44.1705311Z","createdBy":null,"updatedBy":"2b7fa1bd-b817-45cb-9068-e416ce1125fa","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"39029da9-0fef-42a9-b478-2fe4e19b8c7b","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2023-02-24T02:53:37.3739363Z","updatedOn":"2023-02-24T02:53:37.9589430Z","createdBy":null,"updatedBy":"2b7fa1bd-b817-45cb-9068-e416ce1125fa","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
     headers:
       cache-control:
       - no-cache
@@ -1823,7 +1883,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:47 GMT
+      - Fri, 24 Feb 2023 02:53:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1833,15 +1893,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
 - request:
     body: '{"location": "westus2", "identity": {"type": "SystemAssigned"}, "properties":
-      {"blueprintId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0",
+      {"blueprintId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0",
       "parameters": {"reader": {"value": ["31e600e0-d7ce-4e98-a927-19bb30042e44"]},
-      "audit": {"value": "jack"}}, "resourceGroups": {"myRgArt": {"name": "blueprint-rg-000006",
+      "audit": {"value": "jack"}}, "resourceGroups": {"myRgArt": {"name": "blueprint-rg-000005",
       "location": "westus2"}}, "locks": {"mode": "None"}}}'
     headers:
       Accept:
@@ -1862,23 +1922,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
+        \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
         \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"creating\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"creating\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
-        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n
-        \     \"lastModified\": \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
+        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n
+        \     \"lastModified\": \"2023-02-24T02:53:42.8517157+00:00\"\r\n    },\r\n
         \   \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1887,7 +1947,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:49 GMT
+      - Fri, 24 Feb 2023 02:53:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1899,7 +1959,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -1919,23 +1979,82 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
+        \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
         \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"waiting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"creating\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
-        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n
-        \     \"lastModified\": \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
+        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n
+        \     \"lastModified\": \"2023-02-24T02:53:42.8517157+00:00\"\r\n    },\r\n
         \   \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1213'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 02:53:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blueprint assignment wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --created
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
+  response:
+    body:
+      string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
+        \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
+        \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
+        \"waiting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
+        \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
+        \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
+        \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
+        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n
+        \     \"lastModified\": \"2023-02-24T02:53:42.8517157+00:00\"\r\n    },\r\n
+        \   \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1944,7 +2063,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:48:51 GMT
+      - Fri, 24 Feb 2023 02:54:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1978,143 +2097,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
+        \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
         \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"waiting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
-        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n
-        \     \"lastModified\": \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n
-        \   \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
-        \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1212'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 22 Feb 2023 11:49:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - blueprint assignment wait
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --created
-      User-Agent:
-      - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
-  response:
-    body:
-      string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
-        \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"deploying\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
-        \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
-        \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
-        \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
-        \     }\r\n    },\r\n    \"status\": {\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n
-        \     \"lastModified\": \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n
-        \   \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
-        \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1214'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 22 Feb 2023 11:49:51 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - blueprint assignment wait
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --created
-      User-Agent:
-      - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
-  response:
-    body:
-      string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
-        \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
-        \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
-        \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
-        \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:42.8517157+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2123,7 +2124,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:22 GMT
+      - Fri, 24 Feb 2023 02:54:44 GMT
       expires:
       - '-1'
       pragma:
@@ -2157,25 +2158,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
+        \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
         \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:42.8517157+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2184,7 +2185,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:23 GMT
+      - Fri, 24 Feb 2023 02:54:45 GMT
       expires:
       - '-1'
       pragma:
@@ -2571,34 +2572,53 @@ interactions:
         \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bpa36amd\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n      \"name\":
         \"Assignment-test-bpa36amd\"\r\n    },\r\n    {\r\n      \"identity\": {\r\n
-        \       \"type\": \"systemAssigned\",\r\n        \"principalId\": \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n
+        \       \"type\": \"systemAssigned\",\r\n        \"principalId\": \"1098821a-8bf4-4c3e-bda3-9c543ef9c8ee\",\r\n
         \       \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n      },\r\n
         \     \"location\": \"westus2\",\r\n      \"properties\": {\r\n        \"provisioningState\":
-        \"succeeded\",\r\n        \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"succeeded\",\r\n        \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-dubuynoxlehx4rwt/versions/1.0\",\r\n
         \       \"parameters\": {\r\n          \"reader\": {\r\n            \"value\":
         [\r\n              \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n            ]\r\n
         \         },\r\n          \"audit\": {\r\n            \"value\": \"jack\"\r\n
         \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"myRgArt\":
-        {\r\n            \"name\": \"blueprint-rg-000006\",\r\n            \"location\":
+        {\r\n            \"name\": \"blueprint-rg-f5hkq5pg3by\",\r\n            \"location\":
         \"westus2\"\r\n          }\r\n        },\r\n        \"status\": {\r\n          \"managedResources\":
-        [\r\n            \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \           \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \         ],\r\n          \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n
-        \         \"lastModified\": \"2023-02-22T11:48:50.0022184+00:00\"\r\n        },\r\n
+        [\r\n            \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-f5hkq5pg3by/providers/Microsoft.Authorization/roleAssignments/ccb9468f-ddf4-bc1a-db37-581668cfeed6\",\r\n
+        \           \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-f5hkq5pg3by/providers/Microsoft.Authorization/policyAssignments/3ef3bdd9d2fa1583fca29797c53a5816b3f03a2ed73de00c5e6feb5e86f61a7c\"\r\n
+        \         ],\r\n          \"timeCreated\": \"2023-02-24T02:30:30+00:00\",\r\n
+        \         \"lastModified\": \"2023-02-24T02:30:30.7864422+00:00\"\r\n        },\r\n
         \       \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \       \"locks\": {\r\n          \"mode\": \"none\"\r\n        }\r\n      },\r\n
-        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bpahyc75\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n      \"name\":
-        \"Assignment-test-bp000004\"\r\n    }\r\n  ]\r\n}"
+        \"Assignment-test-bpahyc75\"\r\n    },\r\n    {\r\n      \"identity\": {\r\n
+        \       \"type\": \"systemAssigned\",\r\n        \"principalId\": \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n
+        \       \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n      },\r\n
+        \     \"location\": \"westus2\",\r\n      \"properties\": {\r\n        \"provisioningState\":
+        \"succeeded\",\r\n        \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
+        \       \"parameters\": {\r\n          \"reader\": {\r\n            \"value\":
+        [\r\n              \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n            ]\r\n
+        \         },\r\n          \"audit\": {\r\n            \"value\": \"jack\"\r\n
+        \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"myRgArt\":
+        {\r\n            \"name\": \"blueprint-rg-000005\",\r\n            \"location\":
+        \"westus2\"\r\n          }\r\n        },\r\n        \"status\": {\r\n          \"managedResources\":
+        [\r\n            \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \           \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \         ],\r\n          \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n
+        \         \"lastModified\": \"2023-02-24T02:53:42.8517157+00:00\"\r\n        },\r\n
+        \       \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"locks\": {\r\n          \"mode\": \"none\"\r\n        }\r\n      },\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n      \"name\":
+        \"Assignment-test-bp000003\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '36706'
+      - '38560'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:25 GMT
+      - Fri, 24 Feb 2023 02:54:46 GMT
       expires:
       - '-1'
       pragma:
@@ -2634,7 +2654,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004/whoIsBlueprint?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003/whoIsBlueprint?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"objectId\": \"39029da9-0fef-42a9-b478-2fe4e19b8c7b\"\r\n}"
@@ -2646,7 +2666,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:27 GMT
+      - Fri, 24 Feb 2023 02:54:48 GMT
       expires:
       - '-1'
       pragma:
@@ -2667,7 +2687,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"ids": ["be89cd7c-4480-4fd6-bc5c-2007991a9873"], "types": ["user", "group",
+    body: '{"ids": ["3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb"], "types": ["user", "group",
       "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
@@ -2690,8 +2710,8 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"be89cd7c-4480-4fd6-bc5c-2007991a9873","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=True","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005"],"appDisplayName":null,"appDescription":null,"appId":"11dfd7c9-96e3-497d-bfa4-60f0efddef2f","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-02-22T11:48:16Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"testid_000005","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["11dfd7c9-96e3-497d-bfa4-60f0efddef2f","https://identity.azure.net/Sir2yzH8uRvcu5lI+iwYTkgo1Vk5nuoq/NU9IAPZvLc="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"9AEC8BE95C025ED5A846CE92AAAC71F4715A579F","displayName":"CN=11dfd7c9-96e3-497d-bfa4-60f0efddef2f,
-        DC=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","endDateTime":"2023-05-23T11:43:00Z","key":null,"keyId":"f90a5482-7d6f-479f-bb9f-e80e44ca6ee5","startDateTime":"2023-02-22T11:43:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=True","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004"],"appDisplayName":null,"appDescription":null,"appId":"b40500e0-12a2-4a47-b724-2229864fb76e","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-02-24T02:53:13Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"testid_000004","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["b40500e0-12a2-4a47-b724-2229864fb76e","https://identity.azure.net/6+UptzSfzCqFwlobZiV8npSHSvqSW28fA14yyYE/JYI="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"D83F04B0EDEC3698C99ED8FC159C299653ED3FA0","displayName":"CN=b40500e0-12a2-4a47-b724-2229864fb76e,
+        DC=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","endDateTime":"2023-05-25T02:48:00Z","key":null,"keyId":"bf5284b8-5fce-4289-a52b-2b7f7153a228","startDateTime":"2023-02-24T02:48:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -2700,13 +2720,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:28 GMT
+      - Fri, 24 Feb 2023 02:54:49 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - 9b4dba37-c47d-4f58-80e4-feb362c40bc3
+      - 62a22cef-5904-4744-8f86-c9f3de13a4f7
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -2714,7 +2734,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF000022D5"}}'
+      - '{"ServerInfo":{"DataCenter":"Japan East","Slice":"E","Ring":"5","ScaleUnit":"000","RoleInstance":"TY1PEPF00006060"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -2737,7 +2757,7 @@ interactions:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.9.5
         (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-04-01
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"Owner","type":"BuiltInRole","description":"Grants
@@ -2751,7 +2771,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:29 GMT
+      - Fri, 24 Feb 2023 02:54:50 GMT
       expires:
       - '-1'
       pragma:
@@ -2771,7 +2791,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
-      "principalId": "be89cd7c-4480-4fd6-bc5c-2007991a9873", "principalType": "ServicePrincipal"}}'
+      "principalId": "3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb", "principalType": "ServicePrincipal"}}'
     headers:
       Accept:
       - application/json
@@ -2793,10 +2813,10 @@ interactions:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.9.5
         (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"be89cd7c-4480-4fd6-bc5c-2007991a9873","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000006","condition":null,"conditionVersion":null,"createdOn":"2023-02-22T11:50:29.7155031Z","updatedOn":"2023-02-22T11:50:31.0335310Z","createdBy":null,"updatedBy":"2b7fa1bd-b817-45cb-9068-e416ce1125fa","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000002"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000005","condition":null,"conditionVersion":null,"createdOn":"2023-02-24T02:54:51.0317419Z","updatedOn":"2023-02-24T02:54:51.5827546Z","createdBy":null,"updatedBy":"2b7fa1bd-b817-45cb-9068-e416ce1125fa","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000002"}'
     headers:
       cache-control:
       - no-cache
@@ -2805,7 +2825,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:34 GMT
+      - Fri, 24 Feb 2023 02:54:54 GMT
       expires:
       - '-1'
       pragma:
@@ -2835,25 +2855,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"systemAssigned\",\r\n    \"principalId\":
-        \"7c0e4c0a-8ac0-4fc2-a471-ba5c1b5e3e75\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
+        \"09c7017a-b26a-4249-bb68-34b26cceb03c\",\r\n    \"tenantId\": \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\"\r\n
         \ },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:50.0022184+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:42.8517157+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"none\"\r\n    }\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2862,7 +2882,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:35 GMT
+      - Fri, 24 Feb 2023 03:04:56 GMT
       expires:
       - '-1'
       pragma:
@@ -2882,11 +2902,11 @@ interactions:
       message: OK
 - request:
     body: '{"location": "westus2", "identity": {"type": "UserAssigned", "userAssignedIdentities":
-      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005":
-      {}}}, "properties": {"blueprintId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0",
+      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004":
+      {}}}, "properties": {"blueprintId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0",
       "scope": "/subscriptions/00000000-0000-0000-0000-000000000000", "parameters":
       {"reader": {"value": ["31e600e0-d7ce-4e98-a927-19bb30042e44"]}, "audit": {"value":
-      "jack"}}, "resourceGroups": {"myRgArt": {"name": "blueprint-rg-000006", "location":
+      "jack"}}, "resourceGroups": {"myRgArt": {"name": "blueprint-rg-000005", "location":
       "westus2"}}, "locks": {"mode": "AllResourcesReadOnly"}}}'
     headers:
       Accept:
@@ -2906,28 +2926,28 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"userAssigned\",\r\n    \"tenantId\":
         \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\",\r\n    \"userAssignedIdentities\":
-        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005\":
-        {\r\n        \"principalId\": \"be89cd7c-4480-4fd6-bc5c-2007991a9873\",\r\n
-        \       \"clientId\": \"11dfd7c9-96e3-497d-bfa4-60f0efddef2f\"\r\n      }\r\n
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004\":
+        {\r\n        \"principalId\": \"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb\",\r\n
+        \       \"clientId\": \"b40500e0-12a2-4a47-b724-2229864fb76e\"\r\n      }\r\n
         \   }\r\n  },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"creating\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"creating\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:50:37.6117486+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:04:57.9385983+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"allResourcesReadOnly\"\r\n    }\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2936,7 +2956,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:39 GMT
+      - Fri, 24 Feb 2023 03:04:58 GMT
       expires:
       - '-1'
       pragma:
@@ -2948,7 +2968,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2968,28 +2988,28 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"userAssigned\",\r\n    \"tenantId\":
         \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\",\r\n    \"userAssignedIdentities\":
-        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005\":
-        {\r\n        \"principalId\": \"be89cd7c-4480-4fd6-bc5c-2007991a9873\",\r\n
-        \       \"clientId\": \"11dfd7c9-96e3-497d-bfa4-60f0efddef2f\"\r\n      }\r\n
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004\":
+        {\r\n        \"principalId\": \"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb\",\r\n
+        \       \"clientId\": \"b40500e0-12a2-4a47-b724-2229864fb76e\"\r\n      }\r\n
         \   }\r\n  },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"deploying\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"deploying\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:50:37.6117486+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:04:57.9385983+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"allResourcesReadOnly\"\r\n    }\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2998,7 +3018,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:50:40 GMT
+      - Fri, 24 Feb 2023 03:04:59 GMT
       expires:
       - '-1'
       pragma:
@@ -3032,28 +3052,28 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"userAssigned\",\r\n    \"tenantId\":
         \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\",\r\n    \"userAssignedIdentities\":
-        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005\":
-        {\r\n        \"principalId\": \"be89cd7c-4480-4fd6-bc5c-2007991a9873\",\r\n
-        \       \"clientId\": \"11dfd7c9-96e3-497d-bfa4-60f0efddef2f\"\r\n      }\r\n
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004\":
+        {\r\n        \"principalId\": \"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb\",\r\n
+        \       \"clientId\": \"b40500e0-12a2-4a47-b724-2229864fb76e\"\r\n      }\r\n
         \   }\r\n  },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"succeeded\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:50:37.6117486+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:04:57.9385983+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"allResourcesReadOnly\"\r\n    }\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3062,7 +3082,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:11 GMT
+      - Fri, 24 Feb 2023 03:05:29 GMT
       expires:
       - '-1'
       pragma:
@@ -3098,28 +3118,28 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"userAssigned\",\r\n    \"tenantId\":
         \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\",\r\n    \"userAssignedIdentities\":
-        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005\":
-        {\r\n        \"principalId\": \"be89cd7c-4480-4fd6-bc5c-2007991a9873\",\r\n
-        \       \"clientId\": \"11dfd7c9-96e3-497d-bfa4-60f0efddef2f\"\r\n      }\r\n
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004\":
+        {\r\n        \"principalId\": \"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb\",\r\n
+        \       \"clientId\": \"b40500e0-12a2-4a47-b724-2229864fb76e\"\r\n      }\r\n
         \   }\r\n  },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"deleting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"deleting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:50:37.6117486+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:04:57.9385983+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"allResourcesReadOnly\"\r\n    }\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3128,7 +3148,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:13 GMT
+      - Fri, 24 Feb 2023 03:05:31 GMT
       expires:
       - '-1'
       pragma:
@@ -3140,7 +3160,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 202
       message: Accepted
@@ -3160,28 +3180,28 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"identity\": {\r\n    \"type\": \"userAssigned\",\r\n    \"tenantId\":
         \"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a\",\r\n    \"userAssignedIdentities\":
-        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000005\":
-        {\r\n        \"principalId\": \"be89cd7c-4480-4fd6-bc5c-2007991a9873\",\r\n
-        \       \"clientId\": \"11dfd7c9-96e3-497d-bfa4-60f0efddef2f\"\r\n      }\r\n
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004\":
+        {\r\n        \"principalId\": \"3dfc3b1b-e9c2-441e-9aaa-7003741b5dcb\",\r\n
+        \       \"clientId\": \"b40500e0-12a2-4a47-b724-2229864fb76e\"\r\n      }\r\n
         \   }\r\n  },\r\n  \"location\": \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\":
-        \"deleting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        \"deleting\",\r\n    \"blueprintId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \   \"parameters\": {\r\n      \"reader\": {\r\n        \"value\": [\r\n          \"31e600e0-d7ce-4e98-a927-19bb30042e44\"\r\n
         \       ]\r\n      },\r\n      \"audit\": {\r\n        \"value\": \"jack\"\r\n
         \     }\r\n    },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n
-        \       \"name\": \"blueprint-rg-000006\",\r\n        \"location\": \"westus2\"\r\n
+        \       \"name\": \"blueprint-rg-000005\",\r\n        \"location\": \"westus2\"\r\n
         \     }\r\n    },\r\n    \"status\": {\r\n      \"managedResources\": [\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/roleAssignments/2e8f0ebf-8bfc-e747-772f-7ce5cebe7211\",\r\n
-        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006/providers/Microsoft.Authorization/policyAssignments/b8446c91f94d3d0ff0399da2eb038ba97f68cef07577bede62f52bf0dbae7167\"\r\n
-        \     ],\r\n      \"timeCreated\": \"2023-02-22T11:48:50+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:50:37.6117486+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleAssignments/f1bf6ae3-8402-47f3-2437-f7f159f17d53\",\r\n
+        \       \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005/providers/Microsoft.Authorization/policyAssignments/c664822c0ea401f7da8550b68f3e2aeb581363d0432b3397ef7983a071e40374\"\r\n
+        \     ],\r\n      \"timeCreated\": \"2023-02-24T02:53:42+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:04:57.9385983+00:00\"\r\n    },\r\n    \"scope\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
         \   \"locks\": {\r\n      \"mode\": \"allResourcesReadOnly\"\r\n    }\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000004\"\r\n}"
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprintAssignments\",\r\n  \"name\": \"Assignment-test-bp000003\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3190,7 +3210,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:14 GMT
+      - Fri, 24 Feb 2023 03:05:32 GMT
       expires:
       - '-1'
       pragma:
@@ -3224,11 +3244,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000004?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprintAssignments/Assignment-test-bp000003?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"error\": {\r\n    \"code\": \"AssignmentNotFound\",\r\n    \"message\":
-        \"Assignment 'Assignment-test-bp000004' could not be found in subscription
+        \"Assignment 'Assignment-test-bp000003' could not be found in subscription
         '0b1f6471-1bf0-4dda-aec3-cb9272f09590'.\"\r\n  }\r\n}"
     headers:
       cache-control:
@@ -3238,7 +3258,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:45 GMT
+      - Fri, 24 Feb 2023 03:06:02 GMT
       expires:
       - '-1'
       pragma:
@@ -3268,10 +3288,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0?api-version=2018-11-01-preview
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"blueprintName\": \"test-bp-000003\",\r\n
+      string: "{\r\n  \"properties\": {\r\n    \"blueprintName\": \"test-bp-000002\",\r\n
         \   \"changeNotes\": \"First release\",\r\n    \"parameters\": {\r\n      \"reader\":
         {\r\n        \"type\": \"array\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"[User group or application name] ([User group or application name] : Reader)\",\r\n
@@ -3281,9 +3301,9 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:37+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:37.2905813+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:31+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:31.3455282+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n  \"name\": \"1.0\"\r\n}"
     headers:
       cache-control:
@@ -3293,7 +3313,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:46 GMT
+      - Fri, 24 Feb 2023 03:06:04 GMT
       expires:
       - '-1'
       pragma:
@@ -3327,11 +3347,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"blueprintName\":
-        \"test-bp-000003\",\r\n        \"changeNotes\": \"First release\",\r\n        \"parameters\":
+        \"test-bp-000002\",\r\n        \"changeNotes\": \"First release\",\r\n        \"parameters\":
         {\r\n          \"reader\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
         {\r\n              \"displayName\": \"[User group or application name] ([User
         group or application name] : Reader)\",\r\n              \"strongType\": \"PrincipalId\"\r\n
@@ -3342,9 +3362,9 @@ interactions:
         \           \"metadata\": {\r\n              \"displayName\": \"Resource Group
         1\"\r\n            },\r\n            \"dependsOn\": []\r\n          }\r\n
         \       },\r\n        \"targetScope\": \"subscription\",\r\n        \"status\":
-        {\r\n          \"timeCreated\": \"2023-02-22T11:48:37+00:00\",\r\n          \"lastModified\":
-        \"2023-02-22T11:48:37.2905813+00:00\"\r\n        },\r\n        \"description\":
-        \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        {\r\n          \"timeCreated\": \"2023-02-24T02:53:31+00:00\",\r\n          \"lastModified\":
+        \"2023-02-24T02:53:31.3455282+00:00\"\r\n        },\r\n        \"description\":
+        \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n      \"name\":
         \"1.0\"\r\n    }\r\n  ]\r\n}"
     headers:
@@ -3355,7 +3375,121 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:46 GMT
+      - Fri, 24 Feb 2023 03:06:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blueprint version artifact show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --blueprint-name --artifact-name --version
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0/artifacts/reader-role-art?api-version=2018-11-01-preview
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"roleDefinitionId\": \"/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\r\n
+        \   \"principalIds\": \"[parameters('reader')]\",\r\n    \"dependsOn\": [],\r\n
+        \   \"resourceGroup\": \"myRgArt\",\r\n    \"displayName\": \"[User group
+        or application name] : Reader\"\r\n  },\r\n  \"kind\": \"roleAssignment\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0/artifacts/reader-role-art\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints/versions/artifacts\",\r\n  \"name\":
+        \"reader-role-art\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 03:06:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - blueprint version artifact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --blueprint-name --version
+      User-Agent:
+      - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0/artifacts?api-version=2018-11-01-preview
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"policyDefinitionId\":
+        \"/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b\",\r\n
+        \       \"parameters\": {\r\n          \"Members\": {\r\n            \"value\":
+        \"[parameters('audit')]\"\r\n          }\r\n        },\r\n        \"dependsOn\":
+        [],\r\n        \"resourceGroup\": \"myRgArt\",\r\n        \"displayName\":
+        \"Audit Windows VMs in which the Administrators group does not contain only
+        the specified members\"\r\n      },\r\n      \"kind\": \"policyAssignment\",\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0/artifacts/policy-audit-win-vm-art\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints/versions/artifacts\",\r\n
+        \     \"name\": \"policy-audit-win-vm-art\"\r\n    },\r\n    {\r\n      \"properties\":
+        {\r\n        \"roleDefinitionId\": \"/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\r\n
+        \       \"principalIds\": \"[parameters('reader')]\",\r\n        \"dependsOn\":
+        [],\r\n        \"resourceGroup\": \"myRgArt\",\r\n        \"displayName\":
+        \"[User group or application name] : Reader\"\r\n      },\r\n      \"kind\":
+        \"roleAssignment\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0/artifacts/reader-role-art\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints/versions/artifacts\",\r\n
+        \     \"name\": \"reader-role-art\"\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1464'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 03:06:08 GMT
       expires:
       - '-1'
       pragma:
@@ -3391,10 +3525,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0?api-version=2018-11-01-preview
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"blueprintName\": \"test-bp-000003\",\r\n
+      string: "{\r\n  \"properties\": {\r\n    \"blueprintName\": \"test-bp-000002\",\r\n
         \   \"changeNotes\": \"First release\",\r\n    \"parameters\": {\r\n      \"reader\":
         {\r\n        \"type\": \"array\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"[User group or application name] ([User group or application name] : Reader)\",\r\n
@@ -3404,9 +3538,9 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:37+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:37.2905813+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/versions/1.0\",\r\n
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:31+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:31.3455282+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n  \"name\": \"1.0\"\r\n}"
     headers:
       cache-control:
@@ -3416,7 +3550,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:48 GMT
+      - Fri, 24 Feb 2023 03:06:09 GMT
       expires:
       - '-1'
       pragma:
@@ -3432,7 +3566,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -3452,14 +3586,14 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/reader-role-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/reader-role-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"roleDefinitionId\": \"/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\r\n
         \   \"principalIds\": \"[parameters('reader')]\",\r\n    \"dependsOn\": [],\r\n
         \   \"resourceGroup\": \"myRgArt\",\r\n    \"displayName\": \"[User group
         or application name] : Reader\"\r\n  },\r\n  \"kind\": \"roleAssignment\",\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/reader-role-art\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/reader-role-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"reader-role-art\"\r\n}"
     headers:
       cache-control:
@@ -3469,7 +3603,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:50 GMT
+      - Fri, 24 Feb 2023 03:06:10 GMT
       expires:
       - '-1'
       pragma:
@@ -3510,14 +3644,14 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/reader-role-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/reader-role-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"roleDefinitionId\": \"/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\r\n
         \   \"principalIds\": \"[parameters('reader')]\",\r\n    \"dependsOn\": [],\r\n
         \   \"resourceGroup\": \"myRgArt\",\r\n    \"displayName\": \"[User group
         or application name] : Reader\",\r\n    \"description\": \"Role description.\"\r\n
-        \ },\r\n  \"kind\": \"roleAssignment\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/reader-role-art\",\r\n
+        \ },\r\n  \"kind\": \"roleAssignment\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/reader-role-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"reader-role-art\"\r\n}"
     headers:
       cache-control:
@@ -3527,7 +3661,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:50 GMT
+      - Fri, 24 Feb 2023 03:06:11 GMT
       expires:
       - '-1'
       pragma:
@@ -3559,7 +3693,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"policyDefinitionId\": \"/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b\",\r\n
@@ -3567,7 +3701,7 @@ interactions:
         \     }\r\n    },\r\n    \"dependsOn\": [],\r\n    \"resourceGroup\": \"myRgArt\",\r\n
         \   \"displayName\": \"Audit Windows VMs in which the Administrators group
         does not contain only the specified members\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"policy-audit-win-vm-art\"\r\n}"
     headers:
       cache-control:
@@ -3577,7 +3711,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:52 GMT
+      - Fri, 24 Feb 2023 03:06:13 GMT
       expires:
       - '-1'
       pragma:
@@ -3620,7 +3754,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"policyDefinitionId\": \"/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b\",\r\n
@@ -3628,7 +3762,7 @@ interactions:
         \     }\r\n    },\r\n    \"dependsOn\": [],\r\n    \"resourceGroup\": \"myRgArt\",\r\n
         \   \"displayName\": \"Audit Windows VMs in which the Administrators group
         does not contain only the specified members\",\r\n    \"description\": \"Policy
-        description.\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art\",\r\n
+        description.\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"policy-audit-win-vm-art\"\r\n}"
     headers:
       cache-control:
@@ -3638,7 +3772,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:52 GMT
+      - Fri, 24 Feb 2023 03:06:14 GMT
       expires:
       - '-1'
       pragma:
@@ -3672,7 +3806,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"policyDefinitionId\": \"/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b\",\r\n
@@ -3680,7 +3814,7 @@ interactions:
         \     }\r\n    },\r\n    \"dependsOn\": [],\r\n    \"resourceGroup\": \"myRgArt\",\r\n
         \   \"displayName\": \"Audit Windows VMs in which the Administrators group
         does not contain only the specified members\",\r\n    \"description\": \"Policy
-        description.\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003/artifacts/policy-audit-win-vm-art\",\r\n
+        description.\"\r\n  },\r\n  \"kind\": \"policyAssignment\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/artifacts/policy-audit-win-vm-art\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/artifacts\",\r\n  \"name\": \"policy-audit-win-vm-art\"\r\n}"
     headers:
       cache-control:
@@ -3690,7 +3824,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:54 GMT
+      - Fri, 24 Feb 2023 03:06:14 GMT
       expires:
       - '-1'
       pragma:
@@ -3726,7 +3860,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {\r\n      \"reader\":
@@ -3738,10 +3872,10 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:48:35.4826197+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T02:53:29.7790397+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3750,7 +3884,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:55 GMT
+      - Fri, 24 Feb 2023 03:06:15 GMT
       expires:
       - '-1'
       pragma:
@@ -3793,7 +3927,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {\r\n      \"reader\":
@@ -3805,19 +3939,19 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 2\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:51:56.0140443+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:06:16.795658+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1021'
+      - '1020'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:56 GMT
+      - Fri, 24 Feb 2023 03:06:16 GMT
       expires:
       - '-1'
       pragma:
@@ -3829,7 +3963,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -3849,7 +3983,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {\r\n      \"reader\":
@@ -3861,19 +3995,19 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 2\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n      \"lastModified\":
-        \"2023-02-22T11:51:56.0140443+00:00\"\r\n    },\r\n    \"description\": \"An
-        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        {\r\n      \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n      \"lastModified\":
+        \"2023-02-24T03:06:16.795658+00:00\"\r\n    },\r\n    \"description\": \"An
+        example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1021'
+      - '1020'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:56 GMT
+      - Fri, 24 Feb 2023 03:06:16 GMT
       expires:
       - '-1'
       pragma:
@@ -3915,7 +4049,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {\r\n      \"reader\":
@@ -3925,19 +4059,19 @@ interactions:
         {\r\n        \"type\": \"string\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Members\"\r\n        },\r\n        \"allowedValues\": []\r\n      }\r\n
         \   },\r\n    \"resourceGroups\": {},\r\n    \"targetScope\": \"subscription\",\r\n
-        \   \"status\": {\r\n      \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n
-        \     \"lastModified\": \"2023-02-22T11:51:57.859987+00:00\"\r\n    },\r\n
-        \   \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \   \"status\": {\r\n      \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n
+        \     \"lastModified\": \"2023-02-24T03:06:18.2757705+00:00\"\r\n    },\r\n
+        \   \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '880'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:57 GMT
+      - Fri, 24 Feb 2023 03:06:17 GMT
       expires:
       - '-1'
       pragma:
@@ -3949,7 +4083,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -3971,7 +4105,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (PIP) azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003?api-version=2018-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002?api-version=2018-11-01-preview
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {\r\n      \"reader\":
@@ -3981,19 +4115,19 @@ interactions:
         {\r\n        \"type\": \"string\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Members\"\r\n        },\r\n        \"allowedValues\": []\r\n      }\r\n
         \   },\r\n    \"resourceGroups\": {},\r\n    \"targetScope\": \"subscription\",\r\n
-        \   \"status\": {\r\n      \"timeCreated\": \"2023-02-22T11:48:19+00:00\",\r\n
-        \     \"lastModified\": \"2023-02-22T11:51:57.859987+00:00\"\r\n    },\r\n
-        \   \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000003\",\r\n
-        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000003\"\r\n}"
+        \   \"status\": {\r\n      \"timeCreated\": \"2023-02-24T02:53:16+00:00\",\r\n
+        \     \"lastModified\": \"2023-02-24T03:06:18.2757705+00:00\"\r\n    },\r\n
+        \   \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '880'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Feb 2023 11:51:59 GMT
+      - Fri, 24 Feb 2023 03:06:19 GMT
       expires:
       - '-1'
       pragma:
@@ -4032,7 +4166,7 @@ interactions:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.5
         (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000006?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005?api-version=2021-04-01
   response:
     body:
       string: ''
@@ -4042,11 +4176,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 22 Feb 2023 11:52:05 GMT
+      - Fri, 24 Feb 2023 03:06:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1CTFVFUFJJTlQ6MkRSRzoyREdJSEhHQ0ZCM0YzLVdFU1RVUzIiLCJqb2JMb2NhdGlvbiI6Indlc3R1czIifQ?api-version=2021-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1CTFVFUFJJTlQ6MkRSRzoyRDI3UVgzM1pHT09PLVdFU1RVUzIiLCJqb2JMb2NhdGlvbiI6Indlc3R1czIifQ?api-version=2021-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -4075,7 +4209,7 @@ interactions:
       - AZURECLI/2.45.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.9.5
         (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1CTFVFUFJJTlQ6MkRSRzoyREdJSEhHQ0ZCM0YzLVdFU1RVUzIiLCJqb2JMb2NhdGlvbiI6Indlc3R1czIifQ?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1CTFVFUFJJTlQ6MkRSRzoyRDI3UVgzM1pHT09PLVdFU1RVUzIiLCJqb2JMb2NhdGlvbiI6Indlc3R1czIifQ?api-version=2021-04-01
   response:
     body:
       string: ''
@@ -4085,7 +4219,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 22 Feb 2023 11:52:21 GMT
+      - Fri, 24 Feb 2023 03:06:39 GMT
       expires:
       - '-1'
       pragma:

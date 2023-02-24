@@ -151,7 +151,7 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd(
             'az blueprint assignment list ',
             checks=[
-                self.check('length(@)', 1)
+                self.check("length([?provisioningState == 'succeeded']) == length(@)", True),
             ])
 
         self.cmd('az blueprint assignment who '
@@ -208,6 +208,7 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd(
             'az blueprint version artifact show '
             '--blueprint-name "{blueprintName}" '
+            '--artifact-name "reader-role-art" '
             '--version "1.0" ',
             checks=[])
 
