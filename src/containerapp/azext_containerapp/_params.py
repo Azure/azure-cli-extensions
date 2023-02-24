@@ -398,3 +398,11 @@ def load_arguments(self, _):
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
         c.argument('compose_file_path', options_list=['--compose-file-path', '-f'], help='Path to a Docker Compose file with the configuration to import to Azure Container Apps.')
         c.argument('transport_mapping', options_list=['--transport-mapping', c.deprecate(target='--transport', redirect='--transport-mapping')], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
+
+    with self.argument_context('containerapp env workload-profile') as c:
+        c.argument('env_name', options_list=['--name', '-n'], help="The name of the Container App environment")
+        c.argument('workload_profile', options_list=['--workload-profile-type', '-w'], help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+
+    with self.argument_context('containerapp env workload-profile add') as c:
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")

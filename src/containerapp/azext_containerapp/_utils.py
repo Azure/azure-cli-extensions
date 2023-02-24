@@ -1574,8 +1574,9 @@ def list_environment_locations(cmd):
 
 # normalizes workload profile name
 def get_workload_profile_type(cmd, name, location):
-    name = name.lower()
+    name = name
     return name
+    #Uncomment when WorkloadProfileTypes available in all regions
     '''
     workload_profiles = WorkloadProfileClient.list_supported(cmd, location)
     if not workload_profiles:

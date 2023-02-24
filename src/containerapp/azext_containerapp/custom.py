@@ -29,7 +29,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception, handle_non_404_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -1191,6 +1191,7 @@ def update_managed_environment(cmd,
             raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
         workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
+        workload_profile = workload_profile.upper()
         workload_profiles = r["properties"]["workloadProfiles"]
         profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_profile.lower()]
         update = False  # flag for updating an existing profile
