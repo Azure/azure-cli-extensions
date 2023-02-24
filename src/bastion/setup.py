@@ -10,7 +10,6 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-
 VERSION = '0.2.3'
 
 # The full list of classifiers is available at
