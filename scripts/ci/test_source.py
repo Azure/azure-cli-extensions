@@ -11,14 +11,10 @@ import logging
 import os
 import sys
 import tempfile
-import unittest
 import shutil
 import shlex
-from subprocess import check_output, check_call, CalledProcessError, run
 
-from unittest import mock
-from six import with_metaclass
-
+from subprocess import check_output, CalledProcessError, run
 from util import SRC_PATH
 
 logger = logging.getLogger(__name__)
@@ -61,44 +57,42 @@ logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                f'ALL_TESTS: {ALL_TESTS}.')
 
 
-class TestExtensionRecordingMode(unittest.TestCase):
-
-    def run_command(self, cmd, check_return_code=False, cwd=None):
-        logger.info(f'cmd: {cmd}')
-        out = run(cmd, check=True, cwd=cwd)
-        if check_return_code and out.returncode:
-            raise RuntimeError(f"{cmd} failed")
-
-    def test_extension(self):
-        for tname, ext_path in ALL_TESTS:
-            ext_name = ext_path.split('/')[-1]
-            logger.info(f'installing extension: {ext_name}')
-            cmd = ['azdev', 'extension', 'add', ext_name]
-            self.run_command(cmd, check_return_code=True)
-            test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', ext_name]
-            logger.warning(f'test_args: {test_args}')
-            self.run_command(test_args, check_return_code=True)
-            logger.info(f'uninstalling extension: {ext_name}')
-            cmd = ['azdev', 'extension', 'remove', ext_name]
-            self.run_command(cmd, check_return_code=True)
+def run_command(cmd, check_return_code=False, cwd=None):
+    logger.info(f'cmd: {cmd}')
+    out = run(cmd, check=True, cwd=cwd)
+    if check_return_code and out.returncode:
+        raise RuntimeError(f"{cmd} failed")
 
 
-class TestSourceWheels(unittest.TestCase):
+def test_extension():
+    for tname, ext_path in ALL_TESTS:
+        ext_name = ext_path.split('/')[-1]
+        logger.info(f'installing extension: {ext_name}')
+        cmd = ['azdev', 'extension', 'add', ext_name]
+        run_command(cmd, check_return_code=True)
+        test_args = [sys.executable, '-m', 'azdev', 'test', '--no-exitfirst', '--discover', '--verbose', ext_name]
+        logger.warning(f'test_args: {test_args}')
+        run_command(test_args, check_return_code=True)
+        logger.info(f'uninstalling extension: {ext_name}')
+        cmd = ['azdev', 'extension', 'remove', ext_name]
+        run_command(cmd, check_return_code=True)
 
-    def test_source_wheels(self):
-        # Test we can build all sources into wheels and that metadata from the wheel is valid
-        built_whl_dir = tempfile.mkdtemp()
-        source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
-                             if os.path.isdir(os.path.join(SRC_PATH, n))]
-        for s in source_extensions:
-            if not os.path.isfile(os.path.join(s, 'setup.py')):
-                continue
-            try:
-                check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
-            except CalledProcessError as err:
-                self.fail("Unable to build extension {} : {}".format(s, err))
-        shutil.rmtree(built_whl_dir)
+
+def test_source_wheels():
+    # Test we can build all sources into wheels and that metadata from the wheel is valid
+    built_whl_dir = tempfile.mkdtemp()
+    source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
+                         if os.path.isdir(os.path.join(SRC_PATH, n))]
+    for s in source_extensions:
+        if not os.path.isfile(os.path.join(s, 'setup.py')):
+            continue
+        try:
+            check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
+        except CalledProcessError as err:
+            raise("Unable to build extension {} : {}".format(s, err))
+    shutil.rmtree(built_whl_dir)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    test_extension()
+    test_source_wheels()
