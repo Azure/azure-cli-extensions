@@ -1026,6 +1026,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               enableWorkloadProfiles=False,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
