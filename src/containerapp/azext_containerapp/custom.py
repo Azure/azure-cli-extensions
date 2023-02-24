@@ -70,7 +70,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
-                     check_managed_cert_name_availability, prepare_managed_certificate_envelop)
+                     check_managed_cert_name_availability, prepare_managed_certificate_envelop, get_workload_profile_type,
+                     get_default_workload_profile, get_default_workload_profile_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1191,7 +1192,7 @@ def update_managed_environment(cmd,
 
         workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
         workload_profiles = r["properties"]["workloadProfiles"]
-        profile = [p for p in workload_profiles if p["workloadProfileType"] == workload_profile]
+        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_profile.lower()]
         update = False  # flag for updating an existing profile
         if profile:
             profile = profile[0]
@@ -1205,7 +1206,7 @@ def update_managed_environment(cmd,
         if not update:
             workload_profiles.append(profile)
         else:
-            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"] == workload_profile][0]
+            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_profile.lower()][0]
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)

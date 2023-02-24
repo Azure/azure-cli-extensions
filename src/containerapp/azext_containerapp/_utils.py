@@ -1572,6 +1572,57 @@ def list_environment_locations(cmd):
 
     return res_locations
 
+# normalizes workload profile name
+def get_workload_profile_type(cmd, name, location):
+    name = name.lower()
+    return name
+    '''
+    workload_profiles = WorkloadProfileClient.list_supported(cmd, location)
+    if not workload_profiles:
+        raise ValidationError(f"Workload Profiles not supported in region {location}")
+    for p in workload_profiles:
+        if name == p["name"].lower() or name == p["properties"]["displayName"].lower() or name == p["properties"]["displayName"].lower().replace(" ", ""):
+            return p["name"]
+    raise ValidationError(f"Not a valid workload profile name: '{name}'. Run 'az containerapp env workload-profile list-supported -l {location}' to see options.")
+    '''
+
+def get_default_workload_profile(cmd, location):
+    return "Consumption"
+    '''
+    workload_profiles = WorkloadProfileClient.list_supported(cmd, location)
+    default_profiles = [p for p in workload_profiles if p["properties"].get("default")]
+    if not default_profiles:
+        raise ValidationError(f"Workload Profiles not supported in region {location}")
+    return default_profiles[0]["name"]
+    '''
+
+
+def get_default_workload_profile_from_env(cmd, env_def, resource_group):
+    location = env_def["location"]
+    api_default = get_default_workload_profile(cmd, location)
+    env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])
+    if api_default in [p["name"] for p in env_profiles]:
+        return api_default
+    return env_profiles[0]["name"]
+
+
+def get_default_workload_profiles(cmd, location):
+    profiles = [
+        {
+            "workloadProfileType": "Consumption",
+        }
+    ]
+    return profiles
+
+
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile, managed_env_info):
+    from .custom import update_managed_environment
+
+    profiles = [p["workloadProfileType"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    #if workload_profile not in profiles:
+    #    logger.warning("Adding new workload profile to the environment")
+    #    update_managed_environment(cmd, env_name, env_rg, workload_name=workload_profile, min_nodes=DEFAULT_MIN_NODES, max_nodes=DEFAULT_MAX_NODES)
+
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
     updated = False
