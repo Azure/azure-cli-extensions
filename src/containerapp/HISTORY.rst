@@ -2,7 +2,6 @@
 
 Release History
 ===============
-
 Upcoming
 +++++++
 * Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
