@@ -77,6 +77,17 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning(LOG_RUNNING_PROMPT)
     _ensure_app_not_exist(client, resource_group, service, name)
     sku = get_spring_sku(client, resource_group, service)
+
+    if sku.tier.upper() == 'STANDARDGEN2':
+        if cpu is None and memory is None:
+            cpu = '500m'
+            memory = '1Gi'
+    else:
+        if cpu is None:
+            cpu = 1
+        if memory is None:
+            memory = '1Gi'
+
     basic_kwargs = {
         'cmd': cmd,
         'client': client,
@@ -507,5 +518,10 @@ def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_g
             options.update(deployment_source_options_from_resource(active_deployment))
     if not options.get('sku', None):
         options['sku'] = get_spring_sku(client, resource_group, service)
+
+    if options['sku'].tier.upper() == 'STANDARDGEN2' and skip_clone_settings and kwargs['cpu'] is None and kwargs['memory'] is None:
+        options['cpu'] = '500m'
+        options['memory'] = '1Gi'
+
     options.update({k: v for k, v in kwargs.items() if v})
     return options
