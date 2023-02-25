@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.11
+* bug fix for clean room scenario where non-existent docker client connection attempted to be closed
+* adding ability for ARM Template workflows to use regex for environment variables
+* fixing linux permissions for dmverity-vhd tool
+
 0.2.10
 * dmverity-vhd tool fixes
 * changing startup checks to errors rather than warnings

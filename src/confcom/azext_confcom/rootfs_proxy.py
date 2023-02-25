@@ -6,6 +6,7 @@
 import subprocess
 from typing import List
 import os
+import stat
 from pathlib import Path
 import platform
 from azext_confcom.errors import eprint
@@ -40,6 +41,10 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
         if not os.path.exists(self.policy_bin):
             raise RuntimeError("The extension binary file cannot be located.")
+        if not os.access(self.policy_bin, os.X_OK):
+            # add executable permissions for the current user if they don't exist
+            st = os.stat(self.policy_bin)
+            os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
 
     def get_policy_image_layers(
         self, image: str, tag: str, tar_location: str = ""
