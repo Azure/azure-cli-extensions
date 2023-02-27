@@ -364,6 +364,14 @@ def app_scale(cmd, client, resource_group, service, name,
               cpu=None,
               memory=None,
               instance_count=None,
+              # StandardGen2
+              min_replicas=None,
+              max_replicas=None,
+              scale_rule_name=None,
+              scale_rule_type=None,
+              scale_rule_http_concurrency=None,
+              scale_rule_metadata=None,
+              scale_rule_auth=None,
               no_wait=False):
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
@@ -372,14 +380,82 @@ def app_scale(cmd, client, resource_group, service, name,
     _validate_instance_count(resource.sku.tier, instance_count)
 
     resource_requests = models.ResourceRequests(cpu=cpu, memory=memory)
-
-    deployment_settings = models.DeploymentSettings(resource_requests=resource_requests)
+    scale_def = format_scale(min_replicas, max_replicas, scale_rule_name, scale_rule_type, scale_rule_http_concurrency,
+                             scale_rule_metadata, scale_rule_auth)
+    deployment_settings = models.DeploymentSettings(resource_requests=resource_requests, scale=scale_def)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
     return sdk_no_wait(no_wait, client.deployments.begin_update,
                        resource_group, service, name, deployment.name, deployment_resource)
+
+
+def format_scale(min_replicas=None, max_replicas=None, scale_rule_name=None, scale_rule_type=None,
+                 scale_rule_http_concurrency=None, scale_rule_metadata=None, scale_rule_auth=None, **_):
+    scale_def = None
+    if min_replicas is None and max_replicas is None and scale_rule_name is None:
+        return scale_def
+    scale_def = models.Scale(min_replicas=min_replicas, max_replicas=max_replicas)
+    if scale_rule_name:
+        scale_rule_def = None
+        if not scale_rule_type:
+            scale_rule_type = "http"
+        scale_rule_type = scale_rule_type.lower()
+        curr_metadata = {}
+        if scale_rule_http_concurrency:
+            if scale_rule_type in ('http', 'tcp'):
+                curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+        auth_def = parse_auth_flags(scale_rule_auth)
+
+        if scale_rule_type == "http":
+            http_scale_rule = models.HttpScaleRule(metadata=metadata_def, auth=auth_def)
+            scale_rule_def = models.ScaleRule(name=scale_rule_name, http=http_scale_rule)
+        else:
+            custom_scale_rule = models.CustomScaleRule(type=scale_rule_type, metadata=metadata_def, auth=auth_def)
+            scale_rule_def = models.ScaleRule(name=scale_rule_name, custom=custom_scale_rule)
+        scale_def.rules = [scale_rule_def]
+    return scale_def
+
+
+def parse_metadata_flags(metadata_list, metadata_def):
+    if not metadata_list:
+        return metadata_def
+    for pair in metadata_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        if key_val[0] in metadata_def:
+            raise ValidationError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(
+                metadata=key_val[0]))
+        metadata_def[key_val[0]] = key_val[1]
+
+    return metadata_def
+
+
+def parse_auth_flags(auth_list):
+    auth_def = []
+    auth_pairs = {}
+    if not auth_list:
+        return auth_def
+    for pair in auth_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError(
+                "Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
+        if key_val[0] in auth_pairs:
+            raise ValidationError(
+                "Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(
+                    param=key_val[0]))
+        auth_pairs[key_val[0]] = key_val[1]
+
+    for key, value in auth_pairs.items():
+        auth_def.append(
+            models.ScaleRuleAuth(trigger_parameter=key, secret_ref=value)
+        )
+
+    return auth_def
 
 
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):

@@ -138,6 +138,14 @@ def app_create(cmd, client, resource_group, service, name,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
         'termination_grace_period_seconds': termination_grace_period_seconds,
+        # StandardGen2
+        'min_replicas': min_replicas,
+        'max_replicas': max_replicas,
+        'scale_rule_name': scale_rule_name,
+        'scale_rule_type': scale_rule_type,
+        'scale_rule_http_concurrency': scale_rule_http_concurrency,
+        'scale_rule_metadata': scale_rule_metadata,
+        'scale_rule_auth': scale_rule_auth,
     }
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
@@ -491,6 +499,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
         'termination_grace_period_seconds': termination_grace_period_seconds,
+        # StandardGen2
+        'min_replicas': min_replicas,
+        'max_replicas': max_replicas,
+        'scale_rule_name': scale_rule_name,
+        'scale_rule_type': scale_rule_type,
+        'scale_rule_http_concurrency': scale_rule_http_concurrency,
+        'scale_rule_metadata': scale_rule_metadata,
+        'scale_rule_auth': scale_rule_auth,
         'no_wait': no_wait
     }
 
