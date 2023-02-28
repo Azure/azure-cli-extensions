@@ -51,6 +51,7 @@ class ShowSupportedOperatingSystem(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
         _args_schema.instance_type = AAZStrArg(
             options=["--instance-type"],

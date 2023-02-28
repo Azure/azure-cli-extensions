@@ -46,16 +46,19 @@ class UpdateMobilityService(AAZCommand):
             options=["--fabric-name"],
             help="The name of the fabric containing the protected item.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.replication_protected_item_name = AAZStrArg(
             options=["--protected-item", "--replication-protected-item-name"],
             help="The name of the protected item on which the agent is to be updated.",
             required=True,
+            id_part="child_name_3",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,6 +67,7 @@ class UpdateMobilityService(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
 
         # define Arg Group "Properties"

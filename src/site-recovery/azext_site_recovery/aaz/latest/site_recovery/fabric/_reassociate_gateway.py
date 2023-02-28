@@ -46,6 +46,7 @@ class ReassociateGateway(AAZCommand):
             options=["--fabric-name"],
             help="The name of the fabric containing the process server.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,6 +55,7 @@ class ReassociateGateway(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
 
         # define Arg Group "Properties"

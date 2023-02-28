@@ -46,16 +46,19 @@ class ApplyRecoveryPoint(AAZCommand):
             options=["--fabric-name"],
             help="The ARM fabric name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.replicated_protected_item_name = AAZStrArg(
             options=["-n", "--replicated-protected-item-name"],
             help="Replication protected item name.",
             required=True,
+            id_part="child_name_3",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,6 +67,7 @@ class ApplyRecoveryPoint(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
 
         # define Arg Group "Properties"
