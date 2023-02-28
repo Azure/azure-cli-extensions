@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.4.0
+++++++++++++++++++
+* microsoft.dapr: Update version comparison logic to use semver based comparison
+* microsoft.azuremonitor.containers: Make ContainerInsights DataCollectionRuleName consistent with portal and other onboarding clients
+
 1.3.9
 ++++++++++++++++++
 * Deprecating  --config-settings alias for --configuration-settings

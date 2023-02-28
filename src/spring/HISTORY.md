@@ -1,5 +1,9 @@
 Release History
 ===============
+1.6.8
+---
+* Add detail description to Default for argument `--backend-protocol`.
+
 1.6.7
 ---
 * Change all Azure Spring Apps API version to 2022-11-01-preview.
