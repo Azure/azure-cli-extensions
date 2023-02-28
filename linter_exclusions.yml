@@ -1245,6 +1245,14 @@ iot hub module-twin update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub state migrate:
+  parameters:
+    orig_resource_group_name:
+      rule exclusions:
+      - parameter_should_not_end_in_resource_group
+    resource_group_name:
+      rule exclusions:
+      - parameter_should_not_end_in_resource_group
 iot edge deployment update:
   parameters:
     auth_type_dataplane:
