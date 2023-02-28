@@ -155,7 +155,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             else:
                 continue
 
-        _ = azext_utils.save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+        azext_utils.save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
 
         if (is_job_scheduled is False):
             telemetry.set_exception(exception="Couldn't schedule cluster diagnostic checks job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
