@@ -80,36 +80,36 @@ def _handle_exists_exception(cloud_error):
 def cli_cosmosdb_mongocluster_firewall_rule_create(client,
                                                    resource_group_name,
                                                    cluster_name,
-                                                   firewall_rule_name,
-                                                   firewall_rule_start_ip_address,
-                                                   firewall_rule_end_ip_address):
+                                                   rule_name,
+                                                   start_ip_address,
+                                                   end_ip_address):
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
         
-    firewall_rule =  FirewallRule(start_ip_address=firewall_rule_start_ip_address, end_ip_address=firewall_rule_end_ip_address)
+    firewall_rule =  FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
     
-    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, firewall_rule_name, firewall_rule)
+    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
 
 def cli_cosmosdb_mongocluster_firewall_rule_update(client,
                                     resource_group_name,
                                     cluster_name,
-                                    firewall_rule_name,
-                                    firewall_rule_start_ip_address,
-                                    firewall_rule_end_ip_address):
+                                    rule_name,
+                                    start_ip_address,
+                                    end_ip_address):
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
     
-    mongo_cluster_firewallRule = client.get_firewall_rule(resource_group_name, cluster_name, firewall_rule_name)
+    mongo_cluster_firewallRule = client.get_firewall_rule(resource_group_name, cluster_name, rule_name)
 
-    if firewall_rule_start_ip_address is None:
-        firewall_rule_start_ip_address = mongo_cluster_firewallRule.firewall_rule_start_ip_address
+    if start_ip_address is None:
+        start_ip_address = mongo_cluster_firewallRule.startIpAddress
     
-    if firewall_rule_end_ip_address is None:
-        firewall_rule_end_ip_address = mongo_cluster_firewallRule.firewall_rule_end_ip_address
+    if end_ip_address is None:
+        firewall_rule_end_ip_address = mongo_cluster_firewallRule.endIpAddress
     
-    firewall_rule =  FirewallRule(start_ip_address=firewall_rule_start_ip_address, end_ip_address=firewall_rule_end_ip_address)
+    firewall_rule =  FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
     
-    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, firewall_rule_name, firewall_rule)
+    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
 
 def cli_cosmosdb_mongocluster_firewall_rule_list(client, resource_group_name, cluster_name):
 
@@ -117,17 +117,17 @@ def cli_cosmosdb_mongocluster_firewall_rule_list(client, resource_group_name, cl
 
     return client.list_firewall_rules(resource_group_name, cluster_name)
 
-def cli_cosmosdb_mongocluster_firewall_rule_get(client, resource_group_name, cluster_name, firewall_rule_name):
+def cli_cosmosdb_mongocluster_firewall_rule_get(client, resource_group_name, cluster_name, rule_name):
 
     """Gets Azure CosmosDB Mongo Cluster Firewall rule"""
 
-    return client.get_firewall_rule(resource_group_name, cluster_name, firewall_rule_name)
+    return client.get_firewall_rule(resource_group_name, cluster_name, rule_name)
 
-def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, cluster_name, firewall_rule_name):
+def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, cluster_name, rule_name):
 
     """Delete Azure CosmosDB Mongo Cluster Firewall Rule"""
 
-    return client.begin_delete_firewall_rule(resource_group_name, cluster_name, firewall_rule_name)
+    return client.begin_delete_firewall_rule(resource_group_name, cluster_name, rule_name)
 
 def cli_cosmosdb_mongocluster_create(client,
                                     resource_group_name,
@@ -195,19 +195,17 @@ def cli_cosmosdb_mongocluster_update(client,
                                     administrator_login_password,
                                     tags=None,
                                     create_mode=CreateMode.DEFAULT.value,
-                                    restore_point_in_time_utc=None,
-                                    restore_source_resource_id=None,
                                     server_version="5.0",
                                     shard_node_sku=None,
-                                    shard_node_disk_size_gb=None, 
                                     shard_enable_ha=None,
+                                    shard_node_disk_size_gb=None, 
                                     shard_node_name=None,
                                     shard_kind=NodeKind.SHARD.value,
                                     shard_node_count=1):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
 
-    mongo_cluster_resource = client.get(resource_group_name, mongocluster_name)
+    mongo_cluster_resource = client.get(resource_group_name, cluster_name)
 
     # user name and password should be updated together
     if administrator_login is None and administrator_login_password is not None:
@@ -232,12 +230,6 @@ def cli_cosmosdb_mongocluster_update(client,
     if create_mode is None:
         create_mode= mongo_cluster_resource.create_mode
     
-    if restore_point_in_time_utc is None:
-        restore_point_in_time_utc = mongo_cluster_resource.restore_parameters.point_in_time_utc
-    
-    if restore_source_resource_id is None:
-        restore_source_resource_id= mongo_cluster_resource.restore_parameters.source_resource_id
-
     # Shard info update.
     if shard_node_sku is None:
         shard_node_sku= mongo_cluster_resource.node_group_specs[0].sku
@@ -251,18 +243,6 @@ def cli_cosmosdb_mongocluster_update(client,
         shard_kind= mongo_cluster_resource.node_group_specs[0].kind
     if shard_node_count is None:
         shard_node_count= mongo_cluster_resource.node_group_specs[0].node_count
-
-    # Validate restore paremeters.
-    if restore_point_in_time_utc is not None and restore_source_resource_id is None:
-        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
-
-    if restore_point_in_time_utc is None and restore_source_resource_id is not None:
-        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
-
-    mongocluster_restore_parameters = MongoClusterRestoreParameters(
-        point_in_time_utc=restore_point_in_time_utc,
-        source_resource_id=restore_source_resource_id,
-    )
 
     node_group_spec = NodeGroupSpec(
         sku= shard_node_sku,

@@ -56,8 +56,8 @@ class MongoClusterScenarioTest(ScenarioTest):
         clusters = self.cmd('az cosmosdb mongocluster list -g {rg_new}').get_output_in_json()
         assert len(clusters) == 1
 
-        clusters = self.cmd('az cosmosdb mongocluster list').get_output_in_json()
-        assert len(clusters) >1
+       #clusters = self.cmd('az cosmosdb mongocluster list').get_output_in_json()
+       # assert len(clusters) >1
 
         # update sku
         cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()

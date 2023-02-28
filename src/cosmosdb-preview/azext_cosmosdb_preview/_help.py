@@ -119,8 +119,6 @@ examples:
         --shard-node-ha true \\
         --shard-node-disk-size-gb 128 \\
         --shard-node-count 2
-        --restore-point-in-time-utc "2023-01-13T20:07:35Z"
-        --restore-source-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/MyOtherMongoCluster
 """
 
 helps['cosmosdb mongocluster list'] = """
