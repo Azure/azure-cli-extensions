@@ -650,3 +650,21 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         return_dict = command.init_return_dict()
 
     return return_dict
+
+
+
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+
+    create_out = create(cmd, vm_name, resource_group_name, "azureuser", "Redhat@12345", associate_public_ip=False, distro='ubuntu')
+
+    repair_vm_name = create_out['repair_vm_name']
+    copy_disk_name = create_out['copied_disk_name']
+    copy_disk_id = create_out['copied_disk_uri']
+    repair_group_name = create_out['repair_resource_group']
+    resource_tag = create_out['resource_tag']
+    created_resources = create_out['created_resources']
+
+    run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters='fstab')
+
+    restore(cmd, vm_name, resource_group_name, copy_disk_name, yes=True)
+
