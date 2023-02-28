@@ -152,7 +152,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def make_cluster_diagnostic_checks_job_log(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
+def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
     try:
         job_name = "cluster-diagnostic-checks-job"
         all_pods = corev1_api_instance.list_namespaced_pod('azure-arc-release')
@@ -175,7 +175,7 @@ def make_cluster_diagnostic_checks_job_log(corev1_api_instance, batchv1_api_inst
                         with open(dns_check_path, 'wb') as f:
                             f.write(pod_description)
                 else:
-                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Not_Saved, summary="Failed to save cluster diagnostic checks pod description")
+                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description")
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
@@ -183,12 +183,12 @@ def make_cluster_diagnostic_checks_job_log(corev1_api_instance, batchv1_api_inst
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while saving the cluster diagnostic checks pod description on the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Not_Saved, summary="Error occured while saving the cluster diagnostic checks pod description")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.warning("An exception has occured while saving the cluster diagnostic checks pod description on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Not_Saved, summary="Error occured while saving the cluster diagnostic checks pod description")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description")
 
 
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):

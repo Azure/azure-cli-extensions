@@ -155,7 +155,7 @@ Diagnoser_Result_Fault_Type = "Error while storing the diagnoser results"
 Kubectl_Cluster_Info_Failed_Fault_Type = "Error while doing kubectl cluster-info"
 Fetch_Kubectl_Cluster_Info_Fault_Type = "Error occured while fetching cluster-info"
 Fetch_Kubectl_Cluster_Info = "kubectl_cluster_info"
-Unable_To_Change_Telemetry_Push_Interval = "Unable to change the telemetry push interval to 1 hr"
+Failed_To_Change_Telemetry_Push_Interval = "Failed to change the telemetry push interval to 1 hr"
 Diagnostic_Check_Passed = "Passed"
 Diagnostic_Check_Failed = "Failed"
 Diagnostic_Check_Incomplete = "Incomplete"
@@ -200,7 +200,7 @@ Outbound_Connectivity_Check_Failed = "Outbound network connectivity check failed
 DNS_Check_Failed = "DNS Resolution failed"
 Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
 Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
-Cluster_Diagnostic_Checks_Pod_Description_Not_Saved = 'Failed to save cluster diagnostic checks pod description'
+Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster diagnostic checks pod description'
 Cluster_Diagnostic_Checks_Job_Log_Not_Saved = 'Failed to save cluster diagnostic checks job log'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"

@@ -75,7 +75,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         if cmd.cli_ctx and hasattr(cmd.cli_ctx, 'config'):
             cmd.cli_ctx.config.set_value('telemetry', 'push_interval_in_hours', '1')
     except exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.Unable_To_Change_Telemetry_Push_Interval, summary="Unable to change the telemetry push interval to 1 hr")
+        telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Change_Telemetry_Push_Interval, summary="Failed to change the telemetry push interval to 1 hr")
 
     # Validate custom token operation
     custom_token_passed, location = utils.validate_custom_token(cmd, resource_group_name, location)

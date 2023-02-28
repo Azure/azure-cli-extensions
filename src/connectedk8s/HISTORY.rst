@@ -5,7 +5,7 @@ Release History
 1.3.14
 ++++++
 
-* Changing telemetry push interval to 1 heuristic
+* Changing telemetry push interval to 1 hr
 * Adding two new supported infra values - Windows 10 IoT Enterprise, LTSCWindows 10 Enterprise LTSC
 * Saving cluster diagnostic checks pod and job logs
 
