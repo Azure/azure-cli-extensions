@@ -19,6 +19,11 @@ from prompt_toolkit.layout.processors import HighlightSearchProcessor, \
     ConditionalProcessor, AppendAutoSuggestion
 from prompt_toolkit.layout.prompt import DefaultPrompt
 from prompt_toolkit.layout.screen import Char
+import warnings
+# HACK: since cryptography==37.0.0 CryptographyDeprecationWarning is being raised
+# this is until https://github.com/paramiko/paramiko/issues/2038 would be solved
+from cryptography.utils import CryptographyDeprecationWarning
+warnings.filterwarnings(action='ignore', category=CryptographyDeprecationWarning)
 
 
 from .progress import get_progress_message, get_done
@@ -218,7 +223,7 @@ def get_height(cli):
 def get_lexers(main_lex, exam_lex, tool_lex, scenario_lex):
     """ gets all the lexer wrappers """
     if not main_lex:
-        return None, None, None
+        return None, None, None, None
     lexer = None
     if main_lex:
         if issubclass(main_lex, PromptLex):
