@@ -7,9 +7,9 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .helper import get_project_data
+from .data_plane_endpoint_helper import get_project_data
 
-# data plane
+# Data plane
 
 
 def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None):
@@ -75,7 +75,7 @@ def cf_notification_setting_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting
 
 
-# control plane
+# Control plane
 
 
 def cf_devcenter_cl(cli_ctx, *_):

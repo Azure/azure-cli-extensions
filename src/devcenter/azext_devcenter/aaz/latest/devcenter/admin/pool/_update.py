@@ -55,8 +55,8 @@ class Update(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
-            help="The name of the project.",
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
             id_part="name",
         )
@@ -92,7 +92,6 @@ class Update(AAZCommand):
             options=["--license-type"],
             arg_group="Properties",
             help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
-            default="Windows_Client",
             enum={"Windows_Client": "Windows_Client"},
         )
         _args_schema.local_administrator = AAZStrArg(

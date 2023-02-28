@@ -53,7 +53,7 @@ class Create(AAZCommand):
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center.",
+            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(

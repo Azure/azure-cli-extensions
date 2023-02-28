@@ -47,19 +47,18 @@ class Sync(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["--catalog-name", "--name"],
+            options=["--catalog-name"],
             help="The name of the Catalog.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center.",
+            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema

@@ -47,8 +47,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-n", "--name", "--dev-center-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the devcenter.",
             required=True,
         )
@@ -160,7 +160,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "devCenterName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

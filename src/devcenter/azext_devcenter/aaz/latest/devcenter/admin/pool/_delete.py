@@ -54,8 +54,8 @@ class Delete(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
-            help="The name of the project.",
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
             id_part="name",
         )

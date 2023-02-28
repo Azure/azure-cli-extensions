@@ -48,8 +48,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.project_name = AAZStrArg(
-            options=["-n", "--name", "--project-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the project.",
             required=True,
             id_part="name",
@@ -151,7 +151,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "projectName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -250,7 +250,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "projectName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

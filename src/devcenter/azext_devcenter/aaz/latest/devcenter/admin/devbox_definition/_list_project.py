@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin gallery list",
+    "devcenter admin devbox-definition list-project",
     is_preview=True,
 )
-class List(AAZCommand):
-    """List galleries for a devcenter.
+class ListProject(AAZCommand):
+    """List dev box definitions configured for a project.
 
-    :example: List
-        az devcenter admin gallery list --dev-center-name "Contoso" --resource-group "rg1"
+    :example: List by project
+        az devcenter admin devbox-definition list --project-name "ContosoProject" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2022-11-11-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions", "2022-11-11-preview"],
         ]
     }
 
@@ -44,9 +44,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -61,7 +61,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.GalleriesListByDevCenter(ctx=self.ctx)()
+        self.DevBoxDefinitionsListByProject(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,7 +77,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class GalleriesListByDevCenter(AAZHttpOperation):
+    class DevBoxDefinitionsListByProject(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -91,7 +91,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/devboxdefinitions",
                 **self.url_parameters
             )
 
@@ -107,7 +107,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -176,6 +176,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -186,19 +189,54 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.gallery_resource_id = AAZStrType(
-                serialized_name="galleryResourceId",
+            properties.active_image_reference = AAZObjectType(
+                serialized_name="activeImageReference",
+            )
+            _ListProjectHelper._build_schema_image_reference_read(properties.active_image_reference)
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
+            )
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+                flags={"required": True},
+            )
+            _ListProjectHelper._build_schema_image_reference_read(properties.image_reference)
+            properties.image_validation_error_details = AAZObjectType(
+                serialized_name="imageValidationErrorDetails",
+            )
+            properties.image_validation_status = AAZStrType(
+                serialized_name="imageValidationStatus",
+            )
+            properties.os_storage_type = AAZStrType(
+                serialized_name="osStorageType",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+
+            image_validation_error_details = cls._schema_on_200.value.Element.properties.image_validation_error_details
+            image_validation_error_details.code = AAZStrType()
+            image_validation_error_details.message = AAZStrType()
+
+            sku = cls._schema_on_200.value.Element.properties.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -220,11 +258,44 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ListProjectHelper:
+    """Helper class for ListProject"""
+
+    _schema_image_reference_read = None
+
+    @classmethod
+    def _build_schema_image_reference_read(cls, _schema):
+        if cls._schema_image_reference_read is not None:
+            _schema.exact_version = cls._schema_image_reference_read.exact_version
+            _schema.id = cls._schema_image_reference_read.id
+            _schema.offer = cls._schema_image_reference_read.offer
+            _schema.publisher = cls._schema_image_reference_read.publisher
+            _schema.sku = cls._schema_image_reference_read.sku
+            return
+
+        cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
+
+        image_reference_read = _schema_image_reference_read
+        image_reference_read.exact_version = AAZStrType(
+            serialized_name="exactVersion",
+            flags={"read_only": True},
+        )
+        image_reference_read.id = AAZStrType()
+        image_reference_read.offer = AAZStrType()
+        image_reference_read.publisher = AAZStrType()
+        image_reference_read.sku = AAZStrType()
+
+        _schema.exact_version = cls._schema_image_reference_read.exact_version
+        _schema.id = cls._schema_image_reference_read.id
+        _schema.offer = cls._schema_image_reference_read.offer
+        _schema.publisher = cls._schema_image_reference_read.publisher
+        _schema.sku = cls._schema_image_reference_read.sku
 
 
-__all__ = ["List"]
+__all__ = ["ListProject"]

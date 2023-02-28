@@ -52,8 +52,8 @@ class Show(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
-            help="The name of the project.",
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
             id_part="name",
         )
@@ -66,6 +66,7 @@ class Show(AAZCommand):
             help="The name of the schedule that uniquely identifies it.",
             required=True,
             id_part="child_name_2",
+            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^[-\w]+$",
                 max_length=100,

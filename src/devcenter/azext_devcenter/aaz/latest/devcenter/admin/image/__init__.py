@@ -10,4 +10,5 @@
 
 from .__cmd_group import *
 from ._list import *
+from ._list_gallery import *
 from ._show import *

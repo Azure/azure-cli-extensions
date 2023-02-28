@@ -7,7 +7,64 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
-from .custom import(PoolCreate, PoolList)
+from .custom import (
+    AttachedNetworkCreate,
+    AttachedNetworkDelete,
+    AttachedNetworkList,
+    AttachedNetworkShow,
+    AttachedNetworkWait,
+    CatalogCreate,
+    CatalogDelete,
+    CatalogList,
+    CatalogShow,
+    CatalogSync,
+    CatalogUpdate,
+    CatalogWait,
+    DevBoxDefinitionCreate,
+    DevBoxDefinitionDelete,
+    DevBoxDefinitionList,
+    DevBoxDefinitionShow,
+    DevBoxDefinitionUpdate,
+    DevBoxDefinitionWait,
+    DevCenterList,
+    EnvironmentTypeCreate,
+    EnvironmentTypeDelete,
+    EnvironmentTypeList,
+    EnvironmentTypeShow,
+    EnvironmentTypeUpdate,
+    GalleryCreate,
+    GalleryDelete,
+    GalleryList,
+    GalleryShow,
+    GalleryWait,
+    ImageList,
+    ImageShow,
+    ImageVersionList,
+    ImageVersionShow,
+    NetworkConnectionList,
+    NetworkConnectionListHealthDetail,
+    PoolCreate,
+    PoolDelete,
+    PoolList,
+    PoolShow,
+    PoolUpdate,
+    PoolWait,
+    ProjectList,
+    ProjectAllowedEnvironmentTypeList,
+    ProjectAllowedEnvironmentTypeShow,
+    ProjectEnvironmentTypeCreate,
+    ProjectEnvironmentTypeDelete,
+    ProjectEnvironmentTypeList,
+    ProjectEnvironmentTypeShow,
+    ProjectEnvironmentTypeUpdate,
+    ScheduleCreate,
+    ScheduleDelete,
+    ScheduleShow,
+    ScheduleUpdate,
+    ScheduleWait,
+    SkuList,
+)
+
 
 from azext_devcenter._client_factory import (
     cf_project_dp,
@@ -23,13 +80,132 @@ from azext_devcenter._client_factory import (
 
 
 def load_command_table(self, _):
-    # control plane
+    # Control plane
+    self.command_table[
+        "devcenter admin attached-network create"
+    ] = AttachedNetworkCreate(loader=self)
+    self.command_table[
+        "devcenter admin attached-network delete"
+    ] = AttachedNetworkDelete(loader=self)
+    self.command_table["devcenter admin attached-network list"] = AttachedNetworkList(
+        loader=self
+    )
+    self.command_table["devcenter admin attached-network show"] = AttachedNetworkShow(
+        loader=self
+    )
+    self.command_table["devcenter admin attached-network wait"] = AttachedNetworkWait(
+        loader=self
+    )
 
+    self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
+    self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
+    self.command_table["devcenter admin catalog list"] = CatalogList(loader=self)
+    self.command_table["devcenter admin catalog show"] = CatalogShow(loader=self)
+    self.command_table["devcenter admin catalog sync"] = CatalogSync(loader=self)
+    self.command_table["devcenter admin catalog update"] = CatalogUpdate(loader=self)
+    self.command_table["devcenter admin catalog wait"] = CatalogWait(loader=self)
 
-    self.command_table['devcenter admin pool list'] = PoolList(loader=self)
-    self.command_table['devcenter admin pool create'] = PoolCreate(loader=self)
+    self.command_table[
+        "devcenter admin devbox-definition create"
+    ] = DevBoxDefinitionCreate(loader=self)
+    self.command_table[
+        "devcenter admin devbox-definition delete"
+    ] = DevBoxDefinitionDelete(loader=self)
+    self.command_table["devcenter admin devbox-definition list"] = DevBoxDefinitionList(
+        loader=self
+    )
+    self.command_table["devcenter admin devbox-definition show"] = DevBoxDefinitionShow(
+        loader=self
+    )
+    self.command_table[
+        "devcenter admin devbox-definition update"
+    ] = DevBoxDefinitionUpdate(loader=self)
+    self.command_table["devcenter admin devbox-definition wait"] = DevBoxDefinitionWait(
+        loader=self
+    )
 
-    # data plane
+    self.command_table["devcenter admin devcenter list"] = DevCenterList(loader=self)
+
+    self.command_table[
+        "devcenter admin environment-type create"
+    ] = EnvironmentTypeCreate(loader=self)
+    self.command_table[
+        "devcenter admin environment-type delete"
+    ] = EnvironmentTypeDelete(loader=self)
+    self.command_table["devcenter admin environment-type list"] = EnvironmentTypeList(
+        loader=self
+    )
+    self.command_table["devcenter admin environment-type show"] = EnvironmentTypeShow(
+        loader=self
+    )
+    self.command_table[
+        "devcenter admin environment-type update"
+    ] = EnvironmentTypeUpdate(loader=self)
+
+    self.command_table["devcenter admin gallery create"] = GalleryCreate(loader=self)
+    self.command_table["devcenter admin gallery delete"] = GalleryDelete(loader=self)
+    self.command_table["devcenter admin gallery list"] = GalleryList(loader=self)
+    self.command_table["devcenter admin gallery show"] = GalleryShow(loader=self)
+    self.command_table["devcenter admin gallery wait"] = GalleryWait(loader=self)
+
+    self.command_table["devcenter admin image list"] = ImageList(loader=self)
+    self.command_table["devcenter admin image show"] = ImageShow(loader=self)
+
+    self.command_table["devcenter admin image-version list"] = ImageVersionList(
+        loader=self
+    )
+    self.command_table["devcenter admin image-version show"] = ImageVersionShow(
+        loader=self
+    )
+
+    self.command_table[
+        "devcenter admin network-connection list"
+    ] = NetworkConnectionList(loader=self)
+    self.command_table[
+        "devcenter admin network-connection list-health-detail"
+    ] = NetworkConnectionListHealthDetail(loader=self)
+
+    self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
+    self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
+    self.command_table["devcenter admin pool list"] = PoolList(loader=self)
+    self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
+    self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
+    self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
+
+    self.command_table["devcenter admin project list"] = ProjectList(loader=self)
+
+    self.command_table[
+        "devcenter admin project-allowed-environment-type list"
+    ] = ProjectAllowedEnvironmentTypeList(loader=self)
+    self.command_table[
+        "devcenter admin project-allowed-environment-type show"
+    ] = ProjectAllowedEnvironmentTypeShow(loader=self)
+
+    self.command_table[
+        "devcenter admin project-environment-type create"
+    ] = ProjectEnvironmentTypeCreate(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type delete"
+    ] = ProjectEnvironmentTypeDelete(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type list"
+    ] = ProjectEnvironmentTypeList(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type show"
+    ] = ProjectEnvironmentTypeShow(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type update"
+    ] = ProjectEnvironmentTypeUpdate(loader=self)
+
+    self.command_table["devcenter admin schedule create"] = ScheduleCreate(loader=self)
+    self.command_table["devcenter admin schedule delete"] = ScheduleDelete(loader=self)
+    self.command_table["devcenter admin schedule show"] = ScheduleShow(loader=self)
+    self.command_table["devcenter admin schedule update"] = ScheduleUpdate(loader=self)
+    self.command_table["devcenter admin schedule wait"] = ScheduleWait(loader=self)
+
+    self.command_table["devcenter admin sku list"] = SkuList(loader=self)
+
+    # Data plane
 
     devcenter_pool_dp = CliCommandType(
         operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._pool_operations#PoolOperations.{}",

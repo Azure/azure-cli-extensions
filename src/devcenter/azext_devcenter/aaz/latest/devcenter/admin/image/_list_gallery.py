@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin environment-type create",
+    "devcenter admin image list-gallery",
     is_preview=True,
 )
-class Create(AAZCommand):
-    """Create an environment type.
+class ListGallery(AAZCommand):
+    """List images for a gallery.
 
-    :example: Create
-        az devcenter admin environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+    :example: List by gallery
+        az devcenter admin image list --dev-center-name "Contoso" --gallery-name "DevGallery" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2022-11-11-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/environmenttypes/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images", "2022-11-11-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -50,32 +49,24 @@ class Create(AAZCommand):
             help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
             required=True,
         )
-        _args_schema.environment_type_name = AAZStrArg(
-            options=["-n", "--name", "--environment-type-name"],
-            help="The name of the environment type.",
+        _args_schema.gallery_name = AAZStrArg(
+            options=["--gallery-name"],
+            help="The name of the gallery.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EnvironmentTypesCreateOrUpdate(ctx=self.ctx)()
+        self.ImagesListByGallery(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,10 +78,11 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class EnvironmentTypesCreateOrUpdate(AAZHttpOperation):
+    class ImagesListByGallery(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,13 +96,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -124,7 +116,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "environmentTypeName", self.ctx.args.environment_type_name,
+                    "galleryName", self.ctx.args.gallery_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -142,6 +134,9 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,
                 ),
@@ -152,28 +147,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -193,31 +170,65 @@ class Create(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.description = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.offer = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.publisher = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.recommended_machine_configuration = AAZObjectType(
+                serialized_name="recommendedMachineConfiguration",
+            )
+            properties.sku = AAZStrType(
+                flags={"read_only": True},
+            )
 
-            system_data = cls._schema_on_200.system_data
+            recommended_machine_configuration = cls._schema_on_200.value.Element.properties.recommended_machine_configuration
+            recommended_machine_configuration.memory = AAZObjectType()
+            _ListGalleryHelper._build_schema_resource_range_read(recommended_machine_configuration.memory)
+            recommended_machine_configuration.v_cp_us = AAZObjectType(
+                serialized_name="vCPUs",
+            )
+            _ListGalleryHelper._build_schema_resource_range_read(recommended_machine_configuration.v_cp_us)
+
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -237,14 +248,33 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _ListGalleryHelper:
+    """Helper class for ListGallery"""
+
+    _schema_resource_range_read = None
+
+    @classmethod
+    def _build_schema_resource_range_read(cls, _schema):
+        if cls._schema_resource_range_read is not None:
+            _schema.max = cls._schema_resource_range_read.max
+            _schema.min = cls._schema_resource_range_read.min
+            return
+
+        cls._schema_resource_range_read = _schema_resource_range_read = AAZObjectType()
+
+        resource_range_read = _schema_resource_range_read
+        resource_range_read.max = AAZIntType(
+            flags={"read_only": True},
+        )
+        resource_range_read.min = AAZIntType(
+            flags={"read_only": True},
+        )
+
+        _schema.max = cls._schema_resource_range_read.max
+        _schema.min = cls._schema_resource_range_read.min
 
 
-__all__ = ["Create"]
+__all__ = ["ListGallery"]

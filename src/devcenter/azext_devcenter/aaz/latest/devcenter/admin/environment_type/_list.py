@@ -46,12 +46,16 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center.",
+            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
+        )
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
         )
         return cls._args_schema
 
@@ -120,6 +124,9 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,

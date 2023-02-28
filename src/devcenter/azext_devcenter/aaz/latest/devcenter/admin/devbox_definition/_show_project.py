@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin environment-type create",
+    "devcenter admin devbox-definition show-project",
     is_preview=True,
 )
-class Create(AAZCommand):
-    """Create an environment type.
+class ShowProject(AAZCommand):
+    """Get a dev box definition configured for a project
 
-    :example: Create
-        az devcenter admin environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+    :example: Show project dev box definition
+        az devcenter admin devbox-definition show --name "WebDevBox" --project-name "ContosoProject" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2022-11-11-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/environmenttypes/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2022-11-11-preview"],
         ]
     }
 
@@ -45,37 +45,27 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+        _args_schema.dev_box_definition_name = AAZStrArg(
+            options=["-n", "--name", "--dev-box-definition-name"],
+            help="The name of the Dev Box definition.",
             required=True,
+            id_part="child_name_1",
         )
-        _args_schema.environment_type_name = AAZStrArg(
-            options=["-n", "--name", "--environment-type-name"],
-            help="The name of the environment type.",
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EnvironmentTypesCreateOrUpdate(ctx=self.ctx)()
+        self.DevBoxDefinitionsGetByProject(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +80,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EnvironmentTypesCreateOrUpdate(AAZHttpOperation):
+    class DevBoxDefinitionsGetByProject(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,13 +94,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/devboxdefinitions/{devBoxDefinitionName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -120,11 +110,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "environmentTypeName", self.ctx.args.environment_type_name,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -152,28 +142,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -196,6 +168,9 @@ class Create(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -212,10 +187,48 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.active_image_reference = AAZObjectType(
+                serialized_name="activeImageReference",
+            )
+            _ShowProjectHelper._build_schema_image_reference_read(properties.active_image_reference)
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
+            )
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+                flags={"required": True},
+            )
+            _ShowProjectHelper._build_schema_image_reference_read(properties.image_reference)
+            properties.image_validation_error_details = AAZObjectType(
+                serialized_name="imageValidationErrorDetails",
+            )
+            properties.image_validation_status = AAZStrType(
+                serialized_name="imageValidationStatus",
+            )
+            properties.os_storage_type = AAZStrType(
+                serialized_name="osStorageType",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+
+            image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
+            image_validation_error_details.code = AAZStrType()
+            image_validation_error_details.message = AAZStrType()
+
+            sku = cls._schema_on_200.properties.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -243,8 +256,38 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _ShowProjectHelper:
+    """Helper class for ShowProject"""
+
+    _schema_image_reference_read = None
+
+    @classmethod
+    def _build_schema_image_reference_read(cls, _schema):
+        if cls._schema_image_reference_read is not None:
+            _schema.exact_version = cls._schema_image_reference_read.exact_version
+            _schema.id = cls._schema_image_reference_read.id
+            _schema.offer = cls._schema_image_reference_read.offer
+            _schema.publisher = cls._schema_image_reference_read.publisher
+            _schema.sku = cls._schema_image_reference_read.sku
+            return
+
+        cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
+
+        image_reference_read = _schema_image_reference_read
+        image_reference_read.exact_version = AAZStrType(
+            serialized_name="exactVersion",
+            flags={"read_only": True},
+        )
+        image_reference_read.id = AAZStrType()
+        image_reference_read.offer = AAZStrType()
+        image_reference_read.publisher = AAZStrType()
+        image_reference_read.sku = AAZStrType()
+
+        _schema.exact_version = cls._schema_image_reference_read.exact_version
+        _schema.id = cls._schema_image_reference_read.id
+        _schema.offer = cls._schema_image_reference_read.offer
+        _schema.publisher = cls._schema_image_reference_read.publisher
+        _schema.sku = cls._schema_image_reference_read.sku
 
 
-__all__ = ["Create"]
+__all__ = ["ShowProject"]

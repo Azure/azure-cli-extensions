@@ -52,8 +52,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
-            help="The name of the project.",
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -64,6 +64,7 @@ class Create(AAZCommand):
             options=["-n", "--name", "--schedule-name"],
             help="The name of the schedule that uniquely identifies it.",
             required=True,
+            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^[-\w]+$",
                 max_length=100,

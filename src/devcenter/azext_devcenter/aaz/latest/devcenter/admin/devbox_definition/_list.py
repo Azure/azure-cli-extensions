@@ -9,29 +9,23 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-from azure.cli.core.azclierror import (
-    RequiredArgumentMissingError,
-)
+
 
 @register_command(
     "devcenter admin devbox-definition list",
     is_preview=True,
 )
 class List(AAZCommand):
-    """List dev box definitions
+    """List dev box definitions configured for a dev center.
 
     :example: List by dev center
         az devcenter admin devbox-definition list --dev-center-name "Contoso" --resource-group "rg1"
-    
-    :example: List by project
-        az devcenter admin devbox-definition list --project-name "ContosoProject" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2022-11-11-preview",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions", "2022-11-11-preview"],
         ]
     }
 
@@ -52,35 +46,26 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center.",
-        )
-        _args_schema.project_name = AAZStrArg(
-            options=["--project-name"],
-            help="The name of the project.",
+            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-        
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.DevBoxDefinitionsListByDevCenter(ctx=self.ctx)()
-        if condition_1:
-            self.DevBoxDefinitionsListByProject(ctx=self.ctx)()
+        self.DevBoxDefinitionsListByDevCenter(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
     def pre_operations(self):
-        if not has_value(self.ctx.args.dev_center_name) and not has_value(self.ctx.args.project_name):
-            error_message = """Either project (--project --project-name) \
-or dev center (--dev-center --dev-center-name -d) should be set."""
-            raise RequiredArgumentMissingError(error_message)
         pass
 
     @register_callback
@@ -140,188 +125,8 @@ or dev center (--dev-center --dev-center-name -d) should be set."""
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
-                    required=True,
+                    "$top", self.ctx.args.top,
                 ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.active_image_reference = AAZObjectType(
-                serialized_name="activeImageReference",
-            )
-            _ListHelper._build_schema_image_reference_read(properties.active_image_reference)
-            properties.hibernate_support = AAZStrType(
-                serialized_name="hibernateSupport",
-            )
-            properties.image_reference = AAZObjectType(
-                serialized_name="imageReference",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_image_reference_read(properties.image_reference)
-            properties.image_validation_error_details = AAZObjectType(
-                serialized_name="imageValidationErrorDetails",
-            )
-            properties.image_validation_status = AAZStrType(
-                serialized_name="imageValidationStatus",
-            )
-            properties.os_storage_type = AAZStrType(
-                serialized_name="osStorageType",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.sku = AAZObjectType(
-                flags={"required": True},
-            )
-
-            image_validation_error_details = cls._schema_on_200.value.Element.properties.image_validation_error_details
-            image_validation_error_details.code = AAZStrType()
-            image_validation_error_details.message = AAZStrType()
-
-            sku = cls._schema_on_200.value.Element.properties.sku
-            sku.capacity = AAZIntType()
-            sku.family = AAZStrType()
-            sku.name = AAZStrType(
-                flags={"required": True},
-            )
-            sku.size = AAZStrType()
-            sku.tier = AAZStrType()
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class DevBoxDefinitionsListByProject(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/devboxdefinitions",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
                 **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,

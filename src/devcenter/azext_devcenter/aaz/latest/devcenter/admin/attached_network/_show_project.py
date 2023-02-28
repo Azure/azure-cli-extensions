@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin environment-type create",
+    "devcenter admin attached-network show-project",
     is_preview=True,
 )
-class Create(AAZCommand):
-    """Create an environment type.
+class ShowProject(AAZCommand):
+    """Get an attached network connection configured for a project.
 
-    :example: Create
-        az devcenter admin environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+    :example: Show project attached network connection
+        az devcenter admin attached-network show --name "{attachedNetworkConnectionName}" --project-name "{projectName}" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2022-11-11-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/environmenttypes/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/attachednetworks/{}", "2022-11-11-preview"],
         ]
     }
 
@@ -45,37 +45,27 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+        _args_schema.attached_network_connection_name = AAZStrArg(
+            options=["-n", "--name", "--attached-network-connection-name"],
+            help="The name of the attached network connection.",
             required=True,
+            id_part="child_name_1",
         )
-        _args_schema.environment_type_name = AAZStrArg(
-            options=["-n", "--name", "--environment-type-name"],
-            help="The name of the environment type.",
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EnvironmentTypesCreateOrUpdate(ctx=self.ctx)()
+        self.AttachedNetworksGetByProject(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +80,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EnvironmentTypesCreateOrUpdate(AAZHttpOperation):
+    class AttachedNetworksGetByProject(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,13 +94,13 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/attachednetworks/{attachedNetworkConnectionName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -120,11 +110,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "attachedNetworkConnectionName", self.ctx.args.attached_network_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "environmentTypeName", self.ctx.args.environment_type_name,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -152,28 +142,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -206,12 +178,25 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
+            properties.domain_join_type = AAZStrType(
+                serialized_name="domainJoinType",
+            )
+            properties.health_check_status = AAZStrType(
+                serialized_name="healthCheckStatus",
+            )
+            properties.network_connection_id = AAZStrType(
+                serialized_name="networkConnectionId",
+                flags={"required": True},
+            )
+            properties.network_connection_location = AAZStrType(
+                serialized_name="networkConnectionLocation",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -237,14 +222,11 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _ShowProjectHelper:
+    """Helper class for ShowProject"""
 
 
-__all__ = ["Create"]
+__all__ = ["ShowProject"]
