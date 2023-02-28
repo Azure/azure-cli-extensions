@@ -710,7 +710,7 @@ def _parse_jar_file(artifact_path):
                     prefix = 'spring-cloud-netflix-eureka-client-'
                     spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
         return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, \
-               ms_sdk_version, jdk_version
+            ms_sdk_version, jdk_version
     except Exception as err:  # pylint: disable=broad-except
         telemetry.set_exception("parse user jar file failed, " + str(err))
         return None

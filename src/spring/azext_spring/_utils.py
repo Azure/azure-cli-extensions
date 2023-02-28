@@ -49,8 +49,8 @@ def _is_java(runtime_version):
     if runtime_version is None:
         return False
     return runtime_version.casefold() == SupportedRuntimeValue.JAVA8.casefold() or \
-           runtime_version.casefold() == SupportedRuntimeValue.JAVA11.casefold() or \
-           runtime_version.casefold() == SupportedRuntimeValue.JAVA17.casefold()
+        runtime_version.casefold() == SupportedRuntimeValue.JAVA11.casefold() or \
+        runtime_version.casefold() == SupportedRuntimeValue.JAVA17.casefold()
 
 
 def _java_runtime_in_number():
