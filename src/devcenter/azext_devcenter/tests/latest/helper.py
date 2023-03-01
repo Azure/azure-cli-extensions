@@ -89,8 +89,7 @@ def create_sig(self):
         'sigId': sig['id']
     })
 
-    self.cmd(
-        'az network nsg create -n "{nsgName}" --location "{location}" -g "{rg}"')
+    create_virtual_network_with_subnet(self);
 
     # Create compute virtual machine
     self.cmd('az vm create -n "{computeVmName}" '
@@ -99,7 +98,8 @@ def create_sig(self):
              '--location "{location}" '
              '--security-type TrustedLaunch '
              '--admin-password "{computeVmPassword}" '
-             '--nsg "{nsgName}" '
+             '--vnet-name "{vNetName}" '
+             '--subnet "{subnetName}" '
              '--admin-username "{computeUserName}"')
 
     compute_vm = self.cmd('az vm show -n "{computeVmName}" '

@@ -478,6 +478,12 @@ class PoolCreate(_PoolCreate):
         args_schema.license_type._registered = False
         return args_schema
 
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.license_type = "Windows_Client"
+        pass
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -508,6 +514,12 @@ class PoolShow(_PoolShow):
 
 
 class PoolUpdate(_PoolUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.license_type._registered = False
+        return args_schema
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -582,12 +594,42 @@ class ProjectEnvironmentTypeUpdate(_ProjectEnvironmentTypeUpdate):
 
 
 class ScheduleCreate(_ScheduleCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required=False
+        args_schema.frequency._registered = False
+        args_schema.type._registered = False
+        return args_schema
+    
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+        args.frequency="Daily"
+        args.type="StopDevBox"
+        pass
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
-
 class ScheduleDelete(_ScheduleDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required=False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+        pass
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -598,7 +640,14 @@ class ScheduleShow(_ScheduleShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required=False
         return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -606,12 +655,40 @@ class ScheduleShow(_ScheduleShow):
 
 
 class ScheduleUpdate(_ScheduleUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required=False
+        args_schema.frequency._registered = False
+        args_schema.type._registered = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+        pass
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
 
 class ScheduleWait(_ScheduleWait):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required=False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+        pass
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
