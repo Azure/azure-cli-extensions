@@ -21,6 +21,8 @@ from azure.cli.core._profile import _SUBSCRIPTION_NAME, Profile
 from azure.cli.core._session import ACCOUNT, CONFIG, SESSION
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.util import handle_exception
+# stylized output
+from azure.cli.core.style import print_styled_text, Style
 
 # pylint: disable=import-error
 import jmespath
@@ -48,6 +50,7 @@ from .recommendation import Recommender, _show_details_for_e2e_scenario, gen_com
 from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word
+
 
 
 NOTIFICATIONS = ""
@@ -553,8 +556,8 @@ class AzInteractiveShell(object):
         )
         quit_scenario = False
         # give notice to users that they can skip a command or quit the scenario
-        print("\033[32mYou can use CTRL C to skip a command of the scenario, "
-              "and CTRL D to exit the scenario.\033[0m")
+        print_styled_text([(Style.WARNING, 'You can use CTRL C to skip a command of the scenario, '
+                                           'and CTRL D to exit the scenario.')])
         for nx_cmd, sample in gen_command_in_scenario(scenario, file=self.output):
             auto_suggest.update(sample)
             retry = True
