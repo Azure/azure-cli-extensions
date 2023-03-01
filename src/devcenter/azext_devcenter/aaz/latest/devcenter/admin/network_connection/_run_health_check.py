@@ -47,7 +47,7 @@ class RunHealthCheck(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
-            options=["--network-connection-name"],
+            options=["-n", "--network-connection-name"],
             help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
             id_part="name",

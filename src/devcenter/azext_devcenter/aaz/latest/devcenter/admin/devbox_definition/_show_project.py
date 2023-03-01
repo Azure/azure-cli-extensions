@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter admin devbox-definition show-project",
-    is_preview=True,
-)
 class ShowProject(AAZCommand):
     """Get a dev box definition configured for a project
 

@@ -74,7 +74,8 @@ def create_sig(self):
         'publisher': "MicrosoftWindowsDesktop",
         'offer': "Windows-10",
         'sku': "win10-21h2-entn-g2",
-        'imageVersion': "1.0.0"
+        'imageVersion': "1.0.0",
+        'nsgName': self.create_random_name(prefix='cli', length=12),
     })
 
     sig = self.cmd(
@@ -88,6 +89,9 @@ def create_sig(self):
         'sigId': sig['id']
     })
 
+    self.cmd(
+        'az network nsg create -n "{nsgName}" --location "{location}" -g "{rg}"')
+
     # Create compute virtual machine
     self.cmd('az vm create -n "{computeVmName}" '
              '-g "{rg}" '
@@ -95,6 +99,7 @@ def create_sig(self):
              '--location "{location}" '
              '--security-type TrustedLaunch '
              '--admin-password "{computeVmPassword}" '
+             '--nsg "{nsgName}" '
              '--admin-username "{computeUserName}"')
 
     compute_vm = self.cmd('az vm show -n "{computeVmName}" '

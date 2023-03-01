@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter admin attached-network list-project",
-    is_preview=True,
-)
 class ListProject(AAZCommand):
     """List the attached network connections configured for a project.
 

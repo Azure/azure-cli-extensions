@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter admin attached-network show-project",
-    is_preview=True,
-)
 class ShowProject(AAZCommand):
     """Get an attached network connection configured for a project.
 

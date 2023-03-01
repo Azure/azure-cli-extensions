@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter admin image list-gallery",
-    is_preview=True,
-)
 class ListGallery(AAZCommand):
     """List images for a gallery.
 
