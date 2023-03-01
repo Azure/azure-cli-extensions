@@ -222,7 +222,7 @@ class AzInteractiveShell(object):
         scenarios = self.recommender.get_scenarios() or []
         scenarios_rec_info = "Scenario Recommendation: "
         for idx, s in enumerate(scenarios):
-            idx_display = f'[{idx+1}]'
+            idx_display = f'[{idx + 1}]'
             scenario_desc = f'{s["scenario"]}'
             command_size = f'{len(s["nextCommandSet"])} Commands'
             scenarios_rec_info += f'\n {idx_display} {scenario_desc} ({command_size})'
@@ -503,7 +503,7 @@ class AzInteractiveShell(object):
                 else:
                     if len(answer.split()) > 1:
                         start_index += 1
-                        cmd += " " + answer.split()[-1] + " " +\
+                        cmd += " " + answer.split()[-1] + " " + \
                                u' '.join(text.split()[start_index:start_index + 1])
             self.completer.enable_scenario_recommender(True)
             example_cli.exit()
@@ -552,6 +552,9 @@ class AzInteractiveShell(object):
             initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
         )
         quit_scenario = False
+        # give notice to users that they can skip a command or quit the scenario
+        print("\033[32mYou can use CTRL C to skip a command of the scenario, "
+              "and CTRL D to exit the scenario.\033[0m")
         for nx_cmd, sample in gen_command_in_scenario(scenario, file=self.output):
             auto_suggest.update(sample)
             retry = True
@@ -693,6 +696,7 @@ class AzInteractiveShell(object):
                     escaped_symbol = re.escape(query_symbol)
                     # regex captures query symbol and all characters following it in the argument
                     return json.dumps(re.sub(r'%s.*' % escaped_symbol, jmespath_query, arg))
+
                 cmd_base = ' '.join(map(sub_result, args))
                 self.cli_execute(cmd_base)
             continue_flag = True
@@ -868,6 +872,7 @@ class AzInteractiveShell(object):
                     else:
                         telemetry.set_success()
                     # Update execution result of previous command, fetch recommendation if command failed
-                    self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
+                    self.recommender.update_exec_result(self.last_exit_code,
+                                                        telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()
