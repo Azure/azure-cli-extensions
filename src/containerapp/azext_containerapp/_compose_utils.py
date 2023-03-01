@@ -7,7 +7,7 @@
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_choice_list
 
-from .custom import create_managed_environment
+from ._utils import create_managed_environment
 from ._up_utils import (ContainerApp,
                         ContainerAppEnvironment,
                         ResourceGroup,
@@ -23,11 +23,13 @@ logger = get_logger(__name__)
 
 
 def create_containerapps_compose_environment(cmd,
+                                             client,
                                              name,
                                              resource_group_name,
                                              tags=None):
 
     return create_managed_environment(cmd,
+                                      client,
                                       name,
                                       resource_group_name,
                                       tags=tags)

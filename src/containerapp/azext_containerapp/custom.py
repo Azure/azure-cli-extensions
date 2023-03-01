@@ -28,7 +28,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from ._client_factory import handle_raw_exception, handle_non_404_exception
+from ._client_factory import handle_raw_exception, handle_non_404_exception, cf_container_apps
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
 from ._github_oauth import get_github_access_token
 from ._models import (
@@ -1160,11 +1160,11 @@ def update_managed_environment(cmd,
     return r
 
 
-def show_managed_environment(cmd, name, resource_group_name):
+def show_managed_environment(cmd, client, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        return client.get(resource_group_name=resource_group_name, environment_name=name)
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -2589,16 +2589,16 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
             print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
 
 
-def stream_environment_logs(cmd, resource_group_name, name, follow=False, tail=None):
+def stream_environment_logs(cmd, client, resource_group_name, name, follow=False, tail=None):
     if tail:
         if tail < 0 or tail > 300:
             raise ValidationError("--tail must be between 0 and 300.")
 
-    env = show_managed_environment(cmd, name, resource_group_name)
+    env = show_managed_environment(cmd, client, name, resource_group_name)
     sub = get_subscription_id(cmd.cli_ctx)
-    token_response = ManagedEnvironmentClient.get_auth_token(cmd, resource_group_name, name)
-    token = token_response["properties"]["token"]
-    base_url = f"https://{env['location']}.azurecontainerapps.dev"
+    token_response = client.get_auth_token(resource_group_name=resource_group_name, environment_name=name)
+    token = token_response.token
+    base_url = f"https://{env.location}.azurecontainerapps.dev"
 
     url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}"
            f"/eventstream")
@@ -3879,6 +3879,7 @@ def show_auth_config(cmd, resource_group_name, name):
 
 
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
+                                      client,
                                       resource_group_name,
                                       managed_env,
                                       compose_file_path='./docker-compose.yml',
@@ -3915,10 +3916,12 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
 
     try:
         managed_environment = show_managed_environment(cmd=cmd,
+                                                       client=client,
                                                        name=managed_env_name,
                                                        resource_group_name=resource_group_name)
     except CLIInternalError:  # pylint: disable=W0702
         managed_environment = create_containerapps_compose_environment(cmd,
+                                                                       client,
                                                                        managed_env_name,
                                                                        resource_group_name,
                                                                        tags=tags)
@@ -3982,7 +3985,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 resource_group_name,
                                 image=image,
                                 container_name=service.container_name,
-                                managed_env=managed_environment["id"],
+                                managed_env=managed_environment.id,
                                 ingress=ingress_type,
                                 target_port=target_port,
                                 registry_server=registry,
