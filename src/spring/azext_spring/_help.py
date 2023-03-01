@@ -393,6 +393,8 @@ helps['spring app deployment create'] = """
       text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
     - name: Deploy a container image on a private registry to an app.
       text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
+    - summary: Deploy source code to a new deployment of an app in the Enterprise tier and use JVM 17. This will pack current directory, build binary with Pivotal Build Service and then deploy.
+      text: az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --build-env BP_JVM_VERSION=17 --source-path
 """
 
 helps['spring app deployment generate-heap-dump'] = """

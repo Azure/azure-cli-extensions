@@ -42,7 +42,7 @@ name_type = CLIArgumentType(options_list=[
 env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 build_env_type = CLIArgumentType(
-    validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
+    validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format. Enterprise users should use --build-env BP_JVM_VERSION=17 to use JVM 17 as their runtime.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
@@ -407,7 +407,7 @@ def load_arguments(self, _):
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
             c.argument('runtime_version', arg_type=get_enum_type(SupportedRuntimeValue),
-                       help='Runtime version of used language', validator=validate_runtime_version)
+                       help='Runtime version of used language but this does not work with Azure Spring Apps Enterprise. Please use the --build-env command above.', validator=validate_runtime_version)
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
