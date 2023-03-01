@@ -190,13 +190,13 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
                             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
                         else:
-                            logger.warning("An exception has occured while saving the cluster diagnostic checks job log in the cluster. Exception: {}".format(str(e)) + "\n")
-                            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Not_Saved, summary="Error occured while saving the cluster diagnostic checks job log")
+                            logger.warning("An exception has occured while saving the cluster diagnostic checks job logs in the local machine. Exception: {}".format(str(e)) + "\n")
+                            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed, summary="Error occured while saving the cluster diagnostic checks job logs in the local machine")
 
                     # To handle any exception that may occur during the execution
                     except Exception as e:
-                        logger.warning("An exception has occured while saving the cluster diagnostic checks job log in the cluster. Exception: {}".format(str(e)) + "\n")
-                        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Not_Saved, summary="Error occured while saving the cluster diagnostic checks job log")
+                        logger.warning("An exception has occured while saving the cluster diagnostic checks job logs in the local machine. Exception: {}".format(str(e)) + "\n")
+                        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed, summary="Error occured while saving the cluster diagnostic checks job logs in the local machine")
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 

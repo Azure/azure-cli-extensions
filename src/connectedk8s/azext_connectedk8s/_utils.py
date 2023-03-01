@@ -175,20 +175,20 @@ def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_
                         with open(dns_check_path, 'wb') as f:
                             f.write(pod_description)
                 else:
-                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description")
+                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description in the local machine', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An exception has occured while saving the cluster diagnostic checks pod description on the cluster. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description")
+            logger.warning("An exception has occured while saving the cluster diagnostic checks pod description in the local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description in the local machine")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while saving the cluster diagnostic checks pod description on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description")
+        logger.warning("An exception has occured while saving the cluster diagnostic checks pod description in the local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description in the local machine")
 
 
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):

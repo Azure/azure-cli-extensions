@@ -201,7 +201,7 @@ DNS_Check_Failed = "DNS Resolution failed"
 Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
 Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
 Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster diagnostic checks pod description'
-Cluster_Diagnostic_Checks_Job_Log_Not_Saved = 'Failed to save cluster diagnostic checks job log'
+Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

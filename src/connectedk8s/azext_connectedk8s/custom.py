@@ -71,6 +71,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
 
+    # changing cli config to push telemetry in 1 hr interval
     try:
         if cmd.cli_ctx and hasattr(cmd.cli_ctx, 'config'):
             cmd.cli_ctx.config.set_value('telemetry', 'push_interval_in_hours', '1')
