@@ -64,7 +64,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003?api-version=2022-01-31-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"8c64326b-75b5-47ff-850b-5cfb09000147","clientId":"a5072a65-bd3d-4e30-b99b-32dbdde55c9b"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"00000000-0000-0000-0000-000000000000","principalId":"8c64326b-75b5-47ff-850b-5cfb09000147","clientId":"a5072a65-bd3d-4e30-b99b-32dbdde55c9b"}}'
     headers:
       cache-control:
       - no-cache
@@ -445,7 +445,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-03-01T05:12:40.1212138Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-01T05:12:40.1212138Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"8c64326b-75b5-47ff-850b-5cfb09000147","clientId":"a5072a65-bd3d-4e30-b99b-32dbdde55c9b"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-03-01T05:12:40.1212138Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-01T05:12:40.1212138Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"8c64326b-75b5-47ff-850b-5cfb09000147","clientId":"a5072a65-bd3d-4e30-b99b-32dbdde55c9b"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -3208,7 +3208,7 @@ interactions:
         : \"westus3\",\r\n  \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\"\
         : \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\"\
         ,\r\n    \"principalId\": \"331b5c46-983c-4eef-8f2c-038d26f93783\",\r\n  \
-        \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"\
+        \  \"tenantId\": \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"\
         properties\": {\r\n    \"vmId\": \"333df251-0eb4-4e88-87e1-f39233749196\"\
         ,\r\n    \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\
         \n    },\r\n    \"storageProfile\": {\r\n      \"imageReference\": {\r\n \
@@ -7595,7 +7595,7 @@ interactions:
         : \"westus3\",\r\n  \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\"\
         : \"true\",\r\n    \"azsecpack\": \"nonprod\"\r\n  },\r\n  \"identity\": {\r\
         \n    \"type\": \"SystemAssigned, UserAssigned\",\r\n    \"principalId\":\
-        \ \"331b5c46-983c-4eef-8f2c-038d26f93783\",\r\n    \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\
+        \ \"331b5c46-983c-4eef-8f2c-038d26f93783\",\r\n    \"tenantId\": \"00000000-0000-0000-0000-000000000000\"\
         ,\r\n    \"userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-westus3\"\
         : {\r\n        \"principalId\": \"d93ad33d-dba2-48e2-be9c-086e7912d250\",\r\
         \n        \"clientId\": \"eb80fd42-5411-46d9-a512-3bccfbd9d268\"\r\n     \
@@ -7859,7 +7859,7 @@ interactions:
         : \"westus3\",\r\n  \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\"\
         : \"true\",\r\n    \"azsecpack\": \"nonprod\"\r\n  },\r\n  \"identity\": {\r\
         \n    \"type\": \"SystemAssigned, UserAssigned\",\r\n    \"principalId\":\
-        \ \"331b5c46-983c-4eef-8f2c-038d26f93783\",\r\n    \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\
+        \ \"331b5c46-983c-4eef-8f2c-038d26f93783\",\r\n    \"tenantId\": \"00000000-0000-0000-0000-000000000000\"\
         ,\r\n    \"userAssignedIdentities\": {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-westus3\"\
         : {\r\n        \"principalId\": \"d93ad33d-dba2-48e2-be9c-086e7912d250\",\r\
         \n        \"clientId\": \"eb80fd42-5411-46d9-a512-3bccfbd9d268\"\r\n     \

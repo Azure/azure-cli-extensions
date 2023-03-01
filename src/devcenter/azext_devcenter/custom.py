@@ -904,7 +904,6 @@ def devcenter_environment_create(
     catalog_name=None,
     catalog_item_name=None,
     parameters=None,
-    scheduled_tasks=None,
     tags=None,
     user=None,
     no_wait=False,
@@ -920,8 +919,6 @@ def devcenter_environment_create(
         body["catalog_item_name"] = catalog_item_name
     if parameters is not None:
         body["parameters"] = parameters
-    if scheduled_tasks is not None:
-        body["scheduled_tasks"] = scheduled_tasks
     if tags is not None:
         body["tags"] = tags
     body["environment_type"] = environment_type

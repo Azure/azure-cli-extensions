@@ -297,13 +297,6 @@ helps[
 "helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
 torageAccountType\\":\\"Standard_LRS\\"}" --dev-center-name "{devCenterName}" \
 --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
-      - name: Environments_CreateWithAutoExpire
-        text: |-
-              az devcenter dev environment create --description "Personal Dev Environment" --catalog-item-name \
-"helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
-torageAccountType\\":\\"Standard_LRS\\"}" --scheduled-tasks "{\\"autoExpire\\":{\\"type\\":\\"AutoExpire\\",\\"startTim\
-e\\":\\"2022-01-01T00:01:00Z\\"}}" --dev-center-name "{devCenterName}" --name \
-"{environmentName}" --project-name "{projectName}" --user-id "{userId}"
 """
 
 helps[
