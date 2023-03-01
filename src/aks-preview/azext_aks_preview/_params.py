@@ -599,8 +599,9 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)
-        c.argument('aks_custom_headers')
         c.argument('snapshot_id', validator=validate_snapshot_id)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool delete') as c:
         c.argument('ignore_pod_disruption_budget', options_list=[
