@@ -7,7 +7,6 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
-
 from azext_devcenter._client_factory import (
     cf_project_dp,
     cf_pool_dp,
@@ -18,29 +17,193 @@ from azext_devcenter._client_factory import (
     cf_catalog_item_version_dp,
     cf_environment_type_dp,
     cf_notification_setting_dp,
-    cf_dev_center,
-    cf_project,
-    cf_attached_network,
-    cf_gallery,
-    cf_image,
-    cf_image_version,
-    cf_catalog,
-    cf_environment_type,
-    cf_project_allowed_environment_type,
-    cf_project_environment_type,
-    cf_dev_box_definition,
-    cf_operation_statuses,
-    cf_sku,
-    cf_pool,
-    cf_schedule,
-    cf_network_connection,
-    cf_check_name_availability,
+)
+from .custom import (
+    AttachedNetworkCreate,
+    AttachedNetworkDelete,
+    AttachedNetworkList,
+    AttachedNetworkShow,
+    AttachedNetworkWait,
+    CatalogCreate,
+    CatalogDelete,
+    CatalogList,
+    CatalogShow,
+    CatalogSync,
+    CatalogUpdate,
+    CatalogWait,
+    DevBoxDefinitionCreate,
+    DevBoxDefinitionDelete,
+    DevBoxDefinitionList,
+    DevBoxDefinitionShow,
+    DevBoxDefinitionUpdate,
+    DevBoxDefinitionWait,
+    DevCenterList,
+    EnvironmentTypeCreate,
+    EnvironmentTypeDelete,
+    EnvironmentTypeList,
+    EnvironmentTypeShow,
+    EnvironmentTypeUpdate,
+    GalleryCreate,
+    GalleryDelete,
+    GalleryList,
+    GalleryShow,
+    GalleryWait,
+    ImageList,
+    ImageShow,
+    ImageVersionList,
+    ImageVersionShow,
+    NetworkConnectionList,
+    NetworkConnectionListHealthDetail,
+    PoolCreate,
+    PoolDelete,
+    PoolList,
+    PoolShow,
+    PoolUpdate,
+    PoolWait,
+    ProjectList,
+    ProjectAllowedEnvironmentTypeList,
+    ProjectAllowedEnvironmentTypeShow,
+    ProjectEnvironmentTypeCreate,
+    ProjectEnvironmentTypeDelete,
+    ProjectEnvironmentTypeList,
+    ProjectEnvironmentTypeShow,
+    ProjectEnvironmentTypeUpdate,
+    ScheduleCreate,
+    ScheduleDelete,
+    ScheduleShow,
+    ScheduleUpdate,
+    ScheduleWait,
+    SkuList,
 )
 
 
 def load_command_table(self, _):
+    # Control plane
+    self.command_table[
+        "devcenter admin attached-network create"
+    ] = AttachedNetworkCreate(loader=self)
+    self.command_table[
+        "devcenter admin attached-network delete"
+    ] = AttachedNetworkDelete(loader=self)
+    self.command_table["devcenter admin attached-network list"] = AttachedNetworkList(
+        loader=self
+    )
+    self.command_table["devcenter admin attached-network show"] = AttachedNetworkShow(
+        loader=self
+    )
+    self.command_table["devcenter admin attached-network wait"] = AttachedNetworkWait(
+        loader=self
+    )
 
-    # data plane
+    self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
+    self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
+    self.command_table["devcenter admin catalog list"] = CatalogList(loader=self)
+    self.command_table["devcenter admin catalog show"] = CatalogShow(loader=self)
+    self.command_table["devcenter admin catalog sync"] = CatalogSync(loader=self)
+    self.command_table["devcenter admin catalog update"] = CatalogUpdate(loader=self)
+    self.command_table["devcenter admin catalog wait"] = CatalogWait(loader=self)
+
+    self.command_table[
+        "devcenter admin devbox-definition create"
+    ] = DevBoxDefinitionCreate(loader=self)
+    self.command_table[
+        "devcenter admin devbox-definition delete"
+    ] = DevBoxDefinitionDelete(loader=self)
+    self.command_table["devcenter admin devbox-definition list"] = DevBoxDefinitionList(
+        loader=self
+    )
+    self.command_table["devcenter admin devbox-definition show"] = DevBoxDefinitionShow(
+        loader=self
+    )
+    self.command_table[
+        "devcenter admin devbox-definition update"
+    ] = DevBoxDefinitionUpdate(loader=self)
+    self.command_table["devcenter admin devbox-definition wait"] = DevBoxDefinitionWait(
+        loader=self
+    )
+
+    self.command_table["devcenter admin devcenter list"] = DevCenterList(loader=self)
+
+    self.command_table[
+        "devcenter admin environment-type create"
+    ] = EnvironmentTypeCreate(loader=self)
+    self.command_table[
+        "devcenter admin environment-type delete"
+    ] = EnvironmentTypeDelete(loader=self)
+    self.command_table["devcenter admin environment-type list"] = EnvironmentTypeList(
+        loader=self
+    )
+    self.command_table["devcenter admin environment-type show"] = EnvironmentTypeShow(
+        loader=self
+    )
+    self.command_table[
+        "devcenter admin environment-type update"
+    ] = EnvironmentTypeUpdate(loader=self)
+
+    self.command_table["devcenter admin gallery create"] = GalleryCreate(loader=self)
+    self.command_table["devcenter admin gallery delete"] = GalleryDelete(loader=self)
+    self.command_table["devcenter admin gallery list"] = GalleryList(loader=self)
+    self.command_table["devcenter admin gallery show"] = GalleryShow(loader=self)
+    self.command_table["devcenter admin gallery wait"] = GalleryWait(loader=self)
+
+    self.command_table["devcenter admin image list"] = ImageList(loader=self)
+    self.command_table["devcenter admin image show"] = ImageShow(loader=self)
+
+    self.command_table["devcenter admin image-version list"] = ImageVersionList(
+        loader=self
+    )
+    self.command_table["devcenter admin image-version show"] = ImageVersionShow(
+        loader=self
+    )
+
+    self.command_table[
+        "devcenter admin network-connection list"
+    ] = NetworkConnectionList(loader=self)
+    self.command_table[
+        "devcenter admin network-connection list-health-detail"
+    ] = NetworkConnectionListHealthDetail(loader=self)
+
+    self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
+    self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
+    self.command_table["devcenter admin pool list"] = PoolList(loader=self)
+    self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
+    self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
+    self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
+
+    self.command_table["devcenter admin project list"] = ProjectList(loader=self)
+
+    self.command_table[
+        "devcenter admin project-allowed-environment-type list"
+    ] = ProjectAllowedEnvironmentTypeList(loader=self)
+    self.command_table[
+        "devcenter admin project-allowed-environment-type show"
+    ] = ProjectAllowedEnvironmentTypeShow(loader=self)
+
+    self.command_table[
+        "devcenter admin project-environment-type create"
+    ] = ProjectEnvironmentTypeCreate(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type delete"
+    ] = ProjectEnvironmentTypeDelete(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type list"
+    ] = ProjectEnvironmentTypeList(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type show"
+    ] = ProjectEnvironmentTypeShow(loader=self)
+    self.command_table[
+        "devcenter admin project-environment-type update"
+    ] = ProjectEnvironmentTypeUpdate(loader=self)
+
+    self.command_table["devcenter admin schedule create"] = ScheduleCreate(loader=self)
+    self.command_table["devcenter admin schedule delete"] = ScheduleDelete(loader=self)
+    self.command_table["devcenter admin schedule show"] = ScheduleShow(loader=self)
+    self.command_table["devcenter admin schedule update"] = ScheduleUpdate(loader=self)
+    self.command_table["devcenter admin schedule wait"] = ScheduleWait(loader=self)
+
+    self.command_table["devcenter admin sku list"] = SkuList(loader=self)
+
+    # Data plane
 
     devcenter_pool_dp = CliCommandType(
         operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._pool_operations#PoolOperations.{}",
@@ -99,111 +262,12 @@ def load_command_table(self, _):
         client_factory=cf_notification_setting_dp,
     )
 
-    # control plane
-
-    devcenter_attached_network = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._attached_networks_operations#AttachedNetworksOperations.{}"
-        ),
-        client_factory=cf_attached_network,
-    )
-
-    devcenter_catalog = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._catalogs_operations#CatalogsOperations.{}",
-        client_factory=cf_catalog,
-    )
-
-    devcenter_dev_box_definition = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._dev_box_definitions_operations#DevBoxDefinitionsOperations.{}",
-        client_factory=cf_dev_box_definition,
-    )
-
-    devcenter_dev_center = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._dev_centers_operations#DevCentersOperations.{}"
-        ),
-        client_factory=cf_dev_center,
-    )
-
-    devcenter_environment_type = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._environment_types_operations#EnvironmentTypesOperations.{}"
-        ),
-        client_factory=cf_environment_type,
-    )
-
-    devcenter_gallery = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._galleries_operations#GalleriesOperations.{}",
-        client_factory=cf_gallery,
-    )
-
-    devcenter_image = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._images_operations#ImagesOperations.{}",
-        client_factory=cf_image,
-    )
-
-    devcenter_image_version = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter.operations._image_versions_operations#ImageVersionsOperations.{}"
-        ),
-        client_factory=cf_image_version,
-    )
-
-    devcenter_network_connection = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._network_connections_operations#NetworkConnectionsOperations.{}",
-        client_factory=cf_network_connection,
-    )
-
-    devcenter_operation_statuses = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._operation_statuses_operations#OperationStatusesOperations.{}",
-        client_factory=cf_operation_statuses,
-    )
-
-    devcenter_pool = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._pools_operations#PoolsOperations.{}",
-        client_factory=cf_pool,
-    )
-
-    devcenter_project = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._projects_operations#ProjectsOperations.{}",
-        client_factory=cf_project,
-    )
-
-    devcenter_project_allowed_environment_type = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._project_allowed_environment_types_operations#ProjectAllowedEnvironmentTypesOperations.{}",
-        client_factory=cf_project_allowed_environment_type,
-    )
-
-    devcenter_project_environment_type = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._project_environment_types_operations#ProjectEnvironmentTypesOperations.{}",
-        client_factory=cf_project_environment_type,
-    )
-
-    devcenter_schedule = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._schedules_operations#SchedulesOperations.{}",
-        client_factory=cf_schedule,
-    )
-
-    devcenter_sku = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._skus_operations#SkusOperations.{}",
-        client_factory=cf_sku,
-    )
-
-    devcenter_check_name_availability = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter.operations._check_name_availability_operations#CheckNameAvailabilityOperations.{}",
-        client_factory=cf_check_name_availability,
-    )
-
     with self.command_group("devcenter", is_preview=True):
         pass
 
     with self.command_group("devcenter dev"):
         pass
 
-    with self.command_group("devcenter admin"):
-        pass
-
-    # data plane
     with self.command_group("devcenter dev project", devcenter_project_dp) as g:
         g.custom_command("list", "devcenter_project_list_dp")
         g.custom_show_command("show", "devcenter_project_show_dp")
@@ -292,228 +356,3 @@ def load_command_table(self, _):
         g.custom_command(
             "create", "devcenter_notification_setting_create_dp", supports_no_wait=True
         )
-
-    # control plane
-    with self.command_group(
-        "devcenter admin attached-network",
-        devcenter_attached_network,
-        client_factory=cf_attached_network,
-    ) as g:
-        g.custom_command("list", "devcenter_attached_network_list")
-        g.custom_show_command("show", "devcenter_attached_network_show")
-        g.custom_command(
-            "create", "devcenter_attached_network_create", supports_no_wait=True
-        )
-        g.custom_command(
-            "delete",
-            "devcenter_attached_network_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_wait_command("wait", "devcenter_attached_network_show")
-
-    with self.command_group(
-        "devcenter admin catalog", devcenter_catalog, client_factory=cf_catalog
-    ) as g:
-        g.custom_command("list", "devcenter_catalog_list")
-        g.custom_show_command("show", "devcenter_catalog_show")
-        g.custom_command("create", "devcenter_catalog_create", supports_no_wait=True)
-        g.custom_command("update", "devcenter_catalog_update", supports_no_wait=True)
-        g.custom_command(
-            "delete",
-            "devcenter_catalog_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_command("sync", "devcenter_catalog_sync", supports_no_wait=True)
-        g.custom_wait_command("wait", "devcenter_catalog_show")
-
-    with self.command_group(
-        "devcenter admin check-name-availability",
-        devcenter_check_name_availability,
-        client_factory=cf_check_name_availability,
-    ) as g:
-        g.custom_command("execute", "devcenter_check_name_availability_execute")
-
-    with self.command_group(
-        "devcenter admin devbox-definition",
-        devcenter_dev_box_definition,
-        client_factory=cf_dev_box_definition,
-    ) as g:
-        g.custom_command("list", "devcenter_dev_box_definition_list")
-        g.custom_show_command("show", "devcenter_dev_box_definition_show")
-        g.custom_command(
-            "create", "devcenter_dev_box_definition_create", supports_no_wait=True
-        )
-        g.custom_command(
-            "update", "devcenter_dev_box_definition_update", supports_no_wait=True
-        )
-        g.custom_command(
-            "delete",
-            "devcenter_dev_box_definition_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_wait_command("wait", "devcenter_dev_box_definition_show")
-
-    with self.command_group(
-        "devcenter admin devcenter", devcenter_dev_center, client_factory=cf_dev_center
-    ) as g:
-        g.custom_command("list", "devcenter_dev_center_list")
-        g.custom_show_command("show", "devcenter_dev_center_show")
-        g.custom_command("create", "devcenter_dev_center_create", supports_no_wait=True)
-        g.custom_command("update", "devcenter_dev_center_update", supports_no_wait=True)
-        g.custom_command(
-            "delete",
-            "devcenter_dev_center_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_wait_command("wait", "devcenter_dev_center_show")
-
-    with self.command_group(
-        "devcenter admin environment-type",
-        devcenter_environment_type,
-        client_factory=cf_environment_type,
-    ) as g:
-        g.custom_command("list", "devcenter_environment_type_list")
-        g.custom_show_command("show", "devcenter_environment_type_show")
-        g.custom_command("create", "devcenter_environment_type_create")
-        g.custom_command("update", "devcenter_environment_type_update")
-        g.custom_command(
-            "delete", "devcenter_environment_type_delete", confirmation=True
-        )
-
-    with self.command_group(
-        "devcenter admin gallery", devcenter_gallery, client_factory=cf_gallery
-    ) as g:
-        g.custom_command("list", "devcenter_gallery_list")
-        g.custom_show_command("show", "devcenter_gallery_show")
-        g.custom_command("create", "devcenter_gallery_create", supports_no_wait=True)
-        g.custom_command(
-            "delete",
-            "devcenter_gallery_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_wait_command("wait", "devcenter_gallery_show")
-
-    with self.command_group(
-        "devcenter admin image", devcenter_image, client_factory=cf_image
-    ) as g:
-        g.custom_command("list", "devcenter_image_list")
-        g.custom_show_command("show", "devcenter_image_show")
-
-    with self.command_group(
-        "devcenter admin image-version",
-        devcenter_image_version,
-        client_factory=cf_image_version,
-    ) as g:
-        g.custom_command("list", "devcenter_image_version_list")
-        g.custom_show_command("show", "devcenter_image_version_show")
-
-    with self.command_group(
-        "devcenter admin network-connection",
-        devcenter_network_connection,
-        client_factory=cf_network_connection,
-    ) as g:
-        g.custom_command("list", "devcenter_network_connection_list")
-        g.custom_show_command("show", "devcenter_network_connection_show")
-        g.custom_command(
-            "create", "devcenter_network_connection_create", supports_no_wait=True
-        )
-        g.custom_command(
-            "update", "devcenter_network_connection_update", supports_no_wait=True
-        )
-        g.custom_command(
-            "delete",
-            "devcenter_network_connection_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_command(
-            "list-health-detail", "devcenter_network_connection_list_health_detail"
-        )
-        g.custom_command(
-            "run-health-check",
-            "devcenter_network_connection_run_health_check",
-            supports_no_wait=True,
-        )
-        g.custom_command(
-            "show-health-detail", "devcenter_network_connection_show_health_detail"
-        )
-        g.custom_wait_command("wait", "devcenter_network_connection_show")
-
-    with self.command_group(
-        "devcenter admin operation-statuses",
-        devcenter_operation_statuses,
-        client_factory=cf_operation_statuses,
-    ) as g:
-        g.custom_show_command("show", "devcenter_operation_statuses_show")
-
-    with self.command_group(
-        "devcenter admin pool", devcenter_pool, client_factory=cf_pool
-    ) as g:
-        g.custom_command("list", "devcenter_pool_list")
-        g.custom_show_command("show", "devcenter_pool_show")
-        g.custom_command("create", "devcenter_pool_create", supports_no_wait=True)
-        g.custom_command("update", "devcenter_pool_update", supports_no_wait=True)
-        g.custom_command(
-            "delete", "devcenter_pool_delete", supports_no_wait=True, confirmation=True
-        )
-        g.custom_wait_command("wait", "devcenter_pool_show")
-
-    with self.command_group(
-        "devcenter admin project", devcenter_project, client_factory=cf_project
-    ) as g:
-        g.custom_command("list", "devcenter_project_list")
-        g.custom_show_command("show", "devcenter_project_show")
-        g.custom_command("create", "devcenter_project_create", supports_no_wait=True)
-        g.custom_command("update", "devcenter_project_update", supports_no_wait=True)
-        g.custom_command(
-            "delete",
-            "devcenter_project_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_wait_command("wait", "devcenter_project_show")
-
-    with self.command_group(
-        "devcenter admin project-allowed-environment-type",
-        devcenter_project_allowed_environment_type,
-        client_factory=cf_project_allowed_environment_type,
-    ) as g:
-        g.custom_command("list", "devcenter_project_allowed_environment_type_list")
-        g.custom_show_command("show", "devcenter_project_allowed_environment_type_show")
-
-    with self.command_group(
-        "devcenter admin project-environment-type",
-        devcenter_project_environment_type,
-        client_factory=cf_project_environment_type,
-    ) as g:
-        g.custom_command("list", "devcenter_project_environment_type_list")
-        g.custom_show_command("show", "devcenter_project_environment_type_show")
-        g.custom_command("create", "devcenter_project_environment_type_create")
-        g.custom_command("update", "devcenter_project_environment_type_update")
-        g.custom_command(
-            "delete", "devcenter_project_environment_type_delete", confirmation=True
-        )
-
-    with self.command_group(
-        "devcenter admin schedule", devcenter_schedule, client_factory=cf_schedule
-    ) as g:
-        g.custom_show_command("show", "devcenter_schedule_show")
-        g.custom_command("create", "devcenter_schedule_create", supports_no_wait=True)
-        g.custom_command("update", "devcenter_schedule_update", supports_no_wait=True)
-        g.custom_command(
-            "delete",
-            "devcenter_schedule_delete",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_wait_command("wait", "devcenter_schedule_show")
-
-    with self.command_group(
-        "devcenter admin sku", devcenter_sku, client_factory=cf_sku
-    ) as g:
-        g.custom_command("list", "devcenter_sku_list")

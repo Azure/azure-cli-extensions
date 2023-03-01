@@ -2,1012 +2,699 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=protected-access
 
 from datetime import timedelta
+from azure.cli.core.aaz import (AAZStrArg, has_value, register_callback)
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
-from .helper import get_project_arg
+from .data_plane_endpoint_helper import get_project_arg
+from .aaz.latest.devcenter.admin.attached_network import (
+    Create as _AttachedNetworkCreate,
+    Delete as _AttachedNetworkDelete,
+    List as _AttachedNetworkList,
+    ListProject as AttachedNetworkListByProject,
+    Show as _AttachedNetworkShow,
+    ShowProject as AttachedNetworkShowByProject,
+    Wait as _AttachedNetworkWait,
+)
+from .aaz.latest.devcenter.admin.catalog import (
+    Create as _CatalogCreate,
+    Delete as _CatalogDelete,
+    List as _CatalogList,
+    Show as _CatalogShow,
+    Sync as _CatalogSync,
+    Update as _CatalogUpdate,
+    Wait as _CatalogWait,
+)
+from .aaz.latest.devcenter.admin.devbox_definition import (
+    Create as _DevBoxDefinitionCreate,
+    Delete as _DevBoxDefinitionDelete,
+    List as _DevBoxDefinitionList,
+    ListProject as DevBoxDefinitionListByProject,
+    Show as _DevBoxDefinitionShow,
+    ShowProject as DevBoxDefinitionShowByProject,
+    Update as _DevBoxDefinitionUpdate,
+    Wait as _DevBoxDefinitionWait,
+)
+from .aaz.latest.devcenter.admin.devcenter import List as _DevCenterList
+from .aaz.latest.devcenter.admin.environment_type import (
+    Create as _EnvironmentTypeCreate,
+    Delete as _EnvironmentTypeDelete,
+    List as _EnvironmentTypeList,
+    Show as _EnvironmentTypeShow,
+    Update as _EnvironmentTypeUpdate,
+)
+from .aaz.latest.devcenter.admin.gallery import (
+    Create as _GalleryCreate,
+    Delete as _GalleryDelete,
+    List as _GalleryList,
+    Show as _GalleryShow,
+    Wait as _GalleryWait,
+)
+from .aaz.latest.devcenter.admin.image import (
+    ListGallery as _ImageListByGallery,
+    List as _ImageList,
+    Show as _ImageShow,
+)
+from .aaz.latest.devcenter.admin.image_verion import (
+    List as _ImageVersionList,
+    Show as _ImageVersionShow,
+)
+from .aaz.latest.devcenter.admin.network_connection import (
+    List as _NetworkConnectionList,
+    ListHealthDetail as _NetworkConnectionListHealthDetail,
+)
+from .aaz.latest.devcenter.admin.pool import (
+    Create as _PoolCreate,
+    Delete as _PoolDelete,
+    List as _PoolList,
+    Show as _PoolShow,
+    Update as _PoolUpdate,
+    Wait as _PoolWait,
+)
+from .aaz.latest.devcenter.admin.project import List as _ProjectList
+from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
+    List as _ProjectAllowedEnvironmentTypeList,
+    Show as _ProjectAllowedEnvironmentTypeShow,
+)
+from .aaz.latest.devcenter.admin.project_environment_type import (
+    Create as _ProjectEnvironmentTypeCreate,
+    Delete as _ProjectEnvironmentTypeDelete,
+    List as _ProjectEnvironmentTypeList,
+    Show as _ProjectEnvironmentTypeShow,
+    Update as _ProjectEnvironmentTypeUpdate,
+)
+from .aaz.latest.devcenter.admin.schedule import (
+    Create as _ScheduleCreate,
+    Delete as _ScheduleDelete,
+    Show as _ScheduleShow,
+    Update as _ScheduleUpdate,
+    Wait as _ScheduleWait,
+)
+from .aaz.latest.devcenter.admin.sku import List as _SkuList
+from ._validators import validate_attached_network_or_dev_box_def
 
-# control plane commands
-
-
-def devcenter_dev_center_list(client, resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
-
-
-def devcenter_dev_center_show(client,
-                              resource_group_name,
-                              dev_center_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name)
-
-
-def devcenter_dev_center_create(
-    client,
-    resource_group_name,
-    dev_center_name,
-    location,
-    tags=None,
-    identity_type="SystemAssigned",
-    user_assigned_identities=None,
-    no_wait=False,
-):
-    body = {}
-    if tags is not None:
-        body["tags"] = tags
-    body["location"] = location
-    body["identity"] = {}
-    if identity_type is not None:
-        body["identity"]["type"] = identity_type
-    if user_assigned_identities is not None:
-        body["identity"]["user_assigned_identities"] = user_assigned_identities
-    if len(body["identity"]) == 0:
-        del body["identity"]
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        resource_group_name=resource_group_name,
-        dev_center_name=dev_center_name,
-        body=body,
-    )
-
-
-def devcenter_dev_center_update(client,
-                                resource_group_name,
-                                dev_center_name,
-                                tags=None,
-                                type_=None,
-                                user_assigned_identities=None,
-                                no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    body['identity'] = {}
-    if type_ is not None:
-        body['identity']['type'] = type_
-    if user_assigned_identities is not None:
-        body['identity']['user_assigned_identities'] = user_assigned_identities
-    if len(body['identity']) == 0:
-        del body['identity']
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       body=body)
-
-
-def devcenter_dev_center_delete(client,
-                                resource_group_name,
-                                dev_center_name,
-                                no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name)
-
-
-def devcenter_project_list(client, resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
-
-
-def devcenter_project_show(client,
-                           resource_group_name,
-                           project_name):
-    return client.get(resource_group_name=resource_group_name,
-                      project_name=project_name)
+# Control plane
 
 
-def devcenter_project_create(client,
-                             resource_group_name,
-                             project_name,
-                             location,
-                             tags=None,
-                             dev_center_id=None,
-                             description=None,
-                             no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    body['location'] = location
-    if dev_center_id is not None:
-        body['dev_center_id'] = dev_center_id
-    if description is not None:
-        body['description'] = description
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       project_name=project_name,
-                       body=body)
+def set_configured_defaults(args):
+    for arg_name, arg in args:
+        if arg_name == "project_name":
+            arg.configured_default = "project"
+        if arg_name == "dev_center_name":
+            arg.configured_default = "dev-center"
+    return args
 
 
-def devcenter_project_update(client,
-                             resource_group_name,
-                             project_name,
-                             tags=None,
-                             dev_center_id=None,
-                             description=None,
-                             no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if dev_center_id is not None:
-        body['dev_center_id'] = dev_center_id
-    if description is not None:
-        body['description'] = description
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       project_name=project_name,
-                       body=body)
+class AttachedNetworkCreate(_AttachedNetworkCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.network_connection_id._required = True
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_project_delete(client,
-                             resource_group_name,
-                             project_name,
-                             no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       project_name=project_name)
+class AttachedNetworkDelete(_AttachedNetworkDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_attached_network_list(
-    client, resource_group_name, project_name=None, dev_center_name=None
-):
-    dev_center_not_default = getattr(dev_center_name, 'is_default', None) is None
-    project_not_default = getattr(project_name, 'is_default', None) is None
-    if project_name is not None and project_not_default:
-        return client.list_by_project(
-            resource_group_name=resource_group_name, project_name=project_name
+class AttachedNetworkList(_AttachedNetworkList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.dev_center_name._required = False
+        args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
         )
-    if dev_center_name is not None and dev_center_not_default:
-        return client.list_by_dev_center(
-            resource_group_name=resource_group_name, dev_center_name=dev_center_name
+        args_schema.top._registered = False
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        condition_0 = has_value(self.ctx.args.dev_center_name)
+        condition_1 = has_value(self.ctx.args.project_name)
+        if condition_0:
+            self.AttachedNetworksListByDevCenter(ctx=self.ctx)()
+        elif condition_1:
+            AttachedNetworkListByProject.AttachedNetworksListByProject(ctx=self.ctx)()
+
+    @register_callback
+    def pre_operations(self):
+        validate_attached_network_or_dev_box_def(
+            self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-    if dev_center_name is not None:
-        return client.list_by_dev_center(
-            resource_group_name=resource_group_name, dev_center_name=dev_center_name
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class AttachedNetworkShow(_AttachedNetworkShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.dev_center_name._required = False
+        args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
         )
-    return client.list_by_project(
-        resource_group_name=resource_group_name, project_name=project_name
-    )
+        return args_schema
 
+    def _execute_operations(self):
+        self.pre_operations()
+        condition_0 = has_value(self.ctx.args.dev_center_name)
+        condition_1 = has_value(self.ctx.args.project_name)
+        if condition_0:
+            self.AttachedNetworksGetByDevCenter(ctx=self.ctx)()
+        elif condition_1:
+            AttachedNetworkShowByProject.AttachedNetworksGetByProject(ctx=self.ctx)()
 
-def devcenter_attached_network_show(client,
-                                    resource_group_name,
-                                    attached_network_connection_name,
-                                    project_name=None,
-                                    dev_center_name=None):
-    dev_center_not_default = getattr(dev_center_name, 'is_default', None) is None
-    project_not_default = getattr(project_name, 'is_default', None) is None
-    if project_name is not None and project_not_default:
-        return client.get_by_project(resource_group_name=resource_group_name,
-                                     project_name=project_name,
-                                     attached_network_connection_name=attached_network_connection_name)
-    if dev_center_name is not None and dev_center_not_default:
-        return client.get_by_dev_center(resource_group_name=resource_group_name,
-                                        dev_center_name=dev_center_name,
-                                        attached_network_connection_name=attached_network_connection_name)
-    if dev_center_name is not None:
-        return client.get_by_dev_center(resource_group_name=resource_group_name,
-                                        dev_center_name=dev_center_name,
-                                        attached_network_connection_name=attached_network_connection_name)
-    return client.get_by_project(resource_group_name=resource_group_name,
-                                 project_name=project_name,
-                                 attached_network_connection_name=attached_network_connection_name)
-
-
-def devcenter_attached_network_create(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      attached_network_connection_name,
-                                      network_connection_id=None,
-                                      no_wait=False):
-    body = {}
-    if network_connection_id is not None:
-        body['network_connection_id'] = network_connection_id
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       attached_network_connection_name=attached_network_connection_name,
-                       body=body)
-
-
-def devcenter_attached_network_delete(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      attached_network_connection_name,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       attached_network_connection_name=attached_network_connection_name)
-
-
-def devcenter_gallery_list(client, resource_group_name, dev_center_name):
-    return client.list_by_dev_center(
-        resource_group_name=resource_group_name, dev_center_name=dev_center_name
-    )
-
-
-def devcenter_gallery_show(client,
-                           resource_group_name,
-                           dev_center_name,
-                           gallery_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name,
-                      gallery_name=gallery_name)
-
-
-def devcenter_gallery_create(client,
-                             resource_group_name,
-                             dev_center_name,
-                             gallery_name,
-                             gallery_resource_id=None,
-                             no_wait=False):
-    body = {}
-    if gallery_resource_id is not None:
-        body['gallery_resource_id'] = gallery_resource_id
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       gallery_name=gallery_name,
-                       body=body)
-
-
-def devcenter_gallery_delete(client,
-                             resource_group_name,
-                             dev_center_name,
-                             gallery_name,
-                             no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       gallery_name=gallery_name)
-
-
-def devcenter_image_list(
-    client, resource_group_name, dev_center_name, gallery_name=None
-):
-    if dev_center_name is not None and gallery_name is not None:
-        return client.list_by_gallery(
-            resource_group_name=resource_group_name,
-            dev_center_name=dev_center_name,
-            gallery_name=gallery_name,
+    @register_callback
+    def pre_operations(self):
+        validate_attached_network_or_dev_box_def(
+            self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-    return client.list_by_dev_center(
-        resource_group_name=resource_group_name, dev_center_name=dev_center_name
-    )
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_image_show(client,
-                         resource_group_name,
-                         dev_center_name,
-                         gallery_name,
-                         image_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name,
-                      gallery_name=gallery_name,
-                      image_name=image_name)
+class AttachedNetworkWait(_AttachedNetworkWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_image_version_list(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 gallery_name,
-                                 image_name):
-    return client.list_by_image(resource_group_name=resource_group_name,
-                                dev_center_name=dev_center_name,
-                                gallery_name=gallery_name,
-                                image_name=image_name)
+class CatalogCreate(_CatalogCreate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_image_version_show(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 gallery_name,
-                                 image_name,
-                                 version_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name,
-                      gallery_name=gallery_name,
-                      image_name=image_name,
-                      version_name=version_name)
+class CatalogDelete(_CatalogDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_catalog_list(client, resource_group_name, dev_center_name):
-    return client.list_by_dev_center(
-        resource_group_name=resource_group_name, dev_center_name=dev_center_name
-    )
+class CatalogList(_CatalogList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_catalog_show(client,
-                           resource_group_name,
-                           dev_center_name,
-                           catalog_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name,
-                      catalog_name=catalog_name)
+class CatalogShow(_CatalogShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_catalog_create(client,
-                             resource_group_name,
-                             dev_center_name,
-                             catalog_name,
-                             git_hub=None,
-                             ado_git=None,
-                             no_wait=False):
-    body = {}
-    if git_hub is not None:
-        body['git_hub'] = git_hub
-    if ado_git is not None:
-        body['ado_git'] = ado_git
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       catalog_name=catalog_name,
-                       body=body)
+class CatalogSync(_CatalogSync):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_catalog_update(client,
-                             resource_group_name,
-                             dev_center_name,
-                             catalog_name,
-                             tags=None,
-                             git_hub=None,
-                             ado_git=None,
-                             no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if git_hub is not None:
-        body['git_hub'] = git_hub
-    if ado_git is not None:
-        body['ado_git'] = ado_git
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       catalog_name=catalog_name,
-                       body=body)
+class CatalogUpdate(_CatalogUpdate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_catalog_delete(client,
-                             resource_group_name,
-                             dev_center_name,
-                             catalog_name,
-                             no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       catalog_name=catalog_name)
+class CatalogWait(_CatalogWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_catalog_sync(client,
-                           resource_group_name,
-                           dev_center_name,
-                           catalog_name,
-                           no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_sync,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       catalog_name=catalog_name)
+class DevBoxDefinitionCreate(_DevBoxDefinitionCreate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_environment_type_list(client, resource_group_name, dev_center_name):
-    return client.list_by_dev_center(
-        resource_group_name=resource_group_name, dev_center_name=dev_center_name
-    )
+class DevBoxDefinitionDelete(_DevBoxDefinitionDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_environment_type_show(client,
-                                    resource_group_name,
-                                    dev_center_name,
-                                    environment_type_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name,
-                      environment_type_name=environment_type_name)
-
-
-def devcenter_environment_type_create(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      environment_type_name,
-                                      tags=None):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   dev_center_name=dev_center_name,
-                                   environment_type_name=environment_type_name,
-                                   body=body)
-
-
-def devcenter_environment_type_update(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      environment_type_name,
-                                      tags=None):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    return client.update(resource_group_name=resource_group_name,
-                         dev_center_name=dev_center_name,
-                         environment_type_name=environment_type_name,
-                         body=body)
-
-
-def devcenter_environment_type_delete(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      environment_type_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         dev_center_name=dev_center_name,
-                         environment_type_name=environment_type_name)
-
-
-def devcenter_project_allowed_environment_type_list(
-    client, resource_group_name, project_name
-):
-    return client.list(
-        resource_group_name=resource_group_name, project_name=project_name
-    )
-
-
-def devcenter_project_allowed_environment_type_show(client,
-                                                    resource_group_name,
-                                                    project_name,
-                                                    environment_type_name):
-    return client.get(resource_group_name=resource_group_name,
-                      project_name=project_name,
-                      environment_type_name=environment_type_name)
-
-
-def devcenter_project_environment_type_list(client, resource_group_name, project_name):
-    return client.list(
-        resource_group_name=resource_group_name, project_name=project_name
-    )
-
-
-def devcenter_project_environment_type_show(client,
-                                            resource_group_name,
-                                            project_name,
-                                            environment_type_name):
-    return client.get(resource_group_name=resource_group_name,
-                      project_name=project_name,
-                      environment_type_name=environment_type_name)
-
-
-def devcenter_project_environment_type_create(client,
-                                              resource_group_name,
-                                              project_name,
-                                              environment_type_name,
-                                              tags=None,
-                                              location=None,
-                                              deployment_target_id=None,
-                                              status=None,
-                                              user_role_assignments=None,
-                                              roles=None,
-                                              type_=None,
-                                              user_assigned_identities=None):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if location is not None:
-        body['location'] = location
-    if deployment_target_id is not None:
-        body['deployment_target_id'] = deployment_target_id
-    if status is not None:
-        body['status'] = status
-    if user_role_assignments is not None:
-        body['user_role_assignments'] = user_role_assignments
-    body['creator_role_assignment'] = {}
-    if roles is not None:
-        body['creator_role_assignment']['roles'] = roles
-    if len(body['creator_role_assignment']) == 0:
-        del body['creator_role_assignment']
-    body['identity'] = {}
-    if type_ is not None:
-        body['identity']['type'] = type_
-    if user_assigned_identities is not None:
-        body['identity']['user_assigned_identities'] = user_assigned_identities
-    if len(body['identity']) == 0:
-        del body['identity']
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   project_name=project_name,
-                                   environment_type_name=environment_type_name,
-                                   body=body)
-
-
-def devcenter_project_environment_type_update(client,
-                                              resource_group_name,
-                                              project_name,
-                                              environment_type_name,
-                                              tags=None,
-                                              deployment_target_id=None,
-                                              status=None,
-                                              user_role_assignments=None,
-                                              roles=None,
-                                              type_=None,
-                                              user_assigned_identities=None):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if deployment_target_id is not None:
-        body['deployment_target_id'] = deployment_target_id
-    if status is not None:
-        body['status'] = status
-    if user_role_assignments is not None:
-        body['user_role_assignments'] = user_role_assignments
-    body['creator_role_assignment'] = {}
-    if roles is not None:
-        body['creator_role_assignment']['roles'] = roles
-    if len(body['creator_role_assignment']) == 0:
-        del body['creator_role_assignment']
-    body['identity'] = {}
-    if type_ is not None:
-        body['identity']['type'] = type_
-    if user_assigned_identities is not None:
-        body['identity']['user_assigned_identities'] = user_assigned_identities
-    if len(body['identity']) == 0:
-        del body['identity']
-    return client.update(resource_group_name=resource_group_name,
-                         project_name=project_name,
-                         environment_type_name=environment_type_name,
-                         body=body)
-
-
-def devcenter_project_environment_type_delete(client,
-                                              resource_group_name,
-                                              project_name,
-                                              environment_type_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         project_name=project_name,
-                         environment_type_name=environment_type_name)
-
-
-def devcenter_dev_box_definition_list(
-    client, resource_group_name, dev_center_name=None, project_name=None
-):
-    dev_center_not_default = getattr(dev_center_name, 'is_default', None) is None
-    project_not_default = getattr(project_name, 'is_default', None) is None
-    if dev_center_name is not None and dev_center_not_default:
-        return client.list_by_dev_center(
-            resource_group_name=resource_group_name, dev_center_name=dev_center_name
+class DevBoxDefinitionList(_DevBoxDefinitionList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.dev_center_name._required = False
+        args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
         )
-    if project_name is not None and project_not_default:
-        return client.list_by_project(
-            resource_group_name=resource_group_name, project_name=project_name
+        args_schema.top._registered = False
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        condition_0 = has_value(self.ctx.args.dev_center_name)
+        condition_1 = has_value(self.ctx.args.project_name)
+        if condition_0:
+            self.DevBoxDefinitionsListByDevCenter(ctx=self.ctx)()
+        elif condition_1:
+            DevBoxDefinitionListByProject.DevBoxDefinitionsListByProject(ctx=self.ctx)()
+
+    @register_callback
+    def pre_operations(self):
+        validate_attached_network_or_dev_box_def(
+            self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-    if dev_center_name is not None:
-        return client.list_by_dev_center(
-            resource_group_name=resource_group_name, dev_center_name=dev_center_name
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class DevBoxDefinitionShow(_DevBoxDefinitionShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.dev_center_name._required = False
+        args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
         )
-    return client.list_by_project(
-        resource_group_name=resource_group_name, project_name=project_name
-    )
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        condition_0 = has_value(self.ctx.args.dev_center_name)
+        condition_1 = has_value(self.ctx.args.project_name)
+        if condition_0:
+            self.DevBoxDefinitionsGet(ctx=self.ctx)()
+        elif condition_1:
+            DevBoxDefinitionShowByProject.DevBoxDefinitionsGetByProject(ctx=self.ctx)()
+
+    @register_callback
+    def pre_operations(self):
+        validate_attached_network_or_dev_box_def(
+            self.ctx.args.dev_center_name, self.ctx.args.project_name
+        )
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_dev_box_definition_show(client,
-                                      resource_group_name,
-                                      dev_box_definition_name,
-                                      dev_center_name=None,
-                                      project_name=None):
-    dev_center_not_default = getattr(dev_center_name, 'is_default', None) is None
-    project_not_default = getattr(project_name, 'is_default', None) is None
-    if dev_center_name is not None and dev_center_not_default:
-        return client.get(resource_group_name=resource_group_name,
-                          dev_center_name=dev_center_name,
-                          dev_box_definition_name=dev_box_definition_name)
-    if project_name is not None and project_not_default:
-        return client.get_by_project(resource_group_name=resource_group_name,
-                                     project_name=project_name,
-                                     dev_box_definition_name=dev_box_definition_name)
-    if dev_center_name is not None:
-        return client.get(resource_group_name=resource_group_name,
-                          dev_center_name=dev_center_name,
-                          dev_box_definition_name=dev_box_definition_name)
-    return client.get_by_project(resource_group_name=resource_group_name,
-                                 project_name=project_name,
-                                 dev_box_definition_name=dev_box_definition_name)
+class DevBoxDefinitionUpdate(_DevBoxDefinitionUpdate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_dev_box_definition_create(client,
-                                        resource_group_name,
-                                        dev_center_name,
-                                        dev_box_definition_name,
-                                        location,
-                                        tags=None,
-                                        image_reference=None,
-                                        sku=None,
-                                        os_storage_type=None,
-                                        hibernate_support=None,
-                                        no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    body['location'] = location
-    if image_reference is not None:
-        body['image_reference'] = image_reference
-    if sku is not None:
-        body['sku'] = sku
-    if os_storage_type is not None:
-        body['os_storage_type'] = os_storage_type
-    if hibernate_support is not None:
-        body['hibernate_support'] = hibernate_support
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       dev_box_definition_name=dev_box_definition_name,
-                       body=body)
+class DevBoxDefinitionWait(_DevBoxDefinitionWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_dev_box_definition_update(client,
-                                        resource_group_name,
-                                        dev_center_name,
-                                        dev_box_definition_name,
-                                        tags=None,
-                                        image_reference=None,
-                                        sku=None,
-                                        os_storage_type=None,
-                                        hibernate_support=None,
-                                        no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if image_reference is not None:
-        body['image_reference'] = image_reference
-    if sku is not None:
-        body['sku'] = sku
-    if os_storage_type is not None:
-        body['os_storage_type'] = os_storage_type
-    if hibernate_support is not None:
-        body['hibernate_support'] = hibernate_support
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       dev_box_definition_name=dev_box_definition_name,
-                       body=body)
+class DevCenterList(_DevCenterList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
 
 
-def devcenter_dev_box_definition_delete(client,
-                                        resource_group_name,
-                                        dev_center_name,
-                                        dev_box_definition_name,
-                                        no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       dev_center_name=dev_center_name,
-                       dev_box_definition_name=dev_box_definition_name)
+class EnvironmentTypeCreate(_EnvironmentTypeCreate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_operation_statuses_show(client,
-                                      location,
-                                      operation_id):
-    return client.get(location=location,
-                      operation_id=operation_id)
+class EnvironmentTypeDelete(_EnvironmentTypeDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_check_name_availability_execute(client,
-                                              name=None,
-                                              type_=None):
-    name_availability_request = {}
-    if name is not None:
-        name_availability_request['name'] = name
-    if type_ is not None:
-        name_availability_request['type'] = type_
-    return client.execute(name_availability_request=name_availability_request)
+class EnvironmentTypeList(_EnvironmentTypeList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_sku_list(client):
-    return client.list_by_subscription()
+class EnvironmentTypeShow(_EnvironmentTypeShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_pool_list(client, resource_group_name, project_name):
-    return client.list_by_project(
-        resource_group_name=resource_group_name, project_name=project_name
-    )
+class EnvironmentTypeUpdate(_EnvironmentTypeUpdate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_pool_show(client,
-                        resource_group_name,
-                        project_name,
-                        pool_name):
-    return client.get(resource_group_name=resource_group_name,
-                      project_name=project_name,
-                      pool_name=pool_name)
+class GalleryCreate(_GalleryCreate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_pool_create(client,
-                          resource_group_name,
-                          project_name,
-                          pool_name,
-                          location,
-                          dev_box_definition_name,
-                          network_connection_name,
-                          local_administrator,
-                          tags=None,
-                          no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    body['location'] = location
-    body['dev_box_definition_name'] = dev_box_definition_name
-    body['network_connection_name'] = network_connection_name
-    body['license_type'] = "Windows_Client"
-    body['local_administrator'] = local_administrator
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       project_name=project_name,
-                       pool_name=pool_name,
-                       body=body)
+class GalleryDelete(_GalleryDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_pool_update(client,
-                          resource_group_name,
-                          project_name,
-                          pool_name,
-                          tags=None,
-                          dev_box_definition_name=None,
-                          network_connection_name=None,
-                          local_administrator=None,
-                          no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if dev_box_definition_name is not None:
-        body['dev_box_definition_name'] = dev_box_definition_name
-    if network_connection_name is not None:
-        body['network_connection_name'] = network_connection_name
-    body['license_type'] = "Windows_Client"
-    if local_administrator is not None:
-        body['local_administrator'] = local_administrator
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       project_name=project_name,
-                       pool_name=pool_name,
-                       body=body)
+class GalleryList(_GalleryList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_pool_delete(client,
-                          resource_group_name,
-                          project_name,
-                          pool_name,
-                          no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       project_name=project_name,
-                       pool_name=pool_name)
+class GalleryShow(_GalleryShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_schedule_list(client,
-                            resource_group_name,
-                            project_name,
-                            pool_name,
-                            top=None):
-    return client.list_by_pool(resource_group_name=resource_group_name,
-                               project_name=project_name,
-                               pool_name=pool_name,
-                               top=top)
+class GalleryWait(_GalleryWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_schedule_show(client, resource_group_name, project_name, pool_name):
-    return client.get(
-        resource_group_name=resource_group_name,
-        project_name=project_name,
-        pool_name=pool_name,
-        schedule_name="default",
-    )
+class ImageList(_ImageList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.gallery_name = AAZStrArg(
+            options=["--gallery-name"],
+            help="The name of the gallery.",
+        )
+        args_schema.top._registered = False
+        return args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        condition_0 = has_value(self.ctx.args.gallery_name)
+        if condition_0:
+            _ImageListByGallery.ImagesListByGallery(ctx=self.ctx)()
+        else:
+            self.ImagesListByDevCenter(ctx=self.ctx)()
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_schedule_create(
-    client,
-    resource_group_name,
-    project_name,
-    pool_name,
-    time=None,
-    time_zone=None,
-    state=None,
-    no_wait=False,
-):
-    body = {}
-    body["type_properties_type"] = "StopDevBox"
-    body["frequency"] = "Daily"
-    if time is not None:
-        body["time"] = time
-    if time_zone is not None:
-        body["time_zone"] = time_zone
-    if state is not None:
-        body["state"] = state
-    return sdk_no_wait(
-        no_wait,
-        client.begin_create_or_update,
-        resource_group_name=resource_group_name,
-        project_name=project_name,
-        pool_name=pool_name,
-        schedule_name="default",
-        body=body,
-    )
+class ImageShow(_ImageShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_schedule_update(
-    client,
-    resource_group_name,
-    project_name,
-    pool_name,
-    time=None,
-    time_zone=None,
-    state=None,
-    no_wait=False,
-):
-    body = {}
-    body["type_properties_type"] = "StopDevBox"
-    body["frequency"] = "Daily"
-    if time is not None:
-        body["time"] = time
-    if time_zone is not None:
-        body["time_zone"] = time_zone
-    if state is not None:
-        body["state"] = state
-    return sdk_no_wait(
-        no_wait,
-        client.begin_update,
-        resource_group_name=resource_group_name,
-        project_name=project_name,
-        pool_name=pool_name,
-        schedule_name="default",
-        body=body,
-    )
+class ImageVersionList(_ImageVersionList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_schedule_delete(
-    client, resource_group_name, project_name, pool_name, no_wait=False
-):
-    return sdk_no_wait(
-        no_wait,
-        client.begin_delete,
-        resource_group_name=resource_group_name,
-        project_name=project_name,
-        pool_name=pool_name,
-        schedule_name="default",
-    )
+class ImageVersionShow(_ImageVersionShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_network_connection_list(client, resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
+class NetworkConnectionList(_NetworkConnectionList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
 
 
-def devcenter_network_connection_show(client,
-                                      resource_group_name,
-                                      network_connection_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_connection_name=network_connection_name)
+class NetworkConnectionListHealthDetail(_NetworkConnectionListHealthDetail):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
 
 
-def devcenter_network_connection_create(client,
-                                        resource_group_name,
-                                        network_connection_name,
-                                        location,
-                                        tags=None,
-                                        subnet_id=None,
-                                        domain_name=None,
-                                        organization_unit=None,
-                                        domain_username=None,
-                                        domain_password=None,
-                                        networking_resource_group_name=None,
-                                        domain_join_type=None,
-                                        no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    body['location'] = location
-    if subnet_id is not None:
-        body['subnet_id'] = subnet_id
-    if domain_name is not None:
-        body['domain_name'] = domain_name
-    if organization_unit is not None:
-        body['organization_unit'] = organization_unit
-    if domain_username is not None:
-        body['domain_username'] = domain_username
-    if domain_password is not None:
-        body['domain_password'] = domain_password
-    if networking_resource_group_name is not None:
-        body['networking_resource_group_name'] = networking_resource_group_name
-    if domain_join_type is not None:
-        body['domain_join_type'] = domain_join_type
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       network_connection_name=network_connection_name,
-                       body=body)
+class PoolCreate(_PoolCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.license_type._registered = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.license_type = "Windows_Client"
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_network_connection_update(client,
-                                        resource_group_name,
-                                        network_connection_name,
-                                        tags=None,
-                                        subnet_id=None,
-                                        domain_name=None,
-                                        organization_unit=None,
-                                        domain_username=None,
-                                        domain_password=None,
-                                        no_wait=False):
-    body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if subnet_id is not None:
-        body['subnet_id'] = subnet_id
-    if domain_name is not None:
-        body['domain_name'] = domain_name
-    if organization_unit is not None:
-        body['organization_unit'] = organization_unit
-    if domain_username is not None:
-        body['domain_username'] = domain_username
-    if domain_password is not None:
-        body['domain_password'] = domain_password
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       network_connection_name=network_connection_name,
-                       body=body)
+class PoolDelete(_PoolDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_network_connection_delete(client,
-                                        resource_group_name,
-                                        network_connection_name,
-                                        no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       network_connection_name=network_connection_name)
+class PoolList(_PoolList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_network_connection_list_health_detail(
-    client, resource_group_name, network_connection_name
-):
-    return client.list_health_details(
-        resource_group_name=resource_group_name,
-        network_connection_name=network_connection_name,
-    )
+class PoolShow(_PoolShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_network_connection_run_health_check(client,
-                                                  resource_group_name,
-                                                  network_connection_name,
-                                                  no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_run_health_checks,
-                       resource_group_name=resource_group_name,
-                       network_connection_name=network_connection_name)
+class PoolUpdate(_PoolUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.license_type._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-def devcenter_network_connection_show_health_detail(client,
-                                                    resource_group_name,
-                                                    network_connection_name):
-    return client.get_health_details(resource_group_name=resource_group_name,
-                                     network_connection_name=network_connection_name)
+class PoolWait(_PoolWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
-# dataplane commands
+class ProjectList(_ProjectList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+
+class ProjectAllowedEnvironmentTypeList(_ProjectAllowedEnvironmentTypeList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectAllowedEnvironmentTypeShow(_ProjectAllowedEnvironmentTypeShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectEnvironmentTypeCreate(_ProjectEnvironmentTypeCreate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectEnvironmentTypeDelete(_ProjectEnvironmentTypeDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectEnvironmentTypeList(_ProjectEnvironmentTypeList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectEnvironmentTypeShow(_ProjectEnvironmentTypeShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectEnvironmentTypeUpdate(_ProjectEnvironmentTypeUpdate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ScheduleCreate(_ScheduleCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required = False
+        args_schema.frequency._registered = False
+        args_schema.type._registered = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+        args.frequency = "Daily"
+        args.type = "StopDevBox"
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ScheduleDelete(_ScheduleDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ScheduleShow(_ScheduleShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ScheduleUpdate(_ScheduleUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required = False
+        args_schema.frequency._registered = False
+        args_schema.type._registered = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ScheduleWait(_ScheduleWait):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.schedule_name._registered = False
+        args_schema.schedule_name._required = False
+        return args_schema
+
+    @register_callback
+    def pre_operations(self):
+        args = self.ctx.args
+        args.schedule_name = "default"
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class SkuList(_SkuList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
+
+# Data plane
+
+
 def devcenter_project_list_dp(cmd, dev_center):
     resource_graph_data = get_project_arg(cmd.cli_ctx, dev_center)
     if len(resource_graph_data) == 0:
@@ -1050,7 +737,7 @@ def devcenter_dev_box_list(cmd, dev_center, project_name=None, user_id=None):
     return cf_dataplane.dev_box.list()
 
 
-def devcenter_dev_box_show(cmd, dev_center, project_name, dev_box_name, user_id='me'):
+def devcenter_dev_box_show(cmd, dev_center, project_name, dev_box_name, user_id="me"):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.dev_box.get(user_id=user_id, dev_box_name=dev_box_name)
 
@@ -1061,7 +748,7 @@ def devcenter_dev_box_create(
     project_name,
     dev_box_name,
     pool_name,
-    user_id='me',
+    user_id="me",
     no_wait=False,
     local_administrator=None,
 ):
@@ -1080,7 +767,7 @@ def devcenter_dev_box_create(
 
 
 def devcenter_dev_box_delete(
-    cmd, dev_center, project_name, dev_box_name, user_id='me', no_wait=False
+    cmd, dev_center, project_name, dev_box_name, user_id="me", no_wait=False
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return sdk_no_wait(
@@ -1092,7 +779,7 @@ def devcenter_dev_box_delete(
 
 
 def devcenter_dev_box_get_remote_connection(
-    cmd, dev_center, project_name, dev_box_name, user_id='me'
+    cmd, dev_center, project_name, dev_box_name, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.dev_box.get_remote_connection(
@@ -1101,7 +788,7 @@ def devcenter_dev_box_get_remote_connection(
 
 
 def devcenter_dev_box_start(
-    cmd, dev_center, project_name, dev_box_name, user_id='me', no_wait=False
+    cmd, dev_center, project_name, dev_box_name, user_id="me", no_wait=False
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return sdk_no_wait(
@@ -1113,7 +800,13 @@ def devcenter_dev_box_start(
 
 
 def devcenter_dev_box_stop(
-    cmd, dev_center, project_name, dev_box_name, no_wait=False, hibernate=None, user_id='me'
+    cmd,
+    dev_center,
+    project_name,
+    dev_box_name,
+    no_wait=False,
+    hibernate=None,
+    user_id="me",
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return sdk_no_wait(
@@ -1132,9 +825,9 @@ def devcenter_dev_box_delay_upcoming_action(
     dev_box_name,
     delay_time,
     upcoming_action_id,
-    user_id='me'
+    user_id="me",
 ):
-    split_time = delay_time.split(':')
+    split_time = delay_time.split(":")
     hours = int(split_time[0])
     minutes = int(split_time[1])
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
@@ -1143,7 +836,9 @@ def devcenter_dev_box_delay_upcoming_action(
         dev_box_name=dev_box_name,
         upcoming_action_id=upcoming_action_id,
     )
-    delayed_time = upcoming_action.scheduled_time + timedelta(hours=hours, minutes=minutes)
+    delayed_time = upcoming_action.scheduled_time + timedelta(
+        hours=hours, minutes=minutes
+    )
     return cf_dataplane.dev_box.delay_upcoming_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
@@ -1153,7 +848,7 @@ def devcenter_dev_box_delay_upcoming_action(
 
 
 def devcenter_dev_box_list_upcoming_action(
-    cmd, dev_center, project_name, dev_box_name, user_id='me'
+    cmd, dev_center, project_name, dev_box_name, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.dev_box.list_upcoming_actions(
@@ -1162,7 +857,7 @@ def devcenter_dev_box_list_upcoming_action(
 
 
 def devcenter_dev_box_show_upcoming_action(
-    cmd, dev_center, project_name, dev_box_name, upcoming_action_id, user_id='me'
+    cmd, dev_center, project_name, dev_box_name, upcoming_action_id, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.dev_box.get_upcoming_action(
@@ -1173,7 +868,7 @@ def devcenter_dev_box_show_upcoming_action(
 
 
 def devcenter_dev_box_skip_upcoming_action(
-    cmd, dev_center, project_name, dev_box_name, upcoming_action_id, user_id='me'
+    cmd, dev_center, project_name, dev_box_name, upcoming_action_id, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.dev_box.skip_upcoming_action(
@@ -1183,7 +878,7 @@ def devcenter_dev_box_skip_upcoming_action(
     )
 
 
-def devcenter_environment_list(cmd, dev_center, project_name, user_id='me'):
+def devcenter_environment_list(cmd, dev_center, project_name, user_id="me"):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     if user_id is not None:
         return cf_dataplane.environments.list_by_project_by_user(user_id=user_id)
@@ -1191,7 +886,7 @@ def devcenter_environment_list(cmd, dev_center, project_name, user_id='me'):
 
 
 def devcenter_environment_show(
-    cmd, dev_center, project_name, environment_name, user_id='me'
+    cmd, dev_center, project_name, environment_name, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.environments.get(
@@ -1213,7 +908,7 @@ def devcenter_environment_create(
     tags=None,
     user=None,
     no_wait=False,
-    user_id='me'
+    user_id="me",
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}
@@ -1252,7 +947,7 @@ def devcenter_environment_update(
     parameters=None,
     scheduled_tasks=None,
     tags=None,
-    user_id=None
+    user_id=None,
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}
@@ -1276,7 +971,7 @@ def devcenter_environment_update(
 
 
 def devcenter_environment_delete(
-    cmd, dev_center, project_name, environment_name, no_wait=False, user_id='me'
+    cmd, dev_center, project_name, environment_name, no_wait=False, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return sdk_no_wait(
@@ -1295,7 +990,7 @@ def devcenter_environment_custom_action(
     action_id,
     parameters=None,
     no_wait=False,
-    user_id='me'
+    user_id="me",
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}
@@ -1319,7 +1014,7 @@ def devcenter_environment_deploy_action(
     action_id,
     parameters=None,
     no_wait=False,
-    user_id='me'
+    user_id="me",
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}
@@ -1369,15 +1064,13 @@ def devcenter_environment_type_list_dp(cmd, dev_center, project_name):
     return cf_dataplane.environment_type.list()
 
 
-def devcenter_notification_setting_show_dp(
-    cmd, dev_center, project_name, user_id='me'
-):
+def devcenter_notification_setting_show_dp(cmd, dev_center, project_name, user_id="me"):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.notification_setting.get(user_id=user_id)
 
 
 def devcenter_notification_setting_list_allowed_culture_dp(
-    cmd, dev_center, project_name, user_id='me'
+    cmd, dev_center, project_name, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.notification_setting.list_allowed_cultures(user_id=user_id)
@@ -1392,7 +1085,7 @@ def devcenter_notification_setting_create_dp(
     boolean_enabled,
     email_notification,
     webhook_notification,
-    user_id='me'
+    user_id="me",
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}

@@ -7,13 +7,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .helper import get_project_data
+from .data_plane_endpoint_helper import get_project_data
 
-# data plane
+# Data plane
 
 
 def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None):
-
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
@@ -75,7 +74,7 @@ def cf_notification_setting_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting
 
 
-# control plane
+# Control plane
 
 
 def cf_devcenter_cl(cli_ctx, *_):
@@ -83,75 +82,3 @@ def cf_devcenter_cl(cli_ctx, *_):
     from azext_devcenter.vendored_sdks.devcenter import DevCenter
 
     return get_mgmt_service_client(cli_ctx, DevCenter)
-
-
-def cf_dev_center(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).dev_centers
-
-
-def cf_project(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).projects
-
-
-def cf_attached_network(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).attached_networks
-
-
-def cf_gallery(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).galleries
-
-
-def cf_image(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).images
-
-
-def cf_image_version(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).image_versions
-
-
-def cf_catalog(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).catalogs
-
-
-def cf_environment_type(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).environment_types
-
-
-def cf_project_allowed_environment_type(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).project_allowed_environment_types
-
-
-def cf_project_environment_type(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).project_environment_types
-
-
-def cf_dev_box_definition(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).dev_box_definitions
-
-
-def cf_operation_statuses(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).operation_statuses
-
-
-def cf_usage(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).usages
-
-
-def cf_check_name_availability(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).check_name_availability
-
-
-def cf_sku(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).skus
-
-
-def cf_pool(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).pools
-
-
-def cf_schedule(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).schedules
-
-
-def cf_network_connection(cli_ctx, *_):
-    return cf_devcenter_cl(cli_ctx).network_connections

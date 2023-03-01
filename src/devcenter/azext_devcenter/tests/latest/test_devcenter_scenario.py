@@ -412,7 +412,7 @@ class DevcenterScenarioTest(ScenarioTest):
         create_project(self)
 
         self.kwargs.update({
-            'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
+            'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
             'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
             'osStorageType': "ssd_1024gb",
             'skuName': "general_a_8c32gb_v1"
@@ -627,17 +627,6 @@ class DevcenterScenarioTest(ScenarioTest):
                  ]
                  )
 
-        self.cmd('az devcenter admin image-version list '
-                 '--image-name "{imageDefName}" '
-                 '--gallery-name "{galleryName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--resource-group "{rg}" ',
-                 checks=[
-                     self.check("length(@)", 1),
-                     self.check("[0].name", "{imageVersion}"),
-                 ]
-                 )
-
         imageVersion = self.cmd('az devcenter admin image-version show '
                                 '--image-name "{imageDefName}" '
                                 '--gallery-name "{galleryName}" '
@@ -777,6 +766,9 @@ class DevcenterScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdevcenter_rg1'[:7], key='rg', parameter_name='rg')
     def test_pool_scenario(self):
+        self.kwargs.update({
+            'location': 'eastus',
+        })
         create_attached_network_dev_box_definition(self)
         self.kwargs.update({
             'poolName': self.create_random_name(prefix='c3', length=12)
@@ -862,10 +854,10 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "default"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('timeZone', "America/Los_Angeles"),
-                     self.check('time', "13:00"),
-                     self.check('frequency', "Daily"),
-                     self.check('typePropertiesType', "StopDevBox")
+                     self.check('properties.timeZone', "America/Los_Angeles"),
+                     self.check('properties.time', "13:00"),
+                     self.check('properties.frequency', "Daily"),
+                     self.check('properties.type', "StopDevBox")
                  ]
                  )
 
@@ -878,10 +870,10 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "default"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('timeZone', "America/New_York"),
-                     self.check('time', "17:30"),
-                     self.check('frequency', "Daily"),
-                     self.check('typePropertiesType', "StopDevBox")
+                     self.check('properties.timeZone', "America/New_York"),
+                     self.check('properties.time', "17:30"),
+                     self.check('properties.frequency', "Daily"),
+                     self.check('properties.type', "StopDevBox")
                  ]
                  )
 
@@ -892,10 +884,10 @@ class DevcenterScenarioTest(ScenarioTest):
                  checks=[
                      self.check('name', "default"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('timeZone', "America/New_York"),
-                     self.check('time', "17:30"),
-                     self.check('frequency', "Daily"),
-                     self.check('typePropertiesType', "StopDevBox")
+                     self.check('properties.timeZone', "America/New_York"),
+                     self.check('properties.time', "17:30"),
+                     self.check('properties.frequency', "Daily"),
+                     self.check('properties.type', "StopDevBox")
                  ]
                  )
 
@@ -1020,14 +1012,14 @@ class DevcenterScenarioTest(ScenarioTest):
         self.cmd('az devcenter admin catalog update '
                  '--dev-center "{devcenterName}" '
                  '--name "{catalogName}" '
-                 '--git-hub path="" branch="" '
+                 '--git-hub path="/Catalog" branch="test" '
                  'secret-identifier="{secretIdentifier2}" '
-                 '--resource-group "{rg}" ',
+                 '--resource-group "{rg}"',
                  checks=[
                      self.check('name', "{catalogName}"),
                      self.check('resourceGroup', "{rg}"),
-                     self.check('gitHub.branch', ""),
-                     self.check('gitHub.path', ""),
+                     self.check('gitHub.branch', "test"),
+                     self.check('gitHub.path', "/Catalog"),
                      self.check('gitHub.secretIdentifier',
                                 "{secretIdentifier2}"),
                      self.check('gitHub.uri', "{uri}"),
