@@ -173,6 +173,39 @@ def create_network_connection(self):
         'networkConnectionId': network_connection['id'],
     })
 
+def create_network_connection_dp(self):
+    subnet = create_virtual_network_with_subnet_dp(self)
+
+    self.kwargs.update({
+        'subnetId': subnet['id'],
+        'networkConnectionName': self.create_random_name(prefix='cli', length=24),
+        'networkingRgName1': self.create_random_name(prefix='cli', length=24),
+    })
+
+    network_connection = self.cmd('az devcenter admin network-connection create '
+                                  '--location "{location}" '
+                                  '--tags CostCode="12345" '
+                                  '--name "{networkConnectionName}" '
+                                  '--domain-join-type "AzureADJoin" '
+                                  '--subnet-id "{subnetId}" '
+                                  '--networking-resource-group-name "{networkingRgName1}" '
+                                  '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'networkConnectionId': network_connection['id'],
+    })
+
+def create_virtual_network_with_subnet_dp(self):
+    self.kwargs.update({
+        'vNetName': self.create_random_name(prefix='cli', length=24),
+        'subnetName': self.create_random_name(prefix='cli', length=24)
+    })
+
+    self.cmd(
+        'az network vnet create -n "{vNetName}" --location "{location}" -g "{rg}"')
+
+    return self.cmd('az network vnet subnet create -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"').get_output_in_json()
+
 
 def create_attached_network_dev_box_definition(self):
     self.kwargs.update({
@@ -301,7 +334,7 @@ def create_pool(self):
 
 def create_pool_dataplane_dependencies(self):
     
-    create_network_connection(self)
+    create_network_connection_dp(self)
 
     self.kwargs.update({
         'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
@@ -440,7 +473,7 @@ def create_dev_box_dependencies(self):
     create_dev_center(self)
     create_project(self)
     add_dev_box_user_role_to_project(self)
-    create_network_connection(self)
+    create_network_connection_dp(self)
 
     self.kwargs.update({
         'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
