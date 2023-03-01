@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"App was not found","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","details":null}}'
@@ -61,7 +61,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"e55ed5c1ee8942f9a36f033e7bbd28e8","networkProfile":{"outboundIPs":{"publicIPs":["20.237.103.188","20.237.103.250"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"S0","tier":"Standard"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T02:05:42.8680393Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T02:11:29.9671687Z"}}'
@@ -116,13 +116,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Creating","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:27:33.1872921Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2df6d763-3fe6-4b0b-a052-915045558513?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2df6d763-3fe6-4b0b-a052-915045558513?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -134,7 +134,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/2df6d763-3fe6-4b0b-a052-915045558513/Spring/test-i2atls-app?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/2df6d763-3fe6-4b0b-a052-915045558513/Spring/test-i2atls-app?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -166,7 +166,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2df6d763-3fe6-4b0b-a052-915045558513?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2df6d763-3fe6-4b0b-a052-915045558513?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2df6d763-3fe6-4b0b-a052-915045558513","name":"2df6d763-3fe6-4b0b-a052-915045558513","status":"Succeeded","startTime":"2022-09-07T06:27:33.8901992Z","endTime":"2022-09-07T06:27:40.2774043Z"}'
@@ -214,7 +214,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:27:33.1872921Z"}}'
@@ -271,13 +271,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90},"provisioningState":"Creating","status":"Running","active":true,"instances":null,"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -289,7 +289,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f/Spring/default?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f/Spring/default?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -326,13 +326,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:12.0623334Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2e3c2634-1343-4d30-b82b-88754cd45a75?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2e3c2634-1343-4d30-b82b-88754cd45a75?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -344,7 +344,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/2e3c2634-1343-4d30-b82b-88754cd45a75/Spring/test-i2atls-app?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/2e3c2634-1343-4d30-b82b-88754cd45a75/Spring/test-i2atls-app?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -376,7 +376,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f","name":"fd1f5510-ad2c-451b-8a4c-f8f0e27c899f","status":"Running","startTime":"2022-09-07T06:28:11.7326248Z"}'
@@ -424,7 +424,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2e3c2634-1343-4d30-b82b-88754cd45a75?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2e3c2634-1343-4d30-b82b-88754cd45a75?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/2e3c2634-1343-4d30-b82b-88754cd45a75","name":"2e3c2634-1343-4d30-b82b-88754cd45a75","status":"Succeeded","startTime":"2022-09-07T06:28:13.0728131Z","endTime":"2022-09-07T06:28:20.3295847Z"}'
@@ -472,7 +472,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:12.0623334Z"}}'
@@ -522,7 +522,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/default/operationId/fd1f5510-ad2c-451b-8a4c-f8f0e27c899f","name":"fd1f5510-ad2c-451b-8a4c-f8f0e27c899f","status":"Succeeded","startTime":"2022-09-07T06:28:11.7326248Z","endTime":"2022-09-07T06:28:46.5128426Z"}'
@@ -570,7 +570,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}'
@@ -620,7 +620,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:12.0623334Z"}}'
@@ -670,7 +670,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -720,7 +720,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -774,13 +774,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":true,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:30:07.1988729Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/8d676a54-4b7c-40e3-91ef-1a78584eeb07?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/8d676a54-4b7c-40e3-91ef-1a78584eeb07?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -792,7 +792,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/8d676a54-4b7c-40e3-91ef-1a78584eeb07/Spring/test-i2atls-app?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/8d676a54-4b7c-40e3-91ef-1a78584eeb07/Spring/test-i2atls-app?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -829,7 +829,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}'
@@ -879,7 +879,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/8d676a54-4b7c-40e3-91ef-1a78584eeb07?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/8d676a54-4b7c-40e3-91ef-1a78584eeb07?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/8d676a54-4b7c-40e3-91ef-1a78584eeb07","name":"8d676a54-4b7c-40e3-91ef-1a78584eeb07","status":"Succeeded","startTime":"2022-09-07T06:30:08.547959Z","endTime":"2022-09-07T06:30:26.4137775Z"}'
@@ -927,7 +927,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":true,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:30:07.1988729Z"}}'
@@ -977,7 +977,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":true,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:30:07.1988729Z"}}'
@@ -1027,7 +1027,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -1077,7 +1077,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -1131,13 +1131,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:31:31.6726448Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/5d8e770b-3e76-41d9-91b3-d0fadc4fde33?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/5d8e770b-3e76-41d9-91b3-d0fadc4fde33?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1149,7 +1149,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/5d8e770b-3e76-41d9-91b3-d0fadc4fde33/Spring/test-i2atls-app?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/5d8e770b-3e76-41d9-91b3-d0fadc4fde33/Spring/test-i2atls-app?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1186,7 +1186,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}'
@@ -1236,7 +1236,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/5d8e770b-3e76-41d9-91b3-d0fadc4fde33?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/5d8e770b-3e76-41d9-91b3-d0fadc4fde33?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/5d8e770b-3e76-41d9-91b3-d0fadc4fde33","name":"5d8e770b-3e76-41d9-91b3-d0fadc4fde33","status":"Succeeded","startTime":"2022-09-07T06:31:33.2283137Z","endTime":"2022-09-07T06:31:52.8830363Z"}'
@@ -1284,7 +1284,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:31:31.6726448Z"}}'
@@ -1334,7 +1334,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:31:31.6726448Z"}}'
@@ -1384,7 +1384,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -1434,7 +1434,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -1484,13 +1484,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":true,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:32:56.1746854Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/176cf344-f049-43bd-acf0-506985143991?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/176cf344-f049-43bd-acf0-506985143991?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1502,7 +1502,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/176cf344-f049-43bd-acf0-506985143991/Spring/test-i2atls-app?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/176cf344-f049-43bd-acf0-506985143991/Spring/test-i2atls-app?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1539,7 +1539,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}'
@@ -1589,7 +1589,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/176cf344-f049-43bd-acf0-506985143991?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/176cf344-f049-43bd-acf0-506985143991?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/176cf344-f049-43bd-acf0-506985143991","name":"176cf344-f049-43bd-acf0-506985143991","status":"Succeeded","startTime":"2022-09-07T06:32:56.7178132Z","endTime":"2022-09-07T06:33:09.2901372Z"}'
@@ -1637,7 +1637,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":true,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:32:56.1746854Z"}}'
@@ -1687,7 +1687,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":true,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:32:56.1746854Z"}}'
@@ -1737,7 +1737,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -1787,7 +1787,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
@@ -1841,13 +1841,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:34:19.2717273Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb?api-version=2022-11-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1859,7 +1859,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb/Spring/test-i2atls-app?api-version=2022-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationResults/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb/Spring/test-i2atls-app?api-version=2022-11-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1896,7 +1896,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/mock-deployment?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}'
@@ -1946,7 +1946,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb?api-version=2022-11-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-i2atls-app/operationId/cbbdc6ae-38e5-4f34-88c2-7146f6db31bb","name":"cbbdc6ae-38e5-4f34-88c2-7146f6db31bb","status":"Succeeded","startTime":"2022-09-07T06:34:20.827413Z","endTime":"2022-09-07T06:34:33.6650093Z"}'
@@ -1994,7 +1994,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:34:19.2717273Z"}}'
@@ -2044,7 +2044,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app?api-version=2022-11-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app","name":"test-i2atls-app","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:27:33.1872921Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:34:19.2717273Z"}}'
@@ -2094,7 +2094,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.39.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments?api-version=2022-11-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":24,"initialDelaySeconds":60,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-i2atls-app-default-15-7f56cc47c4-zspz4","status":"Running","discoveryStatus":"UNKNOWN","startTime":"2022-09-07T06:28:14Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_8"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-i2atls-app/deployments/default","name":"default","systemData":{"createdBy":"caihuarui@microsoft.com","createdByType":"User","createdAt":"2022-09-07T06:28:09.4529284Z","lastModifiedBy":"caihuarui@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-07T06:28:09.4529284Z"}}]}'
