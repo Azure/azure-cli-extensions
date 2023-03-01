@@ -10,6 +10,7 @@ from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
 
 class ScenarioAutoSuggest(AutoSuggest):
     """Auto Suggest used in Scenario execution mode"""
+
     def __init__(self):
         self.cur_sample = ''
         self.cur_command = ''
@@ -32,12 +33,14 @@ class ScenarioAutoSuggest(AutoSuggest):
                 self.param_value_map[cur_param] += ' ' + part
                 self.param_value_map[cur_param] = self.param_value_map[cur_param].strip()
 
-    def get_suggestion(self, cli, buffer, document):
+    def get_suggestion(self, cli, buffer, document, value_storage_cache={}, auto_complete_values=False):
         user_input = document.text.rsplit('\n', 1)[-1]
+        # format all the space in user's input to ' '
         user_input = re.sub(r'\s+', ' ', user_input)
         # If the user has input the command part of sample, suggest the parameters
         if user_input.startswith(self.cur_command):
             # find user unfinished part of input command
+            # rsplit(' ', 1) will split the string from right to left with max split 1
             unfinished = user_input.rsplit(' ', 1)[-1]
             # list of unused parameters in current sample
             unused_param = list(self.param_value_map.keys())
@@ -81,12 +84,20 @@ class ScenarioAutoSuggest(AutoSuggest):
             # If the user finish input with space, suggest all the rest unused parameters
             elif unfinished == '':
                 if not last_part.startswith('-'):
-                    suggest = []
+                    suggests = []
                     for param in unused_param:
-                        suggest.append(param)
-                        if self.param_value_map[param]:
-                            suggest.append(self.param_value_map[param])
-                    return Suggestion(' '.join(suggest))
+                        raw_value = self.param_value_map[param]
+                        if raw_value and raw_value.startswith('<'):
+                            # find value in local cache to see whether a similar name has been used (constructing)
+                            if raw_value in value_storage_cache.keys():
+                                value = value_storage_cache[raw_value]
+                            else:
+                                value = ''
+                            suggests.append({'param': param, 'value': value})
+                    if suggests:
+                        # suggest one parameter at a time
+                        return Suggestion(' '.join([suggests[0]['param'], suggests[0]['value']]))
+
         # If the user hasn't finished the command part, suggest the whole sample
         elif self.cur_command.startswith(user_input):
             return Suggestion(self.cur_sample[len(user_input):])
