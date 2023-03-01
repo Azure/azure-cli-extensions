@@ -76,7 +76,7 @@ from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
     Show as _ProjectAllowedEnvironmentTypeShow,
 )
-from .aaz.latest.devcenter.admin.environment_type import (
+from .aaz.latest.devcenter.admin.project_environment_type import (
     Create as _ProjectEnvironmentTypeCreate,
     Delete as _ProjectEnvironmentTypeDelete,
     List as _ProjectEnvironmentTypeList,
