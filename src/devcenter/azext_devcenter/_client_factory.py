@@ -13,7 +13,6 @@ from .data_plane_endpoint_helper import get_project_data
 
 
 def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None):
-
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
@@ -83,4 +82,3 @@ def cf_devcenter_cl(cli_ctx, *_):
     from azext_devcenter.vendored_sdks.devcenter import DevCenter
 
     return get_mgmt_service_client(cli_ctx, DevCenter)
-

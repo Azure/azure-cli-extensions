@@ -7,6 +7,17 @@
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
+from azext_devcenter._client_factory import (
+    cf_project_dp,
+    cf_pool_dp,
+    cf_schedule_dp,
+    cf_dev_box_dp,
+    cf_environment_dp,
+    cf_catalog_item_dp,
+    cf_catalog_item_version_dp,
+    cf_environment_type_dp,
+    cf_notification_setting_dp,
+)
 from .custom import (
     AttachedNetworkCreate,
     AttachedNetworkDelete,
@@ -63,19 +74,6 @@ from .custom import (
     ScheduleUpdate,
     ScheduleWait,
     SkuList,
-)
-
-
-from azext_devcenter._client_factory import (
-    cf_project_dp,
-    cf_pool_dp,
-    cf_schedule_dp,
-    cf_dev_box_dp,
-    cf_environment_dp,
-    cf_catalog_item_dp,
-    cf_catalog_item_version_dp,
-    cf_environment_type_dp,
-    cf_notification_setting_dp,
 )
 
 

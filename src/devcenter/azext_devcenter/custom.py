@@ -2,8 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=protected-access
 
 from datetime import timedelta
+from azure.cli.core.aaz import (AAZStrArg, has_value, register_callback)
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
 from .data_plane_endpoint_helper import get_project_arg
@@ -91,8 +93,6 @@ from .aaz.latest.devcenter.admin.schedule import (
     Wait as _ScheduleWait,
 )
 from .aaz.latest.devcenter.admin.sku import List as _SkuList
-
-from azure.cli.core.aaz import *
 from ._validators import validate_attached_network_or_dev_box_def
 
 # Control plane
@@ -151,7 +151,6 @@ class AttachedNetworkList(_AttachedNetworkList):
         validate_attached_network_or_dev_box_def(
             self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -183,7 +182,6 @@ class AttachedNetworkShow(_AttachedNetworkShow):
         validate_attached_network_or_dev_box_def(
             self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -282,7 +280,6 @@ class DevBoxDefinitionList(_DevBoxDefinitionList):
         validate_attached_network_or_dev_box_def(
             self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -314,7 +311,6 @@ class DevBoxDefinitionShow(_DevBoxDefinitionShow):
         validate_attached_network_or_dev_box_def(
             self.ctx.args.dev_center_name, self.ctx.args.project_name
         )
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -482,7 +478,6 @@ class PoolCreate(_PoolCreate):
     def pre_operations(self):
         args = self.ctx.args
         args.license_type = "Windows_Client"
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -598,37 +593,35 @@ class ScheduleCreate(_ScheduleCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
-        args_schema.schedule_name._required=False
+        args_schema.schedule_name._required = False
         args_schema.frequency._registered = False
         args_schema.type._registered = False
         return args_schema
-    
 
     @register_callback
     def pre_operations(self):
         args = self.ctx.args
         args.schedule_name = "default"
-        args.frequency="Daily"
-        args.type="StopDevBox"
-        pass
+        args.frequency = "Daily"
+        args.type = "StopDevBox"
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class ScheduleDelete(_ScheduleDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
-        args_schema.schedule_name._required=False
+        args_schema.schedule_name._required = False
         return args_schema
 
     @register_callback
     def pre_operations(self):
         args = self.ctx.args
         args.schedule_name = "default"
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -640,14 +633,13 @@ class ScheduleShow(_ScheduleShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
-        args_schema.schedule_name._required=False
+        args_schema.schedule_name._required = False
         return args_schema
 
     @register_callback
     def pre_operations(self):
         args = self.ctx.args
         args.schedule_name = "default"
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -659,7 +651,7 @@ class ScheduleUpdate(_ScheduleUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
-        args_schema.schedule_name._required=False
+        args_schema.schedule_name._required = False
         args_schema.frequency._registered = False
         args_schema.type._registered = False
         return args_schema
@@ -668,7 +660,6 @@ class ScheduleUpdate(_ScheduleUpdate):
     def pre_operations(self):
         args = self.ctx.args
         args.schedule_name = "default"
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -680,14 +671,13 @@ class ScheduleWait(_ScheduleWait):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
-        args_schema.schedule_name._required=False
+        args_schema.schedule_name._required = False
         return args_schema
 
     @register_callback
     def pre_operations(self):
         args = self.ctx.args
         args.schedule_name = "default"
-        pass
 
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()

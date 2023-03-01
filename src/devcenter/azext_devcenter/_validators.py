@@ -7,17 +7,19 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
 )
-from azure.cli.core.aaz import *
+from azure.cli.core.aaz import has_value
+
 
 # Control plane
 def validate_attached_network_or_dev_box_def(dev_center_name, project_name):
     if not has_value(dev_center_name) and not has_value(project_name):
-            error_message = """Either project (--project --project-name) \
+        error_message = """Either project (--project --project-name) \
 or dev center (--dev-center --dev-center-name -d) should be set."""
-            raise RequiredArgumentMissingError(error_message)
+        raise RequiredArgumentMissingError(error_message)
 
 
 # Data plane
+
 
 def validate_dev_box_list(namespace):
     if namespace.project_name is not None and namespace.user_id is None:
