@@ -313,6 +313,7 @@ class AzureFirewallScenario(ScenarioTest):
         # ])
         # self.cmd('network firewall show -g {rg} -n {af}')
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westus2')
     def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
