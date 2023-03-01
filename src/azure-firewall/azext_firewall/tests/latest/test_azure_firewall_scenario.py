@@ -41,6 +41,31 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_on_exist_", location="westus")
+    def test_firewall_on_exist(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+        })
+        self.cmd("network firewall create -n {firewall_name} -g {rg} --threat-intel-mode Alert")
+
+        from azure.cli.core.azclierror import ValidationError
+        with self.assertRaisesRegex(ValidationError, f"The specified firewall: {self.kwargs['firewall_name']} already exists."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --threat-intel-mode Deny --on-exist error")
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --threat-intel-mode Deny --on-exist skip",
+            checks=[
+                self.check("threatIntelMode", "Alert")
+            ]
+        )
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --threat-intel-mode Deny --on-exist overwrite",
+            checks=[
+                self.check("threatIntelMode", "Deny")
+            ]
+        )
+
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):
         self.kwargs.update({
@@ -313,6 +338,7 @@ class AzureFirewallScenario(ScenarioTest):
         # ])
         # self.cmd('network firewall show -g {rg} -n {af}')
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westus2')
     def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({

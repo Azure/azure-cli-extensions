@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.14.5
+++++++
+* `az network firewall create`: Add parameter `--on-exist` for firewall creation
+
 0.14.4
 ++++++
 * `az network firewall create/update`: Add parameter `--udp-log-optimization`

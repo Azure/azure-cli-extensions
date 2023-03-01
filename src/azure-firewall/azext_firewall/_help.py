@@ -24,6 +24,9 @@ helps['network firewall create'] = """
     - name: Create a Basic SKU Firewall with Management IP Configuration
       text: |
         az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_VNet --tier Basic --vnet-name MyVNet --conf-name MyIpConfig --m-conf-name MyManagementIpConfig --m-public-ip MyPublicIp
+    - name: Raise an error when a duplicate firewall exists
+      text: |
+        az network firewall create -n MyFirewall -g MyResourceGroup --threat-intel-mode Deny --on-exist error
 """
 
 helps['network firewall delete'] = """
