@@ -556,7 +556,7 @@ class AzInteractiveShell(object):
         )
         quit_scenario = False
         # give notice to users that they can skip a command or quit the scenario
-        print_styled_text([(Style.WARNING, 'You can use CTRL C to skip a command of the scenario, '
+        print_styled_text([(Style.WARNING, '\nYou can use CTRL C to skip a command of the scenario, '
                                            'and CTRL D to exit the scenario.')])
         for nx_cmd, sample in gen_command_in_scenario(scenario, file=self.output):
             auto_suggest.update(sample)
