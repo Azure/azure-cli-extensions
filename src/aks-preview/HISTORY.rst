@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.131
++++++++
+* Allow updating the ssh key value if cluster was created without ssh key
+
 0.5.130
 +++++++
 * Enable outbound migration from/to udr

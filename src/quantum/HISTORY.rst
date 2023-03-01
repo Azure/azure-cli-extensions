@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.19.0
+++++++
+* [2023-02-27] Version intended to work with QDK version 0.27.253010
+* You can specify --skip-autoadd when creating a workspace to only add the providers listed after the -r parameter, so provider plans in the "Credits for All" program will not be automatically added.
+* Adding resource estimator batching job support to az quantum.
+
 0.18.0
 ++++++
 * [2023-02-08] Version intended to work with QDK version 0.27.253010 and Azure CLI 2.41.0 or greater.
