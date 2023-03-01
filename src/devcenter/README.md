@@ -21,6 +21,11 @@ Manage developer resources with devcenter
 az devcenter dev
 ```
 
+### Update ###
+Update this extension using the below CLI command
+``` sh
+az extension update --name devcenter
+```
 ### Uninstall ###
 Run `az extension list` to see if the extension is installed.
 
