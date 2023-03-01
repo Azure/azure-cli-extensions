@@ -478,12 +478,6 @@ def load_arguments(self, _):
             help="Parameters object for the deploy action Expected "
             "value: json-string/json-file/@json-file.",
         )
-        c.argument(
-            "scheduled_tasks",
-            type=validate_file_or_dict,
-            help="Set of supported scheduled tasks to help "
-            "manage cost. Expected value: json-string/json-file/@json-file.",
-        )
         c.argument("tags", tags_type)
         c.argument("environment_type", type=str, help="Environment type.")
         c.argument(
