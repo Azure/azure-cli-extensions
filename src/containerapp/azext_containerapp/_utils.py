@@ -11,7 +11,6 @@ import platform
 from urllib.parse import urlparse
 from datetime import datetime
 
-from azure.cli.core.util import sdk_no_wait
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
                                        ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
@@ -1724,13 +1723,13 @@ def create_managed_environment(cmd,
         managed_env_def.vnet_configuration.internal = True
 
     try:
-        poller = client.begin_create_or_update(
+        poller = client.managed_environments.begin_create_or_update(
             resource_group_name=resource_group_name,
             environment_name=name,
             environment_envelope=managed_env_def,
         )
         if no_wait:
-            r = client.get(resource_group_name=resource_group_name, environment_name=name)
+            r = client.managed_environments.get(resource_group_name=resource_group_name, environment_name=name)
         else:
             r = LongRunningOperation(cmd.cli_ctx)(poller)
 

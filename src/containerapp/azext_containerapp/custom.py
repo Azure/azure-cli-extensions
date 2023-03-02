@@ -1164,7 +1164,7 @@ def show_managed_environment(cmd, client, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return client.get(resource_group_name=resource_group_name, environment_name=name)
+        return client.managed_environments.get(resource_group_name=resource_group_name, environment_name=name)
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -2596,7 +2596,7 @@ def stream_environment_logs(cmd, client, resource_group_name, name, follow=False
 
     env = show_managed_environment(cmd, client, name, resource_group_name)
     sub = get_subscription_id(cmd.cli_ctx)
-    token_response = client.get_auth_token(resource_group_name=resource_group_name, environment_name=name)
+    token_response = client.managed_environments.get_auth_token(resource_group_name=resource_group_name, environment_name=name)
     token = token_response.token
     base_url = f"https://{env.location}.azurecontainerapps.dev"
 
