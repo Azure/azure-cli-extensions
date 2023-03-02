@@ -9,7 +9,7 @@
 from azext_containerapp._client_factory import ex_handler_factory
 from azure.cli.core.commands import CliCommandType
 
-from _client_factory import cf_managed_environments
+from ._client_factory import cf_managed_environments
 from ._validators import validate_ssh
 
 
@@ -71,7 +71,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp env logs', managed_environment_sdk, client_factory=cf_managed_environments) as g:
         g.custom_show_command('show', 'stream_environment_logs')
 
-    with self.command_group('containerapp env') as g:
+    with self.command_group('containerapp env', managed_environment_sdk, client_factory=cf_managed_environments) as g:
         g.custom_show_command('show', 'show_managed_environment')
         g.custom_command('list', 'list_managed_environments')
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())

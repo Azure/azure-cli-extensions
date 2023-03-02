@@ -3889,7 +3889,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       transport_mapping=None,
                                       location=None,
                                       tags=None):
-
+    from azure.core.exceptions import ResourceNotFoundError
     from pycomposefile import ComposeFile
 
     from ._compose_utils import (create_containerapps_compose_environment,
@@ -3919,7 +3919,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                        client=client,
                                                        name=managed_env_name,
                                                        resource_group_name=resource_group_name)
-    except CLIInternalError:  # pylint: disable=W0702
+    except ResourceNotFoundError:  # pylint: disable=W0702
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        client,
                                                                        managed_env_name,

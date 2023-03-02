@@ -1647,7 +1647,8 @@ def create_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                no_wait=False):
-    from azure.mgmt.appcontainers.models import ManagedEnvironment, AppLogsConfiguration, LogAnalyticsConfiguration, CustomDomainConfiguration, VnetConfiguration
+    from azure.mgmt.appcontainers.models import ManagedEnvironment, AppLogsConfiguration, LogAnalyticsConfiguration, CustomDomainConfiguration, VnetConfiguration, EnvironmentProvisioningState
+    from azure.cli.core.commands import LongRunningOperation
 
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1672,35 +1673,36 @@ def create_managed_environment(cmd,
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
     if logs_destination == "log-analytics":
-        log_analytics_config_def = LogAnalyticsConfiguration
-        log_analytics_config_def.customerId = logs_customer_id
-        log_analytics_config_def.sharedKey = logs_key
+        log_analytics_config_def = LogAnalyticsConfiguration(customer_id=logs_customer_id, shared_key=logs_key)
     else:
         log_analytics_config_def = None
 
-    app_logs_config_def = AppLogsConfiguration
-    app_logs_config_def.destination = logs_destination if logs_destination != "none" else None
-    app_logs_config_def.log_analytics_configuration = log_analytics_config_def
+    app_logs_config_def = AppLogsConfiguration(
+        destination=logs_destination if logs_destination != "none" else None,
+        log_analytics_configuration=log_analytics_config_def
+    )
 
-    managed_env_def = ManagedEnvironment
-    managed_env_def.location = location
-    managed_env_def.app_logs_configuration = app_logs_config_def
-    managed_env_def.tags = tags
-    managed_env_def.zone_redundant = zone_redundant
+    managed_env_def = ManagedEnvironment(
+        location=location,
+        app_logs_configuration=app_logs_config_def,
+        tags=tags,
+        zone_redundant=zone_redundant
+    )
 
     if hostname:
-        custom_domain = CustomDomainConfiguration
         blob, _ = load_cert_file(certificate_file, certificate_password)
-        custom_domain.dns_suffix = hostname
-        custom_domain.certificate_password = certificate_password
-        custom_domain.certificate_value = blob
+        custom_domain = CustomDomainConfiguration(
+            dns_suffix=hostname,
+            certificate_password=certificate_password,
+            certificate_value=blob
+        )
         managed_env_def.custom_domain_configuration = custom_domain
 
     if instrumentation_key is not None:
         managed_env_def.dapr_ai_instrumentation_key = instrumentation_key
 
     if infrastructure_subnet_resource_id or docker_bridge_cidr or platform_reserved_cidr or platform_reserved_dns_ip:
-        vnet_config_def = VnetConfiguration
+        vnet_config_def = VnetConfiguration()
 
         if infrastructure_subnet_resource_id is not None:
             vnet_config_def.infrastructure_subnet_id = infrastructure_subnet_resource_id
@@ -1722,24 +1724,25 @@ def create_managed_environment(cmd,
         managed_env_def.vnet_configuration.internal = True
 
     try:
-        r = sdk_no_wait(
-            no_wait,
-            client.begin_create_or_update,
-            resource_group_name,
-            name,
-            managed_env_def,
+        poller = client.begin_create_or_update(
+            resource_group_name=resource_group_name,
+            environment_name=name,
+            environment_envelope=managed_env_def,
         )
+        if no_wait:
+            r = client.get(resource_group_name=resource_group_name, environment_name=name)
+        else:
+            r = LongRunningOperation(cmd.cli_ctx)(poller)
+
         _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
 
         # return ENV
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"][
-            "provisioningState"].lower() != "succeeded" and not no_wait:
+        if r.provisioning_state != EnvironmentProvisioningState.SUCCEEDED and not no_wait:
             not disable_warnings and logger.warning(
                 'Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(
                     name, resource_group_name))
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"][
-            "provisioningState"].lower() == "succeeded":
+        if r.provisioning_state == EnvironmentProvisioningState.SUCCEEDED:
             not disable_warnings and logger.warning(
                 "\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
 
