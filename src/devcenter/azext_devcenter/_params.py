@@ -677,7 +677,7 @@ def load_arguments(self, _):
             "definition_name", type=str, help="The name of the environment definition"
         )
 
-    with self.argument_context('devcenter dev artifact list') as c:
+    with self.argument_context("devcenter dev artifact list") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -687,8 +687,16 @@ def load_arguments(self, _):
             required=True,
             arg_type=project_type,
         )
-        c.argument('user_id', type=str, help='The AAD object id of the user. If value is \'me\', the identity is taken '
-                   'from the authentication context.')
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
-                   'of the environment.')
-        c.argument('artifact_path', type=str, help='The path of the artifact.')
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument("artifact_path", type=str, help="The path of the artifact.")

@@ -485,3 +485,29 @@ helps[
                az devcenter dev environment-definition show --dev-center-name "{devCenterName}"  \
 --project-name "{projectName}" --catalog-name "myCatalog" --definition-name "foo"
 """
+
+
+helps[
+    "devcenter dev artifact"
+] = """
+    type: group
+    short-summary: Manage artifact with devcenter
+"""
+
+
+helps[
+    "devcenter dev artifact list"
+] = """
+    type: command
+    short-summary: "Lists the artifacts for an environment at a specified path, or returns the file at the path or lists the artifacts for an environment."
+    examples:
+      - name: Artifacts_List
+        text: |-
+               az devcenter dev artifact list--dev-center-name "{devCenterName}"  \
+--project-name "{projectName}" --user-id "me" --environment-name "foo"
+    examples:
+      - name: Artifacts_ListbyPath
+        text: |-
+               az devcenter dev artifact list --dev-center-name "{devCenterName}"  \
+--project-name "{projectName}" --user-id "me"  --environment-name  "foo" --artifact-path "/artifacts"
+"""

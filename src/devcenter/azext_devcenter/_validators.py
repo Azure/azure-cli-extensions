@@ -19,8 +19,6 @@ or dev center (--dev-center --dev-center-name -d) should be set."""
 
 
 # Data plane
-
-
 def validate_dev_box_list(namespace):
     if namespace.project_name is not None and namespace.user_id is None:
         raise RequiredArgumentMissingError(

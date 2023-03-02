@@ -5,7 +5,7 @@
 # pylint: disable=protected-access
 
 from datetime import timedelta
-from azure.cli.core.aaz import (AAZStrArg, has_value, register_callback)
+from azure.cli.core.aaz import AAZStrArg, has_value, register_callback
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
 from .data_plane_endpoint_helper import get_project_arg
@@ -1039,12 +1039,21 @@ def devcenter_environment_definition_show_dp(
         catalog_name=catalog_name, definition_name=definition_name
     )
 
-def devcenter_artifact_list_dp(cmd, dev_center, project_name,
-                                        user_id,
-                                        environment_name,
-                                        artifact_path=None):
+
+def devcenter_artifact_list_dp(
+    cmd, dev_center, project_name, environment_name, user_id="me", artifact_path=None
+):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    if user_id is not None and environment_name is not None and artifact_path is not None:
-        return cf_dataplane.artifacts.list_by_path(user_id=user_id,environment_name=environment_name,
-                                                             artifact_path=artifact_path)
-    return cf_dataplane.artifacts.list(user_id=user_id, environment_name=environment_name)
+    if (
+        user_id is not None
+        and environment_name is not None
+        and artifact_path is not None
+    ):
+        return cf_dataplane.artifacts.list_by_path(
+            user_id=user_id,
+            environment_name=environment_name,
+            artifact_path=artifact_path,
+        )
+    return cf_dataplane.artifacts.list(
+        user_id=user_id, environment_name=environment_name
+    )
