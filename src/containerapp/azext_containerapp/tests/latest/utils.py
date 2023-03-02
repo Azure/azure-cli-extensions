@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import time
+from azure.mgmt.appcontainers.models import EnvironmentProvisioningState
 
 
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):
@@ -18,6 +19,6 @@ def create_containerapp_env(test_cls, env_name, resource_group, location=None):
 
     containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-    while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+    while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
         time.sleep(5)
         containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
