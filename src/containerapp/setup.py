@@ -39,7 +39,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'azure-cli-core',
     'pycomposefile>=0.0.29',
-    'azure-mgmt-appcontainers'
+    'azure-mgmt-appcontainers>=2.0.0b2'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
