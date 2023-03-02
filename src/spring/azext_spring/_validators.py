@@ -613,7 +613,7 @@ def validate_jar(namespace):
     version_number = int(runtime_version[len("Java_"):])
     if jdk_version not in _java_runtime_in_number():
         raise InvalidArgumentValueError("Your java application is compiled with {}, currently the supported "
-                                        "java version is Java_8. Java_11, Java_17, you can configure the java runtime "
+                                        "java version is Java_8, Java_11, Java_17, you can configure the java runtime "
                                         "with --runtime-version".format("Java_" + str(jdk_version)) + tips)
     if jdk_version > version_number:
         telemetry.set_user_fault("invalid_java_runtime")
