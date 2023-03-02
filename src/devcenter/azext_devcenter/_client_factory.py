@@ -73,6 +73,9 @@ def cf_environment_type_dp(cli_ctx, dev_center, *_):
 def cf_notification_setting_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting
 
+def cf_artifact_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).artifacts
+
 
 # Control plane
 

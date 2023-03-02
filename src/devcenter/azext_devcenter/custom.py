@@ -1039,13 +1039,12 @@ def devcenter_environment_definition_show_dp(
         catalog_name=catalog_name, definition_name=definition_name
     )
 
-# TODO: confirm artifacts API will exist
-
-# def devcenter_environment_list_artifact(client,
-#                                         user_id,
-#                                         environment_name,
-#                                         artifact_path=None):
-#     if user_id is not None and environment_name is not None and artifact_path is not None:
-#         return client.list_by_path(user_id=user_id,environment_name=environment_name,
-#                                                              artifact_path=artifact_path)
-#     return client.list(user_id=user_id, environment_name=environment_name)
+def devcenter_artifact_list_dp(cmd, dev_center, project_name,
+                                        user_id,
+                                        environment_name,
+                                        artifact_path=None):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    if user_id is not None and environment_name is not None and artifact_path is not None:
+        return cf_dataplane.artifacts.list_by_path(user_id=user_id,environment_name=environment_name,
+                                                             artifact_path=artifact_path)
+    return cf_dataplane.artifacts.list(user_id=user_id, environment_name=environment_name)

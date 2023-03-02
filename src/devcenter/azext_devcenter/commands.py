@@ -17,6 +17,7 @@ from azext_devcenter._client_factory import (
     cf_environment_definition_dp,
     cf_environment_type_dp,
     cf_notification_setting_dp,
+    cf_artifact_dp
 )
 from .custom import (
     AttachedNetworkCreate,
@@ -262,6 +263,13 @@ def load_command_table(self, _):
         client_factory=cf_notification_setting_dp,
     )
 
+    devcenter_artifact_dp = CliCommandType(
+        operations_tmpl=(
+            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._artifacts_operations#ArtifactsOperations.{}"
+        ),
+        client_factory=cf_artifact_dp,
+    )
+
     with self.command_group("devcenter", is_preview=True):
         pass
 
@@ -341,3 +349,8 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command("list", "devcenter_environment_definition_list_dp")
         g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+    
+    with self.command_group(
+        "devcenter dev artifact", devcenter_artifact_dp
+    ) as g:
+        g.custom_command("list", "devcenter_artifact_list_dp")
