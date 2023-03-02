@@ -2,6 +2,26 @@
 
 Release History
 ===============
+1.3.14
+++++++
+
+* Changing telemetry push interval to 1 hr
+* Adding two new supported infra values - Windows 10 IoT Enterprise, LTSCWindows 10 Enterprise LTSC
+* Saving cluster diagnostic checks pod and job logs
+
+1.3.13
+++++++
+
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+
+1.3.12
+++++++
+
+* Added retries for helm chart pull and config DP POST call
+* Fix parameterizing for kid in csp method
+* Bug fix in delete_arc_agents for arm64 parameter
+* Added specific exception messages for pre-checks
+
 1.3.11
 ++++++
 

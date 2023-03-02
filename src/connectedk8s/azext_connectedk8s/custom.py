@@ -71,6 +71,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                         distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
 
+    # changing cli config to push telemetry in 1 hr interval
+    try:
+        if cmd.cli_ctx and hasattr(cmd.cli_ctx, 'config'):
+            cmd.cli_ctx.config.set_value('telemetry', 'push_interval_in_hours', '1')
+    except exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Change_Telemetry_Push_Interval, summary="Failed to change the telemetry push interval to 1 hr")
+
     # Validate custom token operation
     custom_token_passed, location = utils.validate_custom_token(cmd, resource_group_name, location)
 
@@ -143,6 +150,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
+    is_arm64_cluster = check_arm64_node(node_api_response)
 
     required_node_exists = check_linux_node(node_api_response)
     # Pre onboarding checks
@@ -175,6 +183,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
         utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
 
+        if storage_space_available is False:
+            logger.warning("There is no storage space available on your device and hence not saving cluster diagnostic check logs on your device")
+
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)),
                                 fault_type=consts.Pre_Onboarding_Diagnostic_Checks_Execution_Failed, summary="An exception has occured while trying to execute pre-onboarding diagnostic checks : {}".format(str(e)))
@@ -192,7 +203,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if diagnostic_checks != consts.Diagnostic_Check_Passed:
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
-        raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
+        if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
+            telemetry.set_exception(exception='Cluster Diagnostic Prechecks Incomplete', fault_type=consts.Cluster_Diagnostic_Prechecks_Incomplete, summary="Cluster Diagnostic Prechecks didnt complete in the cluster")
+            raise ValidationError("Execution of pre-onboarding checks failed and hence not proceeding with cluster onboarding. Please meet the prerequisites - 'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites' and try onboarding again.")
+        else:
+            telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
+            raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -288,7 +304,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location)
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -2034,7 +2050,7 @@ def client_side_proxy(cmd,
     if token is None:
         if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
             kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
-            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, "gTYVsmkQfNwajR0w-v6A3ekPkiI7Wcz2T5ZCb7hwHTU", clientproxy_process)
+            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
 
             if post_at_response.status_code != 200:
                 if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
