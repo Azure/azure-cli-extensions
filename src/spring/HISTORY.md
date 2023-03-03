@@ -1,5 +1,11 @@
 Release History
 ===============
+1.7.0
+---
+* Print application logs when create/update deployment
+* Bypass jar check for enterprise tier
+* Add java runtime check for jar file
+
 1.6.8
 ---
 * Add detail description to Default for argument `--backend-protocol`.
