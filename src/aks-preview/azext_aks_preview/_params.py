@@ -44,7 +44,13 @@ from azext_aks_preview._consts import (
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
+    CONST_NODE_OS_CHANNEL_NODE_IMAGE,
+    CONST_NODE_OS_CHANNEL_NONE,
+    CONST_NODE_OS_CHANNEL_SECURITY_PATCH,
+    CONST_NODE_OS_CHANNEL_UNMANAGED,
     CONST_NONE_UPGRADE_CHANNEL,
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
     CONST_OS_DISK_TYPE_EPHEMERAL,
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
@@ -67,10 +73,20 @@ from azext_aks_preview._consts import (
     CONST_STABLE_UPGRADE_CHANNEL,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
+    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
     CONST_DISK_DRIVER_V1,
     CONST_DISK_DRIVER_V2,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
+    CONST_DAILY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKLY_MAINTENANCE_SCHEDULE,
+    CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKINDEX_FIRST,
+    CONST_WEEKINDEX_SECOND,
+    CONST_WEEKINDEX_THIRD,
+    CONST_WEEKINDEX_FOURTH,
+    CONST_WEEKINDEX_LAST,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -133,6 +149,9 @@ from azext_aks_preview._validators import (
     validate_disable_windows_outbound_nat,
     validate_allowed_host_ports,
     validate_application_security_groups,
+    validate_utc_offset,
+    validate_start_date,
+    validate_start_time,
 )
 
 # candidates for enumeration
@@ -149,7 +168,7 @@ node_os_skus = [
     CONST_OS_SKU_WINDOWS2022,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
-workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
 gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
     CONST_GPU_INSTANCE_PROFILE_MIG2_G,
@@ -175,6 +194,32 @@ auto_upgrade_channels = [
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NONE_UPGRADE_CHANNEL,
+]
+node_os_upgrade_channels = [
+    CONST_NODE_OS_CHANNEL_NODE_IMAGE,
+    CONST_NODE_OS_CHANNEL_NONE,
+    CONST_NODE_OS_CHANNEL_SECURITY_PATCH,
+    CONST_NODE_OS_CHANNEL_UNMANAGED,
+]
+nrg_lockdown_restriction_levels = [
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
+    CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
+]
+
+# consts for maintenance configuration
+schedule_types = [
+    CONST_DAILY_MAINTENANCE_SCHEDULE,
+    CONST_WEEKLY_MAINTENANCE_SCHEDULE,
+    CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
+    CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
+]
+
+week_indexes = [
+    CONST_WEEKINDEX_FIRST,
+    CONST_WEEKINDEX_SECOND,
+    CONST_WEEKINDEX_THIRD,
+    CONST_WEEKINDEX_FOURTH,
+    CONST_WEEKINDEX_LAST,
 ]
 
 # consts for credential
@@ -224,6 +269,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
+        c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
@@ -232,6 +278,7 @@ def load_arguments(self, _):
         c.argument('network_policy')
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
+        c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
         c.argument('uptime_sla', action='store_true')
@@ -247,9 +294,9 @@ def load_arguments(self, _):
         c.argument('assign_kubelet_identity', validator=validate_assign_kubelet_identity)
         c.argument('enable_aad', action='store_true')
         c.argument('enable_azure_rbac', action='store_true')
-        c.argument('aad_client_app_id')
-        c.argument('aad_server_app_id')
-        c.argument('aad_server_app_secret')
+        c.argument('aad_client_app_id', deprecate_info=c.deprecate(target='--aad-client-app-id', hide=True))
+        c.argument('aad_server_app_id', deprecate_info=c.deprecate(target='--aad-server-app-id', hide=True))
+        c.argument('aad_server_app_secret', deprecate_info=c.deprecate(target='--aad-server-app-secret', hide=True))
         c.argument('aad_tenant_id')
         c.argument('aad_admin_group_object_ids')
         c.argument('enable_oidc_issuer', action='store_true')
@@ -279,6 +326,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('aci_subnet_name')
         c.argument('appgw_name', arg_group='Application Gateway')
         c.argument('appgw_subnet_cidr', arg_group='Application Gateway')
@@ -312,7 +360,7 @@ def load_arguments(self, _):
         c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.', deprecate_info=c.deprecate(redirect='--vm-set-type', hide=True))
         c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
-        c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
+        c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_fips_image', action='store_true')
         c.argument('kubelet_config')
@@ -365,10 +413,12 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
         c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
+        c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
+        c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
         c.argument('uptime_sla', action='store_true')
@@ -549,8 +599,9 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)
-        c.argument('aks_custom_headers')
         c.argument('snapshot_id', validator=validate_snapshot_id)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool delete') as c:
         c.argument('ignore_pod_disruption_budget', options_list=[
@@ -564,12 +615,26 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_name', options_list=[
                        '--name', '-n'], help='The config name.')
-            c.argument('config_file', options_list=[
-                       '--config-file'], help='The config json file.', required=False)
-            c.argument('weekday', options_list=[
-                       '--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
-            c.argument('start_hour', type=int, options_list=[
-                       '--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
+            c.argument('config_file', help='The config json file.')
+            c.argument('weekday', help='Weekday on which maintenance can happen. e.g. Monday')
+            c.argument('start_hour', type=int, help='Maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
+            c.argument('schedule_type', arg_type=get_enum_type(schedule_types),
+                       help='Schedule type for non-default maintenance configuration.')
+            c.argument('interval_days', type=int, help='The number of days between each set of occurrences for Daily schedule.')
+            c.argument('interval_weeks', type=int, help='The number of weeks between each set of occurrences for Weekly schedule.')
+            c.argument('interval_months', type=int, help='The number of months between each set of occurrences for AbsoluteMonthly or RelativeMonthly schedule.')
+            c.argument('day_of_week', help='Specify on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
+            c.argument('day_of_month', help='Specify on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
+            c.argument('week_index', arg_type=get_enum_type(week_indexes),
+                       help='Specify on which instance of the weekday specified in --day-of-week the maintenance occurs for RelativeMonthly schedule.')
+            c.argument('duration_hours', options_list=['--duration'], type=int,
+                       help='The length of maintenance window. The value ranges from 4 to 24 hours.')
+            c.argument('utc_offset', validator=validate_utc_offset,
+                       help='The UTC offset in format +/-HH:mm. e.g. -08:00 or +05:30.')
+            c.argument('start_date', validator=validate_start_date,
+                       help='The date the maintenance window activates. e.g. 2023-01-01.')
+            c.argument('start_time', validator=validate_start_time,
+                       help='The start time of the maintenance window. e.g. 09:30.')
 
     for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
         with self.argument_context(scope) as c:
@@ -604,6 +669,7 @@ def load_arguments(self, _):
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks addon disable') as c:
@@ -634,6 +700,7 @@ def load_arguments(self, _):
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks disable-addons') as c:
@@ -655,6 +722,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks get-credentials') as c:

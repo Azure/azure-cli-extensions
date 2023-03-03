@@ -10,10 +10,12 @@
 from typing import Tuple
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from copy import deepcopy
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_y_n
+from packaging import version as packaging_version
 
-from ..vendored_sdks.models import Extension, Scope, ScopeCluster
+from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .DefaultExtension import DefaultExtension
 
 logger = get_logger(__name__)
@@ -31,6 +33,7 @@ class Dapr(DefaultExtension):
         # constants for configuration settings.
         self.CLUSTER_TYPE_KEY = 'global.clusterType'
         self.HA_KEY_ENABLED_KEY = 'global.ha.enabled'
+        self.APPLY_CRDS_HOOK_ENABLED_KEY = 'hooks.applyCrds'
         self.SKIP_EXISTING_DAPR_CHECK_KEY = 'skipExistingDaprCheck'
         self.EXISTING_DAPR_RELEASE_NAME_KEY = 'existingDaprReleaseName'
         self.EXISTING_DAPR_RELEASE_NAMESPACE_KEY = 'existingDaprReleaseNamespace'
@@ -93,7 +96,6 @@ class Dapr(DefaultExtension):
             name = prompt(self.MSG_ENTER_RELEASE_NAME, self.RELEASE_INFO_HELP_STRING) or self.DEFAULT_RELEASE_NAME
             if release_name and name != release_name:
                 logger.warning("The release name has been changed from '%s' to '%s'.", release_name, name)
-
             namespace = prompt(self.MSG_ENTER_RELEASE_NAMESPACE, self.RELEASE_INFO_HELP_STRING)\
                 or self.DEFAULT_RELEASE_NAMESPACE
             if release_namespace and namespace != release_namespace:
@@ -106,7 +108,8 @@ class Dapr(DefaultExtension):
                cluster_rp: str, extension_type: str, scope: str, auto_upgrade_minor_version: bool,
                release_train: str, version: str, target_namespace: str, release_namespace: str,
                configuration_settings: dict, configuration_protected_settings: dict,
-               configuration_settings_file: str, configuration_protected_settings_file: str):
+               configuration_settings_file: str, configuration_protected_settings_file: str,
+               plan_name: str, plan_publisher: str, plan_product: str):
         """ExtensionType 'Microsoft.Dapr' specific validations & defaults for Create
            Must create and return a valid 'ExtensionInstance' object.
         """
@@ -144,3 +147,64 @@ class Dapr(DefaultExtension):
             location=""
         )
         return extension_instance, release_name, create_identity
+
+    def Update(self, cmd, resource_group_name: str, cluster_name: str, auto_upgrade_minor_version: bool,
+               release_train: str, version: str, configuration_settings: dict,
+               configuration_protected_settings: dict, original_extension: Extension, yes: bool = False) \
+            -> PatchExtension:
+        """ExtensionType 'Microsoft.Dapr' specific validations & defaults for Update.
+           Must create and return a valid 'PatchExtension' object.
+        """
+        input_configuration_settings = deepcopy(configuration_settings)
+
+        # configuration_settings can be None, so we need to set it to an empty dict.
+        if configuration_settings is None:
+            configuration_settings = {}
+
+        # If we are downgrading the extension, then we need to disable the apply-CRDs hook.
+        # Additionally, if we are disabling auto-upgrades, we need to disable the apply-CRDs hook (as auto-upgrade is always on the latest version).
+        # This is because CRD updates while downgrading can cause issues.
+        # As CRDs are additive, skipping their removal while downgrading is safe.
+        original_version = original_extension.version
+        original_auto_upgrade = original_extension.auto_upgrade_minor_version
+        if self.APPLY_CRDS_HOOK_ENABLED_KEY in configuration_settings:
+            logger.debug("'%s' is set to '%s' in --configuration-settings, not overriding it.",
+                         self.APPLY_CRDS_HOOK_ENABLED_KEY, configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY])
+        elif original_auto_upgrade and not auto_upgrade_minor_version:
+            logger.debug("Auto-upgrade is disabled and version is pinned to %s. Setting '%s' to false.",
+                         version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
+        elif original_version and version and Dapr._is_downgrade(version, original_version):
+            logger.debug("Downgrade detected from %s to %s. Setting %s to false.",
+                         original_version, version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
+        elif original_version and version and version == original_version:
+            logger.debug("Version unchanged at %s. Setting %s to false.",
+                         version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
+        else:
+            # If we are not downgrading, enable the apply-CRDs hook explicitly.
+            # This is because the value may have been set to false during a previous downgrade.
+            logger.debug("No downgrade detected. Setting %s to true.", self.APPLY_CRDS_HOOK_ENABLED_KEY)
+            configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'true'
+
+        # If no changes were made, return the original dict (empty or None).
+        if len(configuration_settings) == 0:
+            configuration_settings = input_configuration_settings
+
+        return PatchExtension(auto_upgrade_minor_version=auto_upgrade_minor_version,
+                              release_train=release_train,
+                              version=version,
+                              configuration_settings=configuration_settings,
+                              configuration_protected_settings=configuration_protected_settings)
+
+    @staticmethod
+    def _is_downgrade(v1: str, v2: str) -> bool:
+        """
+        Returns True if version v1 is less than version v2.
+        """
+        try:
+            return packaging_version.Version(v1) < packaging_version.Version(v2)
+        except packaging_version.InvalidVersion:
+            logger.debug("Warning: Unable to compare versions %s and %s.", v1, v2)
+            return True  # This will cause the apply-CRDs hook to be disabled, which is safe.

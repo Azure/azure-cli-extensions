@@ -149,13 +149,19 @@ def list_grafana(cmd, resource_group_name=None):
 
 
 def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
-                   public_network_access=None, resource_group_name=None, tags=None):
-    if (not api_key_and_service_account and not deterministic_outbound_ip
-            and not public_network_access and not tags):
-        raise ArgumentUsageError("--api-key | --service-account | --tags"
-                                 "--deterministic-outbound-ip | --public-network-access")
+                   public_network_access=None, smtp=None, host=None, user=None, password=None,
+                   start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
+                   resource_group_name=None, tags=None):
+
+    # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
+
+    if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
+            and not smtp and not host and not user and not password and not start_tls_policy and not from_address
+            and not from_name and skip_verify is None):
+        raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
 
     client = cf_amg(cmd.cli_ctx)
+
     instance = client.grafana.get(resource_group_name, grafana_name)
 
     if api_key_and_service_account:
@@ -169,6 +175,32 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if tags:
         instance.tags = tags
+
+    if (smtp or host or user or password or start_tls_policy
+            or from_address or from_name or skip_verify is not None):
+
+        from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
+        if not instance.properties.grafana_configurations:
+            instance.properties.grafana_configurations = GrafanaConfigurations()
+        if not instance.properties.grafana_configurations.smtp:
+            instance.properties.grafana_configurations.smtp = Smtp()
+
+        if smtp:
+            instance.properties.grafana_configurations.smtp.enabled = (smtp == "Enabled")
+        if host:
+            instance.properties.grafana_configurations.smtp.host = host
+        if user:
+            instance.properties.grafana_configurations.smtp.user = user
+        if password:
+            instance.properties.grafana_configurations.smtp.password = password
+        if start_tls_policy:
+            instance.properties.grafana_configurations.smtp.start_tls_policy = start_tls_policy
+        if skip_verify is not None:
+            instance.properties.grafana_configurations.smtp.skip_verify = skip_verify
+        if from_address:
+            instance.properties.grafana_configurations.smtp.from_address = from_address
+        if from_name:
+            instance.properties.grafana_configurations.smtp.from_name = from_name
 
     # "begin_create" uses PUT, which handles both Create and Update
     return client.grafana.begin_create(resource_group_name, grafana_name, instance)

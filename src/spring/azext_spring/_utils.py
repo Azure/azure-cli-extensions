@@ -15,7 +15,7 @@ from re import (search, match, compile)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -27,7 +27,7 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
     file_path = None
     if artifact_path is not None:
         file_path = artifact_path
-        file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
+        file_type = "NetCoreZip" if runtime_version == SupportedRuntimeValue.NET_CORE31 else "Jar"
     elif source_path is not None:
         file_path = os.path.join(tempfile.gettempdir(
         ), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
@@ -39,11 +39,22 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
 
 
 def _get_file_type(runtime_version, artifact_path=None):
-    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
-
+    file_type = "Jar" if _is_java(runtime_version) else "Others"
     if artifact_path is None:
         file_type = "Source"
     return file_type
+
+
+def _is_java(runtime_version):
+    if runtime_version is None:
+        return False
+    return runtime_version.casefold() == SupportedRuntimeValue.JAVA8.casefold() or \
+        runtime_version.casefold() == SupportedRuntimeValue.JAVA11.casefold() or \
+        runtime_version.casefold() == SupportedRuntimeValue.JAVA17.casefold()
+
+
+def _java_runtime_in_number():
+    return [8, 11, 17]
 
 
 def _pack_source_code(source_location, tar_file_path):

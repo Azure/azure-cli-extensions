@@ -42,6 +42,14 @@ def load_arguments(self, _):
                    help="if enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
         c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
                    help="allow public network access")
+        c.argument("smtp", get_enum_type(["Enabled", "Disabled"]), arg_group='SMTP', help="allow Grafana to send email")
+        c.argument("host", arg_group='SMTP', help="Smtp server url(port included)")
+        c.argument("user", arg_group='SMTP', help="Smtp server user name")
+        c.argument("password", arg_group='SMTP', help="Smtp server user password")
+        c.argument("from_address", arg_group='SMTP', help="Address used when sending out emails")
+        c.argument("from_name", arg_group='SMTP', help="Name to be used when sending out emails")
+        c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
+        c.argument("skip_verify", arg_group='SMTP', arg_type=get_three_state_flag(), help="Skip verifying SSL for SMTP server")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")

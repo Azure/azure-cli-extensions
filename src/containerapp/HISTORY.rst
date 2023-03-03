@@ -2,6 +2,24 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+
+0.3.21
+++++++
+* Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
+* Added model mapping to support add/update of init Containers via `az containerapp create` & `az containerapp update` commands.
+
+0.3.20
+++++++
+* Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
+
+0.3.19
+++++++
+* Fix "'NoneType' object is not iterable" error in `az containerapp hostname bind` command
+
 0.3.18
 ++++++
 * Fix "'NoneType' object has no attribute 'get'" error in `az containerapp up` with no ingress arguments
