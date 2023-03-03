@@ -34,7 +34,7 @@ CLASSIFIERS = [
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
-with open('HISTORY.md', 'r', encoding='utf-8') as f:
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 DEPENDENCIES = [
