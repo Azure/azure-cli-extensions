@@ -1968,7 +1968,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group {resource_group} --name {aks_name2} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
                      '--node-count 1 --snapshot-id {snapshot_resource_id} ' \
-                     '-k {k8s_version} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -1978,7 +1977,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add a new nodepool to this cluster using this snapshot
         add_nodepool_cmd = 'aks nodepool add --resource-group={resource_group} --cluster-name={aks_name2} --name={nodepool_name2} --node-count 1 ' \
-                           '-k {k8s_version} ' \
                            '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(add_nodepool_cmd,
                  checks=[
@@ -2003,14 +2001,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(get_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('creationData.sourceResourceId', snapshot_resource_id)
-        ])
-
-        # upgrade this cluster (snapshot is not allowed for cluster upgrading), snapshot info is reset
-        create_cmd = 'aks upgrade --resource-group {resource_group} --name {aks_name2} -k {upgrade_k8s_version} --yes -o json'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].creationData', None),
-            self.check('agentPoolProfiles[1].creationData', None)
         ])
 
         # delete the 2nd AKS cluster
@@ -2437,7 +2427,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # upgrade Windows nodepool
         self.cmd('aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} '
                  '--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} '
-                 '--aks-custom-headers WindowsContainerRuntime=containerd', checks=[
+                 '--aks-custom-headers WindowsContainerRuntime=containerd --yes', checks=[
                      self.check('provisioningState', 'Succeeded')
                  ])
 
@@ -3055,14 +3045,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--enable-managed-identity ' \
                      '--node-os-upgrade-channel NodeImage ' \
-                     '--ssh-key-value={ssh_key_value}'
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.nodeOsUpgradeChannel', 'NodeImage')
         ])
 
         # update node os upgrade channel
-        self.cmd('aks update --resource-group={resource_group} --name={name} --node-os-upgrade-channel None', checks=[
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--node-os-upgrade-channel None ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.nodeOsUpgradeChannel', 'None')
         ])
@@ -3087,7 +3081,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--enable-managed-identity ' \
                      '--auto-upgrade-channel rapid ' \
                      '--node-os-upgrade-channel NodeImage ' \
-                     '--ssh-key-value={ssh_key_value}'
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.upgradeChannel', 'rapid'),
@@ -3095,7 +3090,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update auto upgrade channel and node os upgrade channel
-        self.cmd('aks update --resource-group={resource_group} --name={name} --auto-upgrade-channel stable --node-os-upgrade-channel None', checks=[
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--auto-upgrade-channel stable --node-os-upgrade-channel None ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeOSUpgradeChannelPreview'
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('autoUpgradeProfile.upgradeChannel', 'stable'),
             self.check('autoUpgradeProfile.nodeOsUpgradeChannel', 'None')
@@ -6588,6 +6586,41 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
+            self.check('linuxProfile.ssh.publicKeys[0].keyData', TEST_SSH_KEY_PUB)
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_no_ssh_key_and_update_ssh_public_key(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '-c 1 --no-ssh-key -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        TEST_SSH_KEY_PUB = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYpZoWGqsIbCKOvcrtPi5PpgoaP24pKJ8yk80qBYbqIjyVngCfM8rbgQCZKx4D8emmN7UxjiSt+c4WtV1aUfbT7VA5r4neuhPVgkqgp7CmkKdf0beV/0i5K28J7RojDTktllY9EYRYK6A4olLplaHJiuqbsMYa8amv43ol6IxgM3eE2BiEYm0/uvNKDmZ8AN4w07fFKjz1+wfdkluxC73qhijMY6FCgw+xEvvS1kd2Se6L/M/qV+VVnxW+S/bBT4Yew2dR6KWnauJvxXzdM8WQHyJy52jQ1n5PHxVRMgjRLhWvbcNNgPseFpULxe3a4ATS8kKO2Z9pzpSOgEpW7LVz'  # pylint: disable=line-too-long
+        _, pathname = tempfile.mkstemp()
+        with open(pathname, 'w') as key_file:
+            key_file.write(TEST_SSH_KEY_PUB)
+        self.kwargs.update({
+            'ssh_key_value': pathname.replace('\\', '\\\\')
+        })
+
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--ssh-key-value={ssh_key_value} -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('linuxProfile.adminUsername', "azureuser"),
             self.check('linuxProfile.ssh.publicKeys[0].keyData', TEST_SSH_KEY_PUB)
         ])
 

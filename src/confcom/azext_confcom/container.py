@@ -308,7 +308,7 @@ class ContainerImage:
         allow_elevated: bool,
         id_val: str,
         extraEnvironmentRules: Dict,
-        allowStdioAccess: bool = False,
+        allowStdioAccess: bool = True,
         execProcesses: List = None,
         signals: List = None,
     ) -> None:
