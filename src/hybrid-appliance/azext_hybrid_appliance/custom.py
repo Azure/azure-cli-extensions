@@ -21,17 +21,17 @@ def validate_hybrid_appliance():
 
     # Check if the disk space is at least 20GB
     disk_usage = psutil.disk_usage('/')
-    if disk_usage.total < 20 * 1024 * 1024 * 1024:
+    if disk_usage.total < consts.Disk_Threshold * 1024 * 1024 * 1024:
         raise ValidationError("This program requires at least 20GB of disk space")
 
     # Check if the memory is at least 4GB
     memory = psutil.virtual_memory()
-    if memory.total < 4 * 1024 * 1024 * 1024:
+    if memory.total < consts.Memory_Threshold * 1024 * 1024 * 1024:
         raise ValidationError("This program requires at least 4GB of memory")
     
     # Check if snap storage endpoint is reachable
     try:
-        response = requests.head(consts.Snap_Storage_End_Point, timeout=5)
+        response = requests.head(consts.Snap_Config_Storage_End_Point, timeout=5)
         response.raise_for_status()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError):
         raise ValidationError("The endpoint {} is not reachable", consts.Snap_Storage_End_Point)
