@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class FailoverCommit(AAZCommand):
     """Operation to commit the failover of the replication protected item.
+
+    :example: protected-item failover-commit
+        az site-recovery protected-item failover-commit --fabric-name {fabric1_name} --protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name}
     """
 
     _aaz_info = {

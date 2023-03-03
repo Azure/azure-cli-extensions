@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the details of a protection container.
+
+    :example: protection-container show
+        az site-recovery fabric protection-container show -g {rg} --fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name}
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the details of an ASR replication protected item.
+
+    :example: protected-item show
+        az site-recovery protected-item show -g {rg} --fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} --vault-name {vault_name}
     """
 
     _aaz_info = {

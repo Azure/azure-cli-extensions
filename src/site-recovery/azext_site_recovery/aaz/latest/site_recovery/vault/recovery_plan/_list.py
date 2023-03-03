@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the recovery plans in the vault.
+
+    :example: recovery-plan list
+        az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}
     """
 
     _aaz_info = {
