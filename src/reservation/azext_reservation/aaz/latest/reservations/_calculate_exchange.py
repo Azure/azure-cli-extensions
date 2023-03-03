@@ -140,7 +140,7 @@ class CalculateExchange(AAZCommand):
         )
         _element.sku = AAZStrArg(
             options=["sku"],
-            help="sku",
+            help="sku name",
         )
 
         applied_scope = cls._args_schema.ris_to_purchase.Element.applied_scope

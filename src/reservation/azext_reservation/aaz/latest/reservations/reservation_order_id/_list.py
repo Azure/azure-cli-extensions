@@ -48,7 +48,6 @@ class List(AAZCommand):
             options=["--subscription-id"],
             help="subscription id",
             required=True,
-            id_part="subscription",
         )
         return cls._args_schema
 

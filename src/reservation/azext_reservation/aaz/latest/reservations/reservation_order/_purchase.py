@@ -18,7 +18,7 @@ class Purchase(AAZCommand):
     """Create `ReservationOrder` and create resource under the specified URI.
 
     :example: Purchase a single scope reservation
-        az reservations reservation-order purchase --reservation-order-id 40000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --billing-scope 50000000-aaaa-bbbb-cccc-200000000005 --reserved-resource-type VirtualMachines --display-name name1 --quantity 1 --sku Standard_B1s --term P1Y --billing-plan Monthly --location eastus --applied-scope 50000000-aaaa-bbbb-cccc-200000000005
+        az reservations reservation-order purchase --reservation-order-id 40000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --billing-scope 50000000-aaaa-bbbb-cccc-200000000005 --reserved-resource-type VirtualMachines --display-name name1 --quantity 1 --sku Standard_B1s --term P1Y --billing-plan Monthly --location eastus --applied-scope 50000000-aaaa-bbbb-cccc-200000000010
 
     :example: Purchase a Single scope with resource group reservation
         az reservations reservation-order purchase --reservation-order-id 40000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --billing-scope 50000000-aaaa-bbbb-cccc-200000000005 --reserved-resource-type VirtualMachines --display-name testername1 --quantity 1 --sku Standard_B1s --term P1Y --billing-plan Monthly --location eastus --applied-scope '/subscriptions/50000000-aaaa-bbbb-cccc-200000000005/resourceGroups/rg1' --instance-flexibility Off
