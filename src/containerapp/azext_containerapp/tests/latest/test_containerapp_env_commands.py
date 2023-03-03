@@ -325,7 +325,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
 
     @AllowLargeResponse(8192)
-    # @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_custom_domains(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
