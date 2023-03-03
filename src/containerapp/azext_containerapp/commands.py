@@ -52,11 +52,6 @@ def load_command_table(self, _):
         client_factory=cf_managed_environments
     )
 
-    container_apps_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.appcontainers.operations#ContainerAppsOperations.{}',
-        client_factory=cf_container_apps
-    )
-
     with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
