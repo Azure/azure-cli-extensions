@@ -20,7 +20,8 @@ def create_dashboard(grafana_url, file_path, http_headers):
 
     result = _create_dashboard(json.dumps(payload), grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None)
     dashboard_title = content['dashboard'].get('title', '')
-    logger.info("create dashboard %s response status: %s, msg: %s", dashboard_title, result[0], result[1])
+    logger.warning("Create dashboard %s. (%s)", dashboard_title, "SUCCESS" if result[0] == 200 else "FAILURE")
+    logger.info("status: %s, msg: %s", result[0], result[1])
 
 
 def _create_dashboard(payload, grafana_url, http_post_headers, verify_ssl, client_cert, debug):

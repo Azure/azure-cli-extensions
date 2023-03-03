@@ -48,5 +48,5 @@ def restore_components(grafana_url, restore_functions, tmpdir, components, http_
 
     for ext in exts:
         for file_path in glob('{0}/**/*.{1}'.format(tmpdir, ext), recursive=True):
-            logger.warning('Restoring %s: %s', ext, file_path)
+            logger.info('Restoring %s: %s', ext, file_path)
             restore_functions[ext](grafana_url, file_path, http_headers)

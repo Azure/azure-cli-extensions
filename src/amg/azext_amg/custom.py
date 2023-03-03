@@ -254,7 +254,7 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, resource_g
             http_headers=headers)
 
 
-def sync_dashboard(cmd, source, destination, skip_folders=None, dry_run=None):
+def sync_dashboard(cmd, source, destination, folders=None, dry_run=None):
     # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     if not is_valid_resource_id(source):
         raise ArgumentUsageError(f"'{source}' isn't a valid resource id, please refer to example commands in help")
@@ -262,7 +262,7 @@ def sync_dashboard(cmd, source, destination, skip_folders=None, dry_run=None):
         raise ArgumentUsageError(f"'{destination}' isn't a valid resource id, please refer to example commands in help")
 
     if source.lower() == destination.lower():
-        raise ArgumentUsageError(f"Destination workspace should be different from the source workspace")
+        raise ArgumentUsageError("Destination workspace should be different from the source workspace")
 
     parsed_source = parse_resource_id(source)
     parsed_destination = parse_resource_id(destination)
@@ -295,7 +295,7 @@ def sync_dashboard(cmd, source, destination, skip_folders=None, dry_run=None):
     source_dashboards = list_dashboards(cmd, source_workspace, resource_group_name=source_resource_group,
                                         subscription=source_subscription)
 
-    skip_folders = skip_folders or []
+    folders = folders or []
     summary = {
         "folders_created": [],
         "dashboards_synced": [],
@@ -309,8 +309,8 @@ def sync_dashboard(cmd, source, destination, skip_folders=None, dry_run=None):
                                           subscription=source_subscription)
         folder_title = source_dashboard["meta"]["folderTitle"]
         dashboard_path = folder_title + "/" + source_dashboard["dashboard"]["title"]
-        under_skip_folders = bool(next((f for f in skip_folders if folder_title.lower() == f.lower()), None))
-        if source_dashboard["meta"].get("provisioned") or under_skip_folders:
+        if (source_dashboard["meta"].get("provisioned") or
+            (folders and not bool(next((f for f in folders if folder_title.lower() == f.lower()), None)))):
             summary["dashboards_skipped"].append(dashboard_path)
             continue
 

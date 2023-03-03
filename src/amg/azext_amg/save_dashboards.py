@@ -29,9 +29,8 @@ def get_all_dashboards_in_grafana(page, limit, grafana_url, http_get_headers, ve
         for board in dashboards:
             logger.info('name: %s', board['title'])
         return dashboards
-    else:
-        logger.warning("Get dashboards failed, status: %s, msg: %s", status, content)
-        return []
+    logger.warning("Get dashboards failed, status: %s, msg: %s", status, content)
+    return []
 
 
 def save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path, pretty_print):

@@ -1,5 +1,4 @@
 import re
-import sys
 import json
 
 from knack.log import get_logger
@@ -21,13 +20,6 @@ def log_response(resp):
     except ValueError:
         logger.debug("[DEBUG] resp body: %s", resp.text)
     return resp
-
-
-def to_python2_and_3_compatible_string(some_string):
-    if sys.version_info[0] > 2:
-        return some_string
-    else:
-        return some_string.encode('utf8')
 
 
 def save_json(file_name, data, folder_path, extension, pretty_print):

@@ -29,9 +29,8 @@ def get_all_folders_in_grafana(grafana_url, http_get_headers, verify_ssl, client
         for folder in folders:
             logger.info("name: %s", folder['title'])
         return folders
-    else:
-        logger.warning("Get folders failed, status: %s, msg: %s", status, content)
-        return []
+    logger.warning("Get folders failed, status: %s, msg: %s", status, content)
+    return []
 
 
 def save_folder_setting(folder_name, file_name, folder_settings, folder_permissions, folder_path, pretty_print):

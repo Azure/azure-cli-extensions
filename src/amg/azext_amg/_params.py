@@ -53,17 +53,6 @@ def load_arguments(self, _):
         c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
         c.argument("skip_verify", arg_group='SMTP', arg_type=get_three_state_flag(), help="Skip verifying SSL for SMTP server")
 
-    with self.argument_context("grafana dashboard sync") as c:
-        c.argument("source", options_list=["--source", "-s"], help="resource id of the source workspace")
-        c.argument("destination", options_list=["--destination", "-d"], help="resource id of the destination workspace")
-        c.argument("dry_run", arg_type=get_three_state_flag(), help="preview changes w/o committing")
-        c.argument("skip_folders", nargs="+", help="space separated folder list which sync command shall skip")
-        c.argument("data_source_uid_mappings", options_list=["--data-source-uid-mappings", "-m"], nargs="+",
-                   help="space seperated key vaule pairs that 'sync' command can link to new data sources at destination workspace, e.g. --data-source-uid-mappings datasource-1=datasource-2")
-
-    with self.argument_context("grafana sync") as c:
-        c.argument("sync_data_sources", arg_type=get_three_state_flag(), help="sync up data sources. default: false")
-
     with self.argument_context("grafana backup") as c:
         c.argument("directory", options_list=["-d", "--directory"], help="directory to backup Grafana artifacts")
 
@@ -83,6 +72,14 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana dashboard import") as c:
         c.argument("definition", help="The complete dashboard model in json string, Grafana gallery id, a path or url to a file with such content")
+
+    with self.argument_context("grafana dashboard sync") as c:
+        c.argument("source", options_list=["--source", "-s"], help="resource id of the source workspace")
+        c.argument("destination", options_list=["--destination", "-d"], help="resource id of the destination workspace")
+        c.argument("dry_run", arg_type=get_three_state_flag(), help="preview changes w/o committing")
+        c.argument("folders", nargs="+", help="space separated folder list which sync command shall handle dashboards underneath")
+        c.argument("data_source_uid_mappings", options_list=["--data-source-uid-mappings", "-m"], nargs="+",
+                   help="space seperated key vaule pairs that 'sync' command can link to new data sources at destination workspace, e.g. --data-source-uid-mappings datasource-1=datasource-2")
 
     with self.argument_context("grafana") as c:
         c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
