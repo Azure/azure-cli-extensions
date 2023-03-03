@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "confidentialledger managedccfs update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Patch a Managed CCF instance.
@@ -44,8 +45,9 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.app_name = AAZStrArg(
             options=["-n", "--name", "--app-name"],
-            help="Name of the Managed CCF",
+            help="The unique name of the instance.",
             required=True,
+            is_preview=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
@@ -84,11 +86,13 @@ class Update(AAZCommand):
         deployment_type = cls._args_schema.deployment_type
         deployment_type.app_source_uri = AAZStrArg(
             options=["app-source-uri"],
-            help="Source Uri containing ManagedCCF code",
+            help="Source Uri containing the Managed CCF code. For sample JS application, use the value 'sample' and for a custom JS application, use the value 'customImage'",
+            is_preview=True,
         )
         deployment_type.language_runtime = AAZStrArg(
             options=["language-runtime"],
-            help="Unique name for the Managed CCF.",
+            help="The language runtime value is 'JS'",
+            is_preview=True,
             enum={"CPP": "CPP", "JS": "JS"},
         )
 

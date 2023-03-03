@@ -13,13 +13,14 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "confidentialledger managedccfs delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a Managed CCF instance.
 
     :example: Delete a Managed CCF instance
-        az confidentialledger managedccfs delete --app-name "myMccf" --resource-group "myResourceGroup" --subscription <subscription-id>
+        az confidentialledger managedccfs delete --name "myMccf" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
@@ -48,8 +49,9 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.app_name = AAZStrArg(
             options=["-n", "--name", "--app-name"],
-            help="Name of the Managed CCF",
+            help="The unique name of the instance.",
             required=True,
+            is_preview=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",

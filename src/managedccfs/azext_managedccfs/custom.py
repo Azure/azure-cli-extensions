@@ -23,14 +23,14 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         )
         
         _Element.encryptionkey = AAZFileArg(
-            options=["encryptionkey"],
+            options=["encryption-key"],
             help="Path to the PEM certificate file containing the encryption key.",
             required=False,
             fmt = AAZFileArgTextFormat(),
         )
 
         _Element.tags = AAZStrArg(
-            options=["tag"],
+            options=["identifier"],
             help="A string value that is used to uniquely identify a member.",
             required=True,
         )
@@ -46,10 +46,10 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         def item_transform(_, item):
             member_cert = dict()
             member_cert['certificate'] = item.certificate
-            member_cert['encryptionkey'] = item.encryptionkey if (has_value(item.encryptionkey) and item.encryptionkey != None and item.encryptionkey != "") else None
+            member_cert['encryptionkey'] = item.encryption_key if (has_value(item.encryption_key) and item.encryption_key != None and item.encryption_key != "") else None
 
             tags = dict()
-            tags['identifier'] = item.tag
+            tags['identifier'] = item.identifier
             member_cert['tags'] = tags
 
             return member_cert

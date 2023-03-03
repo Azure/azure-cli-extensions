@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "confidentialledger managedccfs list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """View the Managed CCF instances in a subscription.
+    """View the Azure Managed CCF instances in a resource group.
 
     :example: View the Managed CCF instances
-        az confidentialledger managedccfs list --subscription <subscription-id> --resource-group "myResourceGroup"
+        az confidentialledger managedccfs list --resource-group "myResourceGroup"
     """
 
     _aaz_info = {

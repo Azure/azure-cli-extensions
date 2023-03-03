@@ -13,16 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "confidentialledger managedccfs create",
+    is_preview=True,
 )
-
 class Create(AAZCommand):
-    """Create a Managed CCF instance.
+    """Create an Azure Managed CCF instance.
 
     :example: Deploy a Managed CCF instance with the sample JS application
-        az confidentialledger managedccfs create --name "myMccf" --resource-group "myResourceGroup" --subscription <subscription-id> --location "southcentralus" --tags Dept=Finance --deployment-type language-run-time="JS" app-source-uri="sample" --member-identity-certificates certificate="<public certificate in PEM format>" encryption-key="" tags identifier=financemanager
+        az confidentialledger managedccfs create --certs [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --deployment-type {language-runtime:'JS',app-source-uri:'sample'}
 
     :example: Deploy a Managed CCF instance with a custom JS application
-        az confidentialledger managedccfs create --name "myMccf" --resource-group "myResourceGroup" --subscription <subscription-id> --location "southcentralus" --tags Dept=Finance --deployment-type language-run-time="JS" --member-identity-certificates certificate="<public certificate in PEM format>" encryption-key="" tags identifier=financemanager
+        az confidentialledger managedccfs create --certs [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --deployment-type {language-runtime:'JS',app-source-uri:'customImage'}
     """
 
     _aaz_info = {
@@ -51,8 +51,9 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.app_name = AAZStrArg(
             options=["-n", "--name", "--app-name"],
-            help="Name of the Managed CCF",
+            help="The unique name of the instance.",
             required=True,
+            is_preview=True,
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
             ),
@@ -66,8 +67,9 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ManagedCCF",
-            help="The geo-location where the resource lives",
+            help="The geo-location of the instance. The only region that is supported is southcentralus.",
             required=True,
+            is_preview=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -87,44 +89,22 @@ class Create(AAZCommand):
         _args_schema.deployment_type = AAZObjectArg(
             options=["--deployment-type"],
             arg_group="Properties",
-            help="Deployment Type of Managed CCF",
-        )
-        _args_schema.member_identity_certificates = AAZListArg(
-            options=["--member-identity-certificates"],
-            arg_group="Properties",
-            help="List of member identity certificates for  Managed CCF",
+            help="Instance specific data.",
+            is_preview=True,
         )
 
         deployment_type = cls._args_schema.deployment_type
         deployment_type.app_source_uri = AAZStrArg(
             options=["app-source-uri"],
-            help="Source Uri containing ManagedCCF code",
+            help="Source Uri containing the Managed CCF code. For sample JS application, use the value 'sample' and for a custom JS application, use the value 'customImage'",
+            is_preview=True,
         )
         deployment_type.language_runtime = AAZStrArg(
             options=["language-runtime"],
-            help="Unique name for the Managed CCF.",
+            help="The language runtime value is 'JS'",
+            is_preview=True,
             enum={"CPP": "CPP", "JS": "JS"},
         )
-
-        member_identity_certificates = cls._args_schema.member_identity_certificates
-        member_identity_certificates.Element = AAZObjectArg()
-
-        _element = cls._args_schema.member_identity_certificates.Element
-        _element.certificate = AAZStrArg(
-            options=["cert"],
-            help="Member Identity Certificate",
-        )
-        _element.encryptionkey = AAZStrArg(
-            options=["encryptionkey"],
-            help="Member Identity Certificate Encryption Key",
-        )
-        _element.tags = AAZDictArg(
-            options=["tags"],
-            help="Tags for Managed CCF Certificates",
-        )
-
-        tags = cls._args_schema.member_identity_certificates.Element.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -233,26 +213,11 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("deploymentType", AAZObjectType, ".deployment_type")
-                properties.set_prop("memberIdentityCertificates", AAZListType, ".member_identity_certificates")
 
             deployment_type = _builder.get(".properties.deploymentType")
             if deployment_type is not None:
                 deployment_type.set_prop("appSourceUri", AAZStrType, ".app_source_uri")
                 deployment_type.set_prop("languageRuntime", AAZStrType, ".language_runtime")
-
-            member_identity_certificates = _builder.get(".properties.memberIdentityCertificates")
-            if member_identity_certificates is not None:
-                member_identity_certificates.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.memberIdentityCertificates[]")
-            if _elements is not None:
-                _elements.set_prop("certificate", AAZStrType, ".certificate")
-                _elements.set_prop("encryptionkey", AAZStrType, ".encryptionkey")
-                _elements.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".properties.memberIdentityCertificates[].tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:

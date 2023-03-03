@@ -42,8 +42,9 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.app_name = AAZStrArg(
             options=["-n", "--name", "--app-name"],
-            help="Name of the Managed CCF",
+            help="The unique name of the instance.",
             required=True,
+            is_preview=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
