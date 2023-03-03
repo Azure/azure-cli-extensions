@@ -1037,8 +1037,7 @@ def create_managed_environment(cmd,
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
     if (logs_customer_id is None or logs_key is None) and logs_destination == "log-analytics":
-        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location,
-                                                                             resource_group_name)
+        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
     if logs_destination == "log-analytics":
         log_analytics_config_def = LogAnalyticsConfiguration(customer_id=logs_customer_id, shared_key=logs_key)
@@ -1088,8 +1087,7 @@ def create_managed_environment(cmd,
 
     if internal_only:
         if not infrastructure_subnet_resource_id:
-            raise ValidationError(
-                'Infrastructure subnet resource ID needs to be supplied for internal only environments.')
+            raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
         managed_env_def.vnet_configuration.internal = True
 
     try:
@@ -1107,13 +1105,10 @@ def create_managed_environment(cmd,
 
         # return ENV
         if r.provisioning_state != EnvironmentProvisioningState.SUCCEEDED and not no_wait:
-            not disable_warnings and logger.warning(
-                'Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(
-                    name, resource_group_name))
+            not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
 
         if r.provisioning_state == EnvironmentProvisioningState.SUCCEEDED:
-            not disable_warnings and logger.warning(
-                "\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+            not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
 
         return r
     except Exception as e:
@@ -2624,7 +2619,7 @@ def stream_environment_logs(cmd, client, resource_group_name, name, follow=False
 
     env = show_managed_environment(cmd, client, name, resource_group_name)
     sub = get_subscription_id(cmd.cli_ctx)
-    token_response = client.managed_environments.get_auth_token(resource_group_name=resource_group_name, environment_name=name)
+    token_response = client.get_auth_token(resource_group_name=resource_group_name, environment_name=name)
     token = token_response.token
     base_url = f"https://{env.location}.azurecontainerapps.dev"
 
