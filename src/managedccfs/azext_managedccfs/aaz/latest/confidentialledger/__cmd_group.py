@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "confidentialledger",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Deploy and manage Azure confidential ledgers.

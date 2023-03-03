@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "confidentialledger managedccfs",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Deploy and manage CCF aware applications on a managed platform
+    """Deploy and manage the Azure Managed CCF instances
     """
     pass
 
