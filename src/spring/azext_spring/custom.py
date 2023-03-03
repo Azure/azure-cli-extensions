@@ -482,7 +482,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     if resource.sku.tier.upper() == 'STANDARDGEN2':
         profile = Profile(cli_ctx=cmd.cli_ctx)
-        creds, _, tenant= profile.get_raw_token()
+        creds, _, tenant = profile.get_raw_token()
         token = creds[1]
         subscriptionId = get_subscription_id(cmd.cli_ctx)
         hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
@@ -508,7 +508,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
             params["sinceSeconds"] = since
         if follow:
             params["follow"] = True
-        auth=HTTPBasicAuth("primary", log_stream.primary_key)
+        auth = HTTPBasicAuth("primary", log_stream.primary_key)
 
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""

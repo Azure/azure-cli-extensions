@@ -251,7 +251,7 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
-def is_dogfood_resource(resource):    
+def is_dogfood_resource(resource):
     return resource.tags and 'environment' in resource.tags and resource.tags['environment'] == 'dogfood'
 
 
@@ -301,9 +301,11 @@ def handle_asc_exception(ex):
         else:
             raise CLIError(ex)
 
+
 class BearerAuth(requests.auth.AuthBase):
     def __init__(self, token):
         self.token = token
+
     def __call__(self, r):
         r.headers["authorization"] = "Bearer " + self.token
         return r
