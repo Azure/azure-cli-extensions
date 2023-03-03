@@ -43,9 +43,9 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.app_name = AAZStrArg(
-            options=["-n", "--name", "--app-name"],
-            help="The unique name of the instance.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="A unique name for the instance.",
             required=True,
             is_preview=True,
             id_part="name",
@@ -86,13 +86,15 @@ class Update(AAZCommand):
         deployment_type = cls._args_schema.deployment_type
         deployment_type.app_source_uri = AAZStrArg(
             options=["app-source-uri"],
-            help="Source Uri containing the Managed CCF code. For sample JS application, use the value 'sample' and for a custom JS application, use the value 'customImage'",
+            help={"short-summary": "Supply 'sample' to deploy the sample JS application.", "long-summary": "Determines the type of the JS application to deploy."},
             is_preview=True,
+            default="customImage",
         )
         deployment_type.language_runtime = AAZStrArg(
             options=["language-runtime"],
             help="The language runtime value is 'JS'",
             is_preview=True,
+            default="JS",
             enum={"CPP": "CPP", "JS": "JS"},
         )
 
@@ -176,7 +178,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "appName", self.ctx.args.app_name,
+                    "appName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

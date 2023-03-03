@@ -5,16 +5,17 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZListArg, AAZObjectArg, AAZFileArg, AAZStrArg, AAZFileArgTextFormat
 
+        # Member details.
         args_schema = super()._build_arguments_schema(*args, **kwargs)   
-        args_schema.certs = AAZListArg(
-                options=['--certs'],
-                help="Details of the member identity certificate.",
+        args_schema.members = AAZListArg(
+                options=['--members'],
+                help="Member details.",
                 required=True,
         )
         
-        args_schema.certs.Element = AAZObjectArg()
+        args_schema.members.Element = AAZObjectArg()
 
-        _Element = args_schema.certs.Element
+        _Element = args_schema.members.Element
         _Element.certificate = AAZFileArg(
             options=["certificate"],
             help="Path to the PEM certificate file.",
@@ -29,13 +30,25 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
             fmt = AAZFileArgTextFormat(),
         )
 
-        _Element.tags = AAZStrArg(
+        _Element.identifier = AAZStrArg(
             options=["identifier"],
             help="A string value that is used to uniquely identify a member.",
             required=True,
         )
         
         args_schema.member_identity_certificates._registered = False
+
+        # Deployment type properties.
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.app_type = AAZStrArg(
+            options=['--app-type'],
+            help="The type of the JS application. Set it to 'sample' to deploy the sample JS application.",
+            required=False,
+            default="customImage",
+        )
+
+        args_schema.deployment_type._registered = False
+
         return args_schema    
 
     def pre_operations(self):
@@ -43,22 +56,22 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         from azure.cli.core.aaz import has_value
         args = self.ctx.args
 
-        def item_transform(_, item):
+        def members_transform(_, item):
             member_cert = dict()
             member_cert['certificate'] = item.certificate
-            member_cert['encryptionkey'] = item.encryption_key if (has_value(item.encryption_key) and item.encryption_key != None and item.encryption_key != "") else None
+            member_cert['encryptionkey'] = item.encryptionkey if (has_value(item.encryptionkey) and item.encryptionkey != None and item.encryptionkey != "") else None
 
             tags = dict()
             tags['identifier'] = item.identifier
             member_cert['tags'] = tags
 
             return member_cert
-
+    
         args.member_identity_certificates = assign_aaz_list_arg(
             args.member_identity_certificates,
-            args.certs,
-            element_transformer=item_transform
+            args.members,
+            element_transformer=members_transform
         )
 
-        print(args.member_identity_certificates.to_serialized_data())
-
+        args.deployment_type.app_source_uri = args.app_type
+        args.deployment_type.language_runtime = "JS"

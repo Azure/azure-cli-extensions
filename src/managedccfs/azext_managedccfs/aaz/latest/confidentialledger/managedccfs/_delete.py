@@ -47,9 +47,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.app_name = AAZStrArg(
-            options=["-n", "--name", "--app-name"],
-            help="The unique name of the instance.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="A unique name for the instance.",
             required=True,
             is_preview=True,
             id_part="name",
@@ -130,7 +130,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "appName", self.ctx.args.app_name,
+                    "appName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
