@@ -102,7 +102,7 @@ def log_analytics_shared_key_client_factory(cli_ctx):
     return get_mgmt_service_client(cli_ctx, LogAnalyticsManagementClient).shared_keys
 
 
-def container_apps_client_factory(cli_ctx, **_):
+def container_apps_client_factory(cli_ctx):
     from azure.mgmt.appcontainers import ContainerAppsAPIClient
 
     return get_mgmt_service_client(cli_ctx, ContainerAppsAPIClient)

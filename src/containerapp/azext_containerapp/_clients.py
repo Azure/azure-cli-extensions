@@ -404,21 +404,6 @@ class ContainerAppClient():
         return r.json()
 
     @classmethod
-    def get_auth_token(cls, cmd, resource_group_name, name):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/getAuthToken?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            CURRENT_API_VERSION)
-
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
-        return r.json()
-
-    @classmethod
     def validate_domain(cls, cmd, resource_group_name, name, hostname):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -436,35 +421,6 @@ class ContainerAppClient():
 
 
 class ManagedEnvironmentClient():
-    @classmethod
-    def create(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = CURRENT_API_VERSION
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(managed_environment_envelope))
-
-        if no_wait:
-            return r.json()
-        elif r.status_code == 201:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-            return poll(cmd, request_url, "inprogress")
-
-        return r.json()
-
     @classmethod
     def update(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager

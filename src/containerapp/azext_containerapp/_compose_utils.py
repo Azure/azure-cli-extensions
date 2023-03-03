@@ -7,7 +7,7 @@
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_choice_list
 
-from ._utils import create_managed_environment
+from .custom import create_managed_environment
 from ._up_utils import (ContainerApp,
                         ContainerAppEnvironment,
                         ResourceGroup,

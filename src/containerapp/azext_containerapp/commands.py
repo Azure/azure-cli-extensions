@@ -9,7 +9,7 @@
 from azext_containerapp._client_factory import ex_handler_factory
 from azure.cli.core.commands import CliCommandType
 
-from ._client_factory import container_apps_client_factory
+from ._client_factory import cf_managed_environments, cf_container_apps
 from ._validators import validate_ssh
 
 
@@ -47,9 +47,14 @@ def transform_revision_list_output(revs):
 
 
 def load_command_table(self, _):
-    container_apps_sdk = CliCommandType(
+    managed_environments_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.appcontainers.operations#ManagedEnvironmentsOperations.{}',
-        client_factory=container_apps_client_factory
+        client_factory=cf_managed_environments
+    )
+
+    container_apps_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.appcontainers.operations#ContainerAppsOperations.{}',
+        client_factory=cf_container_apps
     )
 
     with self.command_group('containerapp') as g:
@@ -68,10 +73,10 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
-    with self.command_group('containerapp env logs', container_apps_sdk, client_factory=container_apps_client_factory) as g:
+    with self.command_group('containerapp env logs', managed_environments_sdk, client_factory=cf_managed_environments) as g:
         g.custom_show_command('show', 'stream_environment_logs')
 
-    with self.command_group('containerapp env', container_apps_sdk, client_factory=container_apps_client_factory) as g:
+    with self.command_group('containerapp env', managed_environments_sdk, client_factory=cf_managed_environments) as g:
         g.custom_show_command('show', 'show_managed_environment')
         g.custom_command('list', 'list_managed_environments')
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -193,5 +198,5 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp compose', container_apps_sdk, client_factory=container_apps_client_factory) as g:
+    with self.command_group('containerapp compose') as g:
         g.custom_command('create', 'create_containerapps_from_compose')

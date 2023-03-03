@@ -28,14 +28,10 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from ._client_factory import handle_raw_exception, handle_non_404_exception, cf_container_apps
+from ._client_factory import handle_raw_exception, handle_non_404_exception, container_apps_client_factory
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
 from ._github_oauth import get_github_access_token
 from ._models import (
-    ManagedEnvironment as ManagedEnvironmentModel,
-    VnetConfiguration as VnetConfigurationModel,
-    AppLogsConfiguration as AppLogsConfigurationModel,
-    LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
     Ingress as IngressModel,
     Configuration as ConfigurationModel,
     Template as TemplateModel,
@@ -53,8 +49,15 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
-    CustomDomainConfiguration as CustomDomainConfigurationModel,
     ScaleRule as ScaleRuleModel)
+from azure.mgmt.appcontainers.models import (
+    ManagedEnvironment,
+    AppLogsConfiguration,
+    LogAnalyticsConfiguration,
+    CustomDomainConfiguration,
+    VnetConfiguration,
+    EnvironmentProvisioningState)
+from azure.cli.core.commands import LongRunningOperation
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -993,6 +996,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
 
 
 def create_managed_environment(cmd,
+                               client,
                                name,
                                resource_group_name,
                                logs_destination="log-analytics",
@@ -1033,78 +1037,91 @@ def create_managed_environment(cmd,
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
     if (logs_customer_id is None or logs_key is None) and logs_destination == "log-analytics":
-        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
+        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location,
+                                                                             resource_group_name)
 
     if logs_destination == "log-analytics":
-        log_analytics_config_def = LogAnalyticsConfigurationModel
-        log_analytics_config_def["customerId"] = logs_customer_id
-        log_analytics_config_def["sharedKey"] = logs_key
+        log_analytics_config_def = LogAnalyticsConfiguration(customer_id=logs_customer_id, shared_key=logs_key)
     else:
         log_analytics_config_def = None
 
-    app_logs_config_def = AppLogsConfigurationModel
-    app_logs_config_def["destination"] = logs_destination if logs_destination != "none" else None
-    app_logs_config_def["logAnalyticsConfiguration"] = log_analytics_config_def
+    app_logs_config_def = AppLogsConfiguration(
+        destination=logs_destination if logs_destination != "none" else None,
+        log_analytics_configuration=log_analytics_config_def
+    )
 
-    managed_env_def = ManagedEnvironmentModel
-    managed_env_def["location"] = location
-    managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
-    managed_env_def["tags"] = tags
-    managed_env_def["properties"]["zoneRedundant"] = zone_redundant
+    managed_env_def = ManagedEnvironment(
+        location=location,
+        app_logs_configuration=app_logs_config_def,
+        tags=tags,
+        zone_redundant=zone_redundant
+    )
 
     if hostname:
-        customDomain = CustomDomainConfigurationModel
         blob, _ = load_cert_file(certificate_file, certificate_password)
-        customDomain["dnsSuffix"] = hostname
-        customDomain["certificatePassword"] = certificate_password
-        customDomain["certificateValue"] = blob
-        managed_env_def["properties"]["customDomainConfiguration"] = customDomain
+        custom_domain = CustomDomainConfiguration(
+            dns_suffix=hostname,
+            certificate_password=certificate_password,
+            certificate_value=blob
+        )
+        managed_env_def.custom_domain_configuration = custom_domain
 
     if instrumentation_key is not None:
-        managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
+        managed_env_def.dapr_ai_instrumentation_key = instrumentation_key
 
     if infrastructure_subnet_resource_id or docker_bridge_cidr or platform_reserved_cidr or platform_reserved_dns_ip:
-        vnet_config_def = VnetConfigurationModel
+        vnet_config_def = VnetConfiguration()
 
         if infrastructure_subnet_resource_id is not None:
-            vnet_config_def["infrastructureSubnetId"] = infrastructure_subnet_resource_id
+            vnet_config_def.infrastructure_subnet_id = infrastructure_subnet_resource_id
 
         if docker_bridge_cidr is not None:
-            vnet_config_def["dockerBridgeCidr"] = docker_bridge_cidr
+            vnet_config_def.docker_bridge_cidr = docker_bridge_cidr
 
         if platform_reserved_cidr is not None:
-            vnet_config_def["platformReservedCidr"] = platform_reserved_cidr
+            vnet_config_def.platform_reserved_cidr = platform_reserved_cidr
 
         if platform_reserved_dns_ip is not None:
-            vnet_config_def["platformReservedDnsIP"] = platform_reserved_dns_ip
+            vnet_config_def.platform_reserved_dns_ip = platform_reserved_dns_ip
 
-        managed_env_def["properties"]["vnetConfiguration"] = vnet_config_def
+        managed_env_def.vnet_configuration = vnet_config_def
 
     if internal_only:
         if not infrastructure_subnet_resource_id:
-            raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
-        managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
+            raise ValidationError(
+                'Infrastructure subnet resource ID needs to be supplied for internal only environments.')
+        managed_env_def.vnet_configuration.internal = True
 
     try:
-        r = ManagedEnvironmentClient.create(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
+        poller = client.begin_create_or_update(
+            resource_group_name=resource_group_name,
+            environment_name=name,
+            environment_envelope=managed_env_def,
+        )
+        if no_wait:
+            r = client.get(resource_group_name=resource_group_name, environment_name=name)
+        else:
+            r = LongRunningOperation(cmd.cli_ctx)(poller)
 
+        _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
+
+        # return ENV
+        if r.provisioning_state != EnvironmentProvisioningState.SUCCEEDED and not no_wait:
+            not disable_warnings and logger.warning(
+                'Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(
+                    name, resource_group_name))
+
+        if r.provisioning_state == EnvironmentProvisioningState.SUCCEEDED:
+            not disable_warnings and logger.warning(
+                "\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+
+        return r
     except Exception as e:
         handle_raw_exception(e)
 
-    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
-
-    # return ENV
-    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() != "succeeded" and not no_wait:
-        not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
-
-    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
-        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
-
-    return r
-
 
 def update_managed_environment(cmd,
+                               client,
                                name,
                                resource_group_name,
                                logs_destination=None,
@@ -1116,41 +1133,52 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                no_wait=False):
+    r = None
     try:
-        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        r = client.get(resource_group_name=resource_group_name, environment_name=name)
     except CLIError as e:
         handle_raw_exception(e)
 
     # General setup
-    env_def = {}
-    safe_set(env_def, "location", value=r["location"])  # required for API
-    safe_set(env_def, "tags", value=tags)
+    env_def = ManagedEnvironment(location=r["location"], tags=tags)
 
     # Logs
+    app_logs_config_def = AppLogsConfiguration()
     if logs_destination:
         logs_destination = None if logs_destination == "none" else logs_destination
-        safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+        app_logs_config_def.destination = logs_destination
+        env_def.app_logs_configuration = app_logs_config_def
+        # safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
     if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
         raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
 
     if logs_customer_id and logs_key:
-        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
-        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+        log_analytics_config_def = LogAnalyticsConfiguration(customer_id=logs_customer_id, shared_key=logs_key)
+        app_logs_config_def.log_analytics_configuration = log_analytics_config_def
+
 
     # Custom domains
-    safe_set(env_def, "properties", "customDomainConfiguration", value={})
-    cert_def = env_def["properties"]["customDomainConfiguration"]
     if hostname:
         blob, _ = load_cert_file(certificate_file, certificate_password)
-        safe_set(cert_def, "dnsSuffix", value=hostname)
-        safe_set(cert_def, "certificatePassword", value=certificate_password)
-        safe_set(cert_def, "certificateValue", value=blob)
+        custom_domain = CustomDomainConfiguration(
+            dns_suffix=hostname,
+            certificate_password=certificate_password,
+            certificate_value=blob
+        )
+        env_def.custom_domain_configuration = custom_domain
 
-    # no PATCH api support atm, put works fine even with partial json
+    # PATCH managed environment
     try:
-        r = ManagedEnvironmentClient.create(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
+        poller = client.begin_update(
+            resource_group_name=resource_group_name,
+            environment_name=name,
+            environment_envelope=env_def,
+        )
+        if no_wait:
+            r = client.get(resource_group_name=resource_group_name, environment_name=name)
+        else:
+            r = LongRunningOperation(cmd.cli_ctx)(poller)
 
     except Exception as e:
         handle_raw_exception(e)
@@ -1164,7 +1192,7 @@ def show_managed_environment(cmd, client, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        return client.managed_environments.get(resource_group_name=resource_group_name, environment_name=name)
+        return client.get(resource_group_name=resource_group_name, environment_name=name)
     except CLIError as e:
         handle_raw_exception(e)
 
@@ -3879,7 +3907,6 @@ def show_auth_config(cmd, resource_group_name, name):
 
 
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
-                                      client,
                                       resource_group_name,
                                       managed_env,
                                       compose_file_path='./docker-compose.yml',
@@ -3914,14 +3941,15 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     logger.info(   # pylint: disable=W1203
         f"Creating the Container Apps managed environment {managed_env_name} under {resource_group_name} in {location}.")
 
+    client_factory = container_apps_client_factory(cmd.cli_ctx)
     try:
         managed_environment = show_managed_environment(cmd=cmd,
-                                                       client=client,
+                                                       client=client_factory.managed_environments,
                                                        name=managed_env_name,
                                                        resource_group_name=resource_group_name)
     except ResourceNotFoundError:  # pylint: disable=W0702
         managed_environment = create_containerapps_compose_environment(cmd,
-                                                                       client,
+                                                                       client_factory.managed_environments,
                                                                        managed_env_name,
                                                                        resource_group_name,
                                                                        tags=tags)
