@@ -19,12 +19,12 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri, get_spring_sku)
+from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2023_01_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
@@ -479,24 +479,41 @@ def app_tail_log(cmd, client, resource_group, service, name,
             return None
         instance = instances[0].name
 
-    log_stream = LogStream(client, resource_group, service)
-    if not log_stream:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
-
-    streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
-        log_stream.base_url, name, instance)
-    params = {}
-    params["tailLines"] = lines
-    params["limitBytes"] = limit
-    if since:
-        params["sinceSeconds"] = since
-    if follow:
-        params["follow"] = True
+    resource = client.services.get(resource_group, service)
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        profile = Profile(cli_ctx=cmd.cli_ctx)
+        creds, _, tenant = profile.get_raw_token()
+        token = creds[1]
+        subscriptionId = get_subscription_id(cmd.cli_ctx)
+        hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
+        streaming_url = "https://{}/proxy/logstream/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/apps/{}/deployments/{}/instances/{}".format(
+            hostname, subscriptionId, resource_group, service, name, deployment.name, instance)
+        params = {}
+        params["tailLines"] = lines
+        params["tenantId"] = tenant
+        if follow:
+            params["follow"] = True
+        format_json = None
+        auth = BearerAuth(token)
+    else:
+        log_stream = LogStream(client, resource_group, service)
+        if not log_stream:
+            raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
+        streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
+            log_stream.base_url, name, instance)
+        params = {}
+        params["tailLines"] = lines
+        params["limitBytes"] = limit
+        if since:
+            params["sinceSeconds"] = since
+        if follow:
+            params["follow"] = True
+        auth = HTTPBasicAuth("primary", log_stream.primary_key)
 
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
+        streaming_url, auth, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -1046,7 +1063,7 @@ def _get_redis_primary_key(cli_ctx, resource_id):
 
 
 # pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, user_name, password, format_json, exceptions):
+def _get_app_log(url, auth, format_json, exceptions):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
 
     def build_log_shortener(length):
@@ -1148,7 +1165,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                     buffer.clear()
                     total = 0
 
-    with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
+    with requests.get(url, stream=True, auth=auth) as response:
         try:
             if response.status_code != 200:
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
@@ -1538,11 +1555,10 @@ def app_connect(cmd, client, resource_group, service, name,
                 deployment=None, instance=None, shell_cmd='/bin/sh'):
 
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    creds, _, _ = profile.get_raw_token()
+    creds, _, tenant = profile.get_raw_token()
     token = creds[1]
 
     resource = client.services.get(resource_group, service)
-    hostname = resource.properties.fqdn
     if not instance:
         if not deployment.properties.instances:
             raise ResourceNotFoundError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -1556,9 +1572,17 @@ def app_connect(cmd, client, resource_group, service, name,
             return None
         instance = instances[0].name
 
-    connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(
-        hostname, name, deployment.name, instance, shell_cmd)
-    logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        subscriptionId = get_subscription_id(cmd.cli_ctx)
+        hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
+        connect_url = "wss://{}/proxy/appconnect/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/apps/{}/deployments/{}/instances/{}?tenantId={}&command={}".format(
+            hostname, subscriptionId, resource_group, resource.name, name, deployment.name, instance, tenant, shell_cmd)
+        logger.warning("Connecting to %s...", connect_url)
+    else:
+        hostname = resource.properties.fqdn
+        connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(hostname, name, deployment.name, instance, shell_cmd)
+        logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+
     conn = WebSocketConnection(connect_url, token)
 
     reader = Thread(target=recv_remote, args=(conn,))

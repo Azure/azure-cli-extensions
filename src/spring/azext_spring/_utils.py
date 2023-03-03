@@ -7,6 +7,7 @@ from enum import Enum
 import os
 from time import sleep
 import codecs
+import requests
 import tarfile
 import tempfile
 import uuid
@@ -250,6 +251,23 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def is_dogfood_resource(resource):
+    return resource.tags and 'environment' in resource.tags and resource.tags['environment'] == 'dogfood'
+
+
+def get_proxy_api_endpoint(cli_ctx, spring_resource):
+    """Get the endpoint of the proxy api."""
+    service_id = spring_resource.properties.service_id
+    service_id = service_id.replace('-', '')
+    is_dogfood = is_dogfood_resource(spring_resource)
+    cloud_name = cli_ctx.cloud.name
+    if cloud_name == 'AzureCloud':
+        host_suffix = 'svc.asc-test.net' if not is_dogfood else 'svc.azuremicroservices.io'
+    else:
+        raise CLIError('Unsupported cloud: ' + cloud_name)
+    return f'{service_id}.{host_suffix}'
+
+
 def get_spring_sku(client, resource_group, name):
     return client.services.get(resource_group, name).sku
 
@@ -282,3 +300,12 @@ def handle_asc_exception(ex):
             raise CLIError(response_dict["error"]["message"])
         else:
             raise CLIError(ex)
+
+
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = "Bearer " + self.token
+        return r
