@@ -27,7 +27,7 @@ from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient
+from ._clients import ContainerAppClient, GitHubActionClient
 
 from ._utils import (
     get_randomized_name,
@@ -152,6 +152,7 @@ class ContainerAppEnvironment(Resource):
     def __init__(
         self,
         cmd,
+        client,
         name: str,
         resource_group: "ResourceGroup",
         exists: bool = None,
@@ -170,6 +171,7 @@ class ContainerAppEnvironment(Resource):
         self.location = location
         self.logs_key = logs_key
         self.logs_customer_id = logs_customer_id
+        self.client = client
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
@@ -186,9 +188,7 @@ class ContainerAppEnvironment(Resource):
             self.name = name_or_rid
 
     def _get(self):
-        return ManagedEnvironmentClient.show(
-            self.cmd, self.resource_group.name, self.name
-        )
+        return self.client.get(resource_group_name=self.resource_group.name, environment_name=self.name)
 
     def create_if_needed(self, app_name):
         if not self.check_exists():
@@ -211,6 +211,7 @@ class ContainerAppEnvironment(Resource):
 
             env = create_managed_environment(
                 self.cmd,
+                self.client,
                 self.name,
                 location=self.location,
                 resource_group_name=self.resource_group.name,
@@ -227,6 +228,7 @@ class ContainerAppEnvironment(Resource):
                 try:
                     env = create_managed_environment(
                         self.cmd,
+                        self.client,
                         self.name,
                         location=loc,
                         resource_group_name=self.resource_group.name,
@@ -907,17 +909,17 @@ def find_existing_acr(cmd, app: "ContainerApp"):
     return None, None
 
 
-def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
+def check_env_name_on_rg(cmd, client, managed_env, resource_group_name, location):
     if location:
         _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
     if managed_env and resource_group_name and location:
         env_def = None
         try:
-            env_def = ManagedEnvironmentClient.show(cmd, resource_group_name, parse_resource_id(managed_env)["name"])
+            env_def = client.get(resource_group_name=resource_group_name, environment_name=parse_resource_id(managed_env)["name"])
         except:  # pylint: disable=bare-except
             pass
         if env_def:
-            if location != env_def["location"]:
+            if location != env_def.location:
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
 
 

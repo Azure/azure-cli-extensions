@@ -73,7 +73,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
-                     check_managed_cert_name_availability, prepare_managed_certificate_envelop)
+                     check_managed_cert_name_availability, prepare_managed_certificate_envelop, load_cert_data)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1057,11 +1057,11 @@ def create_managed_environment(cmd,
     )
 
     if hostname:
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        cert_data = load_cert_data(certificate_file)
         custom_domain = CustomDomainConfiguration(
             dns_suffix=hostname,
-            certificate_password=certificate_password,
-            certificate_value=blob
+            certificate_value=cert_data,
+            certificate_password=certificate_password
         )
         managed_env_def.custom_domain_configuration = custom_domain
 
@@ -1135,7 +1135,7 @@ def update_managed_environment(cmd,
         handle_raw_exception(e)
 
     # General setup
-    env_def = ManagedEnvironment(location=r["location"], tags=tags)
+    env_def = ManagedEnvironment(location=r.location, tags=tags)
 
     # Logs
     app_logs_config_def = AppLogsConfiguration()
@@ -1155,17 +1155,17 @@ def update_managed_environment(cmd,
 
     # Custom domains
     if hostname:
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        cert_data = load_cert_data(certificate_file)
         custom_domain = CustomDomainConfiguration(
             dns_suffix=hostname,
-            certificate_password=certificate_password,
-            certificate_value=blob
+            certificate_value=cert_data,
+            certificate_password=certificate_password
         )
         env_def.custom_domain_configuration = custom_domain
 
-    # PATCH managed environment
+    # TODO: Currently using the PUT method, it should be changed to PATCH in the future
     try:
-        poller = client.begin_update(
+        poller = client.begin_create_or_update(
             resource_group_name=resource_group_name,
             environment_name=name,
             environment_envelope=env_def,
@@ -2687,13 +2687,14 @@ def containerapp_up(cmd,
     from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
+    client_factory = container_apps_client_factory(cmd.cli_ctx)
 
     _validate_containerapp_name(name)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)
     validate_container_app_name(name)
-    check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
+    check_env_name_on_rg(cmd, client_factory.managed_environments, managed_env, resource_group_name, location)
 
     image = _reformat_image(source, repo, image)
     token = get_token(cmd, repo, token)
@@ -2714,7 +2715,7 @@ def containerapp_up(cmd,
         ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
-    env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
+    env = ContainerAppEnvironment(cmd, client_factory.managed_environments, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, ingress)
 
     _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)

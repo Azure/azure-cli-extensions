@@ -6,6 +6,7 @@
 import os
 import time
 import yaml
+from azure.mgmt.appcontainers.models import EnvironmentProvisioningState
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
@@ -32,7 +33,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -66,14 +67,14 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
-            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
@@ -82,7 +83,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.appLogsConfiguration.destination', "azure-monitor"),
+            JMESPathCheck('appLogsConfiguration.destination', "azure-monitor"),
         ]).get_output_in_json()
 
         diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
@@ -93,22 +94,22 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+            JMESPathCheck('appLogsConfiguration.destination', None),
         ])
 
         self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
-            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+            JMESPathCheck('appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.appLogsConfiguration.destination', "azure-monitor"),
+            JMESPathCheck('appLogsConfiguration.destination', "azure-monitor"),
         ]).get_output_in_json()
 
         diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
@@ -119,7 +120,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+            JMESPathCheck('appLogsConfiguration.destination', None),
         ])
 
 
@@ -162,7 +163,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -208,7 +209,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -324,7 +325,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
 
     @AllowLargeResponse(8192)
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    # @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_custom_domains(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -339,7 +340,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -352,7 +353,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         txt_name_2 = "asuid.{}".format(subdomain_2)
         hostname_1 = "{}.{}".format(subdomain_1, zone_name)
         hostname_2 = "{}.{}".format(subdomain_2, zone_name)
-        verification_id = containerapp_env["properties"]["customDomainConfiguration"]["customDomainVerificationId"]
+        verification_id = containerapp_env["customDomainConfiguration"]["customDomainVerificationId"]
         self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
         self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
         self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_2, verification_id)).get_output_in_json()
@@ -365,7 +366,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+            JMESPathCheck('customDomainConfiguration.dnsSuffix', hostname_1),
         ])
 
 
@@ -385,7 +386,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -398,7 +399,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         txt_name_2 = "asuid.{}".format(subdomain_2)
         hostname_1 = "{}.{}".format(subdomain_1, zone_name)
         hostname_2 = "{}.{}".format(subdomain_2, zone_name)
-        verification_id = containerapp_env["properties"]["customDomainConfiguration"]["customDomainVerificationId"]
+        verification_id = containerapp_env["customDomainConfiguration"]["customDomainVerificationId"]
         self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
         self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
         self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_2, verification_id)).get_output_in_json()
@@ -411,7 +412,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+            JMESPathCheck('customDomainConfiguration.dnsSuffix', hostname_1),
         ])
 
 
@@ -435,11 +436,12 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
         self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
             JMESPathCheck('name', env),
-            JMESPathCheck('properties.vnetConfiguration.internal', True),
+            JMESPathCheck('vnetConfiguration.internal', True),
         ])
+

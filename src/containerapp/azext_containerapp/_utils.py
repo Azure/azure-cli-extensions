@@ -1366,6 +1366,25 @@ def load_cert_file(file_path, cert_password=None):
     return blob, thumbprint
 
 
+def load_cert_data(file_path):
+    import os
+
+    cert_data = None
+    try:
+        with open(file_path, "rb") as f:
+            if os.path.splitext(file_path)[1] in ['.pem']:
+                cert_data = f.read()
+                return cert_data
+            elif os.path.splitext(file_path)[1] in ['.pfx']:
+                cert_data = f.read()
+                return cert_data
+            else:
+                raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
+    except Exception as e:
+        raise CLIInternalError(e) from e
+    return cert_data
+
+
 def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     name_availability_request = {}
     name_availability_request["name"] = cert_name

@@ -9,6 +9,7 @@ from unittest import mock
 import time
 import unittest
 from azext_containerapp.custom import containerapp_ssh
+from azure.mgmt.appcontainers.models import EnvironmentProvisioningState
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -37,7 +38,7 @@ class ContainerappScenarioTest(ScenarioTest):
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -105,7 +106,7 @@ class ContainerappScenarioTest(ScenarioTest):
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -149,7 +150,7 @@ class ContainerappScenarioTest(ScenarioTest):
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -219,7 +220,7 @@ class ContainerappScenarioTest(ScenarioTest):
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -287,7 +288,7 @@ class ContainerappScenarioTest(ScenarioTest):
         # Ensure environment is completed
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -422,7 +423,7 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -444,7 +445,7 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -469,7 +470,7 @@ class ContainerappScenarioTest(ScenarioTest):
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+        while containerapp_env["provisioningState"] == EnvironmentProvisioningState.WAITING:
             time.sleep(5)
             containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
