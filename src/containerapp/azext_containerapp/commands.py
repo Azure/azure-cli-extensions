@@ -9,7 +9,7 @@
 from azext_containerapp._client_factory import ex_handler_factory
 from azure.cli.core.commands import CliCommandType
 
-from ._client_factory import cf_managed_environments, cf_container_apps
+from ._client_factory import cf_managed_environments
 from ._validators import validate_ssh
 
 

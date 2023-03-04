@@ -36,6 +36,7 @@ def create_containerapps_compose_environment(cmd,
 
 
 def build_containerapp_from_compose_service(cmd,
+                                            client_factory,
                                             name,
                                             source,
                                             dockerfile,
@@ -54,6 +55,7 @@ def build_containerapp_from_compose_service(cmd,
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd,
+                                  client_factory.managed_environments,
                                   managed_env,
                                   resource_group,
                                   location=location,

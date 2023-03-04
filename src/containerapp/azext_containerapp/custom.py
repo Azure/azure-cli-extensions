@@ -20,8 +20,16 @@ from azure.cli.core.azclierror import (
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
+from azure.mgmt.appcontainers.models import (
+    ManagedEnvironment,
+    AppLogsConfiguration,
+    LogAnalyticsConfiguration,
+    CustomDomainConfiguration,
+    VnetConfiguration,
+    EnvironmentProvisioningState)
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, prompt as prompt_str
 
@@ -50,14 +58,6 @@ from ._models import (
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
     ScaleRule as ScaleRuleModel)
-from azure.mgmt.appcontainers.models import (
-    ManagedEnvironment,
-    AppLogsConfiguration,
-    LogAnalyticsConfiguration,
-    CustomDomainConfiguration,
-    VnetConfiguration,
-    EnvironmentProvisioningState)
-from azure.cli.core.commands import LongRunningOperation
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -1151,7 +1151,6 @@ def update_managed_environment(cmd,
     if logs_customer_id and logs_key:
         log_analytics_config_def = LogAnalyticsConfiguration(customer_id=logs_customer_id, shared_key=logs_key)
         app_logs_config_def.log_analytics_configuration = log_analytics_config_def
-
 
     # Custom domains
     if hostname:
@@ -3912,7 +3911,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       transport_mapping=None,
                                       location=None,
                                       tags=None):
-    from azure.core.exceptions import ResourceNotFoundError
+    from azure.core.exceptions import ResourceNotFoundError as ExceptionsResourceNotFoundError
     from pycomposefile import ComposeFile
 
     from ._compose_utils import (create_containerapps_compose_environment,
@@ -3943,7 +3942,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                        client=client_factory.managed_environments,
                                                        name=managed_env_name,
                                                        resource_group_name=resource_group_name)
-    except ResourceNotFoundError:  # pylint: disable=W0702
+    except ExceptionsResourceNotFoundError:  # pylint: disable=W0702
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        client_factory.managed_environments,
                                                                        managed_env_name,
@@ -3990,6 +3989,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                 dockerfile = service.build.dockerfile
             image, registry, registry_username, registry_password = build_containerapp_from_compose_service(
                 cmd,
+                client_factory,
                 service_name,
                 context,
                 dockerfile,
