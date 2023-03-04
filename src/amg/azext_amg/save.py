@@ -8,7 +8,7 @@ from .save_datasources import save_datasources
 from .archive import archive
 
 
-def save(grafana_url, backup_dir, components, http_headers):
+def save(grafana_name, grafana_url, backup_dir, components, http_headers, **kwargs):
     backup_functions = {'dashboards': save_dashboards,
                         'folders': save_folders,
                         'snapshots': save_snapshots,
@@ -19,10 +19,10 @@ def save(grafana_url, backup_dir, components, http_headers):
     if components:
         # Backup only the components that provided via an argument
         for backup_function in components:
-            backup_functions[backup_function](grafana_url, backup_dir, timestamp, http_headers)
+            backup_functions[backup_function](grafana_url, backup_dir, timestamp, http_headers, **kwargs)
     else:
         # Backup every component
         for backup_function in backup_functions.values():
-            backup_function(grafana_url, backup_dir, timestamp, http_headers)
+            backup_function(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
 
-    archive(backup_dir, timestamp)
+    archive(grafana_name, backup_dir, timestamp)

@@ -11,7 +11,7 @@ def create_datasource(grafana_url, file_path, http_headers):
 
     datasource = json.loads(data)
     result = _create_datasource(json.dumps(datasource), grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None)
-    logger.warning("Create datasource %s. (%s)", datasource['name'], "SUCCESS" if result[0] == 200 else "FAILURE")
+    logger.warning("Create datasource \"%s\". %s", datasource['name'], "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 

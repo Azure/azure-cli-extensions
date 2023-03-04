@@ -7,8 +7,8 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def archive(backup_dir, timestamp):
-    archive_file = '{0}/{1}.tar.gz'.format(backup_dir, timestamp)
+def archive(grafana_name, backup_dir, timestamp):
+    archive_file = '{0}/{1}-{2}.tar.gz'.format(backup_dir, grafana_name, timestamp)
     backup_files = []
 
     for folder_name in ['folders', 'datasources', 'dashboards', 'alert_channels', 'organizations', 'users', 'snapshots', 'versions', 'annotations']:

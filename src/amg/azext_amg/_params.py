@@ -28,6 +28,8 @@ def load_arguments(self, _):
         c.argument("api_key_or_token", options_list=["--api-key", "--token", '-t'],
                    help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use logon user's credentials")
         c.argument("components", get_enum_type(["dashboards", "datasources", "folders", "snapshots", "annotations"]), nargs='+', options_list=["-c", "--components"], help="grafana artifact types to backup")
+        c.argument("folders_to_include", nargs='+', options_list=["-i", "--folders-to-include"], help="folders to include in backup or sync")
+        c.argument("folders_to_exclude", nargs='+', options_list=["-e", "--folders-to-exclude"], help="folders to exclude in backup or sync")
         c.ignore("subscription")  # a help argument
 
     with self.argument_context("grafana create") as c:

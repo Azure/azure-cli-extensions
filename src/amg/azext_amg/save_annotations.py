@@ -7,7 +7,7 @@ from .commons import print_horizontal_line, save_json
 logger = get_logger(__name__)
 
 
-def save_annotations(grafana_url, backup_dir, timestamp, http_headers):
+def save_annotations(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     folder_path = '{0}/annotations/{1}'.format(backup_dir, timestamp)
     'annotations_{0}.txt'.format(timestamp)
 
@@ -20,7 +20,8 @@ def save_annotations(grafana_url, backup_dir, timestamp, http_headers):
 
 def save_annotation(file_name, annotation_setting, folder_path, pretty_print):
     file_path = save_json(file_name, annotation_setting, folder_path, 'annotation', pretty_print)
-    logger.warning("Annotation: %s is saved to %s", file_name, file_path)
+    logger.warning("Annotation: \"%s\" is saved", annotation_setting.get('text'))
+    logger.info("    -> %s", file_path)
 
 
 def get_all_annotations_and_save(folder_path, grafana_url, http_get_headers, verify_ssl, client_cert, debug, pretty_print):
@@ -40,8 +41,8 @@ def get_all_annotations_and_save(folder_path, grafana_url, http_get_headers, ver
                 logger.info(annotation)
                 save_annotation(str(annotation['id']), annotation, folder_path, pretty_print)
         else:
-            logger.info("query annotation failed, status: %s, msg: %s", status_code_and_content[0],
-                        status_code_and_content[1])
+            logger.warning("Query annotation FAILED, status: %s, msg: %s", status_code_and_content[0],
+                           status_code_and_content[1])
 
         ts_to = ts_from
         ts_from = ts_from - one_month_in_ms

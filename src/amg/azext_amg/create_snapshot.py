@@ -16,7 +16,7 @@ def create_snapshot(grafana_url, file_path, http_headers):
         snapshot['name'] = "Untitled Snapshot"
 
     (status, content) = _create_snapshot(json.dumps(snapshot), grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None)
-    logger.warning("Create snapshot %s. (%s)", snapshot['name'], "SUCCESS" if status == 200 else "FAILURE")
+    logger.warning("Create snapshot \"%s\". %s", snapshot['name'], "SUCCESS" if status == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", status, content)
 
 

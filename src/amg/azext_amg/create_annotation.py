@@ -11,7 +11,7 @@ def create_annotation(grafana_url, file_path, http_headers):
 
     annotation = json.loads(data)
     result = _create_annotation(json.dumps(annotation), grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None)
-    logger.warning("Create annotation %s. (%s)", annotation['id'], "SUCCESS" if result[0] == 200 else "FAILURE")
+    logger.warning("Create annotation \"%s\". %s", annotation['id'], "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 

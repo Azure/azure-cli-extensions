@@ -225,7 +225,7 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
     _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
 
-def backup_grafana(cmd, grafana_name, components=None, directory=None, resource_group_name=None):
+def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None, folders_to_exclude=None, resource_group_name=None):
     import os
     from pathlib import Path
     from .save import save
@@ -235,10 +235,13 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, resource_
         "authorization": "Bearer " + creds[1]
     }
 
-    save(grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
+    save(grafana_name=grafana_name,
+         grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
          backup_dir=directory or os.path.join(Path.cwd(), "_backup"),
          components=components,
-         http_headers=headers)
+         http_headers=headers,
+         folders_to_include=folders_to_include,
+         folders_to_exclude=folders_to_exclude)
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, resource_group_name=None):
@@ -254,7 +257,7 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, resource_g
             http_headers=headers)
 
 
-def sync_dashboard(cmd, source, destination, folders=None, dry_run=None):
+def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None, dry_run=None):
     # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     if not is_valid_resource_id(source):
         raise ArgumentUsageError(f"'{source}' isn't a valid resource id, please refer to example commands in help")
@@ -295,7 +298,6 @@ def sync_dashboard(cmd, source, destination, folders=None, dry_run=None):
     source_dashboards = list_dashboards(cmd, source_workspace, resource_group_name=source_resource_group,
                                         subscription=source_subscription)
 
-    folders = folders or []
     summary = {
         "folders_created": [],
         "dashboards_synced": [],
@@ -309,8 +311,17 @@ def sync_dashboard(cmd, source, destination, folders=None, dry_run=None):
                                           subscription=source_subscription)
         folder_title = source_dashboard["meta"]["folderTitle"]
         dashboard_path = folder_title + "/" + source_dashboard["dashboard"]["title"]
-        if (source_dashboard["meta"].get("provisioned") or
-            (folders and not bool(next((f for f in folders if folder_title.lower() == f.lower()), None)))):
+
+        should_skip = False
+        if source_dashboard["meta"].get("provisioned"):
+            should_skip = True
+        else:
+            if folders_to_include:
+                should_skip = not next((f for f in folders_to_include if folder_title.lower() == f.lower()), None)
+            if not should_skip and folders_to_exclude:
+                should_skip = next((f for f in folders_to_exclude if folder_title.lower() == f.lower()), None)
+
+        if should_skip:
             summary["dashboards_skipped"].append(dashboard_path)
             continue
 
@@ -393,9 +404,19 @@ def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_
 
 
 def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/search?type=dash-db",
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
+    limit = 5000
+    current_page = 1
+    dashboards = []
+    while True:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                                 "/api/search?type=dash-db&limit={0}&page={1}".format(limit, current_page),
+                                 api_key_or_token=api_key_or_token, subscription=subscription)
+        temp = json.loads(response.content)
+        dashboards += temp
+        if len(temp) == 0:
+            break
+        current_page += 1
+    return dashboards
 
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None,

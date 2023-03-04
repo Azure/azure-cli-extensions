@@ -6,7 +6,7 @@ from .commons import print_horizontal_line, save_json
 logger = get_logger(__name__)
 
 
-def save_datasources(grafana_url, backup_dir, timestamp, http_headers):
+def save_datasources(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     folder_path = '{0}/datasources/{1}'.format(backup_dir, timestamp)
 
     if not os.path.exists(folder_path):
@@ -18,7 +18,8 @@ def save_datasources(grafana_url, backup_dir, timestamp, http_headers):
 
 def save_datasource(file_name, datasource_setting, folder_path, pretty_print):
     file_path = save_json(file_name, datasource_setting, folder_path, 'datasource', pretty_print)
-    logger.warning("Datasource:%s is saved to %s", file_name, file_path)
+    logger.warning("Datasource: \"%s\" is saved", datasource_setting['name'])
+    logger.info("    -> %s", file_path)
 
 
 def get_all_datasources_and_save(folder_path, grafana_url, http_get_headers, verify_ssl, client_cert, debug, pretty_print):
@@ -31,5 +32,5 @@ def get_all_datasources_and_save(folder_path, grafana_url, http_get_headers, ver
             datasource_name = datasource['uid']
             save_datasource(datasource_name, datasource, folder_path, pretty_print)
     else:
-        logger.info("query datasource failed, status: %s, msg: %s", status_code_and_content[0],
+        logger.info("Query datasource FAILED, status: %s, msg: %s", status_code_and_content[0],
                     status_code_and_content[1])

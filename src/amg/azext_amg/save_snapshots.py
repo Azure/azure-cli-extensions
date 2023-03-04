@@ -8,7 +8,7 @@ from .commons import print_horizontal_line, save_json
 logger = get_logger(__name__)
 
 
-def save_snapshots(grafana_url, backup_dir, timestamp, http_headers):
+def save_snapshots(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     folder_path = '{0}/snapshots/{1}'.format(backup_dir, timestamp)
     'snapshots_{0}.txt'.format(timestamp)
 
@@ -23,7 +23,8 @@ def save_snapshot(file_name, snapshot_setting, folder_path, pretty_print):
     file_name = file_name.replace('/', '_')
     random_suffix = "".join(random.choice(string.ascii_letters) for _ in range(6))
     file_path = save_json(file_name + "_" + random_suffix, snapshot_setting, folder_path, 'snapshot', pretty_print)
-    logger.warning("Snapshot:%s is saved to %s", file_name, file_path)
+    logger.warning("Snapshot: \"%s\" is saved", snapshot_setting.get('dashboard', {}).get("title"))
+    logger.info("    -> %s", file_path)
 
 
 def get_single_snapshot_and_save(snapshot, grafana_url, http_get_headers, verify_ssl, client_cert, debug, folder_path, pretty_print):
@@ -31,7 +32,7 @@ def get_single_snapshot_and_save(snapshot, grafana_url, http_get_headers, verify
     if status == 200:
         save_snapshot(snapshot['name'], content, folder_path, pretty_print)
     else:
-        logger.warning("Getting snapshot %s failed with %s", snapshot['name'], status)
+        logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], status, content)
 
 
 def get_all_snapshots_and_save(folder_path, grafana_url, http_get_headers, verify_ssl, client_cert, debug, pretty_print):
