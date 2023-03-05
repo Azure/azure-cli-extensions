@@ -18,17 +18,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create an Azure Managed CCF instance.
 
-    :example: Deploy a Managed CCF instance with the sample JS application
+    :example: Deploy a Managed CCF instance with 3 CCF nodes and the sample JS application.
         az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --app-type sample
 
-    :example: Deploy a Managed CCF instance with a custom JS application
+    :example: Deploy a Managed CCF instance with 3 CCF nodes and a custom JS application.
         az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus
+
+    :example: Deploy a Managed CCF instance with 5 CCF nodes and a custom JS application
+        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --node-count 5
     """
 
     _aaz_info = {
-        "version": "2022-09-08-preview",
+        "version": "2023-01-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confidentialledger/managedccfs/{}", "2022-09-08-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confidentialledger/managedccfs/{}", "2023-01-26-preview"],
         ]
     }
 
@@ -53,7 +56,6 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="A unique name for the instance.",
             required=True,
-            is_preview=True,
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
             ),
@@ -69,7 +71,6 @@ class Create(AAZCommand):
             arg_group="ManagedCCF",
             help="The geo-location of the instance. The only region that is supported is southcentralus.",
             required=True,
-            is_preview=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -90,26 +91,29 @@ class Create(AAZCommand):
             options=["--deployment-type"],
             arg_group="Properties",
             help="Instance specific data.",
-            is_preview=True,
         )
         _args_schema.member_identity_certificates = AAZListArg(
             options=["--member-identity-certificates"],
             arg_group="Properties",
             help="A collection of member identity certificates.",
+        )
+        _args_schema.node_count = AAZIntArg(
+            options=["--node-count"],
+            arg_group="Properties",
+            help={"short-summary": "Number of CCF nodes in the instance.", "long-summary": "If the argument is omitted, a default value of 3 is used. The maximum supported size is 9 nodes."},
             is_preview=True,
+            default=3,
         )
 
         deployment_type = cls._args_schema.deployment_type
         deployment_type.app_source_uri = AAZStrArg(
             options=["app-source-uri"],
             help={"short-summary": "Supply 'sample' to deploy the sample JS application.", "long-summary": "Determines the type of the JS application to deploy."},
-            is_preview=True,
             default="customImage",
         )
         deployment_type.language_runtime = AAZStrArg(
             options=["language-runtime"],
             help="The language runtime value is 'JS'",
-            is_preview=True,
             default="JS",
             enum={"CPP": "CPP", "JS": "JS"},
         )
@@ -212,7 +216,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-08-preview",
+                    "api-version", "2023-01-26-preview",
                     required=True,
                 ),
             }
@@ -242,6 +246,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("deploymentType", AAZObjectType, ".deployment_type")
                 properties.set_prop("memberIdentityCertificates", AAZListType, ".member_identity_certificates")
+                properties.set_prop("nodeCount", AAZIntType, ".node_count")
 
             deployment_type = _builder.get(".properties.deploymentType")
             if deployment_type is not None:

@@ -20,9 +20,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-08-preview",
+        "version": "2023-01-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confidentialledger/managedccfs/{}", "2022-09-08-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confidentialledger/managedccfs/{}", "2023-01-26-preview"],
         ]
     }
 
@@ -47,7 +47,6 @@ class Update(AAZCommand):
             options=["-n", "--name"],
             help="A unique name for the instance.",
             required=True,
-            is_preview=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
@@ -82,18 +81,23 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="List of member identity certificates for  Managed CCF",
         )
+        _args_schema.node_count = AAZIntArg(
+            options=["--node-count"],
+            arg_group="Properties",
+            help={"short-summary": "Number of CCF nodes in the instance.", "long-summary": "If the argument is omitted, a default value of 3 is used. The maximum supported size is 9 nodes."},
+            is_preview=True,
+            default=3,
+        )
 
         deployment_type = cls._args_schema.deployment_type
         deployment_type.app_source_uri = AAZStrArg(
             options=["app-source-uri"],
             help={"short-summary": "Supply 'sample' to deploy the sample JS application.", "long-summary": "Determines the type of the JS application to deploy."},
-            is_preview=True,
             default="customImage",
         )
         deployment_type.language_runtime = AAZStrArg(
             options=["language-runtime"],
             help="The language runtime value is 'JS'",
-            is_preview=True,
             default="JS",
             enum={"CPP": "CPP", "JS": "JS"},
         )
@@ -196,7 +200,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-08-preview",
+                    "api-version", "2023-01-26-preview",
                     required=True,
                 ),
             }
@@ -225,6 +229,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("deploymentType", AAZObjectType, ".deployment_type")
                 properties.set_prop("memberIdentityCertificates", AAZListType, ".member_identity_certificates")
+                properties.set_prop("nodeCount", AAZIntType, ".node_count")
 
             deployment_type = _builder.get(".properties.deploymentType")
             if deployment_type is not None:

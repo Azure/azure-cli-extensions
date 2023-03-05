@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-08-preview",
+        "version": "2023-01-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confidentialledger/managedccfs/{}", "2022-09-08-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confidentialledger/managedccfs/{}", "2023-01-26-preview"],
         ]
     }
 
@@ -49,7 +49,6 @@ class Show(AAZCommand):
             options=["-n", "--name"],
             help="A unique name for the instance.",
             required=True,
-            is_preview=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[^-0-9][A-Za-z0-9-]{1,33}[A-Za-z0-9]$",
@@ -125,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-08-preview",
+                    "api-version", "2023-01-26-preview",
                     required=True,
                 ),
             }
@@ -195,6 +194,9 @@ class Show(AAZCommand):
             )
             properties.member_identity_certificates = AAZListType(
                 serialized_name="memberIdentityCertificates",
+            )
+            properties.node_count = AAZIntType(
+                serialized_name="nodeCount",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
