@@ -244,7 +244,7 @@ helps[
     "devcenter dev dev-box delay-all-actions"
 ] = """
     type: command
-    short-summary: "Delays all action."
+    short-summary: "Delays all actions."
     examples:
       - name: DevBoxes_DelayActions
         text: |-
