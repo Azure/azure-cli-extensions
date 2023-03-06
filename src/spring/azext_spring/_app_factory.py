@@ -162,10 +162,6 @@ class DefaultApp:
 
         secret_var_def = []
         for key, value in secret_pairs.items():
-            secret_var_def.append({
-                "name": key,
-                "value": value
-            })
             secret_var_def.append(
                 models.Secret(name=key, value=value)
             )
