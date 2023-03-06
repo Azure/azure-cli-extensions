@@ -837,3 +837,202 @@ class RoutingIntentClientTest(ScenarioTest):
         self.cmd("network vhub routing-intent delete -n {routing_intent_name} -g {rg} --vhub {vhub_name} --yes")
 
         self.cmd("extension remove -n azure-firewall")
+
+class RouteMapScenario(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix="cli_test_route_map", location="westus")
+    def test_vhub_route_map(self):
+        self.kwargs.update({
+            "vwan_name": self.create_random_name("vwan-", 12),
+            "vhub_name": self.create_random_name("vhub-", 12),
+            "route_map_name": self.create_random_name("routemap-", 16)
+        })
+
+        self.cmd("network vwan create -n {vwan_name} -g {rg}")
+        self.cmd("network vhub create -n {vhub_name} -g {rg} --vwan {vwan_name} --address-prefix 10.0.1.0/24")
+
+        self.cmd("network vhub route-map create -n {route_map_name} -g {rg} --vhub-name {vhub_name}", checks=[
+            self.check('name', '{route_map_name}')
+        ])
+        self.cmd("network vhub route-map update -n {route_map_name} -g {rg} --vhub-name {vhub_name} --rules [{{name:rule1,matchCriteria:[{{matchCondition:Contains,routePrefix:[10.0.0.0/8]}}],actions:[{{type:Add,parameters:[{{asPath:[22334]}}]}}]}}]", checks=[
+            self.check('name', '{route_map_name}'),
+            self.check('rules[0].actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('rules[0].actions[0].type', 'Add'),
+            self.check('rules[0].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('rules[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('rules[0].name', 'rule1')
+        ])
+        self.cmd("network vhub route-map list -g {rg} --vhub-name {vhub_name}",checks=[
+            self.check('[0].name', '{route_map_name}'),
+            self.check('[0].rules[0].actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('[0].rules[0].actions[0].type', 'Add'),
+            self.check('[0].rules[0].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('[0].rules[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('[0].rules[0].name', 'rule1')
+        ])
+        self.cmd('network vhub route-map rule add --name rule2 -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name} --match-criteria "[{{matchCondition:Contains,routePrefix:[10.0.0.1/8]}}]" --actions "[{{type:Add,parameters:[{{asPath:[22335]}}]}}]" --next-step Continue', checks=[
+            self.check('actions[0].parameters[0].asPath[0]', '22335'),
+            self.check('actions[0].type', 'Add'),
+            self.check('matchCriteria[0].matchCondition', 'Contains'),
+            self.check('matchCriteria[0].routePrefix[0]', '10.0.0.1/8'),
+            self.check('name', 'rule2'),
+            self.check('nextStepIfMatched', 'Continue')
+        ])
+        self.cmd('network vhub route-map rule show -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name} --rule-index 0', checks=[
+            self.check('actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('actions[0].type', 'Add'),
+            self.check('matchCriteria[0].matchCondition', 'Contains'),
+            self.check('matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('name', 'rule1')
+        ])
+        self.cmd('network vhub route-map rule list -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name}', checks=[
+            self.check('[0].actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('[0].actions[0].type', 'Add'),
+            self.check('[0].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('[0].name', 'rule1'),
+            self.check('[1].actions[0].parameters[0].asPath[0]', '22335'),
+            self.check('[1].actions[0].type', 'Add'),
+            self.check('[1].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('[1].matchCriteria[0].routePrefix[0]', '10.0.0.1/8'),
+            self.check('[1].name', 'rule2'),
+            self.check('[1].nextStepIfMatched', 'Continue')
+        ])
+        self.cmd("network vhub route-map show -n {route_map_name} -g {rg} --vhub-name {vhub_name}", checks=[
+            self.check('name', '{route_map_name}'),
+            self.check('rules[0].actions[0].parameters[0].asPath[0]', '22334'),
+            self.check('rules[0].actions[0].type', 'Add'),
+            self.check('rules[0].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('rules[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
+            self.check('rules[0].name', 'rule1'),
+            self.check('rules[1].actions[0].parameters[0].asPath[0]', '22335'),
+            self.check('rules[1].actions[0].type', 'Add'),
+            self.check('rules[1].matchCriteria[0].matchCondition', 'Contains'),
+            self.check('rules[1].matchCriteria[0].routePrefix[0]', '10.0.0.1/8'),
+            self.check('rules[1].name', 'rule2'),
+            self.check('rules[1].nextStepIfMatched', 'Continue')
+        ])
+        self.cmd('network vhub route-map rule delete -g {rg} --route-map-name {route_map_name} --vhub-name {vhub_name} --rule-index 1 -y')
+        self.cmd("network vhub route-map show -n {route_map_name} -g {rg} --vhub-name {vhub_name}", checks=[
+            self.check('name', '{route_map_name}'),
+            self.check('length(rules)', 1)
+        ])
+        self.cmd("network vhub route-map delete -n {route_map_name} -g {rg} --vhub-name {vhub_name} -y")
+
+    @ResourceGroupPreparer(name_prefix='cli_test_vhub_connection_inbound_outbound_routemap')
+    @VirtualNetworkPreparer()
+    def test_vhub_connection_inbound_outbound_routemap(self, virtual_network, resource_group):
+        self.kwargs.update({
+            'vnet': virtual_network,
+            'vwan': self.create_random_name('vwan', 10),
+            'vhub': self.create_random_name('vhub', 10),
+            'connection': self.create_random_name('conn', 10),
+            "route_map_name": self.create_random_name("routemap-", 16),
+            "route_map_name_2": self.create_random_name("routemap-", 16),
+            "route_map_name_3": self.create_random_name("routemap-", 16),
+            "route_map_name_4": self.create_random_name("routemap-", 16)
+        })
+
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
+        route_map_id = self.cmd("network vhub route-map create -n {route_map_name} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_2 = self.cmd("network vhub route-map create -n {route_map_name_2} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_3 = self.cmd("network vhub route-map create -n {route_map_name_3} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_4 = self.cmd("network vhub route-map create -n {route_map_name_4} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        self.kwargs.update({
+            'route_map_id': route_map_id,
+            'route_map_id_2': route_map_id_2,
+            'route_map_id_3': route_map_id_3,
+            'route_map_id_4': route_map_id_4
+        })
+        self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet} --associated-inbound-routemap {route_map_id} --associated-outbound-routemap {route_map_id_2}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', '{connection}'),
+            self.check('routingConfiguration.inboundRouteMap.id', '{route_map_id}'),
+            self.check('routingConfiguration.outboundRouteMap.id', '{route_map_id_2}')
+        ])
+        self.cmd('network vhub connection update -g {rg} --vhub-name {vhub} --name {connection} --associated-inbound-routemap {route_map_id_3} --associated-outbound-routemap {route_map_id_4}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', '{connection}'),
+            self.check('routingConfiguration.inboundRouteMap.id', '{route_map_id_3}'),
+            self.check('routingConfiguration.outboundRouteMap.id', '{route_map_id_4}')
+        ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_vpn_gateway_connection_inbound_outbound_routemap')
+    def test_vpn_gateway_connection_inbound_outbound_routemap(self):
+        self.kwargs.update({
+            'vwan': self.create_random_name('vwan', 10),
+            'vhub': self.create_random_name('vhub', 10),
+            'vpn_site': self.create_random_name('site', 10),
+            'vpn_gateway': self.create_random_name('gateway', 15),
+            'connection': self.create_random_name('conn', 10),
+            "route_map_name": self.create_random_name("routemap-", 16),
+            "route_map_name_2": self.create_random_name("routemap-", 16),
+            "route_map_name_3": self.create_random_name("routemap-", 16),
+            "route_map_name_4": self.create_random_name("routemap-", 16)
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+
+        route_map_id = self.cmd("network vhub route-map create -n {route_map_name} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_2 = self.cmd("network vhub route-map create -n {route_map_name_2} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_3 = self.cmd("network vhub route-map create -n {route_map_name_3} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_4 = self.cmd("network vhub route-map create -n {route_map_name_4} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        self.kwargs.update({
+            'route_map_id': route_map_id,
+            'route_map_id_2': route_map_id_2,
+            'route_map_id_3': route_map_id_3,
+            'route_map_id_4': route_map_id_4
+        })
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpn_gateway}')
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.2.110 --address-prefixes 10.0.2.0/24')
+        self.cmd('network vpn-gateway connection create -g {rg} -n {connection} --gateway-name {vpn_gateway} --remote-vpn-site {vpn_site} --associated-inbound-routemap {route_map_id} --associated-outbound-routemap {route_map_id_2}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', '{connection}'),
+            self.check('routingConfiguration.inboundRouteMap.id', '{route_map_id}'),
+            self.check('routingConfiguration.outboundRouteMap.id', '{route_map_id_2}')
+        ])
+        self.cmd('network vpn-gateway connection update -g {rg} -n {connection} --gateway-name {vpn_gateway} --associated-inbound-routemap {route_map_id_3} --associated-outbound-routemap {route_map_id_4}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', '{connection}'),
+            self.check('routingConfiguration.inboundRouteMap.id', '{route_map_id_3}'),
+            self.check('routingConfiguration.outboundRouteMap.id', '{route_map_id_4}')
+        ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_p2s_vpn_gateway_inbound_outbound_routemap', location='westcentralus')
+    def test_p2s_vpn_gateway_inbound_outbound_routemap(self, resource_group):
+        self.kwargs.update({
+            'vwan': self.create_random_name('vwan', 10),
+            'vhub': self.create_random_name('vhub', 10),
+            'cert_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.cer'),
+            'pem_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.pem'),
+            'vserverconfig': self.create_random_name("config-", 16),
+            'vp2sgateway': self.create_random_name("vp2s-", 16),
+            "route_map_name": self.create_random_name("routemap-", 16),
+            "route_map_name_2": self.create_random_name("routemap-", 16),
+            "route_map_name_3": self.create_random_name("routemap-", 16),
+            "route_map_name_4": self.create_random_name("routemap-", 16)
+        })
+
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 --sku Standard')
+        route_map_id = self.cmd("network vhub route-map create -n {route_map_name} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_2 = self.cmd("network vhub route-map create -n {route_map_name_2} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_3 = self.cmd("network vhub route-map create -n {route_map_name_3} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        route_map_id_4 = self.cmd("network vhub route-map create -n {route_map_name_4} -g {rg} --vhub-name {vhub}").get_output_in_json()['id']
+        self.kwargs.update({
+            'route_map_id': route_map_id,
+            'route_map_id_2': route_map_id_2,
+            'route_map_id_3': route_map_id_3,
+            'route_map_id_4': route_map_id_4
+        })
+        self.cmd('network vpn-server-config create -n {vserverconfig} -g {rg} --vpn-client-root-certs "{cert_file}" --vpn-client-revoked-certs "{pem_file}"')
+
+        self.cmd('az network p2s-vpn-gateway create -g {rg} -n {vp2sgateway} --scale-unit 2 --vhub {vhub} --vpn-server-config {vserverconfig} --address-space 10.0.0.0/24 11.0.0.0/24 --associated-inbound-routemap {route_map_id} --associated-outbound-routemap {route_map_id_2}', checks=[
+            self.check('p2SConnectionConfigurations[0].routingConfiguration.inboundRouteMap.id', '{route_map_id}'),
+            self.check('p2SConnectionConfigurations[0].routingConfiguration.outboundRouteMap.id', '{route_map_id_2}')
+        ])
+        self.cmd('az network p2s-vpn-gateway update -g {rg} -n {vp2sgateway} --associated-inbound-routemap {route_map_id_3} --associated-outbound-routemap {route_map_id_4}', checks=[
+            self.check('p2SConnectionConfigurations[0].routingConfiguration.inboundRouteMap.id', '{route_map_id_3}'),
+            self.check('p2SConnectionConfigurations[0].routingConfiguration.outboundRouteMap.id', '{route_map_id_4}')
+        ])

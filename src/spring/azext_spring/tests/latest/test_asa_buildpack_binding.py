@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import json
 from azure.cli.testsdk import (ScenarioTest, record_only)
-from knack.log import get_logger
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
