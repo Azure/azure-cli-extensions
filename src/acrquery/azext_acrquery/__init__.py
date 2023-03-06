@@ -5,8 +5,9 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_acrquery._help import helps  # pylint: disable=unused-import
-from ._client_factory2 import cf_metadata
+from ._client_factory import cf_metadata
 from azure.cli.core.commands import CliCommandType
+from ._format import transform_metadata_output
 
 class AcrqueryCommandsLoader(AzCommandsLoader):
 
@@ -22,7 +23,7 @@ class AcrqueryCommandsLoader(AzCommandsLoader):
              client_factory=cf_metadata)
         
         with self.command_group('acr', acr_metadata_util) as g:
-            g.custom_command('query', 'create_query')
+            g.custom_command('query', 'create_query', transform=transform_metadata_output)
 
         return self.command_table
 
