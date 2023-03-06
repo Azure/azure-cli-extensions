@@ -585,6 +585,8 @@ class AzInteractiveShell(object):
                 if not document.text:
                     continue
                 cmd = document.text
+                # Update customized parameter value map
+                auto_suggest.update_customized_param_value_map(cmd)
                 self.history.append(cmd)
                 # Prefetch the next recommendation using current executing command
                 self.recommender.update_executing(cmd, feedback=False)
@@ -830,7 +832,7 @@ class AzInteractiveShell(object):
         self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
         self.command_table_thread.start()
         self.command_table_thread.start_time = time.time()
-        print_styled_text([(Style.ACTION, "Loading command table... Expected time is around 1 minute.")])
+        print_styled_text([(Style.ACTION, "Loading command table... Expected time around 1 minute.")])
         time_spent_on_loading = 0
         # still loading commands, show the time of loading
         while self.command_table_thread.is_alive() and time_spent_on_loading < 150:
