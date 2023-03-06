@@ -33,7 +33,6 @@ from .aaz.latest.devcenter.admin.devbox_definition import (
     Update as _DevBoxDefinitionUpdate,
     Wait as _DevBoxDefinitionWait,
 )
-from .aaz.latest.devcenter.admin.devcenter import List as _DevCenterList
 from .aaz.latest.devcenter.admin.environment_type import (
     Create as _EnvironmentTypeCreate,
     Delete as _EnvironmentTypeDelete,
@@ -56,10 +55,6 @@ from .aaz.latest.devcenter.admin.image_verion import (
     List as _ImageVersionList,
     Show as _ImageVersionShow,
 )
-from .aaz.latest.devcenter.admin.network_connection import (
-    List as _NetworkConnectionList,
-    ListHealthDetail as _NetworkConnectionListHealthDetail,
-)
 from .aaz.latest.devcenter.admin.pool import (
     Create as _PoolCreate,
     Delete as _PoolDelete,
@@ -68,7 +63,6 @@ from .aaz.latest.devcenter.admin.pool import (
     Update as _PoolUpdate,
     Wait as _PoolWait,
 )
-from .aaz.latest.devcenter.admin.project import List as _ProjectList
 from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
     Show as _ProjectAllowedEnvironmentTypeShow,
@@ -87,7 +81,6 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from .aaz.latest.devcenter.admin.sku import List as _SkuList
 from ._validators import validate_attached_network_or_dev_box_def
 
 # Control plane
@@ -121,12 +114,6 @@ class AttachedNetworkDelete(_AttachedNetworkDelete):
 
 
 class AttachedNetworkList(_AttachedNetworkList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -169,12 +156,6 @@ class CatalogDelete(_CatalogDelete):
 
 
 class CatalogList(_CatalogList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -217,12 +198,6 @@ class DevBoxDefinitionDelete(_DevBoxDefinitionDelete):
 
 
 class DevBoxDefinitionList(_DevBoxDefinitionList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -258,14 +233,6 @@ class DevBoxDefinitionWait(_DevBoxDefinitionWait):
         return set_configured_defaults(args)
 
 
-class DevCenterList(_DevCenterList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
-
 class EnvironmentTypeCreate(_EnvironmentTypeCreate):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -279,12 +246,6 @@ class EnvironmentTypeDelete(_EnvironmentTypeDelete):
 
 
 class EnvironmentTypeList(_EnvironmentTypeList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -315,12 +276,6 @@ class GalleryDelete(_GalleryDelete):
 
 
 class GalleryList(_GalleryList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -339,12 +294,6 @@ class GalleryWait(_GalleryWait):
 
 
 class ImageList(_ImageList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -366,22 +315,6 @@ class ImageVersionShow(_ImageVersionShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
-
-
-class NetworkConnectionList(_NetworkConnectionList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
-
-class NetworkConnectionListHealthDetail(_NetworkConnectionListHealthDetail):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
 
 
 class PoolCreate(_PoolCreate):
@@ -408,12 +341,6 @@ class PoolDelete(_PoolDelete):
 
 
 class PoolList(_PoolList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -443,21 +370,7 @@ class PoolWait(_PoolWait):
         return set_configured_defaults(args)
 
 
-class ProjectList(_ProjectList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
-
 class ProjectAllowedEnvironmentTypeList(_ProjectAllowedEnvironmentTypeList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -482,12 +395,6 @@ class ProjectEnvironmentTypeDelete(_ProjectEnvironmentTypeDelete):
 
 
 class ProjectEnvironmentTypeList(_ProjectEnvironmentTypeList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -599,14 +506,6 @@ class ScheduleWait(_ScheduleWait):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
-
-
-class SkuList(_SkuList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
 
 
 # Data plane
