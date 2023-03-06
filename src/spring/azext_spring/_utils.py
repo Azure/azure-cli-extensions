@@ -16,6 +16,7 @@ from re import (search, match, compile)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
+from azure.cli.core.azclierror import ValidationError
 from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
@@ -251,21 +252,18 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
-def is_dogfood_resource(resource):
-    return resource.tags and 'environment' in resource.tags and resource.tags['environment'] == 'dogfood'
-
-
 def get_proxy_api_endpoint(cli_ctx, spring_resource):
     """Get the endpoint of the proxy api."""
+    if spring_resource.properties.fqdn:
+        return spring_resource.properties.fqdn
+
     service_id = spring_resource.properties.service_id
     service_id = service_id.replace('-', '')
-    is_dogfood = is_dogfood_resource(spring_resource)
     cloud_name = cli_ctx.cloud.name
     if cloud_name == 'AzureCloud':
-        host_suffix = 'svc.asc-test.net' if not is_dogfood else 'svc.azuremicroservices.io'
+        return f'{service_id}.svc.azuremicroservices.io'
     else:
-        raise CLIError('Unsupported cloud: ' + cloud_name)
-    return f'{service_id}.{host_suffix}'
+        raise ValidationError('Unsupported Azure cloud: ' + cloud_name)
 
 
 def get_spring_sku(client, resource_group, name):
