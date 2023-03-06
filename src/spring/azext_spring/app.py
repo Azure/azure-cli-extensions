@@ -75,7 +75,8 @@ def app_create(cmd, client, resource_group, service, name,
                scale_rule_type=None,
                scale_rule_http_concurrency=None,
                scale_rule_metadata=None,
-               scale_rule_auth=None):
+               scale_rule_auth=None,
+               secrets=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -120,7 +121,8 @@ def app_create(cmd, client, resource_group, service, name,
         'session_affinity': session_affinity,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
-        'client_auth_certs': client_auth_certs
+        'client_auth_certs': client_auth_certs,
+        'secrets': secrets
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -219,6 +221,7 @@ def app_update(cmd, client, resource_group, service, name,
                readiness_probe_config=None,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
+               secrets=None,
                # general
                no_wait=False):
     '''app_update
@@ -269,6 +272,7 @@ def app_update(cmd, client, resource_group, service, name,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
+        'secrets': secrets,
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}

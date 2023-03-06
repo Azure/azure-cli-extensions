@@ -411,6 +411,8 @@ def load_arguments(self, _):
             c.argument('client_auth_certs',
                        validator=validate_ingress_client_auth_certificates,
                        help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
+            c.argument('secrets', nargs='*', arg_group='StandardGen2',
+                       help="A list of secret(s) for the app. Space-separated values in 'key=value' format.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
