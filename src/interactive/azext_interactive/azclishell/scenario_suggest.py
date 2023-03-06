@@ -32,7 +32,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                 self.param_value_map[cur_param] += ' ' + part
                 self.param_value_map[cur_param] = self.param_value_map[cur_param].strip()
 
-    def get_suggestion(self, cli, buffer, document, value_storage_cache={}, auto_complete_values=False):
+    def get_suggestion(self, cli, buffer, document):
         user_input = document.text.rsplit('\n', 1)[-1]
         # format all the space in user's input to ' '
         user_input = re.sub(r'\s+', ' ', user_input)
