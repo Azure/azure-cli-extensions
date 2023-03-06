@@ -10,7 +10,6 @@ from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
 
 class ScenarioAutoSuggest(AutoSuggest):
     """Auto Suggest used in Scenario execution mode"""
-
     def __init__(self):
         self.cur_sample = ''
         self.cur_command = ''
@@ -96,7 +95,6 @@ class ScenarioAutoSuggest(AutoSuggest):
                     if suggests:
                         # suggest one parameter at a time
                         return Suggestion(' '.join([suggests[0]['param'], suggests[0]['value']]))
-
         # If the user hasn't finished the command part, suggest the whole sample
         elif self.cur_command.startswith(user_input):
             return Suggestion(self.cur_sample[len(user_input):])

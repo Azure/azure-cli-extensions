@@ -12,6 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.131
++++++++
+* Allow updating the ssh key value if cluster was created without ssh key
+
+0.5.130
++++++++
+* Enable outbound migration from/to udr
+* Update description after Azure Keyvault Secrets Provider addon is GA
+
 0.5.129
 +++++++
 * Vendor new SDK and bump API version to 2023-01-02-preview.
