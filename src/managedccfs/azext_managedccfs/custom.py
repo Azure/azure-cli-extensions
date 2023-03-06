@@ -32,8 +32,14 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
 
         _Element.identifier = AAZStrArg(
             options=["identifier"],
-            help="A string value that is used to uniquely identify a member.",
+            help="A unique identifier for the member.",
             required=True,
+        )
+
+        _Element.group = AAZStrArg(
+            options=["group"],
+            help="A group name for the member.",
+            required=False,
         )
         
         args_schema.member_identity_certificates._registered = False
@@ -63,6 +69,7 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
 
             tags = dict()
             tags['identifier'] = item.identifier
+            tags['group'] = item.group if has_value(item.group) else None
             member_cert['tags'] = tags
 
             return member_cert

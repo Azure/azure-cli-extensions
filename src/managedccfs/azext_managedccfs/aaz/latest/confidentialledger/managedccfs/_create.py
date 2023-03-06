@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create an Azure Managed CCF instance.
+    """Create an instance of the Azure Managed CCF service.
 
-    :example: Deploy a Managed CCF instance with 3 CCF nodes and the sample JS application.
-        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --app-type sample
+    :example: Deploy an Azure Managed CCF instance with 3 CCF nodes and the sample JS application.
+        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0",group:"group1"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1",group:"group2"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --app-type sample
 
-    :example: Deploy a Managed CCF instance with 3 CCF nodes and a custom JS application.
+    :example: Deploy an Azure Managed CCF instance with 3 CCF nodes and a custom JS application.
         az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus
 
-    :example: Deploy a Managed CCF instance with 5 CCF nodes and a custom JS application
-        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --node-count 5
+    :example: Deploy an Azure Managed CCF instance with 5 CCF nodes and a custom JS application
+        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0",group:"mygroup1"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --node-count 5
     """
 
     _aaz_info = {
