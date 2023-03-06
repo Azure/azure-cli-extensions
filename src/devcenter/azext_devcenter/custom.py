@@ -5,7 +5,7 @@
 # pylint: disable=protected-access
 
 from datetime import timedelta
-from azure.cli.core.aaz import (AAZStrArg, has_value, register_callback)
+from azure.cli.core.aaz import register_callback
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
 from .data_plane_endpoint_helper import get_project_arg
