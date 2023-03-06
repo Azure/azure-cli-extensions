@@ -19,7 +19,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
-    # @live_only()
     def test_containerapp_identity_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -101,7 +100,6 @@ class ContainerappIdentityTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
-    # @live_only()
     def test_containerapp_identity_user(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
