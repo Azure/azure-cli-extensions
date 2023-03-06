@@ -50,6 +50,7 @@ from .recommendation import Recommender, _show_details_for_e2e_scenario, gen_com
 from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word
+import time
 
 
 
@@ -825,8 +826,21 @@ class AzInteractiveShell(object):
         self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
         self.cli_ctx.get_progress_controller = self.progress_patch
 
+        # load command table
         self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
         self.command_table_thread.start()
+        self.command_table_thread.start_time = time.time()
+        print_styled_text([(Style.ACTION, "Loading command table... Expected time is around 1 minute.")])
+        time_spent_on_loading = 0
+        # still loading commands, show the time of loading
+        while self.command_table_thread.is_alive() and time_spent_on_loading < 150:
+            time_spent_on_loading = time.time() - self.command_table_thread.start_time
+            # print out loading time every 10 seconds
+            if time_spent_on_loading % 10 < 1:
+                print_styled_text([(Style.ACTION, "Already spent {} seconds on loading command table.".format(round(time_spent_on_loading, 1)))])
+            time.sleep(1)
+        if time_spent_on_loading >= 150:
+            print_styled_text([(Style.WARNING, 'Loading command table takes too long, please contact the Azure CLI team for help.')])
 
         from .configuration import SHELL_HELP
         self.cli.buffers['symbols'].reset(
