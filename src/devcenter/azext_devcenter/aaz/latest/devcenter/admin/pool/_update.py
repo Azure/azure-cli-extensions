@@ -88,12 +88,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Name of a Dev Box definition in parent Project of this Pool",
         )
-        _args_schema.license_type = AAZStrArg(
-            options=["--license-type"],
-            arg_group="Properties",
-            help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
-            enum={"Windows_Client": "Windows_Client"},
-        )
         _args_schema.local_administrator = AAZStrArg(
             options=["--local-administrator"],
             arg_group="Properties",
@@ -356,7 +350,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("devBoxDefinitionName", AAZStrType, ".dev_box_definition_name", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("licenseType", AAZStrType, ".license_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("localAdministrator", AAZStrType, ".local_administrator", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkConnectionName", AAZStrType, ".network_connection_name", typ_kwargs={"flags": {"required": True}})
 

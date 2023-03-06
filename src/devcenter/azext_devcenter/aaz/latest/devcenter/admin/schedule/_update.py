@@ -80,12 +80,6 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.frequency = AAZStrArg(
-            options=["--frequency"],
-            arg_group="Properties",
-            help="The frequency of this scheduled task.",
-            enum={"Daily": "Daily"},
-        )
         _args_schema.state = AAZStrArg(
             options=["--state"],
             arg_group="Properties",
@@ -102,12 +96,6 @@ class Update(AAZCommand):
             options=["--time-zone"],
             arg_group="Properties",
             help="The IANA timezone id at which the schedule should execute.",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="Properties",
-            help="Supported type this scheduled task represents.",
-            enum={"StopDevBox": "StopDevBox"},
         )
         return cls._args_schema
 
@@ -304,9 +292,6 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
-                ),
-                **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,
                 ),
@@ -369,11 +354,9 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("frequency", AAZStrType, ".frequency", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("time", AAZStrType, ".time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("timeZone", AAZStrType, ".time_zone", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
