@@ -12,7 +12,6 @@ logger = get_logger(__name__)
 
 ACR_IMAGE_SUFFIX = "/acr/v1/"
 ACR_METADATA_PATH = "_metadata/_query"
-DEFAULT_PAGINATION = 100
 
 def create_query(cmd, registry_name, kql_query, repository=None, skip_token=None, username=None, password=None):
     '''Create a query.'''
