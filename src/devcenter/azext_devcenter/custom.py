@@ -121,6 +121,12 @@ class AttachedNetworkDelete(_AttachedNetworkDelete):
 
 
 class AttachedNetworkList(_AttachedNetworkList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -211,6 +217,12 @@ class DevBoxDefinitionDelete(_DevBoxDefinitionDelete):
 
 
 class DevBoxDefinitionList(_DevBoxDefinitionList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -327,6 +339,12 @@ class GalleryWait(_GalleryWait):
 
 
 class ImageList(_ImageList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.top._registered = False
+        return args_schema
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
