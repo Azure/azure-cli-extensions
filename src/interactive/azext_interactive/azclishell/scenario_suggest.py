@@ -81,14 +81,13 @@ class ScenarioAutoSuggest(AutoSuggest):
                         if self.param_value_map[param]:
                             suggest.append(self.param_value_map[param])
                     return Suggestion(' '.join(suggest))
-            # If the user finish input with space, suggest all the rest unused parameters
             elif unfinished == '':
                 if not last_part.startswith('-'):
                     suggests = []
                     for param in unused_param:
                         raw_value = self.param_value_map[param]
                         if raw_value and raw_value.startswith('<'):
-                            # find value in local cache to see whether a similar name has been used (constructing)
+                            # TODO: find value in local cache to see whether a similar name has been use
                             if raw_value in value_storage_cache.keys():
                                 value = value_storage_cache[raw_value]
                             else:

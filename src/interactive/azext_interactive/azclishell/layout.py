@@ -19,11 +19,6 @@ from prompt_toolkit.layout.processors import HighlightSearchProcessor, \
     ConditionalProcessor, AppendAutoSuggestion
 from prompt_toolkit.layout.prompt import DefaultPrompt
 from prompt_toolkit.layout.screen import Char
-import warnings
-# HACK: since cryptography==37.0.0 CryptographyDeprecationWarning is being raised
-# this is until https://github.com/paramiko/paramiko/issues/2038 would be solved
-from cryptography.utils import CryptographyDeprecationWarning
-warnings.filterwarnings(action='ignore', category=CryptographyDeprecationWarning)
 
 
 from .progress import get_progress_message, get_done
