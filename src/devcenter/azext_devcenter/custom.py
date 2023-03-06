@@ -353,12 +353,6 @@ class PoolShow(_PoolShow):
 
 
 class PoolUpdate(_PoolUpdate):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.license_type._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -476,8 +470,6 @@ class ScheduleUpdate(_ScheduleUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
         args_schema.schedule_name._required = False
-        args_schema.frequency._registered = False
-        args_schema.type._registered = False
         return args_schema
 
     @register_callback
