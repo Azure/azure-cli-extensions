@@ -702,7 +702,7 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
             logger.debug(result.boot_diagnostics)
             if result.boot_diagnostics.console_screenshot_blob_uri is not None:
                 storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
-                storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
+                storage_account_region = get_storage_account_info(storage_account_url, scf)
     else:
         try:
             result_data = client.virtual_machines.get(
@@ -731,12 +731,12 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
         if result.diagnostics_profile is not None:
             if result.diagnostics_profile.boot_diagnostics is not None:
                 storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-                storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
+                storage_account_region = get_storage_account_info(storage_account_url, scf)
 
     return result, storage_account_region
 
 
-def get_storage_account_info(storage_account_url, resource_group_name, scf):
+def get_storage_account_info(storage_account_url, scf):
     from azext_serialconsole._arm_endpoints import ArmEndpoints
 
     if storage_account_url is not None:
@@ -766,6 +766,7 @@ def resource_group_from_storage_account_name(storage_account_name, scf):
     for storage_account in storage_accounts:
         storage_account_id = storage_account.id
         if storage_account_id.endswith("Microsoft.Storage/storageAccounts/" + storage_account_name):
-            rg = re.search(r"resourceGroups/(.+)/providers/Microsoft.Storage/storageAccounts", storage_account_id).group(1)
+            rg = re.search(r"resourceGroups/(.+)/providers/Microsoft.Storage/storageAccounts",
+                           storage_account_id).group(1)
             return rg
     return None
