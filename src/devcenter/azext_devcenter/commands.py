@@ -37,7 +37,6 @@ from .custom import (
     DevBoxDefinitionShow,
     DevBoxDefinitionUpdate,
     DevBoxDefinitionWait,
-    DevCenterList,
     EnvironmentTypeCreate,
     EnvironmentTypeDelete,
     EnvironmentTypeList,
@@ -52,15 +51,12 @@ from .custom import (
     ImageShow,
     ImageVersionList,
     ImageVersionShow,
-    NetworkConnectionList,
-    NetworkConnectionListHealthDetail,
     PoolCreate,
     PoolDelete,
     PoolList,
     PoolShow,
     PoolUpdate,
     PoolWait,
-    ProjectList,
     ProjectAllowedEnvironmentTypeList,
     ProjectAllowedEnvironmentTypeShow,
     ProjectEnvironmentTypeCreate,
@@ -73,7 +69,6 @@ from .custom import (
     ScheduleShow,
     ScheduleUpdate,
     ScheduleWait,
-    SkuList,
 )
 
 
@@ -122,8 +117,6 @@ def load_command_table(self, _):
         loader=self
     )
 
-    self.command_table["devcenter admin devcenter list"] = DevCenterList(loader=self)
-
     self.command_table[
         "devcenter admin environment-type create"
     ] = EnvironmentTypeCreate(loader=self)
@@ -156,21 +149,12 @@ def load_command_table(self, _):
         loader=self
     )
 
-    self.command_table[
-        "devcenter admin network-connection list"
-    ] = NetworkConnectionList(loader=self)
-    self.command_table[
-        "devcenter admin network-connection list-health-detail"
-    ] = NetworkConnectionListHealthDetail(loader=self)
-
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
     self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
-
-    self.command_table["devcenter admin project list"] = ProjectList(loader=self)
 
     self.command_table[
         "devcenter admin project-allowed-environment-type list"
@@ -200,8 +184,6 @@ def load_command_table(self, _):
     self.command_table["devcenter admin schedule show"] = ScheduleShow(loader=self)
     self.command_table["devcenter admin schedule update"] = ScheduleUpdate(loader=self)
     self.command_table["devcenter admin schedule wait"] = ScheduleWait(loader=self)
-
-    self.command_table["devcenter admin sku list"] = SkuList(loader=self)
 
     # Data plane
 

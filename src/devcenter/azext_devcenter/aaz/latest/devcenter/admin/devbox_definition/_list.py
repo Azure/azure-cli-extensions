@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List dev box definitions configured for a devcenter or project.
+    """List Dev Box definitions configured for a project.
 
     :example: List by dev center
         az devcenter admin devbox-definition list --dev-center-name "Contoso" --resource-group "rg1"
@@ -59,10 +58,6 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
-        )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
-            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
         )
         return cls._args_schema
 
@@ -136,9 +131,6 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,
@@ -322,9 +314,6 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,
