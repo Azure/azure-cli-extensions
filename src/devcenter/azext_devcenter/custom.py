@@ -13,9 +13,7 @@ from .aaz.latest.devcenter.admin.attached_network import (
     Create as _AttachedNetworkCreate,
     Delete as _AttachedNetworkDelete,
     List as _AttachedNetworkList,
-    ListProject as AttachedNetworkListByProject,
     Show as _AttachedNetworkShow,
-    ShowProject as AttachedNetworkShowByProject,
     Wait as _AttachedNetworkWait,
 )
 from .aaz.latest.devcenter.admin.catalog import (
@@ -31,9 +29,7 @@ from .aaz.latest.devcenter.admin.devbox_definition import (
     Create as _DevBoxDefinitionCreate,
     Delete as _DevBoxDefinitionDelete,
     List as _DevBoxDefinitionList,
-    ListProject as DevBoxDefinitionListByProject,
     Show as _DevBoxDefinitionShow,
-    ShowProject as DevBoxDefinitionShowByProject,
     Update as _DevBoxDefinitionUpdate,
     Wait as _DevBoxDefinitionWait,
 )
@@ -53,7 +49,6 @@ from .aaz.latest.devcenter.admin.gallery import (
     Wait as _GalleryWait,
 )
 from .aaz.latest.devcenter.admin.image import (
-    ListGallery as _ImageListByGallery,
     List as _ImageList,
     Show as _ImageShow,
 )
@@ -126,26 +121,6 @@ class AttachedNetworkDelete(_AttachedNetworkDelete):
 
 
 class AttachedNetworkList(_AttachedNetworkList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        args_schema.top._registered = False
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.AttachedNetworksListByDevCenter(ctx=self.ctx)()
-        elif condition_1:
-            AttachedNetworkListByProject.AttachedNetworksListByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -158,25 +133,6 @@ class AttachedNetworkList(_AttachedNetworkList):
 
 
 class AttachedNetworkShow(_AttachedNetworkShow):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.AttachedNetworksGetByDevCenter(ctx=self.ctx)()
-        elif condition_1:
-            AttachedNetworkShowByProject.AttachedNetworksGetByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -255,26 +211,6 @@ class DevBoxDefinitionDelete(_DevBoxDefinitionDelete):
 
 
 class DevBoxDefinitionList(_DevBoxDefinitionList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        args_schema.top._registered = False
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.DevBoxDefinitionsListByDevCenter(ctx=self.ctx)()
-        elif condition_1:
-            DevBoxDefinitionListByProject.DevBoxDefinitionsListByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -287,25 +223,6 @@ class DevBoxDefinitionList(_DevBoxDefinitionList):
 
 
 class DevBoxDefinitionShow(_DevBoxDefinitionShow):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.DevBoxDefinitionsGet(ctx=self.ctx)()
-        elif condition_1:
-            DevBoxDefinitionShowByProject.DevBoxDefinitionsGetByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -410,24 +327,6 @@ class GalleryWait(_GalleryWait):
 
 
 class ImageList(_ImageList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.gallery_name = AAZStrArg(
-            options=["--gallery-name"],
-            help="The name of the gallery.",
-        )
-        args_schema.top._registered = False
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.gallery_name)
-        if condition_0:
-            _ImageListByGallery.ImagesListByGallery(ctx=self.ctx)()
-        else:
-            self.ImagesListByDevCenter(ctx=self.ctx)()
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
