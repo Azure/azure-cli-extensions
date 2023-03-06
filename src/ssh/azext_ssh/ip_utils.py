@@ -14,10 +14,12 @@ logger = log.get_logger(__name__)
 
 def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
     compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-    network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
+    # network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
     vm_client = compute_client.virtual_machines
-    nic_client = network_client.network_interfaces
-    ip_client = network_client.public_ip_addresses
+    # nic_client = network_client.network_interfaces
+    # ip_client = network_client.public_ip_addresses
+    from .aaz.latest.network.public_ip import Show as PublicIpShow
+    from .aaz.latest.network.nic import Show as InterfaceShow
 
     vm = vm_client.get(resource_group, vm_name)
 
@@ -25,14 +27,24 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
 
     for nic_ref in vm.network_profile.network_interfaces:
         parsed_id = tools.parse_resource_id(nic_ref.id)
-        nic = nic_client.get(parsed_id['resource_group'], parsed_id['name'])
+        # nic = nic_client.get(parsed_id['resource_group'], parsed_id['name'])
+        get_args = {
+            'name': parsed_id['name'],
+            'resource_group': parsed_id['resource_group']
+        }
+        nic = InterfaceShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
         for ip_config in nic.ip_configurations:
             if use_private_ip and ip_config.private_ip_address:
                 return ip_config.private_ip_address
             public_ip_ref = ip_config.public_ip_address
             if public_ip_ref and public_ip_ref.id:
                 parsed_ip_id = tools.parse_resource_id(public_ip_ref.id)
-                public_ip = ip_client.get(parsed_ip_id['resource_group'], parsed_ip_id['name'])
+                # public_ip = ip_client.get(parsed_ip_id['resource_group'], parsed_ip_id['name'])
+                api_args = {
+                    'name': parsed_ip_id['name'],
+                    'resource_group': parsed_ip_id['resource_group']
+                }
+                public_ip = PublicIpShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
                 if public_ip and public_ip.ip_address:
                     return public_ip.ip_address
             if ip_config.private_ip_address:
