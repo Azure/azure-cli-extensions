@@ -11,11 +11,11 @@ from azext_hybrid_appliance._constants import Supported_Locations
 def load_arguments(self, _):
     
     with self.argument_context('hybrid-appliance validate') as c:
-        c.arguent('name', options_list=['--name', '-n'])
+        c.argument('name', options_list=['--name', '-n'])
 
     with self.argument_context('hybrid-appliance create') as c:
         c.argument('name', options_list=['--name', '-n'], help='')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), arg_type=get_enum_type(Supported_Locations))
+        c.argument('location', arg_type=get_enum_type(Supported_Locations))
         c.argument('mode', options_list=['--mode'], help='')
         c.argument('https_proxy', options_list=['--proxy-https'], arg_group='Proxy', help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], arg_group='Proxy', help='Http proxy URL to be used.')

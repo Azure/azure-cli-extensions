@@ -42,7 +42,7 @@ def validate_hybrid_appliance():
         response.raise_for_status()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError):
         all_validations_passed = False
-        logger.warning("The endpoint {} is not reachable".format(consts.Snap_Storage_End_Point))
+        logger.warning("The endpoint {} is not reachable".format(consts.Snap_Config_Storage_End_Point))
     
     if all_validations_passed is False:
         raise ValidationError("One or more pre-requisite validations have failed. Please resolve them and try again")
