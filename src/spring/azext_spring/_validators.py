@@ -394,6 +394,8 @@ def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
     # network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
     # return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
+    ctx = cmd.cli_ctx
+    ctx.update_aux_subscriptions(vnet['subscription'])
     get_args = {
         'name': vnet['resource_name'],
         'resource_group': vnet['resource_group']

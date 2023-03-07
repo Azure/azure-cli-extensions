@@ -44,7 +44,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
                     'name': parsed_ip_id['name'],
                     'resource_group': parsed_ip_id['resource_group']
                 }
-                public_ip = PublicIpShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
+                public_ip = PublicIpShow(cli_ctx=cmd.cli_ctx)(command_args=api_args)
                 if public_ip and public_ip.ip_address:
                     return public_ip.ip_address
             if ip_config.private_ip_address:
