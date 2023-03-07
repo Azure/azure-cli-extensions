@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 from azure.cli.core.util import sdk_no_wait
 from ._utils import get_portal_uri
 from msrestazure.tools import parse_resource_id, is_valid_resource_id

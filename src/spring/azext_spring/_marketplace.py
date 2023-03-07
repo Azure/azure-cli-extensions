@@ -14,8 +14,8 @@ logger = get_logger(__name__)
 def _spring_list_marketplace_plan(cmd, client):
     # return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220501preview)
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.marketplace.v2022_11_01_preview import MarketplaceRPService
-    from .vendored_sdks.marketplace.v2022_11_01_preview.models import Offer
+    from .vendored_sdks.marketplace.v2023_01_01_preview import MarketplaceRPService
+    from .vendored_sdks.marketplace.v2023_01_01_preview.models import Offer
 
     logger.warning('To view the Azure Spring Apps Enterprise tier offering and read a detailed description, see https://aka.ms/ascmpoffer')
     client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceRPService)

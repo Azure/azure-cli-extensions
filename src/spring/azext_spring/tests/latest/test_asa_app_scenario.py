@@ -145,7 +145,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
-        self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
 
 
     def test_app_crud_1(self):

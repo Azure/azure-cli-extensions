@@ -5,7 +5,7 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 from azure.cli.core.util import get_file_json
 
 
@@ -23,6 +23,7 @@ class DefaultApp:
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
+        kwargs['secrets'] = self._load_secrets_config(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
@@ -143,6 +144,29 @@ class DefaultApp:
             )
         else:
             return None
+
+    def _load_secrets_config(self, secrets=None, **_):
+        if secrets is None:
+            return None
+
+        secret_pairs = {}
+
+        for pair in secrets:
+            key_val = pair.split('=', 1)
+            if len(key_val) != 2:
+                raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
+            if key_val[0] in secret_pairs:
+                raise ValidationError(
+                    "Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+            secret_pairs[key_val[0]] = key_val[1]
+
+        secret_var_def = []
+        for key, value in secret_pairs.items():
+            secret_var_def.append(
+                models.Secret(name=key, value=value)
+            )
+
+        return secret_var_def
 
 
 class BasicTierApp(DefaultApp):

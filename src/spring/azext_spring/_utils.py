@@ -7,6 +7,7 @@ from enum import Enum
 import os
 from time import sleep
 import codecs
+import requests
 import tarfile
 import tempfile
 import uuid
@@ -15,7 +16,8 @@ from re import (search, match, compile)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from azure.cli.core.azclierror import ValidationError
+from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -236,6 +238,8 @@ def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'S0'
     if tier == 'ENTERPRISE':
         return 'E0'
+    if tier == 'STANDARDGEN2':
+        return 'S0'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 
@@ -257,6 +261,20 @@ def get_portal_uri(cli_ctx):
     except Exception as e:
         logger.debug("Could not get Azure Portal endpoint. Exception: %s", str(e))
         return 'https://portal.azure.com'
+
+
+def get_proxy_api_endpoint(cli_ctx, spring_resource):
+    """Get the endpoint of the proxy api."""
+    if spring_resource.properties.fqdn:
+        return spring_resource.properties.fqdn
+
+    service_id = spring_resource.properties.service_id
+    service_id = service_id.replace('-', '')
+    cloud_name = cli_ctx.cloud.name
+    if cloud_name == 'AzureCloud':
+        return f'{service_id}.svc.azuremicroservices.io'
+    else:
+        raise ValidationError('Unsupported Azure cloud: ' + cloud_name)
 
 
 def get_spring_sku(client, resource_group, name):
@@ -291,3 +309,12 @@ def handle_asc_exception(ex):
             raise CLIError(response_dict["error"]["message"])
         else:
             raise CLIError(ex)
+
+
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = "Bearer " + self.token
+        return r
