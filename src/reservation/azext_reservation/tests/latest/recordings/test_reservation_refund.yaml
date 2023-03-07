@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"id": "/providers/microsoft.capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8",
-      "properties": {"reservationToReturn": {"quantity": 1, "reservationId": "/providers/microsoft.capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/8075741d-8002-412e-b392-64a56baecfa4"},
+    body: '{"id": "/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876",
+      "properties": {"reservationToReturn": {"quantity": 1, "reservationId": "/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f"},
       "scope": "Reservation"}}'
     headers:
       Accept:
@@ -21,10 +21,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/calculateRefund?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/calculateRefund?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/8075741d-8002-412e-b392-64a56baecfa4","properties":{"sessionId":"b33a1816-d878-4e7a-a55a-6a578a72720b","quantity":1,"billingRefundAmount":{"currencyCode":"GBP","amount":2.41},"pricingRefundAmount":{"currencyCode":"USD","amount":2.97},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":15.45},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":1,"totalTransactions":36,"billingCurrencyTotalPaidAmount":{"currencyCode":"GBP","amount":24.1},"billingCurrencyProratedAmount":{"currencyCode":"GBP","amount":21.69},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"GBP","amount":84.35}}}}'
+      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f","properties":{"sessionId":"d2dff20e-169e-4ab8-968f-6289be776dc0","quantity":1,"billingRefundAmount":{"currencyCode":"GBP","amount":1.83},"pricingRefundAmount":{"currencyCode":"USD","amount":2.18},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":431.93},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":1,"totalTransactions":12,"billingCurrencyTotalPaidAmount":{"currencyCode":"GBP","amount":5.49},"billingCurrencyProratedAmount":{"currencyCode":"GBP","amount":3.66},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"GBP","amount":20.13}}}}'
     headers:
       cache-control:
       - no-cache
@@ -33,7 +33,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 18 Feb 2023 01:45:57 GMT
+      - Mon, 06 Mar 2023 23:26:47 GMT
       expires:
       - '-1'
       pragma:
@@ -53,15 +53,15 @@ interactions:
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-test:
-      - '{"contact":"sagirees","scenarios":"NewReservationTypeScenario,TestInProduction","retention":"5/19/2023
-        1:29:29 AM"}'
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        3:29:09 AM"}'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"reservationToReturn": {"quantity": 1, "reservationId":
-      "/providers/microsoft.capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/8075741d-8002-412e-b392-64a56baecfa4"},
-      "returnReason": "testing", "scope": "Reservation", "sessionId": "b33a1816-d878-4e7a-a55a-6a578a72720b"}}'
+      "/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f"},
+      "returnReason": "testing", "scope": "Reservation", "sessionId": "d2dff20e-169e-4ab8-968f-6289be776dc0"}}'
     headers:
       Accept:
       - application/json
@@ -80,10 +80,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/return?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/return?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/8075741d-8002-412e-b392-64a56baecfa4","properties":{"sessionId":"b33a1816-d878-4e7a-a55a-6a578a72720b","quantity":1,"billingRefundAmount":{"currencyCode":"GBP","amount":2.41},"pricingRefundAmount":{"currencyCode":"USD","amount":2.97},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":15.45},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":1,"totalTransactions":36,"billingCurrencyTotalPaidAmount":{"currencyCode":"GBP","amount":24.1},"billingCurrencyProratedAmount":{"currencyCode":"GBP","amount":21.69},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"GBP","amount":84.35}}}}'
+      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f","properties":{"sessionId":"d2dff20e-169e-4ab8-968f-6289be776dc0","quantity":1,"billingRefundAmount":{"currencyCode":"GBP","amount":1.83},"pricingRefundAmount":{"currencyCode":"USD","amount":2.18},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":431.93},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":1,"totalTransactions":12,"billingCurrencyTotalPaidAmount":{"currencyCode":"GBP","amount":5.49},"billingCurrencyProratedAmount":{"currencyCode":"GBP","amount":3.66},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"GBP","amount":20.13}}}}'
     headers:
       cache-control:
       - no-cache
@@ -92,11 +92,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 18 Feb 2023 01:46:03 GMT
+      - Mon, 06 Mar 2023 23:26:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8?api-version=2022-11-01
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876?api-version=2022-11-01
       pragma:
       - no-cache
       server:
@@ -110,8 +110,8 @@ interactions:
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-test:
-      - '{"contact":"sagirees","scenarios":"NewReservationTypeScenario,TestInProduction","retention":"5/19/2023
-        1:29:29 AM"}'
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        3:29:09 AM"}'
     status:
       code: 202
       message: Accepted
@@ -131,19 +131,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/microsoft.capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8","name":"fade3e0f-aecb-43f8-a109-21bcb62c21d8","type":"microsoft.capacity/reservationOrders","etag":18,"properties":{"originalQuantity":10,"requestDateTime":"2023-02-18T01:29:30.5297325Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/275c7aa6-4ddd-4539-a580-cfe884456acd"},{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/ae29f38a-4a1a-40f7-ab19-39e0c1d64222"},{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/8075741d-8002-412e-b392-64a56baecfa4"},{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/e025617d-2d34-4e2a-b0e5-f1316cd3b20f"},{"id":"/providers/Microsoft.Capacity/reservationOrders/fade3e0f-aecb-43f8-a109-21bcb62c21d8/reservations/7dd68ab3-35cb-4c54-a125-d120384d8076"}],"term":"P3Y","displayName":"VM_RI_02-17-2023_17-29","createdDateTime":"2023-02-18T01:34:20.9090113Z","benefitStartTime":"2023-02-18T01:34:20.2840447Z","provisioningState":"Pending","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d","expiryDateTime":"2026-02-18T01:34:20.2840447Z"}}'
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876","name":"62069b8a-8f84-49ab-9a4a-f69009390876","type":"microsoft.capacity/reservationOrders","etag":18,"properties":{"originalQuantity":3,"requestDateTime":"2023-03-04T03:29:14.6367316Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/8f4acb58-cca9-4b54-847e-791694079fab"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/0d86ee3f-1b88-4a2b-8d71-2a27eb25da66"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/8bae2e8e-c4b9-48f1-b43e-03514f0d7f34"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/21eae555-c406-47d5-a178-98cf422be361"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f"}],"term":"P1Y","displayName":"VM_RI_03-03-2023_19-28","createdDateTime":"2023-03-04T03:37:37.2333829Z","benefitStartTime":"2023-03-04T03:37:33.9364708Z","provisioningState":"Pending","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d","expiryDateTime":"2024-03-04T03:37:33.9364708Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1374'
+      - '1373'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 18 Feb 2023 01:48:03 GMT
+      - Mon, 06 Mar 2023 23:28:57 GMT
       expires:
       - '-1'
       pragma:
@@ -157,7 +157,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-version:
-      - 1.0.2237.106
+      - 1.0.2251.115
     status:
       code: 200
       message: OK

@@ -15,24 +15,24 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --reservation-order-id --reservation-id --applied-scope-type
+      - --reservation-order-id --reservation-id --applied-scope-typ
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/c38bef9c-6199-452a-85af-290b5b4616b0/reservations/a132a5c3-51d4-4d6f-b380-f27a4ff7ea84?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/microsoft.capacity/reservationOrders/c38bef9c-6199-452a-85af-290b5b4616b0/reservations/a132a5c3-51d4-4d6f-b380-f27a4ff7ea84","name":"a132a5c3-51d4-4d6f-b380-f27a4ff7ea84","type":"microsoft.capacity/reservationOrders/reservations","location":"westeurope","etag":21,"sku":{"name":"Standard_DC8_v2"},"properties":{"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
-        VM Instance, Standard_DC8_v2, EU West, 3 Years","renew":false,"archived":false,"quantity":1,"appliedScopeType":"Shared","displayName":"VM_RI_12-01-2022_14-57","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2025-12-01T23:00:03.8505954Z","purchaseDateTime":"2022-12-01T22:57:41.8849858Z","benefitStartTime":"2022-12-01T23:00:03.8505954Z","lastUpdatedDateTime":"2023-02-09T21:37:23.3607701Z","expiryDate":"2025-12-01","purchaseDate":"2022-12-01","effectiveDateTime":"2023-02-09T21:37:23.3138926Z","instanceFlexibility":"On","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64","name":"96a8b784-28da-4cae-a32d-001cf4ea9a64","type":"microsoft.capacity/reservationOrders/reservations","location":"uksouth","etag":13,"sku":{"name":"Standard_B1ls"},"properties":{"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 3 Years","renew":false,"archived":false,"quantity":4,"appliedScopeType":"Shared","displayName":"VM_RI_02-10-2023_16-37","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2026-02-10T22:40:23.0651555Z","purchaseDateTime":"2023-02-10T22:37:49.7576881Z","benefitStartTime":"2023-02-10T22:40:23.0651555Z","lastUpdatedDateTime":"2023-03-06T20:54:41.1460524Z","expiryDate":"2026-02-10","purchaseDate":"2023-02-10","effectiveDateTime":"2023-03-06T20:54:41.0533458Z","instanceFlexibility":"On","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1397'
+      - '1391'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Feb 2023 21:37:34 GMT
+      - Mon, 06 Mar 2023 20:54:48 GMT
       expires:
       - '-1'
       pragma:
@@ -48,7 +48,7 @@ interactions:
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-version:
-      - 1.0.2206.71
+      - 1.0.2251.115
     status:
       code: 200
       message: OK
@@ -74,21 +74,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/c38bef9c-6199-452a-85af-290b5b4616b0/reservations/a132a5c3-51d4-4d6f-b380-f27a4ff7ea84?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/microsoft.capacity/reservationOrders/c38bef9c-6199-452a-85af-290b5b4616b0/reservations/a132a5c3-51d4-4d6f-b380-f27a4ff7ea84","name":"a132a5c3-51d4-4d6f-b380-f27a4ff7ea84","type":"microsoft.capacity/reservationOrders/reservations","location":"westeurope","etag":23,"sku":{"name":"Standard_DC8_v2"},"properties":{"appliedScopeProperties":{"subscriptionId":"/subscriptions/00000000-0000-0000-0000-000000000000","displayName":"Azure
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64","name":"96a8b784-28da-4cae-a32d-001cf4ea9a64","type":"microsoft.capacity/reservationOrders/reservations","location":"uksouth","etag":15,"sku":{"name":"Standard_B1ls"},"properties":{"appliedScopeProperties":{"subscriptionId":"/subscriptions/00000000-0000-0000-0000-000000000000","displayName":"Azure
         subscription 1"},"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
-        VM Instance, Standard_DC8_v2, EU West, 3 Years","renew":false,"archived":false,"quantity":1,"appliedScopeType":"Single","displayName":"VM_RI_12-01-2022_14-57","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Single","expiryDateTime":"2025-12-01T23:00:03.8505954Z","purchaseDateTime":"2022-12-01T22:57:41.8849858Z","benefitStartTime":"2022-12-01T23:00:03.8505954Z","lastUpdatedDateTime":"2023-02-09T21:37:38.3769435Z","expiryDate":"2025-12-01","purchaseDate":"2022-12-01","effectiveDateTime":"2023-02-09T21:37:38.3299912Z","instanceFlexibility":"Off","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
+        VM Instance, Standard_B1ls, UK South, 3 Years","renew":false,"archived":false,"quantity":4,"appliedScopeType":"Single","displayName":"VM_RI_02-10-2023_16-37","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Single","expiryDateTime":"2026-02-10T22:40:23.0651555Z","purchaseDateTime":"2023-02-10T22:37:49.7576881Z","benefitStartTime":"2023-02-10T22:40:23.0651555Z","lastUpdatedDateTime":"2023-03-06T20:54:53.3084166Z","expiryDate":"2026-02-10","purchaseDate":"2023-02-10","effectiveDateTime":"2023-03-06T20:54:53.2459888Z","instanceFlexibility":"Off","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1533'
+      - '1527'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Feb 2023 21:37:48 GMT
+      - Mon, 06 Mar 2023 20:55:06 GMT
       expires:
       - '-1'
       pragma:
@@ -104,7 +104,7 @@ interactions:
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-version:
-      - 1.0.2206.71
+      - 1.0.2251.115
     status:
       code: 200
       message: OK

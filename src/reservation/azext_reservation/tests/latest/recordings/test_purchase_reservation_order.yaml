@@ -2,7 +2,7 @@ interactions:
 - request:
     body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
       "Monthly", "billingScopeId": "b0f278e1-1f18-4378-84d7-b44dfa708665", "displayName":
-      "clitest", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
+      "clitest2", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
       "term": "P1Y"}, "sku": {"name": "standard_b1ls"}}'
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '301'
+      - '302'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -23,10 +23,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-11-01-beta
+    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-11-01
   response:
     body:
-      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"GBP","amount":48.0},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2023-03-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"billingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-04-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-05-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-06-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-07-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-08-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-09-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-10-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-11-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-12-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-01-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-02-02","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"}],"reservationOrderId":"c8533688-2b69-48e4-9269-e8b335f8c719","skuTitle":"Reserved
+      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"GBP","amount":48.0},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2023-03-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"billingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-04-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-05-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-06-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-07-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-08-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-09-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-10-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-11-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-12-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-01-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-02-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"}],"reservationOrderId":"dbbcc369-214d-44e3-bd7f-d019c07e9eea","skuTitle":"Reserved
         VM Instance, Standard_B1ls, US West, 1 Year","skuDescription":"standard_b1ls","pricingCurrencyTotal":{"currencyCode":"GBP","amount":48.0}}}'
     headers:
       cache-control:
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Mar 2023 22:30:53 GMT
+      - Mon, 06 Mar 2023 23:08:52 GMT
       expires:
       - '-1'
       pragma:
@@ -56,15 +56,15 @@ interactions:
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-test:
-      - '{"contact":"sagirees","scenarios":"NewReservationTypeScenario,TestInProduction","retention":"5/31/2023
-        10:30:51 PM"}'
+      - '{"contact":"sagirees","scenarios":"NewReservationTypeScenario,TestInProduction","retention":"6/4/2023
+        11:08:46 PM"}'
     status:
       code: 200
       message: OK
 - request:
     body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
       "Monthly", "billingScopeId": "b0f278e1-1f18-4378-84d7-b44dfa708665", "displayName":
-      "clitest", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
+      "clitest2", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
       "term": "P1Y"}, "sku": {"name": "standard_b1ls"}}'
     headers:
       Accept:
@@ -76,7 +76,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '301'
+      - '302'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -85,23 +85,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719?api-version=2022-11-01-beta
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/microsoft.capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719","name":"c8533688-2b69-48e4-9269-e8b335f8c719","type":"microsoft.capacity/reservationOrders","etag":1,"properties":{"originalQuantity":2,"requestDateTime":"2023-03-02T22:30:57.1256893Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719/reservations/a987e93e-a585-45d4-899f-a212d96a88a0"}],"term":"P1Y","displayName":"clitest","provisioningState":"Creating","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d"}}'
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea","name":"dbbcc369-214d-44e3-bd7f-d019c07e9eea","type":"microsoft.capacity/reservationOrders","etag":1,"properties":{"originalQuantity":2,"requestDateTime":"2023-03-06T23:08:54.9810417Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea/reservations/29632bdc-66c0-4d16-b74a-034b505c89b2"}],"term":"P1Y","displayName":"clitest2","provisioningState":"Creating","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '635'
+      - '636'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Mar 2023 22:31:29 GMT
+      - Mon, 06 Mar 2023 23:08:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719?api-version=2022-11-01-beta
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea?api-version=2022-11-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -132,19 +132,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719?api-version=2022-11-01-beta
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea?api-version=2022-11-01
   response:
     body:
-      string: '{"id":"/providers/microsoft.capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719","name":"c8533688-2b69-48e4-9269-e8b335f8c719","type":"microsoft.capacity/reservationOrders","etag":4,"properties":{"originalQuantity":2,"requestDateTime":"2023-03-02T22:30:57.1256893Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/c8533688-2b69-48e4-9269-e8b335f8c719/reservations/a987e93e-a585-45d4-899f-a212d96a88a0"}],"term":"P1Y","displayName":"clitest","provisioningState":"PendingCapacity","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d"}}'
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea","name":"dbbcc369-214d-44e3-bd7f-d019c07e9eea","type":"microsoft.capacity/reservationOrders","etag":4,"properties":{"originalQuantity":2,"requestDateTime":"2023-03-06T23:08:54.9810417Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea/reservations/29632bdc-66c0-4d16-b74a-034b505c89b2"}],"term":"P1Y","displayName":"clitest2","provisioningState":"PendingCapacity","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '642'
+      - '643'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Mar 2023 22:33:31 GMT
+      - Mon, 06 Mar 2023 23:11:00 GMT
       expires:
       - '-1'
       pragma:
