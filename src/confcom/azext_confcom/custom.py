@@ -26,6 +26,7 @@ def acipolicygen_confcom(
     image_name: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
+    approve_wildcards: str = False,
     use_json: bool = False,
     outraw: bool = False,
     outraw_pretty_print: bool = False,
@@ -97,6 +98,7 @@ def acipolicygen_confcom(
             arm_template_parameters,
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
+            approve_wildcards=approve_wildcards,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
