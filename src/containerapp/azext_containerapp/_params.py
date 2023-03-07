@@ -374,7 +374,7 @@ def load_arguments(self, _):
         c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.', is_preview=True)
 
     with self.argument_context('containerapp hostname add') as c:
         c.argument('hostname', help='The custom domain name.')
