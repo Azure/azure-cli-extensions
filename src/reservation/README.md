@@ -154,3 +154,11 @@ az reservations reservation-order calculate-refund --reservation-order-id 000000
 ```
 az reservations reservation-order return --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000000 --return-reason mockReason --scope Reservation --quantity 1 --reservation-id /providers/microsoft.capacity/reservationOrders/50000000-aaaa-bbbb-cccc-200000000000/reservations/30000000-aaaa-bbbb-cccc-200000000011 --session-id 40000000-aaaa-bbbb-cccc-200000000012
 ```
+
+##### Listing reservations under the tenant
+```
+az reservations list
+    [--selected-state {state}] \
+    [--filter {filter}] \
+    [--orderby {orderby}]
+```
