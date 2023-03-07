@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "reservations list",
 )
 class List(AAZCommand):
-    """List the reservations and the roll up counts of reservations group by provisioning states that the user has access to in the current tenant.
+    """List the reservations that the user has access to in the current tenant.
 
     :example: List reservations under the current tenant
         az reservations list
