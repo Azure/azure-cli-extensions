@@ -35,6 +35,7 @@ AUTHTYPES = {
     AUTH_TYPE.SystemIdentity: 'systemAssignedIdentity',
     AUTH_TYPE.UserAccount: 'userAccount'
 }
+IP_ADDRESS_CHECKER = 'https://api.ipify.org'
 
 
 # pylint: disable=line-too-long, consider-using-f-string
@@ -122,6 +123,8 @@ class TargetHandler:
     identity_client_id = ""
     identity_object_id = ""
 
+    connection_name = ""
+
     def __init__(self, cmd, target_id, target_type, auth_type, connection_name):
         self.cmd = cmd
         self.target_id = target_id
@@ -136,10 +139,11 @@ class TargetHandler:
             'az account show').get("user").get("name")
         self.login_usertype = run_cli_cmd(
             'az account show').get("user").get("type")
-        if(self.login_usertype not in ['servicePrincipal', 'user']):
+        if (self.login_usertype not in ['servicePrincipal', 'user']):
             raise CLIInternalError(
                 f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
         self.aad_username = "aad_" + connection_name
+        self.connection_name = connection_name
 
     def enable_target_aad_auth(self):
         return
@@ -147,7 +151,7 @@ class TargetHandler:
     def set_user_admin(self, user_object_id, **kwargs):
         return
 
-    def set_target_firewall(self, add_new_rule, ip_name):
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         return
 
     def create_aad_user(self):
@@ -207,42 +211,52 @@ class MysqlFlexibleHandler(TargetHandler):
     def create_aad_user(self):
         query_list = self.get_create_query()
         connection_kwargs = self.get_connection_string()
-        ip_name = None
+        ip_name = generate_random_string(prefix='svc_').lower()
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_mysql(connection_kwargs, query_list)
         except AzureConnectionError:
-            # allow public access
-            ip_name = generate_random_string(prefix='svc_').lower()
-            self.set_target_firewall(True, ip_name)
+            # allow local access
+            from requests import get
+            ip_address = get(IP_ADDRESS_CHECKER).text
+            self.set_target_firewall(True, ip_name, ip_address, ip_address)
             # create again
-            self.create_aad_user_in_mysql(connection_kwargs, query_list)
-
-        # remove firewall rule
-        if ip_name is not None:
             try:
+                self.create_aad_user_in_mysql(connection_kwargs, query_list)
+            except AzureConnectionError:
+                # allow public access
+                self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
+                # create again
+                self.create_aad_user_in_mysql(connection_kwargs, query_list)
+            finally:
                 self.set_target_firewall(False, ip_name)
-            # pylint: disable=bare-except
-            except:
-                pass
-                # logger.warning('Please manually delete firewall rule %s to avoid security issue', ipname)
 
-    def set_target_firewall(self, add_new_rule, ip_name):
-        if add_new_rule:
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
             target = run_cli_cmd(
                 'az mysql flexible-server show --ids {}'.format(self.target_id))
-            # logger.warning("Update database server firewall rule to connect...")
             if target.get('network').get('publicNetworkAccess') == "Disabled":
-                return
+                raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
+            logger.warning(f"Add firewall rule {ip_name} {start_ip} - {end_ip}..." +
+                           '(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
+                           else '(Please delete it manually if it has security risk.)')
             run_cli_cmd(
                 'az mysql flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
-                '--subscription {3} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255'.format(
-                    self.resource_group, self.server, ip_name, self.subscription)
+                '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
+                    self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
             )
-        # logger.warning("Remove database server firewall rules to recover...")
-        # run_cli_cmd('az mysql server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ipname))
-        # if deny_public_access:
-        #     run_cli_cmd('az mysql server update --public Disabled --ids {}'.format(target_id))
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az mysql flexible-server firewall-rule delete --resource-group {0} --name {1} --rule-name {2} '
+                    '--subscription {3} --yes'.format(
+                        self.resource_group, self.server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def create_aad_user_in_mysql(self, connection_kwargs, query_list):
         if not is_packaged_installed('pymysql'):
@@ -268,6 +282,8 @@ class MysqlFlexibleHandler(TargetHandler):
                         logger.warning(
                             "Query %s, error: %s", q, str(e))
         except pymysql.Error as e:
+            logger.debug(e)
+            logger.warning("Local environment can't connect to the database server.")
             raise AzureConnectionError("Fail to connect mysql. " + str(e)) from e
         if cursor is not None:
             try:
@@ -330,40 +346,51 @@ class SqlHandler(TargetHandler):
 
         query_list = self.get_create_query()
         connection_args = self.get_connection_string()
-        ip_name = None
+        ip_name = generate_random_string(prefix='svc_').lower()
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError:
-            # allow public access
-            ip_name = generate_random_string(prefix='svc_').lower()
-            self.set_target_firewall(True, ip_name)
-            # create again
-            self.create_aad_user_in_sql(connection_args, query_list)
-
-        # remove firewall rule
-        if ip_name is not None:
+            # allow local access
+            from requests import get
+            ip_address = get(IP_ADDRESS_CHECKER).text
+            self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
+                # create again
+                self.create_aad_user_in_sql(connection_args, query_list)
+            except AzureConnectionError:
+                self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
+                # create again
+                self.create_aad_user_in_sql(connection_args, query_list)
+            finally:
                 self.set_target_firewall(False, ip_name)
-            # pylint: disable=bare-except
-            except:
-                pass
-                # logger.warning('Please manually delete firewall rule %s to avoid security issue', ipname)
 
-    def set_target_firewall(self, add_new_rule, ip_name):
-        if add_new_rule:
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
             target = run_cli_cmd(
                 'az sql server show --ids {}'.format(self.target_id))
             # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
-                run_cli_cmd(
-                    'az sql server update -e true --ids {}'.format(self.target_id))
+                raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
+            logger.warning(f"Add firewall rule {ip_name} {start_ip} - {end_ip}..." +
+                           '(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
+                           else '(Please delete it manually if it has security risk.)')
             run_cli_cmd(
                 'az sql server firewall-rule create -g {0} -s {1} -n {2} '
-                '--subscription {3} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255'.format(
-                    self.resource_group, self.server, ip_name, self.subscription)
+                '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
+                    self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
             )
-            # return False
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az sql server firewall-rule delete -g {0} -s {1} -n {2} --subscription {3}'.format(
+                        self.resource_group, self.server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def create_aad_user_in_sql(self, connection_args, query_list):
 
@@ -392,6 +419,8 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
+            logger.debug(e)
+            logger.warning("Local environment can't connect to the database server.")
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self):
@@ -404,6 +433,7 @@ class SqlHandler(TargetHandler):
         SQL_COPT_SS_ACCESS_TOKEN = 1256
         conn_string = 'DRIVER={{{driver}}};server=' + \
             self.server + self.endpoint + ';database=' + self.dbname + ';'
+        logger.debug(conn_string)
         return {'connection_string': conn_string, 'attrs_before': {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}
 
     def get_create_query(self):
@@ -452,44 +482,52 @@ class PostgresFlexHandler(TargetHandler):
     def create_aad_user(self):
         query_list = self.get_create_query()
         connection_string = self.get_connection_string()
-        ip_name = None
+        ip_name = generate_random_string(prefix='svc_').lower()
+
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_pg(connection_string, query_list)
         except AzureConnectionError:
-            # allow public access
-            ip_name = generate_random_string(prefix='svc_').lower()
-            self.set_target_firewall(True, ip_name)
-            # create again
-            self.create_aad_user_in_pg(connection_string, query_list)
-
-        # remove firewall rule
-        if ip_name is not None:
+            # allow local access
+            from requests import get
+            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
+            self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
+                # create again
+                self.create_aad_user_in_pg(connection_string, query_list)
+            except AzureConnectionError:
+                self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
+                # create again
+                self.create_aad_user_in_pg(connection_string, query_list)
+            finally:
                 self.set_target_firewall(False, ip_name)
-            # pylint: disable=bare-except
-            except:
-                pass
-                # logger.warning('Please manually delete firewall rule %s to avoid security issue', ipname)
 
-    def set_target_firewall(self, add_new_rule, ip_name):
-        if add_new_rule:
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
             target = run_cli_cmd(
                 'az postgres flexible-server show --ids {}'.format(self.target_id))
-            # logger.warning("Update database server firewall rule to connect...")
             if target.get('network').get('publicNetworkAccess') == "Disabled":
-                return
-            start_ip = self.ip or '0.0.0.0'
-            end_ip = self.ip or '255.255.255.255'
+                raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
+            logger.warning(f"Add firewall rule {ip_name} {start_ip} - {end_ip}..." +
+                           '(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
+                           else '(Please delete it manually if it has security risk.)')
             run_cli_cmd(
                 'az postgres flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
                     self.resource_group, self.db_server, ip_name, self.subscription, start_ip, end_ip)
             )
-        # logger.warning("Remove database server firewall rules to recover...")
-        # run_cli_cmd('az postgres server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ipname))
-        # if deny_public_access:
-        #     run_cli_cmd('az postgres server update --public Disabled --ids {}'.format(target_id))
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az postgres flexible-server firewall-rule delete --resource-group {0} --name {1} --rule-name {2} '
+                    '--subscription {3} --yes'.format(
+                        self.resource_group, self.db_server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def create_aad_user_in_pg(self, conn_string, query_list):
         if not is_packaged_installed('psycopg2'):
@@ -506,12 +544,14 @@ class PostgresFlexHandler(TargetHandler):
         try:
             conn = psycopg2.connect(conn_string)
         except (psycopg2.Error, psycopg2.OperationalError) as e:
+            logger.debug(e)
             import re
             # logger.warning(e)
             search_ip = re.search(
                 'no pg_hba.conf entry for host "(.*)", user ', str(e))
             if search_ip is not None:
                 self.ip = search_ip.group(1)
+            logger.warning("Local environment can't connect to the database server.")
             raise AzureConnectionError(
                 "Fail to connect to postgresql. " + str(e)) from e
 
@@ -580,30 +620,32 @@ class PostgresSingleHandler(PostgresFlexHandler):
             run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
                         ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
 
-    def set_target_firewall(self, add_new_rule, ip_name):
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         sub = self.subscription
         rg = self.resource_group
         server = self.db_server
         target_id = self.target_id
-        if add_new_rule:
+        if is_add:
             target = run_cli_cmd(
                 'az postgres server show --ids {}'.format(target_id))
-            # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
-                run_cli_cmd(
-                    'az postgres server update --public Enabled --ids {}'.format(target_id))
-            start_ip = self.ip or '0.0.0.0'
-            end_ip = self.ip or '255.255.255.255'
+                raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
+            logger.warning(f"Add firewall rule {ip_name} {start_ip} - {end_ip}..." +
+                           '(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
+                           else '(Please delete it manually if it has security risk.)')
             run_cli_cmd(
                 'az postgres server firewall-rule create -g {0} -s {1} -n {2} --subscription {3}'
                 ' --start-ip-address {4} --end-ip-address {5}'.format(
                     rg, server, ip_name, sub, start_ip, end_ip)
             )
-            # return target.get('publicNetworkAccess') == "Disabled"
-        # logger.warning("Remove database server firewall rules to recover...")
-        # run_cli_cmd('az postgres server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ipname))
-        # if deny_public_access:
-        #     run_cli_cmd('az postgres server update --public Disabled --ids {}'.format(target_id))
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd('az postgres server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ip_name))
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def get_connection_string(self):
         password = run_cli_cmd(
