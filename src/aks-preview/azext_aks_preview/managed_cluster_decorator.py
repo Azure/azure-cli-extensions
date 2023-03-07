@@ -321,7 +321,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                             "be pre-configured with a route table with egress rules"
                         )
 
-                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                if self.decorator_mode == DecoratorMode.CREATE and outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
                     if load_balancer_profile:
                         if (
                             load_balancer_profile.managed_outbound_i_ps or
@@ -2793,14 +2793,24 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if ssh_key_value:
             if mc.linux_profile is None:
-                raise InvalidArgumentValueError("Updating the cluster with no ssh key set at creation is not supported")
-            mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
-                public_keys=[
-                    self.models.ContainerServiceSshPublicKey(
-                        key_data=ssh_key_value
+                mc.linux_profile = self.models.ContainerServiceLinuxProfile(
+                    admin_username="azureuser",
+                    ssh=self.models.ContainerServiceSshConfiguration(
+                        public_keys=[
+                            self.models.ContainerServiceSshPublicKey(
+                                key_data=ssh_key_value
+                            )
+                        ]
                     )
-                ]
-            )
+                )
+            else:
+                mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
+                    public_keys=[
+                        self.models.ContainerServiceSshPublicKey(
+                            key_data=ssh_key_value
+                        )
+                    ]
+                )
         return mc
 
     def update_node_resource_group_profile(self, mc: ManagedCluster) -> ManagedCluster:

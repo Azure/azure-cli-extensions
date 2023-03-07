@@ -6113,7 +6113,7 @@ class IngressSettings(_serialization.Model):
     :ivar session_cookie_max_age: Time in seconds until the cookie expires.
     :vartype session_cookie_max_age: int
     :ivar backend_protocol: How ingress should communicate with this app backend service. Known
-     values are: "GRPC" and "Default".
+     values are: "GRPC" and "Default", Default means HTTP/HTTPS/WebSocket.
     :vartype backend_protocol: str or
      ~azure.mgmt.appplatform.v2022_11_01_preview.models.BackendProtocol
     :ivar client_auth: Client-Certification Authentication.
@@ -6153,7 +6153,7 @@ class IngressSettings(_serialization.Model):
         :keyword session_cookie_max_age: Time in seconds until the cookie expires.
         :paramtype session_cookie_max_age: int
         :keyword backend_protocol: How ingress should communicate with this app backend service. Known
-         values are: "GRPC" and "Default".
+         values are: "GRPC" and "Default", Default means HTTP/HTTPS/WebSocket.
         :paramtype backend_protocol: str or
          ~azure.mgmt.appplatform.v2022_11_01_preview.models.BackendProtocol
         :keyword client_auth: Client-Certification Authentication.

@@ -19,7 +19,7 @@ from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
-from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
+from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
 from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
@@ -583,30 +583,43 @@ def _validate_route_table(namespace, vnet_obj):
 
 
 def validate_jar(namespace):
+    server_runtime_version = _get_server_runtime(namespace)
+    cmd_runtime_version = namespace.runtime_version
+    runtime_version = cmd_runtime_version if cmd_runtime_version is not None else server_runtime_version
     if namespace.disable_validation:
         telemetry.set_user_fault("jar validation is disabled")
         return
-    file_type = _get_file_type(namespace.runtime_version, namespace.artifact_path)
+    file_type = _get_file_type(runtime_version, namespace.artifact_path)
     if file_type != "Jar":
         return
     values = _parse_jar_file(namespace.artifact_path)
     if values is None:
         # ignore jar_file check
         return
-
-    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version = values
+    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
 
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
     if not has_jar and not has_class:
         telemetry.set_user_fault("invalid_jar_no_class_jar")
-        raise InvalidArgumentValueError("Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
+        raise InvalidArgumentValueError(
+            "Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
     if not has_manifest:
         telemetry.set_user_fault("invalid_jar_no_manifest")
-        raise InvalidArgumentValueError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
+        raise InvalidArgumentValueError(
+            "Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
     if file_size / 1024 / 1024 < 10:
         telemetry.set_user_fault("invalid_jar_thin_jar")
         raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
-
+    version_number = int(runtime_version[len("Java_"):])
+    if jdk_version not in _java_runtime_in_number():
+        raise InvalidArgumentValueError("Your java application is compiled with {}, currently the supported "
+                                        "java version is Java_8, Java_11, Java_17, you can configure the java runtime "
+                                        "with --runtime-version".format("Java_" + str(jdk_version)) + tips)
+    if jdk_version > version_number:
+        telemetry.set_user_fault("invalid_java_runtime")
+        raise InvalidArgumentValueError("Invalid java runtime, the runtime you configured is {}, the jar you use is "
+                                        "compiled with {}, you can configure the java runtime with --runtime-version".
+                                        format(runtime_version, "Java_" + str(jdk_version)) + tips)
     # validate spring boot version
     if spring_boot_version and spring_boot_version.startswith('1'):
         telemetry.set_user_fault("old_spring_boot_version")
@@ -639,6 +652,13 @@ def validate_jar(namespace):
             "https://aka.ms/ascdependencies for more details")
 
 
+def _get_server_runtime(namespace):
+    try:
+        return namespace.deployment.properties.source.runtime_version
+    except:
+        return None
+
+
 def _parse_jar_file(artifact_path):
     file_size = 0
     spring_boot_version = ""
@@ -648,6 +668,7 @@ def _parse_jar_file(artifact_path):
     has_jar = False
     has_class = False
     ms_sdk_version = ""
+    jdk_version = ""
 
     spring_boot_pattern = "/spring-boot-[0-9].*jar"
     spring_boot_actuator_pattern = "/spring-boot-actuator-[0-9].*jar"
@@ -658,32 +679,38 @@ def _parse_jar_file(artifact_path):
     try:
         with zipfile.ZipFile(artifact_path, 'r') as zf:
             files = zf.infolist()
-        for file in files:
-            file_size += file.file_size
-            file_name = file.filename
+            for file in files:
+                file_size += file.file_size
+                file_name = file.filename
 
-            if file_name.lower().endswith('.jar'):
-                has_jar = True
-            if file_name.lower().endswith('.class'):
-                has_class = True
-            if file_name.upper().endswith('MANIFEST.MF'):
-                has_manifest = True
-
-            if search(spring_boot_pattern, file_name):
-                prefix = 'spring-boot-'
-                spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if search(spring_boot_actuator_pattern, file_name):
-                has_actuator = True
-            if search(ms_sdk_pattern, file_name):
-                prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
-                ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if search(spring_cloud_config_pattern, file_name):
-                prefix = 'spring-cloud-config-client-'
-                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if search(spring_cloud_eureka_pattern, file_name):
-                prefix = 'spring-cloud-netflix-eureka-client-'
-                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version
+                if file_name.lower().endswith('.jar'):
+                    has_jar = True
+                if file_name.lower().endswith('.class'):
+                    has_class = True
+                    binary_content = zf.open(file_name)
+                    binary_content.read(4)
+                    binary_content.read(2)
+                    major_version = int.from_bytes(binary_content.read(2), byteorder='big')
+                    # refers to https://www.baeldung.com/java-find-class-version#class-version-in-java
+                    jdk_version = major_version - 44
+                if file_name.upper().endswith('MANIFEST.MF'):
+                    has_manifest = True
+                if search(spring_boot_pattern, file_name):
+                    prefix = 'spring-boot-'
+                    spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+                if search(spring_boot_actuator_pattern, file_name):
+                    has_actuator = True
+                if search(ms_sdk_pattern, file_name):
+                    prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
+                    ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+                if search(spring_cloud_config_pattern, file_name):
+                    prefix = 'spring-cloud-config-client-'
+                    spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+                if search(spring_cloud_eureka_pattern, file_name):
+                    prefix = 'spring-cloud-netflix-eureka-client-'
+                    spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, \
+            ms_sdk_version, jdk_version
     except Exception as err:  # pylint: disable=broad-except
         telemetry.set_exception("parse user jar file failed, " + str(err))
         return None
