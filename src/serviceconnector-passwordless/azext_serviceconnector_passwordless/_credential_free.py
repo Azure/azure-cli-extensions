@@ -282,8 +282,7 @@ class MysqlFlexibleHandler(TargetHandler):
                         logger.warning(
                             "Query %s, error: %s", q, str(e))
         except pymysql.Error as e:
-            logger.debug(e)
-            logger.warning("Local environment can't connect to the database server.")
+            logger.warning("Fail to connect mysql. " + str(e))
             raise AzureConnectionError("Fail to connect mysql. " + str(e)) from e
         if cursor is not None:
             try:
@@ -419,8 +418,7 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
-            logger.debug(e)
-            logger.warning("Local environment can't connect to the database server.")
+            logger.warning("Fail to connect sql." + str(e))
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self):
@@ -551,7 +549,7 @@ class PostgresFlexHandler(TargetHandler):
                 'no pg_hba.conf entry for host "(.*)", user ', str(e))
             if search_ip is not None:
                 self.ip = search_ip.group(1)
-            logger.warning("Local environment can't connect to the database server.")
+            logger.warning("Fail to connect to postgresql. " + str(e))
             raise AzureConnectionError(
                 "Fail to connect to postgresql. " + str(e)) from e
 
