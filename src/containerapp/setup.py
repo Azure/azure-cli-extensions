@@ -37,7 +37,6 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'azure-cli-core',
     'pycomposefile>=0.0.29',
     'azure-mgmt-appcontainers>=2.0.0b2'
 ]
