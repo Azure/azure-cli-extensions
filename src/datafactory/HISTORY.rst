@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.8.0
++++++
+* az datafactory update for new version
+
 0.7.0
 +++++
 * az datafactory data-flow: Support create/update/list/show/delete data flows.
