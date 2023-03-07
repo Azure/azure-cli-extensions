@@ -9,6 +9,7 @@ import pytest
 import json
 import deepdiff
 import docker
+from unittest.mock import patch
 
 from azext_confcom.security_policy import (
     OutputType,
@@ -285,7 +286,9 @@ class PolicyGeneratingArmIncorrect(unittest.TestCase):
     {
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
-
+        "variables": {
+            "image": ""
+        },
 
         "parameters": {
             "containergroupname": {
@@ -385,7 +388,10 @@ class PolicyGeneratingArmIncorrect(unittest.TestCase):
     """
 
         with self.assertRaises(SystemExit) as exc_info:
-            load_policy_from_arm_template_str(custom_arm_json_missing_image_name, "")
+            out_policies = load_policy_from_arm_template_str(custom_arm_json_missing_image_name, "")
+            for policy in out_policies:
+                policy.populate_policy_content_for_all_images()
+
         self.assertEqual(exc_info.exception.code, 1)
 
     def test_arm_template_missing_resources(self):
@@ -609,121 +615,6 @@ class PolicyGeneratingArmIncorrect(unittest.TestCase):
 # @unittest.skip("not in use")
 @pytest.mark.run(order=3)
 class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
-    def test_arm_template_missing_default_value(self):
-        custom_arm_json_missing_default_value = """
-    {
-        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-        "contentVersion": "1.0.0.0",
-
-
-        "parameters": {
-            "containergroupname": {
-            "type": "string",
-            "metadata": {
-                "description": "Name for the container group"
-            }
-            },
-
-            "containername": {
-            "type": "string",
-            "metadata": {
-                "description": "Name for the container"
-            }
-             },
-            "image": {
-                "type": "string",
-                "metadata": {
-                    "description": "Name for the image"
-                }
-            },
-
-            "port": {
-            "type": "string",
-            "metadata": {
-                "description": "Port to open on the container and the public IP address."
-            },
-            "defaultValue": "8080"
-            },
-            "cpuCores": {
-            "type": "string",
-            "metadata": {
-                "description": "The number of CPU cores to allocate to the container."
-            },
-            "defaultValue": "1.0"
-            },
-            "memoryInGb": {
-            "type": "string",
-            "metadata": {
-                "description": "The amount of memory to allocate to the container in gigabytes."
-            },
-            "defaultValue": "1.5"
-            },
-            "location": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().location]",
-            "metadata": {
-                "description": "Location for all resources."
-            }
-            }
-        },
-        "resources": [
-            {
-            "name": "[parameters('containergroupname')]",
-            "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
-            "location": "[parameters('location')]",
-
-            "properties": {
-                "containers": [
-                {
-                    "name": "[parameters('containername')]",
-                    "properties": {
-                    "image": "[parameters('image')]",
-                    "ports": [
-                        {
-                        "port": "[parameters('port')]"
-                        }
-                    ],
-                    "resources": {
-                        "requests": {
-                        "cpu": "[parameters('cpuCores')]",
-                        "memoryInGb": "[parameters('memoryInGb')]"
-                        }
-                    }
-                    }
-                }
-                ],
-
-                "osType": "Linux",
-                "restartPolicy": "OnFailure",
-                "confidentialComputeProperties": {
-                "IsolationType": "SevSnp"
-                },
-                "ipAddress": {
-                "type": "Public",
-                "ports": [
-                    {
-                    "protocol": "Tcp",
-                    "port": "[parameters( 'port' )]"
-                    }
-                ]
-                }
-            }
-            }
-        ],
-        "outputs": {
-            "containerIPv4Address": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
-            }
-        }
-    }
-    """
-
-        with self.assertRaises(SystemExit) as exc_info:
-            load_policy_from_arm_template_str(custom_arm_json_missing_default_value, "")
-        self.assertEqual(exc_info.exception.code, 1)
-
     def test_arm_template_missing_definition(self):
         custom_arm_json_missing_definition = """
     {
@@ -1943,7 +1834,7 @@ class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
 
 
 # @unittest.skip("not in use")
-@pytest.mark.run(order=8)
+@pytest.mark.run(order=10)
 class MultiplePolicyTemplate(unittest.TestCase):
     custom_json = """
 {
@@ -2123,7 +2014,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
 
 
 # @unittest.skip("not in use")
-@pytest.mark.run(order=10)
+@pytest.mark.run(order=11)
 class PolicyGeneratingArmInitContainer(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -2312,7 +2203,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
 
 
 # @unittest.skip("not in use")
-@pytest.mark.run(order=11)
+@pytest.mark.run(order=12)
 class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -2460,7 +2351,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
 
 
 # @unittest.skip("not in use")
-@pytest.mark.run(order=11)
+@pytest.mark.run(order=13)
 class PrintExistingPolicy(unittest.TestCase):
 
     def test_printing_existing_policy(self):
@@ -2759,3 +2650,815 @@ class PrintExistingPolicy(unittest.TestCase):
             # delete test file
             os.remove("test_template.json")
             os.remove("test_template2.json")
+
+# @unittest.skip("not in use")
+@pytest.mark.run(order=14)
+class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
+    custom_json = """
+        {
+            "version": "1.0",
+            "containers": [
+                {
+                    "containerImage": "python:3.6.14-slim-buster",
+                    "environmentVariables": [
+                        {
+                            "name":"PATH",
+                            "value":"/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"LANG",
+                            "value":"C.UTF-8",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"GPG_KEY",
+                            "value":"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"PYTHON_VERSION",
+                            "value":"3.6.14",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"PYTHON_PIP_VERSION",
+                            "value":"21.2.4",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"PYTHON_GET_PIP_URL",
+                            "value":"https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"PYTHON_GET_PIP_SHA256",
+                            "value":"fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
+                            "strategy":"string"
+                        },
+                        {
+                            "name":"TEST_WILDCARD_ENV",
+                            "value":".*",
+                            "strategy":"re2"
+                        }
+                    ],
+                    "command": ["python3"],
+                    "workingDir": "",
+                    "mounts": []
+                }
+            ]
+        }
+        """
+
+    custom_arm_json_error = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "variables": {
+            "image": "python:3.6.14-slim-buster"
+        },
+
+
+        "parameters": {
+            "containergroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            },
+            "defaultValue":"simple-container-group"
+            },
+
+            "containername": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container"
+            },
+            "defaultValue":"simple-container"
+            },
+            "port": {
+            "type": "string",
+            "metadata": {
+                "description": "Port to open on the container and the public IP address."
+            },
+            "defaultValue": "8080"
+            },
+            "cpuCores": {
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container."
+            },
+            "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            },
+            "defaultValue": "1.5"
+            },
+            "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+
+                    "properties": {
+                    "image": "[variables('image')]",
+                    "command": [
+                        "python3"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    },
+                    "environmentVariables": [
+                        {
+                            "name": "PATH",
+                            "value": "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                        },
+                        {
+                            "name": "TEST_WILDCARD_ENV"
+                        }
+                    ]
+                    }
+                }
+                ],
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+    custom_arm_json_error2 = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "variables": {
+            "image": "python:3.6.14-slim-buster"
+        },
+
+
+        "parameters": {
+            "containergroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            },
+            "defaultValue":"simple-container-group"
+            },
+
+            "containername": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container"
+            },
+            "defaultValue":"simple-container"
+            },
+            "port": {
+            "type": "string",
+            "metadata": {
+                "description": "Port to open on the container and the public IP address."
+            },
+            "defaultValue": "8080"
+            },
+            "cpuCores": {
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container."
+            },
+            "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            },
+            "defaultValue": "1.5"
+            },
+            "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+
+                    "properties": {
+                    "image": "[variables('image')]",
+                    "command": [
+                        "python3"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    },
+                    "environmentVariables": [
+                        {
+                            "name": "[parameters('fake_parameter')]",
+                            "value": "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                        }
+
+                    ]
+                    }
+                }
+                ],
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+    custom_arm_json = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "variables": {
+            "image": "python:3.6.14-slim-buster"
+        },
+
+
+        "parameters": {
+            "containergroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            },
+            "defaultValue":"simple-container-group"
+            },
+            "wildcardParamName": {
+            "defaultValue": "TEST_WILDCARD_ENV",
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            }
+
+            },
+            "wildcardParamValue": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            }
+
+            },
+
+            "containername": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container"
+            },
+            "defaultValue":"simple-container"
+            },
+            "port": {
+            "type": "string",
+            "metadata": {
+                "description": "Port to open on the container and the public IP address."
+            },
+            "defaultValue": "8080"
+            },
+            "cpuCores": {
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container."
+            },
+            "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            },
+            "defaultValue": "1.5"
+            },
+            "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+
+                    "properties": {
+                    "image": "[variables('image')]",
+                    "command": [
+                        "python3"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    },
+                    "environmentVariables": [
+                        {
+                            "name": "PATH",
+                            "value": "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                        },
+                        {
+                            "name": "[parameters('wildcardParamName')]",
+                            "value": "[parameters('wildcardParamValue')]"
+                        }
+                    ]
+                    }
+                }
+                ],
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+    custom_arm_json2 = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "variables": {
+            "image": "python:3.6.14-slim-buster"
+        },
+
+
+        "parameters": {
+            "containergroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            },
+            "defaultValue":"simple-container-group"
+            },
+            "wildcardParamName": {
+            "defaultValue": "TEST_WILDCARD_ENV",
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            }
+
+            },
+            "wildcardParamValue": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            }
+
+            },
+            "wildcardParamValue2": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group2"
+            }
+
+            },
+
+            "containername": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container"
+            },
+            "defaultValue":"simple-container"
+            },
+            "port": {
+            "type": "string",
+            "metadata": {
+                "description": "Port to open on the container and the public IP address."
+            },
+            "defaultValue": "8080"
+            },
+            "cpuCores": {
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container."
+            },
+            "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            },
+            "defaultValue": "1.5"
+            },
+            "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+
+                    "properties": {
+                    "image": "[variables('image')]",
+                    "command": [
+                        "python3"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    },
+                    "environmentVariables": [
+                        {
+                            "name": "PATH",
+                            "value": "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                        },
+                        {
+                            "name": "[parameters('wildcardParamName')]",
+                            "value": "[parameters('wildcardParamValue')]"
+                        },
+                        {
+                            "name": "WILDCARD2",
+                            "value": "[parameters('wildcardParamValue2')]"
+                        }
+                    ]
+                    }
+                }
+                ],
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+    aci_policy = None
+    aci_policy2 = None
+
+    @classmethod
+    def setUpClass(cls):
+        with load_policy_from_str(cls.custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+            cls.aci_policy = aci_policy
+
+        with patch('builtins.input', return_value='y'):
+            cls.aci_arm_policy = load_policy_from_arm_template_str(cls.custom_arm_json, "")[
+                0
+            ]
+            cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+        with patch('builtins.input', side_effect=['y', 'n']):
+            cls.aci_arm_policy2 = load_policy_from_arm_template_str(cls.custom_arm_json2, "")[
+                0
+            ]
+            cls.aci_arm_policy2.populate_policy_content_for_all_images()
+
+    def test_arm_template_policy_regex(self):
+        # deep diff the output policies from the regular policy.json and the ARM template
+        normalized_aci_policy = json.loads(
+            self.aci_policy.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
+        )
+
+        normalized_aci_arm_policy = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW,rego_boilerplate=False
+            )
+        )
+
+        normalized_aci_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+
+        normalized_aci_arm_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+
+        self.assertEqual(
+            deepdiff.DeepDiff(
+                normalized_aci_policy, normalized_aci_arm_policy, ignore_order=True
+            ),
+            {},
+        )
+
+    def test_wildcard_env_var(self):
+        normalized_aci_arm_policy = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        self.assertEqual(
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
+                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY],
+            "re2"
+        )
+
+        self.assertEqual(
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
+                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
+            "TEST_WILDCARD_ENV=.*"
+        )
+
+        normalized_aci_arm_policy2 = json.loads(
+            self.aci_arm_policy2.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        self.assertFalse(
+            any([item.get("name") == "WILDCARD2" for item in normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]])
+        )
+
+        self.assertEqual(
+            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
+                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
+            "TEST_WILDCARD_ENV=.*"
+        )
+
+    def test_wildcard_env_var_invalid(self):
+        with self.assertRaises(SystemExit) as wrapped_exit:
+            load_policy_from_arm_template_str(self.custom_arm_json_error, "")
+        self.assertEqual(wrapped_exit.exception.code, 1)
+
+        with self.assertRaises(SystemExit) as wrapped_exit:
+            out = load_policy_from_arm_template_str(self.custom_arm_json_error2, "")
+            for policy in out:
+                policy.populate_policy_content_for_all_images()
+
+        self.assertEqual(wrapped_exit.exception.code, 1)
+
+
+# @unittest.skip("not in use")
+@pytest.mark.run(order=15)
+class PolicyGeneratingEdgeCases(unittest.TestCase):
+
+    custom_arm_json_default_value = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+
+
+        "parameters": {
+            "containergroupname": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"simple-container-group"
+            },
+            "image": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"rust:1.52.1"
+            },
+            "containername": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container"
+                },
+                "defaultValue":"simple-container"
+            },
+
+            "port": {
+                "type": "string",
+                "metadata": {
+                    "description": "Port to open on the container and the public IP address."
+                },
+                "defaultValue": "8080"
+            },
+            "cpuCores": {
+                "type": "string",
+                "metadata": {
+                    "description": "The number of CPU cores to allocate to the container."
+                },
+                "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+                "type": "string",
+                "metadata": {
+                    "description": "The amount of memory to allocate to the container in gigabytes."
+                },
+                "defaultValue": "1.5"
+            },
+            "location": {
+                "type": "string",
+                "defaultValue": "[resourceGroup().location]",
+                "metadata": {
+                    "description": "Location for all resources."
+                }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+                    "properties": {
+                    "image": "[parameters('image')]",
+                    "environmentVariables": [
+                        {
+                        "name": "PORT",
+                        "value": "parameters('abc')"
+                        }
+                    ],
+
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "command": [
+                        "/bin/bash",
+                        "-c",
+                        "while sleep 5; do cat /mnt/input/access.log; done"
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+                    }
+                }
+                ],
+
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.aci_arm_policy = load_policy_from_arm_template_str(
+            cls.custom_arm_json_default_value, ""
+        )[0]
+        cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+    def test_arm_template_with_env_var(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        env_var = regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]
+
+        # see if the remote image and the local one produce the same output
+        self.assertEquals(env_var, "PORT=parameters('abc')")
+        self.assertEquals(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "rust:1.52.1")

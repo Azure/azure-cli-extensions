@@ -93,6 +93,7 @@ class TunnelServer:
         else:
             custom_header = {}
 
+        logger.debug("Content: %s", str(content))
         web_address = f"https://{self.bastion_endpoint}/api/tokens"
         response = requests.post(web_address, data=content, headers=custom_header,
                                  verify=(not should_disable_connection_verify()))
@@ -219,4 +220,5 @@ class TunnelServer:
         return self.local_port
 
     def set_host_name(self, hostname):
+        logger.debug("hereeeeeee")
         self.host_name = hostname

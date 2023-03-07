@@ -25,7 +25,6 @@ test_arm_template_missing_image_name | N/A | Error condition if an image isn't s
 test_arm_template_missing_resources | N/A | Error condition where no resources are specified to deploy
 test_arm_template_missing_aci | N/A | Error condition where ACI is not specified in resources
 test_arm_template_missing_containers | N/A | Error condition where there are no containers in the ACI resource
-test_arm_template_missing_default_value | N/A | Error condition where there aren't default values or defined values for parameters in the ARM Template
 test_arm_template_missing_definition | python:3.6.14-slim-buster | Error condition where image is specified in template.parameters.json but not in template.json
 test_arm_template_with_parameter_file | mcr.microsoft.com/azure-functions/python:4-python3.8 | Condition where image in template.parameters.json overwrites image name in template.json
 test_arm_template_with_parameter_file_injected_env_vars | mcr.microsoft.com/azure-functions/python:4-python3.8 | See if env vars from the image are injected into the policy. Also make sure the `concat` function in ARM template won't break the CLI if it's not in a required spot like image name
@@ -37,6 +36,10 @@ test_update_infrastructure_svn | python:3.6.14-slim-buster | Change the minimum 
 test_multiple_policies | python:3.6.14-slim-buster & rust:1.52.1 | See if two unique policies are generated from a single ARM Template container multiple container groups. Also have an extra resource that is untouched. Also has a secureValue for an environment variable.
 test_arm_template_with_init_container | python:3.6.14-slim-buster & rust:1.52.1 | See if having an initContainer is picked up and added to the list of valid containers
 test_arm_template_without_stdio_access | rust:1.52.1 | See if disabling container stdio access gets passed down to individual containers
+test_arm_template_policy_regex | python:3.6.14-slim-buster | Make sure the regex generated from the ARM Template workflow matches that of the policy.json workflow
+test_wildcard_env_var | python:3.6.14-slim-buster | Check that an "allow all" regex is created when a value for env var is not provided via a parameter value
+test_wildcard_env_var_invalid | N/A | Make sure the process errors out if a value is not given for an env var or an undefined parameter is used for the name of an env var
+test_arm_template_with_env_var | rust:1.52.1 | Make sure that a value that looks similar to but is not an ARM parameter is treated as a string
 
 ## policy.json [test file](test_confcom_scenario.py)
 
@@ -101,5 +104,6 @@ This is a way to generate a CCE policy without the use of the docker daemon. The
 Test Name | Image Used | Purpose
 ---|---|---
 test_arm_template_with_parameter_file_clean_room_tar | nginx:1.23 | Create a policy from a tar file and compare it to a policy generated from an ARM template
+test_arm_template_mixed_mode_tar | python:3.9 & nginx:1.22 | Create a policy with one image from a tar file and one image that must be downloaded or used locally from the daemon
 test_arm_template_with_parameter_file_clean_room_tar_invalid | N/A | Fail out if searching for an image in a tar file that does not include it
 test_clean_room_fake_tar_invalid | N/A | Fail out if the path to the tar file doesn't exist

@@ -4,6 +4,7 @@ Release History
 ===============
 Upcoming
 +++++++
+* Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
 * Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
 
 0.3.21
