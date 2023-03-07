@@ -19,7 +19,6 @@ from enum import Enum
 from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 from azure.core.exceptions import HttpResponseError
-from azure.cli.core.util import get_az_user_agent
 
 AKS_CLUSTER_API = "2022-07-02-preview"
 MAC_API = "2021-06-03-preview"
@@ -507,6 +506,33 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
         raise CLIError(e)
     return GrafanaLink.SUCCESS
 
+def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, i):
+    from azure.cli.core.util import send_raw_request
+    body = json.dumps({
+        "id": default_rule_group_id,
+        "name": default_rule_group_name,
+        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
+        "location": mac_region,
+        "properties": {
+            "scopes": [
+                azure_monitor_workspace_resource_id
+            ],
+            "clusterName": cluster_name,
+            "interval": "PT1M",
+            "rules": default_rules_template["resources"][i]["properties"]["rules"]
+        }
+    })
+    for _ in range(3):
+        try:
+            headers = ['User-Agent=azuremonitormetrics.create_rules_node']
+            send_raw_request(cmd.cli_ctx, "PUT", url,
+                             body=body, headers=headers)
+            error = None
+            break
+        except CLIError as e:
+            error = e
+    else:
+        raise error
 
 def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
     from azure.cli.core.util import send_raw_request
@@ -522,31 +548,8 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         default_rule_group_id,
         RULES_API
     )
-    body = json.dumps({
-        "id": default_rule_group_id,
-        "name": default_rule_group_name,
-        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
-        "location": mac_region,
-        "properties": {
-            "scopes": [
-                azure_monitor_workspace_resource_id
-            ],
-            "clusterName": cluster_name,
-            "interval": "PT1M",
-            "rules": default_rules_template["resources"][0]["properties"]["rules"]
-        }
-    })
-    for _ in range(3):
-        try:
-            headers = ['User-Agent=azuremonitormetrics.create_rules_node']
-            send_raw_request(cmd.cli_ctx, "PUT", url,
-                             body=body, headers=headers)
-            error = None
-            break
-        except CLIError as e:
-            error = e
-    else:
-        raise error
+    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 0)
+
     default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
@@ -557,31 +560,32 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         default_rule_group_id,
         RULES_API
     )
-    body = json.dumps({
-        "id": default_rule_group_id,
-        "name": default_rule_group_name,
-        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
-        "location": mac_region,
-        "properties": {
-            "scopes": [
-                azure_monitor_workspace_resource_id
-            ],
-            "clusterName": cluster_name,
-            "rules": default_rules_template["resources"][1]["properties"]["rules"]
-        }
-    })
-    for _ in range(3):
-        try:
-            headers = ['User-Agent=azuremonitormetrics.create_rules_kubernetes']
-            send_raw_request(cmd.cli_ctx, "PUT", url,
-                             body=body, headers=headers)
-            error = None
-            break
-        except CLIError as e:
-            print(e)
-            error = e
-    else:
-        raise error
+    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 1)
+
+    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        default_rule_group_name
+    )
+    url = "https://management.azure.com{0}?api-version={1}".format(
+        default_rule_group_id,
+        RULES_API
+    )
+    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 2)
+
+    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-Win-1-{0}".format(cluster_name)
+    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+        cluster_subscription,
+        cluster_resource_group_name,
+        default_rule_group_name
+    )
+    url = "https://management.azure.com{0}?api-version={1}".format(
+        default_rule_group_id,
+        RULES_API
+    )
+    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 3)
+
 
 
 def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
