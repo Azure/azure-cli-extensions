@@ -16,8 +16,7 @@ class AzureReservationsTests(ScenarioTest):
         self.assertIsNotNone(reservation_order['reservations'])
         self.assertIsNotNone(reservation_order['term'])
         self.assertIsNotNone(reservation_order['type'])
-        self.assertTrue(
-            reservation_order['type'] == 'microsoft.capacity/reservationOrders')
+        self.assertEqual('microsoft.capacity/reservationorders', reservation_order['type'].lower())
 
     def _validate_reservation(self, reservation):
         self.assertIsNotNone(reservation)
@@ -31,7 +30,7 @@ class AzureReservationsTests(ScenarioTest):
         self.assertIsNotNone(reservation['properties'])
         self.assertIsNotNone(reservation['type'])
         self.assertEqual(
-            'Microsoft.Capacity/reservationOrders/reservations', reservation['type'])
+            'microsoft.capacity/reservationorders/reservations', reservation['type'].lower())
 
     def _validate_reservation_refund(self, response):
         self.assertIsNotNone(response)
@@ -198,7 +197,7 @@ class AzureReservationsTests(ScenarioTest):
         self.assertGreater(reservation_order['etag'], 0)
 
     @record_only()  # This test relies on the existing reservation order
-    def test_list_reservation(self):
+    def test_list_reservations_in_order(self):
         self.kwargs.update({
             'reservation_order_id': '73e63333-9b94-442c-8a5d-9403ba0e8b87'
         })
@@ -206,9 +205,40 @@ class AzureReservationsTests(ScenarioTest):
             .get_output_in_json()
         self.assertIsNotNone(reservation_list)
         for reservation in reservation_list:
+            self._validate_reservation(reservation)
             self.assertGreater(reservation['etag'], 0)
             self.assertEqual(
                 'microsoft.capacity/reservationOrders/reservations', reservation['type'])
+            
+    @record_only()  # This test relies on the existing reservation order
+    def test_list_reservations(self):
+        reservation_list = self.cmd('reservations list').get_output_in_json()
+        self.assertIsNotNone(reservation_list)
+        for reservation in reservation_list:
+            self._validate_reservation(reservation)
+
+        self.kwargs.update({
+            'state': 'Cancelled'
+        })
+        reservation_list1 = self.cmd('reservations list --selected-state {state}').get_output_in_json()
+        for reservation in reservation_list1:
+            self.assertEqual("Cancelled", reservation['properties']['displayProvisioningState'])
+
+        self.kwargs.update({
+            'filter': "properties/reservedResourceType eq \'SuseLinux\'"
+        })
+        reservation_list2 = self.cmd('reservations list --filter \"{filter}\"').get_output_in_json()
+        for reservation in reservation_list2:
+            self.assertEqual("SuseLinux", reservation['properties']['reservedResourceType'])
+
+        self.kwargs.update({
+            'orderby': 'properties/quantity desc'
+        })
+        reservation_list3 = self.cmd('reservations list --orderby \'{orderby}\'').get_output_in_json()
+        index = 1
+        while index < len(reservation_list3):
+            self.assertTrue(reservation_list3[index-1]['properties']['quantity'] >= reservation_list3[index]['properties']['quantity'])
+            index += 1
 
     @record_only()  # This test relies on the existing reservation order
     def test_get_reservation(self):

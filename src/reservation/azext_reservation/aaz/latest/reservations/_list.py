@@ -16,6 +16,18 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the reservations and the roll up counts of reservations group by provisioning states that the user has access to in the current tenant.
+
+    :example: List reservations under the current tenant
+        az reservations list
+
+    :example: List reservation which has "Failed" state under the current tenant
+        az reservations list --selected-state "Failed"
+
+    :example: List all "VirtualMachines" reservations under the current tenant
+        az az reservations list --filter "properties/reservedResourceType eq 'VirtualMachines'"
+
+    :example: List reservation and order the result by quantity in descending order
+        az reservations list --orderby 'properties/quantity desc'
     """
 
     _aaz_info = {
@@ -51,14 +63,6 @@ class List(AAZCommand):
         _args_schema.selected_state = AAZStrArg(
             options=["--selected-state"],
             help="The selected provisioning state",
-        )
-        _args_schema.skiptoken = AAZFloatArg(
-            options=["--skiptoken"],
-            help="The number of reservations to skip from the list before returning results",
-        )
-        _args_schema.take = AAZFloatArg(
-            options=["--take"],
-            help="To number of reservations to return",
         )
         return cls._args_schema
 
@@ -116,13 +120,7 @@ class List(AAZCommand):
                     "$orderby", self.ctx.args.orderby,
                 ),
                 **self.serialize_query_param(
-                    "$skiptoken", self.ctx.args.skiptoken,
-                ),
-                **self.serialize_query_param(
                     "selectedState", self.ctx.args.selected_state,
-                ),
-                **self.serialize_query_param(
-                    "take", self.ctx.args.take,
                 ),
                 **self.serialize_query_param(
                     "api-version", "2022-11-01",
