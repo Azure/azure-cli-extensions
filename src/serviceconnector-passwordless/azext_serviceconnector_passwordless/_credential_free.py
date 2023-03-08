@@ -257,8 +257,8 @@ class MysqlFlexibleHandler(TargetHandler):
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
-                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                                else '(Please delete it manually if it has security risk.)'))
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az mysql flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
@@ -401,8 +401,8 @@ class SqlHandler(TargetHandler):
             if target.get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
-                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                                else '(Please delete it manually if it has security risk.)'))
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az sql server firewall-rule create -g {0} -s {1} -n {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
@@ -546,8 +546,8 @@ class PostgresFlexHandler(TargetHandler):
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
-                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                                else '(Please delete it manually if it has security risk.)'))
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az postgres flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
@@ -667,8 +667,8 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 raise AzureConnectionError(
                     "The target resource doesn't allow public access. Please enable it manually and try again.")
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
-                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                                else '(Please delete it manually if it has security risk.)'))
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az postgres server firewall-rule create -g {0} -s {1} -n {2} --subscription {3}'
                 ' --start-ip-address {4} --end-ip-address {5}'.format(
