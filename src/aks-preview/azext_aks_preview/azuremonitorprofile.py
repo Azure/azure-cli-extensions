@@ -524,7 +524,7 @@ def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, a
     })
     for _ in range(3):
         try:
-            headers = ['User-Agent=azuremonitormetrics.create_rules_node']
+            headers = ['User-Agent=azuremonitormetrics.put_rules.' + default_rule_group_name]
             send_raw_request(cmd.cli_ctx, "PUT", url,
                              body=body, headers=headers)
             error = None
