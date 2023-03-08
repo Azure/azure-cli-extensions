@@ -506,6 +506,7 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
         raise CLIError(e)
     return GrafanaLink.SUCCESS
 
+
 def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, i):
     from azure.cli.core.util import send_raw_request
     body = json.dumps({
@@ -533,6 +534,7 @@ def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, a
             error = e
     else:
         raise error
+
 
 def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
     from azure.cli.core.util import send_raw_request
@@ -585,7 +587,6 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         RULES_API
     )
     put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 3)
-
 
 
 def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
