@@ -992,13 +992,13 @@ class ContainerAppsJobClient():
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
-    
+
     @classmethod
     def stop_job(cls, cmd, resource_group_name, name, job_execution_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
-        
+
         if not job_execution_name:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/stop?api-version={}"
             request_url = url_fmt.format(

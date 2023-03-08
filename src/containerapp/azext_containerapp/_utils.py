@@ -25,7 +25,7 @@ from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, ContainerAppsJobClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
@@ -495,6 +495,15 @@ def get_container_app_if_exists(cmd, resource_group_name, name):
     except:  # pylint: disable=bare-except
         pass
     return app
+
+
+def get_containerapps_job_if_exists(cmd, resource_group_name, name):
+    job = None
+    try:
+        job = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:  # pylint: disable=bare-except
+        pass
+    return job
 
 
 def _get_name(name_or_rid):
