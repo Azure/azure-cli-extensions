@@ -35,6 +35,7 @@ yes_arg_type = CLIArgumentType(
     help='Do not prompt for confirmation.'
 )
 
+
 def add_auth_block(context, source, target):
     support_auth_types = SUPPORTED_AUTH_TYPE.get(
         source, {}).get(target, [])
