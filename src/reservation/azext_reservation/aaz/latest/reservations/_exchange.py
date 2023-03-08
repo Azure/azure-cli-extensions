@@ -23,9 +23,9 @@ class Exchange(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/exchange", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/exchange", "2022-11-01"],
         ]
     }
 
@@ -58,11 +58,11 @@ class Exchange(AAZCommand):
         yield self.ExchangePost(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -116,7 +116,7 @@ class Exchange(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -181,23 +181,26 @@ class Exchange(AAZCommand):
             properties.net_payable = AAZObjectType(
                 serialized_name="netPayable",
             )
-            _build_schema_price_read(properties.net_payable)
+            _ExchangeHelper._build_schema_price_read(properties.net_payable)
             properties.policy_result = AAZObjectType(
                 serialized_name="policyResult",
             )
             properties.purchases_total = AAZObjectType(
                 serialized_name="purchasesTotal",
             )
-            _build_schema_price_read(properties.purchases_total)
+            _ExchangeHelper._build_schema_price_read(properties.purchases_total)
             properties.refunds_total = AAZObjectType(
                 serialized_name="refundsTotal",
             )
-            _build_schema_price_read(properties.refunds_total)
+            _ExchangeHelper._build_schema_price_read(properties.refunds_total)
             properties.reservations_to_exchange = AAZListType(
                 serialized_name="reservationsToExchange",
             )
             properties.reservations_to_purchase = AAZListType(
                 serialized_name="reservationsToPurchase",
+            )
+            properties.savings_plans_to_purchase = AAZListType(
+                serialized_name="savingsPlansToPurchase",
             )
             properties.session_id = AAZStrType(
                 serialized_name="sessionId",
@@ -225,7 +228,7 @@ class Exchange(AAZCommand):
             _element.billing_refund_amount = AAZObjectType(
                 serialized_name="billingRefundAmount",
             )
-            _build_schema_price_read(_element.billing_refund_amount)
+            _ExchangeHelper._build_schema_price_read(_element.billing_refund_amount)
             _element.quantity = AAZIntType()
             _element.reservation_id = AAZStrType(
                 serialized_name="reservationId",
@@ -236,15 +239,15 @@ class Exchange(AAZCommand):
             billing_information.billing_currency_prorated_amount = AAZObjectType(
                 serialized_name="billingCurrencyProratedAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_prorated_amount)
+            _ExchangeHelper._build_schema_price_read(billing_information.billing_currency_prorated_amount)
             billing_information.billing_currency_remaining_commitment_amount = AAZObjectType(
                 serialized_name="billingCurrencyRemainingCommitmentAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
+            _ExchangeHelper._build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
             billing_information.billing_currency_total_paid_amount = AAZObjectType(
                 serialized_name="billingCurrencyTotalPaidAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_total_paid_amount)
+            _ExchangeHelper._build_schema_price_read(billing_information.billing_currency_total_paid_amount)
 
             reservations_to_purchase = cls._schema_on_200.properties.reservations_to_purchase
             reservations_to_purchase.Element = AAZObjectType()
@@ -253,7 +256,7 @@ class Exchange(AAZCommand):
             _element.billing_currency_total = AAZObjectType(
                 serialized_name="billingCurrencyTotal",
             )
-            _build_schema_price_read(_element.billing_currency_total)
+            _ExchangeHelper._build_schema_price_read(_element.billing_currency_total)
             _element.properties = AAZObjectType()
             _element.reservation_id = AAZStrType(
                 serialized_name="reservationId",
@@ -269,8 +272,13 @@ class Exchange(AAZCommand):
                 flags={"client_flatten": True},
             )
             properties.sku = AAZObjectType()
+            _ExchangeHelper._build_schema_sku_name_read(properties.sku)
 
             properties = cls._schema_on_200.properties.reservations_to_purchase.Element.properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _ExchangeHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
@@ -294,6 +302,9 @@ class Exchange(AAZCommand):
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
             )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
+            )
             properties.term = AAZStrType()
 
             applied_scopes = cls._schema_on_200.properties.reservations_to_purchase.Element.properties.properties.applied_scopes
@@ -304,32 +315,134 @@ class Exchange(AAZCommand):
                 serialized_name="instanceFlexibility",
             )
 
-            sku = cls._schema_on_200.properties.reservations_to_purchase.Element.properties.sku
-            sku.name = AAZStrType()
+            savings_plans_to_purchase = cls._schema_on_200.properties.savings_plans_to_purchase
+            savings_plans_to_purchase.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.savings_plans_to_purchase.Element
+            _element.billing_currency_total = AAZObjectType(
+                serialized_name="billingCurrencyTotal",
+            )
+            _ExchangeHelper._build_schema_price_read(_element.billing_currency_total)
+            _element.properties = AAZObjectType()
+            _element.savings_plan_id = AAZStrType(
+                serialized_name="savingsPlanId",
+            )
+            _element.savings_plan_order_id = AAZStrType(
+                serialized_name="savingsPlanOrderId",
+            )
+            _element.status = AAZStrType()
+
+            properties = cls._schema_on_200.properties.savings_plans_to_purchase.Element.properties
+            properties.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            properties.sku = AAZObjectType()
+            _ExchangeHelper._build_schema_sku_name_read(properties.sku)
+
+            properties = cls._schema_on_200.properties.savings_plans_to_purchase.Element.properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _ExchangeHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
+            properties.applied_scope_type = AAZStrType(
+                serialized_name="appliedScopeType",
+            )
+            properties.billing_plan = AAZStrType(
+                serialized_name="billingPlan",
+            )
+            properties.billing_scope_id = AAZStrType(
+                serialized_name="billingScopeId",
+            )
+            properties.commitment = AAZObjectType()
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.term = AAZStrType()
+
+            commitment = cls._schema_on_200.properties.savings_plans_to_purchase.Element.properties.properties.commitment
+            commitment.amount = AAZFloatType()
+            commitment.currency_code = AAZStrType(
+                serialized_name="currencyCode",
+            )
+            commitment.grain = AAZStrType()
 
             return cls._schema_on_200
 
 
-_schema_price_read = None
+class _ExchangeHelper:
+    """Helper class for Exchange"""
 
+    _schema_applied_scope_properties_read = None
 
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
+    @classmethod
+    def _build_schema_applied_scope_properties_read(cls, _schema):
+        if cls._schema_applied_scope_properties_read is not None:
+            _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+            _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+            _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+            _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+            _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+            return
 
-    _schema_price_read = AAZObjectType()
+        cls._schema_applied_scope_properties_read = _schema_applied_scope_properties_read = AAZObjectType()
 
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        applied_scope_properties_read = _schema_applied_scope_properties_read
+        applied_scope_properties_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        applied_scope_properties_read.management_group_id = AAZStrType(
+            serialized_name="managementGroupId",
+        )
+        applied_scope_properties_read.resource_group_id = AAZStrType(
+            serialized_name="resourceGroupId",
+        )
+        applied_scope_properties_read.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
+        applied_scope_properties_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+        _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+        _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+        _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+        _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+        _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+
+    _schema_price_read = None
+
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
+
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
+
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
+
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
+
+    _schema_sku_name_read = None
+
+    @classmethod
+    def _build_schema_sku_name_read(cls, _schema):
+        if cls._schema_sku_name_read is not None:
+            _schema.name = cls._schema_sku_name_read.name
+            return
+
+        cls._schema_sku_name_read = _schema_sku_name_read = AAZObjectType()
+
+        sku_name_read = _schema_sku_name_read
+        sku_name_read.name = AAZStrType()
+
+        _schema.name = cls._schema_sku_name_read.name
 
 
 __all__ = ["Exchange"]
