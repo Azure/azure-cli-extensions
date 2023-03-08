@@ -91,7 +91,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
         # create an aad user in db
         target_handler.create_aad_user()
         return target_handler.get_auth_config(user_object_id)
-    
+
     return enable_mi_for_db_linker
 
 # pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
@@ -236,10 +236,11 @@ class MysqlFlexibleHandler(TargetHandler):
                 try:
                     if not self.skip_prompt:
                         if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            raise AzureConnectionError("Please confirm local environment can connect to database and try again.")
-                except NoTTYException:
+                            raise AzureConnectionError(
+                                "Please confirm local environment can connect to database and try again.") from e
+                except NoTTYException as e:
                     raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.')
+                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
                 # allow public access
                 self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
@@ -253,9 +254,10 @@ class MysqlFlexibleHandler(TargetHandler):
                 'az mysql flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
-            logger.warning("Add firewall rule %s %s - %s..." +
+            logger.warning("Add firewall rule %s %s - %s...%s",
+                           ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                           else '(Please delete it manually if it has security risk.)'), ip_name, start_ip, end_ip)
+                           else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az mysql flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
@@ -379,10 +381,11 @@ class SqlHandler(TargetHandler):
                 try:
                     if not self.skip_prompt:
                         if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            raise AzureConnectionError("Please confirm local environment can connect to database and try again.")
-                except NoTTYException:
+                            raise AzureConnectionError(
+                                "Please confirm local environment can connect to database and try again.") from e
+                except NoTTYException as e:
                     raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.')
+                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
                 self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
                 self.create_aad_user_in_sql(connection_args, query_list)
@@ -396,9 +399,10 @@ class SqlHandler(TargetHandler):
             # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
-            logger.warning("Add firewall rule {} {} - {}..." +
+            logger.warning("Add firewall rule %s %s - %s...%s",
+                           ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                           else '(Please delete it manually if it has security risk.)'), ip_name, start_ip, end_ip)
+                           else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az sql server firewall-rule create -g {0} -s {1} -n {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
@@ -524,10 +528,11 @@ class PostgresFlexHandler(TargetHandler):
                 try:
                     if not self.skip_prompt:
                         if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            raise AzureConnectionError("Please confirm local environment can connect to database and try again.")
-                except NoTTYException:
+                            raise AzureConnectionError(
+                                "Please confirm local environment can connect to database and try again.") from e
+                except NoTTYException as e:
                     raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.')
+                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
                 self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
                 self.create_aad_user_in_pg(connection_string, query_list)
@@ -540,9 +545,10 @@ class PostgresFlexHandler(TargetHandler):
                 'az postgres flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
-            logger.warning("Add firewall rule %s %s - %s..." +
+            logger.warning("Add firewall rule %s %s - %s...%s",
+                           ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                           else '(Please delete it manually if it has security risk.)'), ip_name, start_ip, end_ip)
+                           else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az postgres flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
@@ -659,10 +665,12 @@ class PostgresSingleHandler(PostgresFlexHandler):
             target = run_cli_cmd(
                 'az postgres server show --ids {}'.format(target_id))
             if target.get('publicNetworkAccess') == "Disabled":
-                raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
-            logger.warning("Add firewall rule {} {} - {}..." +
+                raise AzureConnectionError(
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
+            logger.warning("Add firewall rule %s %s - %s...%s",
+                           ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
-                           else '(Please delete it manually if it has security risk.)'), ip_name, start_ip, end_ip)
+                           else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az postgres server firewall-rule create -g {0} -s {1} -n {2} --subscription {3}'
                 ' --start-ip-address {4} --end-ip-address {5}'.format(
