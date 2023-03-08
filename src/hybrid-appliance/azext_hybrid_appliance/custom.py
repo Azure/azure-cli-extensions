@@ -11,9 +11,10 @@ import subprocess
 import yaml
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
+
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azext_hybrid_appliance import _constants as consts
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 logger = get_logger(__name__)
 
 
@@ -38,24 +39,26 @@ def validate_hybrid_appliance(resource_group_name, name):
         all_validations_passed = False
         logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
     
-    # Check if snap storage endpoint is reachable
-    try:
-        response = requests.head("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), timeout=5)
-        response.raise_for_status()
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError):
-        all_validations_passed = False
-        logger.warning("The endpoint {} is not reachable".format(consts.Snap_Config_Storage_End_Point))
+    # Check if pre-req endpoints are reachable
+    endpoints = [consts.Snap_Config_Storage_Endpoint, consts.Apt_Pull_Public_Endpoint, consts.Snap_Pull_Public_Endpoint, consts.App_Insights_Endpoint]
 
+    for endpoint in endpoints:
+        try:
+            response = requests.head(endpoint, timeout=5)
+            response.raise_for_status()
+        except (requests.exceptions.RequestException):
+            all_validations_passed = False
+            logger.warning("The endpoint {} is not reachable from your machine".format(endpoint))
+    
     try:
         cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
         process = subprocess.Popen(cmd_show_arc)
         if process.wait() == 0:
             print("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
-            return # Return with non-zero error code?
+            all_validations_passed = False
     except Exception as e:
         print(type(e))
         print(str(e))
-
     
     if all_validations_passed is False:
         raise ValidationError("One or more pre-requisite validations have failed. Please resolve them and try again")
@@ -72,15 +75,14 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-    # Print the output and error messages in real-time
-    for line in iter(process.stdout.readline, ""):
-        print(line, end="") # Use 'end' parameter to prevent printing extra newline characters
-
-    for line in iter(process.stderr.readline, ""):
-        print(line, end="")
-    
-    if not check_microk8s():
-        return # How do we return with non-zero status code here?
+    # Iterate over stdout and stderr in real-time
+    for stdout_line, stderr_line in zip(process.stdout, process.stderr):
+        # Print stdout output
+        if stdout_line:
+            print(stdout_line.strip())
+        # Print stderr output
+        if stderr_line:
+            print(stderr_line.strip())
 
     # Install specific version of connectedk8s
     get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
@@ -94,8 +96,16 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         cmd_onboard_arc.extend(["--proxy-https", https_proxy])
     if no_proxy:
         cmd_onboard_arc.extend(["--proxy-skip-range", no_proxy])
+    if proxy_cert:
+        cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
+    if onboarding_result.is_success():
+        logger.info("The k8s cluster has been onboarded to Arc successfully")
+    else:
+        error_code = onboarding_result.error.code
+        error_message = onboarding_result.error.message
+        raise CLIInternalError("Onboarding the k8s cluster Arc failed with error: {}".format(error_code, error_message))
 
 def upgrade_hybrid_appliance(resource_group_name, name):
     try:
