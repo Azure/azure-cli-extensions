@@ -127,7 +127,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     kubernetesVersionResponseString = subprocess.check_output(['kubectl', 'version', '-o', 'json']).decode()
     kubernetesVersionResponse = json.loads(kubernetesVersionResponseString)
     currentMajorVersion = kubernetesVersionResponse["serverVersion"]["major"]
-    currentMinorVersion =  kubernetesVersionResponse["serverVersion"]["minor"]
+    currentMinorVersion =  kubernetesVersionResponse["serverVersion"]["minor"].strip('+') # For some versions, for example, 1.23, minor version is represented as 23+ 
     
     latestMajorVersion, latestMinorVersion = get_latest_tested_microsk8_version()
 
@@ -143,22 +143,30 @@ def upgrade_hybrid_appliance(resource_group_name, name):
         # This logic works as long as new versions are only minor version bumps
         # TODO: Figure out what to do in case major version is bumped (very unlikely)
         while currentMinorVersion != latestMinorVersion:
-            currentMinorVersion = currentMinorVersion + 1
+            currentMinorVersion = int(currentMinorVersion) + 1
             process = subprocess.Popen(['snap', 'refresh', 'microk8s', '--channel={}.{}'.format(currentMajorVersion, currentMinorVersion)])
             _, stderr = process.communicate()
             if process.returncode != 0:
                 print("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
+            try:
+                subprocess.check_call(['microk8s', 'start'])
+            except Exception as e:
+                print("Failed to start microk8s cluster with exception {}".format(str(e)))
+
             if not check_microk8s():
-                print("Cluster is not healthy after upgrade. Please check the logs at <TODO: UPDATE CORRECT FILE PATH>.")
+                print("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
                 return # Non zero return code?
+            print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
 def get_latest_tested_microsk8_version():
     response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
     return json.loads(response.content.decode())["latestTested"].split('.')
 
-def check_microk8s(addonsList=None):
-    statusYaml = subprocess.check_call(['microk8s', 'status', '--format', 'yaml'])
+def check_microk8s():
+    statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml']).decode()
     print(statusYaml)
     status = yaml.safe_load(statusYaml)
     print(status)
-    return True
+    if not status["microk8s"]["running"]:
+        print("Microk8s is not running")
+        subprocess.check_call(['microk8s', 'inspect'])
