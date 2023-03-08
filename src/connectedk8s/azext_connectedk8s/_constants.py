@@ -7,7 +7,7 @@
 # pylint: disable=line-too-long
 
 Distribution_Enum_Values = ["generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg", "canonical", "karbon", "aks_edge_k3s", "aks_edge_k8s"]
-Infrastructure_Enum_Values = ["generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server", "Windows 11 Enterprise", "Windows 11 Enterprise N", "Windows 11 IoT Enterprise", "Windows 11 Pro", "Windows 10 Enterprise", "Windows 10 Enterprise N", "Windows 10 Enterprise LTSC 2021", "Windows 10 Enterprise N LTSC 2021", "Windows 10 IoT Enterprise", "Windows 10 IoT Enterprise LTSC 2021", "Windows 10 Pro", "Windows 10 Enterprise LTSC 2019", "Windows 10 Enterprise N LTSC 2019", "Windows 10 IoT Enterprise LTSC 2019", "Windows Server 2022", "Windows Server 2022 Datacenter", "Windows Server 2022 Standard", "Windows Server 2019", "Windows Server 2019 Datacenter", "Windows Server 2019 Standard"]
+Infrastructure_Enum_Values = ["generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server", "Windows 11 Enterprise", "Windows 11 Enterprise N", "Windows 11 IoT Enterprise", "Windows 11 Pro", "Windows 10 Enterprise", "Windows 10 Enterprise N", "Windows 10 Enterprise LTSC 2021", "Windows 10 Enterprise N LTSC 2021", "Windows 10 IoT Enterprise", "Windows 10 IoT Enterprise LTSC 2021", "Windows 10 Pro", "Windows 10 Enterprise LTSC 2019", "Windows 10 Enterprise N LTSC 2019", "Windows 10 IoT Enterprise LTSC 2019", "Windows Server 2022", "Windows Server 2022 Datacenter", "Windows Server 2022 Standard", "Windows Server 2019", "Windows Server 2019 Datacenter", "Windows Server 2019 Standard", "Windows 10 IoT Enterprise", "LTSCWindows 10 Enterprise LTSC"]
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com", "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com", "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com", "gitconfigs.clusterconfig.azure.com"]
@@ -155,6 +155,7 @@ Diagnoser_Result_Fault_Type = "Error while storing the diagnoser results"
 Kubectl_Cluster_Info_Failed_Fault_Type = "Error while doing kubectl cluster-info"
 Fetch_Kubectl_Cluster_Info_Fault_Type = "Error occured while fetching cluster-info"
 Fetch_Kubectl_Cluster_Info = "kubectl_cluster_info"
+Failed_To_Change_Telemetry_Push_Interval = "Failed to change the telemetry push interval to 1 hr"
 Diagnostic_Check_Passed = "Passed"
 Diagnostic_Check_Failed = "Failed"
 Diagnostic_Check_Incomplete = "Incomplete"
@@ -188,13 +189,19 @@ K8s_Cluster_Info = "k8s_cluster_info.txt"
 Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
-Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.0"
+Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.1"
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
 Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
 Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
 Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while trying to execute pre-onboarding diagnostic checks'
+Outbound_Connectivity_Check_Failed = "Outbound network connectivity check failed"
+DNS_Check_Failed = "DNS Resolution failed"
+Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
+Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
+Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster diagnostic checks pod description'
+Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 DNS_Check_Result_String = "DNS Result:"

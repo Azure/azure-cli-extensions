@@ -192,7 +192,7 @@ helps['aks create'] = """
                 confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
                 open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
                 gitops                          - enable GitOps (PREVIEW).
-                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
                 web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
@@ -1729,7 +1729,7 @@ long-summary: |-
         ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
-        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
         web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addon -a
@@ -1871,7 +1871,7 @@ long-summary: |-
         ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
-        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
         web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addons -a

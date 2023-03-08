@@ -279,3 +279,11 @@ AzureFileProperties = {
     "accessMode": None,
     "shareName": None
 }
+
+ManagedCertificateEnvelop = {
+    "location": None,  # str
+    "properties": {
+        "subjectName": None,  # str
+        "validationMethod": None  # str
+    }
+}

@@ -11,6 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
 
+from .common import TEST_LOCATION
 from .utils import create_containerapp_env
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -19,10 +20,7 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_identity_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -65,10 +63,7 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="canadacentral")
     def test_containerapp_identity_system(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -106,10 +101,7 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_identity_user(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -161,10 +153,7 @@ class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_ingress_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -203,10 +192,7 @@ class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_ingress_traffic_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -252,10 +238,7 @@ class ContainerappIngressTests(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_custom_domains_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -375,10 +358,7 @@ class ContainerappIngressTests(ScenarioTest):
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live) and vnet command error in cli pipeline
     def test_containerapp_tcp_ingress(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
@@ -434,10 +414,7 @@ class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_ip_restrictions(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -508,10 +485,7 @@ class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_ip_restrictions_deny(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -584,10 +558,7 @@ class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dapr_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -653,11 +624,7 @@ class ContainerappDaprTests(ScenarioTest):
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_dapr_e2e(self, resource_group):
         """ Ensure that dapr can be enabled if the app has been created using containerapp up """
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         image = 'mcr.microsoft.com/azuredocs/aks-helloworld:v1'
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -683,10 +650,7 @@ class ContainerappEnvStorageTests(ScenarioTest):
     @live_only()  # Passes locally but fails in CI
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_storage(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         storage_name = self.create_random_name(prefix='storage', length=24)
@@ -694,7 +658,7 @@ class ContainerappEnvStorageTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_ZRS --enable-large-file-share'.format(resource_group, storage_name))
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
@@ -722,10 +686,7 @@ class ContainerappRevisionTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_revision_label_e2e(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -792,10 +753,7 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_anonymous_registry(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
@@ -813,10 +771,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_user(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
@@ -840,10 +795,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_system(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
@@ -865,10 +817,7 @@ class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_create(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
@@ -903,10 +852,7 @@ class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_update(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
@@ -941,10 +887,7 @@ class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_revision_copy(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
