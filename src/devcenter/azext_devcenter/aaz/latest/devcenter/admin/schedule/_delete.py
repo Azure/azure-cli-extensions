@@ -75,10 +75,6 @@ class Delete(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
-            help="The maximum number of resources to return from the operation. Example: '$top=10'.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -174,9 +170,6 @@ class Delete(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2022-11-11-preview",
                     required=True,

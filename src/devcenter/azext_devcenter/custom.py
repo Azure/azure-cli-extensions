@@ -5,7 +5,7 @@
 # pylint: disable=protected-access
 
 from datetime import timedelta
-from azure.cli.core.aaz import AAZStrArg, has_value, register_callback
+from azure.cli.core.aaz import register_callback
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
 from .data_plane_endpoint_helper import get_project_arg
@@ -13,9 +13,7 @@ from .aaz.latest.devcenter.admin.attached_network import (
     Create as _AttachedNetworkCreate,
     Delete as _AttachedNetworkDelete,
     List as _AttachedNetworkList,
-    ListProject as AttachedNetworkListByProject,
     Show as _AttachedNetworkShow,
-    ShowProject as AttachedNetworkShowByProject,
     Wait as _AttachedNetworkWait,
 )
 from .aaz.latest.devcenter.admin.catalog import (
@@ -31,13 +29,10 @@ from .aaz.latest.devcenter.admin.devbox_definition import (
     Create as _DevBoxDefinitionCreate,
     Delete as _DevBoxDefinitionDelete,
     List as _DevBoxDefinitionList,
-    ListProject as DevBoxDefinitionListByProject,
     Show as _DevBoxDefinitionShow,
-    ShowProject as DevBoxDefinitionShowByProject,
     Update as _DevBoxDefinitionUpdate,
     Wait as _DevBoxDefinitionWait,
 )
-from .aaz.latest.devcenter.admin.devcenter import List as _DevCenterList
 from .aaz.latest.devcenter.admin.environment_type import (
     Create as _EnvironmentTypeCreate,
     Delete as _EnvironmentTypeDelete,
@@ -53,17 +48,12 @@ from .aaz.latest.devcenter.admin.gallery import (
     Wait as _GalleryWait,
 )
 from .aaz.latest.devcenter.admin.image import (
-    ListGallery as _ImageListByGallery,
     List as _ImageList,
     Show as _ImageShow,
 )
 from .aaz.latest.devcenter.admin.image_verion import (
     List as _ImageVersionList,
     Show as _ImageVersionShow,
-)
-from .aaz.latest.devcenter.admin.network_connection import (
-    List as _NetworkConnectionList,
-    ListHealthDetail as _NetworkConnectionListHealthDetail,
 )
 from .aaz.latest.devcenter.admin.pool import (
     Create as _PoolCreate,
@@ -73,7 +63,6 @@ from .aaz.latest.devcenter.admin.pool import (
     Update as _PoolUpdate,
     Wait as _PoolWait,
 )
-from .aaz.latest.devcenter.admin.project import List as _ProjectList
 from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
     Show as _ProjectAllowedEnvironmentTypeShow,
@@ -92,7 +81,6 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from .aaz.latest.devcenter.admin.sku import List as _SkuList
 from ._validators import validate_attached_network_or_dev_box_def
 
 # Control plane
@@ -126,26 +114,6 @@ class AttachedNetworkDelete(_AttachedNetworkDelete):
 
 
 class AttachedNetworkList(_AttachedNetworkList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        args_schema.top._registered = False
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.AttachedNetworksListByDevCenter(ctx=self.ctx)()
-        elif condition_1:
-            AttachedNetworkListByProject.AttachedNetworksListByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -158,25 +126,6 @@ class AttachedNetworkList(_AttachedNetworkList):
 
 
 class AttachedNetworkShow(_AttachedNetworkShow):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.AttachedNetworksGetByDevCenter(ctx=self.ctx)()
-        elif condition_1:
-            AttachedNetworkShowByProject.AttachedNetworksGetByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -207,12 +156,6 @@ class CatalogDelete(_CatalogDelete):
 
 
 class CatalogList(_CatalogList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -255,26 +198,6 @@ class DevBoxDefinitionDelete(_DevBoxDefinitionDelete):
 
 
 class DevBoxDefinitionList(_DevBoxDefinitionList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        args_schema.top._registered = False
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.DevBoxDefinitionsListByDevCenter(ctx=self.ctx)()
-        elif condition_1:
-            DevBoxDefinitionListByProject.DevBoxDefinitionsListByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -287,25 +210,6 @@ class DevBoxDefinitionList(_DevBoxDefinitionList):
 
 
 class DevBoxDefinitionShow(_DevBoxDefinitionShow):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.dev_center_name._required = False
-        args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
-        )
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.dev_center_name)
-        condition_1 = has_value(self.ctx.args.project_name)
-        if condition_0:
-            self.DevBoxDefinitionsGet(ctx=self.ctx)()
-        elif condition_1:
-            DevBoxDefinitionShowByProject.DevBoxDefinitionsGetByProject(ctx=self.ctx)()
-
     @register_callback
     def pre_operations(self):
         validate_attached_network_or_dev_box_def(
@@ -329,14 +233,6 @@ class DevBoxDefinitionWait(_DevBoxDefinitionWait):
         return set_configured_defaults(args)
 
 
-class DevCenterList(_DevCenterList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
-
 class EnvironmentTypeCreate(_EnvironmentTypeCreate):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -350,12 +246,6 @@ class EnvironmentTypeDelete(_EnvironmentTypeDelete):
 
 
 class EnvironmentTypeList(_EnvironmentTypeList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -386,12 +276,6 @@ class GalleryDelete(_GalleryDelete):
 
 
 class GalleryList(_GalleryList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -410,24 +294,6 @@ class GalleryWait(_GalleryWait):
 
 
 class ImageList(_ImageList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.gallery_name = AAZStrArg(
-            options=["--gallery-name"],
-            help="The name of the gallery.",
-        )
-        args_schema.top._registered = False
-        return args_schema
-
-    def _execute_operations(self):
-        self.pre_operations()
-        condition_0 = has_value(self.ctx.args.gallery_name)
-        if condition_0:
-            _ImageListByGallery.ImagesListByGallery(ctx=self.ctx)()
-        else:
-            self.ImagesListByDevCenter(ctx=self.ctx)()
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -449,22 +315,6 @@ class ImageVersionShow(_ImageVersionShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
-
-
-class NetworkConnectionList(_NetworkConnectionList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
-
-class NetworkConnectionListHealthDetail(_NetworkConnectionListHealthDetail):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
 
 
 class PoolCreate(_PoolCreate):
@@ -491,12 +341,6 @@ class PoolDelete(_PoolDelete):
 
 
 class PoolList(_PoolList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -509,12 +353,6 @@ class PoolShow(_PoolShow):
 
 
 class PoolUpdate(_PoolUpdate):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.license_type._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -526,21 +364,7 @@ class PoolWait(_PoolWait):
         return set_configured_defaults(args)
 
 
-class ProjectList(_ProjectList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
-
 class ProjectAllowedEnvironmentTypeList(_ProjectAllowedEnvironmentTypeList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -565,12 +389,6 @@ class ProjectEnvironmentTypeDelete(_ProjectEnvironmentTypeDelete):
 
 
 class ProjectEnvironmentTypeList(_ProjectEnvironmentTypeList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
-
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -652,8 +470,6 @@ class ScheduleUpdate(_ScheduleUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.schedule_name._registered = False
         args_schema.schedule_name._required = False
-        args_schema.frequency._registered = False
-        args_schema.type._registered = False
         return args_schema
 
     @register_callback
@@ -682,14 +498,6 @@ class ScheduleWait(_ScheduleWait):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
-
-
-class SkuList(_SkuList):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.top._registered = False
-        return args_schema
 
 
 # Data plane
