@@ -874,7 +874,6 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
 
     try:
         if storage_space_available:
-        # To describe pod if its not in running state and storing it if storage is available
             command = [kubectl_client_location, "get", "secrets", "-n", "azure-arc"]
             if kube_config:
                 command.extend(["--kubeconfig", kube_config])
@@ -886,12 +885,12 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
             if response_kubectl_get_events.returncode != 0:
                 telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Secrets_Failed_Fault_Type, summary='Error while doing kubectl get secrets')
                 logger.warning("Error while doing kubectl get secrets for azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
-                diagnoser_output.append("Error while doing kubectl get secrets in azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: "+ error_kubectl_get_events.decode("ascii"))
+                diagnoser_output.append("Error while doing kubectl get secrets in azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format and fetching the azure-arc events
+            # Converting output obtained in json format 
             events_json = response_kubectl_get_events.communicate()[0].strip()
-            # Path to add the azure-arc events
+            # Path to add the azure-arc secrets
             event_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
 
             with open(event_logs_path, 'wb') as event_log:
@@ -923,7 +922,6 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
 
     try:
         if storage_space_available:
-        # To describe pod if its not in running state and storing it if storage is available
             command = [helm_client_location, "get", "values", "azure-arc", "-n", release_namespace, "--output", "json"]
             if kube_config:
                 command.extend(["--kubeconfig", kube_config])
@@ -938,7 +936,7 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
                 diagnoser_output.append("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format and fetching the azure-arc events
+            # Converting output obtained in json format
             events_json = output_kubectl_get_events.decode("ascii")
             events_json = json.loads(events_json)
             try:
@@ -948,7 +946,7 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
                 pass
 
             events_json = yaml.dump(events_json)
-            # Path to add the azure-arc events
+            # Path to add the helm values of azure-arc release
             event_logs_path = os.path.join(filepath_with_timestamp, "helm_values_azure_arc.txt")
 
             with open(event_logs_path, 'w') as event_log:
@@ -980,7 +978,6 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
 
     try:
         if storage_space_available:
-        # To describe pod if its not in running state and storing it if storage is available
             command = [kubectl_client_location, "describe", "connectedclusters.arc.azure.com/clustermetadata", "-n", "azure-arc"]
             if kube_config:
                 command.extend(["--kubeconfig", kube_config])
@@ -995,9 +992,9 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
                 diagnoser_output.append("Error occured while fetching metadata CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format and fetching the azure-arc events
+            # Converting output obtained in json format 
             events_json = response_kubectl_get_events.communicate()[0].strip()
-            # Path to add the azure-arc events
+            # Path to add the metadata CR details
             event_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
 
             with open(event_logs_path, 'wb') as event_log:
@@ -1029,7 +1026,6 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
 
     try:
         if storage_space_available:
-        # To describe pod if its not in running state and storing it if storage is available
             command = [kubectl_client_location, "describe", "arccertificates.clusterconfig.azure.com/kube-aad-proxy", "-n", "azure-arc"]
             if kube_config:
                 command.extend(["--kubeconfig", kube_config])
@@ -1044,9 +1040,9 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
                 diagnoser_output.append("Error occured while fetching kube-aad-proxy CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format and fetching the azure-arc events
+            # Converting output obtained in json format 
             events_json = response_kubectl_get_events.communicate()[0].strip()
-            # Path to add the azure-arc events
+            # Path to add the kube-aad-proxy CR details
             event_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
 
             with open(event_logs_path, 'wb') as event_log:
