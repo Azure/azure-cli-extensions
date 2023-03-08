@@ -9,13 +9,14 @@ import requests
 import subprocess
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
+
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azext_hybrid_appliance import _constants as consts
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 logger = get_logger(__name__)
 
 
-def validate_hybrid_appliance():
+def validate_hybrid_appliance(resource_group_name, appliance_name):
 
     all_validations_passed = True
 
@@ -36,13 +37,16 @@ def validate_hybrid_appliance():
         all_validations_passed = False
         logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
     
-    # Check if snap storage endpoint is reachable
-    try:
-        response = requests.head(consts.Snap_Config_Storage_End_Point, timeout=5)
-        response.raise_for_status()
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError):
-        all_validations_passed = False
-        logger.warning("The endpoint {} is not reachable".format(consts.Snap_Config_Storage_End_Point))
+    # Check if pre-req endpoints are reachable
+    endpoints = [consts.Snap_Config_Storage_Endpoint, consts.Apt_Pull_Public_Endpoint, consts.Snap_Pull_Public_Endpoint, consts.App_Insights_Endpoint]
+
+    for endpoint in endpoints:
+        try:
+            response = requests.head(endpoint, timeout=5)
+            response.raise_for_status()
+        except (requests.exceptions.RequestException):
+            all_validations_passed = False
+            logger.warning("The endpoint {} is not reachable from your machine".format(endpoint))
     
     if all_validations_passed is False:
         raise ValidationError("One or more pre-requisite validations have failed. Please resolve them and try again")
@@ -75,7 +79,15 @@ def create_hybrid_appliance(resource_group_name, appliance_name, correlation_id=
         cmd_onboard_arc.extend(["--proxy-https", https_proxy])
     if no_proxy:
         cmd_onboard_arc.extend(["--proxy-skip-range", no_proxy])
+    if proxy_cert:
+        cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
-
+    if onboarding_result.is_success():
+        logger.info("The k8s cluster has been onboarded to Arc successfully")
+    else:
+        error_code = onboarding_result.error.code
+        error_message = onboarding_result.error.message
+        raise CLIInternalError("Onboarding the k8s cluster Arc failed with error: {}".format(error_code, error_message))
+                               
 

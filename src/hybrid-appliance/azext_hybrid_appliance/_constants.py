@@ -5,7 +5,10 @@
 
 
 # pylint: disable=line-too-long
-Snap_Config_Storage_End_Point = "https://k8connecthelm.azureedge.net"
+Snap_Config_Storage_Endpoint = "https://k8connecthelm.azureedge.net"
+Snap_Pull_Public_Endpoint = ""
+Apt_Pull_Public_Endpoint = ""
+App_Insights_Endpoint = ""
 Memory_Threshold = 4
 Disk_Threshold = 20
 Supported_Locations = "southeastasia"
