@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.15
+++++++
+
+* Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secrets
+
 1.3.14
 ++++++
 
