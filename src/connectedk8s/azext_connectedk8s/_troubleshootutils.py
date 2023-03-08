@@ -888,7 +888,7 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
                 diagnoser_output.append("Error while doing kubectl get secrets in azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format 
+            # Converting output obtained in json format
             events_json = response_kubectl_get_events.communicate()[0].strip()
             # Path to add the azure-arc secrets
             event_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
@@ -992,7 +992,7 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
                 diagnoser_output.append("Error occured while fetching metadata CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format 
+            # Converting output obtained in json format
             events_json = response_kubectl_get_events.communicate()[0].strip()
             # Path to add the metadata CR details
             event_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
@@ -1040,7 +1040,7 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
                 diagnoser_output.append("Error occured while fetching kube-aad-proxy CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
                 return storage_space_available
 
-            # Converting output obtained in json format 
+            # Converting output obtained in json format
             events_json = response_kubectl_get_events.communicate()[0].strip()
             # Path to add the kube-aad-proxy CR details
             event_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
