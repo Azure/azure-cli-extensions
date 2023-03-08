@@ -131,7 +131,16 @@ KAP_1P_Server_AppId = "6256c85f-0aad-4d50-b960-e6e9b21efe35"
 Get_PublicKey_Info_Fault_Type = 'Error while fetching the PoP publickey information from client proxy'
 PoP_Public_Key_Expried_Fault_Type = 'The PoP public key used to generate the at has expired'
 Post_AT_To_ClientProxy_Failed_Fault_Type = 'Failed to post access token to client proxy'
-Kubectl_Get_Events_Failed_Fault_Type = "Error while doing kubectl get events"
+Kubectl_Get_Events_Failed_Fault_Type = "Error occured while doing kubectl get events"
+Kubectl_Get_Secrets_Failed_Fault_Type = "Error occured while doing kubectl get secrets"
+Kubectl_Get_Secrets_Failed_Fault_Type_Exception = "Exception occured while doing kubectl get secrets"
+Helm_Get_Values_Failed_Fault_Type = "Error occured while doing helm get values for azure-arc release"
+Helm_Get_Values_Failed_Fault_Type_Exception = "Exception occured while doing helm get values for azure-arc release"
+Get_Metadata_CR_Failed_Fault_Type = "Error occured while fetching metadata CR snapshot"
+Get_Metadata_CR_Failed_Fault_Type_Exception = "Exception occured while fetching metadata CR snapshot"
+Get_KAP_CR_Failed_Fault_Type = "Error occured while fetching KAP CR snapshot"
+Get_KAP_CR_Failed_Fault_Type_Exception = "Exception occured while fetching KAP CR snapshot"
+
 Fetch_Arc_Agent_Logs_Failed_Fault_Type = "Error occured in arc agents logger"
 Fetch_Arc_Agents_Events_Logs_Failed_Fault_Type = "Error occured in arc agents events logger"
 Fetch_Arc_Deployment_Logs_Failed_Fault_Type = "Error occured in deployments logger"

@@ -2289,6 +2289,24 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Performing diagnoser container check
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
+        # saving secrets in azure-arc namespace
+        storage_space_available = troubleshootutils.get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving helm values of azure-arc release
+        storage_space_available = troubleshootutils.get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving metadata CR sanpshot
+        storage_space_available = troubleshootutils.get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving kube-aad-proxy CR snapshot
+        storage_space_available = troubleshootutils.get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # checking cluster connectivity status
+        cluster_connectivity_status = connected_cluster.connectivity_status
+
+        if cluster_connectivity_status != "Connectedhaha":
+            logger.warning("All the pods in the cluster are not in the running state. The current state of the cluster is : " + cluster_connectivity_status)
+
         # Adding cli output to the logs
         diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
