@@ -392,3 +392,26 @@ def load_arguments(self, _):
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
         c.argument('compose_file_path', options_list=['--compose-file-path', '-f'], help='Path to a Docker Compose file with the configuration to import to Azure Container Apps.')
         c.argument('transport_mapping', options_list=['--transport-mapping', c.deprecate(target='--transport', redirect='--transport-mapping')], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
+        
+    # Container App job
+    with self.argument_context('containerapp job create') as c:
+        c.argument('cron_expression', options_list=['--cron-expression'], help='Cron expression for schedule trigger job.')
+        c.argument('image', options_list=['--image'], help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('replica_count', options_list=['--replica-count'], help='number of replicas that will be created when the job is triggered')
+        c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='maximum number of replica retries before the job execution fails')
+        c.argument('replica_timeout', options_list=['--replica-timeout'], help='number of seconds from underlying Pods are active.')
+        c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
+        c.argument('system_assigned', options_list=['--system-assigned'], help='System assigned identity.')
+        c.argument('trigger_type', options_list=['--trigger-type'], help='Trigger type. Schedule | Event | Manual')
+        c.argument('user_assigned', options_list=['--user-assigned'], help='User assigned identity.')
+        
+    with self.argument_context('containerapp job stop') as c:
+        c.argument('job_execution_name', options_list=['--job-execution-name'], help='name of the specific job execution which needs to be stopped.')
+        
+    with self.argument_context('containerapp job update') as c:
+        c.argument('cron_expression', options_list=['--cron-expression'], help='Cron expression for schedule trigger job.')
+        c.argument('image', options_list=['--image'], help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('replica_count', options_list=['--replica-count'], help='number of replicas that will be created when the job is triggered')
+        c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='maximum number of replica retries before the job execution fails')
+        c.argument('replica_timeout', options_list=['--replica-timeout'], help='number of seconds from underlying Pods are active.')
+        c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
