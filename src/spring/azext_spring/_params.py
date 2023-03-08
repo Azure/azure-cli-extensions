@@ -233,6 +233,10 @@ def load_arguments(self, _):
                        options_list=['--termination-grace-period-seconds', '--grace-period'],
                        help='Optional duration in seconds the app instance needs to terminate gracefully', arg_group='App Customization')
 
+    for scope in ['spring app deploy', 'spring app deployment create']:
+        with self.argument_context(scope) as c:
+            c.argument('disable_app_log', help='Do not print application logs when deploy application')
+
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.', default=False,
