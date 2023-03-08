@@ -208,6 +208,7 @@ class DevBoxOperations:
             get_next, extract_data
         )
     list_by_user.metadata = {'url': '/users/{userId}/devboxes'}  # type: ignore
+
     def list_by_project(
         self,
         filter: Optional[str] = None,
