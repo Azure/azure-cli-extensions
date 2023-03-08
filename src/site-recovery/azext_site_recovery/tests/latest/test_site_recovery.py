@@ -455,7 +455,8 @@ class SiteRecoveryScenario(ScenarioTest):
             'policy_name': 'testpolicy',
             'container1_name': 'cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a',
             # 'container2_name': 'cli-test-container-A2A-2',
-            'container_mapping1_name': 'cli-test-container-mapping-H2A-B2A-1',
+            'container_mapping1_name': 'eac12c26-e856-4d4c-9975-841fd0b0031d',
+            # 'container_mapping1_name': 'cli-test-container-mapping-H2A-B2A-1',
             # 'container_mapping2_name': 'cli-test-container-mapping-A2A-2',
             # 'vnet1_name': 'cli-test-vnet-A2A-1',
             # 'vnet2_name': 'cli-test-vnet-A2A-2',
@@ -480,14 +481,14 @@ class SiteRecoveryScenario(ScenarioTest):
         #          '--vault-name {vault_name} -n {policy_name} '
         #          '--provider-specific-input {{hyper-v-replica-azure:{{'
         #          'application-consistent-snapshot-frequency-in-hours:1,'
-        #          'recovery-point-history-duration:24,replication-interval:24}}}}')
+        #          'recovery-point-history-duration:2,replication-interval:300}}}}')
         policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
-
-        # container is automatically created by server
-
-        # container mapping
+        #
+        # # container is automatically created by server
+        #
+        # # container mapping
         # self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
         #          '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
         #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
@@ -502,7 +503,7 @@ class SiteRecoveryScenario(ScenarioTest):
         # self.cmd('az site-recovery protected-item create -g {rg} '
         #          '--fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} '
         #          '--vault-name {vault_name} --policy-id {policy_id} '
-        #          '--protectable-item-id {protectable_item_id}'
+        #          '--protectable-item-id {protectable_item_id} '
         #          '--provider-details {{hyper-v-replica-azure:{{'
         #          'disks-to-include:[1bec3e57-fdb6-42d0-924b-007af0fa1b12],'
         #          'enable-rdp-on-target-option:Never,'
@@ -532,10 +533,15 @@ class SiteRecoveryScenario(ScenarioTest):
         #          '--failover-direction PrimaryToRecovery --provider-details {{hyper-v-replica-azure:{{}}}} '
         #          '--source-site-operations NotRequired')
 
-        # reprotect
-        self.cmd('az site-recovery protected-item re-protect --fabric-name {fabric1_name} '
+        # commit
+        # self.cmd('az site-recovery protected-item failover-commit --fabric-name {fabric1_name} '
+        #          '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name}')
+
+        # failback
+        self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric1_name} '
                  '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
-                 '--failover-direction RecoveryToPrimary --provider-details {{hyper-v-replica-azure:{{}}}}')
+                 '--failover-direction RecoveryToPrimary --provider-details {{hyper-v-replica-azure:{{}}}} '
+                 '--source-site-operations NotRequired')
 
 
 
