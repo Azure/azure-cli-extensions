@@ -39,6 +39,7 @@ AUTHTYPES = {
 IP_ADDRESS_CHECKER = 'https://api.ipify.org'
 OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
 
+
 # pylint: disable=line-too-long, consider-using-f-string
 # For db(mysqlFlex/psql/psqlFlex/sql) linker with auth type=systemAssignedIdentity, enable AAD auth and create db user on data plane
 # For other linker, ignore the steps
@@ -93,6 +94,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
         return target_handler.get_auth_config(user_object_id)
 
     return enable_mi_for_db_linker
+
 
 # pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
 def getTargetHandler(cmd, target_id, target_type, auth_type, client_type, connection_name, skip_prompt):
@@ -254,8 +256,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 'az mysql flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
-            logger.warning("Add firewall rule %s %s - %s...%s",
-                           ip_name, start_ip, end_ip,
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
                            else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
@@ -399,8 +400,7 @@ class SqlHandler(TargetHandler):
             # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
-            logger.warning("Add firewall rule %s %s - %s...%s",
-                           ip_name, start_ip, end_ip,
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
                            else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
@@ -545,8 +545,7 @@ class PostgresFlexHandler(TargetHandler):
                 'az postgres flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
-            logger.warning("Add firewall rule %s %s - %s...%s",
-                           ip_name, start_ip, end_ip,
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
                            else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
@@ -667,8 +666,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
             if target.get('publicNetworkAccess') == "Disabled":
                 raise AzureConnectionError(
                     "The target resource doesn't allow public access. Please enable it manually and try again.")
-            logger.warning("Add firewall rule %s %s - %s...%s",
-                           ip_name, start_ip, end_ip,
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[AUTH_TYPE.UserAccount]
                            else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
