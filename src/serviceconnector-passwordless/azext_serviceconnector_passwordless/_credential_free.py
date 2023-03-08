@@ -215,7 +215,8 @@ class MysqlFlexibleHandler(TargetHandler):
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_mysql(connection_kwargs, query_list)
-        except AzureConnectionError:
+        except AzureConnectionError as e:
+            logger.warning(e)
             # allow local access
             from requests import get
             ip_address = get(IP_ADDRESS_CHECKER).text
@@ -223,7 +224,8 @@ class MysqlFlexibleHandler(TargetHandler):
             # create again
             try:
                 self.create_aad_user_in_mysql(connection_kwargs, query_list)
-            except AzureConnectionError:
+            except AzureConnectionError as e:
+                logger.warning(e)
                 # allow public access
                 self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
@@ -272,6 +274,7 @@ class MysqlFlexibleHandler(TargetHandler):
         connection_kwargs['client_flag'] = CLIENT.MULTI_STATEMENTS
         try:
             connection = pymysql.connect(**connection_kwargs)
+            logger.warning("Adding new AAD user %s to database...", self.aad_username)
             cursor = connection.cursor()
             for q in query_list:
                 if q:
@@ -282,7 +285,6 @@ class MysqlFlexibleHandler(TargetHandler):
                         logger.warning(
                             "Query %s, error: %s", q, str(e))
         except pymysql.Error as e:
-            logger.warning("Fail to connect mysql. " + str(e))
             raise AzureConnectionError("Fail to connect mysql. " + str(e)) from e
         if cursor is not None:
             try:
@@ -349,7 +351,8 @@ class SqlHandler(TargetHandler):
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
-        except AzureConnectionError:
+        except AzureConnectionError as e:
+            logger.warning(e)
             # allow local access
             from requests import get
             ip_address = get(IP_ADDRESS_CHECKER).text
@@ -357,7 +360,8 @@ class SqlHandler(TargetHandler):
             try:
                 # create again
                 self.create_aad_user_in_sql(connection_args, query_list)
-            except AzureConnectionError:
+            except AzureConnectionError as e:
+                logger.warning(e)
                 self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
                 self.create_aad_user_in_sql(connection_args, query_list)
@@ -410,6 +414,7 @@ class SqlHandler(TargetHandler):
         try:
             with pyodbc.connect(connection_args.get("connection_string").format(driver=drivers[0]), attrs_before=connection_args.get("attrs_before")) as conn:
                 with conn.cursor() as cursor:
+                    logger.warning("Adding new AAD user %s to database...", self.aad_username)
                     for execution_query in query_list:
                         try:
                             logger.debug(execution_query)
@@ -418,7 +423,6 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
-            logger.warning("Fail to connect sql." + str(e))
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self):
@@ -485,7 +489,8 @@ class PostgresFlexHandler(TargetHandler):
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_pg(connection_string, query_list)
-        except AzureConnectionError:
+        except AzureConnectionError as e:
+            logger.warning(e)
             # allow local access
             from requests import get
             ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
@@ -493,7 +498,8 @@ class PostgresFlexHandler(TargetHandler):
             try:
                 # create again
                 self.create_aad_user_in_pg(connection_string, query_list)
-            except AzureConnectionError:
+            except AzureConnectionError as e:
+                logger.warning(e)
                 self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
                 self.create_aad_user_in_pg(connection_string, query_list)
@@ -542,14 +548,12 @@ class PostgresFlexHandler(TargetHandler):
         try:
             conn = psycopg2.connect(conn_string)
         except (psycopg2.Error, psycopg2.OperationalError) as e:
-            logger.debug(e)
             import re
             # logger.warning(e)
             search_ip = re.search(
                 'no pg_hba.conf entry for host "(.*)", user ', str(e))
             if search_ip is not None:
                 self.ip = search_ip.group(1)
-            logger.warning("Fail to connect to postgresql. " + str(e))
             raise AzureConnectionError(
                 "Fail to connect to postgresql. " + str(e)) from e
 
