@@ -56,8 +56,8 @@ class CalculateExchange(AAZCommand):
             arg_group="Properties",
             help="List of reservations that are being purchased in this exchange.",
         )
-        _args_schema.savings_plans_to_purchase = AAZListArg(
-            options=["--savings-plans-to-purchase"],
+        _args_schema.sp_to_purchase = AAZListArg(
+            options=["--sp-to-purchase"],
             arg_group="Properties",
             help="List of savings plans that are being purchased in this exchange.",
         )
@@ -146,10 +146,10 @@ class CalculateExchange(AAZCommand):
         applied_scope = cls._args_schema.ris_to_purchase.Element.applied_scope
         applied_scope.Element = AAZStrArg()
 
-        savings_plans_to_purchase = cls._args_schema.savings_plans_to_purchase
-        savings_plans_to_purchase.Element = AAZObjectArg()
+        sp_to_purchase = cls._args_schema.sp_to_purchase
+        sp_to_purchase.Element = AAZObjectArg()
 
-        _element = cls._args_schema.savings_plans_to_purchase.Element
+        _element = cls._args_schema.sp_to_purchase.Element
         _element.applied_scope_properties = AAZObjectArg(
             options=["applied-scope-properties"],
         )
@@ -186,7 +186,7 @@ class CalculateExchange(AAZCommand):
         )
         cls._build_args_sku_name_create(_element.sku)
 
-        commitment = cls._args_schema.savings_plans_to_purchase.Element.commitment
+        commitment = cls._args_schema.sp_to_purchase.Element.commitment
         commitment.amount = AAZFloatArg(
             options=["amount"],
         )
@@ -354,7 +354,7 @@ class CalculateExchange(AAZCommand):
             if properties is not None:
                 properties.set_prop("reservationsToExchange", AAZListType, ".ris_to_exchange")
                 properties.set_prop("reservationsToPurchase", AAZListType, ".ris_to_purchase")
-                properties.set_prop("savingsPlansToPurchase", AAZListType, ".savings_plans_to_purchase")
+                properties.set_prop("savingsPlansToPurchase", AAZListType, ".sp_to_purchase")
 
             reservations_to_exchange = _builder.get(".properties.reservationsToExchange")
             if reservations_to_exchange is not None:

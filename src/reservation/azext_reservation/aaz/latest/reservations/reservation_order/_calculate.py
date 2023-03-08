@@ -53,8 +53,8 @@ class Calculate(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.applied_scope_properties = AAZObjectArg(
-            options=["--applied-scope-properties"],
+        _args_schema.applied_scope_property = AAZObjectArg(
+            options=["--applied-scope-property"],
             arg_group="Properties",
             help="Properties specific to applied scope type. Not required if not applicable. Required and need to provide tenantId and managementGroupId if AppliedScopeType is ManagementGroup",
         )
@@ -114,24 +114,24 @@ class Calculate(AAZCommand):
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
         )
 
-        applied_scope_properties = cls._args_schema.applied_scope_properties
-        applied_scope_properties.display_name = AAZStrArg(
+        applied_scope_property = cls._args_schema.applied_scope_property
+        applied_scope_property.display_name = AAZStrArg(
             options=["display-name"],
             help="Display name",
         )
-        applied_scope_properties.management_group_id = AAZStrArg(
+        applied_scope_property.management_group_id = AAZStrArg(
             options=["management-group-id"],
             help="Fully-qualified identifier of the management group where the benefit must be applied.",
         )
-        applied_scope_properties.resource_group_id = AAZStrArg(
+        applied_scope_property.resource_group_id = AAZStrArg(
             options=["resource-group-id"],
             help="Fully-qualified identifier of the resource group.",
         )
-        applied_scope_properties.subscription_id = AAZStrArg(
+        applied_scope_property.subscription_id = AAZStrArg(
             options=["subscription-id"],
             help="Fully-qualified identifier of the subscription.",
         )
-        applied_scope_properties.tenant_id = AAZStrArg(
+        applied_scope_property.tenant_id = AAZStrArg(
             options=["tenant-id"],
             help="Tenant ID where the savings plan should apply benefit.",
         )
@@ -237,7 +237,7 @@ class Calculate(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties")
+                properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_property")
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("appliedScopes", AAZListType, ".applied_scope")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")

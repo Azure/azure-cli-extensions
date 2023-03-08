@@ -17,8 +17,20 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update the applied scopes, renewal, name, instance-flexibility of the `Reservation`.
 
-    :example: Update applied scope type
+    :example: Set reservation to Shared scope
         az reservations reservation update --applied-scope-type Shared --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005
+
+    :example: Set reservation renewal
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --renew true
+
+    :example: Set reservation to Single scope
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --applied-scopes ['/subscriptions/50000000-aaaa-bbbb-cccc-200000000009']
+
+    :example: Set reservation to Single scope resource group
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --applied-scopes ['/subscriptions/50000000-aaaa-bbbb-cccc-200000000009/resourceGroups/mock_resource_group_name']
+
+    :example: Set reservation to management group scope
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type ManagementGroup --applied-scope-property '{management-group-id:/providers/Microsoft.Management/managementGroups/mock_management_group_name,tenant-id:50000000-aaaa-bbbb-cccc-200000000008}'
     """
 
     _aaz_info = {
@@ -59,12 +71,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.applied_scope_properties = AAZObjectArg(
-            options=["--applied-scope-properties"],
+        _args_schema.applied_scope_property = AAZObjectArg(
+            options=["--applied-scope-property"],
             arg_group="Properties",
             help="Properties specific to applied scope type. Not required if not applicable. Required and need to provide tenantId and managementGroupId if AppliedScopeType is ManagementGroup",
         )
-        cls._build_args_applied_scope_properties_update(_args_schema.applied_scope_properties)
+        cls._build_args_applied_scope_properties_update(_args_schema.applied_scope_property)
         _args_schema.applied_scope_type = AAZStrArg(
             options=["--applied-scope-type"],
             arg_group="Properties",
@@ -98,43 +110,67 @@ class Update(AAZCommand):
         # define Arg Group "RenewProperties"
 
         _args_schema = cls._args_schema
-        _args_schema.renewal_purchase_properties = AAZObjectArg(
-            options=["--renewal-purchase-properties"],
+        _args_schema.renewal_properties = AAZObjectArg(
+            options=["--renewal-properties"],
             arg_group="RenewProperties",
             help="renewal purchase properties",
         )
 
-        renewal_purchase_properties = cls._args_schema.renewal_purchase_properties
-        renewal_purchase_properties.applied_scope_properties = AAZObjectArg(
+        renewal_properties = cls._args_schema.renewal_properties
+        renewal_properties.applied_scope_properties = AAZObjectArg(
             options=["applied-scope-properties"],
         )
-        cls._build_args_applied_scope_properties_update(renewal_purchase_properties.applied_scope_properties)
-        renewal_purchase_properties.billing_plan = AAZStrArg(
+        cls._build_args_applied_scope_properties_update(renewal_properties.applied_scope_properties)
+        renewal_properties.applied_scope_type = AAZStrArg(
+            options=["applied-scope-type"],
+            help="Type of the Applied Scope.",
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
+        )
+        renewal_properties.applied_scopes = AAZListArg(
+            options=["applied-scopes"],
+            help="applied-scopes",
+        )
+        cls._build_args_applied_scopes_update(renewal_properties.applied_scopes)
+        renewal_properties.billing_plan = AAZStrArg(
             options=["billing-plan"],
             help="Represent the billing plans.",
             enum={"Monthly": "Monthly", "Upfront": "Upfront"},
         )
-        renewal_purchase_properties.billing_scope_id = AAZStrArg(
+        renewal_properties.billing_scope_id = AAZStrArg(
             options=["billing-scope-id"],
             help="Subscription that will be charged for purchasing Reservation",
         )
-        renewal_purchase_properties.display_name = AAZStrArg(
+        renewal_properties.display_name = AAZStrArg(
             options=["display-name"],
             help="Friendly name of the Reservation",
         )
-        renewal_purchase_properties.quantity = AAZIntArg(
+        renewal_properties.quantity = AAZIntArg(
             options=["quantity"],
             help="Quantity of the SKUs that are part of the Reservation.",
         )
-        renewal_purchase_properties.renew = AAZBoolArg(
+        renewal_properties.renew = AAZBoolArg(
             options=["renew"],
             help="Setting this to true will automatically purchase a new reservation on the expiration date time.",
             default=False,
         )
-        renewal_purchase_properties.term = AAZStrArg(
+        renewal_properties.instance_flexibility = AAZStrArg(
+            options=["instance-flexibility"],
+            help="Turning this on will apply the reservation discount to other VMs in the same VM size group. Only specify for VirtualMachines reserved resource type.",
+            enum={"Off": "Off", "On": "On"},
+        )
+        renewal_properties.reserved_resource_type = AAZStrArg(
+            options=["reserved-resource-type"],
+            help="The type of the resource that is being reserved. For reservation renewal, this property should have the same value as the original reservation.",
+            enum={"AVS": "AVS", "AppService": "AppService", "AzureDataExplorer": "AzureDataExplorer", "AzureFiles": "AzureFiles", "BlockBlob": "BlockBlob", "CosmosDb": "CosmosDb", "DataFactory": "DataFactory", "Databricks": "Databricks", "DedicatedHost": "DedicatedHost", "ManagedDisk": "ManagedDisk", "MariaDb": "MariaDb", "MySql": "MySql", "NetAppStorage": "NetAppStorage", "PostgreSql": "PostgreSql", "RedHat": "RedHat", "RedHatOsa": "RedHatOsa", "RedisCache": "RedisCache", "SapHana": "SapHana", "SqlAzureHybridBenefit": "SqlAzureHybridBenefit", "SqlDataWarehouse": "SqlDataWarehouse", "SqlDatabases": "SqlDatabases", "SqlEdge": "SqlEdge", "SuseLinux": "SuseLinux", "VMwareCloudSimple": "VMwareCloudSimple", "VirtualMachineSoftware": "VirtualMachineSoftware", "VirtualMachines": "VirtualMachines"},
+        )
+        renewal_properties.term = AAZStrArg(
             options=["term"],
             help="Represent the term of Reservation.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
+        )
+        renewal_properties.sku = AAZStrArg(
+            options=["sku"],
+            help="sku",
         )
         return cls._args_schema
 
@@ -301,7 +337,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_property"))
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 _UpdateHelper._build_schema_applied_scopes_update(properties.set_prop("appliedScopes", AAZListType, ".applied_scopes"))
                 properties.set_prop("instanceFlexibility", AAZStrType, ".instance_flexibility")
@@ -311,22 +347,34 @@ class Update(AAZCommand):
 
             renew_properties = _builder.get(".properties.renewProperties")
             if renew_properties is not None:
-                renew_properties.set_prop("purchaseProperties", AAZObjectType, ".renewal_purchase_properties")
+                renew_properties.set_prop("purchaseProperties", AAZObjectType, ".renewal_properties")
 
             purchase_properties = _builder.get(".properties.renewProperties.purchaseProperties")
             if purchase_properties is not None:
                 purchase_properties.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                purchase_properties.set_prop("sku", AAZObjectType)
 
             properties = _builder.get(".properties.renewProperties.purchaseProperties.properties")
             if properties is not None:
                 _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
+                _UpdateHelper._build_schema_applied_scopes_update(properties.set_prop("appliedScopes", AAZListType, ".applied_scopes"))
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
                 properties.set_prop("billingScopeId", AAZStrType, ".billing_scope_id")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("quantity", AAZIntType, ".quantity")
                 properties.set_prop("renew", AAZBoolType, ".renew")
                 properties.set_prop("reservedResourceProperties", AAZObjectType)
+                properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
                 properties.set_prop("term", AAZStrType, ".term")
+
+            reserved_resource_properties = _builder.get(".properties.renewProperties.purchaseProperties.properties.reservedResourceProperties")
+            if reserved_resource_properties is not None:
+                reserved_resource_properties.set_prop("instanceFlexibility", AAZStrType, ".instance_flexibility")
+
+            sku = _builder.get(".properties.renewProperties.purchaseProperties.sku")
+            if sku is not None:
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 
