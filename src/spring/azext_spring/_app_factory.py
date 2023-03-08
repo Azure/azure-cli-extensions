@@ -154,9 +154,9 @@ class DefaultApp:
         for pair in secrets:
             key_val = pair.split('=', 1)
             if len(key_val) != 2:
-                raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
+                raise InvalidArgumentValueError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
             if key_val[0] in secret_pairs:
-                raise ValidationError(
+                raise InvalidArgumentValueError(
                     "Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
             secret_pairs[key_val[0]] = key_val[1]
 

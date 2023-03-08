@@ -425,9 +425,9 @@ def parse_metadata_flags(metadata_list, metadata_def):
     for pair in metadata_list:
         key_val = pair.split('=', 1)
         if len(key_val) != 2:
-            raise ValidationError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+            raise InvalidArgumentValueError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
         if key_val[0] in metadata_def:
-            raise ValidationError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(
+            raise InvalidArgumentValueError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(
                 metadata=key_val[0]))
         metadata_def[key_val[0]] = key_val[1]
 
@@ -442,10 +442,10 @@ def parse_auth_flags(auth_list):
     for pair in auth_list:
         key_val = pair.split('=', 1)
         if len(key_val) != 2:
-            raise ValidationError(
+            raise InvalidArgumentValueError(
                 "Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
         if key_val[0] in auth_pairs:
-            raise ValidationError(
+            raise InvalidArgumentValueError(
                 "Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(
                     param=key_val[0]))
         auth_pairs[key_val[0]] = key_val[1]
