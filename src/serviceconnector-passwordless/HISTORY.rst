@@ -2,9 +2,9 @@
 
 Release History
 ===============
-0.1.1
+0.2.0
 ++++++
-* Remove firewall rule to avoid security issue
+* Remove firewall rule to avoid security issue. Prompt confirmation before open all IPs. Add param `--yes` to skip the confirmation. 
 
 0.1.0
 ++++++
