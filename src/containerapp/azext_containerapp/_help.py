@@ -510,17 +510,19 @@ helps['containerapp job create'] = """
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \\
-              --parallelism 1
+              --replica-count 1 \\
+              --parallelism 1 \\
+              --image imageName
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \\
+              --replica-count 1 \\
               --parallelism 1
-              --cron-expression */1 * * * *
+              --cron-expression */1 * * * * \\
+              --image imageName
 """
 
 helps['containerapp job update'] = """
@@ -577,7 +579,7 @@ helps['containerapp job stop'] = """
     - name: Stop a job execution.
       text: az containerapp job stop -n MyContainerappjob -g MyResourceGroup
     - name: Stop a job execution giving a specific job execution name.
-      text: az containerapp job stop -n MyContainerappjob -g MyResourceGroup --job_execution_name MyContainerappjob-66v9xh0
+      text: az containerapp job stop -n MyContainerappjob -g MyResourceGroup --job-execution-name MyContainerappjob-66v9xh0
 """
 
 helps['containerapp job executionhistory'] = """

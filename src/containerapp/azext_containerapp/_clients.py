@@ -1033,7 +1033,7 @@ class ContainerAppsJobClient():
             name,
             api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
 
