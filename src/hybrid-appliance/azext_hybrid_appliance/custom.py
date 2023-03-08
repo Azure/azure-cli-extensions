@@ -100,12 +100,13 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
-    if onboarding_result.is_success():
-        logger.info("The k8s cluster has been onboarded to Arc successfully")
-    else:
-        error_code = onboarding_result.error.code
-        error_message = onboarding_result.error.message
-        raise CLIInternalError("Onboarding the k8s cluster Arc failed with error: {}".format(error_code, error_message))
+    # if onboarding_result.is_success():
+    #     logger.info("The k8s cluster has been onboarded to Arc successfully")
+    # else:
+    #     error_code = onboarding_result.error.code
+    #     error_message = onboarding_result.error.message
+    #     raise CLIInternalError("Onboarding the k8s cluster Arc failed with error: {}".format(error_code, error_message))
+    check_microk8s()
 
 def upgrade_hybrid_appliance(resource_group_name, name):
     try:
@@ -160,3 +161,4 @@ def check_microk8s(addonsList=None):
     print(statusYaml)
     status = yaml.safe_load(statusYaml)
     print(status)
+    return True
