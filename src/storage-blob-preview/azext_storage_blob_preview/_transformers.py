@@ -181,6 +181,15 @@ def _transform_page_ranges(page_ranges):
     return None
 
 
+def transform_response_with_bytearray(response):
+    """ transform bytearray to string """
+    from msrest import Serializer
+    for item in response:
+        if response[item] and isinstance(response[item], (bytes, bytearray)):
+            response[item] = Serializer.serialize_bytearray(response[item])
+    return response
+
+
 def transform_blob_list_output(result):
     for i, item in enumerate(result):
         if isinstance(item, dict) and 'nextMarker' in item:
