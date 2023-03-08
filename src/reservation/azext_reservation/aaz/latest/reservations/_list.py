@@ -12,27 +12,34 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "reservations reservation split",
+    "reservations list",
 )
-class Split(AAZCommand):
-    """Split a `Reservation` into two `Reservation`s with specified quantity distribution.
+class List(AAZCommand):
+    """List the reservations that the user has access to in the current tenant.
 
-    :example: Split a reservation
-        az reservations reservation split --quantities "[2,8]" --reservation-id /providers/Microsoft.Capacity/reservationOrders/30000000-aaaa-bbbb-cccc-100000000004/reservations/40000000-aaaa-bbbb-cccc-100000000001 --reservation-order-id 30000000-aaaa-bbbb-cccc-100000000004
+    :example: List reservations under the current tenant
+        az reservations list
+
+    :example: List reservation which has "Failed" state under the current tenant
+        az reservations list --selected-state "Failed"
+
+    :example: List all "VirtualMachines" reservations under the current tenant
+        az az reservations list --filter "properties/reservedResourceType eq 'VirtualMachines'"
+
+    :example: List reservation and order the result by quantity in descending order
+        az reservations list --orderby 'properties/quantity desc'
     """
 
     _aaz_info = {
         "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/split", "2022-11-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservations", "2022-11-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,33 +52,23 @@ class Split(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.reservation_order_id = AAZStrArg(
-            options=["--reservation-order-id"],
-            help="Order Id of the reservation",
-            required=True,
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="May be used to filter by reservation properties. The filter supports 'eq', 'or', and 'and'. It does not currently support 'ne', 'gt', 'le', 'ge', or 'not'. Reservation properties include sku/name, properties/{appliedScopeType, archived, displayName, displayProvisioningState, effectiveDateTime, expiryDate, provisioningState, quantity, renew, reservedResourceType, term, userFriendlyAppliedScopeType, userFriendlyRenewState}",
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.quantities = AAZListArg(
-            options=["--quantities"],
-            arg_group="Properties",
-            help="List of the quantities in the new reservations to create.",
+        _args_schema.orderby = AAZStrArg(
+            options=["--orderby"],
+            help="May be used to sort order by reservation properties.",
         )
-        _args_schema.reservation_id = AAZStrArg(
-            options=["--reservation-id"],
-            arg_group="Properties",
-            help="Resource id of the reservation to be split. Format of the resource id should be /providers/Microsoft.Capacity/reservationOrders/{reservationOrderId}/reservations/{reservationId}",
+        _args_schema.selected_state = AAZStrArg(
+            options=["--selected-state"],
+            help="The selected provisioning state",
         )
-
-        quantities = cls._args_schema.quantities
-        quantities.Element = AAZIntArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReservationSplit(ctx=self.ctx)()
+        self.ReservationListAll(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,64 +80,48 @@ class Split(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ReservationSplit(AAZHttpOperation):
+    class ReservationListAll(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/providers/Microsoft.Capacity/reservationOrders/{reservationOrderId}/split",
+                "/providers/Microsoft.Capacity/reservations",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
             return "ODataV4Format"
 
         @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "reservationOrderId", self.ctx.args.reservation_order_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
+                    "$orderby", self.ctx.args.orderby,
+                ),
+                **self.serialize_query_param(
+                    "selectedState", self.ctx.args.selected_state,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2022-11-01",
                     required=True,
@@ -152,33 +133,10 @@ class Split(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("quantities", AAZListType, ".quantities")
-                properties.set_prop("reservationId", AAZStrType, ".reservation_id")
-
-            quantities = _builder.get(".properties.quantities")
-            if quantities is not None:
-                quantities.set_elements(AAZIntType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -195,12 +153,60 @@ class Split(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZListType()
+            cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.Element = AAZObjectType()
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.summary = AAZObjectType()
+            _schema_on_200.value = AAZListType(
+                flags={"read_only": True},
+            )
 
-            _element = cls._schema_on_200.Element
+            summary = cls._schema_on_200.summary
+            summary.cancelled_count = AAZFloatType(
+                serialized_name="cancelledCount",
+                flags={"read_only": True},
+            )
+            summary.expired_count = AAZFloatType(
+                serialized_name="expiredCount",
+                flags={"read_only": True},
+            )
+            summary.expiring_count = AAZFloatType(
+                serialized_name="expiringCount",
+                flags={"read_only": True},
+            )
+            summary.failed_count = AAZFloatType(
+                serialized_name="failedCount",
+                flags={"read_only": True},
+            )
+            summary.no_benefit_count = AAZFloatType(
+                serialized_name="noBenefitCount",
+                flags={"read_only": True},
+            )
+            summary.pending_count = AAZFloatType(
+                serialized_name="pendingCount",
+                flags={"read_only": True},
+            )
+            summary.processing_count = AAZFloatType(
+                serialized_name="processingCount",
+                flags={"read_only": True},
+            )
+            summary.succeeded_count = AAZFloatType(
+                serialized_name="succeededCount",
+                flags={"read_only": True},
+            )
+            summary.warning_count = AAZFloatType(
+                serialized_name="warningCount",
+                flags={"read_only": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
             _element.etag = AAZIntType()
             _element.id = AAZStrType(
                 flags={"read_only": True},
@@ -212,7 +218,7 @@ class Split(AAZCommand):
             )
             _element.properties = AAZObjectType()
             _element.sku = AAZObjectType()
-            _SplitHelper._build_schema_sku_name_read(_element.sku)
+            _ListHelper._build_schema_sku_name_read(_element.sku)
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -221,18 +227,18 @@ class Split(AAZCommand):
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.Element.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.applied_scope_properties = AAZObjectType(
                 serialized_name="appliedScopeProperties",
             )
-            _SplitHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
+            _ListHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _SplitHelper._build_schema_applied_scopes_read(properties.applied_scopes)
+            _ListHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.archived = AAZBoolType()
             properties.benefit_start_time = AAZStrType(
                 serialized_name="benefitStartTime",
@@ -325,13 +331,13 @@ class Split(AAZCommand):
                 flags={"read_only": True},
             )
 
-            extended_status_info = cls._schema_on_200.Element.properties.extended_status_info
+            extended_status_info = cls._schema_on_200.value.Element.properties.extended_status_info
             extended_status_info.message = AAZStrType()
             extended_status_info.status_code = AAZStrType(
                 serialized_name="statusCode",
             )
 
-            merge_properties = cls._schema_on_200.Element.properties.merge_properties
+            merge_properties = cls._schema_on_200.value.Element.properties.merge_properties
             merge_properties.merge_destination = AAZStrType(
                 serialized_name="mergeDestination",
             )
@@ -339,10 +345,10 @@ class Split(AAZCommand):
                 serialized_name="mergeSources",
             )
 
-            merge_sources = cls._schema_on_200.Element.properties.merge_properties.merge_sources
+            merge_sources = cls._schema_on_200.value.Element.properties.merge_properties.merge_sources
             merge_sources.Element = AAZStrType()
 
-            renew_properties = cls._schema_on_200.Element.properties.renew_properties
+            renew_properties = cls._schema_on_200.value.Element.properties.renew_properties
             renew_properties.billing_currency_total = AAZObjectType(
                 serialized_name="billingCurrencyTotal",
             )
@@ -353,38 +359,38 @@ class Split(AAZCommand):
                 serialized_name="purchaseProperties",
             )
 
-            billing_currency_total = cls._schema_on_200.Element.properties.renew_properties.billing_currency_total
+            billing_currency_total = cls._schema_on_200.value.Element.properties.renew_properties.billing_currency_total
             billing_currency_total.amount = AAZFloatType()
             billing_currency_total.currency_code = AAZStrType(
                 serialized_name="currencyCode",
             )
 
-            pricing_currency_total = cls._schema_on_200.Element.properties.renew_properties.pricing_currency_total
+            pricing_currency_total = cls._schema_on_200.value.Element.properties.renew_properties.pricing_currency_total
             pricing_currency_total.amount = AAZFloatType()
             pricing_currency_total.currency_code = AAZStrType(
                 serialized_name="currencyCode",
             )
 
-            purchase_properties = cls._schema_on_200.Element.properties.renew_properties.purchase_properties
+            purchase_properties = cls._schema_on_200.value.Element.properties.renew_properties.purchase_properties
             purchase_properties.location = AAZStrType()
             purchase_properties.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
             purchase_properties.sku = AAZObjectType()
-            _SplitHelper._build_schema_sku_name_read(purchase_properties.sku)
+            _ListHelper._build_schema_sku_name_read(purchase_properties.sku)
 
-            properties = cls._schema_on_200.Element.properties.renew_properties.purchase_properties.properties
+            properties = cls._schema_on_200.value.Element.properties.renew_properties.purchase_properties.properties
             properties.applied_scope_properties = AAZObjectType(
                 serialized_name="appliedScopeProperties",
             )
-            _SplitHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
+            _ListHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _SplitHelper._build_schema_applied_scopes_read(properties.applied_scopes)
+            _ListHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.billing_plan = AAZStrType(
                 serialized_name="billingPlan",
             )
@@ -407,12 +413,12 @@ class Split(AAZCommand):
             )
             properties.term = AAZStrType()
 
-            reserved_resource_properties = cls._schema_on_200.Element.properties.renew_properties.purchase_properties.properties.reserved_resource_properties
+            reserved_resource_properties = cls._schema_on_200.value.Element.properties.renew_properties.purchase_properties.properties.reserved_resource_properties
             reserved_resource_properties.instance_flexibility = AAZStrType(
                 serialized_name="instanceFlexibility",
             )
 
-            split_properties = cls._schema_on_200.Element.properties.split_properties
+            split_properties = cls._schema_on_200.value.Element.properties.split_properties
             split_properties.split_destinations = AAZListType(
                 serialized_name="splitDestinations",
             )
@@ -420,10 +426,10 @@ class Split(AAZCommand):
                 serialized_name="splitSource",
             )
 
-            split_destinations = cls._schema_on_200.Element.properties.split_properties.split_destinations
+            split_destinations = cls._schema_on_200.value.Element.properties.split_properties.split_destinations
             split_destinations.Element = AAZStrType()
 
-            swap_properties = cls._schema_on_200.Element.properties.swap_properties
+            swap_properties = cls._schema_on_200.value.Element.properties.swap_properties
             swap_properties.swap_destination = AAZStrType(
                 serialized_name="swapDestination",
             )
@@ -431,16 +437,16 @@ class Split(AAZCommand):
                 serialized_name="swapSource",
             )
 
-            utilization = cls._schema_on_200.Element.properties.utilization
+            utilization = cls._schema_on_200.value.Element.properties.utilization
             utilization.aggregates = AAZListType()
             utilization.trend = AAZStrType(
                 flags={"read_only": True},
             )
 
-            aggregates = cls._schema_on_200.Element.properties.utilization.aggregates
+            aggregates = cls._schema_on_200.value.Element.properties.utilization.aggregates
             aggregates.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.Element.properties.utilization.aggregates.Element
+            _element = cls._schema_on_200.value.Element.properties.utilization.aggregates.Element
             _element.grain = AAZFloatType(
                 flags={"read_only": True},
             )
@@ -456,7 +462,7 @@ class Split(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.Element.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -479,8 +485,8 @@ class Split(AAZCommand):
             return cls._schema_on_200
 
 
-class _SplitHelper:
-    """Helper class for Split"""
+class _ListHelper:
+    """Helper class for List"""
 
     _schema_applied_scope_properties_read = None
 
@@ -550,4 +556,4 @@ class _SplitHelper:
         _schema.name = cls._schema_sku_name_read.name
 
 
-__all__ = ["Split"]
+__all__ = ["List"]

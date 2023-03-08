@@ -22,9 +22,9 @@ class Calculate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/calculateprice", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/calculateprice", "2022-11-01"],
         ]
     }
 
@@ -53,11 +53,16 @@ class Calculate(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.applied_scope_property = AAZObjectArg(
+            options=["--applied-scope-property"],
+            arg_group="Properties",
+            help="Properties specific to applied scope type. Not required if not applicable. Required and need to provide tenantId and managementGroupId if AppliedScopeType is ManagementGroup",
+        )
         _args_schema.applied_scope_type = AAZStrArg(
             options=["--applied-scope-type"],
             arg_group="Properties",
             help="Type of the Applied Scope.",
-            enum={"Shared": "Shared", "Single": "Single"},
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
         )
         _args_schema.applied_scope = AAZListArg(
             options=["--applied-scope"],
@@ -97,11 +102,38 @@ class Calculate(AAZCommand):
             help="The type of the resource that is being reserved.",
             enum={"AVS": "AVS", "AppService": "AppService", "AzureDataExplorer": "AzureDataExplorer", "AzureFiles": "AzureFiles", "BlockBlob": "BlockBlob", "CosmosDb": "CosmosDb", "DataFactory": "DataFactory", "Databricks": "Databricks", "DedicatedHost": "DedicatedHost", "ManagedDisk": "ManagedDisk", "MariaDb": "MariaDb", "MySql": "MySql", "NetAppStorage": "NetAppStorage", "PostgreSql": "PostgreSql", "RedHat": "RedHat", "RedHatOsa": "RedHatOsa", "RedisCache": "RedisCache", "SapHana": "SapHana", "SqlAzureHybridBenefit": "SqlAzureHybridBenefit", "SqlDataWarehouse": "SqlDataWarehouse", "SqlDatabases": "SqlDatabases", "SqlEdge": "SqlEdge", "SuseLinux": "SuseLinux", "VMwareCloudSimple": "VMwareCloudSimple", "VirtualMachineSoftware": "VirtualMachineSoftware", "VirtualMachines": "VirtualMachines"},
         )
+        _args_schema.review_date_time = AAZDateTimeArg(
+            options=["--review-date-time"],
+            arg_group="Properties",
+            help="This is the date-time when the Azure hybrid benefit needs to be reviewed.",
+        )
         _args_schema.term = AAZStrArg(
             options=["--term"],
             arg_group="Properties",
             help="Represent the term of Reservation.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
+        )
+
+        applied_scope_property = cls._args_schema.applied_scope_property
+        applied_scope_property.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Display name",
+        )
+        applied_scope_property.management_group_id = AAZStrArg(
+            options=["management-group-id"],
+            help="Fully-qualified identifier of the management group where the benefit must be applied.",
+        )
+        applied_scope_property.resource_group_id = AAZStrArg(
+            options=["resource-group-id"],
+            help="Fully-qualified identifier of the resource group.",
+        )
+        applied_scope_property.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="Fully-qualified identifier of the subscription.",
+        )
+        applied_scope_property.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="Tenant ID where the savings plan should apply benefit.",
         )
 
         applied_scope = cls._args_schema.applied_scope
@@ -132,11 +164,11 @@ class Calculate(AAZCommand):
         self.ReservationOrderCalculate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -174,7 +206,7 @@ class Calculate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -205,6 +237,7 @@ class Calculate(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_property")
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("appliedScopes", AAZListType, ".applied_scope")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
@@ -214,7 +247,16 @@ class Calculate(AAZCommand):
                 properties.set_prop("renew", AAZBoolType, ".renew")
                 properties.set_prop("reservedResourceProperties", AAZObjectType)
                 properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
+                properties.set_prop("reviewDateTime", AAZStrType, ".review_date_time")
                 properties.set_prop("term", AAZStrType, ".term")
+
+            applied_scope_properties = _builder.get(".properties.appliedScopeProperties")
+            if applied_scope_properties is not None:
+                applied_scope_properties.set_prop("displayName", AAZStrType, ".display_name")
+                applied_scope_properties.set_prop("managementGroupId", AAZStrType, ".management_group_id")
+                applied_scope_properties.set_prop("resourceGroupId", AAZStrType, ".resource_group_id")
+                applied_scope_properties.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+                applied_scope_properties.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             applied_scopes = _builder.get(".properties.appliedScopes")
             if applied_scopes is not None:
@@ -301,7 +343,7 @@ class Calculate(AAZCommand):
             _element.billing_currency_total = AAZObjectType(
                 serialized_name="billingCurrencyTotal",
             )
-            _build_schema_price_read(_element.billing_currency_total)
+            _CalculateHelper._build_schema_price_read(_element.billing_currency_total)
             _element.due_date = AAZStrType(
                 serialized_name="dueDate",
             )
@@ -314,7 +356,7 @@ class Calculate(AAZCommand):
             _element.pricing_currency_total = AAZObjectType(
                 serialized_name="pricingCurrencyTotal",
             )
-            _build_schema_price_read(_element.pricing_currency_total)
+            _CalculateHelper._build_schema_price_read(_element.pricing_currency_total)
             _element.status = AAZStrType()
 
             extended_status_info = cls._schema_on_200.properties.payment_schedule.Element.extended_status_info
@@ -332,26 +374,28 @@ class Calculate(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_price_read = None
+class _CalculateHelper:
+    """Helper class for Calculate"""
 
+    _schema_price_read = None
 
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
 
-    _schema_price_read = AAZObjectType()
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
 
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
 
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
 
 
 __all__ = ["Calculate"]
