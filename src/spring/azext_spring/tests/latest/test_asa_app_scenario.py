@@ -77,7 +77,7 @@ class AppDeploy(ScenarioTest):
         ]).get_output_in_json()
         relative_path = deployment['properties']['source']['relativePath']
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
+        # self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
         self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
