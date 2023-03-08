@@ -60,12 +60,14 @@ def create_hybrid_appliance(resource_group_name, appliance_name, correlation_id=
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-    # Print the output and error messages in real-time
-    for line in iter(process.stdout.readline, ""):
-        print(line, end="") # Use 'end' parameter to prevent printing extra newline characters
-
-    for line in iter(process.stderr.readline, ""):
-        print(line, end="")
+    # Iterate over stdout and stderr in real-time
+    for stdout_line, stderr_line in zip(process.stdout, process.stderr):
+        # Print stdout output
+        if stdout_line:
+            print(stdout_line.strip())
+        # Print stderr output
+        if stderr_line:
+            print(stderr_line.strip())
 
     # Install specific version of connectedk8s
     get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
