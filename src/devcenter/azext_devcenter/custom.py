@@ -607,6 +607,18 @@ def devcenter_dev_box_start(
     )
 
 
+def devcenter_dev_box_restart(
+    cmd, dev_center, project_name, dev_box_name, user_id="me", no_wait=False
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    return sdk_no_wait(
+        no_wait,
+        cf_dataplane.dev_box.begin_restart,
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+    )
+
+
 def devcenter_dev_box_stop(
     cmd,
     dev_center,
@@ -626,63 +638,66 @@ def devcenter_dev_box_stop(
     )
 
 
-def devcenter_dev_box_delay_upcoming_action(
-    cmd,
-    dev_center,
-    project_name,
-    dev_box_name,
-    delay_time,
-    upcoming_action_id,
-    user_id="me",
+def devcenter_dev_box_delay_action(
+    cmd, dev_center, project_name, dev_box_name, delay_time, action_name, user_id="me"
 ):
     split_time = delay_time.split(":")
     hours = int(split_time[0])
     minutes = int(split_time[1])
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    upcoming_action = cf_dataplane.dev_box.get_upcoming_action(
+    upcoming_action = cf_dataplane.dev_box.get_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
-        upcoming_action_id=upcoming_action_id,
+        upcoming_action_id=action_name,
     )
     delayed_time = upcoming_action.scheduled_time + timedelta(
         hours=hours, minutes=minutes
     )
-    return cf_dataplane.dev_box.delay_upcoming_action(
+    return cf_dataplane.dev_box.delay_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
-        upcoming_action_id=upcoming_action_id,
-        delay_until=delayed_time,
+        action_name=action_name,
+        until=delayed_time,
     )
 
 
-def devcenter_dev_box_list_upcoming_action(
+def devcenter_dev_box_delay_all_actions(
+    cmd, dev_center, project_name, dev_box_name, until, user_id="me"
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    return cf_dataplane.dev_box.delay_actions(
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+        until=until,
+    )
+
+
+def devcenter_dev_box_list_action(
     cmd, dev_center, project_name, dev_box_name, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.dev_box.list_upcoming_actions(
-        user_id=user_id, dev_box_name=dev_box_name
+    return cf_dataplane.dev_box.list_actions(user_id=user_id, dev_box_name=dev_box_name)
+
+
+def devcenter_dev_box_show_action(
+    cmd, dev_center, project_name, dev_box_name, action_name, user_id="me"
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    return cf_dataplane.dev_box.get_action(
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+        action_name=action_name,
     )
 
 
-def devcenter_dev_box_show_upcoming_action(
-    cmd, dev_center, project_name, dev_box_name, upcoming_action_id, user_id="me"
+def devcenter_dev_box_skip_action(
+    cmd, dev_center, project_name, dev_box_name, action_name, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.dev_box.get_upcoming_action(
+    return cf_dataplane.dev_box.skip_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
-        upcoming_action_id=upcoming_action_id,
-    )
-
-
-def devcenter_dev_box_skip_upcoming_action(
-    cmd, dev_center, project_name, dev_box_name, upcoming_action_id, user_id="me"
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.dev_box.skip_upcoming_action(
-        user_id=user_id,
-        dev_box_name=dev_box_name,
-        upcoming_action_id=upcoming_action_id,
+        action_name=action_name,
     )
 
 
@@ -708,70 +723,25 @@ def devcenter_environment_create(
     project_name,
     environment_name,
     environment_type,
-    description=None,
-    catalog_name=None,
-    catalog_item_name=None,
+    catalog_name,
+    environment_definition_name,
     parameters=None,
-    tags=None,
-    user=None,
     no_wait=False,
     user_id="me",
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     body = {}
-    if description is not None:
-        body["description"] = description
-    if catalog_name is not None:
-        body["catalog_name"] = catalog_name
-    if catalog_item_name is not None:
-        body["catalog_item_name"] = catalog_item_name
     if parameters is not None:
         body["parameters"] = parameters
-    if tags is not None:
-        body["tags"] = tags
     body["environment_type"] = environment_type
-    if user is not None:
-        body["user"] = user
+    body["catalog_name"] = catalog_name
+    body["environment_definition_name"] = environment_definition_name
     return sdk_no_wait(
         no_wait,
         cf_dataplane.environments.begin_create_or_update,
         user_id=user_id,
         environment_name=environment_name,
         body=body,
-    )
-
-
-def devcenter_environment_update(
-    cmd,
-    dev_center,
-    project_name,
-    environment_name,
-    description=None,
-    catalog_name=None,
-    catalog_item_name=None,
-    parameters=None,
-    scheduled_tasks=None,
-    tags=None,
-    user_id=None,
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    body = {}
-    if user_id is None:
-        user_id = "me"
-    if description is not None:
-        body["description"] = description
-    if catalog_name is not None:
-        body["catalog_name"] = catalog_name
-    if catalog_item_name is not None:
-        body["catalog_item_name"] = catalog_item_name
-    if parameters is not None:
-        body["parameters"] = parameters
-    if scheduled_tasks is not None:
-        body["scheduled_tasks"] = scheduled_tasks
-    if tags is not None:
-        body["tags"] = tags
-    return cf_dataplane.environments.update(
-        user_id=user_id, environment_name=environment_name, body=body
     )
 
 
@@ -784,83 +754,6 @@ def devcenter_environment_delete(
         cf_dataplane.environments.begin_delete,
         user_id=user_id,
         environment_name=environment_name,
-    )
-
-
-def devcenter_environment_custom_action(
-    cmd,
-    dev_center,
-    project_name,
-    environment_name,
-    action_id,
-    parameters=None,
-    no_wait=False,
-    user_id="me",
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    body = {}
-    body["action_id"] = action_id
-    if parameters is not None:
-        body["parameters"] = parameters
-    return sdk_no_wait(
-        no_wait,
-        cf_dataplane.environments.begin_custom_action,
-        user_id=user_id,
-        environment_name=environment_name,
-        body=body,
-    )
-
-
-def devcenter_environment_deploy_action(
-    cmd,
-    dev_center,
-    project_name,
-    environment_name,
-    action_id,
-    parameters=None,
-    no_wait=False,
-    user_id="me",
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    body = {}
-    body["action_id"] = action_id
-    if parameters is not None:
-        body["parameters"] = parameters
-    return sdk_no_wait(
-        no_wait,
-        cf_dataplane.environments.begin_deploy_action,
-        user_id=user_id,
-        environment_name=environment_name,
-        body=body,
-    )
-
-
-def devcenter_catalog_item_list(cmd, dev_center, project_name):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.catalog_items.list()
-
-
-def devcenter_catalog_item_show(cmd, dev_center, project_name, catalog_item_id):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.catalog_items.get(catalog_item_id=catalog_item_id)
-
-
-def devcenter_catalog_item_version_list(cmd, dev_center, project_name, catalog_item_id):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.catalog_item_versions.list(catalog_item_id=catalog_item_id)
-
-
-def devcenter_catalog_item_version_show(
-    cmd,
-    dev_center,
-    project_name,
-    catalog_item_id,
-    version,
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.catalog_item_versions.get(
-        catalog_item_id=catalog_item_id,
-        version=version,
     )
 
 
@@ -923,3 +816,52 @@ def devcenter_notification_setting_create_dp(
             "notification_channel"
         ]
     return cf_dataplane.notification_setting.create(user_id=user_id, body=body)
+
+
+def devcenter_catalog_list_dp(cmd, dev_center, project_name):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    return cf_dataplane.catalogs.list()
+
+
+def devcenter_catalog_show_dp(cmd, dev_center, project_name, catalog_name):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    return cf_dataplane.catalogs.get(catalog_name=catalog_name)
+
+
+def devcenter_environment_definition_list_dp(
+    cmd, dev_center, project_name, catalog_name=None
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    if catalog_name is not None:
+        return cf_dataplane.environment_definitions.list_by_catalog(
+            catalog_name=catalog_name
+        )
+    return cf_dataplane.environment_definitions.list()
+
+
+def devcenter_environment_definition_show_dp(
+    cmd, dev_center, project_name, catalog_name, definition_name
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    return cf_dataplane.environment_definitions.get(
+        catalog_name=catalog_name, definition_name=definition_name
+    )
+
+
+def devcenter_artifact_list_dp(
+    cmd, dev_center, project_name, environment_name, user_id="me", artifact_path=None
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    if (
+        user_id is not None
+        and environment_name is not None
+        and artifact_path is not None
+    ):
+        return cf_dataplane.artifacts.list_by_path(
+            user_id=user_id,
+            environment_name=environment_name,
+            artifact_path=artifact_path,
+        )
+    return cf_dataplane.artifacts.list(
+        user_id=user_id, environment_name=environment_name
+    )

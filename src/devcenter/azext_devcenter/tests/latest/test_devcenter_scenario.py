@@ -1531,6 +1531,12 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  '--dev-center "{devcenterName}" '
                  )
 
+        self.cmd('az devcenter dev dev-box restart '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" '
+                 )
+
         self.cmd('az devcenter dev dev-box show '
                  '--name "{devBoxName}" '
                  '--project "{projectName}" '
@@ -1541,7 +1547,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  ]
                  )
 
-        self.cmd('az devcenter dev dev-box list-upcoming-action '
+        self.cmd('az devcenter dev dev-box list-action '
                  '--name "{devBoxName}" '
                  '--project "{projectName}" '
                  '--dev-center "{devcenterName}" ',
@@ -1554,25 +1560,25 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  ]
                  )
 
-        stopAction = self.cmd('az devcenter dev dev-box list-upcoming-action '
+        stopAction = self.cmd('az devcenter dev dev-box list-action '
                               '--name "{devBoxName}" '
                               '--project "{projectName}" '
                               '--dev-center "{devcenterName}" '
                               ).get_output_in_json()
 
         self.kwargs.update({
-            'actionId': stopAction[0]['id'],
-            'scheduledTime': stopAction[0]['scheduledTime'],
+            'actionName': stopAction[0]['id'],
+            'scheduledTime': stopAction[0]['next']['scheduledTime'],
             'delayTime': "2:30",
         })
 
-        self.cmd('az devcenter dev dev-box show-upcoming-action '
+        self.cmd('az devcenter dev dev-box show-action '
                  '--name "{devBoxName}" '
                  '--project "{projectName}" '
                  '--dev-center "{devcenterName}" '
-                 '--upcoming-action-id "{actionId}"',
+                 '--action-name "{actionName}"',
                  checks=[
-                     self.check("id", "{actionId}"),
+                     self.check("name", "{actionName}"),
                      self.check("actionType", "Stop"),
                      self.check("reason", "Schedule"),
                      self.check("scheduledTime", "{scheduledTime}"),
@@ -1581,14 +1587,14 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  ]
                  )
 
-        self.cmd('az devcenter dev dev-box delay-upcoming-action '
+        self.cmd('az devcenter dev dev-box delay-action '
                  '--name "{devBoxName}" '
                  '--project "{projectName}" '
                  '--dev-center "{devcenterName}" '
                  '--delay-time "{delayTime}" '
-                 '--upcoming-action-id "{actionId}"',
+                 '--action-name "{actionName}"',
                  checks=[
-                     self.check("id", "{actionId}"),
+                     self.check("name", "{actionName}"),
                      self.check("actionType", "Stop"),
                      self.check("reason", "Schedule"),
                      self.check("originalScheduledTime", "{scheduledTime}"),
@@ -1598,11 +1604,20 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                  ]
                  )
 
-        self.cmd('az devcenter dev dev-box skip-upcoming-action '
+        self.cmd('az devcenter dev dev-box skip-action '
                  '--name "{devBoxName}" '
                  '--project "{projectName}" '
                  '--dev-center "{devcenterName}" '
-                 '--upcoming-action-id "{actionId}"'
+                 '--action-name "{actionName}"'
+                 )
+
+        self.cmd('az devcenter dev dev-box list-action '
+                 '--name "{devBoxName}" '
+                 '--project "{projectName}" '
+                 '--dev-center "{devcenterName}" ',
+                 checks=[
+                     self.check("length(@)", 0),
+                 ]
                  )
 
         self.cmd('az devcenter dev dev-box delete -y '
@@ -1735,13 +1750,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                      self.check("length(@)", 1),
                      self.check("[0].name", "{envName}")
                  ]
-                 )
-        
-        self.cmd('az devcenter dev environment deploy-action '
-                 '--action-id "deploy" '
-                 '--name "{envName}" '
-                 '--dev-center "{devcenterName}" '
-                 '--project "{projectName}" '
                  )
         
         self.cmd('az devcenter dev environment delete -y '

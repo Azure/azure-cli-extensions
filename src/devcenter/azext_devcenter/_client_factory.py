@@ -58,12 +58,12 @@ def cf_environment_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
 
-def cf_catalog_item_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_items
+def cf_catalog_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).catalogs
 
 
-def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item_versions
+def cf_environment_definition_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_definitions
 
 
 def cf_environment_type_dp(cli_ctx, dev_center, *_):
@@ -72,6 +72,10 @@ def cf_environment_type_dp(cli_ctx, dev_center, *_):
 
 def cf_notification_setting_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting
+
+
+def cf_artifact_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).artifacts
 
 
 # Control plane

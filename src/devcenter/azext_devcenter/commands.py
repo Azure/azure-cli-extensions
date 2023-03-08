@@ -13,10 +13,11 @@ from azext_devcenter._client_factory import (
     cf_schedule_dp,
     cf_dev_box_dp,
     cf_environment_dp,
-    cf_catalog_item_dp,
-    cf_catalog_item_version_dp,
+    cf_catalog_dp,
+    cf_environment_definition_dp,
     cf_environment_type_dp,
     cf_notification_setting_dp,
+    cf_artifact_dp,
 )
 from .custom import (
     AttachedNetworkCreate,
@@ -204,16 +205,16 @@ def load_command_table(self, _):
         client_factory=cf_dev_box_dp,
     )
 
-    devcenter_catalog_item_dp = CliCommandType(
+    devcenter_catalog_dp = CliCommandType(
         operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._catalog_item_operations#CatalogItemOperations.{}"
+            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._catalogs_operations#CatalogsOperations.{}"
         ),
-        client_factory=cf_catalog_item_dp,
+        client_factory=cf_catalog_dp,
     )
 
-    devcenter_catalog_item_version_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._catalog_item_versions_operations#CatalogItemVersionsOperations.{}",
-        client_factory=cf_catalog_item_version_dp,
+    devcenter_environment_definition_dp = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environment_definitions_operations#EnvironmentDefinitionsOperations.{}",
+        client_factory=cf_environment_definition_dp,
     )
 
     devcenter_environment_dp = CliCommandType(
@@ -244,6 +245,13 @@ def load_command_table(self, _):
         client_factory=cf_notification_setting_dp,
     )
 
+    devcenter_artifact_dp = CliCommandType(
+        operations_tmpl=(
+            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._artifacts_operations#ArtifactsOperations.{}"
+        ),
+        client_factory=cf_artifact_dp,
+    )
+
     with self.command_group("devcenter", is_preview=True):
         pass
 
@@ -272,31 +280,13 @@ def load_command_table(self, _):
             "show-remote-connection", "devcenter_dev_box_get_remote_connection"
         )
         g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
+        g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
         g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
-        g.custom_command(
-            "delay-upcoming-action", "devcenter_dev_box_delay_upcoming_action"
-        )
-        g.custom_command(
-            "list-upcoming-action", "devcenter_dev_box_list_upcoming_action"
-        )
-        g.custom_command(
-            "show-upcoming-action", "devcenter_dev_box_show_upcoming_action"
-        )
-        g.custom_command(
-            "skip-upcoming-action", "devcenter_dev_box_skip_upcoming_action"
-        )
-
-    with self.command_group(
-        "devcenter dev catalog-item", devcenter_catalog_item_dp
-    ) as g:
-        g.custom_command("list", "devcenter_catalog_item_list")
-        g.custom_show_command("show", "devcenter_catalog_item_show")
-
-    with self.command_group(
-        "devcenter dev catalog-item-version", devcenter_catalog_item_version_dp
-    ) as g:
-        g.custom_command("list", "devcenter_catalog_item_version_list")
-        g.custom_show_command("show", "devcenter_catalog_item_version_show")
+        g.custom_command("delay-action", "devcenter_dev_box_delay_action")
+        g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
+        g.custom_command("list-action", "devcenter_dev_box_list_action")
+        g.custom_command("show-action", "devcenter_dev_box_show_action")
+        g.custom_command("skip-action", "devcenter_dev_box_skip_action")
 
     with self.command_group("devcenter dev environment", devcenter_environment_dp) as g:
         g.custom_command("list", "devcenter_environment_list")
@@ -304,19 +294,12 @@ def load_command_table(self, _):
         g.custom_command(
             "create", "devcenter_environment_create", supports_no_wait=True
         )
-        g.custom_command("update", "devcenter_environment_update")
         g.custom_command(
             "delete",
             "devcenter_environment_delete",
             supports_no_wait=True,
             confirmation=True,
         )
-        g.custom_command(
-            "deploy-action",
-            "devcenter_environment_deploy_action",
-            supports_no_wait=True,
-        )
-        g.custom_wait_command("wait", "devcenter_environment_show")
 
     with self.command_group(
         "devcenter dev environment-type", devcenter_environment_type_dp
@@ -338,3 +321,16 @@ def load_command_table(self, _):
         g.custom_command(
             "create", "devcenter_notification_setting_create_dp", supports_no_wait=True
         )
+
+    with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:
+        g.custom_command("list", "devcenter_catalog_list_dp")
+        g.custom_show_command("show", "devcenter_catalog_show_dp")
+
+    with self.command_group(
+        "devcenter dev environment-definition", devcenter_environment_definition_dp
+    ) as g:
+        g.custom_command("list", "devcenter_environment_definition_list_dp")
+        g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+
+    with self.command_group("devcenter dev artifact", devcenter_artifact_dp) as g:
+        g.custom_command("list", "devcenter_artifact_list_dp")
