@@ -8,6 +8,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from .custom import FrontendCreate
     self.command_table["service-networking traffic-controller frontend create"] = FrontendCreate(loader=self)
