@@ -546,10 +546,10 @@ def generate_sas_blob_uri(cmd, client, container_name, blob_name, permission=Non
     else:
         sas_kwargs['account_key'] = client.credential.account_key
 
-    blob_url = kwargs.pop('blob_url')
+    blob_url = kwargs.pop('blob_url', None)
     if blob_url:
-        blob_client = t_blob_client.from_blob_url(blob_url=blob_url, snapshot=snapshot,
-                                                  credential=sas_kwargs.get('user_delegation_key') or sas_kwargs.get('account_key'))
+        credential = sas_kwargs.get('user_delegation_key', None) or sas_kwargs.get('account_key', None)
+        blob_client = t_blob_client.from_blob_url(blob_url=blob_url, credential=credential, snapshot=snapshot)
         container_name = blob_client.container_name
         blob_name = blob_client.blob_name
 
@@ -563,9 +563,9 @@ def generate_sas_blob_uri(cmd, client, container_name, blob_name, permission=Non
     if full_uri:
         blob_client = t_blob_client(account_url=client.url, container_name=container_name,
                                     blob_name=blob_name, snapshot=snapshot, credential=sas_token)
-        return encode_url_path(blob_client.url)
+        return encode_url_path(blob_client.url, safe='&%()$=\',~')
 
-    return encode_for_url(sas_token)
+    return encode_for_url(sas_token, safe='&%()$=\',~')
 
 
 def generate_sas_container_uri(client, cmd, container_name, permission=None,
