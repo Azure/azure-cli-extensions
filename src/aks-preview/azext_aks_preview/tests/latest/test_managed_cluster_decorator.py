@@ -3270,12 +3270,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_network_profile(mc_1)
 
-        network_profile_1 = self.models.ContainerServiceNetworkProfile(
-            load_balancer_sku=CONST_LOAD_BALANCER_SKU_STANDARD,
-            ip_families=["IPv4", "IPv6"],
-            pod_cidrs=["10.246.0.0/16", "2001:abcd::/64"],
-            service_cidrs=["10.0.0.0/16", "2001:ffff::/108"],
-        )
+        network_profile_1 = self.models.ContainerServiceNetworkProfile()
+        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
+        for attr_name, attr_value in vars(network_profile_1).items():
+                if not attr_name.startswith("_") and attr_name not in ["additional_properties", "outbound_type"] and attr_value is not None:
+                    setattr(network_profile_1, attr_name, None)
+        network_profile_1.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+        network_profile_1.ip_families = ["IPv4", "IPv6"]
+        network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
+        network_profile_1.service_cidrs=["10.0.0.0/16", "2001:ffff::/108"]
+
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
                 count_ipv6=3,

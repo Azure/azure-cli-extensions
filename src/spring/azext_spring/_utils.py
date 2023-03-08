@@ -39,11 +39,22 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
 
 
 def _get_file_type(runtime_version, artifact_path=None):
-    file_type = "NetCoreZip" if runtime_version == SupportedRuntimeValue.NET_CORE31 else "Jar"
-
+    file_type = "Jar" if _is_java(runtime_version) else "Others"
     if artifact_path is None:
         file_type = "Source"
     return file_type
+
+
+def _is_java(runtime_version):
+    if runtime_version is None:
+        return False
+    return runtime_version.casefold() == SupportedRuntimeValue.JAVA8.casefold() or \
+        runtime_version.casefold() == SupportedRuntimeValue.JAVA11.casefold() or \
+        runtime_version.casefold() == SupportedRuntimeValue.JAVA17.casefold()
+
+
+def _java_runtime_in_number():
+    return [8, 11, 17]
 
 
 def _pack_source_code(source_location, tar_file_path):
