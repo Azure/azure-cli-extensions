@@ -48,9 +48,9 @@ def get_latest_tested_microsk8_version():
 
 def check_microk8s():
     statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml']).decode()
-    print(statusYaml)
     status = yaml.safe_load(statusYaml)
-    print(status)
     if not status["microk8s"]["running"]:
         print("Microk8s is not running")
         subprocess.check_call(['microk8s', 'inspect'])
+        return False
+    return True

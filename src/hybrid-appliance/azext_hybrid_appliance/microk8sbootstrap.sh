@@ -7,13 +7,11 @@ fi
 
 sudo snap install microk8s --channel=$MICROK8S_VERSION --classic
 sudo microk8s start
-sudo microk8s status
 sudo microk8s config > ~/.kube/config
 sudo microk8s enable dns
 sudo microk8s enable rbac
 sudo microk8s enable metrics-server
 echo "Microk8s cluster provisioned"
-echo "Enabling encryption at rest"
 
 if grep -q "encryption-provider-config" "/var/snap/microk8s/current/args/kube-apiserver"; then
   echo "Encryption already enabled"
@@ -43,4 +41,5 @@ fi
 
 # This is needed before running the connectedk8s connect command to allow the cluster to come to a completely running state
 # Without this, the prechecks fail intermittently
+echo "Sleeping for 60 seconds to allow cluster to get completely ready"
 sleep 60

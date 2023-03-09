@@ -43,7 +43,7 @@ def validate_hybrid_appliance(resource_group_name, name):
         logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
-    endpoints = [consts.Snap_Config_Storage_Endpoint, consts.Apt_Pull_Public_Endpoint, consts.Snap_Pull_Public_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
+    endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Apt_Pull_Public_Endpoint, consts.Snap_Pull_Public_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
 
     for endpoint in endpoints:
         try:
@@ -79,16 +79,14 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     script_file_path = os.path.join(current_path, "microk8sbootstrap.sh")
     cmd = ["sh", script_file_path]
 
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-
-    # Iterate over stdout and stderr in real-time
-    for stdout_line, stderr_line in zip(process.stdout, process.stderr):
-        # Print stdout output
-        if stdout_line:
-            print(stdout_line.strip())
-        # Print stderr output
-        if stderr_line:
-            print(stderr_line.strip())
+    process = subprocess.Popen(cmd)
+    if process.wait() != 0:
+        print("Failed to setup microk8s cluster")
+        return
+    
+    if not utils.check_microk8s():
+        print("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
+        return
 
     # Install specific version of connectedk8s
     get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
@@ -104,8 +102,6 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         cmd_onboard_arc.extend(["--proxy-skip-range", no_proxy])
     if proxy_cert:
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
-
-    utils.check_microk8s()
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
@@ -125,13 +121,14 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             print("The kubernetes cluster is not running as expected.")
 
         print("Please delete the appliance and create it again.")
+        return
     
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
         print("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
         return # How to return non 0 error code?
 
-    kubernetesVersionResponseString = subprocess.check_output(['kubectl', 'version', '-o', 'json']).decode()
+    kubernetesVersionResponseString = subprocess.check_output(['microk8s', 'kubectl', 'version', '-o', 'json']).decode()
     kubernetesVersionResponse = json.loads(kubernetesVersionResponseString)
     currentMajorVersion = kubernetesVersionResponse["serverVersion"]["major"]
     currentMinorVersion =  kubernetesVersionResponse["serverVersion"]["minor"].strip('+') # For some versions, for example, 1.23, minor version is represented as 23+ 
