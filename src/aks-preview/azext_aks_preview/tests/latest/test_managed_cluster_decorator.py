@@ -3270,12 +3270,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_network_profile(mc_1)
 
-        network_profile_1 = self.models.ContainerServiceNetworkProfile(
-            load_balancer_sku=CONST_LOAD_BALANCER_SKU_STANDARD,
-            ip_families=["IPv4", "IPv6"],
-            pod_cidrs=["10.246.0.0/16", "2001:abcd::/64"],
-            service_cidrs=["10.0.0.0/16", "2001:ffff::/108"],
-        )
+        network_profile_1 = self.models.ContainerServiceNetworkProfile()
+        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
+        for attr_name, attr_value in vars(network_profile_1).items():
+                if not attr_name.startswith("_") and attr_name not in ["additional_properties", "outbound_type"] and attr_value is not None:
+                    setattr(network_profile_1, attr_name, None)
+        network_profile_1.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+        network_profile_1.ip_families = ["IPv4", "IPv6"]
+        network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
+        network_profile_1.service_cidrs=["10.0.0.0/16", "2001:ffff::/108"]
+
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
                 count_ipv6=3,
@@ -5653,9 +5657,45 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_1.context.attach_mc(mc_1)
-        # fail on cluster has no linux profile
-        with self.assertRaises(InvalidArgumentValueError):
-            dec_mc_1 = dec_1.update_linux_profile(mc_1)
+        dec_mc_1 = dec_1.update_linux_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username="azureuser",
+                ssh= self.models.ContainerServiceSshConfiguration(
+                    public_keys=[self.models.ContainerServiceSshPublicKey(key_data="test_key")]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_key_value": "new_key"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username="olduser",
+                ssh= self.models.ContainerServiceSshConfiguration(
+                    public_keys=[self.models.ContainerServiceSshPublicKey(key_data="old_key")]
+                )
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_linux_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username="olduser",
+                ssh= self.models.ContainerServiceSshConfiguration(
+                    public_keys=[self.models.ContainerServiceSshPublicKey(key_data="new_key")]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_update_mc_profile_preview(self):
         import inspect

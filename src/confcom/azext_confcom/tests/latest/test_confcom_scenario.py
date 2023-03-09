@@ -153,7 +153,7 @@ class MountEnforcement(unittest.TestCase):
 
 # @unittest.skip("not in use")
 @pytest.mark.run(order=2)
-class PolicyGenerating2(unittest.TestCase):
+class PolicyGenerating(unittest.TestCase):
     custom_json = """
       {
         "version": "1.0",

@@ -307,6 +307,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                readiness_probe_config=None,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
+               disable_app_log=False,
                # general
                no_wait=False):
     '''app_deploy
@@ -380,7 +381,8 @@ def app_deploy(cmd, client, resource_group, service, name,
     poller = sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
                          resource_group, service, name, deployment.name,
                          deployment_resource)
-    _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
+    if not disable_app_log:
+        _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
     if "succeeded" != poller.status().lower():
         return poller
     return client.deployments.get(resource_group, service, name, deployment.name)
@@ -460,6 +462,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       readiness_probe_config=None,
                       startup_probe_config=None,
                       termination_grace_period_seconds=None,
+                      disable_app_log=False,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -527,7 +530,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     poller = sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                          resource_group, service, app, name,
                          deployment_resource)
-    _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
+    if not disable_app_log:
+        _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
     if "succeeded" != poller.status().lower():
         return poller
     return client.deployments.get(resource_group, service, app, name)
