@@ -7,80 +7,105 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
 import os
+
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_create
-from .example_steps import step_show
-from .example_steps import step_list_by_resource_group
-from .example_steps import step_list_by_subscription
-from .example_steps import step_update
-from .example_steps import step_delete
-from .. import try_manual, raise_if, calc_coverage
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
-
-
-# Env setup_scenario
-@try_manual
-def setup_scenario(test):
-    pass
-
-
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test):
-    pass
-
-
-# Testcase: Scenario
-@try_manual
-def call_scenario(test):
-    setup_scenario(test)
-    step_create(
-        test,
-        checks=[
-            test.check("location", "southcentralus", case_sensitive=False),
-            test.check("name", "{myLedger}", case_sensitive=False),
-            test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
-            test.check(
-                "tags.dept", "finance", case_sensitive=False
-            ),
-        ],
-    )
-    create_result = step_show(
-        test,
-        checks=[
-            test.check("name", "{myLedger}", case_sensitive=False),
-            test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
-            test.check(
-                "tags.dept", "finance", case_sensitive=False
-            ),
-        ],
-    )
-    step_delete(test, checks=[])
-    cleanup_scenario(test)
-
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+ACL_STAGING_SUBSCRIPTION = "027da7f8-2fc6-46d4-9be9-560706b60fec"
+MEMBER0_TAG_GROUP = "contoso"
+MEMBER0_TAG_IDENTIFIER = "member0"
+MEMBER1_TAG_GROUP = "fabrikam"
+MEMBER1_TAG_IDENTIFIER = "member1"
+TAG_KEY = "dept"
+TAG_VALUE = "finance"
+LOCATION = "southcentralus"
 
 # Test class for Scenario
-@try_manual
 class ManagedCCFsScenarioTest(ScenarioTest):
+
     def __init__(self, *args, **kwargs):
         super(ManagedCCFsScenarioTest, self).__init__(*args, **kwargs)
-        self.kwargs.update(
-            {
-                "myLedger": "mccfs-integrationtest-ledger1",
-            }
-        )
 
-    @ResourceGroupPreparer(
-        name_prefix="managedccfs_DummyResourceGroupName"[:7],
-        key="rg",
-        parameter_name="rg",
-    )
-    def test_confidentialledger_Scenario(self, rg):
-        call_scenario(self)
-        calc_coverage(__file__)
-        raise_if()
+    # Create an instance with custom JS app
+    @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus')
+    def test_managedccfs_create_js_customimage(self, resource_group):
+        self.kwargs.update({
+            'name': 'synth-azcli-customimage',
+            'location': '{LOCATION}',
+            'subscription': '{ACL_STAGING_SUBSCRIPTION}'
+        })
+
+        self.cmd('confidentialledger managedccfs create --name {name} '
+                '--location "{location}" '
+                '--members [{certificate:' + os.path.join("{TEST_DIR}", 'member0_cert.pem') + ',identifier:"{MEMBER0_TAG_IDENTIFIER}",group:"{MEMBER0_TAG_GROUP}"}] '
+                '--tags {TAG_KEY}="{TAG_VALUE}" '
+                '--subscription {subscription}'
+                '--resource-group {rg}')
+        
+        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
+        self.assertIsNone(azcli_instance)
+        self.assertEqual(azcli_instance['properties']['appName'], "{name}")
+        self.assertEqual(azcli_instance['location'], "{location}")
+        self.assertEqual(azcli_instance['tags']['{TAG_KEY}'], "{TAG_VALUE}")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['languageRuntime'], "JS")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['appSourceUri'], "customImage")
+        members = self.assertEqual(azcli_instance['properties']['memberIdentityCertificates'])
+        self.assertIsNotNone(members)
+        self.assertEqual(len(members), 1)
+        for member in members:
+            self.assertEqual(member['tags']['identifier'],'{MEMBER0_TAG_IDENTIFIER}')
+            self.assertEqual(member['tags']['group'],'{MEMBER0_TAG_GROUP}')
+
+        # list will be enabled when the CP is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 1))
+
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --force --yes')
+
+        # list will be enabled when the CP bug is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
+
+    # Create an instance with the sample JS app
+    # and multiple members
+    @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus')
+    def test_managedccfs_create_js_sampleimage(self, resource_group):
+        self.kwargs.update({
+            'name': 'synth-azcli-sampleimage',
+            'location': '{LOCATION}',
+            'subscription': '{ACL_STAGING_SUBSCRIPTION}'
+        })
+
+        self.cmd('confidentialledger managedccfs create --name {name} '
+                '--location "{location}" '
+                '--members [{certificate:' + os.path.join("{TEST_DIR}", 'member0_cert.pem') + ',identifier:"{MEMBER0_TAG_IDENTIFIER}",group:"{MEMBER0_TAG_GROUP}"}, '
+                '{certificate:' + os.path.join("{TEST_DIR}", 'member1_cert.pem') + ',identifier:"{MEMBER1_TAG_IDENTIFIER}",group:"{MEMBER1_TAG_GROUP}"}] '
+                '--tags {TAG_KEY}="{TAG_VALUE}" '
+                '--app-type sample '
+                '--subscription {subscription} '
+                '--resource-group {rg}')
+        
+        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
+        self.assertIsNone(azcli_instance)
+        self.assertEqual(azcli_instance['properties']['appName'], "{name}")
+        self.assertEqual(azcli_instance['location'], "{location}")
+        self.assertEqual(azcli_instance['tags']['{TAG_KEY}'], "{TAG_VALUE}")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['languageRuntime'], "JS")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['appSourceUri'], "sample")
+        members = self.assertEqual(azcli_instance['properties']['memberIdentityCertificates'])
+        self.assertIsNotNone(members)
+        self.assertEqual(len(members), 2)
+        for member in members:
+            self.assertIn(member['tags']['identifier'],['{MEMBER0_TAG_IDENTIFIER}','{MEMBER1_TAG_IDENTIFIER}'])
+            self.assertIn(member['tags']['group'],['{MEMBER0_TAG_GROUP}','{MEMBER1_TAG_GROUP}'])
+
+        # list will be enabled when the CP bug is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 1))
+
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --force --yes')
+
+        # list will be enabled when the CP is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
