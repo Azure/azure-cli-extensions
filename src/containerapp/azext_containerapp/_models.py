@@ -16,15 +16,13 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
-    "sku": {
-        "name": "Consumption",
-    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
         #"internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
-        "customDomainConfiguration": None  # CustomDomainConfiguration
+        "customDomainConfiguration": None,  # CustomDomainConfiguration,
+        "workloadProfiles": None
     }
 }
 

@@ -173,6 +173,7 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
         # c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
         c.argument('workload_profile', options_list=['--workload-profile-type','-w'], help='The type of workload profile to add or update in this environment')
+        c.argument('workload_profile_name', help='The friendly name for the workload profile, --workload-profile-type required')
         c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-type required')
         c.argument('max_nodes',  help='The maximum nodes for this workload profile, --workload-profile-type required')
 
@@ -404,5 +405,6 @@ def load_arguments(self, _):
         c.argument('workload_profile', options_list=['--workload-profile-type', '-w'], help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
 
     with self.argument_context('containerapp env workload-profile add') as c:
+        c.argument('workload_profile_name', help='The friendly name for the workload profile')
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")

@@ -389,10 +389,9 @@ def create_containerapp(cmd,
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
     #sku = managed_env_info["sku"]["name"].lower()
-    sku = "premium"
-    if workload_profile and sku != "premium":
-        raise ValidationError("--workload_profile: only allowed on premium sku managed environments")
-    if not workload_profile and sku == "premium":
+    #if workload_profile and not managed_env_info["workloadProfiles"]:
+    #    raise ValidationError("--workload_profile: only allowed on environments")
+    if not workload_profile and managed_env_info["workloadProfiles"]:
         workload_profile = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
 
     external_ingress = None
@@ -545,7 +544,7 @@ def create_containerapp(cmd,
 
     if workload_profile:
         workload_profile = get_workload_profile_type(cmd, workload_profile, location)
-        containerapp_def["properties"]["workloadProfileType"] = workload_profile
+        containerapp_def["properties"]["workloadProfile"] = workload_profile
 
         ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile, managed_env_info)
 
@@ -1068,7 +1067,6 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
 
     if enableWorkloadProfiles == True:
-        managed_env_def["sku"]["name"] = "Premium"
         managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
 
     if hostname:
@@ -1144,6 +1142,7 @@ def update_managed_environment(cmd,
                                tags=None,
                                #plan=None,
                                workload_profile=None,
+                               workload_profile_name=None,
                                min_nodes=None,
                                max_nodes=None,
                                no_wait=False):
@@ -1187,27 +1186,29 @@ def update_managed_environment(cmd,
     #     safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
 
     if workload_profile:
-        if not r["properties"]["workloadProfiles"]: #and not (plan and plan.lower() == "premium"):
+        if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]: #and not (plan and plan.lower() == "premium"):
             raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
         workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
         workload_profile = workload_profile.upper()
         workload_profiles = r["properties"]["workloadProfiles"]
-        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_profile.lower()]
+        profile = [p for p in workload_profiles if p["workloadProfile"].lower() == workload_profile.lower()]
         update = False  # flag for updating an existing profile
         if profile:
             profile = profile[0]
             update = True
         else:
-            profile = {"workloadProfileType": workload_profile}
+            profile = {"workloadProfile": workload_profile}
 
         profile["maximumCount"] = max_nodes
         profile["minimumCount"] = min_nodes
+        if workload_profile_name:
+            profile["Name"] = workload_profile_name
 
         if not update:
             workload_profiles.append(profile)
         else:
-            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_profile.lower()][0]
+            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfile"].lower() == workload_profile.lower()][0]
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
@@ -4088,8 +4089,8 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile):
     return profile[0]
 
 
-def set_workload_profile(cmd, resource_group_name, env_name, workload_profile, min_nodes, max_nodes):
-    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile=workload_profile, min_nodes=min_nodes, max_nodes=max_nodes)
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile, workload_profile_name, min_nodes, max_nodes):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile=workload_profile, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile):
     try:
@@ -4097,14 +4098,14 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
     except CLIError as e:
         handle_raw_exception(e)
 
-    if not r["properties"]["workloadProfiles"]:
+    if"workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
         raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
     if workload_profile.lower() == "consumption":
         raise ValidationError("Cannot delete the 'Consumption' workload profile")
 
     workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
-    workload_profiles = [p for p in r["properties"]["workloadProfiles"] if p["workloadProfileType"].lower() != workload_profile.lower()]
+    workload_profiles = [p for p in r["properties"]["workloadProfiles"] if p["workloadProfile"].lower() != workload_profile.lower()]
 
     r["properties"]["workloadProfiles"] = workload_profiles
 

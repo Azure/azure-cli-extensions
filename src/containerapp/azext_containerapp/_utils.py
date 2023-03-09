@@ -1610,7 +1610,7 @@ def get_default_workload_profile_from_env(cmd, env_def, resource_group):
 def get_default_workload_profiles(cmd, location):
     profiles = [
         {
-            "workloadProfileType": "Consumption",
+            "workloadProfile": "Consumption",
         }
     ]
     return profiles
@@ -1619,7 +1619,7 @@ def get_default_workload_profiles(cmd, location):
 def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile, managed_env_info):
     from .custom import update_managed_environment
 
-    profiles = [p["workloadProfileType"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    profiles = [p["workloadProfile"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
     #if workload_profile not in profiles:
     #    logger.warning("Adding new workload profile to the environment")
     #    update_managed_environment(cmd, env_name, env_rg, workload_name=workload_profile, min_nodes=DEFAULT_MIN_NODES, max_nodes=DEFAULT_MAX_NODES)
