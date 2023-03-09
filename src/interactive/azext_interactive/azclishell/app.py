@@ -834,18 +834,26 @@ class AzInteractiveShell(object):
         print_styled_text([(Style.ACTION, "Loading command table... Expected time around 1 minute.")])
         progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Loading command table")
         # initialize some variables
+        # whether the customer chooses to continue loading
         continue_loading = False
         time_spent_on_loading = 0
+        # whether the customer has been prompted to choose continue loading
+        # unable to use continue_loading to check this because the customer may choose to continue loading
         already_prompted = False
+        # whether the loading time is too long(>150s)
+        time_loading_too_long = False
         progress_bar.begin()
 
         # still loading commands, show the time of loading
-        while self.command_table_thread.is_alive() and (time_spent_on_loading < 10 or continue_loading == True or already_prompted == False):
+        while self.command_table_thread.is_alive() and ((not time_loading_too_long) or continue_loading == True or already_prompted == False):
             time_spent_on_loading = time.time() - self.command_table_thread.start_time
             progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Already spent {} seconds on loading.".format(round(time_spent_on_loading, 1)))
             progress_bar.update_progress()
             time.sleep(0.1)
-            if time_spent_on_loading >= 10 and already_prompted == False:
+            # setup how long to wait before prompting the customer to continue loading
+            if time_spent_on_loading >= 10:
+                time_loading_too_long = True
+            if time_loading_too_long and already_prompted == False:
                 print_styled_text([(Style.WARNING, '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
                 step_msg = [(Style.PRIMARY, "Do you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
                             (Style.PRIMARY, "If you choose n, it will start the shell immediately, but it may cause unknown errors due to incomplete module loading.\n")]
