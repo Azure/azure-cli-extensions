@@ -11,6 +11,7 @@ Release History
 * 'az containerapp env certificate list': add optional parameters --managed-certificates-only and --private-key-certificates-only to list certificates by type
 * 'az containerapp hostname bind': change --thumbprint to an optional parameter and add optional parameter --validation-method to support managed certificate bindings
 * 'az containerapp ssl upload': log messages to indicate which step is in progress
+* Upgrade api-version from 2022-06-01-preview to 2022-10-01
 * Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
 * Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
 

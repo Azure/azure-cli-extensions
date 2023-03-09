@@ -14,9 +14,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-06-01-preview"
-CURRENT_API_VERSION = PREVIEW_API_VERSION
-MANAGED_CERTS_API_VERSION = '2022-11-01-preview'
+PREVIEW_API_VERSION = "2022-11-01-preview"
+CURRENT_API_VERSION = "2022-10-01"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -623,7 +622,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def show_managed_certificate(cls, cmd, resource_group_name, name, certificate_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
         request_url = url_fmt.format(
@@ -664,7 +663,7 @@ class ManagedEnvironmentClient():
         certs_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates?api-version={}"
         request_url = url_fmt.format(
@@ -701,7 +700,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def create_or_update_managed_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate_envelop, no_wait=False, is_TXT=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
         request_url = url_fmt.format(
@@ -762,7 +761,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def delete_managed_certificate(cls, cmd, resource_group_name, name, certificate_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
         request_url = url_fmt.format(

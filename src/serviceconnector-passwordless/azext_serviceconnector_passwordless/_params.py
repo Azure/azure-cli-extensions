@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string
 
+from knack.arguments import CLIArgumentType
 from azure.cli.command_modules.serviceconnector._params import (
     add_client_type_argument,
     add_connection_name_argument,
@@ -27,6 +28,11 @@ from azure.cli.command_modules.serviceconnector._resource_config import (
 from ._resource_config import (
     SUPPORTED_AUTH_TYPE,
     TARGET_RESOURCES_PARAMS,
+)
+
+yes_arg_type = CLIArgumentType(
+    options_list=['--yes', '-y'],
+    help='Do not prompt for confirmation.'
 )
 
 
@@ -57,6 +63,7 @@ def load_arguments(self, _):
             add_secret_store_argument(c)
             add_vnet_block(c, target)
             add_local_connection_block(c)
+            c.argument('yes', arg_type=yes_arg_type)
 
     for source in SOURCE_RESOURCES_PARAMS:
         for target in TARGET_RESOURCES_PARAMS:
@@ -70,3 +77,4 @@ def load_arguments(self, _):
                 add_secret_store_argument(c)
                 add_vnet_block(c, target)
                 add_connection_string_argument(c, source, target)
+                c.argument('yes', arg_type=yes_arg_type)
