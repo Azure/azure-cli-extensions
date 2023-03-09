@@ -49,9 +49,9 @@ def build_get_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
+    )
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -66,7 +66,7 @@ def build_get_request(
         "gatewayName": _SERIALIZER.url("gateway_name", gateway_name, "str"),
     }
 
-    _url = _format_url_section(_url, **path_format_arguments)
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
@@ -83,10 +83,10 @@ def build_create_or_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
-    content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
+    )
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -101,7 +101,7 @@ def build_create_or_update_request(
         "gatewayName": _SERIALIZER.url("gateway_name", gateway_name, "str"),
     }
 
-    _url = _format_url_section(_url, **path_format_arguments)
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
@@ -120,9 +120,9 @@ def build_delete_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
+    )
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -137,7 +137,7 @@ def build_delete_request(
         "gatewayName": _SERIALIZER.url("gateway_name", gateway_name, "str"),
     }
 
-    _url = _format_url_section(_url, **path_format_arguments)
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
@@ -154,9 +154,9 @@ def build_list_env_secrets_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
+    )
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -171,7 +171,7 @@ def build_list_env_secrets_request(
         "gatewayName": _SERIALIZER.url("gateway_name", gateway_name, "str"),
     }
 
-    _url = _format_url_section(_url, **path_format_arguments)
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
@@ -186,9 +186,9 @@ def build_list_request(resource_group_name: str, service_name: str, subscription
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
+    )
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -202,7 +202,7 @@ def build_list_request(resource_group_name: str, service_name: str, subscription
         "serviceName": _SERIALIZER.url("service_name", service_name, "str"),
     }
 
-    _url = _format_url_section(_url, **path_format_arguments)
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
@@ -219,10 +219,10 @@ def build_validate_domain_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
-    content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
+    )
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -237,7 +237,7 @@ def build_validate_domain_request(
         "gatewayName": _SERIALIZER.url("gateway_name", gateway_name, "str"),
     }
 
-    _url = _format_url_section(_url, **path_format_arguments)
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
@@ -298,10 +298,10 @@ class GatewaysOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.GatewayResource]
+        )
+        cls: ClsType[_models.GatewayResource] = kwargs.pop("cls", None)
 
         request = build_get_request(
             resource_group_name=resource_group_name,
@@ -314,9 +314,9 @@ class GatewaysOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -333,7 +333,9 @@ class GatewaysOperations:
 
         return deserialized
 
-    get.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"}  # type: ignore
+    get.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"
+    }
 
     def _create_or_update_initial(
         self,
@@ -354,11 +356,11 @@ class GatewaysOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.GatewayResource]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.GatewayResource] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -382,9 +384,9 @@ class GatewaysOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -401,11 +403,13 @@ class GatewaysOperations:
             deserialized = self._deserialize("GatewayResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
-    _create_or_update_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"}  # type: ignore
+    _create_or_update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"
+    }
 
     @overload
     def begin_create_or_update(
@@ -505,8 +509,8 @@ class GatewaysOperations:
         :type service_name: str
         :param gateway_name: The name of Spring Cloud Gateway. Required.
         :type gateway_name: str
-        :param gateway_resource: The gateway for the create or update operation. Is either a model type
-         or a IO type. Required.
+        :param gateway_resource: The gateway for the create or update operation. Is either a
+         GatewayResource type or a IO type. Required.
         :type gateway_resource: ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayResource or
          IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -529,16 +533,16 @@ class GatewaysOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.GatewayResource]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, PollingMethod]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.GatewayResource] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = self._create_or_update_initial(  # type: ignore
+            raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 service_name=service_name,
                 gateway_name=gateway_name,
@@ -559,7 +563,7 @@ class GatewaysOperations:
             return deserialized
 
         if polling is True:
-            polling_method = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))  # type: PollingMethod
+            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -571,9 +575,11 @@ class GatewaysOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_create_or_update.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"}  # type: ignore
+    begin_create_or_update.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"
+    }
 
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self, resource_group_name: str, service_name: str, gateway_name: str, **kwargs: Any
@@ -589,10 +595,10 @@ class GatewaysOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_delete_request(
             resource_group_name=resource_group_name,
@@ -605,9 +611,9 @@ class GatewaysOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -620,7 +626,9 @@ class GatewaysOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"}  # type: ignore
+    _delete_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"
+    }
 
     @distributed_trace
     def begin_delete(
@@ -650,13 +658,13 @@ class GatewaysOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, PollingMethod]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = self._delete_initial(  # type: ignore
                 resource_group_name=resource_group_name,
@@ -675,7 +683,7 @@ class GatewaysOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))  # type: PollingMethod
+            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -687,9 +695,11 @@ class GatewaysOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_delete.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"}  # type: ignore
+    begin_delete.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}"
+    }
 
     @distributed_trace
     def list_env_secrets(
@@ -720,10 +730,10 @@ class GatewaysOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[Dict[str, str]]
+        )
+        cls: ClsType[Dict[str, str]] = kwargs.pop("cls", None)
 
         request = build_list_env_secrets_request(
             resource_group_name=resource_group_name,
@@ -736,9 +746,9 @@ class GatewaysOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -755,7 +765,9 @@ class GatewaysOperations:
 
         return deserialized
 
-    list_env_secrets.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}/listEnvSecrets"}  # type: ignore
+    list_env_secrets.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}/listEnvSecrets"
+    }
 
     @distributed_trace
     def list(self, resource_group_name: str, service_name: str, **kwargs: Any) -> Iterable["_models.GatewayResource"]:
@@ -775,10 +787,10 @@ class GatewaysOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.GatewayResourceCollection]
+        )
+        cls: ClsType[_models.GatewayResourceCollection] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -801,7 +813,7 @@ class GatewaysOperations:
                     params=_params,
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -817,7 +829,7 @@ class GatewaysOperations:
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
                 request.method = "GET"
             return request
 
@@ -825,13 +837,13 @@ class GatewaysOperations:
             deserialized = self._deserialize("GatewayResourceCollection", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
-                list_of_elem = cls(list_of_elem)
+                list_of_elem = cls(list_of_elem)  # type: ignore
             return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
                 request, stream=False, **kwargs
             )
             response = pipeline_response.http_response
@@ -844,7 +856,9 @@ class GatewaysOperations:
 
         return ItemPaged(get_next, extract_data)
 
-    list.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways"}  # type: ignore
+    list.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways"
+    }
 
     @overload
     def validate_domain(
@@ -927,8 +941,8 @@ class GatewaysOperations:
         :type service_name: str
         :param gateway_name: The name of Spring Cloud Gateway. Required.
         :type gateway_name: str
-        :param validate_payload: Custom domain payload to be validated. Is either a model type or a IO
-         type. Required.
+        :param validate_payload: Custom domain payload to be validated. Is either a
+         CustomDomainValidatePayload type or a IO type. Required.
         :type validate_payload:
          ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainValidatePayload or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -950,11 +964,11 @@ class GatewaysOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.CustomDomainValidateResult]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.CustomDomainValidateResult] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -978,9 +992,9 @@ class GatewaysOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -997,4 +1011,6 @@ class GatewaysOperations:
 
         return deserialized
 
-    validate_domain.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}/validateDomain"}  # type: ignore
+    validate_domain.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/gateways/{gatewayName}/validateDomain"
+    }

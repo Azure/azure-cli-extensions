@@ -104,10 +104,10 @@ class BuildpackBindingOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.BuildpackBindingResource]
+        )
+        cls: ClsType[_models.BuildpackBindingResource] = kwargs.pop("cls", None)
 
         request = build_get_request(
             resource_group_name=resource_group_name,
@@ -122,9 +122,9 @@ class BuildpackBindingOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -141,7 +141,9 @@ class BuildpackBindingOperations:
 
         return deserialized
 
-    get.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"}  # type: ignore
+    get.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"
+    }
 
     async def _create_or_update_initial(
         self,
@@ -164,11 +166,11 @@ class BuildpackBindingOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.BuildpackBindingResource]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.BuildpackBindingResource] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -194,9 +196,9 @@ class BuildpackBindingOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -213,11 +215,13 @@ class BuildpackBindingOperations:
             deserialized = self._deserialize("BuildpackBindingResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
-    _create_or_update_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"}  # type: ignore
+    _create_or_update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"
+    }
 
     @overload
     async def begin_create_or_update(
@@ -339,7 +343,7 @@ class BuildpackBindingOperations:
         :param buildpack_binding_name: The name of the Buildpack Binding Name. Required.
         :type buildpack_binding_name: str
         :param buildpack_binding: The target buildpack binding for the create or update operation. Is
-         either a model type or a IO type. Required.
+         either a BuildpackBindingResource type or a IO type. Required.
         :type buildpack_binding:
          ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -362,16 +366,16 @@ class BuildpackBindingOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.BuildpackBindingResource]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.BuildpackBindingResource] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_or_update_initial(  # type: ignore
+            raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 service_name=service_name,
                 build_service_name=build_service_name,
@@ -394,7 +398,7 @@ class BuildpackBindingOperations:
             return deserialized
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -406,9 +410,11 @@ class BuildpackBindingOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_create_or_update.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"}  # type: ignore
+    begin_create_or_update.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"
+    }
 
     async def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self,
@@ -430,10 +436,10 @@ class BuildpackBindingOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_delete_request(
             resource_group_name=resource_group_name,
@@ -448,9 +454,9 @@ class BuildpackBindingOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -463,7 +469,9 @@ class BuildpackBindingOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"}  # type: ignore
+    _delete_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"
+    }
 
     @distributed_trace_async
     async def begin_delete(
@@ -503,13 +511,13 @@ class BuildpackBindingOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = await self._delete_initial(  # type: ignore
                 resource_group_name=resource_group_name,
@@ -530,7 +538,7 @@ class BuildpackBindingOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -542,9 +550,11 @@ class BuildpackBindingOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_delete.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"}  # type: ignore
+    begin_delete.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings/{buildpackBindingName}"
+    }
 
     @distributed_trace
     def list(
@@ -571,10 +581,10 @@ class BuildpackBindingOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.BuildpackBindingResourceCollection]
+        )
+        cls: ClsType[_models.BuildpackBindingResourceCollection] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -599,7 +609,7 @@ class BuildpackBindingOperations:
                     params=_params,
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -615,7 +625,7 @@ class BuildpackBindingOperations:
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
                 request.method = "GET"
             return request
 
@@ -623,13 +633,13 @@ class BuildpackBindingOperations:
             deserialized = self._deserialize("BuildpackBindingResourceCollection", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
-                list_of_elem = cls(list_of_elem)
+                list_of_elem = cls(list_of_elem)  # type: ignore
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 request, stream=False, **kwargs
             )
             response = pipeline_response.http_response
@@ -642,4 +652,6 @@ class BuildpackBindingOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    list.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings"}  # type: ignore
+    list.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/buildServices/{buildServiceName}/builders/{builderName}/buildpackBindings"
+    }

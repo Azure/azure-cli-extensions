@@ -88,10 +88,10 @@ class PredefinedAcceleratorsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.PredefinedAcceleratorResourceCollection]
+        )
+        cls: ClsType[_models.PredefinedAcceleratorResourceCollection] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -115,7 +115,7 @@ class PredefinedAcceleratorsOperations:
                     params=_params,
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -131,7 +131,7 @@ class PredefinedAcceleratorsOperations:
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
                 request.method = "GET"
             return request
 
@@ -139,13 +139,13 @@ class PredefinedAcceleratorsOperations:
             deserialized = self._deserialize("PredefinedAcceleratorResourceCollection", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
-                list_of_elem = cls(list_of_elem)
+                list_of_elem = cls(list_of_elem)  # type: ignore
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 request, stream=False, **kwargs
             )
             response = pipeline_response.http_response
@@ -158,7 +158,9 @@ class PredefinedAcceleratorsOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    list.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators"}  # type: ignore
+    list.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators"
+    }
 
     @distributed_trace_async
     async def get(
@@ -196,10 +198,10 @@ class PredefinedAcceleratorsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.PredefinedAcceleratorResource]
+        )
+        cls: ClsType[_models.PredefinedAcceleratorResource] = kwargs.pop("cls", None)
 
         request = build_get_request(
             resource_group_name=resource_group_name,
@@ -213,9 +215,9 @@ class PredefinedAcceleratorsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -232,7 +234,9 @@ class PredefinedAcceleratorsOperations:
 
         return deserialized
 
-    get.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}"}  # type: ignore
+    get.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}"
+    }
 
     async def _disable_initial(  # pylint: disable=inconsistent-return-statements
         self,
@@ -253,10 +257,10 @@ class PredefinedAcceleratorsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_disable_request(
             resource_group_name=resource_group_name,
@@ -270,9 +274,9 @@ class PredefinedAcceleratorsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -285,7 +289,9 @@ class PredefinedAcceleratorsOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _disable_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/disable"}  # type: ignore
+    _disable_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/disable"
+    }
 
     @distributed_trace_async
     async def begin_disable(
@@ -322,13 +328,13 @@ class PredefinedAcceleratorsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = await self._disable_initial(  # type: ignore
                 resource_group_name=resource_group_name,
@@ -348,7 +354,7 @@ class PredefinedAcceleratorsOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -360,9 +366,11 @@ class PredefinedAcceleratorsOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_disable.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/disable"}  # type: ignore
+    begin_disable.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/disable"
+    }
 
     async def _enable_initial(  # pylint: disable=inconsistent-return-statements
         self,
@@ -383,10 +391,10 @@ class PredefinedAcceleratorsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_enable_request(
             resource_group_name=resource_group_name,
@@ -400,9 +408,9 @@ class PredefinedAcceleratorsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -415,7 +423,9 @@ class PredefinedAcceleratorsOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _enable_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/enable"}  # type: ignore
+    _enable_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/enable"
+    }
 
     @distributed_trace_async
     async def begin_enable(
@@ -452,13 +462,13 @@ class PredefinedAcceleratorsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = await self._enable_initial(  # type: ignore
                 resource_group_name=resource_group_name,
@@ -478,7 +488,7 @@ class PredefinedAcceleratorsOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -490,6 +500,8 @@ class PredefinedAcceleratorsOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_enable.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/enable"}  # type: ignore
+    begin_enable.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/applicationAccelerators/{applicationAcceleratorName}/predefinedAccelerators/{predefinedAcceleratorName}/enable"
+    }

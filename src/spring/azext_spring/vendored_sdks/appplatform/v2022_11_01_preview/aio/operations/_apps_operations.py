@@ -105,10 +105,10 @@ class AppsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
+        )
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
 
         request = build_get_request(
             resource_group_name=resource_group_name,
@@ -122,9 +122,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -141,7 +141,9 @@ class AppsOperations:
 
         return deserialized
 
-    get.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    get.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     async def _create_or_update_initial(
         self,
@@ -162,11 +164,11 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -190,9 +192,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -212,11 +214,13 @@ class AppsOperations:
             deserialized = self._deserialize("AppResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
-    _create_or_update_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    _create_or_update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     @overload
     async def begin_create_or_update(
@@ -316,8 +320,8 @@ class AppsOperations:
         :type service_name: str
         :param app_name: The name of the App resource. Required.
         :type app_name: str
-        :param app_resource: Parameters for the create or update operation. Is either a model type or a
-         IO type. Required.
+        :param app_resource: Parameters for the create or update operation. Is either a AppResource
+         type or a IO type. Required.
         :type app_resource: ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -339,16 +343,16 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_or_update_initial(  # type: ignore
+            raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 service_name=service_name,
                 app_name=app_name,
@@ -369,7 +373,7 @@ class AppsOperations:
             return deserialized
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -381,9 +385,11 @@ class AppsOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_create_or_update.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    begin_create_or_update.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     async def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self, resource_group_name: str, service_name: str, app_name: str, **kwargs: Any
@@ -399,10 +405,10 @@ class AppsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_delete_request(
             resource_group_name=resource_group_name,
@@ -415,9 +421,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -430,7 +436,9 @@ class AppsOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    _delete_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     @distributed_trace_async
     async def begin_delete(
@@ -460,13 +468,13 @@ class AppsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[None]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = await self._delete_initial(  # type: ignore
                 resource_group_name=resource_group_name,
@@ -485,7 +493,7 @@ class AppsOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -497,9 +505,11 @@ class AppsOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_delete.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    begin_delete.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     async def _update_initial(
         self,
@@ -520,11 +530,11 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -548,9 +558,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -567,11 +577,13 @@ class AppsOperations:
             deserialized = self._deserialize("AppResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
-    _update_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    _update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     @overload
     async def begin_update(
@@ -671,8 +683,8 @@ class AppsOperations:
         :type service_name: str
         :param app_name: The name of the App resource. Required.
         :type app_name: str
-        :param app_resource: Parameters for the update operation. Is either a model type or a IO type.
-         Required.
+        :param app_resource: Parameters for the update operation. Is either a AppResource type or a IO
+         type. Required.
         :type app_resource: ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -694,16 +706,16 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._update_initial(  # type: ignore
+            raw_result = await self._update_initial(
                 resource_group_name=resource_group_name,
                 service_name=service_name,
                 app_name=app_name,
@@ -724,7 +736,7 @@ class AppsOperations:
             return deserialized
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -736,9 +748,11 @@ class AppsOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_update.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"}  # type: ignore
+    begin_update.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}"
+    }
 
     @distributed_trace
     def list(self, resource_group_name: str, service_name: str, **kwargs: Any) -> AsyncIterable["_models.AppResource"]:
@@ -758,10 +772,10 @@ class AppsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResourceCollection]
+        )
+        cls: ClsType[_models.AppResourceCollection] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -784,7 +798,7 @@ class AppsOperations:
                     params=_params,
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -800,7 +814,7 @@ class AppsOperations:
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
                 request = _convert_request(request)
-                request.url = self._client.format_url(request.url)  # type: ignore
+                request.url = self._client.format_url(request.url)
                 request.method = "GET"
             return request
 
@@ -808,13 +822,13 @@ class AppsOperations:
             deserialized = self._deserialize("AppResourceCollection", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
-                list_of_elem = cls(list_of_elem)
+                list_of_elem = cls(list_of_elem)  # type: ignore
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
                 request, stream=False, **kwargs
             )
             response = pipeline_response.http_response
@@ -827,7 +841,9 @@ class AppsOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    list.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps"}  # type: ignore
+    list.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps"
+    }
 
     @distributed_trace_async
     async def get_resource_upload_url(
@@ -858,10 +874,10 @@ class AppsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.ResourceUploadDefinition]
+        )
+        cls: ClsType[_models.ResourceUploadDefinition] = kwargs.pop("cls", None)
 
         request = build_get_resource_upload_url_request(
             resource_group_name=resource_group_name,
@@ -874,9 +890,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -893,7 +909,9 @@ class AppsOperations:
 
         return deserialized
 
-    get_resource_upload_url.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/getResourceUploadUrl"}  # type: ignore
+    get_resource_upload_url.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/getResourceUploadUrl"
+    }
 
     async def _set_active_deployments_initial(
         self,
@@ -914,11 +932,11 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -942,9 +960,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -961,11 +979,13 @@ class AppsOperations:
             deserialized = self._deserialize("AppResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
-    _set_active_deployments_initial.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/setActiveDeployments"}  # type: ignore
+    _set_active_deployments_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/setActiveDeployments"
+    }
 
     @overload
     async def begin_set_active_deployments(
@@ -1066,8 +1086,8 @@ class AppsOperations:
         :type service_name: str
         :param app_name: The name of the App resource. Required.
         :type app_name: str
-        :param active_deployment_collection: A list of Deployment name to be active. Is either a model
-         type or a IO type. Required.
+        :param active_deployment_collection: A list of Deployment name to be active. Is either a
+         ActiveDeploymentCollection type or a IO type. Required.
         :type active_deployment_collection:
          ~azure.mgmt.appplatform.v2022_11_01_preview.models.ActiveDeploymentCollection or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1090,16 +1110,16 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AppResource]
-        polling = kwargs.pop("polling", True)  # type: Union[bool, AsyncPollingMethod]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AppResource] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token = kwargs.pop("continuation_token", None)  # type: Optional[str]
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._set_active_deployments_initial(  # type: ignore
+            raw_result = await self._set_active_deployments_initial(
                 resource_group_name=resource_group_name,
                 service_name=service_name,
                 app_name=app_name,
@@ -1120,7 +1140,7 @@ class AppsOperations:
             return deserialized
 
         if polling is True:
-            polling_method = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))  # type: AsyncPollingMethod
+            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -1132,9 +1152,11 @@ class AppsOperations:
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_set_active_deployments.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/setActiveDeployments"}  # type: ignore
+    begin_set_active_deployments.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/setActiveDeployments"
+    }
 
     @overload
     async def validate_domain(
@@ -1217,8 +1239,8 @@ class AppsOperations:
         :type service_name: str
         :param app_name: The name of the App resource. Required.
         :type app_name: str
-        :param validate_payload: Custom domain payload to be validated. Is either a model type or a IO
-         type. Required.
+        :param validate_payload: Custom domain payload to be validated. Is either a
+         CustomDomainValidatePayload type or a IO type. Required.
         :type validate_payload:
          ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainValidatePayload or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1240,11 +1262,11 @@ class AppsOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        content_type = kwargs.pop("content_type", _headers.pop("Content-Type", None))  # type: Optional[str]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.CustomDomainValidateResult]
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.CustomDomainValidateResult] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -1268,9 +1290,9 @@ class AppsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
             request, stream=False, **kwargs
         )
 
@@ -1287,4 +1309,6 @@ class AppsOperations:
 
         return deserialized
 
-    validate_domain.metadata = {"url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/validateDomain"}  # type: ignore
+    validate_domain.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/validateDomain"
+    }
