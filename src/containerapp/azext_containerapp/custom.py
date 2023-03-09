@@ -544,7 +544,7 @@ def create_containerapp(cmd,
 
     if workload_profile:
         workload_profile = get_workload_profile_type(cmd, workload_profile, location)
-        containerapp_def["properties"]["workloadProfile"] = workload_profile
+        containerapp_def["properties"]["workloadProfileType"] = workload_profile
 
         ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile, managed_env_info)
 
@@ -1192,13 +1192,13 @@ def update_managed_environment(cmd,
         workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
         workload_profile = workload_profile.upper()
         workload_profiles = r["properties"]["workloadProfiles"]
-        profile = [p for p in workload_profiles if p["workloadProfile"].lower() == workload_profile.lower()]
+        profile = [p for p in workload_profiles if p["workloadProfileType"].lower() == workload_profile.lower()]
         update = False  # flag for updating an existing profile
         if profile:
             profile = profile[0]
             update = True
         else:
-            profile = {"workloadProfile": workload_profile}
+            profile = {"workloadProfileType": workload_profile}
 
         profile["maximumCount"] = max_nodes
         profile["minimumCount"] = min_nodes
@@ -1208,7 +1208,7 @@ def update_managed_environment(cmd,
         if not update:
             workload_profiles.append(profile)
         else:
-            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfile"].lower() == workload_profile.lower()][0]
+            idx = [i for i, p in enumerate(workload_profiles) if p["workloadProfileType"].lower() == workload_profile.lower()][0]
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
@@ -4105,7 +4105,7 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
         raise ValidationError("Cannot delete the 'Consumption' workload profile")
 
     workload_profile = get_workload_profile_type(cmd, workload_profile, r["location"])
-    workload_profiles = [p for p in r["properties"]["workloadProfiles"] if p["workloadProfile"].lower() != workload_profile.lower()]
+    workload_profiles = [p for p in r["properties"]["workloadProfiles"] if p["workloadProfileType"].lower() != workload_profile.lower()]
 
     r["properties"]["workloadProfiles"] = workload_profiles
 
