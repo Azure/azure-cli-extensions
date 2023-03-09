@@ -5,6 +5,7 @@
 
 
 # pylint: disable=line-too-long
+# common constants
 Snap_Config_Storage_End_Point = "https://kkanukollubatch.blob.core.windows.net"
 Snap_Config_Container_Name = "pipelinetest"
 Snap_Config_File_Name = "snap-configuration.json"
@@ -15,3 +16,5 @@ MCR_Endpoint = "https://mcr.microsoft.com"
 Memory_Threshold = 4
 Disk_Threshold = 20
 Supported_Locations = "southeastasia"
+# Fault types
+Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"

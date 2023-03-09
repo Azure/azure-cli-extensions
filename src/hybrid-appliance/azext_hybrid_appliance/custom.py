@@ -8,12 +8,12 @@ import os
 import psutil
 import requests
 import subprocess
-import yaml
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
 from azure.cli.core import telemetry
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azext_hybrid_appliance import _constants as consts
+from azext_hybrid_appliance import _utils as utils
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 logger = get_logger(__name__)
 
@@ -70,8 +70,10 @@ def validate_hybrid_appliance(resource_group_name, name):
         logger.info("All pre-requisite validations have passed successfully")
 
 def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None):
-    latestMajorVersion, latestMinorVersion = get_latest_tested_microsk8_version()
-    os.environ["MICROK8S_VERSION"]="{}.{}".format(latestMajorVersion, latestMinorVersion)
+    kubectl_client_location = utils.install_kubectl_client()
+    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microsk8_version()
+    os.environ["MICROK8S_VERSION"] = "{}.{}".format(latestMajorVersion, latestMinorVersion)
+    os.environ["KUBECTL_CLIENT_LOCATION"] = "{}".format(kubectl_client_location)
 
     current_path = os.path.abspath(os.path.dirname(__file__))
     script_file_path = os.path.join(current_path, "microk8sbootstrap.sh")
@@ -103,7 +105,7 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     if proxy_cert:
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
 
-    check_microk8s()
+    utils.check_microk8s()
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
@@ -117,7 +119,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = subprocess.check_output(['kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
     except Exception as e:
-        if check_microk8s():
+        if utils.check_microk8s():
             print("The required configmap was not found on the kubernetes cluster.") # Is there anything else which can be done in this case?
         else:
             print("The kubernetes cluster is not running as expected.")
@@ -134,7 +136,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     currentMajorVersion = kubernetesVersionResponse["serverVersion"]["major"]
     currentMinorVersion =  kubernetesVersionResponse["serverVersion"]["minor"].strip('+') # For some versions, for example, 1.23, minor version is represented as 23+ 
     
-    latestMajorVersion, latestMinorVersion = get_latest_tested_microsk8_version()
+    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microsk8_version()
 
     if currentMajorVersion == latestMajorVersion and currentMinorVersion == latestMinorVersion:
         print("Already at latest version")
@@ -158,20 +160,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             except Exception as e:
                 print("Failed to start microk8s cluster with exception {}".format(str(e)))
 
-            if not check_microk8s():
+            if not utils.check_microk8s():
                 print("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
                 return # Non zero return code?
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
-
-def get_latest_tested_microsk8_version():
-    response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
-    return json.loads(response.content.decode())["latestTested"].split('.')
-
-def check_microk8s():
-    statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml']).decode()
-    print(statusYaml)
-    status = yaml.safe_load(statusYaml)
-    print(status)
-    if not status["microk8s"]["running"]:
-        print("Microk8s is not running")
-        subprocess.check_call(['microk8s', 'inspect'])
