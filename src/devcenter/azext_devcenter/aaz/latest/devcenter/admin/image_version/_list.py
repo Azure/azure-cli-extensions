@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-verion show",
+    "devcenter admin image-version list",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Get an image version.
+class List(AAZCommand):
+    """List versions for an image.
 
-    :example: Show
-        az devcenter admin image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1" --version-name "{versionName}"
+    :example: List
+        az devcenter admin image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2022-11-11-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions", "2022-11-11-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -49,35 +48,26 @@ class Show(AAZCommand):
             options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
             required=True,
-            id_part="name",
         )
         _args_schema.gallery_name = AAZStrArg(
             options=["--gallery-name"],
             help="The name of the gallery.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.image_name = AAZStrArg(
             options=["--image-name"],
             help="The name of the image.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["-n", "--name", "--version-name"],
-            help="The version of the image.",
-            required=True,
-            id_part="child_name_3",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ImageVersionsGet(ctx=self.ctx)()
+        self.ImageVersionsListByImage(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,10 +79,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ImageVersionsGet(AAZHttpOperation):
+    class ImageVersionsListByImage(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -106,7 +97,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}/versions/{versionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}/versions",
                 **self.url_parameters
             )
 
@@ -139,10 +130,6 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
                     required=True,
                 ),
             }
@@ -185,22 +172,34 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
             properties.exclude_from_latest = AAZBoolType(
                 serialized_name="excludeFromLatest",
                 flags={"read_only": True},
@@ -221,7 +220,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -244,8 +243,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]
