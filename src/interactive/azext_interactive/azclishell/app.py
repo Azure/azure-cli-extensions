@@ -23,6 +23,8 @@ from azure.cli.core.api import get_config_dir
 from azure.cli.core.util import handle_exception
 # stylized output
 from azure.cli.core.style import print_styled_text, Style
+# progress bar
+from azure.cli.core.commands.progress import IndeterminateProgressBar
 
 # pylint: disable=import-error
 import jmespath
@@ -49,7 +51,7 @@ from . import telemetry
 from .recommendation import Recommender, _show_details_for_e2e_scenario, gen_command_in_scenario
 from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
-from .util import get_window_dim, parse_quotes, get_os_clear_screen_word
+from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option
 import time
 
 
@@ -821,25 +823,36 @@ class AzInteractiveShell(object):
 
     def run(self):
         """ starts the REPL """
-        from .progress import ShellProgressView
-        self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
-        self.cli_ctx.get_progress_controller = self.progress_patch
+        # from .progress import ShellProgressView
+        # self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
+        # self.cli_ctx.get_progress_controller = self.progress_patch
 
         # load command table
         self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
         self.command_table_thread.start()
         self.command_table_thread.start_time = time.time()
         print_styled_text([(Style.ACTION, "Loading command table... Expected time around 1 minute.")])
+        progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Loading command table")
+        # initialize some variables
+        continue_loading = False
         time_spent_on_loading = 0
+        already_prompted = False
+        progress_bar.begin()
+
         # still loading commands, show the time of loading
-        while self.command_table_thread.is_alive() and time_spent_on_loading < 150:
+        while self.command_table_thread.is_alive() and (time_spent_on_loading < 10 or continue_loading == True or already_prompted == False):
             time_spent_on_loading = time.time() - self.command_table_thread.start_time
-            # print out loading time every 10 seconds
-            if time_spent_on_loading % 10 < 1:
-                print_styled_text([(Style.ACTION, "Already spent {} seconds on loading command table.".format(round(time_spent_on_loading, 1)))])
-            time.sleep(1)
-        if time_spent_on_loading >= 150:
-            print_styled_text([(Style.WARNING, 'Loading command table takes too long, please contact the Azure CLI team for help.')])
+            progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Already spent {} seconds on loading.".format(round(time_spent_on_loading, 1)))
+            progress_bar.update_progress()
+            time.sleep(0.1)
+            if time_spent_on_loading >= 10 and already_prompted == False:
+                print_styled_text([(Style.WARNING, '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
+                step_msg = [(Style.PRIMARY, "Do you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
+                            (Style.PRIMARY, "If you choose n, it will start the shell immediately, but it may cause unknown errors due to incomplete module loading.\n")]
+                continue_loading = get_yes_or_no_option(step_msg)
+                already_prompted = True
+        progress_bar.stop()
+
 
         from .configuration import SHELL_HELP
         self.cli.buffers['symbols'].reset(
@@ -858,10 +871,12 @@ class AzInteractiveShell(object):
                     self.set_prompt()
                     continue
                 cmd = text
+                # TODO: add paraser to maintain customized value for certain parameters
                 outside = False
 
             except AttributeError:
                 # when the user pressed Control D
+                # TODO: prompt a notice to ask if the user wants to delete all the resources created
                 break
             except (KeyboardInterrupt, ValueError):
                 # CTRL C
