@@ -157,7 +157,7 @@ class AzInteractiveShell(object):
         if not self.config.has_feedback() and frequency_heuristic(self):
             print("\nAny comments or concerns? You can use the \'feedback\' command!" +
                   " We would greatly appreciate it.\n")
-        if self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True) == True:
+        if self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True):
             print("\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
                   "If you don't want to enable this feature, you can use 'az config set interactive.enable_recommender=False' to disable it.\n")
 
