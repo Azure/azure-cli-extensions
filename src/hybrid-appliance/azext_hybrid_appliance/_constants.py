@@ -5,7 +5,9 @@
 
 
 # pylint: disable=line-too-long
-Snap_Config_Storage_Endpoint = "https://k8connecthelm.azureedge.net"
+Snap_Config_Storage_End_Point = "https://kkanukollubatch.blob.core.windows.net"
+Snap_Config_Container_Name = "pipelinetest"
+Snap_Config_File_Name = "snap-configuration.json"
 Snap_Pull_Public_Endpoint = "storage.snapcraftcontent.com:443"
 Apt_Pull_Public_Endpoint = ""
 App_Insights_Endpoint = ""
