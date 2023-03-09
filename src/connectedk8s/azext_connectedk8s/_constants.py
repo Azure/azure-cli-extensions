@@ -140,7 +140,6 @@ Get_Metadata_CR_Failed_Fault_Type = "Error occured while fetching metadata CR sn
 Get_Metadata_CR_Failed_Fault_Type_Exception = "Exception occured while fetching metadata CR snapshot"
 Get_KAP_CR_Failed_Fault_Type = "Error occured while fetching KAP CR snapshot"
 Get_KAP_CR_Failed_Fault_Type_Exception = "Exception occured while fetching KAP CR snapshot"
-
 Fetch_Arc_Agent_Logs_Failed_Fault_Type = "Error occured in arc agents logger"
 Fetch_Arc_Agents_Events_Logs_Failed_Fault_Type = "Error occured in arc agents events logger"
 Fetch_Arc_Deployment_Logs_Failed_Fault_Type = "Error occured in deployments logger"
