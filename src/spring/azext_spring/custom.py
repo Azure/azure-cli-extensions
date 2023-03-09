@@ -240,8 +240,8 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   storage_name,
                                   persistent_storage_type,
-                                  share_name,
                                   mount_path,
+                                  share_name=None,
                                   mount_options=None,
                                   read_only=None):
     storage_resource = client.storages.get(resource_group, service, storage_name)
