@@ -4089,7 +4089,7 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile):
     return profile[0]
 
 
-def set_workload_profile(cmd, resource_group_name, env_name, workload_profile, workload_profile_name, min_nodes, max_nodes):
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile, min_nodes, max_nodes, workload_profile_name=None):
     return update_managed_environment(cmd, env_name, resource_group_name, workload_profile=workload_profile, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile):
