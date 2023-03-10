@@ -64,7 +64,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="The geo-location where the resource lives",
+            help="The geo-location where the resource lives. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",

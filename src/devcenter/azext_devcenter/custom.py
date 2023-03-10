@@ -51,7 +51,7 @@ from .aaz.latest.devcenter.admin.image import (
     List as _ImageList,
     Show as _ImageShow,
 )
-from .aaz.latest.devcenter.admin.image_verion import (
+from .aaz.latest.devcenter.admin.image_version import (
     List as _ImageVersionList,
     Show as _ImageVersionShow,
 )
