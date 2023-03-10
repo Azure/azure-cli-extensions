@@ -9,6 +9,7 @@ import sys
 import time
 from urllib.parse import urlparse
 import requests
+import json
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -1869,9 +1870,13 @@ def start_containerappsjob(cmd, resource_group_name, name):
         handle_raw_exception(e)
 
 
-def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=None):
+def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=None, job_execution_name_list=None):
     try:
-        return ContainerAppsJobClient.stop_job(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name)
+        if job_execution_name_list is not None:
+            job_execution_name_list = job_execution_name_list.split(",")
+            job_execution_name_list = json.dumps({'jobExecutionName': job_execution_name_list})
+            print(job_execution_name_list)
+        return ContainerAppsJobClient.stop_job(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name, job_execution_names=job_execution_name_list)
     except CLIError as e:
         handle_raw_exception(e)
 
