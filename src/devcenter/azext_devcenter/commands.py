@@ -55,6 +55,7 @@ from .custom import (
     PoolCreate,
     PoolDelete,
     PoolList,
+    PoolRunHealthCheck,
     PoolShow,
     PoolUpdate,
     PoolWait,
@@ -153,6 +154,7 @@ def load_command_table(self, _):
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
+    self.command_table["devcenter admin pool run-health-check"] = PoolRunHealthCheck(loader=self)
     self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)

@@ -10,11 +10,11 @@
 
 from azure.cli.core.aaz import *
 
-
-@register_command(
-    "devcenter admin schedule list",
-    is_preview=True,
-)
+#TODO: amlim see if this command will have more than one result
+# @register_command(
+#     "devcenter admin schedule list",
+#     is_preview=True,
+# )
 class List(AAZCommand):
     """List schedules for a pool
 

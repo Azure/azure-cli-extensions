@@ -62,6 +62,7 @@ from .aaz.latest.devcenter.admin.pool import (
     Show as _PoolShow,
     Update as _PoolUpdate,
     Wait as _PoolWait,
+    RunHealthCheck as _PoolRunHealthCheck
 )
 from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
@@ -345,6 +346,10 @@ class PoolList(_PoolList):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+class PoolRunHealthCheck(_PoolRunHealthCheck):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 class PoolShow(_PoolShow):
     def _cli_arguments_loader(self):
