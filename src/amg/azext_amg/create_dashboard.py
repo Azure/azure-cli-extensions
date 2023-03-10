@@ -14,16 +14,15 @@ def create_dashboard(grafana_url, file_path, http_headers):
 
     payload = {
         'dashboard': content['dashboard'],
-        'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None),
+        'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
         'overwrite': True
     }
 
-    result = _create_dashboard(json.dumps(payload), grafana_url, http_post_headers=http_headers, verify_ssl=None, client_cert=None, debug=None)
+    result = _create_dashboard(json.dumps(payload), grafana_url, http_post_headers=http_headers)
     dashboard_title = content['dashboard'].get('title', '')
     logger.warning("Create dashboard \"%s\". %s", dashboard_title, "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 
-def _create_dashboard(payload, grafana_url, http_post_headers, verify_ssl, client_cert, debug):
-    return send_grafana_post('{0}/api/dashboards/db'.format(grafana_url), payload, http_post_headers, verify_ssl,
-                             client_cert, debug)
+def _create_dashboard(payload, grafana_url, http_post_headers):
+    return send_grafana_post('{0}/api/dashboards/db'.format(grafana_url), payload, http_post_headers)

@@ -22,7 +22,7 @@ def log_response(resp):
     return resp
 
 
-def save_json(file_name, data, folder_path, extension, pretty_print):
+def save_json(file_name, data, folder_path, extension, pretty_print=None):
     pattern = "^db/|^uid/"
     if re.match(pattern, file_name):
         file_name = re.sub(pattern, '', file_name)
