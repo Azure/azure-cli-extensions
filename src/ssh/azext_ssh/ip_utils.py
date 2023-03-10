@@ -33,22 +33,22 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
             'resource_group': parsed_id['resource_group']
         }
         nic = InterfaceShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
-        for ip_config in nic.ip_configurations:
-            if use_private_ip and ip_config.private_ip_address:
-                return ip_config.private_ip_address
-            public_ip_ref = ip_config.public_ip_address
-            if public_ip_ref and public_ip_ref.id:
-                parsed_ip_id = tools.parse_resource_id(public_ip_ref.id)
+        for ip_config in nic["ipConfigurations"]:
+            if use_private_ip and ip_config.get("privateIpAddress", None):
+                return ip_config["privateIpAddress"]
+            public_ip_ref = ip_config["privateIpAddress"]
+            if public_ip_ref and public_ip_ref.get("id", None):
+                parsed_ip_id = tools.parse_resource_id(public_ip_ref["id"])
                 # public_ip = ip_client.get(parsed_ip_id['resource_group'], parsed_ip_id['name'])
                 api_args = {
                     'name': parsed_ip_id['name'],
                     'resource_group': parsed_ip_id['resource_group']
                 }
                 public_ip = PublicIpShow(cli_ctx=cmd.cli_ctx)(command_args=api_args)
-                if public_ip and public_ip.ip_address:
-                    return public_ip.ip_address
-            if ip_config.private_ip_address:
-                private_ips.append(ip_config.private_ip_address)
+                if public_ip and public_ip.get("ipAddress", None):
+                    return public_ip["ipAddress"]
+            if ip_config.get("privateIpAddress", None):
+                private_ips.append(ip_config["privateIpAddress"])
 
     if len(private_ips) > 0:
         logger.warning("No public IP detected, attempting private IP (you must bring your own connectivity).")
