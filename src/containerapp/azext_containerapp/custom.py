@@ -87,6 +87,12 @@ def process_loaded_yaml(yaml_containerapp):
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
+    if yaml_containerapp.get('identity') and yaml_containerapp['identity'].get('userAssignedIdentities'):
+        for identity in yaml_containerapp['identity']['userAssignedIdentities']:
+            # properties (principalId and clientId) are readonly and create (PUT) will throw error if they are provided
+            # Update (PATCH) ignores them so it's okay to remove them as well
+            yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
+
     nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn",
                          "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
     for nested_property in nested_properties:
@@ -288,12 +294,12 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if r["properties"] and r["properties"]["provisioningState"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
 
-        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+        if r["properties"] and r["properties"]["configuration"] and r["properties"]["configuration"]["ingress"] and r["properties"]["configuration"]["ingress"]["fqdn"]:
             logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
             logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
