@@ -350,7 +350,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -393,9 +393,7 @@ class _UpdateHelper:
         schedule_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        schedule_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        schedule_read.properties = AAZObjectType()
         schedule_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
