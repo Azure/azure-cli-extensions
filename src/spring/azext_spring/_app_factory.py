@@ -89,7 +89,7 @@ class DefaultApp:
                                                                 load_trust_store=item['loadTrustStore']))
         return loaded_certificates
 
-    def _load_custom_persistent_disks(self, client, resource_group, service, persistent_storage=None, **_):
+    def _load_custom_persistent_disks(self, client, resource_group, service, sku, persistent_storage=None, **_):
         if not persistent_storage:
             return
         data = get_file_json(persistent_storage, throw_on_empty=False)
@@ -102,21 +102,27 @@ class DefaultApp:
         for item in data['customPersistentDisks']:
             invalidProperties = not item.get('storageName') or \
                 not item.get('customPersistentDiskProperties').get('type') or \
-                not item.get('customPersistentDiskProperties').get('shareName') or \
                 not item.get('customPersistentDiskProperties').get('mountPath')
             if invalidProperties:
-                raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
-            storage_resource = client.storages.get(resource_group, service, item['storageName'])
+                raise InvalidArgumentValueError("StorageName, Type, MountPath mast be provided in the json file")
+
+            storage_id = None
+            if sku.tier.upper() == 'STANDARDGEN2':
+                storage_id = item['storageName']
+            else:
+                storage_resource = client.storages.get(resource_group, service, item['storageName'])
+                storage_id = storage_resource.id
+
             custom_persistent_disk_properties = models.AzureFileVolume(
                 type=item['customPersistentDiskProperties']['type'],
-                share_name=item['customPersistentDiskProperties']['shareName'],
+                share_name=item['customPersistentDiskProperties']['shareName'] if 'shareName' in item['customPersistentDiskProperties'] else None,
                 mount_path=item['customPersistentDiskProperties']['mountPath'],
                 mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
                 read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
 
             custom_persistent_disks.append(
                 models.CustomPersistentDiskResource(
-                    storage_id=storage_resource.id,
+                    storage_id=storage_id,
                     custom_persistent_disk_properties=custom_persistent_disk_properties))
         return custom_persistent_disks
 
