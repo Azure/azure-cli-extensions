@@ -150,6 +150,8 @@ class Sync(AAZCommand):
             }
             return parameters
 
+        def on_200(self, session):
+            pass
 
 class _SyncHelper:
     """Helper class for Sync"""
