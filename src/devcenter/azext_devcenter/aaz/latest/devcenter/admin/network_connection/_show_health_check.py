@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin network-connection show-health-detail",
+    "devcenter admin network-connection show-health-check",
     is_preview=True,
 )
-class ShowHealthDetail(AAZCommand):
+class ShowHealthCheck(AAZCommand):
     """Get health check status details.
 
-    :example: Show health detail
-        az devcenter admin network-connection show-health-detail --name "{networkConnectionName}" --resource-group "rg1"
+    :example: Show health check
+        az devcenter admin network-connection show-health-check--name "{networkConnectionName}" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks/latest", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks/latest", "2023-01-01-preview"],
         ]
     }
 
@@ -46,7 +46,7 @@ class ShowHealthDetail(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
-            options=["-n", "--network-connection-name"],
+            options=["-n", "--name", "--network-connection-name"],
             help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
             id_part="name",
@@ -122,7 +122,7 @@ class ShowHealthDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -239,8 +239,8 @@ class ShowHealthDetail(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHealthDetailHelper:
-    """Helper class for ShowHealthDetail"""
+class _ShowHealthCheckHelper:
+    """Helper class for ShowHealthCheck"""
 
 
-__all__ = ["ShowHealthDetail"]
+__all__ = ["ShowHealthCheck"]

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project-environment-type create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a project environment type.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -51,7 +52,7 @@ class Create(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -63,7 +64,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location for the environment type",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -229,7 +230,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }

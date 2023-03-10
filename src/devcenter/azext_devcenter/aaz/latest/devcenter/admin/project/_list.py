@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2023-01-01-preview"],
         ]
     }
 
@@ -120,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -194,6 +194,9 @@ class List(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -265,7 +268,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -339,6 +342,9 @@ class List(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

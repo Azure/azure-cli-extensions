@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Network Connections resource
+    """Create a network connection.
 
     :example: Create hybrid join
         az devcenter admin network-connection create --location "eastus" --domain-join-type "HybridAzureADJoin" --domain-name "mydomaincontroller.local" --domain-password "Password value for user" --domain-username "testuser@mydomaincontroller.local" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group "rg1"
@@ -26,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -55,6 +55,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -63,7 +64,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -200,7 +201,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }

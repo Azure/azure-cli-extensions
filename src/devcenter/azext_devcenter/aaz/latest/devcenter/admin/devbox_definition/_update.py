@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -56,7 +56,7 @@ class Update(AAZCommand):
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -99,6 +99,7 @@ class Update(AAZCommand):
             options=["--os-storage-type"],
             arg_group="Properties",
             help="The storage type used for the Operating System disk of Dev Boxes created using this definition.",
+            nullable=True,
         )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
@@ -110,21 +111,6 @@ class Update(AAZCommand):
         image_reference.id = AAZStrArg(
             options=["id"],
             help="Image ID, or Image version ID. When Image ID is provided, its latest version will be used.",
-            nullable=True,
-        )
-        image_reference.offer = AAZStrArg(
-            options=["offer"],
-            help="The image offer.",
-            nullable=True,
-        )
-        image_reference.publisher = AAZStrArg(
-            options=["publisher"],
-            help="The image publisher.",
-            nullable=True,
-        )
-        image_reference.sku = AAZStrArg(
-            options=["sku"],
-            help="The image sku.",
             nullable=True,
         )
 
@@ -238,7 +224,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -341,7 +327,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -406,15 +392,12 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("hibernateSupport", AAZStrType, ".hibernate_support")
                 properties.set_prop("imageReference", AAZObjectType, ".image_reference", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("osStorageType", AAZStrType, ".os_storage_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("osStorageType", AAZStrType, ".os_storage_type")
                 properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             image_reference = _builder.get(".properties.imageReference")
             if image_reference is not None:
                 image_reference.set_prop("id", AAZStrType, ".id")
-                image_reference.set_prop("offer", AAZStrType, ".offer")
-                image_reference.set_prop("publisher", AAZStrType, ".publisher")
-                image_reference.set_prop("sku", AAZStrType, ".sku")
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
@@ -501,7 +484,6 @@ class _UpdateHelper:
         )
         properties.os_storage_type = AAZStrType(
             serialized_name="osStorageType",
-            flags={"required": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
@@ -562,9 +544,6 @@ class _UpdateHelper:
         if cls._schema_image_reference_read is not None:
             _schema.exact_version = cls._schema_image_reference_read.exact_version
             _schema.id = cls._schema_image_reference_read.id
-            _schema.offer = cls._schema_image_reference_read.offer
-            _schema.publisher = cls._schema_image_reference_read.publisher
-            _schema.sku = cls._schema_image_reference_read.sku
             return
 
         cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
@@ -575,15 +554,9 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         image_reference_read.id = AAZStrType()
-        image_reference_read.offer = AAZStrType()
-        image_reference_read.publisher = AAZStrType()
-        image_reference_read.sku = AAZStrType()
 
         _schema.exact_version = cls._schema_image_reference_read.exact_version
         _schema.id = cls._schema_image_reference_read.id
-        _schema.offer = cls._schema_image_reference_read.offer
-        _schema.publisher = cls._schema_image_reference_read.publisher
-        _schema.sku = cls._schema_image_reference_read.sku
 
 
 __all__ = ["Update"]

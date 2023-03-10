@@ -23,9 +23,9 @@ class Sync(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/sync", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/sync", "2023-01-01-preview"],
         ]
     }
 
@@ -47,18 +47,19 @@ class Sync(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
+            options=["--catalog-name"],
             help="The name of the Catalog.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -86,16 +87,7 @@ class Sync(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -144,14 +136,11 @@ class Sync(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
             return parameters
-
-        def on_200(self, session):
-            pass
 
 
 class _SyncHelper:

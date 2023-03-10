@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-verion list",
+    "devcenter admin network-connection list-health-check",
     is_preview=True,
 )
-class List(AAZCommand):
-    """List versions for an image.
+class ListHealthCheck(AAZCommand):
+    """List health check status details.
 
-    :example: List
-        az devcenter admin image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1"
+    :example: List health checks
+        az devcenter admin network-connection list-health-check --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks", "2023-01-01-preview"],
         ]
     }
 
@@ -44,19 +44,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
-            required=True,
-        )
-        _args_schema.gallery_name = AAZStrArg(
-            options=["--gallery-name"],
-            help="The name of the gallery.",
-            required=True,
-        )
-        _args_schema.image_name = AAZStrArg(
-            options=["--image-name"],
-            help="The name of the image.",
+        _args_schema.network_connection_name = AAZStrArg(
+            options=["-n", "--name", "--network-connection-name"],
+            help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -67,7 +57,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ImageVersionsListByImage(ctx=self.ctx)()
+        self.NetworkConnectionsListHealthDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ImageVersionsListByImage(AAZHttpOperation):
+    class NetworkConnectionsListHealthDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}/versions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/healthChecks",
                 **self.url_parameters
             )
 
@@ -113,15 +103,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "galleryName", self.ctx.args.gallery_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "imageName", self.ctx.args.image_name,
+                    "networkConnectionName", self.ctx.args.network_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -139,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -190,7 +172,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -200,25 +184,48 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.exclude_from_latest = AAZBoolType(
-                serialized_name="excludeFromLatest",
+            properties.end_date_time = AAZStrType(
+                serialized_name="endDateTime",
                 flags={"read_only": True},
             )
-            properties.name = AAZStrType(
+            properties.health_checks = AAZListType(
+                serialized_name="healthChecks",
                 flags={"read_only": True},
             )
-            properties.os_disk_image_size_in_gb = AAZIntType(
-                serialized_name="osDiskImageSizeInGb",
+            properties.start_date_time = AAZStrType(
+                serialized_name="startDateTime",
                 flags={"read_only": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+
+            health_checks = cls._schema_on_200.value.Element.properties.health_checks
+            health_checks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.health_checks.Element
+            _element.additional_details = AAZStrType(
+                serialized_name="additionalDetails",
                 flags={"read_only": True},
             )
-            properties.published_date = AAZStrType(
-                serialized_name="publishedDate",
+            _element.display_name = AAZStrType(
+                serialized_name="displayName",
                 flags={"read_only": True},
             )
+            _element.end_date_time = AAZStrType(
+                serialized_name="endDateTime",
+                flags={"read_only": True},
+            )
+            _element.error_type = AAZStrType(
+                serialized_name="errorType",
+                flags={"read_only": True},
+            )
+            _element.recommended_action = AAZStrType(
+                serialized_name="recommendedAction",
+                flags={"read_only": True},
+            )
+            _element.start_date_time = AAZStrType(
+                serialized_name="startDateTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -243,8 +250,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ListHealthCheckHelper:
+    """Helper class for ListHealthCheck"""
 
 
-__all__ = ["List"]
+__all__ = ["ListHealthCheck"]

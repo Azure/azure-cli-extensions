@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -56,7 +56,7 @@ class Update(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -185,7 +185,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -292,7 +292,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -350,7 +350,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -393,7 +393,9 @@ class _UpdateHelper:
         schedule_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        schedule_read.properties = AAZObjectType()
+        schedule_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
         schedule_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},

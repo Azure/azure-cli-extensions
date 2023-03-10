@@ -12,22 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin attached-network wait",
+    "devcenter admin network-connection list-outbound-network-dependencies-endpoint",
+    is_preview=True,
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class ListOutboundNetworkDependenciesEndpoint(AAZCommand):
+    """List the endpoints that agents may call as part of Dev Box service administration. These FQDNs should be allowed for outbound access in order for the Dev Box service to function.
+
+    :example: List outbound network dependencies endpoint
+        az devcenter admin network-connection list-outbound-network-dependencies-endpoint --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/outboundnetworkdependenciesendpoints", "2023-01-01-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,17 +44,10 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.attached_network_connection_name = AAZStrArg(
-            options=["-n", "--name", "--attached-network-connection-name"],
-            help="The name of the attached network connection.",
+        _args_schema.network_connection_name = AAZStrArg(
+            options=["-n", "--name", "--network-connection-name"],
+            help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
-            required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
@@ -60,7 +57,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AttachedNetworksGetByDevCenter(ctx=self.ctx)()
+        self.NetworkConnectionsListOutboundNetworkDependenciesEndpoints(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,10 +69,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class AttachedNetworksGetByDevCenter(AAZHttpOperation):
+    class NetworkConnectionsListOutboundNetworkDependenciesEndpoints(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,7 +87,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/attachednetworks/{attachedNetworkConnectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/outboundNetworkDependenciesEndpoints",
                 **self.url_parameters
             )
 
@@ -105,11 +103,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "attachedNetworkConnectionName", self.ctx.args.attached_network_connection_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "networkConnectionName", self.ctx.args.network_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -127,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -160,68 +154,53 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.domain_join_type = AAZStrType(
-                serialized_name="domainJoinType",
-            )
-            properties.health_check_status = AAZStrType(
-                serialized_name="healthCheckStatus",
-            )
-            properties.network_connection_id = AAZStrType(
-                serialized_name="networkConnectionId",
-                flags={"required": True},
-            )
-            properties.network_connection_location = AAZStrType(
-                serialized_name="networkConnectionLocation",
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.category = AAZStrType(
                 flags={"read_only": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            _element.endpoints = AAZListType(
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
+            endpoints = cls._schema_on_200.value.Element.endpoints
+            endpoints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.endpoints.Element
+            _element.description = AAZStrType(
+                flags={"read_only": True},
             )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
+            _element.domain_name = AAZStrType(
+                serialized_name="domainName",
+                flags={"read_only": True},
             )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
+            _element.endpoint_details = AAZListType(
+                serialized_name="endpointDetails",
+                flags={"read_only": True},
             )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+
+            endpoint_details = cls._schema_on_200.value.Element.endpoints.Element.endpoint_details
+            endpoint_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.endpoints.Element.endpoint_details.Element
+            _element.port = AAZIntType(
+                flags={"read_only": True},
             )
 
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ListOutboundNetworkDependenciesEndpointHelper:
+    """Helper class for ListOutboundNetworkDependenciesEndpoint"""
 
 
-__all__ = ["Wait"]
+__all__ = ["ListOutboundNetworkDependenciesEndpoint"]

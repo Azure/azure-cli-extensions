@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a machine pool
+    """Create a machine pool.
 
     :example: Create
-        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1" --local-administrator Enabled
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1" --local-administrator "Enabled" --stop-on-disconnect grace-period-minutes="60" status="Enabled"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -53,7 +53,7 @@ class Create(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -66,7 +66,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -93,7 +93,6 @@ class Create(AAZCommand):
             options=["--license-type"],
             arg_group="Properties",
             help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
-            default="Windows_Client",
             enum={"Windows_Client": "Windows_Client"},
         )
         _args_schema.local_administrator = AAZStrArg(
@@ -106,6 +105,22 @@ class Create(AAZCommand):
             options=["-c", "--network-connection-name"],
             arg_group="Properties",
             help="Name of a Network Connection in parent Project of this Pool",
+        )
+        _args_schema.stop_on_disconnect = AAZObjectArg(
+            options=["--stop-on-disconnect"],
+            arg_group="Properties",
+            help="Stop on disconnect configuration settings for Dev Boxes created in this pool.",
+        )
+
+        stop_on_disconnect = cls._args_schema.stop_on_disconnect
+        stop_on_disconnect.grace_period_minutes = AAZIntArg(
+            options=["grace-period-minutes"],
+            help="The specified time in minutes to wait before stopping a Dev Box once disconnect is detected.",
+        )
+        stop_on_disconnect.status = AAZStrArg(
+            options=["status"],
+            help="Whether the feature to stop the Dev Box on disconnect once the grace period has lapsed is enabled.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         return cls._args_schema
 
@@ -194,7 +209,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -229,6 +244,12 @@ class Create(AAZCommand):
                 properties.set_prop("licenseType", AAZStrType, ".license_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("localAdministrator", AAZStrType, ".local_administrator", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkConnectionName", AAZStrType, ".network_connection_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("stopOnDisconnect", AAZObjectType, ".stop_on_disconnect")
+
+            stop_on_disconnect = _builder.get(".properties.stopOnDisconnect")
+            if stop_on_disconnect is not None:
+                stop_on_disconnect.set_prop("gracePeriodMinutes", AAZIntType, ".grace_period_minutes")
+                stop_on_disconnect.set_prop("status", AAZStrType, ".status")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -280,6 +301,13 @@ class Create(AAZCommand):
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
             )
+            properties.health_status = AAZStrType(
+                serialized_name="healthStatus",
+            )
+            properties.health_status_details = AAZListType(
+                serialized_name="healthStatusDetails",
+                flags={"read_only": True},
+            )
             properties.license_type = AAZStrType(
                 serialized_name="licenseType",
                 flags={"required": True},
@@ -296,6 +324,26 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.stop_on_disconnect = AAZObjectType(
+                serialized_name="stopOnDisconnect",
+            )
+
+            health_status_details = cls._schema_on_200_201.properties.health_status_details
+            health_status_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.health_status_details.Element
+            _element.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            stop_on_disconnect = cls._schema_on_200_201.properties.stop_on_disconnect
+            stop_on_disconnect.grace_period_minutes = AAZIntType(
+                serialized_name="gracePeriodMinutes",
+            )
+            stop_on_disconnect.status = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

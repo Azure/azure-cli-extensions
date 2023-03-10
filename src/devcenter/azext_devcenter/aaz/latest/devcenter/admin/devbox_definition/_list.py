@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List Dev Box definitions configured for a project.
@@ -25,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions", "2023-01-01-preview"],
         ]
     }
 
@@ -49,11 +50,11 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
@@ -132,7 +133,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -219,7 +220,6 @@ class List(AAZCommand):
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -315,7 +315,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -402,7 +402,6 @@ class List(AAZCommand):
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -461,9 +460,6 @@ class _ListHelper:
         if cls._schema_image_reference_read is not None:
             _schema.exact_version = cls._schema_image_reference_read.exact_version
             _schema.id = cls._schema_image_reference_read.id
-            _schema.offer = cls._schema_image_reference_read.offer
-            _schema.publisher = cls._schema_image_reference_read.publisher
-            _schema.sku = cls._schema_image_reference_read.sku
             return
 
         cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
@@ -474,15 +470,9 @@ class _ListHelper:
             flags={"read_only": True},
         )
         image_reference_read.id = AAZStrType()
-        image_reference_read.offer = AAZStrType()
-        image_reference_read.publisher = AAZStrType()
-        image_reference_read.sku = AAZStrType()
 
         _schema.exact_version = cls._schema_image_reference_read.exact_version
         _schema.id = cls._schema_image_reference_read.id
-        _schema.offer = cls._schema_image_reference_read.offer
-        _schema.publisher = cls._schema_image_reference_read.publisher
-        _schema.sku = cls._schema_image_reference_read.sku
 
 
 __all__ = ["List"]

@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin catalog show",
+    "devcenter admin image-version show",
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a catalog.
+    """Get an image version.
 
     :example: Show
-        az devcenter admin catalog show --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1" --version-name "{versionName}"
     """
 
     _aaz_info = {
         "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -45,27 +45,39 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
-            help="The name of the catalog.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
         )
+        _args_schema.gallery_name = AAZStrArg(
+            options=["--gallery-name"],
+            help="The name of the gallery.",
+            required=True,
+            id_part="child_name_1",
+        )
+        _args_schema.image_name = AAZStrArg(
+            options=["--image-name"],
+            help="The name of the image.",
+            required=True,
+            id_part="child_name_2",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
+        )
+        _args_schema.version_name = AAZStrArg(
+            options=["-n", "--name", "--version-name"],
+            help="The version of the image.",
+            required=True,
+            id_part="child_name_3",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CatalogsGet(ctx=self.ctx)()
+        self.ImageVersionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,7 +92,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CatalogsGet(AAZHttpOperation):
+    class ImageVersionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +106,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}/versions/{versionName}",
                 **self.url_parameters
             )
 
@@ -110,11 +122,15 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "catalogName", self.ctx.args.catalog_name,
+                    "devCenterName", self.ctx.args.dev_center_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "galleryName", self.ctx.args.gallery_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "imageName", self.ctx.args.image_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -123,6 +139,10 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "versionName", self.ctx.args.version_name,
                     required=True,
                 ),
             }
@@ -183,24 +203,23 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.ado_git = AAZObjectType(
-                serialized_name="adoGit",
+            properties.exclude_from_latest = AAZBoolType(
+                serialized_name="excludeFromLatest",
+                flags={"read_only": True},
             )
-            _ShowHelper._build_schema_git_catalog_read(properties.ado_git)
-            properties.git_hub = AAZObjectType(
-                serialized_name="gitHub",
+            properties.name = AAZStrType(
+                flags={"read_only": True},
             )
-            _ShowHelper._build_schema_git_catalog_read(properties.git_hub)
-            properties.last_sync_time = AAZStrType(
-                serialized_name="lastSyncTime",
+            properties.os_disk_image_size_in_gb = AAZIntType(
+                serialized_name="osDiskImageSizeInGb",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.sync_state = AAZStrType(
-                serialized_name="syncState",
+            properties.published_date = AAZStrType(
+                serialized_name="publishedDate",
                 flags={"read_only": True},
             )
 
@@ -229,32 +248,6 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
-
-    _schema_git_catalog_read = None
-
-    @classmethod
-    def _build_schema_git_catalog_read(cls, _schema):
-        if cls._schema_git_catalog_read is not None:
-            _schema.branch = cls._schema_git_catalog_read.branch
-            _schema.path = cls._schema_git_catalog_read.path
-            _schema.secret_identifier = cls._schema_git_catalog_read.secret_identifier
-            _schema.uri = cls._schema_git_catalog_read.uri
-            return
-
-        cls._schema_git_catalog_read = _schema_git_catalog_read = AAZObjectType()
-
-        git_catalog_read = _schema_git_catalog_read
-        git_catalog_read.branch = AAZStrType()
-        git_catalog_read.path = AAZStrType()
-        git_catalog_read.secret_identifier = AAZStrType(
-            serialized_name="secretIdentifier",
-        )
-        git_catalog_read.uri = AAZStrType()
-
-        _schema.branch = cls._schema_git_catalog_read.branch
-        _schema.path = cls._schema_git_catalog_read.path
-        _schema.secret_identifier = cls._schema_git_catalog_read.secret_identifier
-        _schema.uri = cls._schema_git_catalog_read.uri
 
 
 __all__ = ["Show"]

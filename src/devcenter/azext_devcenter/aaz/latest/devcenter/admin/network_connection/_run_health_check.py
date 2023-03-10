@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class RunHealthCheck(AAZCommand):
-    """Triggers a new health check run. The execution and health check result can be tracked via the network Connection health check details
+    """Triggers a new health check run. The execution and health check result can be tracked via the network connection health check details.
 
     :example: Run health check
         az devcenter admin network-connection run-health-check --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/runhealthchecks", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/runhealthchecks", "2023-01-01-preview"],
         ]
     }
 
@@ -47,7 +47,7 @@ class RunHealthCheck(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
-            options=["-n", "--network-connection-name"],
+            options=["-n", "--name", "--network-connection-name"],
             help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
             id_part="name",
@@ -135,7 +135,7 @@ class RunHealthCheck(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
