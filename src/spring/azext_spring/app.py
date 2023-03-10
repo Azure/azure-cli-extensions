@@ -452,9 +452,9 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
         raise deployment_error
 
 
-def _get_app_log_deploy_phase(url, user_name, password, format_json, exceptions):
+def _get_app_log_deploy_phase(url, auth, format_json, exceptions):
     try:
-        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+        _get_app_log(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
     except Exception:
         pass
 
