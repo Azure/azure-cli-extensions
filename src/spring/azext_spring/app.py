@@ -608,6 +608,7 @@ def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_g
     if not options.get('sku', None):
         options['sku'] = get_spring_sku(client, resource_group, service)
 
+    # For StandardGen2, if skip the deployment settings clone and don't input any value for CPU and memory, will use default value
     if options['sku'].tier.upper() == 'STANDARDGEN2' and skip_clone_settings and kwargs['cpu'] is None and kwargs['memory'] is None:
         options['cpu'] = '500m'
         options['memory'] = '1Gi'
