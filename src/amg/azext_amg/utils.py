@@ -2,9 +2,18 @@ import re
 import json
 import requests
 from knack.log import get_logger
-from .commons import log_response
 
 logger = get_logger(__name__)
+
+
+def log_response(resp):
+    status_code = resp.status_code
+    logger.debug("[DEBUG] resp status: %s", status_code)
+    try:
+        logger.debug("[DEBUG] resp body: %s", resp.json())
+    except ValueError:
+        logger.debug("[DEBUG] resp body: %s", resp.text)
+    return resp
 
 
 def search_dashboard(page, limit, grafana_url, http_get_headers):
