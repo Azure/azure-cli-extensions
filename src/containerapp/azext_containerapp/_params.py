@@ -179,8 +179,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the managed certificate which should be unique within the Container Apps environment.')
-        c.argument('location', get_location_type(self.cli_ctx), help='Location of the managed certificate which can be different from the location of the Container Apps environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership. Supported methods are HTTP, CNAME and TXT.')
 
     with self.argument_context('containerapp env certificate upload') as c:
         c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
