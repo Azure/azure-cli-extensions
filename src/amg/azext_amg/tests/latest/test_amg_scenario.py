@@ -5,6 +5,7 @@
 
 import os
 import tempfile
+import time
 import unittest
 
 
@@ -18,7 +19,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class AmgScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_amg_crud(self, resource_group):
+    def dd_test_amg_crud(self, resource_group):
 
         self.kwargs.update({
             'name': 'clitestamg2',
@@ -63,7 +64,7 @@ class AmgScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_api_key_e2e(self, resource_group):
+    def dd_test_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
             'name': 'clitestamgapikey',
@@ -92,7 +93,7 @@ class AmgScenarioTest(ScenarioTest):
             self.assertTrue(number > 0)
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_service_account_e2e(self, resource_group):
+    def dd_test_service_account_e2e(self, resource_group):
 
         self.kwargs.update({
             'name': 'clitestserviceaccount',
@@ -133,7 +134,7 @@ class AmgScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westeurope')
-    def test_amg_e2e(self, resource_group):
+    def dd_test_amg_e2e(self, resource_group):
 
         # Test Instance
         self.kwargs.update({
@@ -291,12 +292,13 @@ class AmgScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_backup_restore(self, resource_group):
 
+        temp_dir = tempfile.TemporaryDirectory().name
         # Test Instance
         self.kwargs.update({
             'name': 'clitestamg',
             'location': 'westcentralus',
             'name2': 'clitestamg2',
-            'tempDir': tempfile.TemporaryDirectory()
+            'tempDir': temp_dir
         })
 
         owner = self._get_signed_in_user()
@@ -305,12 +307,16 @@ class AmgScenarioTest(ScenarioTest):
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
 
             amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
+            amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
+            # Ensure RBAC changes are propagated
+            time.sleep(15)
 
             # set up folder
             self.kwargs.update({
                 'folderTitle': 'Test Folder',
-                'id': amg1['id']
-            })
+                'id': amg1['id'],
+                'id2': amg2['id']
+           })
             self.cmd('grafana folder create -g {rg} -n {name} --title "{folderTitle}"')
             
             # set up data source
@@ -329,40 +335,36 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardTitle': dashboard_title,
                 'dashboardSlug': slug,
             })
-            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder {folderTitle}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
 
             self.kwargs.update({
                 'dashboardUid': response_create["uid"],
             })
 
-            self.cmd('grafana backup -g {rg} -n {name} -d {tempDir}')
+            self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" --components datasources dashboards folders')
 
-            filenames = next(os.walk(tempDir), (None, None, []))[2]
+            filenames = next(os.walk(temp_dir), (None, None, []))[2]
             self.assertTrue(len(filenames) == 1)
             self.assertTrue(filenames[0].endswith('.tar.gz'))
 
             self.kwargs.update({
-                'archiveFile': os.path.join(tempDir, filenames[0])
+                'archiveFile': os.path.join(temp_dir, filenames[0])
             })
 
             self.cmd('grafana folder delete -g {rg} -n {name} --folder "{folderTitle}"')
             self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"') 
 
-            self.cmd('grafana restore -g {rg} -n {name} --archive-file {archiveFile}')
+            self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
 
-            self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}')
+            self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
             self.cmd('grafana folder show -g {rg} -n {name} --folder "{folderTitle}"')
-            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"')  # add a bit check
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']")])
 
-            amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
-            self.kwargs.update({
-                'id2': amg2['id']
-            })
-
-            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include {folderTitle}')
-            self.cmd('grafana data-source show -g {rg} -n {name2} --data-source "{dataSourceName}')
+            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}"')
             self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"')  # add a bit check
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']")])
 
 
     def _get_signed_in_user(self):

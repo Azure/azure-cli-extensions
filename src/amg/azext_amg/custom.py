@@ -423,7 +423,7 @@ def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, res
                      overwrite=None, api_key_or_token=None):
     folder_id = None
     if folder:
-        folder_id = _find_folder(cmd, resource_group_name, grafana_name, folder)
+        folder_id = _find_folder(cmd, resource_group_name, grafana_name, folder)["id"]
     return _create_dashboard(cmd, grafana_name, definition=definition, title=title, folder_id=folder_id,
                              resource_group_name=resource_group_name, overwrite=overwrite,
                              api_key_or_token=api_key_or_token)
