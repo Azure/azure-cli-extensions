@@ -2976,7 +2976,7 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
             while validation not in ["TXT", "CNAME", "HTTP"]:
                 validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
 
-            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation_method)
+            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation_method, location)
             try:
                 managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation_method == 'TXT')
             except Exception as e:
