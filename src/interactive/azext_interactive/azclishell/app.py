@@ -851,7 +851,7 @@ class AzInteractiveShell(object):
             progress_bar.update_progress()
             time.sleep(0.1)
             # setup how long to wait before prompting the customer to continue loading
-            if time_spent_on_loading >= 10:
+            if time_spent_on_loading >= 150:
                 time_loading_too_long = True
             if time_loading_too_long and already_prompted == False:
                 print_styled_text([(Style.WARNING, '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
