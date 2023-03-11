@@ -51,7 +51,7 @@ from .aaz.latest.devcenter.admin.image import (
     List as _ImageList,
     Show as _ImageShow,
 )
-from .aaz.latest.devcenter.admin.image_verion import (
+from .aaz.latest.devcenter.admin.image_version import (
     List as _ImageVersionList,
     Show as _ImageVersionShow,
 )
@@ -62,6 +62,7 @@ from .aaz.latest.devcenter.admin.pool import (
     Show as _PoolShow,
     Update as _PoolUpdate,
     Wait as _PoolWait,
+    RunHealthCheck as _PoolRunHealthCheck
 )
 from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
@@ -341,6 +342,12 @@ class PoolDelete(_PoolDelete):
 
 
 class PoolList(_PoolList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class PoolRunHealthCheck(_PoolRunHealthCheck):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)

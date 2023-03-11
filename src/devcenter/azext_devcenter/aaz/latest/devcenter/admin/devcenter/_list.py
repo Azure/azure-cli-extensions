@@ -16,20 +16,20 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List all dev centers in a subscription.
+    """List all devcenters in a subscription or resource group.
 
-    :example: List by Resource Group
+    :example: List by resource group
         az devcenter admin devcenter list --resource-group "rg1"
 
-    :example: List by Subscription
+    :example: List by subscription
         az devcenter admin devcenter list
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/devcenters", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/devcenters", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters", "2023-01-01-preview"],
         ]
     }
 
@@ -120,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -291,7 +291,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }

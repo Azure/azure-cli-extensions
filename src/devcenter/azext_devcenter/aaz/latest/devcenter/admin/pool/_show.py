@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-01-01-preview"],
         ]
     }
 
@@ -53,7 +53,7 @@ class Show(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -132,7 +132,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-01-01-preview",
                     required=True,
                 ),
             }
@@ -191,6 +191,13 @@ class Show(AAZCommand):
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
             )
+            properties.health_status = AAZStrType(
+                serialized_name="healthStatus",
+            )
+            properties.health_status_details = AAZListType(
+                serialized_name="healthStatusDetails",
+                flags={"read_only": True},
+            )
             properties.license_type = AAZStrType(
                 serialized_name="licenseType",
                 flags={"required": True},
@@ -207,6 +214,26 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.stop_on_disconnect = AAZObjectType(
+                serialized_name="stopOnDisconnect",
+            )
+
+            health_status_details = cls._schema_on_200.properties.health_status_details
+            health_status_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.health_status_details.Element
+            _element.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            stop_on_disconnect = cls._schema_on_200.properties.stop_on_disconnect
+            stop_on_disconnect.grace_period_minutes = AAZIntType(
+                serialized_name="gracePeriodMinutes",
+            )
+            stop_on_disconnect.status = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

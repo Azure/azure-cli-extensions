@@ -12,28 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin environment-type delete",
+    "devcenter admin pool run-health-check",
     is_preview=True,
-    confirmation="Are you sure you want to perform this operation?",
 )
-class Delete(AAZCommand):
-    """Delete an environment type.
+class RunHealthCheck(AAZCommand):
+    """Triggers a refresh of the pool status.
 
-    :example: Delete
-        az devcenter admin environment-type delete --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+    :example: Run health check
+        az devcenter admin pool run-health-check --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/environmenttypes/{}", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/runhealthchecks", "2023-01-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -46,17 +46,17 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
-            required=True,
-            id_part="name",
-        )
-        _args_schema.environment_type_name = AAZStrArg(
-            options=["-n", "--name", "--environment-type-name"],
-            help="The name of the environment type.",
+        _args_schema.pool_name = AAZStrArg(
+            options=["--pool-name"],
+            help="Name of the pool.",
             required=True,
             id_part="child_name_1",
+        )
+        _args_schema.project_name = AAZStrArg(
+            options=["--project", "--project-name"],
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+            required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
@@ -66,7 +66,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EnvironmentTypesDelete(ctx=self.ctx)()
+        yield self.PoolsRunHealthChecks(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,29 +77,43 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class EnvironmentTypesDelete(AAZHttpOperation):
+    class PoolsRunHealthChecks(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
-            if session.http_response.status_code in [204]:
-                return self.on_204(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/pools/{poolName}/runHealthChecks",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -109,11 +123,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "environmentTypeName", self.ctx.args.environment_type_name,
+                    "projectName", self.ctx.args.project_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -140,12 +154,9 @@ class Delete(AAZCommand):
         def on_200(self, session):
             pass
 
-        def on_204(self, session):
-            pass
+
+class _RunHealthCheckHelper:
+    """Helper class for RunHealthCheck"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["RunHealthCheck"]

@@ -13,9 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin project-environment-type",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage project environment type with devcenter
+    """Manage project environment types.
     """
     pass
 

@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin catalog show",
+    "devcenter admin network-connection list-health-check",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Get a catalog.
+class ListHealthCheck(AAZCommand):
+    """List health check status details.
 
-    :example: Show
-        az devcenter admin catalog show --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+    :example: List health checks
+        az devcenter admin network-connection list-health-check --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2023-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks", "2023-01-01-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,17 +44,10 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
-            help="The name of the catalog.",
+        _args_schema.network_connection_name = AAZStrArg(
+            options=["-n", "--name", "--network-connection-name"],
+            help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
-            required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
@@ -65,7 +57,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CatalogsGet(ctx=self.ctx)()
+        self.NetworkConnectionsListHealthDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +69,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class CatalogsGet(AAZHttpOperation):
+    class NetworkConnectionsListHealthDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +87,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}/healthChecks",
                 **self.url_parameters
             )
 
@@ -110,11 +103,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "catalogName", self.ctx.args.catalog_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
+                    "networkConnectionName", self.ctx.args.network_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -165,46 +154,80 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.ado_git = AAZObjectType(
-                serialized_name="adoGit",
-            )
-            _ShowHelper._build_schema_git_catalog_read(properties.ado_git)
-            properties.git_hub = AAZObjectType(
-                serialized_name="gitHub",
-            )
-            _ShowHelper._build_schema_git_catalog_read(properties.git_hub)
-            properties.last_sync_time = AAZStrType(
-                serialized_name="lastSyncTime",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.end_date_time = AAZStrType(
+                serialized_name="endDateTime",
                 flags={"read_only": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties.health_checks = AAZListType(
+                serialized_name="healthChecks",
                 flags={"read_only": True},
             )
-            properties.sync_state = AAZStrType(
-                serialized_name="syncState",
+            properties.start_date_time = AAZStrType(
+                serialized_name="startDateTime",
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            health_checks = cls._schema_on_200.value.Element.properties.health_checks
+            health_checks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.health_checks.Element
+            _element.additional_details = AAZStrType(
+                serialized_name="additionalDetails",
+                flags={"read_only": True},
+            )
+            _element.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"read_only": True},
+            )
+            _element.end_date_time = AAZStrType(
+                serialized_name="endDateTime",
+                flags={"read_only": True},
+            )
+            _element.error_type = AAZStrType(
+                serialized_name="errorType",
+                flags={"read_only": True},
+            )
+            _element.recommended_action = AAZStrType(
+                serialized_name="recommendedAction",
+                flags={"read_only": True},
+            )
+            _element.start_date_time = AAZStrType(
+                serialized_name="startDateTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -227,34 +250,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
-
-    _schema_git_catalog_read = None
-
-    @classmethod
-    def _build_schema_git_catalog_read(cls, _schema):
-        if cls._schema_git_catalog_read is not None:
-            _schema.branch = cls._schema_git_catalog_read.branch
-            _schema.path = cls._schema_git_catalog_read.path
-            _schema.secret_identifier = cls._schema_git_catalog_read.secret_identifier
-            _schema.uri = cls._schema_git_catalog_read.uri
-            return
-
-        cls._schema_git_catalog_read = _schema_git_catalog_read = AAZObjectType()
-
-        git_catalog_read = _schema_git_catalog_read
-        git_catalog_read.branch = AAZStrType()
-        git_catalog_read.path = AAZStrType()
-        git_catalog_read.secret_identifier = AAZStrType(
-            serialized_name="secretIdentifier",
-        )
-        git_catalog_read.uri = AAZStrType()
-
-        _schema.branch = cls._schema_git_catalog_read.branch
-        _schema.path = cls._schema_git_catalog_read.path
-        _schema.secret_identifier = cls._schema_git_catalog_read.secret_identifier
-        _schema.uri = cls._schema_git_catalog_read.uri
+class _ListHealthCheckHelper:
+    """Helper class for ListHealthCheck"""
 
 
-__all__ = ["Show"]
+__all__ = ["ListHealthCheck"]
