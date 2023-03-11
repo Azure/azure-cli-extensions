@@ -346,10 +346,12 @@ class PoolList(_PoolList):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class PoolRunHealthCheck(_PoolRunHealthCheck):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class PoolShow(_PoolShow):
     def _cli_arguments_loader(self):
