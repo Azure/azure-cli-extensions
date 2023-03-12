@@ -45,7 +45,7 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
         exts.insert(0, exts.pop(exts.index("folder")))
 
     for ext in exts:
-        for file_path in glob('{0}/**/*.{1}'.format(tmpdir, ext), recursive=True):
+        for file_path in glob(f'{tmpdir}/**/*.{ext}', recursive=True):
             logger.info('Restoring %s: %s', ext, file_path)
             restore_functions[ext](grafana_url, file_path, http_headers)
 
@@ -64,7 +64,7 @@ def _create_dashboard(grafana_url, file_path, http_headers):
         'overwrite': True
     }
 
-    result = send_grafana_post('{0}/api/dashboards/db'.format(grafana_url), json.dumps(payload), http_headers)
+    result = send_grafana_post(f'{grafana_url}/api/dashboards/db', json.dumps(payload), http_headers)
     dashboard_title = content['dashboard'].get('title', '')
     logger.warning("Create dashboard \"%s\". %s", dashboard_title, "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
@@ -81,7 +81,7 @@ def _create_snapshot(grafana_url, file_path, http_headers):
     except KeyError:
         snapshot['name'] = "Untitled Snapshot"
 
-    (status, content) = send_grafana_post('{0}/api/snapshots'.format(grafana_url), json.dumps(snapshot), http_headers)
+    (status, content) = send_grafana_post(f'{grafana_url}/api/snapshots', json.dumps(snapshot), http_headers)
     logger.warning("Create snapshot \"%s\". %s", snapshot['name'], "SUCCESS" if status == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", status, content)
 
@@ -92,7 +92,7 @@ def _create_folder(grafana_url, file_path, http_headers):
         data = f.read()
 
     folder = json.loads(data)
-    result = send_grafana_post('{0}/api/folders'.format(grafana_url), json.dumps(folder), http_headers)
+    result = send_grafana_post(f'{grafana_url}/api/folders', json.dumps(folder), http_headers)
     logger.warning("Create folder \"%s\". %s", folder.get('title', ''), "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
@@ -103,7 +103,7 @@ def _create_annotation(grafana_url, file_path, http_headers):
         data = f.read()
 
     annotation = json.loads(data)
-    result = send_grafana_post('{0}/api/annotations'.format(grafana_url), json.dumps(annotation), http_headers)
+    result = send_grafana_post(f'{grafana_url}/api/annotations', json.dumps(annotation), http_headers)
     logger.warning("Create annotation \"%s\". %s", annotation['id'], "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
@@ -114,6 +114,6 @@ def _create_datasource(grafana_url, file_path, http_headers):
         data = f.read()
 
     datasource = json.loads(data)
-    result = send_grafana_post('{0}/api/datasources'.format(grafana_url), json.dumps(datasource), http_headers)
+    result = send_grafana_post(f'{grafana_url}/api/datasources', json.dumps(datasource), http_headers)
     logger.warning("Create datasource \"%s\". %s", datasource['name'], "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])

@@ -17,13 +17,13 @@ def log_response(resp):
 
 
 def search_dashboard(page, limit, grafana_url, http_get_headers):
-    url = '{0}/api/search/?type=dash-db&limit={1}&page={2}'.format(grafana_url, limit, page)
+    url = f'{grafana_url}/api/search/?type=dash-db&limit={limit}&page={page}'
     logger.info("search dashboard in grafana: %s", url)
     return send_grafana_get(url, http_get_headers)
 
 
 def get_dashboard(board_uri, grafana_url, http_get_headers):
-    url = '{0}/api/dashboards/{1}'.format(grafana_url, board_uri)
+    url = f'{grafana_url}/api/dashboards/{board_uri}'
     logger.info("query dashboard uri: %s", url)
     (status_code, content) = send_grafana_get(url, http_get_headers)
     return (status_code, content)
@@ -33,40 +33,41 @@ def search_annotations(grafana_url, ts_from, ts_to, http_get_headers):
     # there is two types of annotations
     # annotation: are user created, custom ones and can be managed via the api
     # alert: are created by Grafana itself, can NOT be managed by the api
-    url = '{0}/api/annotations?type=annotation&limit=5000&from={1}&to={2}'.format(grafana_url, ts_from, ts_to)
+    url = f'{grafana_url}/api/annotations?type=annotation&limit=5000&from={ts_from}&to={ts_to}'
     (status_code, content) = send_grafana_get(url, http_get_headers)
     return (status_code, content)
 
 
 def search_datasource(grafana_url, http_get_headers):
     logger.info("search datasources in grafana:")
-    return send_grafana_get('{0}/api/datasources'.format(grafana_url), http_get_headers)
+    return send_grafana_get(f'{grafana_url}/api/datasources', http_get_headers)
 
 
 def search_snapshot(grafana_url, http_get_headers):
     logger.info("search snapshots in grafana:")
-    return send_grafana_get('{0}/api/dashboard/snapshots'.format(grafana_url), http_get_headers)
+    return send_grafana_get(f'{grafana_url}/api/dashboard/snapshots', http_get_headers)
 
 
 def get_snapshot(key, grafana_url, http_get_headers):
-    url = '{0}/api/snapshots/{1}'.format(grafana_url, key)
+    url = f'{grafana_url}/api/snapshots/{key}'
     (status_code, content) = send_grafana_get(url, http_get_headers)
     return (status_code, content)
 
 
 def search_folders(grafana_url, http_get_headers):
     logger.info("search folder in grafana:")
-    return send_grafana_get('{0}/api/search/?type=dash-folder'.format(grafana_url), http_get_headers)
+    return send_grafana_get(f'{grafana_url}/api/search/?type=dash-folder', http_get_headers)
 
 
 def get_folder(uid, grafana_url, http_get_headers):
-    (status_code, content) = send_grafana_get('{0}/api/folders/{1}'.format(grafana_url, uid), http_get_headers)
+    (status_code, content) = send_grafana_get(f'{grafana_url}/api/folders/{uid}', http_get_headers)
     logger.info("query folder:%s, status:%s", uid, status_code)
     return (status_code, content)
 
 
 def get_folder_permissions(uid, grafana_url, http_get_headers):
-    (status_code, content) = send_grafana_get('{0}/api/folders/{1}/permissions'.format(grafana_url, uid), http_get_headers)
+    (status_code, content) = send_grafana_get(f'{grafana_url}/api/folders/{uid}/permissions',
+                                              http_get_headers)
     logger.info("query folder permissions:%s, status:%s", uid, status_code)
     return (status_code, content)
 

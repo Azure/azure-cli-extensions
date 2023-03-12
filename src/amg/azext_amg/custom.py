@@ -225,23 +225,24 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
     _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
 
-def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None, folders_to_exclude=None, resource_group_name=None):
+def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None,
+                   folders_to_exclude=None, resource_group_name=None):
     import os
     from pathlib import Path
-    from .save import save
+    from .backup import backup
     creds = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
     headers = {
         "content-type": "application/json",
         "authorization": "Bearer " + creds[1]
     }
 
-    save(grafana_name=grafana_name,
-         grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
-         backup_dir=directory or os.path.join(Path.cwd(), "_backup"),
-         components=components,
-         http_headers=headers,
-         folders_to_include=folders_to_include,
-         folders_to_exclude=folders_to_exclude)
+    backup(grafana_name=grafana_name,
+           grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
+           backup_dir=directory or os.path.join(Path.cwd(), "_backup"),
+           components=components,
+           http_headers=headers,
+           folders_to_include=folders_to_include,
+           folders_to_exclude=folders_to_exclude)
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, resource_group_name=None):
@@ -290,7 +291,8 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
     for s in source_data_sources:
         s_type = s.get("type")
         s_name = s.get("name")
-        matched_ds = next((x for x in destination_data_sources if s_type == x.get("type") and s_name == x.get("name")), None)
+        matched_ds = next((x for x in destination_data_sources
+                           if s_type == x.get("type") and s_name == x.get("name")), None)
         if not matched_ds:
             continue
         uid_mapping[s.get("uid")] = matched_ds.get("uid")
@@ -377,7 +379,8 @@ def remap_uids(indict, uid_mapping, data_source_missed):
                     remap_uids(v, uid_mapping, data_source_missed)
 
 
-def create_annotation(cmd, grafana_name, description, resource_group_name=None, api_key_or_token=None, subscription=None):
+def create_annotation(cmd, grafana_name, description, resource_group_name=None, api_key_or_token=None,
+                      subscription=None):
     payload = {
         "text": description
     }
@@ -392,7 +395,8 @@ def list_annotations(cmd, grafana_name, resource_group_name=None, api_key_or_tok
     return json.loads(response.content)
 
 
-def delete_annotation(cmd, grafana_name, annotation, resource_group_name=None, api_key_or_token=None, subscription=None):
+def delete_annotation(cmd, grafana_name, annotation, resource_group_name=None, api_key_or_token=None,
+                      subscription=None):
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/annotations/" + annotation,
                   api_key_or_token=api_key_or_token, subscription=subscription)
 
@@ -409,7 +413,7 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_toke
     dashboards = []
     while True:
         response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                                 "/api/search?type=dash-db&limit={0}&page={1}".format(limit, current_page),
+                                 f"/api/search?type=dash-db&limit={limit}&page={current_page}",
                                  api_key_or_token=api_key_or_token, subscription=subscription)
         temp = json.loads(response.content)
         dashboards += temp

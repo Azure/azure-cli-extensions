@@ -20,7 +20,7 @@ from .utils import search_annotations
 logger = get_logger(__name__)
 
 
-def save(grafana_name, grafana_url, backup_dir, components, http_headers, **kwargs):
+def backup(grafana_name, grafana_url, backup_dir, components, http_headers, **kwargs):
     backup_functions = {'dashboards': _save_dashboards,
                         'folders': _save_folders,
                         'snapshots': _save_snapshots,
@@ -41,11 +41,12 @@ def save(grafana_name, grafana_url, backup_dir, components, http_headers, **kwar
 
 
 def _archive(grafana_name, backup_dir, timestamp):
-    archive_file = '{0}/{1}-{2}.tar.gz'.format(backup_dir, grafana_name, timestamp)
+    archive_file = f'{backup_dir}/{grafana_name}-{timestamp}.tar.gz'
     backup_files = []
 
-    for folder_name in ['folders', 'datasources', 'dashboards', 'alert_channels', 'organizations', 'users', 'snapshots', 'versions', 'annotations']:
-        backup_path = '{0}/{1}/{2}'.format(backup_dir, folder_name, timestamp)
+    for folder_name in ['folders', 'datasources', 'dashboards', 'alert_channels', 'organizations',
+                        'users', 'snapshots', 'versions', 'annotations']:
+        backup_path = f'{backup_dir}/{folder_name}/{timestamp}'
 
         for file_path in glob(backup_path):
             logger.info('backup %s at: %s', folder_name, file_path)
@@ -65,8 +66,8 @@ def _archive(grafana_name, backup_dir, timestamp):
 
 # Save dashboards
 def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
-    folder_path = '{0}/dashboards/{1}'.format(backup_dir, timestamp)
-    log_file = 'dashboards_{0}.txt'.format(timestamp)
+    folder_path = f'{backup_dir}/dashboards/{timestamp}'
+    log_file = f'dashboards_{timestamp}.txt'
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -118,9 +119,9 @@ def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folde
 def _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file, grafana_url, http_headers):
     file_path = folder_path + '/' + log_file
     if dashboards:
-        with open("{0}".format(file_path), 'w', encoding="utf8") as f:
+        with open(file_path, 'w', encoding="utf8") as f:
             for board in dashboards:
-                board_uri = "uid/{0}".format(board['uid'])
+                board_uri = "uid/" + board['uid']
 
                 (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
                 if status == 200:
@@ -129,13 +130,12 @@ def _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file
                         board_uri,
                         content,
                         folder_path)
-                    f.write('{0}\t{1}\n'.format(board_uri, board['title']))
+                    f.write(board_uri + '\t' + board['title'] + '\n')
 
 
 # Save snapshots
 def _save_snapshots(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = '{0}/snapshots/{1}'.format(backup_dir, timestamp)
-    'snapshots_{0}.txt'.format(timestamp)
+    folder_path = f'{backup_dir}/snapshots/{timestamp}'
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -175,8 +175,8 @@ def _get_all_snapshots_and_save(folder_path, grafana_url, http_get_headers):
 
 # Save folders
 def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
-    folder_path = '{0}/folders/{1}'.format(backup_dir, timestamp)
-    log_file = 'folders_{0}.txt'.format(timestamp)
+    folder_path = f'{backup_dir}/folders/{timestamp}'
+    log_file = f'folders_{timestamp}.txt'
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -216,7 +216,6 @@ def _save_folder_setting(folder_name, file_name, folder_settings, folder_permiss
     file_path = _save_json(file_name, folder_settings, folder_path, 'folder')
     logger.warning("Folder: \"%s\" is saved", folder_name)
     logger.info("    -> %s", file_path)
-    # NOTICE: The 'folder_permission' file extension had the 's' removed to work with the magical dict logic in restore.py...
     file_path = _save_json(file_name, folder_permissions, folder_path, 'folder_permission')
     logger.warning("Folder permissions: %s are saved", folder_name)
     logger.info("    -> %s", file_path)
@@ -224,12 +223,14 @@ def _save_folder_setting(folder_name, file_name, folder_settings, folder_permiss
 
 def _get_individual_folder_setting_and_save(folders, folder_path, log_file, grafana_url, http_get_headers):
     file_path = folder_path + '/' + log_file
-    with open("{0}".format(file_path), 'w+', encoding="utf8") as f:
+    with open(file_path, 'w+', encoding="utf8") as f:
         for folder in folders:
-            folder_uri = "uid/{0}".format(folder['uid'])
+            folder_uri = "uid/" + folder['uid']
 
             (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_get_headers)
-            (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'], grafana_url, http_get_headers)
+            (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
+                                                                                             grafana_url,
+                                                                                             http_get_headers)
 
             if status_folder_settings == 200 and status_folder_permissions == 200:
                 _save_folder_setting(
@@ -238,13 +239,12 @@ def _get_individual_folder_setting_and_save(folders, folder_path, log_file, graf
                     content_folder_settings,
                     content_folder_permissions,
                     folder_path)
-                f.write('{0}\t{1}\n'.format(folder_uri, folder['title']))
+                f.write(folder_uri + '\t' + folder['title'] + '\n')
 
 
 # Save annotations
 def _save_annotations(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = '{0}/annotations/{1}'.format(backup_dir, timestamp)
-    'annotations_{0}.txt'.format(timestamp)
+    folder_path = f'{backup_dir}/annotations/{timestamp}'
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -285,7 +285,7 @@ def _get_all_annotations_and_save(folder_path, grafana_url, http_get_headers):
 
 # Save data sources
 def _save_datasources(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = '{0}/datasources/{1}'.format(backup_dir, timestamp)
+    folder_path = f'{backup_dir}/datasources/{timestamp}'
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -320,7 +320,7 @@ def _save_json(file_name, data, folder_path, extension, pretty_print=None):
         file_name = re.sub(pattern, '', file_name)
 
     file_path = folder_path + '/' + file_name + '.' + extension
-    with open("{0}".format(file_path), 'w', encoding="utf8") as f:
+    with open(file_path, 'w', encoding="utf8") as f:
         if pretty_print:
             f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
         else:
