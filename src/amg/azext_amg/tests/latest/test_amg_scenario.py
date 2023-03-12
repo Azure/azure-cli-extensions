@@ -292,13 +292,11 @@ class AmgScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_backup_restore(self, resource_group):
 
-        temp_dir = tempfile.TemporaryDirectory().name
         # Test Instance
         self.kwargs.update({
             'name': 'clitestamg',
             'location': 'westcentralus',
-            'name2': 'clitestamg2',
-            'tempDir': temp_dir
+            'name2': 'clitestamg2'
         })
 
         owner = self._get_signed_in_user()
@@ -341,30 +339,36 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardUid': response_create["uid"],
             })
 
-            self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" --components datasources dashboards folders')
+            with tempfile.TemporaryDirectory() as temp_dir:
+                self.kwargs.update({
+                    'tempDir': temp_dir
+                })
+                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" --components datasources dashboards folders')
 
-            filenames = next(os.walk(temp_dir), (None, None, []))[2]
-            self.assertTrue(len(filenames) == 1)
-            self.assertTrue(filenames[0].endswith('.tar.gz'))
+                filenames = next(os.walk(temp_dir), (None, None, []))[2]
+                self.assertTrue(len(filenames) == 1)
+                self.assertTrue(filenames[0].endswith('.tar.gz'))
 
-            self.kwargs.update({
-                'archiveFile': os.path.join(temp_dir, filenames[0])
-            })
+                self.kwargs.update({
+                    'archiveFile': os.path.join(temp_dir, filenames[0])
+                })
 
-            self.cmd('grafana folder delete -g {rg} -n {name} --folder "{folderTitle}"')
-            self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"') 
+                self.cmd('grafana folder delete -g {rg} -n {name} --folder "{folderTitle}"')
+                self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"') 
 
-            self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
+                self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
 
             self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
             self.cmd('grafana folder show -g {rg} -n {name} --folder "{folderTitle}"')
             self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']")])
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
             self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}"')
             self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']")])
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
 
     def _get_signed_in_user(self):
