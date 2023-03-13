@@ -138,7 +138,7 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamg',
+            'name': 'clitestamge2e',
             'location': 'westeurope'
         })
 
