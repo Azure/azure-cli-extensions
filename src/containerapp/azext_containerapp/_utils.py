@@ -1610,7 +1610,8 @@ def get_default_workload_profile_from_env(cmd, env_def, resource_group):
 def get_default_workload_profiles(cmd, location):
     profiles = [
         {
-            "workloadProfileType": "Consumption"
+            "workloadProfileType": "Consumption",
+            "Name": "Consumption"
         }
     ]
     return profiles

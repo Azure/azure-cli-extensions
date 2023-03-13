@@ -317,7 +317,7 @@ class ManagedEnvironmentList(AAZCommand):
             )
             _element.workload_profile_name = AAZStrType(
                 serialized_name="workloadProfileName",
-                flags={"required": False},
+                flags={"required": True},
             )
             _element.workload_profile_type = AAZStrType(
                 serialized_name="workloadProfileType",
