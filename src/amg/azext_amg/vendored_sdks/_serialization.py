@@ -170,24 +170,20 @@ class RawDeserializer:
         return None
 
 
-#try:
-#    basestring  # type: ignore
-#    unicode_str = unicode  # type: ignore
-#except NameError:
-#    basestring = str
-#    unicode_str = str
-
-basestring = str
-unicode_str = str
+try:
+    basestring  # type: ignore
+    unicode_str = unicode  # type: ignore
+except NameError:
+    basestring = str
+    unicode_str = str
 
 _LOGGER = logging.getLogger(__name__)
 
+try:
+    _long_type = long  # type: ignore
+except NameError:
+    _long_type = int
 
-#try:
-#    _long_type = long  # type: ignore
-#except NameError:
-#    _long_type = int
-_long_type = int
 
 class UTC(datetime.tzinfo):
     """Time Zone info for handling UTC"""
