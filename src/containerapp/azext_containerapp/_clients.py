@@ -194,21 +194,9 @@ class ContainerAppClient():
         if no_wait:
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-
             if r.status_code == 202:
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    operation_url = r.headers["Location"]
-                    poll_results(cmd, operation_url)
-                except ResourceNotFoundError:
-                    pass
+                operation_url = r.headers[HEADER_LOCATION]
+                poll_results(cmd, operation_url)
                 logger.warning('Containerapp successfully deleted')
 
     @classmethod
@@ -553,20 +541,9 @@ class ManagedEnvironmentClient():
         if no_wait:
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-
             if r.status_code == 202:
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    poll(cmd, request_url, "scheduledfordelete")
-                except ResourceNotFoundError:
-                    pass
+                operation_url = r.headers[HEADER_LOCATION]
+                poll_results(cmd, operation_url)
                 logger.warning('Containerapp environment successfully deleted')
         return
 
