@@ -27,7 +27,7 @@ grafana_endpoints = {}
 
 def create_grafana(cmd, resource_group_name, grafana_name,
                    location=None, skip_system_assigned_identity=False, skip_role_assignments=False,
-                   tags=None, zone_redundancy=None, principal_ids=None):
+                   tags=None, zone_redundancy=None, principal_ids=None, principal_types=None):
     from azure.cli.core.commands.arm import resolve_role_id
 
     if skip_role_assignments and principal_ids:
@@ -59,17 +59,18 @@ def create_grafana(cmd, resource_group_name, grafana_name,
     subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
 
     if not principal_ids:
-        user_principal_id = _get_login_account_principal_id(cmd.cli_ctx)
+        user_principal_id, user_principal_type = _get_login_account_principal_id(cmd.cli_ctx)
         principal_ids = [user_principal_id]
+        principal_types = [user_principal_type]
     grafana_admin_role_id = resolve_role_id(cmd.cli_ctx, "Grafana Admin", subscription_scope)
 
-    for p in principal_ids:
-        _create_role_assignment(cmd.cli_ctx, p, grafana_admin_role_id, resource.id)
+    for p, t in zip(principal_ids, principal_types):
+        _create_role_assignment(cmd.cli_ctx, p, t, grafana_admin_role_id, resource.id)
 
     if resource.identity:
         monitoring_reader_role_id = resolve_role_id(cmd.cli_ctx, "Monitoring Reader", subscription_scope)
-        _create_role_assignment(cmd.cli_ctx, resource.identity.principal_id, monitoring_reader_role_id,
-                                subscription_scope)
+        _create_role_assignment(cmd.cli_ctx, resource.identity.principal_id, "ServicePrincipal",
+                                monitoring_reader_role_id, subscription_scope)
 
     return resource
 
@@ -91,10 +92,12 @@ def _get_login_account_principal_id(cli_ctx):
                                        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     active_account = profile.get_subscription()
     assignee = active_account[_USER_ENTITY][_USER_NAME]
+    principal_type = "User"
     try:
         if active_account[_USER_ENTITY][_USER_TYPE] == _SERVICE_PRINCIPAL:
             result = list(client.service_principals.list(
                 filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
+            principal_type = "ServicePrincipal"
         else:
             result = [client.signed_in_user.get()]
     except GraphErrorException as ex:
@@ -103,16 +106,18 @@ def _get_login_account_principal_id(cli_ctx):
         raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
                                 f"role assignment. Consider using '--principal-ids' to bypass the lookup"))
 
-    return result[0].object_id
+    return result[0].object_id, principal_type
 
 
-def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
+def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definition_id, scope):
     import time
+    from azure.core.exceptions import ResourceExistsError
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
-    parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id, principal_id=principal_id)
+    parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
+                                                principal_id=principal_id, principal_type=principal_type)
 
     logger.info("Creating an assignment with a role '%s' on the scope of '%s'", role_definition_id, scope)
     retry_times = 36
@@ -122,11 +127,11 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
             assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                       parameters=parameters)
             break
+        except ResourceExistsError:
+            logger.info('Role assignment already exists')
+            break
         except CloudError as ex:
-            if 'role assignment already exists' in ex.message:
-                logger.info('Role assignment already exists')
-                break
-            if retry_time < retry_times and ' does not exist in the directory ' in ex.message:
+            if retry_time < retry_times and ' does not exist in the directory ' in (ex.message or "").lower():
                 time.sleep(5)
                 logger.warning('Retrying role assignment creation: %s/%s', retry_time + 1,
                                retry_times)
@@ -137,7 +142,7 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
 def _delete_role_assignment(cli_ctx, principal_id):
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list(filter=f))
+    assignments = list(assignments_client.list_for_subscription(filter=f))
     for a in assignments or []:
         assignments_client.delete_by_id(a.id)
 

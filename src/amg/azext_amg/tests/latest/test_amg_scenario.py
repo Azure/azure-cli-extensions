@@ -307,7 +307,7 @@ class AmgScenarioTest(ScenarioTest):
             amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
             amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
             # Ensure RBAC changes are propagated
-            time.sleep(15)
+            time.sleep(120)
 
             # set up folder
             self.kwargs.update({
