@@ -820,3 +820,55 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         restored_account_defaultIdentity = restored_account['defaultIdentity']
         assert user_id_2 in restored_account_defaultIdentity
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_provision_continuous30days', location='eastus2')
+    def test_cosmosdb_sql_xrr(self, resource_group):
+        col = self.create_random_name(prefix='cli', length=15)
+        db_name = self.create_random_name(prefix='cli', length=15)
+        source_acc = self.create_random_name(prefix='cli-continuous30-', length=25)
+        target_acc = source_acc + "-restored"
+
+        self.kwargs.update({
+            'acc': source_acc,
+            'db_name': db_name,
+            'restored_acc': target_acc,
+            'col': col,
+            'loc': 'eastus2'
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        self.kwargs.update({
+            'ins_id': account['instanceId']
+        })
+
+        # Create database
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
+
+        # Create container
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
+
+        restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+        print(account)
+
+        account_creation_time = restorable_database_account['creationTime']
+        creation_timestamp_datetime = parser.parse(account_creation_time)
+        restore_ts = creation_timestamp_datetime + timedelta(minutes=4)
+        import time
+        time.sleep(240)
+        restore_ts_string = restore_ts.isoformat()
+        self.kwargs.update({
+            'rts': restore_ts_string,
+            'target_loc': 'eastus2'
+        })
+
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location {loc} --location {target_loc}')
+        restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
+            self.check('restoreParameters.restoreMode', 'PointInTime')
+        ]).get_output_in_json()
+
+        assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
+        assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
