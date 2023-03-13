@@ -1,0 +1,284 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --reservation-id
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e?api-version=2022-03-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/646d427e-a133-4cb6-9f28-3de6157de83e","etag":11,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-06-20T01:33:19.8872827Z","lastUpdatedDateTime":"2022-06-20T01:33:19.9809872Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","renew":false,"term":"P1Y","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","billingPlan":"Monthly","archived":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '943'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 21:09:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"quantities": [1, 1], "reservationId": "/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation split
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '193'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --reservation-id --quantities
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/split?api-version=2022-03-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725/2","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/8e039835-1ea6-4070-8275-afebc922fc75/2","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e/revisions/14","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/646d427e-a133-4cb6-9f28-3de6157de83e/14","etag":14,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","extendedStatusInfo":{"statusCode":"Split","message":"This
+        reservation was split and is no longer active"},"lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitDestinations":["/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3346'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 21:09:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/splitoperationresults/646d427e-a133-4cb6-9f28-3de6157de83e_12?api-version=2022-03-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"v-heachang@microsoft.com","scenarios":"TestInProdcution,CSZ,Inv-v7,crs-vnext,GtmRiPurchase","retention":"12/31/2024
+        00:00:00"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation split
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --reservation-id --quantities
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/splitoperationresults/646d427e-a133-4cb6-9f28-3de6157de83e_12?api-version=2022-03-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/8e039835-1ea6-4070-8275-afebc922fc75","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/646d427e-a133-4cb6-9f28-3de6157de83e","etag":14,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:09:31.3116884Z","extendedStatusInfo":{"statusCode":"Split","message":"This
+        reservation was split and is no longer active"},"lastUpdatedDateTime":"2022-10-01T21:09:38.8078008Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitDestinations":["/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3272'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 21:09:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"sources": ["/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725",
+      "/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation merge
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '305'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --sources
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/merge?api-version=2022-03-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725/revisions/5","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725/5","etag":5,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2022-10-01T21:10:06.9534184Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/17212af0-3d2f-47dc-882e-d44634889145"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75/revisions/4","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/8e039835-1ea6-4070-8275-afebc922fc75/4","etag":4,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2022-10-01T21:10:06.9534184Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/17212af0-3d2f-47dc-882e-d44634889145"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/17212af0-3d2f-47dc-882e-d44634889145/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/17212af0-3d2f-47dc-882e-d44634889145/2","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","lastUpdatedDateTime":"2022-10-01T21:10:06.9534184Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","mergeProperties":{"mergeSources":["/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 21:10:12 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/mergeoperationresults/851e573e-664c-47e8-ab29-243ac1dd3725_3?api-version=2022-03-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"v-heachang@microsoft.com","scenarios":"TestInProdcution,CSZ,Inv-v7,crs-vnext,GtmRiPurchase","retention":"12/31/2024
+        00:00:00"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation merge
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --sources
+      User-Agent:
+      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/mergeoperationresults/851e573e-664c-47e8-ab29-243ac1dd3725_3?api-version=2022-03-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/851e573e-664c-47e8-ab29-243ac1dd3725","etag":5,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2022-10-01T21:10:06.9534184Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/17212af0-3d2f-47dc-882e-d44634889145"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/8e039835-1ea6-4070-8275-afebc922fc75","etag":4,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2022-10-01T21:10:06.9534184Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/646d427e-a133-4cb6-9f28-3de6157de83e"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/17212af0-3d2f-47dc-882e-d44634889145"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1ls"},"id":"/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/17212af0-3d2f-47dc-882e-d44634889145","type":"Microsoft.Capacity/reservationOrders/reservations","name":"6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/17212af0-3d2f-47dc-882e-d44634889145","etag":2,"location":"westeurope","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Succeeded","expiryDate":"2023-06-17","benefitStartTime":"2022-06-17T07:47:54.4640804Z","displayName":"VM_RI_06-17-2022_15-43_rename","effectiveDateTime":"2022-10-01T21:10:06.9534184Z","lastUpdatedDateTime":"2022-10-01T21:10:06.9534184Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, EU West, 1 Year","mergeProperties":{"mergeSources":["/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/851e573e-664c-47e8-ab29-243ac1dd3725","/providers/microsoft.capacity/reservationOrders/6d1613d2-d4f8-454d-aef3-fe6d5c8bef95/reservations/8e039835-1ea6-4070-8275-afebc922fc75"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3729'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 01 Oct 2022 21:10:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -26,7 +26,7 @@ az grafana delete \
     -n MyGrafanaInstance
 ```
 
-### Configure folder, data sources and dashboard
+### Configure folders, data sources, notification channels and dashboards
 
 #### create a folder
 *Examples:*
@@ -42,6 +42,14 @@ az grafana folder create \
 az grafana data-source create \
     -n MyGrafanaInstance \
     --definition ~/data-source-sql.json
+```
+
+#### configure a notification channel 
+*Examples:*
+```
+az grafana notification-channel create \
+    -n MyGrafanaInstance \
+    --definition ~/notification-channel-teams.json
 ```
 
 #### Create a dashboard

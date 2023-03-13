@@ -44,7 +44,10 @@ def load_command_table(self, _):
         g.custom_command('list', 'stack_hci_arc_setting_list')
         g.custom_show_command('show', 'stack_hci_arc_setting_show')
         g.custom_command('create', 'stack_hci_arc_setting_create')
+        g.custom_command('update', 'stack_hci_arc_setting_update')
         g.custom_command('delete', 'stack_hci_arc_setting_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('create-identity', 'stack_hci_arc_setting_create_identity', supports_no_wait=True)
+        g.custom_command('generate-password', 'stack_hci_arc_setting_generate_password')
         g.custom_wait_command('wait', 'stack_hci_arc_setting_show')
 
     with self.command_group('stack-hci cluster', stack_hci_cluster, client_factory=cf_cluster) as g:
@@ -52,13 +55,17 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'stack_hci_cluster_show')
         g.custom_command('create', 'stack_hci_cluster_create')
         g.custom_command('update', 'stack_hci_cluster_update')
-        g.custom_command('delete', 'stack_hci_cluster_delete', confirmation=True)
+        g.custom_command('delete', 'stack_hci_cluster_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('create-identity', 'stack_hci_cluster_create_identity', supports_no_wait=True)
+        # service team found a bug on this api: Operation returned an invalid status 'OK'
+        # g.custom_command('upload-certificate', 'stack_hci_cluster_upload_certificate', supports_no_wait=True)
+        g.custom_wait_command('wait', 'stack_hci_cluster_show')
 
     with self.command_group('stack-hci extension', stack_hci_extension, client_factory=cf_extension) as g:
         g.custom_command('list', 'stack_hci_extension_list')
         g.custom_show_command('show', 'stack_hci_extension_show')
         g.custom_command('create', 'stack_hci_extension_create', supports_no_wait=True)
-        # service team found a bug on this api
+        # service team found a bug on this api: Operation returned an invalid status 'OK'
         # g.custom_command('update', 'stack_hci_extension_update', supports_no_wait=True)
         g.custom_command('delete', 'stack_hci_extension_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'stack_hci_extension_show')

@@ -11,7 +11,7 @@ from ._confidential_ledger_operations import ConfidentialLedgerOperationsMixin
 from ._ledger_operations import LedgerOperations
 
 __all__ = [
-    'Operations',
-    'ConfidentialLedgerOperationsMixin',
-    'LedgerOperations',
+    "Operations",
+    "ConfidentialLedgerOperationsMixin",
+    "LedgerOperations",
 ]

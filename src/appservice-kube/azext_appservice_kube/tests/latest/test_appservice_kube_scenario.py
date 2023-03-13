@@ -6,7 +6,7 @@
 import os
 import requests
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -19,6 +19,7 @@ class AppserviceKubernetesScenarioTest(ScenarioTest):
 # not lima-specific
 class WebappBasicE2EKubeTest(ScenarioTest):
     @ResourceGroupPreparer(location='canadacentral')
+    @live_only()
     def test_linux_webapp_quick_create_kube(self, resource_group):
         webapp_name = self.create_random_name(
             prefix='webapp-quick-linux', length=24)

@@ -13,6 +13,24 @@ manifest = '''
   "allowedRestoreTargetTypes": [ "AlternateLocation", "RestoreAsFiles" ],
   "itemLevelRecoveyEnabled": false,
   "supportSecretStoreAuthentication": true,
+  "backupVaultPermissions": [
+    {
+      "roleDefinitionName": "Reader",
+      "type": "DataSource"
+    }
+  ],
+  "secretStorePermissions": {
+    "rbacModel": {
+      "roleDefinitionName": "Key Vault Secrets User"
+    },
+    "vaultAccessPolicyModel": {
+      "accessPolicies": {
+        "permissions": {
+          "secrets": [ "Get", "List" ]
+        }
+      }
+    }
+  },
   "policySettings": {
     "supportedRetentionTags": [ "Weekly", "Monthly", "Yearly" ],
     "supportedDatastoreTypes": [ "VaultStore", "ArchiveStore" ],

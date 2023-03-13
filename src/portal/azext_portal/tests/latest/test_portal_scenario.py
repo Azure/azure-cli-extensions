@@ -23,12 +23,13 @@ class PortalScenarioTest(ScenarioTest):
     def test_portal(self, resource_group):
 
         self.kwargs.update({
-            'testDashboard': self.create_random_name(prefix='cli_test_dashboards'[:9], length=24)
+            'testDashboard': self.create_random_name(prefix='cli_test_dashboards'[:9], length=24),
+            'inputPath': os.path.join(TEST_DIR, 'properties.json')
         })
 
         self.cmd('az portal dashboard create '
                  '--location "eastus" '
-                 '--input- "src/portal/azext_portal/tests/latest/properties.json" '
+                 '--input-path "{inputPath}" '
                  '--tags aKey=aValue anotherKey=anotherValue '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
@@ -59,8 +60,12 @@ class PortalScenarioTest(ScenarioTest):
                  '--resource-group=',
                  checks=[JMESPathCheckExists('[?name==\'{}\']'.format(self.kwargs.get('testDashboard', '')))])
 
+        self.kwargs.update({
+            'inputPath': os.path.join(TEST_DIR, 'properties-update.json')
+        })
+
         self.cmd('az portal dashboard update '
-                 '--input-path "src/portal/azext_portal/tests/latest/properties-update.json" '
+                 '--input-path "{inputPath}" '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
                  checks=[
@@ -87,8 +92,12 @@ class PortalScenarioTest(ScenarioTest):
                  '--resource-group "{rg}"',
                  checks=[NoneCheck()])
 
+        self.kwargs.update({
+            'inputPath': os.path.join(TEST_DIR, 'dashboard.json')
+        })
+
         self.cmd('az portal dashboard import '
-                 '--input-path "src/portal/azext_portal/tests/latest/dashboard.json" '
+                 '--input-path "{inputPath}" '
                  '--name "{testDashboard}" '
                  '--resource-group "{rg}"',
                  checks=[

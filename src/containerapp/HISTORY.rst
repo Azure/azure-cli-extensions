@@ -2,6 +2,91 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+
+0.3.21
+++++++
+* Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
+* Added model mapping to support add/update of init Containers via `az containerapp create` & `az containerapp update` commands.
+
+0.3.20
+++++++
+* Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
+
+0.3.19
+++++++
+* Fix "'NoneType' object is not iterable" error in `az containerapp hostname bind` command
+
+0.3.18
+++++++
+* Fix "'NoneType' object has no attribute 'get'" error in `az containerapp up` with no ingress arguments
+
+0.3.17
+++++++
+* Fix polling logic for long running operations.
+
+0.3.16
+++++++
+* Remove quota check for 'az containerapp up' and 'az containerapp env create'.
+
+0.3.15
+++++++
+* Add 'az containerapp containerapp ingress ip-restriction' command group to manage IP restrictions on the ingress of a container app.
+
+0.3.14
+++++++
+* 'az containerapp logs show'/'az containerapp exec': Fix "KeyError" bug
+
+0.3.13
+++++++
+* 'az containerapp compose create': Migrated from containerapp-compose extension
+* Add parameters --logs-destination and --storage-account support for new logs destinations to `az containerapp env create` and `az containerapp env update`
+
+0.3.12
+++++++
+* Add 'az containerapp env update' to update managed environment properties
+* Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
+* 'az containerapp logs show': add new parameter "--type" to allow showing system logs
+* Show system environment logs with new command 'az containerapp env logs show'
+* Add tcp support for ingress transport and scale rules
+* `az containerapp up/github-action add`: Retrieve workflow file name from github actions API
+* 'az containerapp create/update': validate revision suffixes
+
+0.3.11
+++++++
+* Add keda scale rule parameters to 'az containerapp create', 'az containerapp update' and 'az containerapp revision copy'
+* Add new dapr params to 'az containerapp dapr enable' and 'az containerapp create'
+* 'az containerapp up': autogenerate a docker container with --source when no dockerfile present
+
+0.3.10
+++++++
+* 'az containerapp create': Fix bug with --image caused by assuming a value for --registry-server
+* 'az containerapp hostname bind': Remove location set automatically by resource group
+* 'az containerapp env create': Add location validation
+
+0.3.9
+++++++
+* 'az containerapp create': Allow authenticating with managed identity (MSI) instead of ACR username & password
+* 'az containerapp show': Add parameter --show-secrets to show secret values
+* 'az containerapp env create': Add better message when polling times out
+* 'az containerapp env certificate upload': Fix bug where certificate uploading failed with error "Certificate must contain one private key"
+* 'az containerapp env certificate upload': Fix bug where replacing invalid character in certificate name failed
+
+0.3.8
+++++++
+* 'az containerapp update': Fix bug where --yaml would error out due to secret values
+* 'az containerapp update': use PATCH API instead of GET and PUT
+* 'az containerapp up': Fix bug where using --source with an invalid name parameter causes ACR build to fail
+* 'az containerapp logs show'/'az containerapp exec': Fix bug where ssh/logstream they would fail on apps with networking restrictions
+
+0.3.7
+++++++
+* Fixed bug with 'az containerapp up' where --registry-server was ignored
+* 'az containerapp env create': fixed bug where "--internal-only" didn't work
+* 'az containerapp registry set': remove username/password if setting identity and vice versa
 
 0.3.6
 ++++++

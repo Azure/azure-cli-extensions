@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 from argparse import Namespace
+from azure.cli.core import AzCommandsLoader
+from azure.cli.core.commands import AzCliCommand
+from azure.cli.core.mock import DummyCli
 from azure.cli.core.util import CLIError
 from ..._validators import (validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                             validate_java_agent_parameters, validate_app_insights_parameters)
@@ -138,7 +141,7 @@ class TestAppInsightsValidators(unittest.TestCase):
                        sampling_rate=None,
                        disable=True)
         with self.assertRaises(CLIError) as context:
-            validate_app_insights_parameters(ns)
+            validate_app_insights_parameters(_get_test_cmd(), ns)
         self.assertTrue("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
                         "can not be set with '--disable'." in str(context.exception))
 
@@ -148,7 +151,7 @@ class TestAppInsightsValidators(unittest.TestCase):
                        sampling_rate=50,
                        disable=True)
         with self.assertRaises(CLIError) as context:
-            validate_app_insights_parameters(ns)
+            validate_app_insights_parameters(_get_test_cmd(), ns)
         self.assertTrue("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
                         "can not be set with '--disable'." in str(context.exception))
 
@@ -158,5 +161,15 @@ class TestAppInsightsValidators(unittest.TestCase):
                        sampling_rate=None,
                        disable=False)
         with self.assertRaises(CLIError) as context:
-            validate_app_insights_parameters(ns)
+            validate_app_insights_parameters(_get_test_cmd(), ns)
         self.assertTrue("Invalid value: nothing is updated for application insights." in str(context.exception))
+
+
+def _get_test_cmd():
+    cli_ctx = DummyCli()
+    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
+    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
+    cmd = AzCliCommand(loader, 'test', None)
+    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
+    cmd.cli_ctx = cli_ctx
+    return cmd

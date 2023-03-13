@@ -33,6 +33,11 @@ def stack_hci_arc_setting_create(client,
                                  cluster_name,
                                  arc_setting_name,
                                  arc_instance_resource_group=None,
+                                 arc_application_client_id=None,
+                                 arc_application_tenant_id=None,
+                                 arc_service_principal_object_id=None,
+                                 arc_application_object_id=None,
+                                 connectivity_properties=None,
                                  created_by=None,
                                  created_by_type=None,
                                  created_at=None,
@@ -42,6 +47,16 @@ def stack_hci_arc_setting_create(client,
     arc_setting = {}
     if arc_instance_resource_group is not None:
         arc_setting['arc_instance_resource_group'] = arc_instance_resource_group
+    if arc_application_client_id is not None:
+        arc_setting['arc_application_client_id'] = arc_application_client_id
+    if arc_application_tenant_id is not None:
+        arc_setting['arc_application_tenant_id'] = arc_application_tenant_id
+    if arc_service_principal_object_id is not None:
+        arc_setting['arc_service_principal_object_id'] = arc_service_principal_object_id
+    if arc_application_object_id is not None:
+        arc_setting['arc_application_object_id'] = arc_application_object_id
+    if connectivity_properties is not None:
+        arc_setting['connectivity_properties'] = connectivity_properties
     if created_by is not None:
         arc_setting['created_by'] = created_by
     if created_by_type is not None:
@@ -60,6 +75,23 @@ def stack_hci_arc_setting_create(client,
                          arc_setting=arc_setting)
 
 
+def stack_hci_arc_setting_update(client,
+                                 resource_group_name,
+                                 cluster_name,
+                                 arc_setting_name,
+                                 tags=None,
+                                 connectivity_properties=None):
+    arc_setting = {}
+    if tags is not None:
+        arc_setting['tags'] = tags
+    if connectivity_properties is not None:
+        arc_setting['connectivity_properties'] = connectivity_properties
+    return client.update(resource_group_name=resource_group_name,
+                         cluster_name=cluster_name,
+                         arc_setting_name=arc_setting_name,
+                         arc_setting=arc_setting)
+
+
 def stack_hci_arc_setting_delete(client,
                                  resource_group_name,
                                  cluster_name,
@@ -70,6 +102,27 @@ def stack_hci_arc_setting_delete(client,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        arc_setting_name=arc_setting_name)
+
+
+def stack_hci_arc_setting_create_identity(client,
+                                          resource_group_name,
+                                          cluster_name,
+                                          arc_setting_name,
+                                          no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create_identity,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       arc_setting_name=arc_setting_name)
+
+
+def stack_hci_arc_setting_generate_password(client,
+                                            resource_group_name,
+                                            cluster_name,
+                                            arc_setting_name):
+    return client.generate_password(resource_group_name=resource_group_name,
+                                    cluster_name=cluster_name,
+                                    arc_setting_name=arc_setting_name)
 
 
 def stack_hci_cluster_list(client,
@@ -94,6 +147,8 @@ def stack_hci_cluster_create(client,
                              cloud_management_endpoint=None,
                              aad_client_id=None,
                              aad_tenant_id=None,
+                             aad_application_object_id=None,
+                             aad_service_principal_object_id=None,
                              desired_properties=None,
                              created_by=None,
                              created_by_type=None,
@@ -111,6 +166,10 @@ def stack_hci_cluster_create(client,
         cluster['aad_client_id'] = aad_client_id
     if aad_tenant_id is not None:
         cluster['aad_tenant_id'] = aad_tenant_id
+    if aad_application_object_id is not None:
+        cluster['aad_application_object_id'] = aad_application_object_id
+    if aad_service_principal_object_id is not None:
+        cluster['aad_service_principal_object_id'] = aad_service_principal_object_id
     if desired_properties is not None:
         cluster['desired_properties'] = desired_properties
     if created_by is not None:
@@ -156,9 +215,37 @@ def stack_hci_cluster_update(client,
 
 def stack_hci_cluster_delete(client,
                              resource_group_name,
-                             cluster_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         cluster_name=cluster_name)
+                             cluster_name,
+                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name)
+
+
+def stack_hci_cluster_create_identity(client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create_identity,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name)
+
+
+def stack_hci_cluster_upload_certificate(client,
+                                         resource_group_name,
+                                         cluster_name,
+                                         certificates=None,
+                                         no_wait=False):
+    upload_certificate_request = {}
+    if certificates is not None:
+        upload_certificate_request['properties'] = {'certificates': certificates}
+    return sdk_no_wait(no_wait,
+                       client.begin_upload_certificate,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       upload_certificate_request=upload_certificate_request)
 
 
 def stack_hci_extension_list(client,

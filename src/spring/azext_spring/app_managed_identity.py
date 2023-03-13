@@ -5,7 +5,7 @@
 
 from ._clierror import ConflictRequestError
 from ._utils import wait_till_end
-from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from azure.cli.core.azclierror import (AzureInternalError, CLIInternalError)
 from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError
@@ -86,7 +86,7 @@ def app_identity_remove(cmd,
         return
     if not app.identity.type:
         raise AzureInternalError("Invalid existed identity type {}.".format(app.identity.type))
-    if app.identity.type == models_20220301preview.ManagedIdentityType.NONE:
+    if app.identity.type == models.ManagedIdentityType.NONE:
         logger.warning("Skip remove managed identity since identity type is {}.".format(app.identity.type))
         return
 
@@ -98,11 +98,11 @@ def app_identity_remove(cmd,
     new_identity_type = _get_new_identity_type_for_remove(app.identity.type, system_assigned, new_user_identities)
     user_identity_payload = _get_user_identity_payload_for_remove(new_identity_type, user_assigned)
 
-    target_identity = models_20220301preview.ManagedIdentityProperties()
+    target_identity = models.ManagedIdentityProperties()
     target_identity.type = new_identity_type
     target_identity.user_assigned_identities = user_identity_payload
 
-    app_resource = models_20220301preview.AppResource()
+    app_resource = models.AppResource()
     app_resource.identity = target_identity
 
     poller = client.apps.begin_update(resource_group, service, name, app_resource)
@@ -134,7 +134,7 @@ def app_identity_force_set(cmd,
     new_identity_type = _get_new_identity_type_for_force_set(system_assigned, user_assigned)
     user_identity_payload = _get_user_identity_payload_for_force_set(user_assigned)
 
-    target_identity = models_20220301preview.ManagedIdentityProperties()
+    target_identity = models.ManagedIdentityProperties()
     target_identity.type = new_identity_type
     target_identity.user_assigned_identities = user_identity_payload
 
@@ -168,12 +168,12 @@ def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
         raise ConflictRequestError("Failed to enable system-assigned managed identity since app is in {} state.".format(
             app.properties.provisioning_state))
 
-    new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
-    if app.identity and app.identity.type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
-                                              models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
-        new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
-    target_identity = models_20220301preview.ManagedIdentityProperties(type=new_identity_type)
-    app_resource = models_20220301preview.AppResource(identity=target_identity)
+    new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED
+    if app.identity and app.identity.type in (models.ManagedIdentityType.USER_ASSIGNED,
+                                              models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+        new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+    target_identity = models.ManagedIdentityProperties(type=new_identity_type)
+    app_resource = models.AppResource(identity=target_identity)
 
     logger.warning("Start to enable system-assigned managed identity.")
     return client.apps.begin_update(resource_group, service, name, app_resource)
@@ -188,11 +188,11 @@ def _new_app_identity_assign(cmd, client, resource_group, service, name, system_
     new_identity_type = _get_new_identity_type_for_assign(app, system_assigned, user_assigned)
     user_identity_payload = _get_user_identity_payload_for_assign(new_identity_type, user_assigned)
 
-    identity_payload = models_20220301preview.ManagedIdentityProperties()
+    identity_payload = models.ManagedIdentityProperties()
     identity_payload.type = new_identity_type
     identity_payload.user_assigned_identities = user_identity_payload
 
-    app_resource = models_20220301preview.AppResource(identity=identity_payload)
+    app_resource = models.AppResource(identity=identity_payload)
 
     logger.warning("Start to assign managed identities to app.")
     return client.apps.begin_update(resource_group, service, name, app_resource)
@@ -204,23 +204,23 @@ def _get_new_identity_type_for_assign(app, system_assigned, user_assigned):
     if app.identity and app.identity.type:
         new_identity_type = app.identity.type
     else:
-        new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+        new_identity_type = models.ManagedIdentityType.NONE
 
     if system_assigned:
-        if new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
-                                 models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
-            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+        if new_identity_type in (models.ManagedIdentityType.USER_ASSIGNED,
+                                 models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+            new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
         else:
-            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+            new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED
 
     if user_assigned:
-        if new_identity_type in (models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED,
-                                 models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
-            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+        if new_identity_type in (models.ManagedIdentityType.SYSTEM_ASSIGNED,
+                                 models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+            new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
         else:
-            new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+            new_identity_type = models.ManagedIdentityType.USER_ASSIGNED
 
-    if not new_identity_type or new_identity_type == models_20220301preview.ManagedIdentityType.NONE:
+    if not new_identity_type or new_identity_type == models.ManagedIdentityType.NONE:
         raise CLIInternalError("Internal error: invalid new identity type:{}.".format(new_identity_type))
 
     return new_identity_type
@@ -234,13 +234,13 @@ def _get_user_identity_payload_for_assign(new_identity_type, new_user_identity_r
             2. A dict from user-assigned managed identity to an empty object.
     """
     uid_payload = {}
-    if new_identity_type == models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED:
+    if new_identity_type == models.ManagedIdentityType.SYSTEM_ASSIGNED:
         pass
-    elif new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
-                               models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+    elif new_identity_type in (models.ManagedIdentityType.USER_ASSIGNED,
+                               models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
         if new_user_identity_rid_list:
             for rid in new_user_identity_rid_list:
-                uid_payload[rid] = models_20220301preview.UserAssignedManagedIdentity()
+                uid_payload[rid] = models.UserAssignedManagedIdentity()
 
     if len(uid_payload) == 0:
         uid_payload = None
@@ -314,27 +314,27 @@ def _get_new_identity_type_for_remove(exist_identity_type, is_remove_system_iden
 
     exist_identity_type_str = exist_identity_type.lower()
 
-    if exist_identity_type_str == models_20220301preview.ManagedIdentityType.NONE.lower():
-        new_identity_type = models_20220301preview.ManagedIdentityType.NONE
-    elif exist_identity_type_str == models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED.lower():
+    if exist_identity_type_str == models.ManagedIdentityType.NONE.lower():
+        new_identity_type = models.ManagedIdentityType.NONE
+    elif exist_identity_type_str == models.ManagedIdentityType.SYSTEM_ASSIGNED.lower():
         if is_remove_system_identity:
-            new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+            new_identity_type = models.ManagedIdentityType.NONE
         else:
-            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
-    elif exist_identity_type_str == models_20220301preview.ManagedIdentityType.USER_ASSIGNED.lower():
+            new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED
+    elif exist_identity_type_str == models.ManagedIdentityType.USER_ASSIGNED.lower():
         if not new_user_identities:
-            new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+            new_identity_type = models.ManagedIdentityType.NONE
         else:
-            new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
-    elif exist_identity_type_str == models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED.lower():
+            new_identity_type = models.ManagedIdentityType.USER_ASSIGNED
+    elif exist_identity_type_str == models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED.lower():
         if is_remove_system_identity and not new_user_identities:
-            new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+            new_identity_type = models.ManagedIdentityType.NONE
         elif not is_remove_system_identity and not new_user_identities:
-            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+            new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED
         elif is_remove_system_identity and new_user_identities:
-            new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+            new_identity_type = models.ManagedIdentityType.USER_ASSIGNED
         else:
-            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+            new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
     else:
         raise AzureInternalError("Invalid identity type: {}.".format(exist_identity_type_str))
 
@@ -348,8 +348,8 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
     :return None object or a non-empty dict from user-assigned managed identity resource id to None object
     """
     user_identity_payload = {}
-    if new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
-                             models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+    if new_identity_type in (models.ManagedIdentityType.USER_ASSIGNED,
+                             models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
         # empty list means remove all user-assigned managed identites
         if user_identity_list_to_remove is not None and len(user_identity_list_to_remove) == 0:
             raise CLIInternalError("When remove all user-assigned managed identities, "
@@ -366,13 +366,13 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
 
 
 def _get_new_identity_type_for_force_set(system_assigned, user_assigned):
-    new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+    new_identity_type = models.ManagedIdentityType.NONE
     if DISABLE_LOWER == system_assigned and DISABLE_LOWER != user_assigned[0]:
-        new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+        new_identity_type = models.ManagedIdentityType.USER_ASSIGNED
     elif ENABLE_LOWER == system_assigned and DISABLE_LOWER == user_assigned[0]:
-        new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+        new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED
     elif ENABLE_LOWER == system_assigned and DISABLE_LOWER != user_assigned[0]:
-        new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+        new_identity_type = models.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
     return new_identity_type
 
 
@@ -381,7 +381,7 @@ def _get_user_identity_payload_for_force_set(user_assigned):
         return None
     user_identity_payload = {}
     for user_identity_resource_id in user_assigned:
-        user_identity_payload[user_identity_resource_id] = models_20220301preview.UserAssignedManagedIdentity()
+        user_identity_payload[user_identity_resource_id] = models.UserAssignedManagedIdentity()
     if not user_identity_payload:
         user_identity_payload = None
     return user_identity_payload

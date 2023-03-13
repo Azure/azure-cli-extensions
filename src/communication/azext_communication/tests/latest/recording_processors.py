@@ -22,15 +22,22 @@ class URIIdentityReplacer(RecordingProcessor):
 
     def process_request(self, request):
         resource = (urlparse(request.uri).netloc).split('.')[0]
-        request.uri = re.sub('phoneNumbers/[%2B\d]+', 'phoneNumbers/sanitized', request.uri)
-        request.uri = re.sub('/identities/([^/?]+)', '/identities/sanitized', request.uri) 
+        request.uri = re.sub('/phoneNumbers/[%2B\d]+', '/phoneNumbers/sanitized', request.uri)
+        request.uri = re.sub('/identities/([^/?]+)', '/identities/sanitized', request.uri)
+        request.uri = re.sub('/chat/threads/([^/?]+)', '/chat/threads/sanitized', request.uri)
+        request.uri = re.sub('/chat/threads/([^/?]+)/messages/([^/?]+)', '/chat/threads/sanitized/messages/sanitized', request.uri)
+        request.uri = re.sub('/rooms/([0-9]+)/', '/rooms/sanitized/', request.uri)
+        request.uri = re.sub('/rooms/([0-9]+)\?', '/rooms/sanitized?', request.uri)
         request.uri = re.sub(resource, 'sanitized', request.uri)
         return request
     
     def process_response(self, response):
         if 'url' in response:
-            response['url'] = re.sub('phoneNumbers/[%2B\d]+', 'phoneNumbers/sanitized', response['url'])
+            response['url'] = re.sub('/phoneNumbers/[%2B\d]+', '/phoneNumbers/sanitized', response['url'])
             response['url'] = re.sub('/identities/([^/?]+)', '/identities/sanitized', response['url'])
+            response['url'] = re.sub('/chat/threads/([^/?]+)', '/chat/threads/sanitized', response['url'])
+            response['url'] = re.sub('/chat/threads/([^/?]+)/messages/([^/?]+)', '/chat/threads/sanitized/messages/sanitized', response['url'])
+            response['url'] = re.sub('/rooms/([0-9]+)/', '/rooms/sanitized/', response['url'])
         return response
 
 
@@ -130,13 +137,21 @@ class BodyReplacerProcessor(RecordingProcessor):
         return response
     
     def _replace_keys(self, body):
-        def _replace_recursively(dictionary):
-            for key in dictionary:
-                value = dictionary[key]
-                if key in self._keys:
-                    dictionary[key] = self._replacement
-                elif isinstance(value, dict):
-                    _replace_recursively(value)
+        import collections.abc
+        def _replace_recursively(data):
+            if (isinstance(data, str)):
+                return
+            
+            if isinstance(data, dict):
+                for key in data:
+                    value = data[key]
+                    if key in self._keys:
+                        data[key] = self._replacement
+                    else:
+                        _replace_recursively(value)
+            elif isinstance(data, collections.abc.Sequence):
+                for item in data:
+                    _replace_recursively(item)
 
         import json
         try:

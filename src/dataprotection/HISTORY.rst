@@ -2,6 +2,19 @@
 
 Release History
 ===============
+0.7.0
+++++++
+* `az dataprotection backup-vault create`: Add support for optional `--immutability-state`, `--soft-delete-state`, `--soft-delete-retention` parameters, corresponding to new Immutable Vault and Enhanced Soft Delete features
+* `az dataprotection backup-vault update`: Add support for optional `--soft-delete-state`, `--soft-delete-retention` parameters.
+
+0.6.0
+++++++
+* `az dataprotection backup-instance initialize`: Add optional `--tags` parameter
+
+0.5.0
+++++++
+* `az dataprotection backup-instance update-msi-permissions`: New command to grant missing permissions to backup vault MSI
+* `az dataprotection backup-instance initialize`: Added optional `--snapshot-resource-group-name` parameter
 
 0.4.0
 ++++++

@@ -17,14 +17,10 @@ from .example_steps import step_list_by_resource_group
 from .example_steps import step_list_by_subscription
 from .example_steps import step_update
 from .example_steps import step_delete
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
+from .. import try_manual, raise_if, calc_coverage
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
 # Env setup_scenario
@@ -43,35 +39,58 @@ def cleanup_scenario(test):
 @try_manual
 def call_scenario(test):
     setup_scenario(test)
-    step_create(test, checks=[
-        test.check("location", "EastUS", case_sensitive=False),
-        test.check("name", "{myLedger}", case_sensitive=False),
-        test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
-        test.check("properties.ledgerType", "Public", case_sensitive=False),
-        test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
-    ])
-    create_result = step_show(test, checks=[
-        test.check("location", "EastUS", case_sensitive=False),
-        test.check("name", "{myLedger}", case_sensitive=False),
-        test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
-        test.check("properties.ledgerType", "Public", case_sensitive=False),
-        test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
-    ])
-    step_list_by_resource_group(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_list_by_subscription(test, checks=[
-        test.check('length(@)', 3),
-    ])
+    step_create(
+        test,
+        checks=[
+            test.check("location", "EastUS", case_sensitive=False),
+            test.check("name", "{myLedger}", case_sensitive=False),
+            test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
+            test.check("properties.ledgerType", "Public", case_sensitive=False),
+            test.check(
+                "tags.additionalProps1", "additional properties", case_sensitive=False
+            ),
+        ],
+    )
+    create_result = step_show(
+        test,
+        checks=[
+            test.check("location", "EastUS", case_sensitive=False),
+            test.check("name", "{myLedger}", case_sensitive=False),
+            test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
+            test.check("properties.ledgerType", "Public", case_sensitive=False),
+            test.check(
+                "tags.additionalProps1", "additional properties", case_sensitive=False
+            ),
+        ],
+    )
+    step_list_by_resource_group(
+        test,
+        checks=[
+            test.check("length(@)", 1),
+        ],
+    )
+    step_list_by_subscription(
+        test,
+        checks=[
+            test.check("length(@)", 3),
+        ],
+    )
     step_update(test, create_result.get_output_in_json(), checks=[])
-    step_show(test, checks=[
-        test.check("location", "EastUS", case_sensitive=False),
-        test.check("name", "{myLedger}", case_sensitive=False),
-        test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
-        test.check("properties.ledgerType", "Public", case_sensitive=False),
-        test.check("tags.additionProps2", "additional property value", case_sensitive=False),
-        test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
-    ])
+    step_show(
+        test,
+        checks=[
+            test.check("location", "EastUS", case_sensitive=False),
+            test.check("name", "{myLedger}", case_sensitive=False),
+            test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
+            test.check("properties.ledgerType", "Public", case_sensitive=False),
+            test.check(
+                "tags.additionProps2", "additional property value", case_sensitive=False
+            ),
+            test.check(
+                "tags.additionalProps1", "additional properties", case_sensitive=False
+            ),
+        ],
+    )
     step_delete(test, checks=[])
     cleanup_scenario(test)
 
@@ -81,12 +100,17 @@ def call_scenario(test):
 class ConfidentialledgerScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(ConfidentialledgerScenarioTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'myLedger': 'DummyLedgerName',
-        })
+        self.kwargs.update(
+            {
+                "myLedger": "DummyLedgerName",
+            }
+        )
 
-    @ResourceGroupPreparer(name_prefix='clitestconfidentialledger_DummyResourceGroupName'[:7], key='rg',
-                           parameter_name='rg')
+    @ResourceGroupPreparer(
+        name_prefix="clitestconfidentialledger_DummyResourceGroupName"[:7],
+        key="rg",
+        parameter_name="rg",
+    )
     def test_confidentialledger_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)

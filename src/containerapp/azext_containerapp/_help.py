@@ -6,7 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
 helps['containerapp'] = """
     type: group
     short-summary: Manage Azure Container Apps.
@@ -40,6 +39,22 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --environment MyContainerappEnv \\
               --yaml "path/to/yaml/file.yml"
+    - name: Create a container app with an http scale rule
+      text: |
+          az containerapp create -n myapp -g mygroup --environment myenv --image nginx \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Create a container app with a custom scale rule
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-queue-processor --environment MyContainerappEnv \\
+              --min-replicas 4 --max-replicas 8 \\
+              --scale-rule-name queue-based-autoscaling \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name"
 """
 
 helps['containerapp update'] = """
@@ -55,6 +70,18 @@ helps['containerapp update'] = """
           az containerapp update -n MyContainerapp -g MyResourceGroup \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
+    - name: Update a container app with an http scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Update a container app with a custom scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-custom-rule \\
+              --scale-rule-type my-custom-type \\
+              --scale-rule-metadata key=value key2=value2 \\
+              --scale-rule-auth triggerparam=secretref triggerparam=secretref
 """
 
 helps['containerapp delete'] = """
@@ -117,7 +144,7 @@ helps['containerapp up'] = """
     - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
       text: |
           az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
-    - name: Create a container app from a dockerfile in a local directory
+    - name: Create a container app from a dockerfile in a local directory (or autogenerate a container if no dockerfile is found)
       text: |
           az containerapp up -n MyContainerapp --source .
     - name: Create a container app from an image in a registry
@@ -128,6 +155,23 @@ helps['containerapp up'] = """
           az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
 """
 
+helps['containerapp env logs'] = """
+    type: group
+    short-summary: Show container app environment logs
+"""
+
+helps['containerapp env logs show'] = """
+    type: command
+    short-summary: Show past environment logs and/or print logs in real time (with the --follow parameter)
+    examples:
+    - name: Fetch the past 20 lines of logs from an app and return
+      text: |
+          az containerapp env logs show -n MyEnvironment -g MyResourceGroup
+    - name: Fetch 30 lines of past logs logs from an environment and print logs as they come in
+      text: |
+          az containerapp env logs show -n MyEnvironment -g MyResourceGroup --follow --tail 30
+"""
+
 helps['containerapp logs'] = """
     type: group
     short-summary: Show container app logs
@@ -135,11 +179,14 @@ helps['containerapp logs'] = """
 
 helps['containerapp logs show'] = """
     type: command
-    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container.
+    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container (for non-system logs).
     examples:
     - name: Fetch the past 20 lines of logs from an app and return
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup
+    - name: Fetch the past 20 lines of system logs from an app and return
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --type system
     - name: Fetch 30 lines of past logs logs from an app and print logs as they come in
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --follow --tail 30
@@ -324,6 +371,17 @@ helps['containerapp env create'] = """
               --location eastus2
 """
 
+helps['containerapp env update'] = """
+    type: command
+    short-summary: Update a Container Apps environment.
+    examples:
+    - name: Update an environment's custom domain configuration.
+      text: |
+          az containerapp env update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --dns-suffix my-suffix.net --certificate-file MyFilePath \\
+              --certificate-password MyCertPass
+"""
+
 
 helps['containerapp env delete'] = """
     type: command
@@ -442,6 +500,15 @@ helps['containerapp env certificate'] = """
     short-summary: Commands to manage certificates for the Container Apps environment.
 """
 
+helps['containerapp env certificate create'] = """
+    type: command
+    short-summary: Create a managed certificate.
+    examples:
+    - name: Create a managed certificate.
+      text: |
+          az containerapp env certificate create -g MyResourceGroup --name MyEnvironment --certificate-name MyCertificate --hostname MyHostname --validation-method CNAME
+"""
+
 helps['containerapp env certificate list'] = """
     type: command
     short-summary: List certificates for an environment.
@@ -449,7 +516,7 @@ helps['containerapp env certificate list'] = """
     - name: List certificates for an environment.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment
-    - name: List certificates by certificate id.
+    - name: Show a certificate by certificate id.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
     - name: List certificates by certificate name.
@@ -458,6 +525,12 @@ helps['containerapp env certificate list'] = """
     - name: List certificates by certificate thumbprint.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+    - name: List managed certificates for an environment.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --managed-certificates-only
+    - name: List private key certificates for an environment.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --private-key-certificates-only
 """
 
 helps['containerapp env certificate upload'] = """
@@ -482,7 +555,7 @@ helps['containerapp env certificate delete'] = """
     - name: Delete a certificate from the Container Apps environment by certificate id
       text: |
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
-    - name: Delete a certificate from the Container Apps environment by certificate thumbprint
+    - name: Delete all certificates that have a matching thumbprint from the Container Apps environment
       text: |
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
 """
@@ -564,9 +637,9 @@ helps['containerapp ingress show'] = """
 
 helps['containerapp ingress enable'] = """
     type: command
-    short-summary: Enable ingress for a container app.
+    short-summary: Enable or update ingress for a container app.
     examples:
-    - name: Enable ingress for a container app.
+    - name: Enable or update ingress for a container app.
       text: |
           az containerapp ingress enable -n MyContainerapp -g MyResourceGroup \\
               --type external --allow-insecure --target-port 80 --transport auto
@@ -611,6 +684,38 @@ helps['containerapp ingress traffic show'] = """
     - name: Show a container app's ingress traffic configuration.
       text: |
           az containerapp ingress traffic show -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress access-restriction'] = """
+    type: group
+    short-summary: Commands to manage IP access restrictions.
+"""
+
+helps['containerapp ingress access-restriction set'] = """
+    type: command
+    short-summary: Configure IP access restrictions for a container app.
+    examples:
+    - name: Add an allow IP access restriction.
+      text: |
+          az containerapp ingress access-restriction set -n MyContainerapp -g MyResourceGroup --rule-name restrictionName --ip-address 192.168.1.1/32 --description "Restriction description." --action Allow
+"""
+
+helps['containerapp ingress access-restriction remove'] = """
+    type: command
+    short-summary: Remove IP access restrictions from a container app.
+    examples:
+    - name: Remove an IP access restriction.
+      text: |
+          az containerapp ingress access-restriction remove -n MyContainerapp -g MyResourceGroup --rule-name restrictionName
+"""
+
+helps['containerapp ingress access-restriction list'] = """
+    type: command
+    short-summary: List IP access restrictions for a container app.
+    examples:
+    - name: List IP access restrictions.
+      text: |
+          az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
 """
 
 # Registry Commands
@@ -794,13 +899,25 @@ helps['containerapp hostname'] = """
     short-summary: Commands to manage hostnames of a container app.
 """
 
+helps['containerapp hostname add'] = """
+    type: command
+    short-summary: Add the hostname to a container app without binding.
+    examples:
+    - name: Add hostname without binding.
+      text: |
+          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname --location MyLocation
+"""
+
 helps['containerapp hostname bind'] = """
     type: command
-    short-summary: Add or update the hostname and binding with an existing certificate.
+    short-summary: Add or update the hostname and binding with a certificate.
     examples:
-    - name: Add or update hostname and binding.
+    - name: Add or update hostname and binding with a provided certificate.
       text: |
           az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
+    - name: Look for or create a managed certificate and bind with the hostname if no certificate or thumbprint is provided.
+      text: |
+          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname
 """
 
 helps['containerapp hostname delete'] = """
@@ -1040,4 +1157,25 @@ examples:
     text: |
         az containerapp auth twitter update  -g myResourceGroup --name MyContainerapp \\
           --consumer-key my-client-id --consumer-secret very_secret_password
+"""
+
+# Compose commands
+helps['containerapp compose'] = """
+    type: group
+    short-summary: Commands to create Azure Container Apps from Compose specifications.
+"""
+
+helps['containerapp compose create'] = """
+    type: command
+    short-summary: Create one or more Container Apps in a new or existing Container App Environment from a Compose specification.
+    examples:
+    - name: Create a container app by implicitly passing in a Compose configuration file from current directory.
+      text: |
+          az containerapp compose create -g MyResourceGroup \\
+              --environment MyContainerappEnv
+    - name: Create a container app by explicitly passing in a Compose configuration file.
+      text: |
+          az containerapp compose create -g MyResourceGroup \\
+              --environment MyContainerappEnv \\
+              --compose-file-path "path/to/docker-compose.yml"
 """

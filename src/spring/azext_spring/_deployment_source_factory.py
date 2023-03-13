@@ -4,9 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
-from azure.cli.core.azclierror import (ArgumentUsageError)
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from azure.cli.core.azclierror import ArgumentUsageError
 from ._utils import convert_argument_to_parameter_list
+
+import shlex
 
 
 class BaseSource:
@@ -32,7 +34,7 @@ class JarSource(BaseSource):
         return models.JarUploadedUserSourceInfo(
             relative_path=deployable_path,
             jvm_options=jvm_options,
-            runtime_version=runtime_version or 'Java_8',
+            runtime_version=runtime_version or 'Java_11',
             version=version
         )
 
@@ -100,11 +102,15 @@ class CustomContainerSource(BaseSource):
 
     def _format_container(self, container_registry=None, container_image=None,
                           container_command=None, container_args=None,
-                          registry_username=None, registry_password=None, **_):
+                          registry_username=None, registry_password=None, language_framework=None, **_):
         if all(x is None for x in [container_image,
                                    container_command, container_args,
                                    registry_username, registry_password]):
             return None
+        if container_command is not None:
+            container_command = shlex.split(container_command)
+        if container_args is not None:
+            container_args = shlex.split(container_args)
         credential = models.ImageRegistryCredential(
             username=registry_username,
             password=registry_password      # [SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="false positive")]
@@ -115,6 +121,7 @@ class CustomContainerSource(BaseSource):
             command=container_command,
             args=container_args,
             image_registry_credential=credential,
+            language_framework=language_framework
         )
 
 

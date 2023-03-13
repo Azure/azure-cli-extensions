@@ -20,13 +20,13 @@ interactions:
       - --name --description --display-name --scope-accesses --network-manager-scopes
         -l --resource-group
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"","description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"multiTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"d98ff18a-bf4a-4f76-9e56-bb207e75cdb1"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-04-08T07:13:00.2983262Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-08T07:13:00.2983262Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"9b63d300-62b3-48c4-8a3e-330698fc98bf"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-06-27T07:13:52.0147242Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-06-27T07:13:52.0147242Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -35,7 +35,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Apr 2022 07:13:05 GMT
+      - Mon, 27 Jun 2022 07:13:54 GMT
       expires:
       - '-1'
       pragma:
@@ -51,7 +51,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -74,9 +74,9 @@ interactions:
       ParameterSetName:
       - --connection-name --description --network-manager-id
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
@@ -89,7 +89,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Apr 2022 07:13:10 GMT
+      - Mon, 27 Jun 2022 07:13:58 GMT
       expires:
       - '-1'
       pragma:
@@ -105,7 +105,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1192'
     status:
       code: 200
       message: OK
@@ -123,9 +123,9 @@ interactions:
       ParameterSetName:
       - --connection-name
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
@@ -138,7 +138,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Apr 2022 07:13:12 GMT
+      - Mon, 27 Jun 2022 07:14:00 GMT
       expires:
       - '-1'
       pragma:
@@ -170,9 +170,9 @@ interactions:
       ParameterSetName:
       - --connection-name --description
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
@@ -185,7 +185,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Apr 2022 07:13:14 GMT
+      - Mon, 27 Jun 2022 07:14:03 GMT
       expires:
       - '-1'
       pragma:
@@ -222,9 +222,9 @@ interactions:
       ParameterSetName:
       - --connection-name --description
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
@@ -237,7 +237,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Apr 2022 07:13:19 GMT
+      - Mon, 27 Jun 2022 07:14:06 GMT
       expires:
       - '-1'
       pragma:
@@ -253,7 +253,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1193'
     status:
       code: 200
       message: OK
@@ -269,23 +269,22 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections?api-version=2022-01-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/testConnection","name":"testConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"","connectionState":"Pending","description":"My
-        Test Network Manager Connection"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","location":"","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
         Test Network Manager Connection Updated Description"}}],"nextLink":""}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '931'
+      - '594'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Apr 2022 07:13:21 GMT
+      - Mon, 27 Jun 2022 07:14:07 GMT
       expires:
       - '-1'
       pragma:
@@ -319,9 +318,9 @@ interactions:
       ParameterSetName:
       - --connection-name --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: ''
@@ -331,7 +330,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 08 Apr 2022 07:13:23 GMT
+      - Mon, 27 Jun 2022 07:14:11 GMT
       expires:
       - '-1'
       pragma:
@@ -343,7 +342,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -361,11 +360,11 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - --resource-group --name --yes
+      - --resource-group --name --force --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.37.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01&force=true
   response:
     body:
       string: ''
@@ -375,7 +374,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 08 Apr 2022 07:13:28 GMT
+      - Mon, 27 Jun 2022 07:14:17 GMT
       expires:
       - '-1'
       pragma:
@@ -387,7 +386,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 200
       message: OK

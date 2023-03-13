@@ -4,10 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
+import logging
 import requests
 import re
 import os
+import time
+from azure.cli.core._profile import Profile
 
+from ._websocket import WebSocketConnection, recv_remote, send_stdin, EXEC_PROTOCOL_CTRL_C_MSG
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
@@ -17,23 +21,13 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2020_07_01 import models
-from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
-from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
-from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
-from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
-from .vendored_sdks.appplatform.v2020_11_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
-)
-from ._client_factory import (cf_spring)
+from .vendored_sdks.appplatform.v2022_11_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
-from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
+from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
-from azure.core.exceptions import ResourceNotFoundError
-from ._utils import _get_rg_location
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -74,7 +68,7 @@ def _update_application_insights_asc_create(cmd,
                                             **_):
     monitoring_setting_resource = models.MonitoringSettingResource()
     if disable_app_insights is not True:
-        client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+        client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient)
         logger.warning("Start configure Application Insights")
         monitoring_setting_properties = update_java_agent_config(
             cmd, resource_group, name, location, app_insights_key, app_insights, sampling_rate)
@@ -93,7 +87,7 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     Will be decommissioned in future releases.
     :param app_insights_key: Connection string or Instrumentation key
     """
-    updated_resource = models_20220501preview.ServiceResource()
+    updated_resource = models.ServiceResource()
     update_service_tags = False
     update_service_sku = False
     update_log_stream_public_endpoint = False
@@ -105,11 +99,11 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
 
     resource = client.services.get(resource_group, name)
     location = resource.location
-    updated_resource_properties = models_20220501preview.ClusterResourceProperties()
+    updated_resource_properties = models.ClusterResourceProperties()
     updated_resource_properties.zone_redundant = None
 
     if enable_log_stream_public_endpoint is not None:
-        updated_resource_properties.vnet_addons = models_20220501preview.ServiceVNetAddons(
+        updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
             log_stream_public_endpoint=enable_log_stream_public_endpoint
         )
         update_log_stream_public_endpoint = True
@@ -139,8 +133,8 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
 
 def _update_ingress_config(updated_resource_properties, ingress_read_timeout=None):
     if ingress_read_timeout:
-        ingress_configuration = models_20220501preview.IngressConfig(read_timeout_in_seconds=ingress_read_timeout)
-        updated_resource_properties.network_profile = models_20220501preview.NetworkProfile(
+        ingress_configuration = models.IngressConfig(read_timeout_in_seconds=ingress_read_timeout)
+        updated_resource_properties.network_profile = models.NetworkProfile(
             ingress_config=ingress_configuration)
 
 
@@ -151,7 +145,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
     update_app_insights = False
     app_insights_target_status = False
 
-    client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+    client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient)
     monitoring_setting_properties = client_preview.monitoring_settings.get(resource_group, name).properties
     trace_enabled = monitoring_setting_properties.trace_enabled if monitoring_setting_properties is not None else False
 
@@ -170,7 +164,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
     # update application insights
     if update_app_insights is True:
         if app_insights_target_status is False:
-            monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
+            monitoring_setting_properties = models.MonitoringSettingProperties(trace_enabled=False)
         elif monitoring_setting_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key:
             monitoring_setting_properties.trace_enabled = app_insights_target_status
         else:
@@ -184,7 +178,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
 
 
 def spring_delete(cmd, client, resource_group, name, no_wait=False):
-    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
+    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/asa_exitsurvey")
     return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
 
 
@@ -258,7 +252,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         for disk in app.properties.custom_persistent_disks:
             custom_persistent_disks.append(disk)
 
-    custom_persistent_disk_properties = models_20220101preview.AzureFileVolume(
+    custom_persistent_disk_properties = models.AzureFileVolume(
         type=persistent_storage_type,
         share_name=share_name,
         mount_path=mount_path,
@@ -266,7 +260,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         read_only=read_only)
 
     custom_persistent_disks.append(
-        models_20220101preview.CustomPersistentDiskResource(
+        models.CustomPersistentDiskResource(
             storage_id=storage_resource.id,
             custom_persistent_disk_properties=custom_persistent_disk_properties))
 
@@ -310,6 +304,23 @@ def app_stop(cmd, client,
     logger.warning("Successfully triggered the action 'stop' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_stop,
                        resource_group, service, name, deployment.name)
+
+
+def deployment_enable_remote_debugging(cmd, client, resource_group, service, name, remote_debugging_port=None, deployment=None, no_wait=False):
+    logger.warning("Enable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    remote_debugging_payload = models.RemoteDebuggingPayload(port=remote_debugging_port)
+    return sdk_no_wait(no_wait, client.deployments.begin_enable_remote_debugging,
+                       resource_group, service, name, deployment.name, remote_debugging_payload)
+
+
+def deployment_disable_remote_debugging(cmd, client, resource_group, service, name, deployment=None, no_wait=False):
+    logger.warning("Disable remote debugging for the app '{}', deployment '{}'".format(name, deployment.name))
+    return sdk_no_wait(no_wait, client.deployments.begin_disable_remote_debugging,
+                       resource_group, service, name, deployment.name)
+
+
+def deployment_get_remote_debugging(cmd, client, resource_group, service, name, deployment=None):
+    return client.deployments.get_remote_debugging_config(resource_group, service, name, deployment.name)
 
 
 def app_restart(cmd, client,
@@ -360,13 +371,13 @@ def app_scale(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    resource_requests = models_20220101preview.ResourceRequests(cpu=cpu, memory=memory)
+    resource_requests = models.ResourceRequests(cpu=cpu, memory=memory)
 
-    deployment_settings = models_20220101preview.DeploymentSettings(resource_requests=resource_requests)
-    properties = models_20220101preview.DeploymentResourceProperties(
+    deployment_settings = models.DeploymentSettings(resource_requests=resource_requests)
+    properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    sku = models_20220101preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    deployment_resource = models_20220101preview.DeploymentResource(properties=properties, sku=sku)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
     return sdk_no_wait(no_wait, client.deployments.begin_update,
                        resource_group, service, name, deployment.name, deployment_resource)
 
@@ -379,6 +390,13 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
+    app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
+                          format_json, get_app_log=_get_app_log)
+
+
+def app_tail_log_internal(cmd, client, resource_group, service, name,
+                          deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048,
+                          format_json=None, timeout=None, get_app_log=None):
     if not instance:
         if not deployment.properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -408,10 +426,13 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
-    t = Thread(target=_get_app_log, args=(
+    t = Thread(target=get_app_log, args=(
         streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
+
+    if timeout:
+        t.join(timeout=timeout)
 
     while t.is_alive():
         sleep(5)  # so that ctrl+c can stop the command
@@ -421,34 +442,18 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
 
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):
-    sku = get_spring_sku(client, resource_group, service)
-    if sku.tier == 'Enterprise':
-        return _set_active_in_preview_api(cmd, client, resource_group, service, name, deployment)
-    else:
-        return _set_active_in_lagecy_api(cmd, client, resource_group, service, name, deployment)
+    return _set_active_in_preview_api(cmd, client, resource_group, service, name, deployment)
 
 
 def app_unset_deployment(cmd, client, resource_group, service, name):
-    sku = get_spring_sku(client, resource_group, service)
-    if sku.tier == 'Enterprise':
-        return _set_active_in_preview_api(cmd, client, resource_group, service, name)
-    else:
-        return _set_active_in_lagecy_api(cmd, client, resource_group, service, name)
+    return _set_active_in_preview_api(cmd, client, resource_group, service, name)
 
 
 def _set_active_in_preview_api(cmd, client, resource_group, service, name, deployment=None):
-    active_deployment_collection = models_20220101preview.ActiveDeploymentCollection(
+    active_deployment_collection = models.ActiveDeploymentCollection(
         active_deployment_names=[x for x in [deployment] if x is not None]
     )
     return client.apps.begin_set_active_deployments(resource_group, service, name, active_deployment_collection)
-
-
-def _set_active_in_lagecy_api(cmd, client, resource_group, service, name, deployment=''):
-    app = models.AppResource(
-        properties=models.AppResourceProperties(active_deployment_name=deployment)
-    )
-    client = cf_spring(cmd.cli_ctx)
-    return client.apps.begin_update(resource_group, service, name, app)
 
 
 def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
@@ -465,7 +470,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
         if loaded_certificate.resource_id == certificate_resource.id:
             raise ClientRequestError("This certificate has already been loaded.")
 
-    loaded_certificates.append(models_20220101preview.
+    loaded_certificates.append(models.
                                LoadedCertificate(resource_id=certificate_resource_id,
                                                  load_trust_store=load_trust_store))
 
@@ -499,22 +504,21 @@ def deployment_list(cmd, client, resource_group, service, app):
 
 
 def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app_instance, file_path, deployment=None):
-    diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    diagnostic_parameters = models.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Heap dump is triggered.")
     return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_generate_thread_dump(cmd, client, resource_group, service, app, app_instance, file_path,
                                     deployment=None):
-    diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    diagnostic_parameters = models.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Thread dump is triggered.")
     return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
                          deployment=None):
-    diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
-                                                                        duration=duration)
+    diagnostic_parameters = models.DiagnosticParameters(app_instance=app_instance, file_path=file_path, duration=duration)
     logger.info("JFR is triggered.")
     return client.deployments.begin_start_jfr(resource_group, service, app, deployment.name, diagnostic_parameters)
 
@@ -976,7 +980,7 @@ def _get_redis_primary_key(cli_ctx, resource_id):
 
 
 # pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, user_name, password, format_json, exceptions):
+def _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=None, stderr=False):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
 
     def build_log_shortener(length):
@@ -1045,14 +1049,14 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         return format_line
 
-    def iter_lines(response, limit=2 ** 20):
+    def iter_lines(response, limit=2 ** 20, chunk_size=None):
         '''
         Returns a line iterator from the response content. If no line ending was found and the buffered content size is
         larger than the limit, the buffer will be yielded directly.
         '''
         buffer = []
         total = 0
-        for content in response.iter_content(chunk_size=None):
+        for content in response.iter_content(chunk_size=chunk_size):
             if not content:
                 if len(buffer) > 0:
                     yield b''.join(buffer)
@@ -1087,24 +1091,26 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
             formatter = build_formatter()
 
-            for line in iter_lines(response):
+            for line in iter_lines(response, chunk_size=chunk_size):
                 decoded = (line.decode(encoding='utf-8', errors='replace')
                            .encode(std_encoding, errors='replace')
                            .decode(std_encoding, errors='replace'))
-                print(formatter(decoded), end='')
-
+                if stderr:
+                    print(formatter(decoded), end='', file=sys.stderr)
+                else:
+                    print(formatter(decoded), end='')
         except CLIError as e:
             exceptions.append(e)
 
 
 def storage_callback(pipeline_response, deserialized, headers):
-    return models_20220101preview.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
+    return models.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
 
 def storage_add(client, resource_group, service, name, storage_type, account_name, account_key):
     properties = None
     if storage_type == 'StorageAccount':
-        properties = models_20220101preview.StorageAccount(
+        properties = models.StorageAccount(
             storage_type=storage_type,
             account_name=account_name,
             account_key=account_key)
@@ -1113,7 +1119,7 @@ def storage_add(client, resource_group, service, name, storage_type, account_nam
         resource_group_name=resource_group,
         service_name=service,
         storage_name=name,
-        storage_resource=models_20220101preview.StorageResource(properties=properties),
+        storage_resource=models.StorageResource(properties=properties),
         cls=storage_callback)
 
 
@@ -1133,7 +1139,7 @@ def storage_remove(client, resource_group, service, name):
 def storage_update(client, resource_group, service, name, storage_type, account_name, account_key):
     properties = None
     if storage_type == 'StorageAccount':
-        properties = models_20220101preview.StorageAccount(
+        properties = models.StorageAccount(
             storage_type=storage_type,
             account_name=account_name,
             account_key=account_key)
@@ -1142,7 +1148,7 @@ def storage_update(client, resource_group, service, name, storage_type, account_
         resource_group_name=resource_group,
         service_name=service,
         storage_name=name,
-        storage_resource=models_20220101preview.StorageResource(properties=properties),
+        storage_resource=models.StorageResource(properties=properties),
         cls=storage_callback)
 
 
@@ -1174,7 +1180,7 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
     if vault_uri is not None:
         if only_public_cert is None:
             only_public_cert = False
-        properties = models_20220101preview.KeyVaultCertificateProperties(
+        properties = models.KeyVaultCertificateProperties(
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
@@ -1190,14 +1196,14 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
                 raise FileOperationError('Failed to decode file {} - unknown decoding'.format(public_certificate_file))
         else:
             raise FileOperationError("public_certificate_file {} could not be found".format(public_certificate_file))
-        properties = models_20220101preview.ContentCertificateProperties(
+        properties = models.ContentCertificateProperties(
             type="ContentCertificate",
             content=content
         )
-    certificate_resource = models_20220101preview.CertificateResource(properties=properties)
+    certificate_resource = models.CertificateResource(properties=properties)
 
     def callback(pipeline_response, deserialized, headers):
-        return models_20220101preview.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
+        return models.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
     return client.certificates.begin_create_or_update(
         resource_group_name=resource_group,
@@ -1269,8 +1275,8 @@ def _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingres
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models_20220101preview.AppResourceProperties(enable_end_to_end_tls=enable_ingress_to_app_tls)
-    app_resource = models_20220101preview.AppResource()
+    properties = models.AppResourceProperties(enable_end_to_end_tls=enable_ingress_to_app_tls)
+    app_resource = models.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -1338,7 +1344,7 @@ def update_java_agent_config(cmd, resource_group, service_name, location,
         try:
             created_app_insights = try_create_application_insights(cmd, resource_group, service_name, location)
             if created_app_insights:
-                monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+                monitoring_setting_properties = models.MonitoringSettingProperties(
                     trace_enabled=True, app_insights_instrumentation_key=created_app_insights.connection_string)
         except Exception:  # pylint: disable=broad-except
             logger.warning(
@@ -1353,12 +1359,12 @@ def update_java_agent_config(cmd, resource_group, service_name, location,
 def _get_monitoring_setting(cmd, resource_group, app_insights_key, app_insights):
     monitoring_setting_properties = None
     if app_insights_key:
-        monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+        monitoring_setting_properties = models.MonitoringSettingProperties(
             trace_enabled=True,
             app_insights_instrumentation_key=app_insights_key)
     elif app_insights:
         connection_string = _get_connection_string_from_app_insights(cmd, resource_group, app_insights)
-        monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+        monitoring_setting_properties = models.MonitoringSettingProperties(
             trace_enabled=True,
             app_insights_instrumentation_key=connection_string)
     return monitoring_setting_properties
@@ -1421,7 +1427,7 @@ def app_insights_update(cmd, client, resource_group, name,
     :param sampling_rate: float from 0.0 to 100.0, both included
     """
     if disable:
-        monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
+        monitoring_setting_properties = models.MonitoringSettingProperties(trace_enabled=False)
     else:
         monitoring_setting_properties = client.monitoring_settings.get(resource_group, name).properties
         if not monitoring_setting_properties.app_insights_instrumentation_key \
@@ -1441,12 +1447,12 @@ def app_insights_update(cmd, client, resource_group, name,
         else:
             connection_string = monitoring_setting_properties.app_insights_instrumentation_key
         if sampling_rate is not None:
-            monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+            monitoring_setting_properties = models.MonitoringSettingProperties(
                 trace_enabled=True,
                 app_insights_instrumentation_key=connection_string,
                 app_insights_sampling_rate=sampling_rate)
         elif monitoring_setting_properties.app_insights_sampling_rate is not None:
-            monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+            monitoring_setting_properties = models.MonitoringSettingProperties(
                 trace_enabled=True,
                 app_insights_instrumentation_key=connection_string,
                 app_insights_sampling_rate=monitoring_setting_properties.app_insights_sampling_rate)
@@ -1462,3 +1468,65 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
     if not monitoring_setting_properties:
         raise CLIError("Application Insights not set.")
     return monitoring_setting_properties
+
+
+def app_connect(cmd, client, resource_group, service, name,
+                deployment=None, instance=None, shell_cmd='/bin/sh'):
+
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    creds, _, _ = profile.get_raw_token()
+    token = creds[1]
+
+    resource = client.services.get(resource_group, service)
+    hostname = resource.properties.fqdn
+    if not instance:
+        if not deployment.properties.instances:
+            raise ResourceNotFoundError("No instances found for deployment '{0}' in app '{1}'".format(
+                deployment.name, name))
+        instances = deployment.properties.instances
+        if len(instances) > 1:
+            logger.warning("Multiple app instances found:")
+            for temp_instance in instances:
+                logger.warning("{}".format(temp_instance.name))
+            logger.warning("Please use '-i/--instance' parameter to specify the instance name")
+            return None
+        instance = instances[0].name
+
+    connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(
+        hostname, name, deployment.name, instance, shell_cmd)
+    logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+    conn = WebSocketConnection(connect_url, token)
+
+    reader = Thread(target=recv_remote, args=(conn,))
+    reader.daemon = True
+    reader.start()
+
+    try:
+        import tty
+        tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
+    except ModuleNotFoundError:
+        # tty works only on Unix
+        pass
+
+    writer = Thread(target=send_stdin, args=(conn,))
+    writer.daemon = True
+    writer.start()
+
+    logger.warning("Use ctrl + D to exit.")
+    while conn.is_connected:
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                conn.send(EXEC_PROTOCOL_CTRL_C_MSG)
+
+    try:
+        import termios
+        # Turn on the terminal echo after exiting.
+        mode = termios.tcgetattr(sys.stdin.fileno())
+        mode[3] = mode[3] | termios.ECHO
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSAFLUSH, mode)
+    except ModuleNotFoundError:
+        # termios works only on Unix
+        pass

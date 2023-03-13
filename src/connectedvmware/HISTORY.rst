@@ -3,11 +3,39 @@
 Release History
 ===============
 
+0.1.12
+++++++
+* Fixed VM extension issue.
+
+0.1.11
+++++++
+Including pwinput in code to workaround the issue with azure cli version >= 2.42.0 in windows installed using MSI.
+Issue link: https://github.com/Azure/azure-cli/issues/24781
+
+0.1.10
+++++++
+* Bug Fix: Wait for SystemAssigned Identity PATCH to complete before enabling Guest management on VM.
+
+0.1.9
+++++++
+* Update API Version from 2020-10-01-preview to 2022-01-10-preview.
+* Support for VM delete in retain mode.
+
+0.1.8
+++++++
+* Displaying asterisks (*****) for password input.
+
+0.1.7
+++++++
+* Proxy support in vm guest agent.
+* Deprecate support to create resource from moref id.
+* [BREAKING CHANGE] Fixed guest-agent enable issue. 
+
 0.1.6
 ++++++
-* Fix vm update
-* Fix inventory item show
-* Add support for tagging
+* Fix vm update issue.
+* Fix inventory item show.
+* Add support for tagging.
 
 0.1.5
 ++++++

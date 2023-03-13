@@ -792,13 +792,14 @@ def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
     return instance
 
 
-def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version):
+def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version, rule_set_action=None):
     from azext_front_door.vendored_sdks.models import ManagedRuleSet
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
     rule_set = ManagedRuleSet(
         rule_set_type=rule_set_type,
-        rule_set_version=version
+        rule_set_version=version,
+        rule_set_action=rule_set_action,
     )
 
     policy_rule_sets = policy.managed_rules.managed_rule_sets

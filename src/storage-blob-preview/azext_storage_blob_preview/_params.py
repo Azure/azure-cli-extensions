@@ -264,6 +264,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
+        c.argument('container_name', container_name_type,
+                   help='Used when you want to list blobs under a specified container')
 
     with self.argument_context('storage blob generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list
@@ -340,26 +342,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.register_lease_blob_arguments()
             c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
             c.extra('if_tags_match_condition', tags_condition_type)
-
-    with self.argument_context('storage blob list') as c:
-        from .track2_util import get_include_help_string
-        t_blob_include = self.get_sdk('_generated.models._azure_blob_storage_enums#ListBlobsIncludeItem',
-                                      resource_type=CUSTOM_DATA_STORAGE_BLOB)
-        c.register_container_arguments()
-        c.argument('delimiter',
-                   help='When the request includes this parameter, the operation returns a BlobPrefix element in the '
-                   'result list that acts as a placeholder for all blobs whose names begin with the same substring '
-                   'up to the appearance of the delimiter character. The delimiter may be a single character or a '
-                   'string.')
-        c.argument('include', help="Specify one or more additional datasets to include in the response. "
-                   "Options include: {}. Can be combined.".format(get_include_help_string(t_blob_include)),
-                   validator=validate_included_datasets_v2)
-        c.argument('marker', arg_type=marker_type)
-        c.argument('num_results', arg_type=num_results_type)
-        c.argument('prefix',
-                   help='Filter the results to return only blobs whose name begins with the specified prefix.')
-        c.argument('show_next_marker', action='store_true', is_preview=True,
-                   help='Show nextMarker in result when specified.')
 
     for item in ['show', 'update']:
         with self.argument_context('storage blob metadata {}'.format(item), resource_type=CUSTOM_DATA_STORAGE_BLOB) \

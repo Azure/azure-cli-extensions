@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 
-from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
 
 # pylint: disable=line-too-long
@@ -196,15 +194,16 @@ class SslTests(ScenarioTest):
 class CustomImageTest(ScenarioTest):
 
     def test_app_deploy_container(self):
-        py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
         self.kwargs.update({
             'app': 'test-container',
             'serviceName': 'cli-unittest',
             'containerImage': 'springio/gs-spring-boot-docker',
             'resourceGroup': 'cli',
-            'file': file_path
+            'location': 'centralindia'
         })
+
+        self.cmd('group create -n {resourceGroup} -l {location}')
+        self.cmd('spring create -n {serviceName} -g {resourceGroup}')
 
         self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
@@ -212,9 +211,62 @@ class CustomImageTest(ScenarioTest):
             self.check('name', 'default'),
             self.check('properties.source.type', 'Container'),
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.languageFramework', None),
         ])
 
-        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
-                 + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
-            self.check('name', 'green'),
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage} --container-command "java" --container-args "-cp /app/resources:/app/classes:/app/libs/* hello.Application"', checks=[
+            self.check('name', 'default'),
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.command', ['java']),
+            self.check('properties.source.customContainer.args', ['-cp', '/app/resources:/app/classes:/app/libs/*', 'hello.Application']),
         ])
+
+        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green --container-image {containerImage} --language-framework springboot', checks=[
+            self.check('name', 'green'),
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.languageFramework', 'springboot'),
+        ])
+
+
+class RemoteDebuggingTest(ScenarioTest):
+    def test_remote_debugging(self):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': 'test-remote-debugging',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+            'location': 'centralindia',
+            'deployment': 'default',
+            'file': file_path
+        })
+
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        # remote debugging can only be supported for jar, here will throw exception for default banner
+        self.cmd(
+            'spring app enable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}', expect_failure=True)
+
+        self.cmd(
+            'spring app disable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}')
+
+        self.cmd(
+            'spring app get-remote-debugging-config -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}',
+            checks=[
+                self.check('enabled', False)
+            ])
+
+
+class AppConnectTest(ScenarioTest):
+
+    def test_app_connect(self):
+        self.kwargs.update({
+            'app': 'test-app',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli'
+        })
+
+        # Test the failed case only since this is an interactive command
+        self.cmd('spring app connect -s {serviceName} -g {resourceGroup} -n {app} --shell-cmd /bin/placeholder', expect_failure=True)

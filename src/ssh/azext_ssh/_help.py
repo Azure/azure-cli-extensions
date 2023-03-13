@@ -51,6 +51,10 @@ helps['ssh vm'] = """
         - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempts to use pre-installed OpenSSH client (on Windows, extension looks for pre-installed executables under C:\\Windows\\System32\\OpenSSH).
           text: |
             az ssh vm --resource-group myResourceGroup --name myVM --ssh-client-folder "C:\\Program Files\\OpenSSH"
+
+        - name: Open RDP connection over SSH. Useful for connecting via RDP to Arc Servers with no public IP address. Currently only supported for Windows clients.
+          text: |
+            az ssh vm --resource-group myResourceGroup --name myVM --local-user username --rdp
 """
 
 helps['ssh config'] = """
@@ -144,4 +148,8 @@ helps['ssh arc'] = """
         - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempts to use pre-installed OpenSSH client (on Windows, extension looks for pre-installed executables under C:\\Windows\\System32\\OpenSSH).
           text: |
             az ssh arc --resource-group myResourceGroup --name myMachine --ssh-client-folder "C:\\Program Files\\OpenSSH"
+
+        - name: Open RDP connection over SSH. Useful for connecting via RDP to Arc Servers with no public IP address. Currently only supported for Windows clients.
+          text: |
+            az ssh arc --resource-group myResourceGroup --name myVM --local-user username --rdp
 """

@@ -13,7 +13,7 @@ def load_arguments(self, _):
     # PARAMETER REGISTRATION
 
     with self.argument_context('functionapp devops-pipeline') as c:
-        c.argument('functionapp_name', help="Name of the Azure function app that you want to use", required=False,
+        c.argument('functionapp_name', help="Name of the Azure Function App that you want to use", required=False,
                    local_context_attribute=LocalContextAttribute(name='functionapp_name',
                                                                  actions=[LocalContextAction.GET]))
         c.argument('organization_name', help="Name of the Azure DevOps organization that you want to use",

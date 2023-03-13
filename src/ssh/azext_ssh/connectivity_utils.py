@@ -12,9 +12,8 @@ import base64
 from glob import glob
 
 import colorama
-from colorama import Fore
-from colorama import Style
 
+from azure.cli.core.style import Style, print_styled_text
 from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
@@ -29,7 +28,7 @@ logger = log.get_logger(__name__)
 
 
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_seconds):
+def get_relay_information(cmd, resource_group, vm_name, resource_type, certificate_validity_in_seconds):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
 
@@ -40,16 +39,18 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
     try:
         t0 = time.time()
         result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
-                                         endpoint_name="default", expiresin=certificate_validity_in_seconds)
+                                         resource_type=resource_type, endpoint_name="default",
+                                         expiresin=certificate_validity_in_seconds)
         time_elapsed = time.time() - t0
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except ResourceNotFoundError:
         logger.debug("Default Endpoint couldn't be found. Trying to create Default Endpoint.")
-        _create_default_endpoint(cmd, resource_group, vm_name, client)
+        _create_default_endpoint(cmd, resource_group, vm_name, resource_type, client)
         try:
             t0 = time.time()
             result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
-                                             endpoint_name="default", expiresin=certificate_validity_in_seconds)
+                                             resource_type=resource_type, endpoint_name="default",
+                                             expiresin=certificate_validity_in_seconds)
             time_elapsed = time.time() - t0
             telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
         except Exception as e:
@@ -59,17 +60,20 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
     return result
 
 
-def _create_default_endpoint(cmd, resource_group, vm_name, client):
+def _create_default_endpoint(cmd, resource_group, vm_name, resource_type, client):
+    namespace = resource_type.split('/', 1)[0]
+    arc_type = resource_type.split('/', 1)[1]
     az_resource_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
-                                 namespace="Microsoft.HybridCompute", type="machines", name=vm_name)
+                                 namespace=namespace, type=arc_type, name=vm_name)
     endpoint_resource = {"id": az_resource_id, "type_properties_type": "default"}
     try:
-        client.create_or_update(resource_group, vm_name, "default", endpoint_resource)
+        client.create_or_update(resource_group, vm_name, resource_type, "default", endpoint_resource)
     except Exception as e:
         colorama.init()
         raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
                                            f"\nError: {str(e)}",
-                                           Fore.YELLOW + "Contact Owner/Contributor of the resource." + Style.RESET_ALL)
+                                           colorama.Fore.YELLOW + "Contact Owner/Contributor of the resource."
+                                           + colorama.Style.RESET_ALL)
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
@@ -109,8 +113,7 @@ def get_client_side_proxy(arc_proxy_folder):
         # write executable in the install location
         file_utils.write_to_file(install_location, 'wb', response_content, "Failed to create client proxy file. ")
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
-        colorama.init()
-        print(Fore.GREEN + f"SSH Client Proxy saved to {install_location}" + Style.RESET_ALL)
+        print_styled_text((Style.SUCCESS, f"SSH Client Proxy saved to {install_location}"))
 
     return install_location
 

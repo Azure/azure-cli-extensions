@@ -15,13 +15,19 @@ helps[f'{consts.EXTENSION_NAME}'] = """
 
 helps[f'{consts.EXTENSION_NAME} create'] = f"""
     type: command
-    short-summary: Create a Kubernetes Extension.
+    short-summary: Create a Kubernetes Cluster Extension, including purchasing an extension Offer from Azure Marketplace (AKS only). Please refer to the example at the end to see how to create an extension or purchase an extension offer.
     examples:
       - name: Create a Kubernetes Extension
         text: |-
           az {consts.EXTENSION_NAME} create --resource-group my-resource-group \
 --cluster-name mycluster --cluster-type connectedClusters --name myextension \
 --extension-type microsoft.openservicemesh --scope cluster --release-train stable
+      - name: Create a Kubernetes Marketplace Extension
+        text: |-
+          az {consts.EXTENSION_NAME} create --resource-group my-resource-group \
+--cluster-name mycluster --cluster-type managedClusters --name myextension \
+--extension-type Contoso.AzureVoteKubernetesAppTest --scope cluster --release-train stable \
+--plan-name testplan --plan-product kubernetest_apps_demo_offer --plan-publisher test_test_mix3pptest0011614206850774
 """
 
 helps[f'{consts.EXTENSION_NAME} list'] = f"""
@@ -67,7 +73,51 @@ properties is supported before updating these properties.
 --cluster-name mycluster --cluster-type connectedClusters \
 --name myextension --auto-upgrade true/false --version extension-version \
 --release-train stable --configuration-settings settings-key=settings-value \
---configuration-protected-settings protected-settings-key=protected-value \
---configuration-settings-file=config-settings-file \
---configuration-protected-settings-file=protected-settings-file
+--config-protected-settings protected-settings-key=protected-value \
+--config-settings-file=config-settings-file \
+--config-protected-file=protected-settings-file
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types'] = """
+    type: group
+    short-summary: Commands to discover Kubernetes Extension Types.
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types list'] = f"""
+    type: command
+    short-summary: List Kubernetes Extension Types.
+    examples:
+      - name: List Kubernetes Extension Types
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types list --resource-group my-resource-group \
+--cluster-name mycluster --cluster-type connectedClusters
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types list-by-location'] = f"""
+    type: command
+    short-summary: List available Kubernetes Extension Types in a specified region.
+    examples:
+      - name: List Kubernetes Extension Types by location
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types list-by-location --location eastus2euap
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types show'] = f"""
+    type: command
+    short-summary: Show properties for a Kubernetes Extension Type.
+    examples:
+      - name: Show Kubernetes Extension Type
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types show --resource-group my-resource-group \
+--cluster-name mycluster --cluster-type connectedClusters --extension-type cassandradatacenteroperator
+"""
+
+helps[f'{consts.EXTENSION_NAME} extension-types list-versions'] = f"""
+    type: command
+    short-summary: List available versions for a Kubernetes Extension Type.
+    examples:
+      - name: List versions for an Extension Type
+        text: |-
+          az {consts.EXTENSION_NAME} extension-types list-versions --location eastus2euap \
+--extension-type cassandradatacenteroperator
 """

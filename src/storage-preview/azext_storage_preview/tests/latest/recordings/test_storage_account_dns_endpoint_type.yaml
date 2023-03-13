@@ -19,7 +19,8 @@ interactions:
       ParameterSetName:
       - -n -g -l --hns --dns-endpoint-type
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.7.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storage_account_dns_et000001/providers/Microsoft.Storage/storageAccounts/cli000002?api-version=2021-09-01
   response:
@@ -33,11 +34,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Mon, 11 Apr 2022 07:13:07 GMT
+      - Tue, 03 Jan 2023 04:20:38 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/3f0db60e-e023-4002-948a-636adcc9c2bb?monitor=true&api-version=2021-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/ddbb56e7-8d55-4c15-b142-299dbeb76023?monitor=true&api-version=2021-09-01
       pragma:
       - no-cache
       server:
@@ -47,7 +48,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1195'
     status:
       code: 202
       message: Accepted
@@ -65,12 +66,13 @@ interactions:
       ParameterSetName:
       - -n -g -l --hns --dns-endpoint-type
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.7.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/3f0db60e-e023-4002-948a-636adcc9c2bb?monitor=true&api-version=2021-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/ddbb56e7-8d55-4c15-b142-299dbeb76023?monitor=true&api-version=2021-09-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storage_account_dns_et000001/providers/Microsoft.Storage/storageAccounts/cli000002","name":"cli000002","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"dnsEndpointType":"Standard","keyCreationTime":{"key1":"2022-04-11T07:13:04.8199696Z","key2":"2022-04-11T07:13:04.8199696Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-04-11T07:13:04.8355888Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-04-11T07:13:04.8355888Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2022-04-11T07:13:04.7262191Z","primaryEndpoints":{"dfs":"https://cli000002.dfs.core.windows.net/","web":"https://cli000002.z3.web.core.windows.net/","blob":"https://cli000002.blob.core.windows.net/","queue":"https://cli000002.queue.core.windows.net/","table":"https://cli000002.table.core.windows.net/","file":"https://cli000002.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available","secondaryLocation":"centraluseuap","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://cli000002-secondary.dfs.core.windows.net/","web":"https://cli000002-secondary.z3.web.core.windows.net/","blob":"https://cli000002-secondary.blob.core.windows.net/","queue":"https://cli000002-secondary.queue.core.windows.net/","table":"https://cli000002-secondary.table.core.windows.net/"}}}'
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storage_account_dns_et000001/providers/Microsoft.Storage/storageAccounts/cli000002","name":"cli000002","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"dnsEndpointType":"Standard","keyCreationTime":{"key1":"2023-01-03T04:20:34.5381632Z","key2":"2023-01-03T04:20:34.5381632Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-01-03T04:20:35.0694158Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-01-03T04:20:35.0694158Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-01-03T04:20:34.3819434Z","primaryEndpoints":{"dfs":"https://cli000002.dfs.core.windows.net/","web":"https://cli000002.z3.web.core.windows.net/","blob":"https://cli000002.blob.core.windows.net/","queue":"https://cli000002.queue.core.windows.net/","table":"https://cli000002.table.core.windows.net/","file":"https://cli000002.file.core.windows.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available","secondaryLocation":"centraluseuap","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://cli000002-secondary.dfs.core.windows.net/","web":"https://cli000002-secondary.z3.web.core.windows.net/","blob":"https://cli000002-secondary.blob.core.windows.net/","queue":"https://cli000002-secondary.queue.core.windows.net/","table":"https://cli000002-secondary.table.core.windows.net/"}}}'
     headers:
       cache-control:
       - no-cache
@@ -79,7 +81,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 11 Apr 2022 07:13:24 GMT
+      - Tue, 03 Jan 2023 04:20:55 GMT
       expires:
       - '-1'
       pragma:
@@ -117,7 +119,8 @@ interactions:
       ParameterSetName:
       - -n -g -l --hns --dns-endpoint-type
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.7.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storage_account_dns_et000001/providers/Microsoft.Storage/storageAccounts/cli000003?api-version=2021-09-01
   response:
@@ -131,11 +134,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Mon, 11 Apr 2022 07:13:29 GMT
+      - Tue, 03 Jan 2023 04:20:59 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/e03b31c9-e6ab-43a5-98e3-2ed788bce971?monitor=true&api-version=2021-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/41134d0a-adf8-4ee5-9059-cdd4ebed8eab?monitor=true&api-version=2021-09-01
       pragma:
       - no-cache
       server:
@@ -163,9 +166,10 @@ interactions:
       ParameterSetName:
       - -n -g -l --hns --dns-endpoint-type
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.7.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/e03b31c9-e6ab-43a5-98e3-2ed788bce971?monitor=true&api-version=2021-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/41134d0a-adf8-4ee5-9059-cdd4ebed8eab?monitor=true&api-version=2021-09-01
   response:
     body:
       string: ''
@@ -177,11 +181,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Mon, 11 Apr 2022 07:13:46 GMT
+      - Tue, 03 Jan 2023 04:21:15 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/e03b31c9-e6ab-43a5-98e3-2ed788bce971?monitor=true&api-version=2021-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/41134d0a-adf8-4ee5-9059-cdd4ebed8eab?monitor=true&api-version=2021-09-01
       pragma:
       - no-cache
       server:
@@ -207,12 +211,13 @@ interactions:
       ParameterSetName:
       - -n -g -l --hns --dns-endpoint-type
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.7.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-storage/20.0.0 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/e03b31c9-e6ab-43a5-98e3-2ed788bce971?monitor=true&api-version=2021-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2euap/asyncoperations/41134d0a-adf8-4ee5-9059-cdd4ebed8eab?monitor=true&api-version=2021-09-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storage_account_dns_et000001/providers/Microsoft.Storage/storageAccounts/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"dnsEndpointType":"AzureDnsZone","keyCreationTime":{"key1":"2022-04-11T07:13:27.6637766Z","key2":"2022-04-11T07:13:27.6637766Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-04-11T07:13:27.6637766Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-04-11T07:13:27.6637766Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2022-04-11T07:13:27.5544019Z","primaryEndpoints":{"dfs":"https://cli000003.z29.dfs.storage.azure.net/","web":"https://cli000003.z29.web.storage.azure.net/","blob":"https://cli000003.z29.blob.storage.azure.net/","queue":"https://cli000003.z29.queue.storage.azure.net/","table":"https://cli000003.z29.table.storage.azure.net/","file":"https://cli000003.z29.file.storage.azure.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available","secondaryLocation":"centraluseuap","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://cli000003-secondary.z29.dfs.storage.azure.net/","web":"https://cli000003-secondary.z29.web.storage.azure.net/","blob":"https://cli000003-secondary.z29.blob.storage.azure.net/","queue":"https://cli000003-secondary.z29.queue.storage.azure.net/","table":"https://cli000003-secondary.z29.table.storage.azure.net/"}}}'
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storage_account_dns_et000001/providers/Microsoft.Storage/storageAccounts/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts","location":"eastus2euap","tags":{},"properties":{"dnsEndpointType":"AzureDnsZone","keyCreationTime":{"key1":"2023-01-03T04:20:57.3514944Z","key2":"2023-01-03T04:20:57.3514944Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-01-03T04:20:57.3671389Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-01-03T04:20:57.3671389Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-01-03T04:20:57.2108727Z","primaryEndpoints":{"dfs":"https://cli000003.z37.dfs.storage.azure.net/","web":"https://cli000003.z37.web.storage.azure.net/","blob":"https://cli000003.z37.blob.storage.azure.net/","queue":"https://cli000003.z37.queue.storage.azure.net/","table":"https://cli000003.z37.table.storage.azure.net/","file":"https://cli000003.z37.file.storage.azure.net/"},"primaryLocation":"eastus2euap","statusOfPrimary":"available","secondaryLocation":"centraluseuap","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://cli000003-secondary.z37.dfs.storage.azure.net/","web":"https://cli000003-secondary.z37.web.storage.azure.net/","blob":"https://cli000003-secondary.z37.blob.storage.azure.net/","queue":"https://cli000003-secondary.z37.queue.storage.azure.net/","table":"https://cli000003-secondary.z37.table.storage.azure.net/"}}}'
     headers:
       cache-control:
       - no-cache
@@ -221,7 +226,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 11 Apr 2022 07:13:49 GMT
+      - Tue, 03 Jan 2023 04:21:19 GMT
       expires:
       - '-1'
       pragma:

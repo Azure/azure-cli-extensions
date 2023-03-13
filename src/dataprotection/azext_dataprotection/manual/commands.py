@@ -30,6 +30,7 @@ def load_command_table(self, _):
         g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
+        g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions', client_factory=cf_backup_vault)
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")
@@ -62,11 +63,6 @@ def load_command_table(self, _):
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
-
-    with self.command_group('dataprotection backup-vault', exception_handler=exception_handler, client_factory=cf_backup_vault) as g:
-        g.custom_command('list', 'dataprotection_backup_vault_list')
-        g.custom_command('create', 'dataprotection_backup_vault_create', supports_no_wait=True)
-        g.custom_command('update', 'dataprotection_backup_vault_update', supports_no_wait=True)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler, client_factory=cf_resource_guard) as g:
         g.custom_command('list', 'dataprotection_resource_guard_list')

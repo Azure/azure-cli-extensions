@@ -13,6 +13,7 @@
 import time
 from datetime import datetime
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 def setup(test):
     test.kwargs.update({
@@ -22,7 +23,8 @@ def setup(test):
         "ossdb": "postgres",
         "ossdbid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres",
         "policyid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/oss-clitest-vault/backupPolicies/oss-clitest-policy",
-        "secretstoreuri": "https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret"
+        "secretstoreuri": "https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret",
+        "keyvaultid":  "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault"
     })
 
 def configure_backup(test):
@@ -34,17 +36,21 @@ def configure_backup(test):
         "backup_instance_json": backup_instance_json,
         "backup_instance_name": backup_instance_json["backup_instance_name"]
     })
+
+    # run only in record mode - grant permission
+    # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{rgname}" --vault-name "{vaultname}" --operation Backup --backup-instance "{backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
+
+    time.sleep(60)
+
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
     backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rgname}" --vault-name "{vaultname}" --query "[0].properties.protectionStatus"').get_output_in_json()
     protection_status = backup_instance_res["status"]
     while protection_status != "ProtectionConfigured":
-        # run the below line only in record mode
         time.sleep(10)
         backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rgname}" --vault-name "{vaultname}" --query "[0].properties.protectionStatus"').get_output_in_json()
         protection_status = backup_instance_res["status"]
 
-    # run the below line only in record mode
     time.sleep(30)
 
 def update_protection(test):
@@ -54,12 +60,10 @@ def update_protection(test):
     backup_instance_res = test.cmd('az dataprotection backup-instance update-policy -g "{rgname}" --vault-name "{vaultname}" --backup-instance-name "{backup_instance_name}" --policy-id "{newpolicyid}" --query "properties.protectionStatus"').get_output_in_json()
     protection_status = backup_instance_res["status"]
     while protection_status != "ProtectionConfigured":
-        # run the below line only in record mode
         time.sleep(10)
         backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rgname}" --vault-name "{vaultname}" --query "[0].properties.protectionStatus"').get_output_in_json()
         protection_status = backup_instance_res["status"]
 
-    # run the below line only in record mode
     time.sleep(30)
 
 def stop_resume_protection(test):
@@ -92,7 +96,6 @@ def trigger_backup(test):
     job_status = None
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
-        # run the below code only in record mode
         time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
@@ -117,7 +120,6 @@ def trigger_restore(test):
     job_status = None
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
-        # run the below code only in record mode
         time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
@@ -142,7 +144,6 @@ def trigger_restore_as_files(test):
     job_status = None
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":
-        # run the below code only in record mode
         time.sleep(10)
         job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
         job_status = job_response["properties"]["status"]
@@ -152,6 +153,7 @@ def trigger_restore_as_files(test):
 def delete_backup(test):
     test.cmd('az dataprotection backup-instance delete -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --yes')
 
+@AllowLargeResponse()
 def call_scenario(test):
     setup(test)
     try:

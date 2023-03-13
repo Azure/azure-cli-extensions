@@ -16,12 +16,22 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
+    "sku": {
+        "name": "Consumption",
+    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
         "internalLoadBalancerEnabled": None,
-        "appLogsConfiguration": None
+        "appLogsConfiguration": None,
+        "customDomainConfiguration": None  # CustomDomainConfiguration
     }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None
 }
 
 AppLogsConfiguration = {
@@ -40,7 +50,11 @@ Dapr = {
     "enabled": False,
     "appId": None,
     "appProtocol": None,
-    "appPort": None
+    "appPort": None,
+    "httpReadBufferSize": None,
+    "httpMaxRequestSize": None,
+    "logLevel": None,
+    "enableApiLogging": None
 }
 
 EnvironmentVar = {
@@ -100,8 +114,8 @@ HttpScaleRule = {
 ScaleRule = {
     "name": None,
     "azureQueue": None,  # QueueScaleRule
-    "customScaleRule": None,  # CustomScaleRule
-    "httpScaleRule": None,  # HttpScaleRule
+    "custom": None,  # CustomScaleRule
+    "http": None,  # HttpScaleRule
 }
 
 Secret = {
@@ -135,9 +149,11 @@ Ingress = {
     "fqdn": None,
     "external": False,
     "targetPort": None,
-    "transport": None,  # 'auto', 'http', 'http2'
+    "transport": None,  # 'auto', 'http', 'http2', 'tcp'
+    "exposedPort": None,
     "traffic": None,  # TrafficWeight
-    "customDomains": None  # [CustomDomain]
+    "customDomains": None,  # [CustomDomain]
+    "ipSecurityRestrictions": None  # [IPSecurityRestrictions]
 }
 
 RegistryCredentials = {
@@ -149,6 +165,7 @@ RegistryCredentials = {
 Template = {
     "revisionSuffix": None,
     "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
     "scale": Scale,
     "volumes": None  # [Volume]
 }
@@ -261,4 +278,12 @@ AzureFileProperties = {
     "accountKey": None,
     "accessMode": None,
     "shareName": None
+}
+
+ManagedCertificateEnvelop = {
+    "location": None,  # str
+    "properties": {
+        "subjectName": None,  # str
+        "validationMethod": None  # str
+    }
 }

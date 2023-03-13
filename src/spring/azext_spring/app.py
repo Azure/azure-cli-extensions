@@ -7,7 +7,7 @@
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
-from .custom import app_get
+from .custom import app_get, _get_app_log
 from ._utils import (get_spring_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
@@ -16,13 +16,14 @@ from ._deployment_factory import (deployment_selector,
 from ._app_factory import app_selector
 from ._deployment_deployable_factory import deployable_selector
 from ._app_validator import _get_active_deployment
-
+from .custom import app_tail_log_internal
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 
 # pylint: disable=line-too-long
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
+
 
 #  App's command usually operates an Spring/Apps and the active Spring/Apps/Deployments under the app.
 # The general idea of these command is putting all input command in parameter dict and let the Resource factory to construct the payload.
@@ -35,6 +36,7 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 
 
 def app_create(cmd, client, resource_group, service, name,
+               deployment_name=None,
                # deployment.settings
                cpu=None,
                memory=None,
@@ -58,8 +60,15 @@ def app_create(cmd, client, resource_group, service, name,
                liveness_probe_config=None,
                readiness_probe_config=None,
                startup_probe_config=None,
+               termination_grace_period_seconds=None,
                assign_public_endpoint=None,
-               loaded_public_certificate_file=None):
+               loaded_public_certificate_file=None,
+               ingress_read_timeout=None,
+               ingress_send_timeout=None,
+               session_affinity=None,
+               session_max_age=None,
+               backend_protocol=None,
+               client_auth_certs=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -87,7 +96,13 @@ def app_create(cmd, client, resource_group, service, name,
         'persistent_storage': persistent_storage,
         'public': assign_endpoint,
         'public_for_vnet': assign_public_endpoint,
-        'loaded_public_certificate_file': loaded_public_certificate_file
+        'loaded_public_certificate_file': loaded_public_certificate_file,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -104,11 +119,18 @@ def app_create(cmd, client, resource_group, service, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
     }
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
-        'public_for_vnet': assign_public_endpoint
+        'public_for_vnet': assign_public_endpoint,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs
     }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
@@ -123,12 +145,13 @@ def app_create(cmd, client, resource_group, service, name,
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    logger.warning('[2/3] Creating default deployment with name "{}"'.format(DEFAULT_DEPLOYMENT_NAME))
+    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
+    logger.warning('[2/3] Creating default deployment with name "{}"'.format(banner_deployment_name))
     deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
-                                                       DEFAULT_DEPLOYMENT_NAME,
+                                                       banner_deployment_name,
                                                        deployment_resource)
     logger.warning('[3/3] Updating app "{}" (this operation can take a while to complete)'.format(name))
     app_resource = app_factory.format_resource(**update_app_kwargs, **basic_kwargs)
@@ -149,6 +172,12 @@ def app_update(cmd, client, resource_group, service, name,
                https_only=None,
                persistent_storage=None,
                loaded_public_certificate_file=None,
+               ingress_read_timeout=None,
+               ingress_send_timeout=None,
+               session_affinity=None,
+               session_max_age=None,
+               backend_protocol=None,
+               client_auth_certs=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -163,6 +192,7 @@ def app_update(cmd, client, resource_group, service, name,
                liveness_probe_config=None,
                readiness_probe_config=None,
                startup_probe_config=None,
+               termination_grace_period_seconds=None,
                # general
                no_wait=False):
     '''app_update
@@ -196,6 +226,7 @@ def app_update(cmd, client, resource_group, service, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
     }
 
     app_kwargs = {
@@ -206,6 +237,12 @@ def app_update(cmd, client, resource_group, service, name,
         'loaded_public_certificate_file': loaded_public_certificate_file,
         'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
+        'ingress_read_timeout': ingress_read_timeout,
+        'ingress_send_timeout': ingress_send_timeout,
+        'session_affinity': session_affinity,
+        'session_max_age': session_max_age,
+        'backend_protocol': backend_protocol,
+        'client_auth_certs': client_auth_certs,
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
@@ -254,6 +291,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                registry_password=None,
                container_command=None,
                container_args=None,
+               language_framework=None,
                build_env=None,
                builder=None,
                build_cpu=None,
@@ -268,6 +306,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                liveness_probe_config=None,
                readiness_probe_config=None,
                startup_probe_config=None,
+               termination_grace_period_seconds=None,
                # general
                no_wait=False):
     '''app_deploy
@@ -306,6 +345,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'language_framework': language_framework,
         'build_env': build_env,
         'build_cpu': build_cpu,
         'build_memory': build_memory,
@@ -316,6 +356,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
         'no_wait': no_wait
     }
 
@@ -336,9 +377,53 @@ def app_deploy(cmd, client, resource_group, service, name,
                    'while to complete)'.format(kwargs['total_steps'],
                                                kwargs['total_steps'],
                                                name))
-    return sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
-                       resource_group, service, name, deployment.name,
-                       deployment_resource)
+    poller = sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
+                         resource_group, service, name, deployment.name,
+                         deployment_resource)
+    _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
+    if "succeeded" != poller.status().lower():
+        return poller
+    return client.deployments.get(resource_group, service, name, deployment.name)
+
+
+def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
+    if no_wait:
+        return
+    deployment_error = None
+    try:
+        poller.result()
+    except Exception as err:
+        deployment_error = err
+    try:
+        deployment_resource = client.deployments.get(resource_group, service, app_name, deployment_name)
+        instances = deployment_resource.properties.instances
+        start_time = instances[0].start_time
+        instance_name = instances[0].name
+
+        # print the newly created instance log
+        for temp_instance in instances:
+            if temp_instance.start_time > start_time:
+                start_time = temp_instance.start_time
+                instance_name = temp_instance.name
+
+        logger.warning('Application logs:')
+        # For failed deployment we need to print logs as much as possible, we use follow=true to print enough logs
+        # for troubleshooting. We add a timeout to force stop logs then the cli can be exited.
+        app_tail_log_internal(cmd, client, resource_group, service, app_name, deployment_resource, instance_name,
+                              follow=False if deployment_error is None else True, lines=500, limit=1024 * 1024,
+                              since=300, timeout=10, get_app_log=_get_app_log_deploy_phase)
+    except Exception:
+        # ignore
+        return
+    if deployment_error:
+        raise deployment_error
+
+
+def _get_app_log_deploy_phase(url, user_name, password, format_json, exceptions):
+    try:
+        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+    except Exception:
+        pass
 
 
 def deployment_create(cmd, client, resource_group, service, app, name,
@@ -357,6 +442,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       registry_password=None,
                       container_command=None,
                       container_args=None,
+                      language_framework=None,
                       build_env=None,
                       builder=None,
                       # deployment.settings
@@ -373,6 +459,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       liveness_probe_config=None,
                       readiness_probe_config=None,
                       startup_probe_config=None,
+                      termination_grace_period_seconds=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -409,6 +496,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'language_framework': language_framework,
         'cpu': cpu,
         'memory': memory,
         'instance_count': instance_count,
@@ -420,6 +508,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'liveness_probe_config_file_path': liveness_probe_config,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
+        'termination_grace_period_seconds': termination_grace_period_seconds,
         'no_wait': no_wait
     }
 
@@ -435,9 +524,13 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                    'while to complete)'.format(kwargs['total_steps'],
                                                kwargs['total_steps'],
                                                app))
-    return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
-                       resource_group, service, app, name,
-                       deployment_resource)
+    poller = sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
+                         resource_group, service, app, name,
+                         deployment_resource)
+    _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
+    if "succeeded" != poller.status().lower():
+        return poller
+    return client.deployments.get(resource_group, service, app, name)
 
 
 def _ensure_app_not_exist(client, resource_group, service, name):

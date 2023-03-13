@@ -3,7 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+from types import SimpleNamespace
+
 from azure.cli.core.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 import azext_aks_preview._validators as validators
 from azext_aks_preview._consts import ADDONS
 
@@ -111,6 +114,15 @@ class EnableCustomCATrustNamespace:
         self.os_type = os_type
         self.enable_custom_ca_trust = enable_custom_ca_trust
 
+class CustomCATrustCertificatesNamespace:
+    def __init__(self, os_type, custom_ca_trust_certificates):
+        self.os_type = os_type
+        self.custom_ca_trust_certificates = custom_ca_trust_certificates
+
+class DisableWindowsOutboundNatNamespace:
+    def __init__(self, os_type, disable_windows_outbound_nat):
+        self.os_type = os_type
+        self.disable_windows_outbound_nat = disable_windows_outbound_nat
 
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
@@ -187,6 +199,37 @@ class TestEnableCustomCATrust(unittest.TestCase):
             validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
         self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
+
+class TestCustomCATrustCertificates(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["foo", ""]
+        for v in valid:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Linux", v))
+
+    def test_fail_if_os_type_windows(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Windows", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("invalid", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+
+class TestDisableWindowsOutboundNAT(unittest.TestCase):
+    def test_pass_if_os_type_windows(self):
+        validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Windows", True))
+
+    def test_fail_if_os_type_linux(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Linux", True))
+        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("invalid", True))
+        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):
@@ -382,6 +425,218 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
+
+class ImageCleanerNamespace:
+    def __init__(
+        self,
+        enable_image_cleaner=False,
+        disable_image_cleaner=False,
+        image_cleaner_interval_hours=None,
+    ):
+        self.enable_image_cleaner = enable_image_cleaner 
+        self.disable_image_cleaner = disable_image_cleaner 
+        self.image_cleaner_interval_hours = image_cleaner_interval_hours 
+
+class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
+    def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
+        namespace = ImageCleanerNamespace(
+            enable_image_cleaner=True,
+            disable_image_cleaner=True,
+        )
+        err = 'Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time.'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_image_cleaner_enable_disable_mutually_exclusive(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
+
+    def __init__(self, azure_keyvault_kms_key_vault_resource_id):
+        self.azure_keyvault_kms_key_vault_resource_id = azure_keyvault_kms_key_vault_resource_id
+
+
+class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
+    def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
+        invalid_azure_keyvault_kms_key_vault_resource_id = "invalid"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id)
+        err = '--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.'
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_azure_keyvault_kms_key_vault_resource_id(self):
+        valid_azure_keyvault_kms_key_vault_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
+
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+
+class TestValidateNodepoolName(unittest.TestCase):
+    def test_invalid_nodepool_name_too_long(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_name": "tooLongNodepoolName",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_nodepool_name(
+                namespace
+            )
+
+    def test_invalid_agent_pool_name_too_long(self):
+        namespace = SimpleNamespace(
+            **{
+                "agent_pool_name": "tooLongNodepoolName",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_agent_pool_name(
+                namespace
+            )
+
+    def test_invalid_nodepool_name_not_alnum(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_name": "invalid-np*",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_nodepool_name(
+                namespace
+            )
+
+    def test_invalid_agent_pool_name_not_alnum(self):
+        namespace = SimpleNamespace(
+            **{
+                "agent_pool_name": "invalid-np*",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_agent_pool_name(
+                namespace
+            )
+
+    def test_valid_nodepool_name(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_name": "np100",
+            }
+        )
+        validators.validate_nodepool_name(
+            namespace
+        )
+
+    def test_valid_agent_pool_name(self):
+        namespace = SimpleNamespace(
+            **{
+                "agent_pool_name": "np100",
+            }
+        )
+        validators.validate_agent_pool_name(
+            namespace
+        )
+
+
+class TestValidateAllowedHostPorts(unittest.TestCase):
+    def test_invalid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80,443,8080",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_allowed_host_ports(
+                namespace
+            )
+
+    def test_valid_allowed_host_ports(self):
+        namespace = SimpleNamespace(
+            **{
+                "allowed_host_ports": "80/tcp,443/tcp,8080-8090/tcp,53/udp",
+            }
+        )
+        validators.validate_allowed_host_ports(
+            namespace
+        )
+
+
+class TestValidateApplicationSecurityGroups(unittest.TestCase):
+    def test_invalid_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "invalid",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_empty_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": "",
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_multiple_application_security_groups(self):
+        asg_ids = ','.join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": asg_ids,
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+class MaintenanceWindowNameSpace:
+    def __init__(self, utc_offset=None, start_date=None, start_time=None):
+        self.utc_offset = utc_offset
+        self.start_date = start_date
+        self.start_time = start_time
+
+class TestValidateMaintenanceWindow(unittest.TestCase):
+    def test_invalid_utc_offset(self):        
+        namespace = MaintenanceWindowNameSpace(utc_offset="5:00")
+        err = '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_utc_offset(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_utc_offset(self):        
+        namespace = MaintenanceWindowNameSpace(utc_offset="+05:00")
+        validators.validate_utc_offset(namespace)
+
+    def test_invalid_start_date(self):        
+        namespace = MaintenanceWindowNameSpace(start_date="2023/01/01")
+        err = '--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_start_date(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_start_datet(self):        
+        namespace = MaintenanceWindowNameSpace(start_date="2023-01-01")
+        validators.validate_start_date(namespace)
+    
+    def test_invalid_start_time(self):        
+        namespace = MaintenanceWindowNameSpace(start_time="3am")
+        err = '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_start_time(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_start_time(self):        
+        namespace = MaintenanceWindowNameSpace(start_date="00:30")
+        validators.validate_start_time(namespace)
+
 
 if __name__ == "__main__":
     unittest.main()

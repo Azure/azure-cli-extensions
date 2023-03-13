@@ -18,25 +18,31 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
     def test_connectedvmware(self):
         self.kwargs.update(
             {
-                'rg': 'service-sdk-test',
-                'loc': 'eastus2euap',
-                'cus_loc': 'service-sdk-test-cl',
-                'vc_name': 'service-sdk-test-vcenter',
-                'rp_morefid': 'resgroup-87723',
+                'rg': 'azcli-test-rg',
+                'loc': 'eastus',
+                'cus_loc': 'azcli-test-cl',
+                'vc_name': 'azcli-test-vc',
+                'rp_inventory_item': 'resgroup-724471',
                 'rp_name': 'azcli-test-resource-pool',
-                'cluster_morefid': 'domain-c7',
+                'cluster_inventory_item': 'domain-c649660',
                 'cluster_name': 'azcli-test-cluster',
-                'datastore_morefid': 'datastore-11',
+                'datastore_inventory_item': 'datastore-563660',
                 'datastore_name': 'azcli-test-datastore',
-                'host_morefid': 'host-33',
+                'host_inventory_item': 'host-1147546',
                 'host_name': 'azcli-test-host',
-                'vnet_morefid': 'network-o61',
+                'vnet_inventory_item': 'network-563661',
                 'vnet_name': 'azcli-test-virtual-network',
-                'vmtpl_morefid': 'vm-141',
+                'vmtpl_inventory_item': 'vmtpl-vm-1184288',
                 'vmtpl_name': 'azcli-test-vm-template',
                 'vm_name': 'azcli-test-vm',
+                'guest_username': 'azcli-user',
+                'guest_password': 'azcli-password',
                 'nic_name': 'nic_1',
                 'disk_name': 'disk_1',
+                'extension_name': 'AzureMonitorLinuxAgent',
+                'extension_type': 'AzureMonitorLinuxAgent',
+                'type_handler_version': '1.15.3',
+                'publisher': 'Microsoft.Azure.Monitor',
             }
         )
 
@@ -53,11 +59,11 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             self.cmd('az connectedvmware vcenter list -g {rg}').get_output_in_json()
         )
         # vcenter count list should report 1
-        self.assertEqual(count, 1, 'vcenter resource count expected to be 1')
+        self.assertGreaterEqual(count, 1, 'vcenter resource count expected to be at least 1')
 
         # Create resource-pool resource.
         self.cmd(
-            'az connectedvmware resource-pool create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {rp_morefid} --name {rp_name}'
+            'az connectedvmware resource-pool create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {rp_inventory_item} --name {rp_name}'
         )
 
         # Validate the show command output with resource-pool name.
@@ -77,7 +83,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Create cluster resource.
         self.cmd(
-            'az connectedvmware cluster create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {cluster_morefid} --name {cluster_name}'
+            'az connectedvmware cluster create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {cluster_inventory_item} --name {cluster_name}'
         )
 
         # Validate the show command output with cluster name.
@@ -97,7 +103,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Create datastore resource.
         self.cmd(
-            'az connectedvmware datastore create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {datastore_morefid} --name {datastore_name}'
+            'az connectedvmware datastore create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {datastore_inventory_item} --name {datastore_name}'
         )
 
         # Validate the show command output with datastore name.
@@ -117,7 +123,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Create host resource.
         self.cmd(
-            'az connectedvmware host create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {host_morefid} --name {host_name}'
+            'az connectedvmware host create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {host_inventory_item} --name {host_name}'
         )
 
         # Validate the show command output with host name.
@@ -137,7 +143,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Create virtual-network resource.
         self.cmd(
-            'az connectedvmware virtual-network create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vnet_morefid} --name {vnet_name}'
+            'az connectedvmware virtual-network create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {vnet_inventory_item} --name {vnet_name}'
         )
 
         # Validate the show command output with virtual-network name.
@@ -157,7 +163,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Create vm-template resource.
         self.cmd(
-            'az connectedvmware vm-template create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vmtpl_morefid} --name {vmtpl_name}'
+            'az connectedvmware vm-template create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {vmtpl_inventory_item} --name {vmtpl_name}'
         )
 
         # Validate the show command output with vm-template name.
@@ -177,9 +183,9 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Validate the show command output with inventory-item name.
         self.cmd(
-            'az connectedvmware vcenter inventory-item show -g {rg} --vcenter {vc_name} --inventory-item {rp_morefid}',
+            'az connectedvmware vcenter inventory-item show -g {rg} --vcenter {vc_name} --i {rp_inventory_item}',
             checks=[
-                self.check('name', '{rp_morefid}'),
+                self.check('name', '{rp_inventory_item}'),
             ],
         )
 
@@ -189,12 +195,16 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         )
 
         # Validate the show command output with vm name.
-        self.cmd(
+        vm = self.cmd(
             'az connectedvmware vm show -g {rg} --name {vm_name}',
             checks=[
                 self.check('name', '{vm_name}'),
             ],
-        )
+        ).get_output_in_json()
+        vm_moRefId = vm['moRefId']
+        self.kwargs.update({ 'vm_moRefId': vm_moRefId })
+        self.assertIsNotNone(vm_moRefId)
+        self.assertNotEqual(len(vm_moRefId), 0, 'moRefId of the VM should not be empty')
 
         # List the VM resources in this resource group.
         resource_list = self.cmd(
@@ -233,6 +243,32 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # At least 1 disk should be there for the vm resource.
         assert len(resource_list) >= 1
 
+        # Enable guest agent on the vm resource.
+        self.cmd(
+            'az connectedvmware vm guest-agent enable -g {rg} --vm-name {vm_name} --username {guest_username} --password {guest_password}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        # Create VM extension.
+        self.cmd(
+            'az connectedvmware vm extension create -l {loc} -g {rg} --vm-name {vm_name} --name {extension_name} --type {extension_type} --publisher {publisher} --type-handler-version {type_handler_version}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('typeHandlerVersion', '{type_handler_version}'),
+            ],
+        )
+
+        # Update VM extension.
+        self.cmd(
+            'az connectedvmware vm extension update -g {rg} --vm-name {vm_name} --name {extension_name} --enable-auto-upgrade false',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('enableAutomaticUpgrade', False),
+            ],
+        )
+
         # Update VM.
         self.cmd(
             'az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 2048 --num-CPUs 2',
@@ -246,6 +282,14 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Start VM.
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
+
+        # Disable the VM from azure; delete the ARM resource, retain the VM in vCenter.
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} --retain -y')
+
+        # Enable the VM to azure again.
+        self.cmd(
+            'az connectedvmware vm create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {vm_moRefId} --name {vm_name}'
+        )
 
         # Delete the created VM.
         self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')

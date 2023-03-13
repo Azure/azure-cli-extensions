@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
 
 
+from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 import requests
 
@@ -13,6 +14,7 @@ from azure.cli.core.azclierror import (
     ValidationError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    CLIError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._create_util import (
@@ -43,10 +45,18 @@ from ._utils import (
     get_container_app_if_exists,
     trigger_workflow,
     _ensure_location_allowed,
-    register_provider_if_needed
+    register_provider_if_needed,
+    validate_environment_location,
+    list_environment_locations
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP, CONTAINER_APPS_RP, ACR_IMAGE_SUFFIX
+from ._constants import (MAXIMUM_SECRET_LENGTH,
+                         LOG_ANALYTICS_RP,
+                         CONTAINER_APPS_RP,
+                         ACR_IMAGE_SUFFIX,
+                         MAXIMUM_CONTAINER_APP_NAME_LENGTH,
+                         ACR_TASK_TEMPLATE,
+                         DEFAULT_PORT)
 
 from .custom import (
     create_managed_environment,
@@ -194,19 +204,46 @@ class ContainerAppEnvironment(Resource):
             )  # TODO use .info()
 
     def create(self):
-        self.location = validate_environment_location(self.cmd, self.location)
         register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
-        env = create_managed_environment(
-            self.cmd,
-            self.name,
-            location=self.location,
-            resource_group_name=self.resource_group.name,
-            logs_key=self.logs_key,
-            logs_customer_id=self.logs_customer_id,
-            disable_warnings=True,
-        )
-        self.exists = True
-        return env
+
+        if self.location:
+            self.location = validate_environment_location(self.cmd, self.location)
+
+            env = create_managed_environment(
+                self.cmd,
+                self.name,
+                location=self.location,
+                resource_group_name=self.resource_group.name,
+                logs_key=self.logs_key,
+                logs_customer_id=self.logs_customer_id,
+                disable_warnings=True,
+            )
+            self.exists = True
+
+            return env
+        else:
+            res_locations = list_environment_locations(self.cmd)
+            for loc in res_locations:
+                try:
+                    env = create_managed_environment(
+                        self.cmd,
+                        self.name,
+                        location=loc,
+                        resource_group_name=self.resource_group.name,
+                        logs_key=self.logs_key,
+                        logs_customer_id=self.logs_customer_id,
+                        disable_warnings=True,
+                    )
+
+                    self.exists = True
+                    self.location = loc
+
+                    return env
+                except Exception as ex:
+                    logger.info(
+                        f"Failed to create ManagedEnvironment in {loc} due to {ex}"
+                    )
+            raise ValidationError("Can not find a region with quota to create ManagedEnvironment")
 
     def get_rid(self):
         rid = self.name
@@ -313,7 +350,51 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
-    def run_acr_build(self, dockerfile, source, quiet=False):
+    def build_container_from_source(self, image_name, source):
+        from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
+        from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
+        from azure.cli.core.profiles import ResourceType
+        import os
+
+        task_name = "cli_build_containerapp"
+        registry_name = (self.registry_server[: self.registry_server.rindex(ACR_IMAGE_SUFFIX)]).lower()
+        if not self.target_port:
+            self.target_port = DEFAULT_PORT
+        task_content = ACR_TASK_TEMPLATE.replace("{{image_name}}", image_name).replace("{{target_port}}", str(self.target_port))
+        task_client = cf_acr_tasks(self.cmd.cli_ctx)
+        run_client = cf_acr_runs(self.cmd.cli_ctx)
+        task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
+        old_command_kwargs = {}
+        for key in task_command_kwargs:  # pylint: disable=consider-using-dict-items
+            old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
+            self.cmd.command_kwargs[key] = task_command_kwargs[key]
+
+        with NamedTemporaryFile(mode="w", delete=False) as task_file:
+            try:
+                task_file.write(task_content)
+                task_file.flush()
+                acr_task_create(self.cmd, task_client, task_name, registry_name, context_path="/dev/null", file=task_file.name)
+                logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
+            finally:
+                task_file.close()
+                os.unlink(task_file.name)
+
+            from time import sleep
+            sleep(10)
+
+            logger.warning("Running ACR build...")
+            try:
+                acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
+            except CLIError as e:
+                logger.error("Failed to automatically generate a docker container from your source. \n"
+                             "See the ACR logs above for more error information. \nPlease check the supported langauges for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
+                             "or consider using a Dockerfile for your app.")
+                raise e
+
+        for k, v in old_command_kwargs.items():
+            self.cmd.command_kwargs[k] = v
+
+    def run_acr_build(self, dockerfile, source, quiet=False, build_from_source=False):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
@@ -325,15 +406,20 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         self.image = self.registry_server + "/" + image_name
 
-        queue_acr_build(
-            self.cmd,
-            self.acr.resource_group.name,
-            self.acr.name,
-            image_name,
-            source,
-            dockerfile,
-            quiet,
-        )
+        if build_from_source:
+            # TODO should we prompt for confirmation here?
+            logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
+            self.build_container_from_source(image_name, source)
+        else:
+            queue_acr_build(
+                self.cmd,
+                self.acr.resource_group.name,
+                self.acr.name,
+                image_name,
+                source,
+                dockerfile,
+                quiet,
+            )
 
 
 def _create_service_principal(cmd, resource_group_name, env_resource_group_name):
@@ -479,6 +565,14 @@ def _reformat_image(source, repo, image):
     return image
 
 
+def _has_dockerfile(source, dockerfile):
+    try:
+        content = _get_dockerfile_content_local(source, dockerfile)
+        return bool(content)
+    except InvalidArgumentValueError:
+        return False
+
+
 def _get_dockerfile_content_local(source, dockerfile):
     lines = []
     if source:
@@ -592,24 +686,19 @@ def _get_acr_from_image(cmd, app):
             )
 
 
-def _get_registry_from_app(app):
+def _get_registry_from_app(app, source):
     containerapp_def = app.get()
+    existing_registries = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
+    if source:
+        existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
     if containerapp_def:
-        if (
-            len(
-                safe_get(
-                    containerapp_def,
-                    "properties",
-                    "configuration",
-                    "registries",
-                    default=[],
-                )
-            )
-            == 1
-        ):
-            app.registry_server = containerapp_def["properties"]["configuration"][
-                "registries"
-            ][0]["server"]
+        if len(existing_registries) == 1:
+            app.registry_server = existing_registries[0]["server"]
+        elif len(existing_registries) > 1:  # default to registry in image if possible, otherwise don't infer
+            containers = safe_get(containerapp_def, "properties", "template", "containers", default=[])
+            image_server = next(c["image"] for c in containers if c["name"].lower() == app.name.lower()).split('/')[0]
+            if image_server in [r["server"] for r in existing_registries]:
+                app.registry_server = image_server
 
 
 def _get_acr_rg(app):
@@ -673,6 +762,18 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     app.acr = AzureContainerRegistry(
         registry_name, ResourceGroup(cmd, registry_rg, None, None)
     )
+
+
+def _validate_containerapp_name(name):
+    is_valid = True
+    is_valid = is_valid and name.lower() == name
+    is_valid = is_valid and len(name) <= MAXIMUM_CONTAINER_APP_NAME_LENGTH
+    is_valid = is_valid and '--' not in name
+    name = name.replace('-', '')
+    is_valid = is_valid and name.isalnum()
+    is_valid = is_valid and name[0].isalpha()
+    if not is_valid:
+        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 # attempt to populate defaults for managed env, RG, ACR, etc
@@ -741,7 +842,7 @@ def _create_github_action(
     try:
         action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
         if action:
-            trigger_workflow(token, repo, app.name, branch)
+            trigger_workflow(token, repo, action["properties"]["githubActionConfiguration"]["workflowName"], branch)
     except:  # pylint: disable=bare-except
         pass
 
@@ -764,7 +865,7 @@ def _create_github_action(
     )
 
 
-def up_output(app):
+def up_output(app: 'ContainerApp', no_dockerfile):
     url = safe_get(
         ContainerAppClient.show(app.cmd, app.resource_group.name, app.name),
         "properties",
@@ -778,6 +879,9 @@ def up_output(app):
     logger.warning(
         f"\nYour container app {app.name} has been created and deployed! Congrats! \n"
     )
+    if no_dockerfile and app.ingress:
+        logger.warning(f"Your app is running image {app.image} and listening on port {app.target_port}")
+
     url and logger.warning(f"Browse to your container app at: {url} \n")
     logger.warning(
         f"Stream logs for your container with: az containerapp logs show -n {app.name} -g {app.resource_group.name} \n"
@@ -801,58 +905,6 @@ def find_existing_acr(cmd, app: "ContainerApp"):
         app.should_create_acr = False
         return acr.name, parse_resource_id(acr.id)["resource_group"]
     return None, None
-
-
-def validate_environment_location(cmd, location):
-    from ._constants import MAX_ENV_PER_LOCATION
-    env_list = list_managed_environments(cmd)
-
-    locations = [loc["location"] for loc in env_list]
-    locations = list(set(locations))  # remove duplicates
-
-    location_count = {}
-    for loc in locations:
-        location_count[loc] = len([e for e in env_list if e["location"] == loc])
-
-    disallowed_locations = []
-    for _, value in enumerate(location_count):
-        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
-            disallowed_locations.append(value)
-
-    res_locations = list_environment_locations(cmd)
-    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
-
-    allowed_locs = ", ".join(res_locations)
-
-    if location:
-        try:
-            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
-        except Exception as e:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
-
-    if len(res_locations) > 0:
-        if not location:
-            logger.warning("Creating environment on location {}.".format(res_locations[0]))
-            return res_locations[0]
-        if location in disallowed_locations:
-            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
-        return location
-    else:
-        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
-
-
-def list_environment_locations(cmd):
-    from ._utils import providers_client_factory
-    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
-    res_locations = []
-    for res in resource_types:
-        if res and getattr(res, 'resource_type', "") == "managedEnvironments":
-            res_locations = getattr(res, 'locations', [])
-
-    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
-
-    return res_locations
 
 
 def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):

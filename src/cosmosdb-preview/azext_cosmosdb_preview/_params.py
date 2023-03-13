@@ -18,7 +18,14 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id)
 
 from azext_cosmosdb_preview.actions import (
-    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource, AddCassandraTableAction, AddSqlContainerAction)
+    CreateGremlinDatabaseRestoreResource,
+    CreateTableRestoreResource,
+    AddCassandraTableAction,
+    AddMongoCollectionAction,
+    AddSqlContainerAction,
+    CreateTargetPhysicalPartitionThroughputInfoAction,
+    CreateSourcePhysicalPartitionThroughputInfoAction,
+    CreatePhysicalPartitionIdListAction)
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousTier
@@ -210,7 +217,7 @@ def load_arguments(self, _):
             c.argument('backup_interval', type=int, help="the frequency(in minutes) with which backups are taken (only for accounts with periodic mode backups)", arg_group='Backup Policy')
             c.argument('backup_retention', type=int, help="the time(in hours) for which each backup is retained (only for accounts with periodic mode backups)", arg_group='Backup Policy')
             c.argument('backup_redundancy', arg_type=get_enum_type(BackupStorageRedundancy), help="The redundancy type of the backup Storage account", arg_group='Backup Policy')
-            c.argument('server_version', arg_type=get_enum_type(ServerVersion), help="Valid only for MongoDB accounts.", is_preview=True)
+            c.argument('server_version', arg_type=get_enum_type(ServerVersion), help="Valid only for MongoDB accounts.")
             c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
             c.argument('analytical_storage_schema_type', options_list=['--analytical-storage-schema-type', '--as-schema'], arg_type=get_enum_type(AnalyticalStorageSchemaType), help="Schema type for analytical storage.", arg_group='Analytical Storage Configuration')
             c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyType), help="The type of backup policy of the account to create", arg_group='Backup Policy')
@@ -225,6 +232,8 @@ def load_arguments(self, _):
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource)
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True)
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True)
+        c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.", is_preview=True)
+        c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
 
     # Restorable Database Accounts
     with self.argument_context('cosmosdb restorable-database-account show') as c:
@@ -306,8 +315,10 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb dts copy') as c:
         c.argument('job_name', job_name_type)
         c.argument('source_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Source cassandra table')
+        c.argument('source_mongo', nargs='+', action=AddMongoCollectionAction, help='Source mongo collection')
         c.argument('source_sql_container', nargs='+', action=AddSqlContainerAction, help='Source sql container')
         c.argument('dest_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Destination cassandra table')
+        c.argument('dest_mongo', nargs='+', action=AddMongoCollectionAction, help='Destination mongo collection')
         c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
 
@@ -331,3 +342,63 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('database_name', database_name_type, required=True, help='Name of the mongoDB database')
         c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB collection')
+
+    # Sql container partition retrieve throughput
+    with self.argument_context('cosmosdb sql container retrieve-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB container')
+        c.argument('physical_partition_ids', options_list=['--physical-partition-ids', '-p'], nargs='+', action=CreatePhysicalPartitionIdListAction, required=False, help='space separated list of physical partition ids')
+        c.argument('all_partitions', arg_type=get_three_state_flag(), help="switch to retrieve throughput for all physical partitions")
+
+    # Sql container partition redistribute throughput
+    with self.argument_context('cosmosdb sql container redistribute-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB collection')
+        c.argument('evenly_distribute', arg_type=get_three_state_flag(), help="switch to distribute throughput equally among all physical partitions")
+        c.argument('target_partition_info', nargs='+', action=CreateTargetPhysicalPartitionThroughputInfoAction, required=False, help="information about desired target physical partition throughput eg: 0=1200 1=1200")
+        c.argument('source_partition_info', nargs='+', action=CreateSourcePhysicalPartitionThroughputInfoAction, required=False, help="space separated source physical partition ids eg: 1 2")
+
+    # Mongodb collection partition retrieve throughput
+    with self.argument_context('cosmosdb mongodb collection retrieve-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('collection_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB container')
+        c.argument('physical_partition_ids', options_list=['--physical-partition-ids', '-p'], nargs='+', action=CreatePhysicalPartitionIdListAction, required=False, help='space separated list of physical partition ids')
+        c.argument('all_partitions', arg_type=get_three_state_flag(), help="switch to retrieve throughput for all physical partitions")
+
+    # Mongodb collection partition redistribute throughput
+    with self.argument_context('cosmosdb mongodb collection redistribute-partition-throughput') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
+        c.argument('collection_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB collection')
+        c.argument('evenly_distribute', arg_type=get_three_state_flag(), help="switch to distribute throughput equally among all physical partitions")
+        c.argument('target_partition_info', nargs='+', action=CreateTargetPhysicalPartitionThroughputInfoAction, required=False, help="information about desired target physical partition throughput eg: '0=1200 1=1200'")
+        c.argument('source_partition_info', nargs='+', action=CreateSourcePhysicalPartitionThroughputInfoAction, required=False, help="space separated source physical partition ids eg: 1 2")
+
+    # SQL database restore
+    with self.argument_context('cosmosdb sql database restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Database name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+
+    # SQL collection restore
+    with self.argument_context('cosmosdb sql container restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', database_name_type, required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Container name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the container needs to be restored to.", required=True)
+
+    # MongoDB database restore
+    with self.argument_context('cosmosdb mongodb database restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Database name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+
+    # MongoDB collection restore
+    with self.argument_context('cosmosdb mongodb collection restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', database_name_type, required=True)
+        c.argument('collection_name', options_list=['--name', '-n'], help="Collection name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the collection needs to be restored to.", required=True)

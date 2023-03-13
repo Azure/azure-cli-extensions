@@ -9,7 +9,6 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
-# pylint: disable=bad-continuation
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
@@ -31,7 +30,7 @@ from azext_datafactory.generated._client_factory import (
 
 datafactory_factory = CliCommandType(
     operations_tmpl=(
-        'azext_datafactory.vendored_sdks.datafactory.operations._factories_operations#FactoriesOperations.{}'
+        "azext_datafactory.vendored_sdks.datafactory.operations._factories_operations#FactoriesOperations.{}"
     ),
     client_factory=cf_factory,
 )
@@ -39,53 +38,53 @@ datafactory_factory = CliCommandType(
 
 datafactory_activity_run = CliCommandType(
     operations_tmpl=(
-        'azext_datafactory.vendored_sdks.datafactory.operations._activity_runs_operations#ActivityRunsOperations.{}'
+        "azext_datafactory.vendored_sdks.datafactory.operations._activity_runs_operations#ActivityRunsOperations.{}"
     ),
     client_factory=cf_activity_run,
 )
 
 
 datafactory_dataset = CliCommandType(
-    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._datasets_operations#DatasetsOperations.{}',
+    operations_tmpl="azext_datafactory.vendored_sdks.datafactory.operations._datasets_operations#DatasetsOperations.{}",
     client_factory=cf_dataset,
 )
 
 
 datafactory_integration_runtime = CliCommandType(
-    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._integration_runtimes_operations#IntegrationRuntimesOperations.{}',
+    operations_tmpl="azext_datafactory.vendored_sdks.datafactory.operations._integration_runtimes_operations#IntegrationRuntimesOperations.{}",
     client_factory=cf_integration_runtime,
 )
 
 
 datafactory_integration_runtime_node = CliCommandType(
-    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._integration_runtime_nodes_operations#IntegrationRuntimeNodesOperations.{}',
+    operations_tmpl="azext_datafactory.vendored_sdks.datafactory.operations._integration_runtime_nodes_operations#IntegrationRuntimeNodesOperations.{}",
     client_factory=cf_integration_runtime_node,
 )
 
 
 datafactory_linked_service = CliCommandType(
     operations_tmpl=(
-        'azext_datafactory.vendored_sdks.datafactory.operations._linked_services_operations#LinkedServicesOperations.{}'
+        "azext_datafactory.vendored_sdks.datafactory.operations._linked_services_operations#LinkedServicesOperations.{}"
     ),
     client_factory=cf_linked_service,
 )
 
 
 datafactory_managed_private_endpoint = CliCommandType(
-    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._managed_private_endpoints_operations#ManagedPrivateEndpointsOperations.{}',
+    operations_tmpl="azext_datafactory.vendored_sdks.datafactory.operations._managed_private_endpoints_operations#ManagedPrivateEndpointsOperations.{}",
     client_factory=cf_managed_private_endpoint,
 )
 
 
 datafactory_managed_virtual_network = CliCommandType(
-    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._managed_virtual_networks_operations#ManagedVirtualNetworksOperations.{}',
+    operations_tmpl="azext_datafactory.vendored_sdks.datafactory.operations._managed_virtual_networks_operations#ManagedVirtualNetworksOperations.{}",
     client_factory=cf_managed_virtual_network,
 )
 
 
 datafactory_pipeline = CliCommandType(
     operations_tmpl=(
-        'azext_datafactory.vendored_sdks.datafactory.operations._pipelines_operations#PipelinesOperations.{}'
+        "azext_datafactory.vendored_sdks.datafactory.operations._pipelines_operations#PipelinesOperations.{}"
     ),
     client_factory=cf_pipeline,
 )
@@ -93,21 +92,21 @@ datafactory_pipeline = CliCommandType(
 
 datafactory_pipeline_run = CliCommandType(
     operations_tmpl=(
-        'azext_datafactory.vendored_sdks.datafactory.operations._pipeline_runs_operations#PipelineRunsOperations.{}'
+        "azext_datafactory.vendored_sdks.datafactory.operations._pipeline_runs_operations#PipelineRunsOperations.{}"
     ),
     client_factory=cf_pipeline_run,
 )
 
 
 datafactory_trigger = CliCommandType(
-    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._triggers_operations#TriggersOperations.{}',
+    operations_tmpl="azext_datafactory.vendored_sdks.datafactory.operations._triggers_operations#TriggersOperations.{}",
     client_factory=cf_trigger,
 )
 
 
 datafactory_trigger_run = CliCommandType(
     operations_tmpl=(
-        'azext_datafactory.vendored_sdks.datafactory.operations._trigger_runs_operations#TriggerRunsOperations.{}'
+        "azext_datafactory.vendored_sdks.datafactory.operations._trigger_runs_operations#TriggerRunsOperations.{}"
     ),
     client_factory=cf_trigger_run,
 )
@@ -115,130 +114,214 @@ datafactory_trigger_run = CliCommandType(
 
 def load_command_table(self, _):
 
-    with self.command_group('datafactory', datafactory_factory, client_factory=cf_factory) as g:
-        g.custom_command('list', 'datafactory_list')
-        g.custom_show_command('show', 'datafactory_show')
-        g.custom_command('create', 'datafactory_create')
-        g.custom_command('update', 'datafactory_update')
-        g.custom_command('delete', 'datafactory_delete', confirmation=True)
-        g.custom_command('configure-factory-repo', 'datafactory_configure_factory_repo')
-        g.custom_command('get-data-plane-access', 'datafactory_get_data_plane_access')
-        g.custom_command('get-git-hub-access-token', 'datafactory_get_git_hub_access_token')
-
-    with self.command_group('datafactory activity-run', datafactory_activity_run, client_factory=cf_activity_run) as g:
-        g.custom_command('query-by-pipeline-run', 'datafactory_activity_run_query_by_pipeline_run')
-
-    with self.command_group('datafactory dataset', datafactory_dataset, client_factory=cf_dataset) as g:
-        g.custom_command('list', 'datafactory_dataset_list')
-        g.custom_show_command('show', 'datafactory_dataset_show')
-        g.custom_command('create', 'datafactory_dataset_create')
-        g.generic_update_command('update', custom_func_name='datafactory_dataset_update', setter_arg_name='dataset')
-        g.custom_command('delete', 'datafactory_dataset_delete', confirmation=True)
-
     with self.command_group(
-        'datafactory integration-runtime', datafactory_integration_runtime, client_factory=cf_integration_runtime
+        "datafactory", datafactory_factory, client_factory=cf_factory
     ) as g:
-        g.custom_command('list', 'datafactory_integration_runtime_list')
-        g.custom_show_command('show', 'datafactory_integration_runtime_show')
+        g.custom_command("list", "datafactory_list")
+        g.custom_show_command("show", "datafactory_show")
+        g.custom_command("create", "datafactory_create")
+        g.custom_command("update", "datafactory_update")
+        g.custom_command("delete", "datafactory_delete", confirmation=True)
+        g.custom_command("configure-factory-repo", "datafactory_configure_factory_repo")
+        g.custom_command("get-data-plane-access", "datafactory_get_data_plane_access")
         g.custom_command(
-            'linked-integration-runtime create', 'datafactory_integration_runtime_linked_integration_runtime_create'
+            "get-git-hub-access-token", "datafactory_get_git_hub_access_token"
         )
-        g.custom_command('managed create', 'datafactory_integration_runtime_managed_create')
-        g.custom_command('self-hosted create', 'datafactory_integration_runtime_self_hosted_create')
-        g.custom_command('update', 'datafactory_integration_runtime_update')
-        g.custom_command('delete', 'datafactory_integration_runtime_delete', confirmation=True)
-        g.custom_command('get-connection-info', 'datafactory_integration_runtime_get_connection_info')
-        g.custom_command('get-monitoring-data', 'datafactory_integration_runtime_get_monitoring_data')
-        g.custom_command('get-status', 'datafactory_integration_runtime_get_status')
-        g.custom_command('list-auth-key', 'datafactory_integration_runtime_list_auth_key')
-        g.custom_command('regenerate-auth-key', 'datafactory_integration_runtime_regenerate_auth_key')
-        g.custom_command('remove-link', 'datafactory_integration_runtime_remove_link')
-        g.custom_command('start', 'datafactory_integration_runtime_start', supports_no_wait=True)
-        g.custom_command('stop', 'datafactory_integration_runtime_stop', supports_no_wait=True)
-        g.custom_command('sync-credentials', 'datafactory_integration_runtime_sync_credentials')
-        g.custom_command('upgrade', 'datafactory_integration_runtime_upgrade')
-        g.custom_wait_command('wait', 'datafactory_integration_runtime_show')
 
     with self.command_group(
-        'datafactory integration-runtime-node',
+        "datafactory activity-run",
+        datafactory_activity_run,
+        client_factory=cf_activity_run,
+    ) as g:
+        g.custom_command(
+            "query-by-pipeline-run", "datafactory_activity_run_query_by_pipeline_run"
+        )
+
+    with self.command_group(
+        "datafactory dataset", datafactory_dataset, client_factory=cf_dataset
+    ) as g:
+        g.custom_command("list", "datafactory_dataset_list")
+        g.custom_show_command("show", "datafactory_dataset_show")
+        g.custom_command("create", "datafactory_dataset_create")
+        g.generic_update_command(
+            "update",
+            custom_func_name="datafactory_dataset_update",
+            setter_arg_name="dataset",
+        )
+        g.custom_command("delete", "datafactory_dataset_delete", confirmation=True)
+
+    with self.command_group(
+        "datafactory integration-runtime",
+        datafactory_integration_runtime,
+        client_factory=cf_integration_runtime,
+    ) as g:
+        g.custom_command("list", "datafactory_integration_runtime_list")
+        g.custom_show_command("show", "datafactory_integration_runtime_show")
+        g.custom_command(
+            "linked-integration-runtime create",
+            "datafactory_integration_runtime_linked_integration_runtime_create",
+        )
+        g.custom_command(
+            "managed create", "datafactory_integration_runtime_managed_create"
+        )
+        g.custom_command(
+            "self-hosted create", "datafactory_integration_runtime_self_hosted_create"
+        )
+        g.custom_command("update", "datafactory_integration_runtime_update")
+        g.custom_command(
+            "delete", "datafactory_integration_runtime_delete", confirmation=True
+        )
+        g.custom_command(
+            "get-connection-info", "datafactory_integration_runtime_get_connection_info"
+        )
+        g.custom_command(
+            "get-monitoring-data", "datafactory_integration_runtime_get_monitoring_data"
+        )
+        g.custom_command("get-status", "datafactory_integration_runtime_get_status")
+        g.custom_command(
+            "list-auth-key", "datafactory_integration_runtime_list_auth_key"
+        )
+        g.custom_command(
+            "regenerate-auth-key", "datafactory_integration_runtime_regenerate_auth_key"
+        )
+        g.custom_command("remove-link", "datafactory_integration_runtime_remove_link")
+        g.custom_command(
+            "start", "datafactory_integration_runtime_start", supports_no_wait=True
+        )
+        g.custom_command(
+            "stop", "datafactory_integration_runtime_stop", supports_no_wait=True
+        )
+        g.custom_command(
+            "sync-credentials", "datafactory_integration_runtime_sync_credentials"
+        )
+        g.custom_command("upgrade", "datafactory_integration_runtime_upgrade")
+        g.custom_wait_command("wait", "datafactory_integration_runtime_show")
+
+    with self.command_group(
+        "datafactory integration-runtime-node",
         datafactory_integration_runtime_node,
         client_factory=cf_integration_runtime_node,
     ) as g:
-        g.custom_show_command('show', 'datafactory_integration_runtime_node_show')
-        g.custom_command('update', 'datafactory_integration_runtime_node_update')
-        g.custom_command('delete', 'datafactory_integration_runtime_node_delete', confirmation=True)
-        g.custom_command('get-ip-address', 'datafactory_integration_runtime_node_get_ip_address')
-
-    with self.command_group(
-        'datafactory linked-service', datafactory_linked_service, client_factory=cf_linked_service
-    ) as g:
-        g.custom_command('list', 'datafactory_linked_service_list')
-        g.custom_show_command('show', 'datafactory_linked_service_show')
-        g.custom_command('create', 'datafactory_linked_service_create')
-        g.generic_update_command(
-            'update', custom_func_name='datafactory_linked_service_update', setter_arg_name='linked_service'
+        g.custom_show_command("show", "datafactory_integration_runtime_node_show")
+        g.custom_command("update", "datafactory_integration_runtime_node_update")
+        g.custom_command(
+            "delete", "datafactory_integration_runtime_node_delete", confirmation=True
         )
-        g.custom_command('delete', 'datafactory_linked_service_delete', confirmation=True)
+        g.custom_command(
+            "get-ip-address", "datafactory_integration_runtime_node_get_ip_address"
+        )
 
     with self.command_group(
-        'datafactory managed-private-endpoint',
+        "datafactory linked-service",
+        datafactory_linked_service,
+        client_factory=cf_linked_service,
+    ) as g:
+        g.custom_command("list", "datafactory_linked_service_list")
+        g.custom_show_command("show", "datafactory_linked_service_show")
+        g.custom_command("create", "datafactory_linked_service_create")
+        g.generic_update_command(
+            "update",
+            custom_func_name="datafactory_linked_service_update",
+            setter_arg_name="linked_service",
+        )
+        g.custom_command(
+            "delete", "datafactory_linked_service_delete", confirmation=True
+        )
+
+    with self.command_group(
+        "datafactory managed-private-endpoint",
         datafactory_managed_private_endpoint,
         client_factory=cf_managed_private_endpoint,
         is_preview=True,
     ) as g:
-        g.custom_command('list', 'datafactory_managed_private_endpoint_list')
-        g.custom_show_command('show', 'datafactory_managed_private_endpoint_show')
-        g.custom_command('create', 'datafactory_managed_private_endpoint_create')
+        g.custom_command("list", "datafactory_managed_private_endpoint_list")
+        g.custom_show_command("show", "datafactory_managed_private_endpoint_show")
+        g.custom_command("create", "datafactory_managed_private_endpoint_create")
         g.generic_update_command(
-            'update',
-            custom_func_name='datafactory_managed_private_endpoint_update',
-            setter_arg_name='managed_private_endpoint',
+            "update",
+            custom_func_name="datafactory_managed_private_endpoint_update",
+            setter_arg_name="managed_private_endpoint",
         )
-        g.custom_command('delete', 'datafactory_managed_private_endpoint_delete', confirmation=True)
+        g.custom_command(
+            "delete", "datafactory_managed_private_endpoint_delete", confirmation=True
+        )
 
     with self.command_group(
-        'datafactory managed-virtual-network',
+        "datafactory managed-virtual-network",
         datafactory_managed_virtual_network,
         client_factory=cf_managed_virtual_network,
         is_preview=True,
     ) as g:
-        g.custom_command('list', 'datafactory_managed_virtual_network_list')
-        g.custom_show_command('show', 'datafactory_managed_virtual_network_show')
-        g.custom_command('create', 'datafactory_managed_virtual_network_create')
+        g.custom_command("list", "datafactory_managed_virtual_network_list")
+        g.custom_show_command("show", "datafactory_managed_virtual_network_show")
+        g.custom_command("create", "datafactory_managed_virtual_network_create")
         g.generic_update_command(
-            'update',
-            custom_func_name='datafactory_managed_virtual_network_update',
-            setter_arg_name='managed_virtual_network',
+            "update",
+            custom_func_name="datafactory_managed_virtual_network_update",
+            setter_arg_name="managed_virtual_network",
         )
 
-    with self.command_group('datafactory pipeline', datafactory_pipeline, client_factory=cf_pipeline) as g:
-        g.custom_command('list', 'datafactory_pipeline_list')
-        g.custom_show_command('show', 'datafactory_pipeline_show')
-        g.custom_command('create', 'datafactory_pipeline_create')
-        g.generic_update_command('update', custom_func_name='datafactory_pipeline_update', setter_arg_name='pipeline')
-        g.custom_command('delete', 'datafactory_pipeline_delete', confirmation=True)
-        g.custom_command('create-run', 'datafactory_pipeline_create_run')
+    with self.command_group(
+        "datafactory pipeline", datafactory_pipeline, client_factory=cf_pipeline
+    ) as g:
+        g.custom_command("list", "datafactory_pipeline_list")
+        g.custom_show_command("show", "datafactory_pipeline_show")
+        g.custom_command("create", "datafactory_pipeline_create")
+        g.generic_update_command(
+            "update",
+            custom_func_name="datafactory_pipeline_update",
+            setter_arg_name="pipeline",
+        )
+        g.custom_command("delete", "datafactory_pipeline_delete", confirmation=True)
+        g.custom_command("create-run", "datafactory_pipeline_create_run")
 
-    with self.command_group('datafactory pipeline-run', datafactory_pipeline_run, client_factory=cf_pipeline_run) as g:
-        g.custom_show_command('show', 'datafactory_pipeline_run_show')
-        g.custom_command('cancel', 'datafactory_pipeline_run_cancel')
-        g.custom_command('query-by-factory', 'datafactory_pipeline_run_query_by_factory')
+    with self.command_group(
+        "datafactory pipeline-run",
+        datafactory_pipeline_run,
+        client_factory=cf_pipeline_run,
+    ) as g:
+        g.custom_show_command("show", "datafactory_pipeline_run_show")
+        g.custom_command("cancel", "datafactory_pipeline_run_cancel")
+        g.custom_command(
+            "query-by-factory", "datafactory_pipeline_run_query_by_factory"
+        )
 
-    with self.command_group('datafactory trigger', datafactory_trigger, client_factory=cf_trigger) as g:
-        g.custom_command('list', 'datafactory_trigger_list')
-        g.custom_show_command('show', 'datafactory_trigger_show')
-        g.custom_command('create', 'datafactory_trigger_create')
-        g.generic_update_command('update', custom_func_name='datafactory_trigger_update', setter_arg_name='trigger')
-        g.custom_command('delete', 'datafactory_trigger_delete', confirmation=True)
-        g.custom_command('get-event-subscription-status', 'datafactory_trigger_get_event_subscription_status')
-        g.custom_command('query-by-factory', 'datafactory_trigger_query_by_factory')
-        g.custom_command('start', 'datafactory_trigger_start', supports_no_wait=True)
-        g.custom_command('stop', 'datafactory_trigger_stop', supports_no_wait=True)
-        g.custom_command('subscribe-to-event', 'datafactory_trigger_subscribe_to_event', supports_no_wait=True)
-        g.custom_command('unsubscribe-from-event', 'datafactory_trigger_unsubscribe_from_event', supports_no_wait=True)
-        g.custom_wait_command('wait', 'datafactory_trigger_show')
+    with self.command_group(
+        "datafactory trigger", datafactory_trigger, client_factory=cf_trigger
+    ) as g:
+        g.custom_command("list", "datafactory_trigger_list")
+        g.custom_show_command("show", "datafactory_trigger_show")
+        g.custom_command("create", "datafactory_trigger_create")
+        g.generic_update_command(
+            "update",
+            custom_func_name="datafactory_trigger_update",
+            setter_arg_name="trigger",
+        )
+        g.custom_command("delete", "datafactory_trigger_delete", confirmation=True)
+        g.custom_command(
+            "get-event-subscription-status",
+            "datafactory_trigger_get_event_subscription_status",
+        )
+        g.custom_command("query-by-factory", "datafactory_trigger_query_by_factory")
+        g.custom_command("start", "datafactory_trigger_start", supports_no_wait=True)
+        g.custom_command("stop", "datafactory_trigger_stop", supports_no_wait=True)
+        g.custom_command(
+            "subscribe-to-event",
+            "datafactory_trigger_subscribe_to_event",
+            supports_no_wait=True,
+        )
+        g.custom_command(
+            "unsubscribe-from-event",
+            "datafactory_trigger_unsubscribe_from_event",
+            supports_no_wait=True,
+        )
+        g.custom_wait_command("wait", "datafactory_trigger_show")
 
-    with self.command_group('datafactory trigger-run', datafactory_trigger_run, client_factory=cf_trigger_run) as g:
-        g.custom_command('cancel', 'datafactory_trigger_run_cancel')
-        g.custom_command('query-by-factory', 'datafactory_trigger_run_query_by_factory')
-        g.custom_command('rerun', 'datafactory_trigger_run_rerun')
+    with self.command_group(
+        "datafactory trigger-run",
+        datafactory_trigger_run,
+        client_factory=cf_trigger_run,
+    ) as g:
+        g.custom_command("cancel", "datafactory_trigger_run_cancel")
+        g.custom_command("query-by-factory", "datafactory_trigger_run_query_by_factory")
+        g.custom_command("rerun", "datafactory_trigger_run_rerun")

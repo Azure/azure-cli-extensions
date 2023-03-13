@@ -6,6 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
+from azure.cli.core.azclierror import ValidationError
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -39,6 +40,31 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
+
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
+    def test_firewall_with_additional_log(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16)
+        })
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} "
+            "--enable-fat-flow-logging --enable-udp-log-optimization",
+            checks=[
+                self.check('"Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
+                self.check('"Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
+            ]
+        )
+        self.cmd(
+             "network firewall update -n {firewall_name} -g {rg} "
+             "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+             checks=[
+                 self.not_exists('"Network.AdditionalLogs.EnableFatFlowLogging"'),
+                 self.not_exists('"Network.AdditionalLogs.EnableUdpLogOptimization"')
+             ]
+        )
+
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_ip_config')
     def test_azure_firewall_ip_config(self, resource_group):
@@ -944,3 +970,29 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --sql False',
                  checks=self.check('sql.allowSqlRedirect', False))
+
+    @ResourceGroupPreparer(name_prefix="cli_test_firewall_basic_sku_", location="westus")
+    def test_firewall_basic_sku(self):
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "m_conf_name": self.create_random_name("ipconfig-", 16),
+            "m_public_ip_name": self.create_random_name("public-ip-", 16),
+        })
+
+        with self.assertRaisesRegex(ValidationError, "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."):
+            self.cmd("network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic")
+
+        self.cmd("network vnet create -n {vnet_name} -g {rg} --address-prefixes 10.0.0.0/16 --subnet-name AzureFirewallSubnet --subnet-prefixes 10.0.0.0/24")
+        self.cmd("network vnet subnet create -n AzureFirewallManagementSubnet -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.1.0/24")
+        self.cmd("network public-ip create -n {m_public_ip_name} -g {rg} --sku Standard")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} "
+            "--conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.tier", "Basic")
+            ]
+        )

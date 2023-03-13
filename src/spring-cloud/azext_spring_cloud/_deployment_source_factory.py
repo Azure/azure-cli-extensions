@@ -4,9 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_03_01_preview import models
 from azure.cli.core.azclierror import (ArgumentUsageError)
 from ._utils import convert_argument_to_parameter_list
+
+import shlex
 
 
 class BaseSource:
@@ -105,6 +107,10 @@ class CustomContainerSource(BaseSource):
                                    container_command, container_args,
                                    registry_username, registry_password]):
             return None
+        if container_command is not None:
+            container_command = shlex.split(container_command)
+        if container_args is not None:
+            container_args = shlex.split(container_args)
         credential = models.ImageRegistryCredential(
             username=registry_username,
             password=registry_password      # [SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="false positive")]

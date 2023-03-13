@@ -21,7 +21,7 @@ STATUS_ERROR = 'ERROR'
 VM_REPAIR_RUN_COMMAND = 'vm repair run'
 
 
-class command_helper(object):
+class command_helper:
     """
     The command helper stores command state data and helper functions for vm-repair commands.
     It will also execute needed functions at the start and end of commands such as sending telemetry data
@@ -117,7 +117,7 @@ class command_helper(object):
         return self.return_dict
 
 
-class script_data(object):
+class script_data:
     """ Stores repair script data. """
     def __init__(self):
         # Unique run-id

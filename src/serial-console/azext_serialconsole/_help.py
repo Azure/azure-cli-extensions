@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['serial-console'] = """
     type: group
-    short-summary: Connent to the Serial Console of a Linux/Windows Virtual Machine or VMSS Instance.
+    short-summary: Connect to the Serial Console of a Linux/Windows Virtual Machine or VMSS Instance.
 """
 
 helps['serial-console send'] = """

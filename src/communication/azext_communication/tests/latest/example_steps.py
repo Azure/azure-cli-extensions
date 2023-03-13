@@ -55,7 +55,7 @@ def step_list2(test, rg_2, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az communication list '
-             '-g ""',
+             '-g "{rg}"',
              checks=checks)
 
 

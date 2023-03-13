@@ -12,6 +12,7 @@ HOST_RESOURCE_TYPE = "hosts"
 VMTEMPLATE_RESOURCE_TYPE = "virtualmachineTemplates"
 VIRTUALNETWORK_RESOURCE_TYPE = "virtualNetworks"
 VIRTUALMACHINE_RESOURCE_TYPE = "virtualMachines"
+MACHINE_RESOURCE_TYPE = "extensions"
 
 EXTENDED_LOCATION_NAMESPACE = "Microsoft.ExtendedLocation"
 CUSTOM_LOCATION_RESOURCE_TYPE = "CustomLocations"
@@ -23,8 +24,6 @@ VM_SYSTEM_ASSIGNED_INDENTITY_TYPE = "SystemAssigned"
 GUEST_AGENT_PROVISIONING_ACTION_INSTALL = "install"
 NAME_PARAMETER = "name"
 DEVICE_KEY = "device-key"
-
-DEFAULT_VCENTER_PORT = 443
 
 # Nic parameters.
 NETWORK = "network"

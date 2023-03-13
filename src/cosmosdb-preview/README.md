@@ -11,6 +11,7 @@ This package provides commands to
 - Update an Azure Cosmos DB database account to enable materialized views
 - Create/Delete a cosmosdb materialized views builder service resource
 - Provision and update database account with Continuous 7 days backup mode
+- Retrieve and redistribute throughput at physical partition level.
 
 ## How to use ##
 
@@ -260,4 +261,38 @@ az cosmosdb service delete \
     --resource-group "MyResourceGroup" \
     --account-name "MyAccount" 
     --name "MaterializedViewsBuilder" \
+```
+
+#### Restore a deleted database within same account for a Sql database account ####
+
+```sh
+az cosmosdb sql database restore --account-name "account-name" \
+    --name "database-name"
+    --restore-timestamp "2020-07-20T16:09:53+0000" \
+```
+
+#### Restore a deleted container within same account for a Sql database account ####
+
+```sh
+az cosmosdb sql container restore --account-name "account-name" \
+    --database-name "database-name"
+    --name "container-name"
+    --restore-timestamp "2020-07-20T16:09:53+0000" \
+```
+
+#### Restore a deleted database within same account for a MongoDB database account ####
+
+```sh
+az cosmosdb mongodb database restore --account-name "account-name" \
+    --name "database-name"
+    --restore-timestamp "2020-07-20T16:09:53+0000" \
+```
+
+#### Restore a deleted collection within same account for a MongoDB database account ####
+
+```sh
+az cosmosdb mongodb collection restore --account-name "account-name" \
+    --database-name "database-name"
+    --collection-name "collection-name"
+    --restore-timestamp "2020-07-20T16:09:53+0000" \
 ```

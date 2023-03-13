@@ -15,7 +15,7 @@ from . import consts
 from .utils import parse_dependencies, parse_duration
 
 
-class InternalKustomizationDefinition(KustomizationDefinition):
+class InternalKustomizationDefinition(KustomizationPatchDefinition):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

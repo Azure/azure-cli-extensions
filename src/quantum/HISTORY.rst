@@ -3,6 +3,31 @@
 Release History
 ===============
 
+0.19.0
+++++++
+* [2023-02-27] Version intended to work with QDK version 0.27.253010
+* You can specify --skip-autoadd when creating a workspace to only add the providers listed after the -r parameter, so provider plans in the "Credits for All" program will not be automatically added.
+* Adding resource estimator batching job support to az quantum.
+
+0.18.0
+++++++
+* [2023-02-08] Version intended to work with QDK version 0.27.253010 and Azure CLI 2.41.0 or greater.
+* You can now submit QIR and pass-through jobs using the CLI.
+* Fixed Azure/azure-cli-extensions Issue #5831 to eliminate some workspace creation errors.
+
+0.17.0
+++++++
+* [2022-11-02] Update default QDK version to latest 0.27.238334 - See https://learn.microsoft.com/azure/quantum/release-notes.
+* [2022-10-14] [Edited] The 0.17.0 release was originally intended to work with QDK version 0.26.233415, however additional functionality has been added to QDK version to 0.27.238334 that can be accessed by CLI extension 0.17.0.
+* The `az quantum` reference documentation now indicates which command parameters are required, and missing-parameter error messages are more informative. See https://learn.microsoft.com/cli/azure/quantum
+* You can submit jobs to the microsoft.simulator.resources-estimator target using the CLI.
+
+0.16.0
+++++++
+* [2022-06-30] Version intended to work with QDK version 0.25.218240
+* Providers participating in the "Credits for All" program will automatically be added when you create a workspace with the CLI. See https://docs.microsoft.com/en-us/azure/quantum/credits-faq
+* You can pass a TargetCapability value to the Q# compiler by adding the --target-capability parameter to an az quantum run, execute, or job submit command.
+
 0.15.0
 ++++++
 * [2022-04-25] Version intended to work with QDK version v0.24.208024
@@ -64,7 +89,7 @@ Release History
 
 0.6.1
 ++++++
-* [2021-07-22] Reduced the lenghth of the user agent reported by the tool.
+* [2021-07-22] Reduced the length of the user agent reported by the tool.
 
 0.6.0
 ++++++

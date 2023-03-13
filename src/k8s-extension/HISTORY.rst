@@ -3,6 +3,83 @@
 Release History
 ===============
 
+1.4.0
+++++++++++++++++++
+* microsoft.dapr: Update version comparison logic to use semver based comparison
+* microsoft.azuremonitor.containers: Make ContainerInsights DataCollectionRuleName consistent with portal and other onboarding clients
+
+1.3.9
+++++++++++++++++++
+* Deprecating  --config-settings alias for --configuration-settings
+* Deprecating  --configuration-protected-settings alias for --config-protected-settings
+* Deprecating  --configuration-settings-file alias for --config-settings-file
+* Deprecating  --configuration-protected-settings-file alias for --config-protected-file
+
+1.3.8
+++++++++++++++++++
+* Fixes to address the bug with msi auth mode for azuremonitor-containers extension version >= 3.0.0
+* microsoft.dapr: disable apply-CRDs hook if auto-upgrade is disabled
+* microsoft.azuremonitor.containers: ContainerInsights Extension add dataCollectionSettings to configuration settings
+* k8s-extension Adding GA api version 2022-11-01 exposing isSystemExtension and support
+
+1.3.7
+++++++++++++++++++
+* microsoft.dapr: prompt user for existing dapr installation during extension create
+
+1.3.6
+++++++++++++++++++
+* Update the api version and add tests for extension type calls
+* Fix the TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running all az k8s-extension extension-types commands
+* microsoft.azuremonitor.containers: Update DCR creation to Clusters resource group instead of workspace
+* microsoft.dataprotection.kubernetes: Authoring a new k8s partner extension for the BCDR solution of AKS clusters
+
+1.3.5
+++++++++++++++++++
+* Use the api-version 2022-04-02-preview in the CLI command az k8s-extension extension-types list
+
+1.3.4
+++++++++++++++++++
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
+
+1.3.3
+++++++++++++++++++
+* microsoft.azuremonitor.containers: add condition to use different api version for provisioned clusters
+
+1.3.2
+++++++++++++++++++
+* Create identity for Appliances clusters
+
+1.3.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Always show TSG link for AzureMLKubernetes extension at the head.
+* microsoft.azuremonitor.containers: add omsagent rename changes
+* microsoft.azuremonitor.containers: fix script to support provisionedClusters
+
+1.3.0
+++++++++++++++++++
+* Add support for provisionedClusters
+
+1.2.6
+++++++++++++++++++
+* k8s-extension new sub command group for extension types
+
+1.2.5
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding related bug fixes.
+* microsoft.openservicemesh: Fix osm-arc installations for non-connectedClusters
+* k8s-extension azuredefender namespace to mdc
+
+1.2.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Do not invoke `create_or_update` for already existed resources.
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Onboarding updates.
+
+1.2.3
+++++++++++++++++++
+* Fix warning message returned on PATCH
+* microsoft.azureml.kubernetes: remove deprecated warning message.
+* microsoft.azureml.kubernetes: Use cluster scale to control clusterPurpose and inferenceRouterHA
+
 1.2.2
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Disable service bus by default, do not create relay for managed clusters.

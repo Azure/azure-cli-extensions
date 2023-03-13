@@ -3,6 +3,55 @@
 Release History
 ===============
 
+1.5.1
+++++++
+ * Add AzureCli to the user-agent header for Rooms and Email service clients
+ 
+
+1.5.0
+++++++
+ * Add communication email command group in preview mode
+
+
+1.4.1
+++++++
+ * Update version missed in previous release
+ * Remove redundant version definition in setup.py
+ 
+
+1.4.0
+++++++
+ * Add communication rooms command group in preview mode
+ * Add confirmation for delete/remote/revoke commands under identity, chat, rooms
+ * Update minCliCoreVersion to 2.40.0
+
+
+1.3.0
+++++++
+ * Add AzureCli to the user-agent header
+
+
+1.2.2
+++++++
+ * Fix a bug in chat 'message delete command'
+
+
+1.2.1
+++++++
+ * Update command helps
+ * Fix bugs in preview and deprecated flags
+
+
+1.2.0
+++++++
+* Add communication chat command group in preview mode.
+* Add communication identity command group in preview mode.
+* Deprecate 'identity issue-access-token' for 'identity token issue'
+* Deprecate 'sms sens-sms' for 'sms send'
+* Deprecate 'phonenumbers show-phonenumber' for 'phonenumber show'
+* Deprecate 'phonenumbers list-phonenumbers' for 'phonenumber list'
+
+
 1.1.2
 ++++++
 * Add support for multiple SMS recipients.

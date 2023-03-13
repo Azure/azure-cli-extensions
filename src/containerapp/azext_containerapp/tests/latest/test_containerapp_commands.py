@@ -11,28 +11,22 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
 
+from .common import TEST_LOCATION
+from .utils import create_containerapp_env
+
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_identity_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
 
@@ -69,11 +63,13 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="canadacentral")
     def test_containerapp_identity_system(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
@@ -103,25 +99,16 @@ class ContainerappIdentityTests(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_identity_user(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
 
@@ -162,25 +149,16 @@ class ContainerappIdentityTests(ScenarioTest):
         ])
 
 
-
 class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_ingress_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
 
@@ -214,20 +192,12 @@ class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_ingress_traffic_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env_name))
 
@@ -268,20 +238,12 @@ class ContainerappIngressTests(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_custom_domains_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        create_containerapp_env(self, env_name, resource_group)
 
         app = self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name)).get_output_in_json()
 
@@ -392,32 +354,237 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ]).get_output_in_json()
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live) and vnet command error in cli pipeline
+    def test_containerapp_tcp_ingress(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='env', length=24)
+        logs = self.create_random_name(prefix='logs', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
+        logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.vnetConfiguration.internal', True),
+        ])
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --transport tcp --target-port 80 --exposed-port 3000'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', True),
+            JMESPathCheck('targetPort', 80),
+            JMESPathCheck('exposedPort', 3000),
+            JMESPathCheck('transport', "Tcp"),
+        ])
+
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('transport', "Http2"),
+        ])
+
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --transport tcp --exposed-port 3020'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('transport', "Tcp"),
+            JMESPathCheck('exposedPort', 3020),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_ip_restrictions(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Allow'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Allow'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_ip_restrictions_deny(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Deny'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Deny'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dapr_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+        create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+        self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('properties.configuration.dapr.appId', "containerapp"),
+            JMESPathCheck('properties.configuration.dapr.appPort', 800),
+            JMESPathCheck('properties.configuration.dapr.appProtocol', "grpc"),
+            JMESPathCheck('properties.configuration.dapr.enabled', True),
+            JMESPathCheck('properties.configuration.dapr.httpReadBufferSize', 50),
+            JMESPathCheck('properties.configuration.dapr.httpMaxRequestSize', 4),
+            JMESPathCheck('properties.configuration.dapr.logLevel', "debug"),
+            JMESPathCheck('properties.configuration.dapr.enableApiLogging', False),
+        ])
 
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('appId', "containerapp1"),
             JMESPathCheck('appPort', 80),
             JMESPathCheck('appProtocol', "http"),
             JMESPathCheck('enabled', True),
+            JMESPathCheck('httpReadBufferSize', 60),
+            JMESPathCheck('httpMaxRequestSize', 6),
+            JMESPathCheck('logLevel', "warn"),
+            JMESPathCheck('enableApiLogging', True),
         ])
 
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
@@ -425,6 +592,10 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.appPort', 80),
             JMESPathCheck('properties.configuration.dapr.appProtocol', "http"),
             JMESPathCheck('properties.configuration.dapr.enabled', True),
+            JMESPathCheck('properties.configuration.dapr.httpReadBufferSize', 60),
+            JMESPathCheck('properties.configuration.dapr.httpMaxRequestSize', 6),
+            JMESPathCheck('properties.configuration.dapr.logLevel', "warn"),
+            JMESPathCheck('properties.configuration.dapr.enableApiLogging', True),
         ])
 
         self.cmd('containerapp dapr disable -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
@@ -432,6 +603,10 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('appPort', 80),
             JMESPathCheck('appProtocol', "http"),
             JMESPathCheck('enabled', False),
+            JMESPathCheck('httpReadBufferSize', 60),
+            JMESPathCheck('httpMaxRequestSize', 6),
+            JMESPathCheck('logLevel', "warn"),
+            JMESPathCheck('enableApiLogging', True),
         ])
 
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
@@ -439,29 +614,51 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.appPort', 80),
             JMESPathCheck('properties.configuration.dapr.appProtocol', "http"),
             JMESPathCheck('properties.configuration.dapr.enabled', False),
+            JMESPathCheck('properties.configuration.dapr.httpReadBufferSize', 60),
+            JMESPathCheck('properties.configuration.dapr.httpMaxRequestSize', 6),
+            JMESPathCheck('properties.configuration.dapr.logLevel', "warn"),
+            JMESPathCheck('properties.configuration.dapr.enableApiLogging', True),
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_dapr_e2e(self, resource_group):
+        """ Ensure that dapr can be enabled if the app has been created using containerapp up """
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        image = 'mcr.microsoft.com/azuredocs/aks-helloworld:v1'
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd(
+            'containerapp up -g {} -n {} --environment {} --image {}'.format(
+                resource_group, ca_name, env_name, image))
+
+        self.cmd(
+            'containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 '
+            '--dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(
+                resource_group, ca_name, env_name), checks=[
+                JMESPathCheck('appId', "containerapp1"),
+                JMESPathCheck('enabled', True)
+            ])
+
 
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
+    @live_only()  # Passes locally but fails in CI
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_storage(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         storage_name = self.create_random_name(prefix='storage', length=24)
         shares_name = self.create_random_name(prefix='share', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+        create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_ZRS --enable-large-file-share'.format(resource_group, storage_name))
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
@@ -489,20 +686,12 @@ class ContainerappRevisionTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_revision_label_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
-        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
-
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
 
@@ -558,3 +747,174 @@ class ContainerappRevisionTests(ScenarioTest):
         traffic_weight = self.cmd(f"containerapp ingress traffic show -g {resource_group} -n {ca_name}").get_output_in_json()
 
         self.assertEqual(len([w for w in traffic_weight if "label" in w]), 0)
+
+
+class ContainerappAnonymousRegistryTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_anonymous_registry(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+
+class ContainerappRegistryIdentityTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    def test_containerapp_registry_identity_user(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        identity = self.create_random_name(prefix='id', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity {identity_rid} --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    def test_containerapp_registry_identity_system(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+
+class ContainerappScaleTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_scale_create(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+        ])
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app}2 --image nginx --environment {env} --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0" --scale-rule-auth "apiKey=api-key" "appKey=app-key"')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}2', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "datadog"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.age", "120"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.metricUnavailableValue", "0"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].triggerParameter", "apiKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_scale_update(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --image nginx --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0"  --scale-rule-auth "apiKey=api-key" "appKey=app-key"')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "datadog"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.age", "120"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.metricUnavailableValue", "0"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].triggerParameter", "apiKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_scale_revision_copy(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+        ])
+
+        self.cmd(f'containerapp revision copy -g {resource_group} -n {app} --image nginx --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0"  --scale-rule-auth "apiKey=api-key" "appKey=app-key"')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "datadog"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.age", "120"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.metricUnavailableValue", "0"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].triggerParameter", "apiKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+
+        ])

@@ -22,7 +22,8 @@ from .repair_utils import (
     _get_repair_resource_tag,
     _fetch_encryption_settings,
     _resolve_api_version,
-    check_extension_version
+    check_extension_version,
+    _check_existing_rg
 )
 
 # pylint: disable=line-too-long, broad-except
@@ -87,7 +88,7 @@ def validate_create(cmd, namespace):
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
     # Prompt input for public ip usage
-    if not namespace.associate_public_ip:
+    if (not namespace.associate_public_ip) and (not namespace.yes):
         _prompt_public_ip(namespace)
 
 
@@ -172,6 +173,20 @@ def validate_run(cmd, namespace):
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
+
+
+def validate_reset_nic(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+    if namespace._subscription:
+        # setting subscription Id
+        try:
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
+            logger.info('Setting the subscription...\n')
+            _call_az_command(set_sub_command)
+        except AzCommandError as azCommandError:
+            logger.error(azCommandError)
+            raise CLIError('Unexpected error occured while setting the subscription..')
+    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 
 def _prompt_encrypted_vm(namespace):
@@ -273,6 +288,7 @@ def _validate_disk_name(disk_name):
 
 
 def _validate_resource_group_name(rg_name):
+    from knack.prompting import prompt_y_n
     rg_pattern = r'[0-9a-zA-Z._\-()]+$'
     # if match is null or ends in period, then raise error
     if not match(rg_pattern, rg_name) or rg_name[-1] == '.':
@@ -280,26 +296,17 @@ def _validate_resource_group_name(rg_name):
 
     if len(rg_name) > 90:
         raise CLIError('Resource group name only allow up to 90 characters.')
-
-    # Check for existing dup name
-    try:
-        list_rg_command = 'az group list --query "[].name" -o json'
-        logger.info('Checking for existing resource groups with identical name within subscription...')
-        output = _call_az_command(list_rg_command)
-    except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        raise CLIError('Unexpected error occured while fetching existing resource groups.')
-    rg_list = loads(output)
-
-    if rg_name in [rg.lower() for rg in rg_list]:
-        raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))
+    if _check_existing_rg(rg_name):
+        if not prompt_y_n('Resource Group already exists. Continue to use existing resource group? If operation fails you will prompted to delete resource group'):
+            raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))
+        logger.warning("Using preexisting resource group")
 
 
 def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\' || type==\'Microsoft.Compute/virtualMachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)

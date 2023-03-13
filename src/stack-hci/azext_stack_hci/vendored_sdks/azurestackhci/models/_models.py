@@ -10,6 +10,56 @@ from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
+class ArcConnectivityProperties(msrest.serialization.Model):
+    """Connectivity related configuration required by arc server.
+
+    :param enabled: True indicates ARC connectivity is enabled.
+    :type enabled: bool
+    """
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ArcConnectivityProperties, self).__init__(**kwargs)
+        self.enabled = kwargs.get('enabled', None)
+
+
+class ArcIdentityResponse(msrest.serialization.Model):
+    """ArcIdentity details.
+
+    :param arc_application_client_id:
+    :type arc_application_client_id: str
+    :param arc_application_tenant_id:
+    :type arc_application_tenant_id: str
+    :param arc_service_principal_object_id:
+    :type arc_service_principal_object_id: str
+    :param arc_application_object_id:
+    :type arc_application_object_id: str
+    """
+
+    _attribute_map = {
+        'arc_application_client_id': {'key': 'properties.arcApplicationClientId', 'type': 'str'},
+        'arc_application_tenant_id': {'key': 'properties.arcApplicationTenantId', 'type': 'str'},
+        'arc_service_principal_object_id': {'key': 'properties.arcServicePrincipalObjectId', 'type': 'str'},
+        'arc_application_object_id': {'key': 'properties.arcApplicationObjectId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ArcIdentityResponse, self).__init__(**kwargs)
+        self.arc_application_client_id = kwargs.get('arc_application_client_id', None)
+        self.arc_application_tenant_id = kwargs.get('arc_application_tenant_id', None)
+        self.arc_service_principal_object_id = kwargs.get('arc_service_principal_object_id', None)
+        self.arc_application_object_id = kwargs.get('arc_application_object_id', None)
+
+
 class Resource(msrest.serialization.Model):
     """Common fields that are returned in the response for all Azure Resource Manager resources.
 
@@ -66,6 +116,14 @@ class ArcSetting(Resource):
     :param arc_instance_resource_group: The resource group that hosts the Arc agents, ie. Hybrid
      Compute Machine resources.
     :type arc_instance_resource_group: str
+    :param arc_application_client_id: App id of arc AAD identity.
+    :type arc_application_client_id: str
+    :param arc_application_tenant_id: Tenant id of arc AAD identity.
+    :type arc_application_tenant_id: str
+    :param arc_service_principal_object_id: Object id of arc AAD service principal.
+    :type arc_service_principal_object_id: str
+    :param arc_application_object_id: Object id of arc AAD identity.
+    :type arc_application_object_id: str
     :ivar aggregate_state: Aggregate state of Arc agent across the nodes in this HCI cluster.
      Possible values include: "NotSpecified", "Error", "Succeeded", "Canceled", "Failed",
      "Connected", "Disconnected", "Deleted", "Creating", "Updating", "Deleting", "Moving",
@@ -73,6 +131,8 @@ class ArcSetting(Resource):
     :vartype aggregate_state: str or ~azure.mgmt.azurestackhci.models.ArcSettingAggregateState
     :ivar per_node_details: State of Arc agent in each of the nodes.
     :vartype per_node_details: list[~azure.mgmt.azurestackhci.models.PerNodeState]
+    :param connectivity_properties: contains connectivity related configuration for ARC resources.
+    :type connectivity_properties: object
     :param created_by: The identity that created the resource.
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
@@ -104,8 +164,13 @@ class ArcSetting(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'arc_instance_resource_group': {'key': 'properties.arcInstanceResourceGroup', 'type': 'str'},
+        'arc_application_client_id': {'key': 'properties.arcApplicationClientId', 'type': 'str'},
+        'arc_application_tenant_id': {'key': 'properties.arcApplicationTenantId', 'type': 'str'},
+        'arc_service_principal_object_id': {'key': 'properties.arcServicePrincipalObjectId', 'type': 'str'},
+        'arc_application_object_id': {'key': 'properties.arcApplicationObjectId', 'type': 'str'},
         'aggregate_state': {'key': 'properties.aggregateState', 'type': 'str'},
         'per_node_details': {'key': 'properties.perNodeDetails', 'type': '[PerNodeState]'},
+        'connectivity_properties': {'key': 'properties.connectivityProperties', 'type': 'object'},
         'created_by': {'key': 'systemData.createdBy', 'type': 'str'},
         'created_by_type': {'key': 'systemData.createdByType', 'type': 'str'},
         'created_at': {'key': 'systemData.createdAt', 'type': 'iso-8601'},
@@ -121,8 +186,13 @@ class ArcSetting(Resource):
         super(ArcSetting, self).__init__(**kwargs)
         self.provisioning_state = None
         self.arc_instance_resource_group = kwargs.get('arc_instance_resource_group', None)
+        self.arc_application_client_id = kwargs.get('arc_application_client_id', None)
+        self.arc_application_tenant_id = kwargs.get('arc_application_tenant_id', None)
+        self.arc_service_principal_object_id = kwargs.get('arc_service_principal_object_id', None)
+        self.arc_application_object_id = kwargs.get('arc_application_object_id', None)
         self.aggregate_state = None
         self.per_node_details = None
+        self.connectivity_properties = kwargs.get('connectivity_properties', None)
         self.created_by = kwargs.get('created_by', None)
         self.created_by_type = kwargs.get('created_by_type', None)
         self.created_at = kwargs.get('created_at', None)
@@ -159,6 +229,29 @@ class ArcSettingList(msrest.serialization.Model):
         super(ArcSettingList, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
+
+
+class ArcSettingsPatch(msrest.serialization.Model):
+    """ArcSetting details to update.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param connectivity_properties: contains connectivity related configuration for ARC resources.
+    :type connectivity_properties: object
+    """
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'connectivity_properties': {'key': 'properties.connectivityProperties', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ArcSettingsPatch, self).__init__(**kwargs)
+        self.tags = kwargs.get('tags', None)
+        self.connectivity_properties = kwargs.get('connectivity_properties', None)
 
 
 class TrackedResource(Resource):
@@ -239,6 +332,10 @@ class Cluster(TrackedResource):
     :type aad_client_id: str
     :param aad_tenant_id: Tenant id of cluster AAD identity.
     :type aad_tenant_id: str
+    :param aad_application_object_id: Object id of cluster AAD identity.
+    :type aad_application_object_id: str
+    :param aad_service_principal_object_id: Id of cluster identity service principal.
+    :type aad_service_principal_object_id: str
     :param desired_properties: Desired properties of the cluster.
     :type desired_properties: ~azure.mgmt.azurestackhci.models.ClusterDesiredProperties
     :ivar reported_properties: Properties reported by cluster agent.
@@ -253,6 +350,8 @@ class Cluster(TrackedResource):
     :vartype last_sync_timestamp: ~datetime.datetime
     :ivar last_billing_timestamp: Most recent billing meter timestamp.
     :vartype last_billing_timestamp: ~datetime.datetime
+    :ivar service_endpoint: Region specific DataPath Endpoint of the cluster.
+    :vartype service_endpoint: str
     :param created_by: The identity that created the resource.
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
@@ -283,6 +382,7 @@ class Cluster(TrackedResource):
         'registration_timestamp': {'readonly': True},
         'last_sync_timestamp': {'readonly': True},
         'last_billing_timestamp': {'readonly': True},
+        'service_endpoint': {'readonly': True},
     }
 
     _attribute_map = {
@@ -297,6 +397,8 @@ class Cluster(TrackedResource):
         'cloud_management_endpoint': {'key': 'properties.cloudManagementEndpoint', 'type': 'str'},
         'aad_client_id': {'key': 'properties.aadClientId', 'type': 'str'},
         'aad_tenant_id': {'key': 'properties.aadTenantId', 'type': 'str'},
+        'aad_application_object_id': {'key': 'properties.aadApplicationObjectId', 'type': 'str'},
+        'aad_service_principal_object_id': {'key': 'properties.aadServicePrincipalObjectId', 'type': 'str'},
         'desired_properties': {'key': 'properties.desiredProperties', 'type': 'ClusterDesiredProperties'},
         'reported_properties': {'key': 'properties.reportedProperties', 'type': 'ClusterReportedProperties'},
         'trial_days_remaining': {'key': 'properties.trialDaysRemaining', 'type': 'float'},
@@ -304,6 +406,7 @@ class Cluster(TrackedResource):
         'registration_timestamp': {'key': 'properties.registrationTimestamp', 'type': 'iso-8601'},
         'last_sync_timestamp': {'key': 'properties.lastSyncTimestamp', 'type': 'iso-8601'},
         'last_billing_timestamp': {'key': 'properties.lastBillingTimestamp', 'type': 'iso-8601'},
+        'service_endpoint': {'key': 'properties.serviceEndpoint', 'type': 'str'},
         'created_by': {'key': 'systemData.createdBy', 'type': 'str'},
         'created_by_type': {'key': 'systemData.createdByType', 'type': 'str'},
         'created_at': {'key': 'systemData.createdAt', 'type': 'iso-8601'},
@@ -323,6 +426,8 @@ class Cluster(TrackedResource):
         self.cloud_management_endpoint = kwargs.get('cloud_management_endpoint', None)
         self.aad_client_id = kwargs.get('aad_client_id', None)
         self.aad_tenant_id = kwargs.get('aad_tenant_id', None)
+        self.aad_application_object_id = kwargs.get('aad_application_object_id', None)
+        self.aad_service_principal_object_id = kwargs.get('aad_service_principal_object_id', None)
         self.desired_properties = kwargs.get('desired_properties', None)
         self.reported_properties = None
         self.trial_days_remaining = None
@@ -330,6 +435,7 @@ class Cluster(TrackedResource):
         self.registration_timestamp = None
         self.last_sync_timestamp = None
         self.last_billing_timestamp = None
+        self.service_endpoint = None
         self.created_by = kwargs.get('created_by', None)
         self.created_by_type = kwargs.get('created_by_type', None)
         self.created_at = kwargs.get('created_at', None)
@@ -362,6 +468,37 @@ class ClusterDesiredProperties(msrest.serialization.Model):
         super(ClusterDesiredProperties, self).__init__(**kwargs)
         self.windows_server_subscription = kwargs.get('windows_server_subscription', None)
         self.diagnostic_level = kwargs.get('diagnostic_level', None)
+
+
+class ClusterIdentityResponse(msrest.serialization.Model):
+    """Cluster Identity details.
+
+    :param aad_client_id:
+    :type aad_client_id: str
+    :param aad_tenant_id:
+    :type aad_tenant_id: str
+    :param aad_service_principal_object_id:
+    :type aad_service_principal_object_id: str
+    :param aad_application_object_id:
+    :type aad_application_object_id: str
+    """
+
+    _attribute_map = {
+        'aad_client_id': {'key': 'properties.aadClientId', 'type': 'str'},
+        'aad_tenant_id': {'key': 'properties.aadTenantId', 'type': 'str'},
+        'aad_service_principal_object_id': {'key': 'properties.aadServicePrincipalObjectId', 'type': 'str'},
+        'aad_application_object_id': {'key': 'properties.aadApplicationObjectId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterIdentityResponse, self).__init__(**kwargs)
+        self.aad_client_id = kwargs.get('aad_client_id', None)
+        self.aad_tenant_id = kwargs.get('aad_tenant_id', None)
+        self.aad_service_principal_object_id = kwargs.get('aad_service_principal_object_id', None)
+        self.aad_application_object_id = kwargs.get('aad_application_object_id', None)
 
 
 class ClusterList(msrest.serialization.Model):
@@ -915,6 +1052,37 @@ class OperationListResult(msrest.serialization.Model):
         self.next_link = None
 
 
+class PasswordCredential(msrest.serialization.Model):
+    """PasswordCredential.
+
+    :param secret_text:
+    :type secret_text: str
+    :param key_id:
+    :type key_id: str
+    :param start_date_time:
+    :type start_date_time: ~datetime.datetime
+    :param end_date_time:
+    :type end_date_time: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'secret_text': {'key': 'secretText', 'type': 'str'},
+        'key_id': {'key': 'keyId', 'type': 'str'},
+        'start_date_time': {'key': 'startDateTime', 'type': 'iso-8601'},
+        'end_date_time': {'key': 'endDateTime', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PasswordCredential, self).__init__(**kwargs)
+        self.secret_text = kwargs.get('secret_text', None)
+        self.key_id = kwargs.get('key_id', None)
+        self.start_date_time = kwargs.get('start_date_time', None)
+        self.end_date_time = kwargs.get('end_date_time', None)
+
+
 class PerNodeExtensionState(msrest.serialization.Model):
     """Status of Arc Extension for a particular node in HCI Cluster.
 
@@ -1021,3 +1189,41 @@ class ProxyResource(Resource):
         **kwargs
     ):
         super(ProxyResource, self).__init__(**kwargs)
+
+
+class RawCertificateData(msrest.serialization.Model):
+    """RawCertificateData.
+
+    :param certificates:
+    :type certificates: list[str]
+    """
+
+    _attribute_map = {
+        'certificates': {'key': 'certificates', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(RawCertificateData, self).__init__(**kwargs)
+        self.certificates = kwargs.get('certificates', None)
+
+
+class UploadCertificateRequest(msrest.serialization.Model):
+    """UploadCertificateRequest.
+
+    :param properties:
+    :type properties: ~azure.mgmt.azurestackhci.models.RawCertificateData
+    """
+
+    _attribute_map = {
+        'properties': {'key': 'properties', 'type': 'RawCertificateData'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(UploadCertificateRequest, self).__init__(**kwargs)
+        self.properties = kwargs.get('properties', None)

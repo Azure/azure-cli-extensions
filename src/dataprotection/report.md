@@ -120,8 +120,8 @@ redentials"} --friendly-name "harshitbi2" --object-type "BackupInstance" --polic
 -9f70-7708a3a2283b/resourceGroups/000pikumar/providers/Microsoft.DataProtection/Backupvaults/PratikPrivatePreviewVault1\
 /backupPolicies/PratikPolicy1" --policy-parameters data-store-parameters-list={"dataStoreType":"OperationalStore","obje\
 ctType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resour\
-ceGroups/viveksipgtest"} --validation-type "ShallowValidation" --resource-group "000pikumar" --vault-name \
-"PratikPrivatePreviewVault1"
+ceGroups/viveksipgtest"} --validation-type "ShallowValidation" --tags key1="val1" --resource-group "000pikumar" \
+--vault-name "PratikPrivatePreviewVault1"
 ```
 ##### <a name="ParametersBackupInstancesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -129,6 +129,7 @@ ceGroups/viveksipgtest"} --validation-type "ShallowValidation" --resource-group 
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--backup-instance-name**|string|The name of the backup instance|backup_instance_name|backupInstanceName|
+|**--tags**|dictionary|Proxy Resource tags.|tags|tags|
 |**--friendly-name**|string|Gets or sets the Backup Instance friendly name.|friendly_name|friendlyName|
 |**--data-source-info**|object|Gets or sets the data source information.|data_source_info|dataSourceInfo|
 |**--data-source-set-info**|object|Gets or sets the data source set information.|data_source_set_info|dataSourceSetInfo|

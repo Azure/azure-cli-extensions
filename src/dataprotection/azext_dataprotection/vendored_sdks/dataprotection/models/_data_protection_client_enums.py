@@ -221,6 +221,7 @@ class StorageSettingTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     GEO_REDUNDANT = "GeoRedundant"
     LOCALLY_REDUNDANT = "LocallyRedundant"
+    ZONE_REDUNDANT = "ZoneRedundant"
 
 class SyncType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Field indicating sync type e.g. to sync only in case of failure or in all cases

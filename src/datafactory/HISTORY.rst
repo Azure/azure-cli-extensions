@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.7.0
++++++
+* az datafactory data-flow: Support create/update/list/show/delete data flows.
+
+0.6.0
++++++
+* Bug fix for `az datafactory pipeline list`.
 
 0.5.0
 +++++

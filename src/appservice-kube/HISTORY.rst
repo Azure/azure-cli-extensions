@@ -3,14 +3,18 @@
 Release History
 ===============
 
+0.1.7
+++++++
+* Allow creating Azure Arc-hosted Function Apps without storage accounts
+
 0.1.6
- ++++++
- * Fix TypeError on 'az webapp create'
+++++++
+* Fix TypeError on 'az webapp create'
 
 0.1.5
- ++++++
- * SSL bind bug fix
- * Fix compatibility issue with CLI version 2.34.1
+++++++
+* SSL bind bug fix
+* Fix compatibility issue with CLI version 2.34.1
 
 0.1.4
 ++++++

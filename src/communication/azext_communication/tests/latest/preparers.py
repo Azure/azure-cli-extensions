@@ -34,7 +34,6 @@ class CommunicationResourcePreparer(NoTrafficRecordingPreparer, SingleValueRepla
         group = self._get_resource_group(**kwargs)
 
         if not self.dev_setting_name:
-
             template = 'az communication create --name {} --location {} --data-location "{}" --resource-group {} '
             self.live_only_execute(self.cli_ctx, template.format(
                 name, self.location, self.data_location, group))
@@ -45,12 +44,20 @@ class CommunicationResourcePreparer(NoTrafficRecordingPreparer, SingleValueRepla
             account_key = self.live_only_execute(self.cli_ctx,
                                                  'az communication list-key --name {} --resource-group {} --query "primaryConnectionString" -otsv'
                                                  .format(name, group)).output.strip()
+            endpoint_str = account_key.split(';')[0]
+            endpoint = endpoint_str.split('=')[1]
         except AttributeError:  # live only execute returns None if playing from record
             account_key = None
+            endpoint = None
 
         self.test_class_instance.kwargs[self.key] = name
+
+
         return {self.parameter_name: name,
-                self.parameter_name + '_info': (name, account_key or 'endpoint=https://sanitized.communication.azure.com/;accesskey=fake===')}
+                self.parameter_name + '_info': 
+                    (name, 
+                     account_key or 'endpoint=https://sanitized.communication.azure.com/;accesskey=fake===',
+                     endpoint or 'https://sanitized.communication.azure.com/', )}
 
     def remove_resource(self, name, **kwargs):
         if not self.skip_delete and not self.dev_setting_name:

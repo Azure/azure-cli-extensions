@@ -87,6 +87,7 @@ def step_backup_instance_create(test, checks=None):
              'erationalStoreParameters","resourceGroupId":"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resource'
              'Groups/viveksipgtest"}} '
              '--validation-type "ShallowValidation" '
+             '--tags key1="val1" '
              '--resource-group "{rg_2}" '
              '--vault-name "{myBackupVault}"',
              checks=[])

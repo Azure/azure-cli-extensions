@@ -31,11 +31,6 @@ def load_arguments(self, _):
         help='Name or ID of the vCenter that is managing this resource.',
     )
 
-    mo_ref_id = CLIArgumentType(
-        options_list=['--mo-ref-id', '-m'],
-        help='VCenter MoRef (Managed Object Reference) ID for the existing resource.',
-    )
-
     inventory_item = CLIArgumentType(
         options_list=['--inventory-item', '-i'],
         help='Name or ID of the inventory item.',
@@ -52,9 +47,6 @@ def load_arguments(self, _):
         )
         c.argument(
             'vcenter', vcenter, options_list=['--vcenter', '-v']
-        )
-        c.argument(
-            'mo_ref_id', mo_ref_id, options_list=['--mo-ref-id', '-m']
         )
         c.argument(
             'inventory_item', inventory_item, options_list=['--inventory-item', '-i']
@@ -208,6 +200,11 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
+        c.argument(
+            'retain',
+            action='store_true',
+            help='Disable the VM from azure; delete the ARM resource but retain the VM in VMware.',
+        )
 
     with self.argument_context('connectedvmware vm stop') as c:
         c.argument(
@@ -351,6 +348,9 @@ def load_arguments(self, _):
             'password', options_list=['--password'],
             help="Username password credentials to use for connecting to the VM.",
         )
+        c.argument(
+            'https_proxy', help="HTTPS proxy server url for the VM.",
+        )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
@@ -390,6 +390,9 @@ def load_arguments(self, _):
                 'is "CustomScriptExtension".')
             c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
             c.argument(
+                'enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
+                'should be automatically upgraded by the platform if there is a newer version available.')
+            c.argument(
                 'auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                 'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                 'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
@@ -400,14 +403,6 @@ def load_arguments(self, _):
                 'protected_settings', type=validate_file_or_dict, help='The extension can contain either '
                 'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                 'value: json-string/json-file/@json-file.')
-
-    with self.argument_context('connectedvmware vm extension create') as c:
-        c.argument(
-            'instance_view_type', type=str, help='Specify the type of the extension; an example is '
-            '"CustomScriptExtension".', arg_group='Instance View')
-        c.argument(
-            'inst_handler_version', type=str, help='Specify the version of the script handler.',
-            arg_group='Instance View')
 
     with self.argument_context('connectedvmware vm extension delete') as c:
         c.argument('vm_name', type=str, help='The name of the vm where the extension '

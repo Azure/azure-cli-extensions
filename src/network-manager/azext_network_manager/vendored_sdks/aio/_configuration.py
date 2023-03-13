@@ -30,9 +30,6 @@ class NetworkManagementClientConfiguration(Configuration):  # pylint: disable=to
     :param subscription_id: The subscription credentials which uniquely identify the Microsoft
      Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
-    :keyword api_version: Api Version. Default value is "2022-02-01-preview". Note that overriding
-     this default value may result in unsupported behavior.
-    :paramtype api_version: str
     """
 
     def __init__(
@@ -42,8 +39,6 @@ class NetworkManagementClientConfiguration(Configuration):  # pylint: disable=to
         **kwargs: Any
     ) -> None:
         super(NetworkManagementClientConfiguration, self).__init__(**kwargs)
-        api_version = kwargs.pop('api_version', "2022-02-01-preview")  # type: str
-
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
         if subscription_id is None:
@@ -51,7 +46,6 @@ class NetworkManagementClientConfiguration(Configuration):  # pylint: disable=to
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = api_version
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'mgmt-network/{}'.format(VERSION))
         self._configure(**kwargs)

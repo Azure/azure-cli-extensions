@@ -89,6 +89,7 @@ def call_scenario(test):
         test.check("policyInfo.policyId", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.D"
                    "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
                    case_sensitive=False),
+        test.check("tags.key1", "val1", case_sensitive=False),
     ])
     step_backup_instance_suspend_backup(test, checks=[])
     step_backup_instance_adhoc_backup(test, checks=[])

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from azure.cli.core.util import sdk_no_wait
 from ._utils import get_portal_uri
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -23,6 +23,9 @@ DEFAULT_BUILD_SERVICE_NAME = "default"
 
 def create_or_update_buildpack_binding(cmd, client, resource_group, service,
                                        name, type, builder_name=None, properties=None, secrets=None):
+    logger.warning('Editing bindings will regenerate images for all app deployments using this builder. These new images will ' +
+                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
         logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
@@ -52,6 +55,9 @@ def buildpack_binding_list(cmd, client, resource_group, service, builder_name=No
 
 
 def buildpack_binding_delete(cmd, client, resource_group, service, name, builder_name=None):
+    logger.warning('Deleting bindings will regenerate images for all app deployments using this builder. These new images will ' +
+                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
         logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
@@ -83,22 +89,24 @@ def _build_buildpack_binding_resource(binding_type, properties_dict, secrets_dic
 
 def _get_buildpack_binding_properties(cmd, resource_group, service_name, location,
                                       app_insights_key, app_insights, sampling_rate):
-
-    sampling_rate = sampling_rate or 10
-    connection_string = app_insights_key or \
-        _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
-        _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
+    connection_string = _get_connection_string(cmd, resource_group, service_name, location, app_insights_key, app_insights)
 
     if not connection_string:
-        raise InvalidArgumentValueError('Error while trying to get the ConnectionString of Application Insights for the Azure Spring Apps. '
-                                        'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+        return None
 
+    sampling_rate = sampling_rate or 10
     launch_properties = models.BuildpackBindingLaunchProperties(properties={
         "connection-string": connection_string,
         "sampling-percentage": sampling_rate,
     })
 
     return models.BuildpackBindingProperties(binding_type="ApplicationInsights", launch_properties=launch_properties)
+
+
+def _get_connection_string(cmd, resource_group, service_name, location, app_insights_key, app_insights):
+    return app_insights_key or \
+        _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
+        _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
 
 
 def _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location):
@@ -130,8 +138,10 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
     else:
         connection_string = _get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
 
+    # Customer has specify the resourceId or application insights name.
+    # Raise exception when connection string not found in this scenario.
     if not connection_string:
-        logger.warning(
+        raise InvalidArgumentValueError(
             "Cannot find Connection string from application insights:{}".format(app_insights))
 
     return connection_string

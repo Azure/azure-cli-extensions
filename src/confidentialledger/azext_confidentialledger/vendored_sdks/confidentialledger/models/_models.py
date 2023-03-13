@@ -19,23 +19,20 @@ class AadBasedSecurityPrincipal(msrest.serialization.Model):
     :type tenant_id: str
     :param ledger_role_name: LedgerRole associated with the Security Principal of Ledger. Possible
      values include: "Reader", "Contributor", "Administrator".
-    :type ledger_role_name: str or ~confidential_ledger.models.LedgerRoleName
+    :type ledger_role_name: str or ~azure.mgmt.confidentialledger.models.LedgerRoleName
     """
 
     _attribute_map = {
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'tenant_id': {'key': 'tenantId', 'type': 'str'},
-        'ledger_role_name': {'key': 'ledgerRoleName', 'type': 'str'},
+        "principal_id": {"key": "principalId", "type": "str"},
+        "tenant_id": {"key": "tenantId", "type": "str"},
+        "ledger_role_name": {"key": "ledgerRoleName", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(AadBasedSecurityPrincipal, self).__init__(**kwargs)
-        self.principal_id = kwargs.get('principal_id', None)
-        self.tenant_id = kwargs.get('tenant_id', None)
-        self.ledger_role_name = kwargs.get('ledger_role_name', None)
+        self.principal_id = kwargs.get("principal_id", None)
+        self.tenant_id = kwargs.get("tenant_id", None)
+        self.ledger_role_name = kwargs.get("ledger_role_name", None)
 
 
 class CertBasedSecurityPrincipal(msrest.serialization.Model):
@@ -45,21 +42,18 @@ class CertBasedSecurityPrincipal(msrest.serialization.Model):
     :type cert: str
     :param ledger_role_name: LedgerRole associated with the Security Principal of Ledger. Possible
      values include: "Reader", "Contributor", "Administrator".
-    :type ledger_role_name: str or ~confidential_ledger.models.LedgerRoleName
+    :type ledger_role_name: str or ~azure.mgmt.confidentialledger.models.LedgerRoleName
     """
 
     _attribute_map = {
-        'cert': {'key': 'cert', 'type': 'str'},
-        'ledger_role_name': {'key': 'ledgerRoleName', 'type': 'str'},
+        "cert": {"key": "cert", "type": "str"},
+        "ledger_role_name": {"key": "ledgerRoleName", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(CertBasedSecurityPrincipal, self).__init__(**kwargs)
-        self.cert = kwargs.get('cert', None)
-        self.ledger_role_name = kwargs.get('ledger_role_name', None)
+        self.cert = kwargs.get("cert", None)
+        self.ledger_role_name = kwargs.get("ledger_role_name", None)
 
 
 class CheckNameAvailabilityRequest(msrest.serialization.Model):
@@ -72,17 +66,14 @@ class CheckNameAvailabilityRequest(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(CheckNameAvailabilityRequest, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.type = kwargs.get('type', None)
+        self.name = kwargs.get("name", None)
+        self.type = kwargs.get("type", None)
 
 
 class CheckNameAvailabilityResponse(msrest.serialization.Model):
@@ -92,25 +83,22 @@ class CheckNameAvailabilityResponse(msrest.serialization.Model):
     :type name_available: bool
     :param reason: The reason why the given name is not available. Possible values include:
      "Invalid", "AlreadyExists".
-    :type reason: str or ~confidential_ledger.models.CheckNameAvailabilityReason
+    :type reason: str or ~azure.mgmt.confidentialledger.models.CheckNameAvailabilityReason
     :param message: Detailed reason why the given name is available.
     :type message: str
     """
 
     _attribute_map = {
-        'name_available': {'key': 'nameAvailable', 'type': 'bool'},
-        'reason': {'key': 'reason', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
+        "name_available": {"key": "nameAvailable", "type": "bool"},
+        "reason": {"key": "reason", "type": "str"},
+        "message": {"key": "message", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(CheckNameAvailabilityResponse, self).__init__(**kwargs)
-        self.name_available = kwargs.get('name_available', None)
-        self.reason = kwargs.get('reason', None)
-        self.message = kwargs.get('message', None)
+        self.name_available = kwargs.get("name_available", None)
+        self.reason = kwargs.get("reason", None)
+        self.message = kwargs.get("message", None)
 
 
 class Tags(msrest.serialization.Model):
@@ -121,15 +109,12 @@ class Tags(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'tags': {'key': 'tags', 'type': '{str}'},
+        "tags": {"key": "tags", "type": "{str}"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(Tags, self).__init__(**kwargs)
-        self.tags = kwargs.get('tags', None)
+        self.tags = kwargs.get("tags", None)
 
 
 class ResourceLocation(msrest.serialization.Model):
@@ -140,15 +125,12 @@ class ResourceLocation(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'location': {'key': 'location', 'type': 'str'},
+        "location": {"key": "location", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ResourceLocation, self).__init__(**kwargs)
-        self.location = kwargs.get('location', None)
+        self.location = kwargs.get("location", None)
 
 
 class Resource(msrest.serialization.Model):
@@ -163,27 +145,24 @@ class Resource(msrest.serialization.Model):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~confidential_ledger.models.SystemData
+    :vartype system_data: ~azure.mgmt.confidentialledger.models.SystemData
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'id': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "name": {"readonly": True},
+        "id": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'id': {'key': 'id', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        "name": {"key": "name", "type": "str"},
+        "id": {"key": "id", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(Resource, self).__init__(**kwargs)
         self.name = None
         self.id = None
@@ -207,72 +186,66 @@ class ConfidentialLedger(Resource, ResourceLocation, Tags):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~confidential_ledger.models.SystemData
+    :vartype system_data: ~azure.mgmt.confidentialledger.models.SystemData
     :param properties: Properties of Confidential Ledger Resource.
-    :type properties: ~confidential_ledger.models.LedgerProperties
+    :type properties: ~azure.mgmt.confidentialledger.models.LedgerProperties
     """
 
     _validation = {
-        'name': {'readonly': True},
-        'id': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
+        "name": {"readonly": True},
+        "id": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'id': {'key': 'id', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'properties': {'key': 'properties', 'type': 'LedgerProperties'},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "id": {"key": "id", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "LedgerProperties"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ConfidentialLedger, self).__init__(**kwargs)
-        self.tags = kwargs.get('tags', None)
-        self.location = kwargs.get('location', None)
-        self.properties = kwargs.get('properties', None)
-        self.tags = kwargs.get('tags', None)
+        self.tags = kwargs.get("tags", None)
+        self.location = kwargs.get("location", None)
+        self.properties = kwargs.get("properties", None)
+        self.tags = kwargs.get("tags", None)
         self.name = None
         self.id = None
         self.type = None
         self.system_data = None
-        self.properties = kwargs.get('properties', None)
-        self.location = kwargs.get('location', None)
+        self.properties = kwargs.get("properties", None)
+        self.location = kwargs.get("location", None)
         self.name = None
         self.id = None
         self.type = None
         self.system_data = None
-        self.properties = kwargs.get('properties', None)
+        self.properties = kwargs.get("properties", None)
 
 
 class ConfidentialLedgerList(msrest.serialization.Model):
     """Object that includes an array of Confidential Ledgers and a possible link for next set.
 
     :param value: List of Confidential Ledgers.
-    :type value: list[~confidential_ledger.models.ConfidentialLedger]
+    :type value: list[~azure.mgmt.confidentialledger.models.ConfidentialLedger]
     :param next_link: The URL the client should use to fetch the next page (per server side
      paging).
     :type next_link: str
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ConfidentialLedger]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ConfidentialLedger]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ConfidentialLedgerList, self).__init__(**kwargs)
-        self.value = kwargs.get('value', None)
-        self.next_link = kwargs.get('next_link', None)
+        self.value = kwargs.get("value", None)
+        self.next_link = kwargs.get("next_link", None)
 
 
 class ErrorAdditionalInfo(msrest.serialization.Model):
@@ -287,19 +260,16 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
     """
 
     _validation = {
-        'type': {'readonly': True},
-        'info': {'readonly': True},
+        "type": {"readonly": True},
+        "info": {"readonly": True},
     }
 
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'info': {'key': 'info', 'type': 'object'},
+        "type": {"key": "type", "type": "str"},
+        "info": {"key": "info", "type": "object"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ErrorAdditionalInfo, self).__init__(**kwargs)
         self.type = None
         self.info = None
@@ -317,31 +287,28 @@ class ErrorDetail(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~confidential_ledger.models.ErrorDetail]
+    :vartype details: list[~azure.mgmt.confidentialledger.models.ErrorDetail]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~confidential_ledger.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.confidentialledger.models.ErrorAdditionalInfo]
     """
 
     _validation = {
-        'code': {'readonly': True},
-        'message': {'readonly': True},
-        'target': {'readonly': True},
-        'details': {'readonly': True},
-        'additional_info': {'readonly': True},
+        "code": {"readonly": True},
+        "message": {"readonly": True},
+        "target": {"readonly": True},
+        "details": {"readonly": True},
+        "additional_info": {"readonly": True},
     }
 
     _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-        'target': {'key': 'target', 'type': 'str'},
-        'details': {'key': 'details', 'type': '[ErrorDetail]'},
-        'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "details": {"key": "details", "type": "[ErrorDetail]"},
+        "additional_info": {"key": "additionalInfo", "type": "[ErrorAdditionalInfo]"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ErrorDetail, self).__init__(**kwargs)
         self.code = None
         self.message = None
@@ -354,19 +321,16 @@ class ErrorResponse(msrest.serialization.Model):
     """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
     :param error: The error object.
-    :type error: ~confidential_ledger.models.ErrorDetail
+    :type error: ~azure.mgmt.confidentialledger.models.ErrorDetail
     """
 
     _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorDetail'},
+        "error": {"key": "error", "type": "ErrorDetail"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ErrorResponse, self).__init__(**kwargs)
-        self.error = kwargs.get('error', None)
+        self.error = kwargs.get("error", None)
 
 
 class LedgerProperties(msrest.serialization.Model):
@@ -384,50 +348,57 @@ class LedgerProperties(msrest.serialization.Model):
     :vartype ledger_internal_namespace: str
     :param ledger_type: Type of Confidential Ledger. Possible values include: "Unknown", "Public",
      "Private".
-    :type ledger_type: str or ~confidential_ledger.models.LedgerType
+    :type ledger_type: str or ~azure.mgmt.confidentialledger.models.LedgerType
     :ivar provisioning_state: Provisioning state of Ledger Resource. Possible values include:
      "Unknown", "Succeeded", "Failed", "Canceled", "Creating", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~confidential_ledger.models.ProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.confidentialledger.models.ProvisioningState
     :param aad_based_security_principals: Array of all AAD based Security Principals.
     :type aad_based_security_principals:
-     list[~confidential_ledger.models.AadBasedSecurityPrincipal]
+     list[~azure.mgmt.confidentialledger.models.AadBasedSecurityPrincipal]
     :param cert_based_security_principals: Array of all cert based Security Principals.
     :type cert_based_security_principals:
-     list[~confidential_ledger.models.CertBasedSecurityPrincipal]
+     list[~azure.mgmt.confidentialledger.models.CertBasedSecurityPrincipal]
     """
 
     _validation = {
-        'ledger_name': {'readonly': True},
-        'ledger_uri': {'readonly': True},
-        'identity_service_uri': {'readonly': True},
-        'ledger_internal_namespace': {'readonly': True},
-        'provisioning_state': {'readonly': True},
+        "ledger_name": {"readonly": True},
+        "ledger_uri": {"readonly": True},
+        "identity_service_uri": {"readonly": True},
+        "ledger_internal_namespace": {"readonly": True},
+        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
-        'ledger_name': {'key': 'ledgerName', 'type': 'str'},
-        'ledger_uri': {'key': 'ledgerUri', 'type': 'str'},
-        'identity_service_uri': {'key': 'identityServiceUri', 'type': 'str'},
-        'ledger_internal_namespace': {'key': 'ledgerInternalNamespace', 'type': 'str'},
-        'ledger_type': {'key': 'ledgerType', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'aad_based_security_principals': {'key': 'aadBasedSecurityPrincipals', 'type': '[AadBasedSecurityPrincipal]'},
-        'cert_based_security_principals': {'key': 'certBasedSecurityPrincipals', 'type': '[CertBasedSecurityPrincipal]'},
+        "ledger_name": {"key": "ledgerName", "type": "str"},
+        "ledger_uri": {"key": "ledgerUri", "type": "str"},
+        "identity_service_uri": {"key": "identityServiceUri", "type": "str"},
+        "ledger_internal_namespace": {"key": "ledgerInternalNamespace", "type": "str"},
+        "ledger_type": {"key": "ledgerType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "aad_based_security_principals": {
+            "key": "aadBasedSecurityPrincipals",
+            "type": "[AadBasedSecurityPrincipal]",
+        },
+        "cert_based_security_principals": {
+            "key": "certBasedSecurityPrincipals",
+            "type": "[CertBasedSecurityPrincipal]",
+        },
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(LedgerProperties, self).__init__(**kwargs)
         self.ledger_name = None
         self.ledger_uri = None
         self.identity_service_uri = None
         self.ledger_internal_namespace = None
-        self.ledger_type = kwargs.get('ledger_type', None)
+        self.ledger_type = kwargs.get("ledger_type", None)
         self.provisioning_state = None
-        self.aad_based_security_principals = kwargs.get('aad_based_security_principals', None)
-        self.cert_based_security_principals = kwargs.get('cert_based_security_principals', None)
+        self.aad_based_security_principals = kwargs.get(
+            "aad_based_security_principals", None
+        )
+        self.cert_based_security_principals = kwargs.get(
+            "cert_based_security_principals", None
+        )
 
 
 class ResourceProviderOperationDefinition(msrest.serialization.Model):
@@ -438,23 +409,20 @@ class ResourceProviderOperationDefinition(msrest.serialization.Model):
     :param is_data_action: Indicates whether the operation is data action or not.
     :type is_data_action: bool
     :param display: Details about the operations.
-    :type display: ~confidential_ledger.models.ResourceProviderOperationDisplay
+    :type display: ~azure.mgmt.confidentialledger.models.ResourceProviderOperationDisplay
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
-        'display': {'key': 'display', 'type': 'ResourceProviderOperationDisplay'},
+        "name": {"key": "name", "type": "str"},
+        "is_data_action": {"key": "isDataAction", "type": "bool"},
+        "display": {"key": "display", "type": "ResourceProviderOperationDisplay"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ResourceProviderOperationDefinition, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.is_data_action = kwargs.get('is_data_action', None)
-        self.display = kwargs.get('display', None)
+        self.name = kwargs.get("name", None)
+        self.is_data_action = kwargs.get("is_data_action", None)
+        self.display = kwargs.get("display", None)
 
 
 class ResourceProviderOperationDisplay(msrest.serialization.Model):
@@ -471,21 +439,18 @@ class ResourceProviderOperationDisplay(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'provider': {'key': 'provider', 'type': 'str'},
-        'resource': {'key': 'resource', 'type': 'str'},
-        'operation': {'key': 'operation', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
+        "provider": {"key": "provider", "type": "str"},
+        "resource": {"key": "resource", "type": "str"},
+        "operation": {"key": "operation", "type": "str"},
+        "description": {"key": "description", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ResourceProviderOperationDisplay, self).__init__(**kwargs)
-        self.provider = kwargs.get('provider', None)
-        self.resource = kwargs.get('resource', None)
-        self.operation = kwargs.get('operation', None)
-        self.description = kwargs.get('description', None)
+        self.provider = kwargs.get("provider", None)
+        self.resource = kwargs.get("resource", None)
+        self.operation = kwargs.get("operation", None)
+        self.description = kwargs.get("description", None)
 
 
 class ResourceProviderOperationList(msrest.serialization.Model):
@@ -494,26 +459,23 @@ class ResourceProviderOperationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Resource provider operations list.
-    :vartype value: list[~confidential_ledger.models.ResourceProviderOperationDefinition]
+    :vartype value: list[~azure.mgmt.confidentialledger.models.ResourceProviderOperationDefinition]
     :ivar next_link: The URI that can be used to request the next page for list of Azure
      operations.
     :vartype next_link: str
     """
 
     _validation = {
-        'value': {'readonly': True},
-        'next_link': {'readonly': True},
+        "value": {"readonly": True},
+        "next_link": {"readonly": True},
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ResourceProviderOperationDefinition]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "value": {"key": "value", "type": "[ResourceProviderOperationDefinition]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(ResourceProviderOperationList, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -526,35 +488,32 @@ class SystemData(msrest.serialization.Model):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~confidential_ledger.models.CreatedByType
+    :type created_by_type: str or ~azure.mgmt.confidentialledger.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~confidential_ledger.models.CreatedByType
+    :type last_modified_by_type: str or ~azure.mgmt.confidentialledger.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
 
     _attribute_map = {
-        'created_by': {'key': 'createdBy', 'type': 'str'},
-        'created_by_type': {'key': 'createdByType', 'type': 'str'},
-        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
-        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
-        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
-        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+        "created_by": {"key": "createdBy", "type": "str"},
+        "created_by_type": {"key": "createdByType", "type": "str"},
+        "created_at": {"key": "createdAt", "type": "iso-8601"},
+        "last_modified_by": {"key": "lastModifiedBy", "type": "str"},
+        "last_modified_by_type": {"key": "lastModifiedByType", "type": "str"},
+        "last_modified_at": {"key": "lastModifiedAt", "type": "iso-8601"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super(SystemData, self).__init__(**kwargs)
-        self.created_by = kwargs.get('created_by', None)
-        self.created_by_type = kwargs.get('created_by_type', None)
-        self.created_at = kwargs.get('created_at', None)
-        self.last_modified_by = kwargs.get('last_modified_by', None)
-        self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
-        self.last_modified_at = kwargs.get('last_modified_at', None)
+        self.created_by = kwargs.get("created_by", None)
+        self.created_by_type = kwargs.get("created_by_type", None)
+        self.created_at = kwargs.get("created_at", None)
+        self.last_modified_by = kwargs.get("last_modified_by", None)
+        self.last_modified_by_type = kwargs.get("last_modified_by_type", None)
+        self.last_modified_at = kwargs.get("last_modified_at", None)

@@ -13,12 +13,13 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.1
+        (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cosmosdb_mongodb_role000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001","name":"cli_test_cosmosdb_mongodb_role000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-17T19:29:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001","name":"cli_test_cosmosdb_mongodb_role000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-09-29T07:53:50Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 17 May 2022 19:29:16 GMT
+      - Thu, 29 Sep 2022 07:53:53 GMT
       expires:
       - '-1'
       pragma:
@@ -62,30 +63,30 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:29:19.9786755Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"b80bb8bc-a67e-4229-8cd2-24dffb5fcf75","databaseAccountOfferType":"Standard","defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2022-09-29T07:53:57.2661214Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"14416b31-dccd-477d-b1b4-246e9c2b3de0","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","enableMaterializedViews":false,"defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
         US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
         US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
         US 2","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
-        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Invalid"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongoRoleBasedAccessControl"},{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Invalid"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2022-09-29T07:53:57.2661214Z"},"secondaryMasterKey":{"generationTime":"2022-09-29T07:53:57.2661214Z"},"primaryReadonlyMasterKey":{"generationTime":"2022-09-29T07:53:57.2661214Z"},"secondaryReadonlyMasterKey":{"generationTime":"2022-09-29T07:53:57.2661214Z"}}},"identity":{"type":"None"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
-      - '1993'
+      - '2465'
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:29:22 GMT
+      - Thu, 29 Sep 2022 07:53:59 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -101,7 +102,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: Ok
@@ -119,9 +120,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -133,7 +134,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:29:52 GMT
+      - Thu, 29 Sep 2022 07:54:29 GMT
       pragma:
       - no-cache
       server:
@@ -165,9 +166,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -179,7 +180,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:30:23 GMT
+      - Thu, 29 Sep 2022 07:55:00 GMT
       pragma:
       - no-cache
       server:
@@ -211,9 +212,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -225,7 +226,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:30:52 GMT
+      - Thu, 29 Sep 2022 07:55:29 GMT
       pragma:
       - no-cache
       server:
@@ -257,9 +258,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -271,7 +272,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:31:23 GMT
+      - Thu, 29 Sep 2022 07:55:59 GMT
       pragma:
       - no-cache
       server:
@@ -303,9 +304,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -317,7 +318,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:31:53 GMT
+      - Thu, 29 Sep 2022 07:56:30 GMT
       pragma:
       - no-cache
       server:
@@ -349,9 +350,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -363,7 +364,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:32:23 GMT
+      - Thu, 29 Sep 2022 07:56:59 GMT
       pragma:
       - no-cache
       server:
@@ -395,9 +396,9 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/affe2cf9-9270-4489-be95-bfdb5798b08d?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/9f082596-f283-4c6a-9490-39d550cb4f61?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -409,7 +410,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:32:53 GMT
+      - Thu, 29 Sep 2022 07:57:29 GMT
       pragma:
       - no-cache
       server:
@@ -441,26 +442,26 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:31:53.8444638Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"b80bb8bc-a67e-4229-8cd2-24dffb5fcf75","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2022-09-29T07:56:49.334111Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"14416b31-dccd-477d-b1b4-246e9c2b3de0","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","enableMaterializedViews":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
         US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
         US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
         US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
-        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongoRoleBasedAccessControl"},{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"},"secondaryMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"},"primaryReadonlyMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"},"secondaryReadonlyMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"}}},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2380'
+      - '2847'
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:32:54 GMT
+      - Thu, 29 Sep 2022 07:57:29 GMT
       pragma:
       - no-cache
       server:
@@ -492,26 +493,26 @@ interactions:
       ParameterSetName:
       - -n -g --kind --capabilities
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2022-05-17T19:31:53.8444638Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"b80bb8bc-a67e-4229-8cd2-24dffb5fcf75","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
+        US 2","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2022-09-29T07:56:49.334111Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"14416b31-dccd-477d-b1b4-246e9c2b3de0","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","enableMaterializedViews":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True"},"writeLocations":[{"id":"cli000002-westus2","locationName":"West
         US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus2","locationName":"West
         US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus2","locationName":"West
         US 2","documentEndpoint":"https://cli000002-westus2.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus2","locationName":"West
-        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+        US 2","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongoRoleBasedAccessControl"},{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"},"secondaryMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"},"primaryReadonlyMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"},"secondaryReadonlyMasterKey":{"generationTime":"2022-09-29T07:56:49.334111Z"}}},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2380'
+      - '2847'
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:32:54 GMT
+      - Thu, 29 Sep 2022 07:57:29 GMT
       pragma:
       - no-cache
       server:
@@ -547,15 +548,15 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b2 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2021-10-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2022-08-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1f7d357c-747b-44de-bdd5-03ed44d32a60?api-version=2021-10-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/899074f1-b25e-4371-8219-57fd94663cae?api-version=2022-08-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -563,9 +564,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:32:55 GMT
+      - Thu, 29 Sep 2022 07:57:31 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003/operationResults/1f7d357c-747b-44de-bdd5-03ed44d32a60?api-version=2021-10-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003/operationResults/899074f1-b25e-4371-8219-57fd94663cae?api-version=2022-08-15
       pragma:
       - no-cache
       server:
@@ -595,9 +596,9 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b2 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1f7d357c-747b-44de-bdd5-03ed44d32a60?api-version=2021-10-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/899074f1-b25e-4371-8219-57fd94663cae?api-version=2022-08-15
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -609,7 +610,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:33:25 GMT
+      - Thu, 29 Sep 2022 07:58:01 GMT
       pragma:
       - no-cache
       server:
@@ -641,9 +642,9 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b2 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2021-10-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2022-08-15
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003"}}}'
@@ -655,7 +656,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:33:26 GMT
+      - Thu, 29 Sep 2022 07:58:02 GMT
       pragma:
       - no-cache
       server:
@@ -693,14 +694,14 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/randomid?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/randomid?api-version=2022-08-15-preview
   response:
     body:
       string: '{"code":"BadRequest","message":"A Mongo Role Definition with given
         ID [randomid] id not valid. The Mongo role definition should follow the format
-        dbName.roleName for database '''' and roleName ''''\r\nActivityId: 38af3fe6-d618-11ec-b36c-8045dd1923fe,
+        dbName.roleName for database '''' and roleName ''''\r\nActivityId: 707e8187-3fcc-11ed-8a03-9c7bef4baa38,
         Microsoft.Azure.Documents.Common/2.14.0"}'
     headers:
       cache-control:
@@ -710,7 +711,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:33:27 GMT
+      - Thu, 29 Sep 2022 07:58:03 GMT
       pragma:
       - no-cache
       server:
@@ -742,9 +743,9 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: ''
@@ -752,7 +753,7 @@ interactions:
       cache-control:
       - no-store, no-cache
       date:
-      - Tue, 17 May 2022 19:33:30 GMT
+      - Thu, 29 Sep 2022 07:58:04 GMT
       pragma:
       - no-cache
       server:
@@ -762,7 +763,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 39793571-d618-11ec-80f7-8045dd1923fe
+      - 7144844b-3fcc-11ed-8ec4-9c7bef4baa38
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
@@ -782,9 +783,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[]}'
@@ -796,7 +797,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:33:30 GMT
+      - Thu, 29 Sep 2022 07:58:05 GMT
       pragma:
       - no-cache
       server:
@@ -834,15 +835,15 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/8e46648b-0117-4d34-9cab-b03c1222309b?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1245b62b-23e5-47cc-9437-d3a9a6c6c894?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -850,9 +851,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:33:32 GMT
+      - Thu, 29 Sep 2022 07:58:07 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/8e46648b-0117-4d34-9cab-b03c1222309b?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/1245b62b-23e5-47cc-9437-d3a9a6c6c894?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -864,7 +865,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -882,9 +883,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/8e46648b-0117-4d34-9cab-b03c1222309b?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/1245b62b-23e5-47cc-9437-d3a9a6c6c894?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -896,7 +897,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:02 GMT
+      - Thu, 29 Sep 2022 07:58:37 GMT
       pragma:
       - no-cache
       server:
@@ -928,9 +929,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
@@ -942,7 +943,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:02 GMT
+      - Thu, 29 Sep 2022 07:58:37 GMT
       pragma:
       - no-cache
       server:
@@ -974,9 +975,9 @@ interactions:
       ParameterSetName:
       - -g -a -i
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
@@ -988,7 +989,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:04 GMT
+      - Thu, 29 Sep 2022 07:58:39 GMT
       pragma:
       - no-cache
       server:
@@ -1020,9 +1021,9 @@ interactions:
       ParameterSetName:
       - -g -a -i
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
@@ -1034,7 +1035,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:05 GMT
+      - Thu, 29 Sep 2022 07:58:40 GMT
       pragma:
       - no-cache
       server:
@@ -1066,9 +1067,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
@@ -1080,7 +1081,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:06 GMT
+      - Thu, 29 Sep 2022 07:58:40 GMT
       pragma:
       - no-cache
       server:
@@ -1118,15 +1119,15 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/161f3ac7-5198-44dc-a347-5c98a1564ff6?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/85aaf877-67c5-4525-a24b-2df9764a7645?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1134,9 +1135,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:07 GMT
+      - Thu, 29 Sep 2022 07:58:41 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/161f3ac7-5198-44dc-a347-5c98a1564ff6?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/85aaf877-67c5-4525-a24b-2df9764a7645?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -1166,9 +1167,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/161f3ac7-5198-44dc-a347-5c98a1564ff6?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/85aaf877-67c5-4525-a24b-2df9764a7645?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1180,7 +1181,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:38 GMT
+      - Thu, 29 Sep 2022 07:59:11 GMT
       pragma:
       - no-cache
       server:
@@ -1212,9 +1213,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
@@ -1226,7 +1227,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:38 GMT
+      - Thu, 29 Sep 2022 07:59:11 GMT
       pragma:
       - no-cache
       server:
@@ -1260,9 +1261,9 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-08-15-preview
   response:
     body:
       string: ''
@@ -1270,7 +1271,7 @@ interactions:
       cache-control:
       - no-store, no-cache
       date:
-      - Tue, 17 May 2022 19:34:40 GMT
+      - Thu, 29 Sep 2022 07:59:13 GMT
       pragma:
       - no-cache
       server:
@@ -1280,7 +1281,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 63970493-d618-11ec-80c1-8045dd1923fe
+      - 9a42e328-3fcc-11ed-896a-9c7bef4baa38
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
@@ -1300,9 +1301,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}]}'
@@ -1314,7 +1315,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:41 GMT
+      - Thu, 29 Sep 2022 07:59:14 GMT
       pragma:
       - no-cache
       server:
@@ -1352,15 +1353,15 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/3e23b7c6-7c5e-4ee5-9783-bd86151beec9?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/853bf1ef-ea0c-4cad-9219-acb7dc50686d?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1368,9 +1369,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:34:42 GMT
+      - Thu, 29 Sep 2022 07:59:15 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2/operationResults/3e23b7c6-7c5e-4ee5-9783-bd86151beec9?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2/operationResults/853bf1ef-ea0c-4cad-9219-acb7dc50686d?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -1382,7 +1383,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -1400,9 +1401,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/3e23b7c6-7c5e-4ee5-9783-bd86151beec9?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/853bf1ef-ea0c-4cad-9219-acb7dc50686d?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1414,7 +1415,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:12 GMT
+      - Thu, 29 Sep 2022 07:59:46 GMT
       pragma:
       - no-cache
       server:
@@ -1446,9 +1447,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2","name":"my_role_def2","properties":{"roleName":"my_role_def2","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert"]}],"roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
@@ -1460,7 +1461,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:13 GMT
+      - Thu, 29 Sep 2022 07:59:46 GMT
       pragma:
       - no-cache
       server:
@@ -1492,12 +1493,12 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-08-15-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2","name":"my_role_def2","properties":{"roleName":"my_role_def2","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert"]}],"roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2","name":"my_role_def2","properties":{"roleName":"my_role_def2","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert"]}],"roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}]}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -1506,7 +1507,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:14 GMT
+      - Thu, 29 Sep 2022 07:59:47 GMT
       pragma:
       - no-cache
       server:
@@ -1544,15 +1545,15 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/randomuserid?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/randomuserid?api-version=2022-08-15-preview
   response:
     body:
       string: '{"code":"BadRequest","message":"A Mongo User Definition with given
         ID [randomuserid] id not valid. The Mongo User Definition should follow the
         format dbName.userName for database '''' and userName ''''\r\nActivityId:
-        7931f447-d618-11ec-97e9-8045dd1923fe, Microsoft.Azure.Documents.Common/2.14.0"}'
+        af4ee14b-3fcc-11ed-98cc-9c7bef4baa38, Microsoft.Azure.Documents.Common/2.14.0"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -1561,7 +1562,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:16 GMT
+      - Thu, 29 Sep 2022 07:59:49 GMT
       pragma:
       - no-cache
       server:
@@ -1593,9 +1594,9 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: ''
@@ -1603,7 +1604,7 @@ interactions:
       cache-control:
       - no-store, no-cache
       date:
-      - Tue, 17 May 2022 19:35:17 GMT
+      - Thu, 29 Sep 2022 07:59:50 GMT
       pragma:
       - no-cache
       server:
@@ -1613,7 +1614,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 7a53ac36-d618-11ec-baa2-8045dd1923fe
+      - aff33ec0-3fcc-11ed-98e3-9c7bef4baa38
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
@@ -1633,9 +1634,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[]}'
@@ -1647,7 +1648,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:18 GMT
+      - Thu, 29 Sep 2022 07:59:50 GMT
       pragma:
       - no-cache
       server:
@@ -1685,15 +1686,15 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/5087b8e5-8b8b-4741-a0ac-08aea8460a6f?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/00f51ec2-7d2b-4cd8-9c8e-ad543065b6a6?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1701,9 +1702,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:20 GMT
+      - Thu, 29 Sep 2022 07:59:52 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/5087b8e5-8b8b-4741-a0ac-08aea8460a6f?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/00f51ec2-7d2b-4cd8-9c8e-ad543065b6a6?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -1715,7 +1716,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -1733,9 +1734,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/5087b8e5-8b8b-4741-a0ac-08aea8460a6f?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/00f51ec2-7d2b-4cd8-9c8e-ad543065b6a6?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1747,7 +1748,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:50 GMT
+      - Thu, 29 Sep 2022 08:00:22 GMT
       pragma:
       - no-cache
       server:
@@ -1779,9 +1780,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
@@ -1793,7 +1794,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:51 GMT
+      - Thu, 29 Sep 2022 08:00:22 GMT
       pragma:
       - no-cache
       server:
@@ -1825,9 +1826,9 @@ interactions:
       ParameterSetName:
       - -g -a -i
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
@@ -1839,7 +1840,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:52 GMT
+      - Thu, 29 Sep 2022 08:00:24 GMT
       pragma:
       - no-cache
       server:
@@ -1871,9 +1872,9 @@ interactions:
       ParameterSetName:
       - -g -a -i
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
@@ -1885,7 +1886,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:53 GMT
+      - Thu, 29 Sep 2022 08:00:26 GMT
       pragma:
       - no-cache
       server:
@@ -1917,9 +1918,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
@@ -1931,7 +1932,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:54 GMT
+      - Thu, 29 Sep 2022 08:00:27 GMT
       pragma:
       - no-cache
       server:
@@ -1969,15 +1970,15 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/a9bf1627-240e-4a67-8ada-58c1504f2ded?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/50023b4d-ebe2-4656-a3b2-50af312856a9?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1985,9 +1986,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:35:56 GMT
+      - Thu, 29 Sep 2022 08:00:28 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/a9bf1627-240e-4a67-8ada-58c1504f2ded?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/50023b4d-ebe2-4656-a3b2-50af312856a9?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -2017,9 +2018,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/a9bf1627-240e-4a67-8ada-58c1504f2ded?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/50023b4d-ebe2-4656-a3b2-50af312856a9?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -2031,7 +2032,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:36:25 GMT
+      - Thu, 29 Sep 2022 08:00:59 GMT
       pragma:
       - no-cache
       server:
@@ -2063,9 +2064,9 @@ interactions:
       ParameterSetName:
       - -g -a -b
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def2"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
@@ -2077,7 +2078,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:36:26 GMT
+      - Thu, 29 Sep 2022 08:00:59 GMT
       pragma:
       - no-cache
       server:
@@ -2109,9 +2110,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def2"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}]}'
@@ -2123,7 +2124,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:36:28 GMT
+      - Thu, 29 Sep 2022 08:01:00 GMT
       pragma:
       - no-cache
       server:
@@ -2157,15 +2158,15 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/a2b9a82b-76e1-44c3-8cbe-3ae5077782c1?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/d06a8232-c6c8-4b53-9054-29f22140f09f?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -2173,9 +2174,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:36:29 GMT
+      - Thu, 29 Sep 2022 08:01:02 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/a2b9a82b-76e1-44c3-8cbe-3ae5077782c1?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/d06a8232-c6c8-4b53-9054-29f22140f09f?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -2187,7 +2188,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 202
       message: Accepted
@@ -2205,9 +2206,9 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/a2b9a82b-76e1-44c3-8cbe-3ae5077782c1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/d06a8232-c6c8-4b53-9054-29f22140f09f?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -2219,7 +2220,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:37:00 GMT
+      - Thu, 29 Sep 2022 08:01:32 GMT
       pragma:
       - no-cache
       server:
@@ -2251,9 +2252,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[]}'
@@ -2265,7 +2266,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:37:01 GMT
+      - Thu, 29 Sep 2022 08:01:33 GMT
       pragma:
       - no-cache
       server:
@@ -2299,15 +2300,15 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/7d950301-1ceb-4b7c-82a1-57a4f0affe9b?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/491931f4-df1d-4ceb-82b6-1203b8f686c3?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -2315,9 +2316,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:37:03 GMT
+      - Thu, 29 Sep 2022 08:01:35 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/7d950301-1ceb-4b7c-82a1-57a4f0affe9b?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/491931f4-df1d-4ceb-82b6-1203b8f686c3?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -2347,9 +2348,9 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/7d950301-1ceb-4b7c-82a1-57a4f0affe9b?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/491931f4-df1d-4ceb-82b6-1203b8f686c3?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -2361,7 +2362,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:37:33 GMT
+      - Thu, 29 Sep 2022 08:02:05 GMT
       pragma:
       - no-cache
       server:
@@ -2393,9 +2394,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2","name":"my_role_def2","properties":{"roleName":"my_role_def2","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}]}'
@@ -2407,7 +2408,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:37:34 GMT
+      - Thu, 29 Sep 2022 08:02:06 GMT
       pragma:
       - no-cache
       server:
@@ -2441,15 +2442,15 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/b51730e5-fba6-426d-9f80-a946e827199a?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/561f2b87-fcab-46d8-a60d-1d728852d6dd?api-version=2022-08-15-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -2457,9 +2458,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:37:36 GMT
+      - Thu, 29 Sep 2022 08:02:08 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2/operationResults/b51730e5-fba6-426d-9f80-a946e827199a?api-version=2022-02-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2/operationResults/561f2b87-fcab-46d8-a60d-1d728852d6dd?api-version=2022-08-15-preview
       pragma:
       - no-cache
       server:
@@ -2471,7 +2472,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 202
       message: Accepted
@@ -2489,9 +2490,9 @@ interactions:
       ParameterSetName:
       - -g -a -i --yes
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/b51730e5-fba6-426d-9f80-a946e827199a?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus2/operationsStatus/561f2b87-fcab-46d8-a60d-1d728852d6dd?api-version=2022-08-15-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -2503,7 +2504,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:38:05 GMT
+      - Thu, 29 Sep 2022 08:02:38 GMT
       pragma:
       - no-cache
       server:
@@ -2535,9 +2536,9 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b5 Python/3.10.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-02-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2022-08-15-preview
   response:
     body:
       string: '{"value":[]}'
@@ -2549,7 +2550,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 17 May 2022 19:38:07 GMT
+      - Thu, 29 Sep 2022 08:02:39 GMT
       pragma:
       - no-cache
       server:

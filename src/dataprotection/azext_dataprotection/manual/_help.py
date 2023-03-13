@@ -55,6 +55,14 @@ helps['dataprotection backup-instance list-from-resourcegraph'] = """
         text: az dataprotection backup-instance list-from-resourcegraph --resource-groups resourceGroup --vaults vault --protection-status ProtectionError --datasource-type AzureDisk
 """
 
+helps['dataprotection backup-instance update-msi-permissions'] = """
+    type: command
+    short-summary: Assign the required permissions needed to successfully enable backup for the datasource.
+    examples:
+      - name: Assign the required permissions needed to successfully enable backup for the datasource.
+        text: az dataprotection backup-instance update-msi-permissions --backup-instance backup_inst.json --resource-group samarth_resource_group --vault-name samarthbackupvault --datasource-type AzureDisk --operation Backup --permissions-scope ResourceGroup
+"""
+
 helps['dataprotection backup-policy get-default-policy-template'] = """
     type: command
     short-summary: Get default policy template for a given datasource type.

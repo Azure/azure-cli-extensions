@@ -428,8 +428,8 @@ class Extension(ProxyResource):
     :ivar release_train: ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable,
      Preview, etc.) - only if autoUpgradeMinorVersion is 'true'.
     :vartype release_train: str
-    :ivar version: Version of the extension for this extension, if it is 'pinned' to a specific
-     version. autoUpgradeMinorVersion must be 'false'.
+    :ivar version: User-specified version of the extension for this extension to 'pin'. To use
+     'version', autoUpgradeMinorVersion must be 'false'.
     :vartype version: str
     :ivar scope: Scope at which the extension is installed.
     :vartype scope: ~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.Scope
@@ -439,6 +439,8 @@ class Extension(ProxyResource):
     :ivar configuration_protected_settings: Configuration settings that are sensitive, as
      name-value pairs for configuring this extension.
     :vartype configuration_protected_settings: dict[str, str]
+    :ivar installed_version: Installed version of the extension.
+    :vartype installed_version: str
     :ivar provisioning_state: Status of installation of this extension. Possible values include:
      "Succeeded", "Failed", "Canceled", "Creating", "Updating", "Deleting".
     :vartype provisioning_state: str or
@@ -461,6 +463,7 @@ class Extension(ProxyResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'system_data': {'readonly': True},
+        'installed_version': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'error_info': {'readonly': True},
         'custom_location_settings': {'readonly': True},
@@ -480,6 +483,7 @@ class Extension(ProxyResource):
         'scope': {'key': 'properties.scope', 'type': 'Scope'},
         'configuration_settings': {'key': 'properties.configurationSettings', 'type': '{str}'},
         'configuration_protected_settings': {'key': 'properties.configurationProtectedSettings', 'type': '{str}'},
+        'installed_version': {'key': 'properties.installedVersion', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'statuses': {'key': 'properties.statuses', 'type': '[ExtensionStatus]'},
         'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDetail'},
@@ -516,8 +520,8 @@ class Extension(ProxyResource):
         :keyword release_train: ReleaseTrain this extension participates in for auto-upgrade (e.g.
          Stable, Preview, etc.) - only if autoUpgradeMinorVersion is 'true'.
         :paramtype release_train: str
-        :keyword version: Version of the extension for this extension, if it is 'pinned' to a specific
-         version. autoUpgradeMinorVersion must be 'false'.
+        :keyword version: User-specified version of the extension for this extension to 'pin'. To use
+         'version', autoUpgradeMinorVersion must be 'false'.
         :paramtype version: str
         :keyword scope: Scope at which the extension is installed.
         :paramtype scope: ~azure.mgmt.kubernetesconfiguration.v2022_03_01.models.Scope
@@ -544,6 +548,7 @@ class Extension(ProxyResource):
         self.scope = scope
         self.configuration_settings = configuration_settings
         self.configuration_protected_settings = configuration_protected_settings
+        self.installed_version = None
         self.provisioning_state = None
         self.statuses = statuses
         self.error_info = None
@@ -1714,8 +1719,8 @@ class PatchExtension(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        auto_upgrade_minor_version: Optional[bool] = None,
-        release_train: Optional[str] = None,
+        auto_upgrade_minor_version: Optional[bool] = True,
+        release_train: Optional[str] = "Stable",
         version: Optional[str] = None,
         configuration_settings: Optional[Dict[str, str]] = None,
         configuration_protected_settings: Optional[Dict[str, str]] = None,

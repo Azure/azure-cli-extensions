@@ -13,6 +13,12 @@ manifest = '''
   "allowedRestoreTargetTypes": [ "OriginalLocation" ],
   "itemLevelRecoveyEnabled": true,
   "supportSecretStoreAuthentication": false,
+  "backupVaultPermissions": [
+    {
+      "roleDefinitionName": "Storage Account Backup Contributor",
+      "type": "DataSource"
+    }
+  ],
   "policySettings": {
     "supportedRetentionTags": [],
     "supportedDatastoreTypes": [ "OperationalStore" ],

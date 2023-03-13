@@ -12,7 +12,7 @@ from . import consts
 
 from .action import (
     AddConfigurationSettings,
-    AddConfigurationProtectedSettings
+    AddConfigurationProtectedSettings,
 )
 
 
@@ -29,9 +29,12 @@ def load_arguments(self, _):
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
         c.argument('cluster_type',
-                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances', 'provisionedClusters']),
                    options_list=['--cluster-type', '-t'],
-                   help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
+                   help='Specify Arc clusters or AKS managed clusters or Arc appliances or provisionedClusters.')
+        c.argument('cluster_resource_provider',
+                   options_list=['--cluster-resource-provider', '--cluster-rp'],
+                   help='Cluster Resource Provider name for this clusterType (Required for provisionedClusters)')
         c.argument('scope',
                    arg_type=get_enum_type(['cluster', 'namespace']),
                    help='Specify the extension scope.')
@@ -49,30 +52,41 @@ def load_arguments(self, _):
                    help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings', '--config'],
+                   options_list=['--configuration-settings', '--config', c.deprecate(target='--config-settings', redirect='--configuration-settings')],
                    action=AddConfigurationSettings,
                    nargs='+',
                    help='Configuration Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_protected_settings',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings', '--config-protected'],
+                   options_list=['--config-protected-settings', '--config-protected', c.deprecate(target='--configuration-protected-settings', redirect='--config-protected-settings')],
                    action=AddConfigurationProtectedSettings,
                    nargs='+',
                    help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting')
         c.argument('configuration_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-settings-file', '--config-file'],
+                   options_list=['--config-settings-file', '--config-file', c.deprecate(target='--configuration-settings-file', redirect='--config-settings-file')],
                    help='JSON file path for configuration-settings')
         c.argument('configuration_protected_settings_file',
                    arg_group="Configuration",
-                   options_list=['--configuration-protected-settings-file', '--config-protected-file'],
+                   options_list=['--config-protected-settings-file', '--config-protected-file', c.deprecate(target='--configuration-protected-settings-file', redirect='--config-protected-file')],
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
-
+        c.argument('plan_name',
+                   arg_group="Marketplace",
+                   options_list=['--plan-name'],
+                   help='The plan name is referring to the Plan ID of the extension that is being taken from Marketplace portal under Usage Information + Support')
+        c.argument('plan_product',
+                   arg_group="Marketplace",
+                   options_list=['--plan-product'],
+                   help='The plan product is referring to the Product ID of the extension that is being taken from Marketplace portal under Usage Information + Support. An example of this is the name of the ISV offering used.')
+        c.argument('plan_publisher',
+                   arg_group="Marketplace",
+                   options_list=['--plan-publisher'],
+                   help='The plan publisher is referring to the Publisher ID of the extension that is being taken from Marketplace portal under Usage Information + Support')
     with self.argument_context(f"{consts.EXTENSION_NAME} update") as c:
         c.argument('yes',
                    options_list=['--yes', '-y'],
@@ -84,3 +98,33 @@ def load_arguments(self, _):
                    help='Ignore confirmation prompts')
         c.argument('force',
                    help='Specify whether to force delete the extension from the cluster.')
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types list") as c:
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   help='Name of the Kubernetes cluster')
+        c.argument('cluster_type',
+                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   options_list=['--cluster-type', '-t'],
+                   help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types list-by-location") as c:
+        c.argument('location',
+                   validator=get_default_location_from_resource_group)
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types show") as c:
+        c.argument('extension_type',
+                   help='Name of the extension type.')
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   help='Name of the Kubernetes cluster')
+        c.argument('cluster_type',
+                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   options_list=['--cluster-type', '-t'],
+                   help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types list-versions") as c:
+        c.argument('extension_type',
+                   help='Name of the extension type.')
+        c.argument('location',
+                   validator=get_default_location_from_resource_group)

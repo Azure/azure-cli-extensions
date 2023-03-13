@@ -9,8 +9,9 @@
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
-from azure.core import PipelineClient
 from msrest import Deserializer, Serializer
+
+from azure.core import PipelineClient
 
 from . import models
 from ._configuration import QuantumClientConfiguration
@@ -18,7 +19,7 @@ from .operations import JobsOperations, ProvidersOperations, QuotasOperations, S
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
+    from typing import Any
 
     from azure.core.credentials import TokenCredential
     from azure.core.rest import HttpRequest, HttpResponse
@@ -43,7 +44,7 @@ class QuantumClient(object):
     :type resource_group_name: str
     :param workspace_name: Name of the workspace.
     :type workspace_name: str
-    :param base_url: Service URL. Default value is 'https://quantum.azure.com'.
+    :param base_url: Service URL. Default value is "https://quantum.azure.com".
     :type base_url: str
     """
 
@@ -64,10 +65,18 @@ class QuantumClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.jobs = JobsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.providers = ProvidersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.storage = StorageOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.quotas = QuotasOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.jobs = JobsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.providers = ProvidersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.storage = StorageOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.quotas = QuotasOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
 
 
     def _send_request(

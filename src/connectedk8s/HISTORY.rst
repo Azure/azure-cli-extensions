@@ -2,6 +2,101 @@
 
 Release History
 ===============
+1.3.13
+++++++
+
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+
+1.3.12
+++++++
+
+* Added retries for helm chart pull and config DP POST call
+* Fix parameterizing for kid in csp method
+* Bug fix in delete_arc_agents for arm64 parameter
+* Added specific exception messages for pre-checks
+
+1.3.11
+++++++
+
+* Added support for custom AAD token
+* Removed ARM64 unsupported warning
+* Increased helm delete timeout for ARM64 clusters
+* Added multi-architectural images for troubleshoot* Delete azure-arc-release NS if exists as part of delete command
+
+1.3.10
+++++++
+
+* Added CLI heuristics change
+* Added AKS IOT infra support 
+* Bug Fix in precheckutils
+
+1.3.9
+++++++
+
+* Added DNS and outbound connectivity prechecks in connect command
+
+1.3.8
+++++++
+
+* Added connectedk8s proxy support for fairfax
+
+1.3.7
+++++++
+
+* Install new helm release in azure-arc-release NS
+
+1.3.6
+++++++
+
+* Updated patch behaviour for Azure Hybrid Benefit property
+
+1.3.5
+++++++
+
+* Added software assurance related changes for AKS HCI
+* Added parameter for overriding container log path
+* Updated kubernetes package dependency to 24.2.0
+
+1.3.4
+++++++
+
+* Fixed a proxy related bug in connectedk8s upgrade
+
+1.3.3
+++++++
+
+* Added a timeout in force delete's CRD deletion command
+
+1.3.2
+++++++
+
+* Added force delete command which is an added functionality in connectedk8s delete function
+
+1.3.1
+++++++
+
+* Updated min cli core version to 2.30.0
+
+1.3.0
+++++++
+
+* Added private link support
+
+1.2.11
+++++++
+
+* Increased the timeout of diagnoser job completion to 180 seconds
+
+1.2.10
+++++++
+
+* Added troubleshoot command which can be used to diagnose Arc enabled K8s clusters
+
+1.2.9
+++++++
+
+* Add correlation-id parameter to internally track onboarding sources
+
 1.2.8
 ++++++
 

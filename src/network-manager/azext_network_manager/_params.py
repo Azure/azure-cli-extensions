@@ -53,7 +53,6 @@ def load_arguments(self, _):
         c.argument('id_', options_list=['--id'], type=str, help='Resource ID.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
-        c.argument('display_name', type=str, help='A friendly name for the network manager.')
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
@@ -66,7 +65,6 @@ def load_arguments(self, _):
         c.argument('id_', options_list=['--id'], type=str, help='Resource ID.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
-        c.argument('display_name', type=str, help='A friendly name for the network manager.')
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
@@ -78,6 +76,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
                    help='The name of the network manager.', id_part='name')
+        c.argument('force', arg_type=get_three_state_flag(),
+                   help='Deletes the resource even if it is part of a deployed configuration.')
 
     # endregion
     with self.argument_context('network manager post-commit') as c:
@@ -174,7 +174,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('configuration_name', type=str, help='The name of the network manager connectivity configuration.')
-        c.argument('display_name', type=str, help='A friendly name for the resource.')
         c.argument('description', type=str, help='A description of the connectivity configuration.')
         c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpoke', 'Mesh']),
                    help='Connectivity topology type.')
@@ -190,7 +189,6 @@ def load_arguments(self, _):
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager connectivity configuration.',
                    id_part='child_name_1')
-        c.argument('display_name', type=str, help='A friendly name for the resource.')
         c.argument('description', type=str, help='A description of the connectivity configuration.')
         c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpoke', 'Mesh']),
                    help='Connectivity topology type.')
@@ -207,6 +205,8 @@ def load_arguments(self, _):
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager connectivity configuration.',
                    id_part='child_name_1')
+        c.argument('force', arg_type=get_three_state_flag(),
+                   help='Deletes the resource even if it is part of a deployed configuration.')
 
     with self.argument_context('network manager group list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -231,9 +231,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='The ETag of the transformation. Omit this value to always overwrite the '
                    'current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent '
                    'changes.')
-        c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
-        c.argument('member_type', arg_type=get_enum_type(['Microsoft.Network/virtualNetworks']), help='Group member type.')
 
     with self.argument_context('network manager group update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -243,9 +241,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='The ETag of the transformation. Omit this value to always overwrite the '
                    'current resource. Specify the last-seen ETag value to prevent accidentally overwriting concurrent '
                    'changes.')
-        c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
-        c.argument('member_type', arg_type=get_enum_type(['VirtualNetwork', 'Subnet']), help='Group member type.')
         c.ignore('parameters')
 
     with self.argument_context('network manager group delete') as c:
@@ -256,48 +252,46 @@ def load_arguments(self, _):
         c.argument('force', arg_type=get_three_state_flag(),
                    help='Deletes the resource even if it is part of a deployed configuration.')
 
-    with self.argument_context('network manager security-user-config list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+    # with self.argument_context('network manager security-user-config list') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
+    #     c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+    #                'be returned by the server.')
+    #     c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+    #                'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+    #                'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager security-user-config show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
+    # with self.argument_context('network manager security-user-config show') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+    #                id_part='child_name_1')
 
-    with self.argument_context('network manager security-user-config create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
-        c.argument('display_name', type=str, help='A display name of the security Configuration.')
-        c.argument('description', type=str, help='A description of the security Configuration.')
-        c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
-        c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
-                   'network security groups.')
+    # with self.argument_context('network manager security-user-config create') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.')
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
+    #     c.argument('description', type=str, help='A description of the security Configuration.')
+    #     c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
+    #     c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
+    #                'network security groups.')
 
-    with self.argument_context('network manager security-user-config update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('display_name', type=str, help='A display name of the security Configuration.')
-        c.argument('description', type=str, help='A description of the security Configuration.')
-        c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
-        c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
-                   'network security groups.')
-        c.ignore('security_configuration')
+    # with self.argument_context('network manager security-user-config update') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+    #                id_part='child_name_1')
+    #     c.argument('description', type=str, help='A description of the security Configuration.')
+    #     c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
+    #     c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
+    #                'network security groups.')
+    #     c.ignore('security_configuration')
 
-    with self.argument_context('network manager security-user-config delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
+    # with self.argument_context('network manager security-user-config delete') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+    #                id_part='child_name_1')
 
     with self.argument_context('network manager security-admin-config rule-collection rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -309,64 +303,12 @@ def load_arguments(self, _):
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager security-admin-config list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
-    with self.argument_context('network manager security-admin-config show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-
-    with self.argument_context('network manager security-admin-config create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
-        c.argument('display_name', type=str, help='A display name of the security Configuration.')
-        c.argument('description', type=str, help='A description of the security Configuration.')
-        c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
-        c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
-                   'network security groups.')
-        c.argument('apply_on_network_intent_policy_based_services', options_list=['--apply-on-network-intent-policy',
-                                                                                  '--apply-on'], nargs='+',
-                   arg_type=get_enum_type(['None', 'All']), help='Enum list of network intent policy based services.')
-
-    with self.argument_context('network manager security-admin-config update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('display_name', type=str, help='A display name of the security Configuration.')
-        c.argument('description', type=str, help='A description of the security Configuration.')
-        c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
-        c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
-                   'network security groups.')
-        c.argument('apply_on_network_intent_policy_based_services', options_list=['--apply-on-network-intent-policy',
-                                                                                  '--apply-on'], nargs='+',
-                   arg_type=get_enum_type(['None', 'All']), help='Enum list of network intent policy based services.')
-        c.ignore('security_configuration')
-
-    with self.argument_context('network manager security-admin-config delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('force', arg_type=get_three_state_flag(),
-                   help='Deletes the resource even if it is part of a deployed configuration.')
-
     with self.argument_context('network manager security-admin-config rule-collection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
-        c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
@@ -377,7 +319,6 @@ def load_arguments(self, _):
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
-        c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
@@ -406,6 +347,8 @@ def load_arguments(self, _):
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
+        c.argument('force', arg_type=get_three_state_flag(),
+                   help='Deletes the resource even if it is part of a deployed configuration.')
 
     with self.argument_context('network manager security-admin-config rule-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -423,7 +366,6 @@ def load_arguments(self, _):
         c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
         c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
-        c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
@@ -440,7 +382,6 @@ def load_arguments(self, _):
         c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
         c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
-        c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
@@ -449,13 +390,15 @@ def load_arguments(self, _):
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
 
+    with self.argument_context('network manager security-admin-config rule-collection rule delete') as c:
+        c.argument('force', arg_type=get_three_state_flag(),
+                   help='Deletes the resource even if it is part of a deployed configuration.')
     # with self.argument_context('network manager security-user-config rule-collection create') as c:
     #     c.argument('resource_group_name', resource_group_name_type)
     #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
     #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
     #                id_part='child_name_1')
     #     c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
-    #     c.argument('display_name', type=str, help='A friendly name for the rule.')
     #     c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
     #     c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
     #                'for configuration')
@@ -466,7 +409,6 @@ def load_arguments(self, _):
     #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
     #                id_part='child_name_1')
     #     c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
-    #     c.argument('display_name', type=str, help='A friendly name for the rule.')
     #     c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
     #     c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
     #                'for configuration')
@@ -512,7 +454,6 @@ def load_arguments(self, _):
     #                'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
     # with self.argument_context('network manager security-user-config rule-collection rule create') as c:
-    #     c.argument('display_name', type=str, help='A friendly name for the rule.')
     #     c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
     #     c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
     #                'protocol this rule applies to.')
@@ -527,7 +468,6 @@ def load_arguments(self, _):
     #     c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
 
     # with self.argument_context('network manager security-user-config rule-collection rule update') as c:
-    #     c.argument('display_name', type=str, help='A friendly name for the rule.')
     #     c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
     #     c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
     #                'protocol this rule applies to.')
@@ -570,45 +510,45 @@ def load_arguments(self, _):
         c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
-#    with self.argument_context('network manager connection management-group create') as c:
-#        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-#                   help='The name of the network manager connection.')
-#        c.argument('management_group_id', type=str,
-#                   help='The management group id which uniquely identify the microsoft azure management group')
-#        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
-#                   help='the name or id of the network manager.', validator=validate_network_manager)
-#        c.argument('description', type=str, help='A description of the scope connection.')
-#
-#    with self.argument_context('network manager connection management-group update') as c:
-#        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-#                   help='The name of the network manager connection.', id_part='child_name_1')
-#        c.argument('management_group_id', type=str, help='The management group id which uniquely identify '
-#                   'the microsoft azure management group', id_part='name')
-#        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
-#                   help='the name or id of the network manager.', validator=validate_network_manager)
-#        c.argument('description', type=str, help='A description of the scope connection.')
-#        c.ignore('parameters')
-#
-#    with self.argument_context('network manager connection management-group list') as c:
-#        c.argument('management_group_id', type=str,
-#                   help='The management group id which uniquely identify the microsoft azure management group')
-#        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-#                   'be returned by the server.')
-#        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-#                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-#                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-#
-#    with self.argument_context('network manager connection management-group show') as c:
-#        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-#                   help='The name of the network manager connection.', id_part='name')
-#        c.argument('management_group_id', type=str,
-#                   help='The management group id which uniquely identify the microsoft azure management group')
-#
-#    with self.argument_context('network manager connection management-group delete') as c:
-#        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-#                   help='The name of the network manager connection.', id_part='name')
-#        c.argument('management_group_id', type=str,
-#                   help='The management group id which uniquely identify the microsoft azure management group')
+    with self.argument_context('network manager connection management-group create') as c:
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+                   help='The name of the network manager connection.')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
+                   help='the name or id of the network manager.')
+        c.argument('description', type=str, help='A description of the scope connection.')
+
+    with self.argument_context('network manager connection management-group update') as c:
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+                   help='The name of the network manager connection.', id_part='child_name_1')
+        c.argument('management_group_id', type=str, help='The management group id which uniquely identify '
+                   'the microsoft azure management group', required=True, id_part='name')
+        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
+                   help='the name or id of the network manager.')
+        c.argument('description', type=str, help='A description of the scope connection.')
+        c.ignore('parameters')
+
+    with self.argument_context('network manager connection management-group list') as c:
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager connection management-group show') as c:
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+                   help='The name of the network manager connection.', id_part='name')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+
+    with self.argument_context('network manager connection management-group delete') as c:
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+                   help='The name of the network manager connection.', id_part='name')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
 
     with self.argument_context('network manager scope-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)

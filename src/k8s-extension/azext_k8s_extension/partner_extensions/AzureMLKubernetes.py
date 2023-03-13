@@ -26,6 +26,8 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
+from msrest.exceptions import HttpOperationError
+import azure.core.exceptions
 
 from .._client_factory import cf_resources
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
@@ -44,6 +46,9 @@ resource_tag = {'created_by': 'Azure Arc-enabled ML'}
 # pylint: disable=too-many-instance-attributes
 class AzureMLKubernetes(DefaultExtension):
     def __init__(self):
+        # tsg link
+        self.TSG_LINK = 'https://aka.ms/arcmltsg'
+
         # constants for configuration settings.
         self.DEFAULT_RELEASE_NAMESPACE = 'azureml'
         self.RELAY_CONNECTION_STRING_KEY = 'relayserver.relayConnectionString'
@@ -89,6 +94,7 @@ class AzureMLKubernetes(DefaultExtension):
         self.inferenceRouterServiceType = 'inferenceRouterServiceType'
         self.internalLoadBalancerProvider = 'internalLoadBalancerProvider'
         self.inferenceRouterHA = 'inferenceRouterHA'
+        self.clusterPurpose = 'clusterPurpose'
 
         # constants for existing AKS to AMLARC migration
         self.IS_AKS_MIGRATION = 'isAKSMigration'
@@ -105,14 +111,18 @@ class AzureMLKubernetes(DefaultExtension):
 
         self.OPEN_SHIFT = 'openshift'
 
-    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
-               scope, auto_upgrade_minor_version, release_train, version, target_namespace,
+    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
+               extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+               configuration_settings_file, configuration_protected_settings_file, plan_name,
+               plan_publisher, plan_product):
+
+        logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
+
         if scope == 'namespace':
             raise InvalidArgumentValueError("Invalid scope '{}'.  This extension can't be installed "
                                             "only at 'cluster' scope. "
-                                            "Check https://aka.ms/arcmltsg for more information.".format(scope))
+                                            "Check {} for more information.".format(scope, self.TSG_LINK))
         # set release name explicitly to azureml
         release_namespace = self.DEFAULT_RELEASE_NAMESPACE
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
@@ -123,7 +133,7 @@ class AzureMLKubernetes(DefaultExtension):
 
         # get the arc's location
         subscription_id = get_subscription_id(cmd.cli_ctx)
-        cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
+        cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}' \
             '/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         cluster_location = ''
@@ -133,15 +143,28 @@ class AzureMLKubernetes(DefaultExtension):
                 cluster_resource_id, parent_api_version)
             cluster_location = resource.location.lower()
             try:
+                isSmallScale = False
                 if cluster_type.lower() == 'connectedclusters':
                     if resource.properties['totalNodeCount'] < 3:
-                        configuration_settings['clusterPurpose'] = 'DevTest'
+                        isSmallScale = True
                 if cluster_type.lower() == 'managedclusters':
                     nodeCount = 0
                     for agent in resource.properties['agentPoolProfiles']:
                         nodeCount += agent['count']
                     if nodeCount < 3:
-                        configuration_settings['clusterPurpose'] = 'DevTest'
+                        isSmallScale = True
+
+                if isSmallScale:
+                    clusterPurpose = _get_value_from_config_protected_config(
+                        self.clusterPurpose, configuration_settings, configuration_protected_settings)
+                    if clusterPurpose is None:
+                        configuration_settings[self.clusterPurpose] = 'DevTest'
+
+                    inferenceRouterHA = _get_value_from_config_protected_config(
+                        self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
+                    if inferenceRouterHA is None:
+                        configuration_settings[self.inferenceRouterHA] = 'false'
+
                 if resource.properties.get('distribution', '').lower() == self.OPEN_SHIFT:
                     configuration_settings[self.OPEN_SHIFT] = 'true'
             except:
@@ -200,15 +223,15 @@ class AzureMLKubernetes(DefaultExtension):
         )
         return extension, name, create_identity
 
-    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
-        # Give a warning message
-        logger.warning("If nvidia.com/gpu or fuse resource is not recognized by kubernetes after this deletion, "
-                       "you probably have installed nvidia-device-plugin or fuse-device-plugin before installing AMLArc extension. "
-                       "Please try to reinstall device plugins to fix this issue.")
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
+        logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
         user_confirmation_factory(cmd, yes)
 
     def Update(self, cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, release_train, version, configuration_settings,
                configuration_protected_settings, original_extension, yes=False):
+
+        logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
+
         input_configuration_settings = copy.deepcopy(configuration_settings)
         input_configuration_protected_settings = copy.deepcopy(configuration_protected_settings)
         # configuration_settings and configuration_protected_settings can be none, so need to set them to empty dict
@@ -323,9 +346,9 @@ class AzureMLKubernetes(DefaultExtension):
                 except azure.mgmt.relay.models.ErrorResponseException as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Relay server not found. "
-                                                    "Check https://aka.ms/arcmltsg for more information.") from ex
+                                                    "Check {} for more information.".format(self.TSG_LINK)) from ex
                     raise AzureResponseError("Failed to get relay connection string."
-                                             "Check https://aka.ms/arcmltsg for more information.") from ex
+                                             "Check {} for more information.".format(self.TSG_LINK)) from ex
 
             if original_extension_config_settings.get(self.SERVICE_BUS_ENABLED).lower() != 'false' \
                     and self.SERVICE_BUS_CONNECTION_STRING not in configuration_protected_settings:
@@ -337,9 +360,9 @@ class AzureMLKubernetes(DefaultExtension):
                 except azure.core.exceptions.HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Service bus not found."
-                                                    "Check https://aka.ms/arcmltsg for more information.") from ex
+                                                    "Check {} for more information.".format(self.TSG_LINK)) from ex
                     raise AzureResponseError("Failed to get service bus connection string."
-                                             "Check https://aka.ms/arcmltsg for more information.") from ex
+                                             "Check {} for more information.".format(self.TSG_LINK)) from ex
 
             configuration_protected_settings = _dereference(self.reference_mapping, configuration_protected_settings)
 
@@ -366,23 +389,13 @@ class AzureMLKubernetes(DefaultExtension):
                               configuration_protected_settings=configuration_protected_settings)
 
     def __normalize_config(self, configuration_settings, configuration_protected_settings):
-        # inference
-        inferenceRouterHA = _get_value_from_config_protected_config(
-            self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
-        if inferenceRouterHA is not None:
-            isTestCluster = str(inferenceRouterHA).lower() == 'false'
-            if isTestCluster:
-                configuration_settings['clusterPurpose'] = 'DevTest'
-            else:
-                configuration_settings['clusterPurpose'] = 'FastProd'
-
         inferenceRouterServiceType = _get_value_from_config_protected_config(
             self.inferenceRouterServiceType, configuration_settings, configuration_protected_settings)
         if inferenceRouterServiceType:
             if not _is_valid_service_type(inferenceRouterServiceType):
                 raise InvalidArgumentValueError(
                     "inferenceRouterServiceType only supports NodePort or LoadBalancer or ClusterIP."
-                    "Check https://aka.ms/arcmltsg for more information.")
+                    "Check {} for more information.".format(self.TSG_LINK))
 
             feIsNodePort = str(inferenceRouterServiceType).lower() == 'nodeport'
             configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
@@ -405,7 +418,7 @@ class AzureMLKubernetes(DefaultExtension):
                 logger.warning(
                     'Duplicate keys found in both configuration settings and configuration protected setttings: %s', key)
             raise InvalidArgumentValueError("Duplicate keys found."
-                                            "Check https://aka.ms/arcmltsg for more information.")
+                                            "Check {} for more information.".format(self.TSG_LINK))
 
         enable_training = _get_value_from_config_protected_config(
             self.ENABLE_TRAINING, configuration_settings, configuration_protected_settings)
@@ -423,7 +436,7 @@ class AzureMLKubernetes(DefaultExtension):
                 "To create Microsoft.AzureML.Kubernetes extension, either "
                 "enable Machine Learning training or inference by specifying "
                 f"'--configuration-settings {self.ENABLE_TRAINING}=true' or '--configuration-settings {self.ENABLE_INFERENCE}=true'."
-                "Please check https://aka.ms/arcmltsg for more information.")
+                "Please check {} for more information.".format(self.TSG_LINK))
 
         configuration_settings[self.ENABLE_TRAINING] = configuration_settings.get(self.ENABLE_TRAINING, enable_training)
         configuration_settings[self.ENABLE_INFERENCE] = configuration_settings.get(
@@ -432,13 +445,6 @@ class AzureMLKubernetes(DefaultExtension):
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings, release_namespace):
-        inferenceRouterHA = _get_value_from_config_protected_config(
-            self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
-        isTestCluster = True if inferenceRouterHA is not None and str(inferenceRouterHA).lower() == 'false' else False
-        if isTestCluster:
-            configuration_settings['clusterPurpose'] = 'DevTest'
-        else:
-            configuration_settings['clusterPurpose'] = 'FastProd'
         isAKSMigration = _get_value_from_config_protected_config(
             self.IS_AKS_MIGRATION, configuration_settings, configuration_protected_settings)
         isAKSMigration = str(isAKSMigration).lower() == 'true'
@@ -466,7 +472,7 @@ class AzureMLKubernetes(DefaultExtension):
             if not sslCname:
                 raise InvalidArgumentValueError(
                     "To enable HTTPs endpoint, "
-                    "please specify sslCname parameter in --configuration-settings. Check https://aka.ms/arcmltsg for more information.")
+                    "please specify sslCname parameter in --configuration-settings. Check {} for more information.".format(self.TSG_LINK))
 
         inferenceRouterServiceType = _get_value_from_config_protected_config(
             self.inferenceRouterServiceType, configuration_settings, configuration_protected_settings)
@@ -474,7 +480,7 @@ class AzureMLKubernetes(DefaultExtension):
             raise InvalidArgumentValueError(
                 "To use inference, "
                 "please specify inferenceRouterServiceType=ClusterIP or inferenceRouterServiceType=NodePort or inferenceRouterServiceType=LoadBalancer in --configuration-settings and also set internalLoadBalancerProvider=azure if your aks only supports internal load balancer."
-                "Check https://aka.ms/arcmltsg for more information.")
+                "Check {} for more information.".format(self.TSG_LINK))
 
         feIsNodePort = str(inferenceRouterServiceType).lower() == 'nodeport'
         internalLoadBalancerProvider = _get_value_from_config_protected_config(
@@ -484,7 +490,7 @@ class AzureMLKubernetes(DefaultExtension):
         if feIsNodePort and feIsInternalLoadBalancer:
             raise MutuallyExclusiveArgumentError(
                 "When using nodePort as inferenceRouterServiceType, no need to specify internalLoadBalancerProvider."
-                "Check https://aka.ms/arcmltsg for more information.")
+                "Check {} for more information.".format(self.TSG_LINK))
         if feIsNodePort:
             configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
         elif feIsInternalLoadBalancer:
@@ -560,11 +566,11 @@ class AzureMLKubernetes(DefaultExtension):
                 self.SERVICE_BUS_COMPUTE_STATE_TOPIC: self.SERVICE_BUS_COMPUTE_STATE_SUB,
                 self.SERVICE_BUS_JOB_STATE_TOPIC: self.SERVICE_BUS_JOB_STATE_SUB
             }
-            service_bus_connection_string, service_buse_resource_id = _get_service_bus_connection_string(
+            service_bus_connection_string, service_bus_resource_id = _get_service_bus_connection_string(
                 cmd, subscription_id, resource_group_name, cluster_name, cluster_location, topic_sub_mapping)
             logger.info('==== END SERVICE BUS CREATION ====')
             configuration_protected_settings[self.SERVICE_BUS_CONNECTION_STRING] = service_bus_connection_string
-            configuration_settings[self.SERVICE_BUS_RESOURCE_ID_KEY] = service_buse_resource_id
+            configuration_settings[self.SERVICE_BUS_RESOURCE_ID_KEY] = service_bus_resource_id
             configuration_settings[f'{self.SERVICE_BUS_TOPIC_SUB_MAPPING_KEY}.{self.SERVICE_BUS_COMPUTE_STATE_TOPIC}'] = self.SERVICE_BUS_COMPUTE_STATE_SUB
             configuration_settings[f'{self.SERVICE_BUS_TOPIC_SUB_MAPPING_KEY}.{self.SERVICE_BUS_JOB_STATE_TOPIC}'] = self.SERVICE_BUS_JOB_STATE_SUB
 
@@ -610,7 +616,18 @@ def _get_relay_connection_str(
         cluster_id, suffix_len=6, max_len=50)
     hybrid_connection_name = cluster_name
     hc_resource_id = ''
-    if not get_key_only:
+
+    # only create relay if not found
+    try:
+        # get connection string
+        hybrid_connection_object = relay_client.hybrid_connections.get(
+            resource_group_name, relay_namespace_name, hybrid_connection_name)
+        hc_resource_id = hybrid_connection_object.id
+        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
+            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
+    except HttpOperationError as e:
+        if e.response.status_code != 404 or get_key_only:
+            raise e
         # create namespace
         relay_namespace_params = azure.mgmt.relay.models.RelayNamespace(
             location=cluster_location, tags=resource_tag)
@@ -633,9 +650,9 @@ def _get_relay_connection_str(
         relay_client.hybrid_connections.create_or_update_authorization_rule(
             resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name, rights=auth_rule_rights)
 
-    # get connection string
-    key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
-        resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
+        # get connection string
+        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
+            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
     return f'{key.primary_connection_string}', hc_resource_id, hybrid_connection_name
 
 
@@ -647,8 +664,20 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
                                                subscription_id, resource_group_name)
     service_bus_namespace_name = _get_valid_name(
         cluster_id, suffix_len=6, max_len=50)
+    try:
+        service_bus_object = service_bus_client.namespaces.get(resource_group_name, service_bus_namespace_name)
+        service_bus_resource_id = service_bus_object.id
 
-    if not get_key_only:
+        # get connection string
+        auth_rules = service_bus_client.namespaces.list_authorization_rules(
+            resource_group_name, service_bus_namespace_name)
+        for rule in auth_rules:
+            key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
+                resource_group_name, service_bus_namespace_name, rule.name)
+            return key.primary_connection_string, service_bus_resource_id
+    except azure.core.exceptions.HttpResponseError as e:
+        if e.response.status_code != 404 or get_key_only:
+            raise e
         # create namespace
         service_bus_sku = azure.mgmt.servicebus.models.SBSku(
             name=azure.mgmt.servicebus.models.SkuName.standard.name)
@@ -659,8 +688,9 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
         async_poller = service_bus_client.namespaces.begin_create_or_update(
             resource_group_name, service_bus_namespace_name, service_bus_namespace)
         while True:
-            async_poller.result(15)
+            service_bus_object = async_poller.result(15)
             if async_poller.done():
+                service_bus_resource_id = service_bus_object.id
                 break
 
         for topic_name, service_bus_subscription_name in topic_sub_mapping.items():
@@ -675,16 +705,13 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
             service_bus_client.subscriptions.create_or_update(
                 resource_group_name, service_bus_namespace_name, topic_name, service_bus_subscription_name, sub)
 
-    service_bus_object = service_bus_client.namespaces.get(resource_group_name, service_bus_namespace_name)
-    service_bus_resource_id = service_bus_object.id
-
-    # get connection string
-    auth_rules = service_bus_client.namespaces.list_authorization_rules(
-        resource_group_name, service_bus_namespace_name)
-    for rule in auth_rules:
-        key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
-            resource_group_name, service_bus_namespace_name, rule.name)
-        return key.primary_connection_string, service_bus_resource_id
+        # get connection string
+        auth_rules = service_bus_client.namespaces.list_authorization_rules(
+            resource_group_name, service_bus_namespace_name)
+        for rule in auth_rules:
+            key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
+                resource_group_name, service_bus_namespace_name, rule.name)
+            return key.primary_connection_string, service_bus_resource_id
 
 
 def _get_log_analytics_ws_connection_string(
@@ -696,7 +723,15 @@ def _get_log_analytics_ws_connection_string(
     cluster_id = '{}-{}-{}'.format(cluster_name, subscription_id, resource_group_name)
     log_analytics_ws_name = _get_valid_name(cluster_id, suffix_len=6, max_len=63)
     customer_id = ''
-    if not get_key_only:
+    try:
+        # get workspace shared keys
+        log_analytics_ws_object = log_analytics_ws_client.workspaces.get(resource_group_name, log_analytics_ws_name)
+        customer_id = log_analytics_ws_object.customer_id
+        shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
+            resource_group_name, log_analytics_ws_name).primary_shared_key
+    except azure.core.exceptions.HttpResponseError as e:
+        if e.response.status_code != 404 or get_key_only:
+            raise e
         log_analytics_ws = azure.mgmt.loganalytics.models.Workspace(location=cluster_location, tags=resource_tag)
         async_poller = log_analytics_ws_client.workspaces.begin_create_or_update(
             resource_group_name, log_analytics_ws_name, log_analytics_ws)
@@ -705,10 +740,8 @@ def _get_log_analytics_ws_connection_string(
             if async_poller.done():
                 customer_id = log_analytics_ws_object.customer_id
                 break
-
-    # get workspace shared keys
-    shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
-        resource_group_name, log_analytics_ws_name).primary_shared_key
+        shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
+            resource_group_name, log_analytics_ws_name).primary_shared_key
     return customer_id, shared_key
 
 

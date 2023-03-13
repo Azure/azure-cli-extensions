@@ -15,23 +15,31 @@ import azext_confidentialledger._help
 
 
 class ConfidentialLedgerCommandsLoader(AzCommandsLoader):
-
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_confidentialledger.generated._client_factory import cf_confidentialledger_cl
+        from azext_confidentialledger.generated._client_factory import (
+            cf_confidentialledger_cl,
+        )
+
         confidentialledger_custom = CliCommandType(
-            operations_tmpl='azext_confidentialledger.custom#{}',
-            client_factory=cf_confidentialledger_cl)
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=confidentialledger_custom)
+            operations_tmpl="azext_confidentialledger.custom#{}",
+            client_factory=cf_confidentialledger_cl,
+        )
+        parent = super()
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=confidentialledger_custom)
 
     def load_command_table(self, args):
         from azext_confidentialledger.generated.commands import load_command_table
+
         load_command_table(self, args)
         try:
-            from azext_confidentialledger.manual.commands import load_command_table as load_command_table_manual
+            from azext_confidentialledger.manual.commands import (
+                load_command_table as load_command_table_manual,
+            )
+
             load_command_table_manual(self, args)
         except ImportError as e:
-            if e.name.endswith('manual.commands'):
+            if e.name.endswith("manual.commands"):
                 pass
             else:
                 raise e
@@ -39,12 +47,16 @@ class ConfidentialLedgerCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_confidentialledger.generated._params import load_arguments
+
         load_arguments(self, command)
         try:
-            from azext_confidentialledger.manual._params import load_arguments as load_arguments_manual
+            from azext_confidentialledger.manual._params import (
+                load_arguments as load_arguments_manual,
+            )
+
             load_arguments_manual(self, command)
         except ImportError as e:
-            if e.name.endswith('manual._params'):
+            if e.name.endswith("manual._params"):
                 pass
             else:
                 raise e

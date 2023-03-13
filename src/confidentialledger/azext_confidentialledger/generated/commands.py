@@ -18,20 +18,24 @@ from azext_confidentialledger.generated._client_factory import cf_ledger
 
 confidentialledger_ledger = CliCommandType(
     operations_tmpl=(
-        'azext_confidentialledger.vendored_sdks.confidentialledger.operations._ledger_operations#LedgerOperations.{}'
+        "azext_confidentialledger.vendored_sdks.confidentialledger.operations._ledger_operations#LedgerOperations.{}"
     ),
     client_factory=cf_ledger,
 )
 
 
 def load_command_table(self, _):
-
     with self.command_group(
-        'confidentialledger', confidentialledger_ledger, client_factory=cf_ledger, is_experimental=True
+        "confidentialledger", confidentialledger_ledger, client_factory=cf_ledger
     ) as g:
-        g.custom_command('list', 'confidentialledger_list')
-        g.custom_show_command('show', 'confidentialledger_show')
-        g.custom_command('create', 'confidentialledger_create', supports_no_wait=True)
-        g.custom_command('update', 'confidentialledger_update', supports_no_wait=True)
-        g.custom_command('delete', 'confidentialledger_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'confidentialledger_show')
+        g.custom_command("list", "confidentialledger_list")
+        g.custom_show_command("show", "confidentialledger_show")
+        g.custom_command("create", "confidentialledger_create", supports_no_wait=True)
+        g.custom_command("update", "confidentialledger_update", supports_no_wait=True)
+        g.custom_command(
+            "delete",
+            "confidentialledger_delete",
+            supports_no_wait=True,
+            confirmation=True,
+        )
+        g.custom_wait_command("wait", "confidentialledger_show")

@@ -4,16 +4,30 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import re
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
+
+
+def gateway_create(cmd, client, service, resource_group, instance_count=None):
+    sku = get_spring_sku(client, resource_group, service)
+    gateway_resource = models.GatewayResource()
+    if instance_count and sku:
+        gateway_resource.sku = models.Sku(name=sku.name, tier=sku.tier, capacity=instance_count)
+    return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
+
+
+def gateway_delete(cmd, client, service, resource_group):
+    return client.gateways.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
 def gateway_update(cmd, client, resource_group, service,
@@ -31,6 +45,9 @@ def gateway_update(cmd, client, resource_group, service,
                    api_doc_location=None,
                    api_version=None,
                    server_url=None,
+                   apm_types=None,
+                   properties=None,
+                   secrets=None,
                    allowed_origins=None,
                    allowed_methods=None,
                    allowed_headers=None,
@@ -65,18 +82,23 @@ def gateway_update(cmd, client, resource_group, service,
         memory=memory or gateway.properties.resource_requests.memory
     )
 
-    properties = models.GatewayProperties(
+    update_apm_types = apm_types if apm_types is not None else gateway.properties.apm_types
+    environment_variables = _update_envs(gateway.properties.environment_variables, properties, secrets)
+
+    model_properties = models.GatewayProperties(
         public=assign_endpoint if assign_endpoint is not None else gateway.properties.public,
         https_only=https_only if https_only is not None else gateway.properties.https_only,
         sso_properties=sso_properties,
         api_metadata_properties=api_metadata_properties,
         cors_properties=cors_properties,
+        apm_types=update_apm_types,
+        environment_variables=environment_variables,
         resource_requests=resource_requests)
 
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier,
                      capacity=instance_count or gateway.sku.capacity)
 
-    gateway_resource = models.GatewayResource(properties=properties, sku=sku)
+    gateway_resource = models.GatewayResource(properties=model_properties, sku=sku)
 
     logger.warning(LOG_RUNNING_PROMPT)
     return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
@@ -139,25 +161,21 @@ def gateway_route_config_create(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
-    _validate_route_config_exist(client, resource_group, service, name)
-
-    app_resource_id = _update_app_resource_id(client, resource_group, service, app_name, None)
-    routes = _update_routes(routes_file, routes_json, [])
-
-    return _create_or_update_gateway_route_configs(client, resource_group, service, name, app_resource_id, routes)
+    _validate_route_config_not_exist(client, resource_group, service, name)
+    route_properties = models.GatewayRouteConfigProperties()
+    return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
+                                                   app_name, routes_file, routes_json)
 
 
 def gateway_route_config_update(cmd, client, resource_group, service, name,
                                 app_name=None,
                                 routes_json=None,
                                 routes_file=None):
-    gateway_route_config = client.gateway_route_configs.get(
-        resource_group, service, DEFAULT_NAME, name)
-
-    app_resource_id = _update_app_resource_id(client, resource_group, service, app_name, gateway_route_config.properties.app_resource_id)
-    routes = _update_routes(routes_file, routes_json, gateway_route_config.properties.routes)
-
-    return _create_or_update_gateway_route_configs(client, resource_group, service, name, app_resource_id, routes)
+    _validate_route_config_exist(client, resource_group, service, name)
+    route_properties = client.gateway_route_configs.get(
+        resource_group, service, DEFAULT_NAME, name).properties
+    return _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
+                                                   app_name, routes_file, routes_json)
 
 
 def gateway_route_config_remove(cmd, client, resource_group, service, name):
@@ -200,33 +218,80 @@ def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, ma
     return cors
 
 
-def _validate_route_config_exist(client, resource_group, service, name):
+def _update_envs(existing, envs_dict, secrets_dict):
+    if envs_dict is None and secrets_dict is None:
+        return existing
+    envs = existing if existing is not None else models.GatewayPropertiesEnvironmentVariables()
+    if envs_dict is not None:
+        envs.properties = envs_dict
+    if secrets_dict is not None:
+        envs.secrets = secrets_dict
+    return envs
+
+
+def _validate_route_config_not_exist(client, resource_group, service, name):
     route_configs = client.gateway_route_configs.list(
         resource_group, service, DEFAULT_NAME)
     if name in (route_config.name for route_config in list(route_configs)):
         raise InvalidArgumentValueError("Route config " + name + " already exists")
 
 
-def _update_app_resource_id(client, resource_group, service, app_name, app_resource_id):
+def _validate_route_config_exist(client, resource_group, service, name):
+    route_configs = client.gateway_route_configs.list(
+        resource_group, service, DEFAULT_NAME)
+    if name not in (route_config.name for route_config in list(route_configs)):
+        raise InvalidArgumentValueError("Route config " + name + " doesn't exist")
+
+
+def _create_or_update_gateway_route_configs(client, resource_group, service, name, route_properties,
+                                            app_name, routes_file, routes_json):
+    app_resource_id = _get_app_resource_id_by_name(client, resource_group, service, app_name)
+    route_properties = _create_or_update_routes_properties(routes_file, routes_json, route_properties)
+
+    if app_resource_id is not None:
+        route_properties.app_resource_id = app_resource_id
+    route_config_resource = models.GatewayRouteConfigResource(
+        properties=route_properties)
+    return client.gateway_route_configs.begin_create_or_update(resource_group, service, DEFAULT_NAME, name, route_config_resource)
+
+
+def _get_app_resource_id_by_name(client, resource_group, service, app_name):
     if app_name is not None:
         app_resource = client.apps.get(resource_group, service, app_name)
-        app_resource_id = app_resource.id
-    return app_resource_id
+        return app_resource.id
+    return None
 
 
-def _update_routes(routes_file, routes_json, routes):
+def _create_or_update_routes_properties(routes_file, routes_json, route_properties):
+    if routes_file is None and routes_json is None:
+        return route_properties
+
+    route_properties = models.GatewayRouteConfigProperties()
     if routes_file is not None:
         with open(routes_file, 'r') as json_file:
-            routes = json.load(json_file)
+            raw_json = json.load(json_file)
 
     if routes_json is not None:
-        routes = json.loads(routes_json)
-    return routes
+        raw_json = json.loads(routes_json)
+
+    if isinstance(raw_json, list):
+        route_properties.routes = raw_json
+    else:
+        raw_json = _route_config_property_convert(raw_json)
+        route_properties = models.GatewayRouteConfigProperties(**raw_json)
+    return route_properties
 
 
-def _create_or_update_gateway_route_configs(client, resource_group, service, name, app_resource_id, routes):
-    properties = models.GatewayRouteConfigProperties(
-        app_resource_id=app_resource_id, routes=routes)
-    route_config_resource = models.GatewayRouteConfigResource(
-        properties=properties)
-    return client.gateway_route_configs.begin_create_or_update(resource_group, service, DEFAULT_NAME, name, route_config_resource)
+# Convert camelCase to snake_case to align with backend
+def _route_config_property_convert(raw_json):
+    if raw_json is None:
+        return raw_json
+
+    convert_raw_json = {}
+    for key in raw_json:
+        if key == "routes":
+            convert_raw_json[key] = list(map(lambda v: _route_config_property_convert(v), raw_json[key]))
+        else:
+            replaced_key = re.sub('(?<!^)(?=[A-Z])', '_', key).lower()
+            convert_raw_json[replaced_key] = raw_json[key]
+    return convert_raw_json

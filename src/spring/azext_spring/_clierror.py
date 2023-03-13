@@ -9,3 +9,7 @@ from azure.cli.core.azclierror import UserFault
 class ConflictRequestError(UserFault):
     """ Conflict request: 409 error """
     pass
+
+
+class NotSupportedPricingTierError(UserFault):
+    pass

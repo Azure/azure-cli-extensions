@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, deprecated-method, global-statement
 # from logging import Logger  # , log
 import subprocess
 import shlex
@@ -16,9 +16,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
-# pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -202,6 +200,67 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
+def _check_existing_rg(rg_name):
+    # Check for existing dup name
+    try:
+        exists_rg_command = 'az group exists -n {resource_group_name} -o json'.format(resource_group_name=rg_name)
+        logger.info('Checking for existing resource groups with identical name within subscription...')
+        group_exists = loads(_call_az_command(exists_rg_command))
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        raise Exception('Unexpected error occured while fetching existing resource groups.')
+
+    logger.info('Resource group exists is \'%s\'', group_exists)
+    return group_exists
+
+
+def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
+    """
+    Checks if the VM is running and prompts to auto-start it.
+    Returns: True if VM is already running or succeeded in running it.
+             False if user selected not to run the VM or running in non-interactive mode.
+    Raises: AzCommandError if vm start command fails
+            Exception if something went wrong while fetching VM power state
+    """
+    VM_RUNNING = 'PowerState/running'
+    try:
+        logger.info('Checking VM power state...\n')
+        VM_TURNED_ON = False
+        vm_statuses = vm_instance_view.instance_view.statuses
+        for vm_status in vm_statuses:
+            if vm_status.code == VM_RUNNING:
+                VM_TURNED_ON = True
+        # VM already on
+        if VM_TURNED_ON:
+            logger.info('VM is running\n')
+            return True
+
+        logger.warning(vm_off_message)
+        # VM Stopped or Deallocated. Ask to run it
+        if confirm:
+            if not prompt_y_n('Continue to auto-start VM?'):
+                logger.warning('Skipping VM start')
+                return False
+
+        start_vm_command = 'az vm start --resource-group {rg} --name {n}'.format(rg=resource_group_name, n=vm_name)
+        logger.info('Starting the VM. This might take a few minutes...\n')
+        _call_az_command(start_vm_command)
+        logger.info('VM started\n')
+    # NoTTYException exception only thrown from confirm block
+    except NoTTYException:
+        logger.warning('Cannot confirm VM auto-start in non-interactive mode.')
+        logger.warning('Skipping auto-start')
+        return False
+    except AzCommandError as azCommandError:
+        logger.error("Failed to start VM.")
+        raise azCommandError
+    except Exception as exception:
+        logger.error("Failed to check VM power status.")
+        raise exception
+    else:
+        return True
+
+
 def _fetch_compatible_sku(source_vm, hyperv):
 
     location = source_vm.location
@@ -311,20 +370,20 @@ def _check_linux_hyperV_gen(source_vm):
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
-    hyperVGen = loads(_call_az_command(show_disk_command))
-    if hyperVGen != 'V2':
-        logger.info('Trying to check on the source VM if it has the parameter of gen2')
+    disk_hyperVGen = loads(_call_az_command(show_disk_command))
+
+    if disk_hyperVGen != 'V2':
+        logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
-        hyperVGen = hyperVGen_list[0]
-        if hyperVGen == 'V2':
-            return hyperVGen
-        else:
-            hyperVGen = 'V1'
-            return hyperVGen
-    else:
-        return hyperVGen
+        vm_hyperVGen = hyperVGen_list[0]
+        if vm_hyperVGen != 'V2':
+            vm_hyperVGen = 'V1'
+
+        return vm_hyperVGen
+
+    return disk_hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
@@ -640,3 +699,19 @@ def _get_function_param_dict(frame):
         if param in values:
             values[param] = '********'
     return values
+
+
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+    logger.debug('Unlock script STDOUT:\n%s', stdout)
+    if stderr:
+        logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+
+
+def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+    if not fix_uuid:
+        create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+    logger.info('Validating VM template before continuing...')
+    _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
+    logger.info('Creating repair VM...')
+    _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])

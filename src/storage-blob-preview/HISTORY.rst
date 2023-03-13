@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.6.2
+++++++
+* `az storage blob filter`: Add `--container-name` to support filter blobs in specific container
+
 0.6.1
 ++++++
 * `az storage blob immutability-policy set/delete`: Extend/Lock/Unlock/Delete blob's immutability policy

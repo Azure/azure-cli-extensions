@@ -13,15 +13,18 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_ingress_timeout, validate_jar)
+                          validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
+                          validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
+                          validate_remote_debugging_port, validate_ingress_client_auth_certificates)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
-                                     validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
-                                     validate_routes, validate_gateway_instance_count,
+                                     validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
+                                     validate_routes, validate_gateway_instance_count, validate_git_interval,
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
-                                     validate_build_env, validate_target_module, validate_runtime_version)
+                                     validate_build_env, validate_target_module, validate_runtime_version,
+                                     validate_acs_ssh_or_warn)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -31,12 +34,8 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
+from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
-
-from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
-from .vendored_sdks.appplatform.v2022_01_01_preview.models \
-    import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
-from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -44,7 +43,7 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 build_env_type = CLIArgumentType(
     validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
-service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Apps, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
+service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
@@ -63,7 +62,7 @@ def load_arguments(self, _):
     with self.argument_context('spring') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
         c.argument('name', options_list=[
-            '--name', '-n'], help='Name of Azure Spring Apps.')
+            '--name', '-n'], help='The name of Azure Spring Apps instance.')
 
     # A refactoring work item to move validators to command level to reduce the duplications.
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
@@ -76,6 +75,9 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', arg_group='VNet Injection', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Apps service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', arg_group='VNet Injection', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Apps service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
+        c.argument('outbound_type', arg_group='VNet Injection',
+                   help='The outbound type of Azure Spring Apps VNet instance.',
+                   validator=validate_vnet, default="loadBalancer")
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
@@ -119,13 +121,18 @@ def load_arguments(self, _):
                    help='Ingress read timeout value in seconds. Default 300, Minimum is 1, maximum is 1800.',
                    validator=validate_ingress_timeout)
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    validator=validate_build_pool_size,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('enable_application_live_view',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-live-view', '--enable-alv'],
+                   help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
                    action='store_true',
                    options_list=['--enable-service-registry', '--enable-sr'],
@@ -133,26 +140,31 @@ def load_arguments(self, _):
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
                    arg_group="Spring Cloud Gateway",
                    type=int,
                    validator=validate_gateway_instance_count,
-                   is_preview=True,
                    help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
                    action='store_true',
-                   is_preview=True,
                    help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
-                   is_preview=True,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Enterprise Tier Only) Number of API portal instances.')
+        c.argument('marketplace_plan_id',
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Specify a different Marketplace plan to purchase with Spring instance. '
+                        'List all plans by running `az spring list-marketplace-plan -o table`.')
+        c.argument('enable_application_accelerator',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-accelerator', '--enable-app-acc'],
+                   help='(Enterprise Tier Only) Enable Application Accelerator.')
 
     with self.argument_context('spring update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
@@ -184,7 +196,7 @@ def load_arguments(self, _):
                                               redirect='az spring app-insights update --disable',
                                               hide=True))
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
@@ -201,7 +213,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='Name of app.')
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.')
 
     for scope in ['spring app create', 'spring app update', 'spring app deploy', 'spring app deployment create', 'spring app deployment update']:
         with self.argument_context(scope) as c:
@@ -217,6 +229,9 @@ def load_arguments(self, _):
                        help='A json file path indicates the readiness probe config', arg_group='App Customization')
             c.argument('startup_probe_config', type=str, is_preview=True,
                        help='A json file path indicates the startup probe config', arg_group='App Customization')
+            c.argument('termination_grace_period_seconds', type=str, is_preview=True,
+                       options_list=['--termination-grace-period-seconds', '--grace-period'],
+                       help='Optional duration in seconds the app instance needs to terminate gracefully', arg_group='App Customization')
 
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -248,6 +263,8 @@ def load_arguments(self, _):
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
                    help='A json file path indicates the certificates which would be loaded to app')
+        c.argument('deployment_name', default='default',
+                   help='Name of the default deployment.', validator=validate_name)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -284,11 +301,23 @@ def load_arguments(self, _):
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
 
+    for scope in ['spring app disable-remote-debugging', 'spring app get-remote-debugging-config']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+
+    with self.argument_context('spring app enable-remote-debugging') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('remote_debugging_port', options_list=['--port', '-p'], type=int, default=5005,
+                   help='Remote debugging port, the value should be from 1024 to 65536, default value is 5005',
+                   validator=validate_remote_debugging_port)
+
     with self.argument_context('spring app unset-deployment') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist)
 
     with self.argument_context('spring app identity') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
+        c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring app identity assign') as c:
         c.argument('scope',
@@ -299,7 +328,6 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Enable system-assigned managed identity on an app.")
         c.argument('user_assigned',
-                   is_preview=True,
                    nargs='+',
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
 
@@ -308,7 +336,6 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Remove system-assigned managed identity.")
         c.argument('user_assigned',
-                   is_preview=True,
                    nargs='*',
                    help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
 
@@ -339,6 +366,12 @@ def load_arguments(self, _):
     with self.argument_context('spring app log tail') as c:
         prepare_logs_argument(c)
 
+    with self.argument_context('spring app connect') as c:
+        c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
+        c.argument('shell_cmd', help='The shell command to run when connect to the app instance.')
+
     with self.argument_context('spring app set-deployment') as c:
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=ensure_not_active_deployment)
@@ -348,6 +381,28 @@ def load_arguments(self, _):
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
                        options_list=['--enable-persistent-storage', '--enable-ps'],
                        help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
+            c.argument('ingress_read_timeout',
+                       type=int,
+                       help='Ingress read timeout value in seconds. Default 300, minimum is 1, maximum is 1800.',
+                       validator=validate_ingress_timeout)
+            c.argument('ingress_send_timeout',
+                       type=int,
+                       help='Ingress send timeout value in seconds. Default 60, minimum is 1, maximum is 1800.',
+                       validator=validate_ingress_send_timeout)
+            c.argument('session_affinity',
+                       arg_type=get_enum_type(SessionAffinity),
+                       help='Ingress session affinity of app.',
+                       validator=validate_ingress_timeout)
+            c.argument('session_max_age',
+                       type=int,
+                       help='Time until the cookie expires. Minimum is 1 second, maximum is 7 days. If set to 0, the expiration period is equal to the browser session period.',
+                       validator=validate_ingress_session_max_age)
+            c.argument('backend_protocol',
+                       arg_type=get_enum_type(BackendProtocol),
+                       help='Ingress backend protocol of app. Default means HTTP/HTTPS/WebSocket.')
+            c.argument('client_auth_certs',
+                       validator=validate_ingress_client_auth_certificates,
+                       help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
@@ -400,9 +455,11 @@ def load_arguments(self, _):
             c.argument(
                 'registry_password', help='The password of the container registry.', arg_group='Custom Container')
             c.argument(
-                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
+                'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
-                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+                'container_args', help='The arguments of the container image.', arg_group='Custom Container')
+            c.argument(
+                'language_framework', help='Language framework of the container image uploaded. Supported values: "springboot", "".', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
             c.argument(
@@ -495,7 +552,7 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm',
                        help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_config_server_ssh_or_warn)
             c.argument('strict_host_key_checking',
                        options_list=['--strict-host-key-checking', '--host-key-check'],
                        help='Strict_host_key_checking of the added config.')
@@ -564,20 +621,21 @@ def load_arguments(self, _):
 
     with self.argument_context('spring app-insights update') as c:
         c.argument('app_insights_key',
+                   arg_group='Application Insights',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_app_insights_parameters)
         c.argument('app_insights',
+                   arg_group='Application Insights',
                    help="Name of the existing Application Insights in the same Resource Group. "
-                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
-                   validator=validate_app_insights_parameters)
+                        "Or Resource ID of the existing Application Insights in a different Resource Group.")
         c.argument('sampling_rate',
                    type=float,
-                   help="Sampling Rate of application insights. Maximum is 100.",
-                   validator=validate_app_insights_parameters)
+                   arg_group='Application Insights',
+                   help="Sampling Rate of application insights. Maximum is 100.")
         c.argument('disable',
                    arg_type=get_three_state_flag(),
-                   help="Disable Application Insights.",
-                   validator=validate_app_insights_parameters)
+                   arg_group='Application Insights',
+                   help="Disable Application Insights.")
 
     with self.argument_context('spring build-service builder') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
@@ -598,9 +656,17 @@ def load_arguments(self, _):
             c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
-                  'gateway', 'api-portal']:
+                  'gateway', 'api-portal', 'application-live-view', 'dev-tool', 'application-accelerator']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['dev-tool create', 'dev-tool update']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
+            c.argument('scopes', arg_group='Single Sign On (SSO)', help="Comma-separated list of the specific actions applications can be allowed to do on a user's behalf.")
+            c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
+            c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
+            c.argument('metadata_url', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
 
     for scope in ['bind', 'unbind']:
         with self.argument_context('spring service-registry {}'.format(scope)) as c:
@@ -624,12 +690,16 @@ def load_arguments(self, _):
             c.argument('password', help='Password of the added config.')
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
-            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
 
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
+
+    for scope in ['gateway create', 'api-portal create']:
+        with self.argument_context('spring {}'.format(scope)) as c:
+            c.argument('instance_count', type=int, help='Number of instance.')
 
     for scope in ['gateway update', 'api-portal update']:
         with self.argument_context('spring {}'.format(scope)) as c:
@@ -649,6 +719,13 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
+        c.argument('apm_types', nargs='*',
+                   help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(ApmType)))
+        c.argument('properties', nargs='*',
+                   help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
+        c.argument('secrets', nargs='*',
+                   help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
+                        'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
@@ -687,7 +764,7 @@ def load_arguments(self, _):
                   'spring build-service builder buildpack-binding set']:
         with self.argument_context(scope) as c:
             c.argument('type',
-                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       arg_type=get_enum_type(BindingType),
                        help='Required type for buildpack binding.')
             c.argument('properties',
                        help='Non-sensitive properties for launchProperties. Format "key[=value]".',
@@ -714,3 +791,38 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring application-accelerator predefined-accelerator list',
+                  'spring application-accelerator predefined-accelerator show',
+                  'spring application-accelerator predefined-accelerator disable',
+                  'spring application-accelerator predefined-accelerator enable']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for predefined accelerator.')
+
+    for scope in ['spring application-accelerator customized-accelerator list',
+                  'spring application-accelerator customized-accelerator show',
+                  'spring application-accelerator customized-accelerator create',
+                  'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for customized accelerator.')
+
+    for scope in ['spring application-accelerator customized-accelerator create',
+                  'spring application-accelerator customized-accelerator update']:
+        with self.argument_context(scope) as c:
+            c.argument('display_name', type=str, help='Display name for customized accelerator.')
+            c.argument('description', type=str, help='Description for customized accelerator.')
+            c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
+            c.argument('accelerator_tags', type=str, help="Comma-separated list of tags on the customized accelerator.")
+
+            c.argument('git_url', help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_interval', type=int, help='Interval in seconds for checking for updates to Git or image repository.', validator=validate_git_interval)
+            c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
+            c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
+            c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
+
+            c.argument('username', help='Username of git repository basic auth.')
+            c.argument('password', help='Password of git repository basic auth.')
+            c.argument('private_key', help='Private SSH Key algorithm of git repository.')
+            c.argument('host_key', help='Public SSH Key of git repository.')
+            c.argument('host_key_algorithm', help='SSH Key algorithm of git repository.')

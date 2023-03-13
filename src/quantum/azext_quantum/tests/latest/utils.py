@@ -10,7 +10,11 @@ TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
 TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
 TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft/Basic"
-TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft" 
+TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft"
+
+TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST = "microsoft-qc/learn-and-develop"
+TEST_TARGET_DEFAULT_PROVIDER = "microsoft-qc"
+TEST_TARGET_DEFAULT_TARGET = "microsoft.estimator"
 
 def get_from_os_environment(env_name, default):
     import os
@@ -40,12 +44,21 @@ def get_test_workspace_provider_sku_list():
 def get_test_capabilities():
     return get_from_os_environment("AZURE_QUANTUM_CAPABILITIES", TEST_CAPABILITIES_DEFAULT).lower()
 
+def get_test_target_provider_sku_list():
+    return get_from_os_environment("AZURE_QUANTUM_TARGET_PROVIDER_SKU_LIST", TEST_TARGET_DEFAULT_PROVIDER_SKU_LIST)
+
+def get_test_target_provider():
+    return get_from_os_environment("AZURE_QUANTUM_PROVIDER", TEST_TARGET_DEFAULT_PROVIDER)
+
+def get_test_target_target():
+    return get_from_os_environment("AZURE_QUANTUM_TARGET", TEST_TARGET_DEFAULT_TARGET)
+
 def get_test_workspace_random_name():
     import random
     return "e2e-test-w" + str(random.randint(1000000, 9999999))
 
 def get_test_workspace_random_long_name():
-    return get_test_workspace_random_name() + "-54-char-name123456789012345678901234"
+    return get_test_workspace_random_name() + "-53-char-name12345678901234567890123"
 
 def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
     for provide_sku_pair in provider_sku_string.split(';'):
@@ -53,3 +66,22 @@ def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
         if provider not in capabilities_string:
             return False
     return True
+
+# import pytest
+# import sys
+# import traceback
+# # See "TODO" in except block below
+
+# TEST_ERROR_MESSAGE_PREAMBLE = "the following arguments are required: "
+
+def issue_cmd_with_param_missing(calling_object, command, help_example):
+    try:
+        calling_object.cmd(command)
+        assert False    # Fail the test if we DON'T get an exception
+    except:
+        # TODO: Figure out why this works locally, but not in the Azure CLI CI/CD checks pipeline.  Is there an alternative way to capture the error message?
+        # print(traceback.format_exc())
+        # out, err = calling_object.capsys.readouterr()
+        # assert TEST_ERROR_MESSAGE_PREAMBLE in out
+        # assert help_example in err
+        pass

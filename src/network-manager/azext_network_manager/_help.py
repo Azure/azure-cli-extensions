@@ -50,7 +50,7 @@ helps['network manager create'] = """
       - name: Create/Update Azure Virtual Network Manager
         text: |-
                az network manager create --name "TestNetworkManager" -l eastus2euap --description "My Test Network Manager" \
---display-name "TestNetworkManager" --scope-accesses "SecurityAdmin" "Connectivity" \
+--scope-accesses "SecurityAdmin" "Connectivity" \
 --network-manager-scopes management-groups="/providers/Microsoft.Management/testmg" subscriptions="/subscriptions/00000000-0000-0\
 000-0000-000000000000" --resource-group "rg1"
 """
@@ -139,7 +139,7 @@ helps['network manager list-effective-security-admin-rule'] = """
 
 helps['network manager list-active-security-admin-rule'] = """
     type: command
-    short-summary: "Lists active security admin rule in a network manager."
+    short-summary: "List all security admin rules that have been deployed by this network manager."
     examples:
       - name: Get Azure Virtual Network Manager Active Security Admin Rule
         text: |-
@@ -213,7 +213,7 @@ helps['network manager connect-config create'] = """
 "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-existing-peering true --display-name "myTestConnectivityConfig" --hub resource-id="subscriptions/subscriptionA/resource\
+--delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resource\
 Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
 --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """
@@ -280,17 +280,11 @@ helps['network manager group show'] = """
 helps['network manager group create'] = """
     type: command
     short-summary: "Create a network group."
-    parameters:
-      - name: --member-type
-        short-summary: "Group member type"
-        long-summary: |
-            Usage: --member-type "Microsoft.Network/virtualNetworks"
     examples:
       - name: Create/Update Azure Virtual Network Manager Network Group
         text: |-
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
---description "A sample group" --display-name "My Network Group" \
---member-type "Microsoft.Network/virtualNetworks" --resource-group "rg1"
+--description "A sample group" --resource-group "rg1"
 """
 
 helps['network manager group update'] = """
@@ -308,67 +302,67 @@ helps['network manager group delete'] = """
 --resource-group "rg1" --force
 """
 
-helps['network manager group list-effect-vnet'] = """
-    type: command
-    short-summary: "Lists all effective virtual networks by specified network group."
-    examples:
-      - name: List Effective Virtual Networks List By Network Groups
-        text: |-
-               az network manager group list-effect-vnet --network-group-name "TestNetworkGroup" \
---network-manager-name "testNetworkManager" --resource-group "rg1"
-"""
+# The command is not provided in api version 2022-01-01
+# helps['network manager group list-effect-vnet'] = """
+#     type: command
+#     short-summary: "Lists all effective virtual networks by specified network group."
+#     examples:
+#       - name: List Effective Virtual Networks List By Network Groups
+#         text: |-
+#                az network manager group list-effect-vnet --network-group-name "TestNetworkGroup" \
+# --network-manager-name "testNetworkManager" --resource-group "rg1"
+# """
 
-helps['network manager security-user-config'] = """
-    type: group
-    short-summary: Manage securityuserconfiguration with network
-"""
-
-helps['network manager security-user-config list'] = """
-    type: command
-    short-summary: "Lists all the network manager security user configurations in a network manager, in a paginated \
-format."
-    examples:
-      - name: List security user configurations in a network manager
-        text: |-
-               az network manager security-user-config list --network-manager-name "testNetworkManager" --resource-group \
-"rg1"
-"""
-
-helps['network manager security-user-config show'] = """
-    type: command
-    short-summary: "Retrieves a network manager security user Configuration."
-    examples:
-      - name: Get security user configurations
-        text: |-
-               az network manager security-user-config show --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1"
-"""
-
-helps['network manager security-user-config create'] = """
-    type: command
-    short-summary: "Create a network manager security user Configuration."
-    examples:
-      - name: Create network manager security user Configuration
-        text: |-
-               az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true
-"""
-
-helps['network manager security-user-config update'] = """
-    type: command
-    short-summary: "Update a network manager security user Configuration."
-"""
-
-helps['network manager security-user-config delete'] = """
-    type: command
-    short-summary: "Deletes a network manager security user Configuration."
-    examples:
-      - name: Delete network manager security user Configuration
-        text: |-
-               az network manager security-user-config delete --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1"
-"""
+# helps['network manager security-user-config'] = """
+#     type: group
+#     short-summary: Manage securityuserconfiguration with network
+# """
+#
+# helps['network manager security-user-config list'] = """
+#     type: command
+#     short-summary: "Lists all the network manager security user configurations in a network manager, in a paginated \
+# format."
+#     examples:
+#       - name: List security user configurations in a network manager
+#         text: |-
+#                az network manager security-user-config list --network-manager-name "testNetworkManager" --resource-group \
+# "rg1"
+# """
+#
+# helps['network manager security-user-config show'] = """
+#     type: command
+#     short-summary: "Retrieves a network manager security user Configuration."
+#     examples:
+#       - name: Get security user configurations
+#         text: |-
+#                az network manager security-user-config show --configuration-name "myTestSecurityConfig" \
+# --network-manager-name "testNetworkManager" --resource-group "rg1"
+# """
+#
+# helps['network manager security-user-config create'] = """
+#     type: command
+#     short-summary: "Create a network manager security user Configuration."
+#     examples:
+#       - name: Create network manager security user Configuration
+#         text: |-
+#                az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
+# --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy"
+# """
+#
+# helps['network manager security-user-config update'] = """
+#     type: command
+#     short-summary: "Update a network manager security user Configuration."
+# """
+#
+# helps['network manager security-user-config delete'] = """
+#     type: command
+#     short-summary: "Deletes a network manager security user Configuration."
+#     examples:
+#       - name: Delete network manager security user Configuration
+#         text: |-
+#                az network manager security-user-config delete --configuration-name "myTestSecurityConfig" \
+# --network-manager-name "testNetworkManager" --resource-group "rg1"
+# """
 
 helps['network manager security-admin-config'] = """
     type: group
@@ -403,8 +397,7 @@ helps['network manager security-admin-config create'] = """
       - name: Create network manager security admin Configuration
         text: |-
                az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --apply-on None
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
 """
 
 helps['network manager security-admin-config update'] = """
@@ -434,7 +427,7 @@ helps['network manager security-admin-config rule-collection create'] = """
       - name: Create security admin rule collections
         text: |-
                az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
---rule-collection-name "myTestCollection" --description "A sample description" --display-name "ASampleCollection" \
+--rule-collection-name "myTestCollection" --description "A sample description" \
 --applies-to-groups  network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
 """
 
@@ -455,7 +448,7 @@ helps['network manager security-admin-config rule-collection update'] = """
       - name: Update security admin rule collection
         text: |-
                az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
+"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
 helps['network manager security-admin-config rule-collection show'] = """
@@ -586,7 +579,7 @@ helps['network manager security-admin-config rule-collection rule delete'] = """
 #       - name: Create security user rule collections
 #         text: |-
 #                az network manager security-user-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
-# --rule-collection-name myTestCollection --description "A sample description" --display-name "ASampleCollection" \
+# --rule-collection-name myTestCollection --description "A sample description" \
 # --applies-to-groups  network-group-id=/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
 # """
 #
@@ -607,7 +600,7 @@ helps['network manager security-admin-config rule-collection rule delete'] = """
 #       - name: Update security user rule collection
 #         text: |-
 #                az network manager security-user-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-# "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
+# "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 # """
 #
 # helps['network manager security-user-config rule-collection show'] = """
@@ -750,7 +743,7 @@ helps['network manager connection subscription show'] = """
 
 helps['network manager connection subscription create'] = """
     type: command
-    short-summary: "Create a connection from this subscription to a cross tenant network manager."
+    short-summary: "Create a connection from a subscription to a cross-tenant network manager."
     examples:
       - name: Create network manager connection
         text: |-
@@ -783,56 +776,60 @@ helps['network manager connection'] = """
     short-summary: Manage connection with network manager
 """
 
-# helps['network manager connection management-group'] = """
-#     type: group
-#     short-summary: Manage management-group connection with network
-# """
-#
-# helps['network manager connection management-group list'] = """
-#     type: command
-#     short-summary: "List all network manager connections created by this management group."
-#     examples:
-#       - name: List management-group connections in a network manager
-#         text: |-
-#                az network manager connection management-group list --management-group-id "testManagementGroupId" \
-# --resource-group "rg1"
-# """
-#
-# helps['network manager connection management-group show'] = """
-#     type: command
-#     short-summary: "Get a specified connection created by this management group."
-#     examples:
-#       - name: Get network manager connection management-group
-#         text: |-
-#                az network manager connection management-group show --management-group-id "testManagementGroupId" \
-# --connection-name "testNetworkManagerConnection" --resource-group "rg1"
-# """
-#
-# helps['network manager connection management-group create'] = """
-#     type: command
-#     short-summary: Create a connection to a cross tenant network manager"
-#     examples:
-#       - name: Create network manager connection management-group
-#         text: |-
-#                az network manager connection management-group create --management-group-id "testManagementGroupId" \
-# --connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager "testNetworkManagerId" \
-# --description "A sample policy"
-# """
-#
-# helps['network manager connection management-group update'] = """
-#     type: command
-#     short-summary: "Update a connection to a cross tenant network manager"
-# """
-#
-# helps['network manager connection management-group delete'] = """
-#     type: command
-#     short-summary: "Delete specified pending connection created by this management group."
-#     examples:
-#       - name: Delete network manager connection management-group
-#         text: |-
-#                az network manager connection management-group delete --management-group-id "testManagementGroupId" \
-# --connection-name "testNetworkManagerConnection" --resource-group "rg1"
-# """
+helps['network manager connection management-group'] = """
+    type: group
+    short-summary: Manage management-group connection with network
+"""
+
+helps['network manager connection management-group list'] = """
+    type: command
+    short-summary: "List all network manager connections created by this management group."
+    examples:
+      - name: List management-group connections in a network manager
+        text: |-
+               az network manager connection management-group list --management-group-id "testManagementGroupId"
+"""
+
+helps['network manager connection management-group show'] = """
+    type: command
+    short-summary: "Get a specified connection created by this management group."
+    examples:
+      - name: Get network manager connection management-group
+        text: |-
+               az network manager connection management-group show --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection"
+"""
+
+helps['network manager connection management-group create'] = """
+    type: command
+    short-summary: Create a connection to a cross tenant network manager"
+    examples:
+      - name: Create network manager connection management-group
+        text: |-
+               az network manager connection management-group create --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection" --network-manager "testNetworkManagerId" \
+--description "A sample policy"
+"""
+
+helps['network manager connection management-group update'] = """
+    type: command
+    short-summary: "Update a connection to a cross tenant network manager"
+    examples:
+      - name: Update network manager connection management-group
+        text: |-
+               az network manager connection management-group update --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection" --description "My Test Network Manager Connection"
+"""
+
+helps['network manager connection management-group delete'] = """
+    type: command
+    short-summary: "Delete specified pending connection created by this management group."
+    examples:
+      - name: Delete network manager connection management-group
+        text: |-
+               az network manager connection management-group delete --management-group-id "testManagementGroupId" \
+--connection-name "testNetworkManagerConnection"
+"""
 
 helps['network manager scope-connection'] = """
     type: group

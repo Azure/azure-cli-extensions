@@ -26,6 +26,8 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Onboard a connected kubernetes cluster by specifying the https proxy, http proxy, no proxy  with cert settings.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+    - name: Onboard a connected kubernetes cluster with private link feature enabled by specifying private link parameters.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-private-link true --private-link-scope-resource-id pls/resource/arm/id
     - name: Onboard a connected kubernetes cluster with custom onboarding timeout.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-timeout 600
 
@@ -33,7 +35,7 @@ helps['connectedk8s connect'] = """
 
 helps['connectedk8s update'] = """
     type: command
-    short-summary: Update properties of the onboarded agents.
+    short-summary: Update properties of the arc onboarded kubernetes cluster.
     examples:
     - name: Update proxy values for the agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName  --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
@@ -120,4 +122,12 @@ helps['connectedk8s disable-features'] = """
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features azure-rbac
   - name: Disable multiple features.
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
+"""
+
+helps['connectedk8s troubleshoot'] = """
+  type: command
+  short-summary: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
+  examples:
+  - name: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
+    text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName
 """

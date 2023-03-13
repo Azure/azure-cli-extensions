@@ -364,9 +364,9 @@ def load_arguments(self, _):
             c.argument(
                 'registry_password', help='The password of the container registry.', arg_group='Custom Container')
             c.argument(
-                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
+                'container_command', help='The command of the container image.', arg_group='Custom Container')
             c.argument(
-                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+                'container_args', help='The arguments of the container image.', arg_group='Custom Container')
             c.argument(
                 'build_env', build_env_type)
 

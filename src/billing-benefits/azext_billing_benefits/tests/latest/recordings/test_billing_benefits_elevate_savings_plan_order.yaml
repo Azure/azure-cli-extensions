@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order elevate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --savings-plan-order-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/23792c39-712d-449e-9c45-795a0363a9bd/elevate?api-version=2022-11-01
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635","principalId":"067e7443-3a55-40b6-a2d8-0a7a12a9da2d","scope":"/providers/Microsoft.BillingBenefits/savingsplanorders/23792c39-712d-449e-9c45-795a0363a9bd"},"id":"/providers/Microsoft.BillingBenefits/savingsplanorders/23792c39-712d-449e-9c45-795a0363a9bd/providers/Microsoft.Authorization/roleAssignments/ea7998a2-706c-41b8-86e0-8aaada892efd","name":"ea7998a2-706c-41b8-86e0-8aaada892efd"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '512'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:24:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+version: 1

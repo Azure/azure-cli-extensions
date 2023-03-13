@@ -54,6 +54,33 @@ def handle_raw_exception(e):
     raise e
 
 
+def handle_non_404_exception(e):
+    import json
+
+    stringErr = str(e)
+
+    if "{" in stringErr and "}" in stringErr:
+        jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
+        jsonError = json.loads(jsonError)
+
+        if 'error' in jsonError:
+            jsonError = jsonError['error']
+
+            if 'code' in jsonError and 'message' in jsonError:
+                code = jsonError['code']
+                message = jsonError['message']
+                if code != "ResourceNotFound":
+                    raise CLIInternalError('({}) {}'.format(code, message))
+                return jsonError
+        elif "Message" in jsonError:
+            message = jsonError["Message"]
+            raise CLIInternalError(message)
+        elif "message" in jsonError:
+            message = jsonError["message"]
+            raise CLIInternalError(message)
+    raise e
+
+
 def providers_client_factory(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
 

@@ -9,10 +9,10 @@
 # --------------------------------------------------------------------------
 
 
-def cf_network_cl(cli_ctx, *_):
+def cf_network_cl(cli_ctx, **kwargs):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_network_manager.vendored_sdks import NetworkManagementClient
-    return get_mgmt_service_client(cli_ctx, NetworkManagementClient)
+    return get_mgmt_service_client(cli_ctx, NetworkManagementClient, **kwargs)
 
 
 def cf_activesecurityuserrule(cli_ctx, *_):
@@ -57,10 +57,6 @@ def cf_networkmanagerdeploymentstatus(cli_ctx, *_):
 
 def cf_networkmanager(cli_ctx, *_):
     return cf_network_cl(cli_ctx).network_managers
-
-
-def cf_securityadminconfiguration(cli_ctx, *_):
-    return cf_network_cl(cli_ctx).security_admin_configurations
 
 
 def cf_securityuserconfiguration(cli_ctx, *_):

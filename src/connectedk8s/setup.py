@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '1.2.8'
+VERSION = '1.3.13'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -35,8 +35,9 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'kubernetes==11.0.0',
+    'kubernetes==24.2.0',
     'pycryptodome==3.14.1',
+    'azure-mgmt-hybridcompute==7.0.0'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
@@ -58,5 +59,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_connectedk8s': ['azext_metadata.json']},
+    package_data={'azext_connectedk8s': ['azext_metadata.json', 'troubleshoot_diagnoser_job_with_proxycert_mount.yaml', 'troubleshoot_diagnoser_job_without_proxycert.yaml']},
 )

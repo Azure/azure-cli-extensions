@@ -25,7 +25,28 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousModeBackupPolicy,
     ContinuousModeProperties,
     DatabaseAccountCreateUpdateParameters,
-    MergeParameters
+    MergeParameters,
+    RetrieveThroughputParameters,
+    RetrieveThroughputPropertiesResource,
+    PhysicalPartitionId,
+    RedistributeThroughputParameters,
+    RedistributeThroughputPropertiesResource,
+    ThroughputPolicyType,
+    SqlDatabaseResource,
+    SqlDatabaseCreateUpdateParameters,
+    SqlContainerResource,
+    SqlContainerCreateUpdateParameters,
+    MongoDBDatabaseResource,
+    MongoDBDatabaseCreateUpdateParameters,
+    MongoDBCollectionResource,
+    MongoDBCollectionCreateUpdateParameters,
+    Location,
+    CreateMode,
+    ConsistencyPolicy,
+    ResourceIdentityType,
+    ManagedServiceIdentity,
+    AnalyticalStorageConfiguration,
+    ManagedServiceIdentityUserAssignedIdentity
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -35,25 +56,13 @@ from azext_cosmosdb_preview._client_factory import (
 )
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.core.exceptions import ResourceNotFoundError
-
-from azure.mgmt.cosmosdb.models import (
-    Location,
-    CreateMode,
-    ConsistencyPolicy,
-    ResourceIdentityType,
-    ManagedServiceIdentity,
-    AnalyticalStorageConfiguration,
-    Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
-)
-
 from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
+from azure.core.exceptions import ResourceNotFoundError
 
 from azure.cli.command_modules.cosmosdb._client_factory import (
     cf_restorable_sql_resources,
     cf_restorable_mongodb_resources
 )
-
 
 logger = get_logger(__name__)
 
@@ -352,12 +361,6 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
     )
 
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
-
-
-def _handle_exists_exception(http_response_error):
-    if http_response_error.status_code == 404:
-        return False
-    raise http_response_error
 
 
 def cli_cosmosdb_service_create(client,
@@ -752,6 +755,8 @@ def cli_cosmosdb_restore(cmd,
                          target_database_account_name,
                          restore_timestamp,
                          location,
+                         assign_identity=None,
+                         default_identity=None,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None):
@@ -791,11 +796,12 @@ def cli_cosmosdb_restore(cmd,
     if not is_source_restorable_account_deleted:
         restorable_resources = None
         api_type = target_restorable_account.api_type.lower()
+        arm_location_normalized = target_restorable_account.location.lower().replace(" ", "")
         if api_type == "sql":
             try:
                 restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_sql_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -805,7 +811,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_mongodb_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -815,7 +821,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_gremlin_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -825,7 +831,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_table_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -845,6 +851,8 @@ def cli_cosmosdb_restore(cmd,
                                     resource_group_name=resource_group_name,
                                     account_name=target_database_account_name,
                                     locations=locations,
+                                    assign_identity=assign_identity,
+                                    default_identity=default_identity,
                                     is_restore_request=True,
                                     restore_source=target_restorable_account.id,
                                     restore_timestamp=restore_timestamp_datetime_utc.isoformat(),
@@ -921,7 +929,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
@@ -1107,33 +1115,51 @@ def cosmosdb_data_transfer_copy_job(client,
                                     dest_cassandra_table=None,
                                     source_sql_container=None,
                                     dest_sql_container=None,
+                                    source_mongo=None,
+                                    dest_mongo=None,
                                     worker_count=0,
                                     job_name=None):
-    if source_cassandra_table is None and source_sql_container is None:
-        raise CLIError('source component ismissing')
-
-    if source_cassandra_table is not None and source_sql_container is not None:
-        raise CLIError('Invalid input: multiple source components')
-
-    if dest_cassandra_table is None and dest_sql_container is None:
-        raise CLIError('destination component is missing')
-
-    if dest_cassandra_table is not None and dest_sql_container is not None:
-        raise CLIError('Invalid input: multiple destination components')
-
     job_create_properties = {}
 
+    source = None
     if source_cassandra_table is not None:
-        job_create_properties['source'] = source_cassandra_table
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        source = source_cassandra_table
 
     if source_sql_container is not None:
-        job_create_properties['source'] = source_sql_container
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        source = source_sql_container
 
+    if source_mongo is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        source = source_mongo
+
+    if source is None:
+        raise CLIError('source component is missing')
+    job_create_properties['source'] = source
+
+    destination = None
     if dest_cassandra_table is not None:
-        job_create_properties['destination'] = dest_cassandra_table
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_cassandra_table
 
     if dest_sql_container is not None:
-        job_create_properties['destination'] = dest_sql_container
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_sql_container
+
+    if dest_mongo is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_mongo
+
+    if destination is None:
+        raise CLIError('destination component is missing')
+    job_create_properties['destination'] = destination
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count
@@ -1196,3 +1222,371 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
                                                                                          merge_parameters=mergeParameters)
 
     return async_partition_merge_result.result()
+
+
+def _handle_exists_exception(http_response_error):
+    if http_response_error.status_code == 404:
+        return False
+    raise http_response_error
+
+
+def cli_cosmosdb_sql_database_restore(cmd,
+                                      client,
+                                      resource_group_name,
+                                      account_name,
+                                      database_name,
+                                      restore_timestamp=None):
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB SQL database"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    sql_database_resource = SqlDatabaseCreateUpdateParameters(
+        resource=SqlDatabaseResource(
+            id=database_name,
+            create_mode=create_mode,
+            restore_parameters=restore_parameters)
+    )
+
+    return client.begin_create_update_sql_database(resource_group_name,
+                                                   account_name,
+                                                   database_name,
+                                                   sql_database_resource)
+
+
+def cli_cosmosdb_sql_container_restore(cmd,
+                                       client,
+                                       resource_group_name,
+                                       account_name,
+                                       database_name,
+                                       container_name,
+                                       restore_timestamp=None):
+    # """Restores the deleted Azure Cosmos DB SQL container """
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB SQL container"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    sql_container_resource = SqlContainerResource(
+        id=container_name,
+        create_mode=create_mode,
+        restore_parameters=restore_parameters)
+
+    sql_container_create_update_resource = SqlContainerCreateUpdateParameters(
+        resource=sql_container_resource,
+        options={})
+
+    return client.begin_create_update_sql_container(resource_group_name,
+                                                    account_name,
+                                                    database_name,
+                                                    container_name,
+                                                    sql_container_create_update_resource)
+
+
+def cli_cosmosdb_mongodb_database_restore(cmd,
+                                          client,
+                                          resource_group_name,
+                                          account_name,
+                                          database_name,
+                                          restore_timestamp=None):
+    # """Restores the deleted Azure Cosmos DB MongoDB database"""
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB MongoDB database"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    mongodb_database_resource = MongoDBDatabaseCreateUpdateParameters(
+        resource=MongoDBDatabaseResource(id=database_name,
+                                         create_mode=create_mode,
+                                         restore_parameters=restore_parameters),
+        options={})
+
+    return client.begin_create_update_mongo_db_database(resource_group_name,
+                                                        account_name,
+                                                        database_name,
+                                                        mongodb_database_resource)
+
+
+def cli_cosmosdb_mongodb_collection_restore(cmd,
+                                            client,
+                                            resource_group_name,
+                                            account_name,
+                                            database_name,
+                                            collection_name,
+                                            restore_timestamp=None):
+    # """Restores the Azure Cosmos DB MongoDB collection """
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB MongoDB collection"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    mongodb_collection_resource = MongoDBCollectionResource(id=collection_name,
+                                                            create_mode=create_mode,
+                                                            restore_parameters=restore_parameters
+                                                            )
+
+    mongodb_collection_create_update_resource = MongoDBCollectionCreateUpdateParameters(
+        resource=mongodb_collection_resource,
+        options={})
+
+    return client.begin_create_update_mongo_db_collection(resource_group_name,
+                                                          account_name,
+                                                          database_name,
+                                                          collection_name,
+                                                          mongodb_collection_create_update_resource)
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_retrieve_sql_container_partition_throughput(client,
+                                                          resource_group_name,
+                                                          account_name,
+                                                          database_name,
+                                                          container_name,
+                                                          physical_partition_ids=[],
+                                                          all_partitions=False):
+
+    try:
+        client.get_sql_container(
+            resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+
+    if len(physical_partition_ids) == 0 and all_partitions is False:
+        raise CLIError(
+            'Either of --physical-partition-ids/--all-partitions needs to be specified.')
+
+    if len(physical_partition_ids) > 0 and all_partitions:
+        raise CLIError(
+            'Both --physical-partition-ids and --all-partitions cannot be specified together.')
+
+    if all_partitions is True:
+        physical_partition_ids = [PhysicalPartitionId(id='-1')]
+
+    retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
+        physical_partition_ids=physical_partition_ids
+    )
+
+    retrieve_throughput_parameters = RetrieveThroughputParameters(
+        resource=retrieve_throughput_properties_resource
+    )
+
+    async_partition_retrieve_throughput_result = client.begin_sql_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
+                                                                                                             account_name=account_name,
+                                                                                                             database_name=database_name,
+                                                                                                             container_name=container_name,
+                                                                                                             retrieve_throughput_parameters=retrieve_throughput_parameters)
+
+    return async_partition_retrieve_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_redistribute_sql_container_partition_throughput(client,
+                                                              resource_group_name,
+                                                              account_name,
+                                                              database_name,
+                                                              container_name,
+                                                              evenly_distribute=False,
+                                                              target_partition_info=[],
+                                                              source_partition_info=[]):
+
+    try:
+        client.get_sql_container(
+            resource_group_name, account_name, database_name, container_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+
+    if evenly_distribute:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.EQUAL,
+            target_physical_partition_throughput_info=[],
+            source_physical_partition_throughput_info=[])
+    else:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.CUSTOM,
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
+        )
+
+    redistribute_throughput_parameters = RedistributeThroughputParameters(
+        resource=redistribute_throughput_properties_resource
+    )
+
+    async_partition_redistribute_throughput_result = client.begin_sql_container_redistribute_throughput(resource_group_name=resource_group_name,
+                                                                                                        account_name=account_name,
+                                                                                                        database_name=database_name,
+                                                                                                        container_name=container_name,
+                                                                                                        redistribute_throughput_parameters=redistribute_throughput_parameters)
+
+    return async_partition_redistribute_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_retrieve_mongo_container_partition_throughput(client,
+                                                            resource_group_name,
+                                                            account_name,
+                                                            database_name,
+                                                            collection_name,
+                                                            physical_partition_ids=[],
+                                                            all_partitions=False):
+
+    try:
+        client.get_mongo_db_collection(
+            resource_group_name, account_name, database_name, collection_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+
+    if len(physical_partition_ids) == 0 and all_partitions is False:
+        raise CLIError(
+            'Either of --physical-partition-ids/--all-partitions needs to be specified.')
+
+    if len(physical_partition_ids) > 0 and all_partitions:
+        raise CLIError(
+            'Both --physical-partition-ids and --all-partitions cannot be specified together.')
+
+    if all_partitions is True:
+        physical_partition_ids = [PhysicalPartitionId(id='-1')]
+
+    retrieve_throughput_properties_resource = RetrieveThroughputPropertiesResource(
+        physical_partition_ids=physical_partition_ids
+    )
+
+    retrieve_throughput_parameters = RetrieveThroughputParameters(
+        resource=retrieve_throughput_properties_resource
+    )
+
+    async_partition_retrieve_throughput_result = client.begin_mongo_db_container_retrieve_throughput_distribution(resource_group_name=resource_group_name,
+                                                                                                                  account_name=account_name,
+                                                                                                                  database_name=database_name,
+                                                                                                                  collection_name=collection_name,
+                                                                                                                  retrieve_throughput_parameters=retrieve_throughput_parameters)
+
+    return async_partition_retrieve_throughput_result.result()
+
+
+# pylint: disable=dangerous-default-value
+def cli_begin_redistribute_mongo_container_partition_throughput(client,
+                                                                resource_group_name,
+                                                                account_name,
+                                                                database_name,
+                                                                collection_name,
+                                                                evenly_distribute=False,
+                                                                target_partition_info=[],
+                                                                source_partition_info=[]):
+
+    try:
+        client.get_mongo_db_collection(
+            resource_group_name, account_name, database_name, collection_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+
+    if evenly_distribute:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.EQUAL,
+            target_physical_partition_throughput_info=[],
+            source_physical_partition_throughput_info=[])
+    else:
+        redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
+            throughput_policy=ThroughputPolicyType.CUSTOM,
+            target_physical_partition_throughput_info=target_partition_info,
+            source_physical_partition_throughput_info=source_partition_info
+        )
+
+    redistribute_throughput_parameters = RedistributeThroughputParameters(
+        resource=redistribute_throughput_properties_resource
+    )
+
+    async_partition_redistribute_throughput_result = client.begin_mongo_db_container_redistribute_throughput(resource_group_name=resource_group_name,
+                                                                                                             account_name=account_name,
+                                                                                                             database_name=database_name,
+                                                                                                             collection_name=collection_name,
+                                                                                                             redistribute_throughput_parameters=redistribute_throughput_parameters)
+
+    return async_partition_redistribute_throughput_result.result()

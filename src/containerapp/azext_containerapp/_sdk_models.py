@@ -1315,6 +1315,35 @@ class CustomDomain(Model):
         self.certificate_id = kwargs.get('certificate_id', None)
 
 
+class IPSecurityRestrictions(Model):
+    """IP Restrictions of a Container App.
+
+    :param name: ipAddressRange
+    :type name: str
+    :param name: action
+    :type name: str
+    :param name: name
+    :type name: str
+    :param name: description
+    :type name: str
+
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'ipAddressRange': {'key': 'ipAddressRange', 'type': 'str'},
+        'action': {'key': 'action', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(IPSecurityRestrictions, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.ipAddressRange = kwargs.get('ipAddressRange', None)
+        self.action = kwargs.get('action', None)
+        self.description = kwargs.get('description', None)
+
+
 class CustomHostnameAnalysisResult(ProxyResource):
     """Custom domain analysis.
 
@@ -2071,6 +2100,7 @@ class Ingress(Model):
         'traffic': {'key': 'traffic', 'type': '[TrafficWeight]'},
         'custom_domains': {'key': 'customDomains', 'type': '[CustomDomain]'},
         'allow_insecure': {'key': 'allowInsecure', 'type': 'bool'},
+        'ipSecurityRestrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
     }
 
     def __init__(self, **kwargs):
@@ -2082,6 +2112,7 @@ class Ingress(Model):
         self.traffic = kwargs.get('traffic', None)
         self.custom_domains = kwargs.get('custom_domains', None)
         self.allow_insecure = kwargs.get('allow_insecure', None)
+        self.ipSecurityRestrictions = kwargs.get('ipSecurityRestrictions', None)
 
 
 class LegacyMicrosoftAccount(Model):
@@ -3186,6 +3217,7 @@ class Template(Model):
     _attribute_map = {
         'revision_suffix': {'key': 'revisionSuffix', 'type': 'str'},
         'containers': {'key': 'containers', 'type': '[Container]'},
+        'initContainers': {'key': 'initContainers', 'type': '[Container]'},
         'scale': {'key': 'scale', 'type': 'Scale'},
         'volumes': {'key': 'volumes', 'type': '[Volume]'},
     }

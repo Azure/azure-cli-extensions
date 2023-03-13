@@ -18,3 +18,7 @@ def cf_subscriptions(cli_ctx, *_):
 
 def cf_tenants(cli_ctx, *_):
     return cf_account(cli_ctx).tenants
+
+
+def cf_subscription(cli_ctx, *_):
+    return cf_account(cli_ctx).subscription

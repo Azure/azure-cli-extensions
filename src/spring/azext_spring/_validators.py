@@ -18,8 +18,10 @@ from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
+from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
-from .vendored_sdks.appplatform.v2020_07_01 import models
+from ._util_enterprise import is_enterprise_tier
+from .vendored_sdks.appplatform.v2022_11_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -48,6 +50,7 @@ def validate_sku(cmd, namespace):
         _validate_saas_provider(cmd, namespace)
         _validate_terms(cmd, namespace)
     else:
+        _check_saas_not_set(cmd, namespace)
         _check_tanzu_components_not_enable(cmd, namespace)
     normalize_sku(cmd, namespace)
 
@@ -55,6 +58,11 @@ def validate_sku(cmd, namespace):
 def normalize_sku(cmd, namespace):
     if namespace.sku:
         namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
+
+
+def _check_saas_not_set(cmd, namespace):
+    if namespace.marketplace_plan_id:
+        raise InvalidArgumentValueError('--marketplace-plan-id is supported only when --sku=Enterprise')
 
 
 def _validate_saas_provider(cmd, namespace):
@@ -70,17 +78,18 @@ def _validate_terms(cmd, namespace):
     from azure.mgmt.marketplaceordering import MarketplaceOrderingAgreements
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceOrderingAgreements).marketplace_agreements
+    plan_id = namespace.marketplace_plan_id or MARKETPLACE_PLAN_ID
     term = client.get(offer_type="virtualmachine",
                       publisher_id=MARKETPLACE_PUBLISHER_ID,
                       offer_id=MARKETPLACE_OFFER_ID,
-                      plan_id=MARKETPLACE_PLAN_ID)
+                      plan_id=plan_id)
     if not term.accepted:
         raise InvalidArgumentValueError('Terms for Azure Spring Apps Enterprise is not accepted.\n'
                                         'Run "az term accept --publisher {} '
                                         '--product {} '
                                         '--plan {}" to accept the term.'.format(MARKETPLACE_PUBLISHER_ID,
                                                                                 MARKETPLACE_OFFER_ID,
-                                                                                MARKETPLACE_PLAN_ID))
+                                                                                plan_id))
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):
@@ -93,12 +102,23 @@ def _check_tanzu_components_not_enable(cmd, namespace):
         raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
     if namespace.enable_api_portal:
         raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
+    if namespace.enable_application_live_view:
+        raise ArgumentUsageError('--enable-application-live-view {}'.format(suffix))
+    if namespace.enable_application_accelerator:
+        raise ArgumentUsageError('--enable-application-accelerator {}'.format(suffix))
 
 
 def validate_instance_count(namespace):
     if namespace.instance_count is not None:
         if namespace.instance_count < 1:
             raise InvalidArgumentValueError("--instance-count must be greater than 0")
+
+
+def validate_instance_not_existed(client, name, location):
+    availability_parameters = models.NameAvailabilityParameters(type="Microsoft.AppPlatform/Spring", name=name)
+    name_availability = client.services.check_name_availability(location, availability_parameters)
+    if not name_availability.name_available and name_availability.reason == "AlreadyExists":
+        raise InvalidArgumentValueError("The service name '{}' is already taken.".format(name))
 
 
 def validate_name(namespace):
@@ -209,6 +229,29 @@ def validate_ingress_timeout(namespace):
         raise InvalidArgumentValueError("Invalid value: Ingress read timeout must be in the range [1,1800].")
 
 
+def validate_remote_debugging_port(namespace):
+    if namespace.remote_debugging_port is not None and (namespace.remote_debugging_port < 1024 or
+                                                        namespace.remote_debugging_port > 65535):
+        raise InvalidArgumentValueError("Invalid value: remote debugging port must be in the range [1024,65535].")
+
+
+def validate_ingress_send_timeout(namespace):
+    if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
+                                                       namespace.ingress_read_timeout > 1800):
+        raise InvalidArgumentValueError("Invalid value: Ingress send timeout must be in the range [1,1800].")
+
+
+def validate_ingress_session_max_age(namespace):
+    if namespace.session_max_age is not None \
+            and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
+        raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
+
+
+def validate_ingress_client_auth_certificates(namespace):
+    if namespace.client_auth_certs is not None:
+        namespace.client_auth_certs = namespace.client_auth_certs.split()
+
+
 def validate_tracing_parameters_asc_create(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable_app_insights:
@@ -239,7 +282,7 @@ def validate_java_agent_parameters(namespace):
             "can not be set at the same time.")
 
 
-def validate_app_insights_parameters(namespace):
+def validate_app_insights_parameters(cmd, namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable:
         raise InvalidArgumentValueError(
@@ -251,6 +294,7 @@ def validate_app_insights_parameters(namespace):
             and not namespace.disable:
         raise InvalidArgumentValueError("Invalid value: nothing is updated for application insights.")
     _validate_app_insights_parameters(namespace)
+    validate_app_insights_command_not_supported_tier(cmd, namespace)
 
 
 def _validate_app_insights_parameters(namespace):
@@ -263,6 +307,12 @@ def _validate_app_insights_parameters(namespace):
         raise InvalidArgumentValueError("Invalid value: '--app-insights-key' can not be empty.")
     if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
         raise InvalidArgumentValueError("Invalid value: Sampling Rate must be in the range [0,100].")
+
+
+def validate_app_insights_command_not_supported_tier(cmd, namespace):
+    if is_enterprise_tier(cmd, namespace.resource_group, namespace.name):
+        raise NotSupportedPricingTierError("Enterprise tier service instance {} in group {} is not supported in this command, ".format(namespace.name, namespace.resource_group) +
+                                           "please refer to 'az spring build-service builder buildpack-binding' command group.")
 
 
 def validate_vnet(cmd, namespace):
@@ -637,3 +687,13 @@ def _parse_jar_file(artifact_path):
     except Exception as err:  # pylint: disable=broad-except
         telemetry.set_exception("parse user jar file failed, " + str(err))
         return None
+
+
+def validate_config_server_ssh_or_warn(namespace):
+    private_key = namespace.private_key
+    host_key = namespace.host_key
+    host_key_algorithm = namespace.host_key_algorithm
+    strict_host_key_checking = namespace.strict_host_key_checking
+    if private_key or host_key or host_key_algorithm or strict_host_key_checking:
+        logger.warning("SSH authentication only supports SHA-1 signature under Config Server restriction. "
+                       "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use SSH under this restriction.")
