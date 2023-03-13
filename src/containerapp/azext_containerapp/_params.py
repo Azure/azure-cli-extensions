@@ -118,7 +118,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
-        c.argument('workload-profile', options_list=['--workload-profile', '-w'], help="Name of the workload profile to run the app on.", )
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", )
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -172,10 +172,10 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the Container Apps environment.')
         c.argument('tags', arg_type=tags_type)
         # c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
-        c.argument('workload_profile', options_list=['--workload-profile-type','-w'], help='The type of workload profile to add or update in this environment')
-        c.argument('workload_profile_name', help='The friendly name for the workload profile, --workload-profile-type required')
-        c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-type required')
-        c.argument('max_nodes',  help='The maximum nodes for this workload profile, --workload-profile-type required')
+        c.argument('workload_profile_type', help='The type of workload profile to add or update in this environment, --workload-profile-name required')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-name required')
+        c.argument('max_nodes',  help='The maximum nodes for this workload profile, --workload-profile-name required')
 
     with self.argument_context('containerapp env delete') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
@@ -402,9 +402,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env workload-profile') as c:
         c.argument('env_name', options_list=['--name', '-n'], help="The name of the Container App environment")
-        c.argument('workload_profile_name', help='The friendly name for the workload profile')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
 
     with self.argument_context('containerapp env workload-profile add') as c:
-        c.argument('workload_profile', options_list=['--workload-profile-type', '-w'], help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")

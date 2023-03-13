@@ -347,7 +347,7 @@ def create_containerapp(cmd,
                         disable_warnings=False,
                         user_assigned=None,
                         registry_identity=None,
-                        workload_profile=None):
+                        workload_profile_name=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
@@ -388,11 +388,8 @@ def create_containerapp(cmd,
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
-    #sku = managed_env_info["sku"]["name"].lower()
-    #if workload_profile and not managed_env_info["workloadProfiles"]:
-    #    raise ValidationError("--workload_profile: only allowed on environments")
-    if not workload_profile and managed_env_info["workloadProfiles"]:
-        workload_profile = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
+    if not workload_profile_name and managed_env_info["workloadProfiles"]:
+        workload_profile_name = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
 
     external_ingress = None
     if ingress is not None:
@@ -542,11 +539,9 @@ def create_containerapp(cmd,
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
 
-    if workload_profile:
-        workload_profile = get_workload_profile_type(cmd, workload_profile, location)
-        containerapp_def["properties"]["workloadProfileName"] = workload_profile
-
-        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile, managed_env_info)
+    if workload_profile_name:
+        containerapp_def["properties"]["workloadProfileName"] = workload_profile_name
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     if registry_identity:
         if is_registry_msi_system(registry_identity):
@@ -1141,7 +1136,7 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                #plan=None,
-                               workload_profile=None,
+                               workload_profile_type=None,
                                workload_profile_name=None,
                                min_nodes=None,
                                max_nodes=None,
@@ -1189,7 +1184,7 @@ def update_managed_environment(cmd,
         if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]: #and not (plan and plan.lower() == "premium"):
             raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
-        workload_profile = workload_profile.upper()
+        workload_profile_type = workload_profile_type.upper()
         workload_profiles = r["properties"]["workloadProfiles"]
         profile = [p for p in workload_profiles if p["name"].lower() == workload_profile_name.lower()]
         update = False  # flag for updating an existing profile
@@ -1199,7 +1194,7 @@ def update_managed_environment(cmd,
         else:
             profile = {"name": workload_profile_name}
 
-        profile["workloadProfileType"] = workload_profile
+        profile["workloadProfileType"] = workload_profile_type
         profile["maximumCount"] = max_nodes
         profile["minimumCount"] = min_nodes
 
@@ -4086,8 +4081,8 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_n
     return profile[0]
 
 
-def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile, min_nodes, max_nodes):
-    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile=workload_profile, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type, min_nodes, max_nodes):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile_name):
     try:
@@ -4095,7 +4090,7 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
     except CLIError as e:
         handle_raw_exception(e)
 
-    if"workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
+    if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
         raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
     if workload_profile_name.lower() == "consumption":
