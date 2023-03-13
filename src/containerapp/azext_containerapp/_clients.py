@@ -73,6 +73,8 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
 
 
 def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statements
+    from azure.core.exceptions import HttpResponseError
+    from azure.core.polling.base_polling import OperationFailed
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
     animation = PollingAnimation()
@@ -85,7 +87,12 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
         animation.tick()
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         response_body = json.loads(r.text)
-        if response_body["status"].lower() in ["succeeded", "failed", "canceled"]:
+        if response_body["status"].lower() in ["failed", "canceled"]:
+            raise HttpResponseError(
+                response=r,
+                error=OperationFailed("Operation failed or canceled")
+            )
+        if response_body["status"].lower() in ["succeeded"]:
             break
         start = time.time()
 
@@ -104,7 +111,6 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
     while r.status_code in [202] and start < end:
         time.sleep(POLLING_SECONDS)
         animation.tick()
-
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         start = time.time()
 
@@ -493,6 +499,8 @@ class ManagedEnvironmentClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
+            operation_url = r.headers[HEADER_AZURE_ASYNC_OPERATION]
+            poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
             request_url = url_fmt.format(
                 management_hostname.strip('/'),
@@ -500,7 +508,7 @@ class ManagedEnvironmentClient():
                 resource_group_name,
                 name,
                 api_version)
-            return poll(cmd, request_url, "inprogress")
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 
@@ -522,14 +530,8 @@ class ManagedEnvironmentClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-            return poll(cmd, request_url, "waiting")
+            operation_url = r.headers[HEADER_LOCATION]
+            return poll_results(cmd, operation_url)
 
         return r.json()
 
