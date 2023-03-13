@@ -384,28 +384,6 @@ def remap_uids(indict, uid_mapping, data_source_missed):
                     remap_uids(v, uid_mapping, data_source_missed)
 
 
-def create_annotation(cmd, grafana_name, description, resource_group_name=None, api_key_or_token=None,
-                      subscription=None):
-    payload = {
-        "text": description
-    }
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/annotations", body=payload,
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
-
-
-def list_annotations(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/annotations",
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
-
-
-def delete_annotation(cmd, grafana_name, annotation, resource_group_name=None, api_key_or_token=None,
-                      subscription=None):
-    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/annotations/" + annotation,
-                  api_key_or_token=api_key_or_token, subscription=subscription)
-
-
 def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_token=None, subscription=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/dashboards/uid/" + uid,
                              api_key_or_token=api_key_or_token, subscription=subscription)

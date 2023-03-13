@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
         c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logon user as Grafana Admin")
+        c.argument("principal_types", get_enum_type(["User", "Group", "ServicePrincipal"]), nargs="+", help="space-separated Azure AD principal types to pair with --principal-ids")
 
     with self.argument_context("grafana update") as c:
         c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
@@ -80,8 +81,6 @@ def load_arguments(self, _):
         c.argument("destination", options_list=["--destination", "-d"], help="resource id of the destination workspace")
         c.argument("dry_run", arg_type=get_three_state_flag(), help="preview changes w/o committing")
         c.argument("folders", nargs="+", help="space separated folder list which sync command shall handle dashboards underneath")
-        c.argument("data_source_uid_mappings", options_list=["--data-source-uid-mappings", "-m"], nargs="+",
-                   help="space seperated key vaule pairs that 'sync' command can link to new data sources at destination workspace, e.g. --data-source-uid-mappings datasource-1=datasource-2")
 
     with self.argument_context("grafana") as c:
         c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")

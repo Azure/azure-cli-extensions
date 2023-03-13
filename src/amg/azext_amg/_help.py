@@ -241,7 +241,7 @@ helps['grafana dashboard sync'] = """
                 --folders-to-include "Azure Monitor Container Insights" "Azure Monitor"
         - name: Preview the sync
           text: |
-            az grafana sync
+            az grafana dashboard sync
                 --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source
                 --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination
                 --dry-run
