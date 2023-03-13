@@ -394,10 +394,26 @@ def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
     # network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
     # return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
-    from .aaz.latest.network.vnet import Show as VirtualNetworkShow
+    from .aaz.latest.network.vnet import Show as _VirtualNetworkShow
+
+    class VirtualNetworkShow(_VirtualNetworkShow):
+        @classmethod
+        def _build_arguments_schema(cls, *args, **kwargs):
+            from azure.cli.core.aaz import AAZStrArg
+            args_schema = super()._build_arguments_schema(*args, **kwargs)
+            args_schema.subscription_id = AAZStrArg(
+                options=['--subscription-id'],
+            )
+            return args_schema
+
+        def pre_operations(self):
+            from azure.cli.core.aaz import has_value
+            args = self.ctx.args
+            if has_value(args.subscription_id):
+                self.ctx.subscription_id = args.subscription_id
     get_args = {
         'name': vnet['resource_name'],
-        'subscription': vnet['subscription'],
+        'subscription_id': vnet['subscription'],
         'resource_group': vnet['resource_group']
     }
     return VirtualNetworkShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
