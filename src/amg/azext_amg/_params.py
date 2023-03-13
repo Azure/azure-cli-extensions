@@ -76,6 +76,9 @@ def load_arguments(self, _):
     with self.argument_context("grafana dashboard import") as c:
         c.argument("definition", help="The complete dashboard model in json string, Grafana gallery id, a path or url to a file with such content")
 
+    with self.argument_context("grafana dashboard delete") as c:
+        c.ignore("ignore_error")
+
     with self.argument_context("grafana dashboard sync") as c:
         c.argument("source", options_list=["--source", "-s"], help="resource id of the source workspace")
         c.argument("destination", options_list=["--destination", "-d"], help="resource id of the destination workspace")
