@@ -479,7 +479,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             pod_cidr = self.mc.network_profile.pod_cidr
 
         # overwrite if provided by user
-        if self.raw_param.get("pod_cidr"):
+        if self.raw_param.get("pod_cidr") is not None:
             pod_cidr = self.raw_param.get("pod_cidr")
 
         # this parameter does not need dynamic completion
@@ -501,7 +501,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             network_plugin_mode = self.mc.network_profile.network_plugin_mode
 
         # overwrite if provided by user
-        if self.raw_param.get("network_plugin_mode"):
+        if self.raw_param.get("network_plugin_mode") is not None:
             network_plugin_mode = self.raw_param.get("network_plugin_mode")
 
         # this parameter does not need dynamic completion
