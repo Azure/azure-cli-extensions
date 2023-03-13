@@ -419,7 +419,6 @@ def _get_vnet(cmd, vnet_id):
     return VirtualNetworkShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
 
 
-
 # def _get_network_client(cli_ctx, subscription_id=None):
 #     from azure.cli.core.profiles import ResourceType, get_api_version
 #     from azure.cli.core.commands.client_factory import get_mgmt_service_client
