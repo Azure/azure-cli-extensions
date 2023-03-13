@@ -823,9 +823,6 @@ class AzInteractiveShell(object):
 
     def run(self):
         """ starts the REPL """
-        # from .progress import ShellProgressView
-        # self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
-        # self.cli_ctx.get_progress_controller = self.progress_patch
 
         # load command table
         self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
@@ -861,6 +858,10 @@ class AzInteractiveShell(object):
                 already_prompted = True
         progress_bar.stop()
 
+        # init customized processing bar
+        from .progress import ShellProgressView
+        self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
+        self.cli_ctx.get_progress_controller = self.progress_patch
 
         from .configuration import SHELL_HELP
         self.cli.buffers['symbols'].reset(

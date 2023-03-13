@@ -17,7 +17,11 @@ class ScenarioAutoSuggest(AutoSuggest):
         self.param_value_map = {}
         # when user input a value of a parameter,value will be stored in this map. Will be suggested in the scenario
         self.customized_param_value_map = {}
-
+        # Define some special global parameters which matches the param instead of sample value.
+        # Tend to improve the suggestion rate when scenario is not strictly stylized
+        self.special_global_param_map = {'-g': ['-g', '--resource-group'], '--resource-group': ['-g', '--resource-group'],
+                                         '-s': ['-s', '--subscription'], '--subscription': ['-s', '--subscription'],
+                                         '-l': ['-l', '--location'], '--location': ['-l', '--location']}
     # TODO: consider deprecate the update function
     def update(self, sample: str):
         """Change command sample that would be suggested to the user"""
@@ -41,13 +45,27 @@ class ScenarioAutoSuggest(AutoSuggest):
         # remove the 'az ' part of command
         command_text = command_text.split('az ')[-1]
         cur_param = ''
+        cur_param_list = None
         for part in command_text.split():
             if part.startswith('-'):
-                cur_param = self.param_value_map[part]
-                self.customized_param_value_map[cur_param] = ''
+                # if the parameter is a special global parameter, use the parameter itself as the key
+                if part in self.special_global_param_map.keys():
+                    # because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
+                    cur_param_list = self.special_global_param_map[part]
+                    for param in cur_param_list:
+                        self.customized_param_value_map[param] = ''
+                    cur_param = ''
+                else:
+                    cur_param = self.param_value_map[part]
+                    self.customized_param_value_map[cur_param] = ''
+                    cur_param_list = None
             elif cur_param:
                 self.customized_param_value_map[cur_param] += ' ' + part
                 self.customized_param_value_map[cur_param] = self.customized_param_value_map[cur_param].strip()
+            elif cur_param_list:
+                for param in cur_param_list:
+                    self.customized_param_value_map[param] += ' ' + part
+                    self.customized_param_value_map[param] = self.customized_param_value_map[param].strip()
 
 
 
@@ -103,9 +121,11 @@ class ScenarioAutoSuggest(AutoSuggest):
                 if not last_part.startswith('-'):
                     suggests = []
                     for param in unused_param:
-                        raw_value = self.param_value_map[param]
-                        if raw_value and raw_value.startswith('<'):
-                            # TODO: find value in local cache to see whether a similar name has been use
+                        if param in self.special_global_param_map.keys():
+                            raw_value = param
+                        else:
+                            raw_value = self.param_value_map[param]
+                        if raw_value:
                             if raw_value in self.customized_param_value_map.keys():
                                 value = self.customized_param_value_map[raw_value]
                             else:
