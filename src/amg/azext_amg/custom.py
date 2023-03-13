@@ -54,7 +54,7 @@ def create_grafana(cmd, resource_group_name, grafana_name,
     resource = LongRunningOperation(cmd.cli_ctx)(poller)
 
     logger.warning("Grafana instance of '%s' was created. Now creating default role assignments for its "
-                   "managed identity and current CLI user", grafana_name)
+                   "managed identity, and current CLI account unless --principal-ids are provided", grafana_name)
 
     subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
 
