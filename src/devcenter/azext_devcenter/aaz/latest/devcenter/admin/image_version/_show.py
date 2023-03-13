@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-verion show",
+    "devcenter admin image-version show",
     is_preview=True,
 )
 class Show(AAZCommand):
