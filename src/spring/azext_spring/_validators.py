@@ -410,7 +410,7 @@ def _get_vnet(cmd, vnet_id):
             from azure.cli.core.aaz import has_value
             args = self.ctx.args
             if has_value(args.subscription_id):
-                self.ctx.subscription_id = args.subscription_id
+                self.ctx._subscription_id = args.subscription_id
     get_args = {
         'name': vnet['resource_name'],
         'subscription_id': vnet['subscription'],
