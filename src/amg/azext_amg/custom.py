@@ -311,7 +311,6 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
         "dashboards_skipped": [],
     }
     data_source_missed = set()
-    data_source_unmatched = set()  # requires uid mapping
     for dashboard in source_dashboards:
         uid = dashboard["uid"]
         source_dashboard = show_dashboard(cmd, source_workspace, uid, resource_group_name=source_resource_group,
@@ -362,9 +361,6 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
     if data_source_missed:
         logger.warning(("A few data sources used by dashboards are unavailable at destination: \"%s\""
                         ". Please configure them."), ", ".join(data_source_missed))
-    if data_source_unmatched:
-        logger.warning(("Data sources used by dashboards have more than one matches at destination: \"%s\""
-                        ". Use --data_source-uid-mappings to disambiguate"), ", ".join(data_source_unmatched))
     return summary
 
 
