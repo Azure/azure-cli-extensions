@@ -1357,14 +1357,19 @@ def domain_bind(cmd, client, resource_group, service, app,
                 certificate=None,
                 enable_ingress_to_app_tls=None):
     properties = models.CustomDomainProperties()
-    if certificate is not None:
-        certificate_response = client.certificates.get(resource_group, service, certificate)
-        properties = models.CustomDomainProperties(
-            thumbprint=certificate_response.properties.thumbprint,
-            cert_name=certificate
-        )
-    if enable_ingress_to_app_tls is not None:
-        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
+
+    resource = client.services.get(resource_group, service)
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        properties = models.CustomDomainProperties(cert_name=certificate)
+    else:
+        if certificate is not None:
+            certificate_response = client.certificates.get(resource_group, service, certificate)
+            properties = models.CustomDomainProperties(
+                thumbprint=certificate_response.properties.thumbprint,
+                cert_name=certificate
+            )
+        if enable_ingress_to_app_tls is not None:
+            _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
 
     custom_domain_resource = models.CustomDomainResource(properties=properties)
     return client.custom_domains.begin_create_or_update(resource_group, service, app,
