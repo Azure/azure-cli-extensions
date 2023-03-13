@@ -24,6 +24,7 @@ Pending
 0.5.132
 +++++++
 * Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.
+* Allow updating the pod_cidr and network_plugin_mode to migrate clusters to Azure CNI Overlay
 
 0.5.131
 +++++++
