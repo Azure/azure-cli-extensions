@@ -392,25 +392,17 @@ def _validate_subnet(namespace, subnet):
 
 def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
-    # network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
-    # return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
-    ctx = cmd.cli_ctx
-    ctx.update_aux_subscriptions(vnet['subscription'])
-    get_args = {
-        'name': vnet['resource_name'],
-        'resource_group': vnet['resource_group']
-    }
-    from .aaz.latest.network.vnet import Show as VirtualNetworkShow
-    return VirtualNetworkShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
+    network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
+    return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
 
 
-# def _get_network_client(cli_ctx, subscription_id=None):
-#     from azure.cli.core.profiles import ResourceType, get_api_version
-#     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-#     return get_mgmt_service_client(cli_ctx,
-#                                    ResourceType.MGMT_NETWORK,
-#                                    subscription_id=subscription_id,
-#                                    api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
+def _get_network_client(cli_ctx, subscription_id=None):
+    from azure.cli.core.profiles import ResourceType, get_api_version
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cli_ctx,
+                                   ResourceType.MGMT_NETWORK,
+                                   subscription_id=subscription_id,
+                                   api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
 
 
 def _get_authorization_client(cli_ctx, subscription_id=None):
