@@ -372,7 +372,7 @@ class SqlHandler(TargetHandler):
             logger.warning(e)
             # allow local access
             from requests import get
-            ip_address = get(IP_ADDRESS_CHECKER).text
+            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
             self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
                 # create again
@@ -448,6 +448,11 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
+            import re
+            search_ip = re.search(
+                "Client with IP address '(.*?)' is not allowed to access the server", str(e))
+            if search_ip is not None:
+                self.ip = search_ip.group(1)
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self):
