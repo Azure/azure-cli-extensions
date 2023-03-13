@@ -769,6 +769,16 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --pod-cidr
+          type: string
+          short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
+          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --network-plugin-mode
+          type: string
+          short-summary: The network plugin mode to use.
+          long-summary: |
+              Used to control the mode the network plugin should operate in. For example, "overlay" used with
+              --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.
