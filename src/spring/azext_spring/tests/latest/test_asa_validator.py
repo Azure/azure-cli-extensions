@@ -32,27 +32,27 @@ def _get_test_cmd():
 def _mock_get_vnet(cmd, vnet_id):
     def _mock_get(id):
         def _get_subnet(vnet_id, name, address_prefix=None, app_route_table_name=None, svc_route_table_name=None, ip_configurations=None, location=None):
-            subnet = mock.MagicMock()
-            subnet.id = '{0}/subnets/{1}'.format(vnet_id, name)
-            subnet.name = name
+            subnet = {
+                "id": '{0}/subnets/{1}'.format(vnet_id, name),
+                "name": name
+            }
             route_table = None
             if name == 'app' and app_route_table_name:
-                route_table = mock.MagicMock()
-                route_table.id = app_route_table_name
+                route_table = {"id": app_route_table_name}
             if name == 'svc' and svc_route_table_name:
-                route_table = mock.MagicMock()
-                route_table.id = svc_route_table_name
-            subnet.route_table = route_table
+                route_table = {"id": svc_route_table_name}
+            subnet["routeTable"] = route_table
 
-            subnet.address_prefix = address_prefix
-            subnet.ip_configurations = ip_configurations
+            subnet["addressPrefix"] = address_prefix
+            subnet["ipConfigurations"] = ip_configurations
             return subnet
 
         def _get_mock_vnet(id, location, **kwargs):
-            vnet = mock.MagicMock()
-            vnet.id = id
-            vnet.location = location
-            vnet.subnets = [_get_subnet(id, x, **kwargs) for x in ['app', 'svc']]
+            vnet = {
+                "id": id,
+                "location": location,
+                "subnets": [_get_subnet(id, x, **kwargs) for x in ['app', 'svc']]
+            }
             return vnet
 
         all_mocks = [
@@ -82,7 +82,7 @@ def _mock_get_vnet(cmd, vnet_id):
                 app_route_table_name='app', address_prefix='10.0.0.0/24'),
         ]
         for x in all_mocks:
-            if x.id == id:
+            if x["id"] == id:
                 return x
         return None
 

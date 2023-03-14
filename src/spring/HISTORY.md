@@ -1,5 +1,9 @@
 Release History
 ===============
+1.7.1
+---
+* Remove dependency to NETWORK SDK
+
 1.7.0
 ---
 * Print application logs when create/update deployment
