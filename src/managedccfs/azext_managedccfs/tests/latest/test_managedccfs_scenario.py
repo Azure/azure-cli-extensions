@@ -20,7 +20,7 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         super(ManagedCCFsScenarioTest, self).__init__(*args, **kwargs)
 
     # Create an instance with custom JS app and 3 nodes
-    @ResourceGroupPreparer(name_prefix='synth_azcli_', location='eastus', random_name_length=30)
+    @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_custom_3nodes(self, resource_group):
         location = "southcentralus"
         subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
@@ -74,7 +74,7 @@ class ManagedCCFsScenarioTest(ScenarioTest):
 
     # Create an instance with the sample JS app
     # and multiple members
-    @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus', random_name_length=30)
+    @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_sample_3nodes(self, resource_group):
         location = "southcentralus"
         subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
@@ -135,7 +135,7 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
 
     # Create an instance with custom JS app and 5 nodes
-    @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus', random_name_length=30)
+    @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_custom_5nodes(self, resource_group):
         location = "southcentralus"
         subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
