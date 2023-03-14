@@ -1205,14 +1205,12 @@ def update_managed_environment(cmd,
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
-        #safe_set(env_def, "sku", "name", value="premium")
         safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
         if safe_get(r, "properties", "appLogsConfiguration"):
             safe_set(env_def, "properties", "appLogsConfiguration", value=safe_get(r, "properties", "appLogsConfiguration"))
 
-    # no PATCH api support atm, put works fine even with partial json
     try:
-        r = ManagedEnvironmentClient.create(
+        r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
 
     except Exception as e:

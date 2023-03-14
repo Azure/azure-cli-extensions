@@ -481,8 +481,8 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
         if no_wait:
-            return r.json()
-        elif r.status_code == 201:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
             request_url = url_fmt.format(
                 management_hostname.strip('/'),
@@ -492,7 +492,7 @@ class ManagedEnvironmentClient():
                 api_version)
             return poll(cmd, request_url, ["waiting"])
 
-        return r.json()
+        return
 
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
