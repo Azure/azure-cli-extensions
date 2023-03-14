@@ -25,7 +25,7 @@ class StaticwebappDbConnectionScenarioTest(ScenarioTest):
         location = "West US"
         db_name = "tables"
 
-        self.cmd(f"staticwebapp create -n {name} -g {resource_group}")
+        self.cmd(f"staticwebapp create -n {name} -g {resource_group} -l centralus")
         server_id = self.cmd(f"sql server create -l '{location}' -g {resource_group} -n {server} -u {username} -p {password}").get_output_in_json()["id"]
         self.cmd(f"sql db create -g {resource_group} -n {db_name} -s {server}")
 
@@ -39,7 +39,7 @@ class StaticwebappDbConnectionScenarioTest(ScenarioTest):
         server = self.create_random_name("cli-test", length=20)
         location = "West US"
 
-        self.cmd(f"staticwebapp create -n {name} -g {resource_group}")
+        self.cmd(f"staticwebapp create -n {name} -g {resource_group} -l centralus")
         server_id = self.cmd(f"cosmosdb create -n {server} -g {resource_group}").get_output_in_json()["id"]
 
         self.cmd(f"staticwebapp dbconnection create -n {name} -g {resource_group} -d {server_id}",
