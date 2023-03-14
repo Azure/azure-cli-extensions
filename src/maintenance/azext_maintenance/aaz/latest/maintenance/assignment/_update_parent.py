@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "maintenance assignment update-untitled2",
+    "maintenance assignment update-parent",
 )
-class UpdateUntitled2(AAZCommand):
-    """Update configuration for resource.
+class UpdateParent(AAZCommand):
+    """Update configuration for parent resource.
     """
 
     _aaz_info = {
@@ -329,7 +329,7 @@ class UpdateUntitled2(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateUntitled2Helper._build_schema_configuration_assignment_read(cls._schema_on_200)
+            _UpdateParentHelper._build_schema_configuration_assignment_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -444,7 +444,7 @@ class UpdateUntitled2(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateUntitled2Helper._build_schema_configuration_assignment_read(cls._schema_on_200)
+            _UpdateParentHelper._build_schema_configuration_assignment_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -508,8 +508,8 @@ class UpdateUntitled2(AAZCommand):
             return _instance_value
 
 
-class _UpdateUntitled2Helper:
-    """Helper class for UpdateUntitled2"""
+class _UpdateParentHelper:
+    """Helper class for UpdateParent"""
 
     _schema_configuration_assignment_read = None
 
@@ -623,4 +623,4 @@ class _UpdateUntitled2Helper:
         _schema.type = cls._schema_configuration_assignment_read.type
 
 
-__all__ = ["UpdateUntitled2"]
+__all__ = ["UpdateParent"]
