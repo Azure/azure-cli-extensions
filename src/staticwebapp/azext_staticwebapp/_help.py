@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['staticwebapp dbconnection'] = """
     type: group
-    short-summary: Manage Static Web App database connections
+    short-summary: Manage Static Web App database connections.
 """
 
 helps['staticwebapp dbconnection create'] = """
