@@ -392,8 +392,6 @@ def _validate_subnet(namespace, subnet):
 
 def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
-    # network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
-    # return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
     from .aaz.latest.network.vnet import Show as _VirtualNetworkShow
 
     class VirtualNetworkShow(_VirtualNetworkShow):
@@ -401,9 +399,7 @@ def _get_vnet(cmd, vnet_id):
         def _build_arguments_schema(cls, *args, **kwargs):
             from azure.cli.core.aaz import AAZStrArg
             args_schema = super()._build_arguments_schema(*args, **kwargs)
-            args_schema.subscription_id = AAZStrArg(
-                options=['--subscription-id'],
-            )
+            args_schema.subscription_id = AAZStrArg()
             return args_schema
 
         def pre_operations(self):
@@ -417,15 +413,6 @@ def _get_vnet(cmd, vnet_id):
         'resource_group': vnet['resource_group']
     }
     return VirtualNetworkShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
-
-
-# def _get_network_client(cli_ctx, subscription_id=None):
-#     from azure.cli.core.profiles import ResourceType, get_api_version
-#     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-#     return get_mgmt_service_client(cli_ctx,
-#                                    ResourceType.MGMT_NETWORK,
-#                                    subscription_id=subscription_id,
-#                                    api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
 
 
 def _get_authorization_client(cli_ctx, subscription_id=None):
