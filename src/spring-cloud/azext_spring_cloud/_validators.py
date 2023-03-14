@@ -340,9 +340,7 @@ def _get_vnet(cmd, vnet_id):
         def _build_arguments_schema(cls, *args, **kwargs):
             from azure.cli.core.aaz import AAZStrArg
             args_schema = super()._build_arguments_schema(*args, **kwargs)
-            args_schema.subscription_id = AAZStrArg(
-                options=['--subscription-id'],
-            )
+            args_schema.subscription_id = AAZStrArg()
             return args_schema
 
         def pre_operations(self):
