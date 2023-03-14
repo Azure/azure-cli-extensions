@@ -5,6 +5,7 @@ Release History
 0.2.13
 * fixing bug where you could not pull by sha value if a tag was not specified
 * fixing error message when attempting to use sha value with tar files
+* making image caching template-wide instead of container group-wide
 
 0.2.12
 * adding ability for mixed-mode OCI image pulling, e.g. using tar files and remote registries in the same template
