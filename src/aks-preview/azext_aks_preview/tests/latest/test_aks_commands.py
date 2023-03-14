@@ -48,7 +48,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         prefix = upgrade_version[:upgrade_version.rfind('.')]
         create_version = next(x for x in versions if not x.startswith(prefix))
         return create_version, upgrade_version
-    
+
     def _get_version_in_range(self, location: str, min_version: str, max_version: str) -> str:
         """Return the version which is greater than min_version and less than max_version."""
         versions = self.cmd(
@@ -2851,7 +2851,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name('cliakstest', 16)
         self.enable_monitoring_existing_cluster_aad_atuh(
             resource_group, resource_group_location, aks_name, user_assigned_identity=True, syslog_enabled=True)
-    
+
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -3825,7 +3825,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_maintenancewindow(self, resource_group, resource_group_location):
@@ -3837,7 +3837,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'auto_upgrade_config_name': 'aksManagedAutoUpgradeSchedule',
             'node_os_upgrade_config_name': 'aksManagedNodeOSUpgradeSchedule',
             'ssh_key_value': self.generate_ssh_keys(),
-            'future_date': "2123-01-01" 
+            'future_date': "2123-01-01"
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
@@ -3855,7 +3855,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--duration 8 ' \
             '--utc-offset +05:30 ' \
             '--start-date {future_date} ' \
-            '--start-time 00:00 ' 
+            '--start-time 00:00 '
 
         self.cmd(
             maintenance_configuration_add_cmd, checks=[
@@ -3910,7 +3910,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check('maintenanceWindow.schedule.absoluteMonthly.intervalMonths', 3),
                 self.check('maintenanceWindow.durationHours', 4),
                 self.check('maintenanceWindow.utcOffset', '-08:00'),
-                self.check('maintenanceWindow.startTime', '09:00'), 
+                self.check('maintenanceWindow.startTime', '09:00'),
                 self.check('maintenanceWindow.notAllowedDates | length(@)', 2)]
         )
 
@@ -3933,7 +3933,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '-g {resource_group} --cluster-name {name} ' \
             '-n {node_os_upgrade_config_name}'
         self.cmd(maintenance_configuration_delete_cmd, checks=[self.is_empty()])
-        
+
         # maintenanceconfiguration list
         maintenance_configuration_list_cmd = 'aks maintenanceconfiguration list ' \
             '-g {resource_group} --cluster-name {name}'
@@ -6299,7 +6299,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azuremonitormetrics
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview ' \
-                     '--enable-azuremonitormetrics --enable-managed-identity'
+                     '--enable-azuremonitormetrics --enable-managed-identity --enable-windows-recording-rules'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
@@ -6366,7 +6366,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.kubeProxyConfig.mode','IPTABLES'),
         ])
 
-        
+
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -6418,9 +6418,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--location={location} '
             '--ssh-key-value={ssh_key_value} '
             '--node-count=1 '
-            '--node-vm-size={node_vm_size} ' 
-            '--nodepool-asg-ids={asg_ids} ' 
-            '--nodepool-allowed-host-ports={allowed_host_ports} ' 
+            '--node-vm-size={node_vm_size} '
+            '--nodepool-asg-ids={asg_ids} '
+            '--nodepool-allowed-host-ports={allowed_host_ports} '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPNSGControlPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
@@ -6697,7 +6697,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(roles) > 0
         role = roles[0]
         assert len(role['rules']) > 0
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_trustedaccess_rolebinding(self, resource_group, resource_group_location):
@@ -6752,12 +6752,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ]).get_output_in_json()
         assert len(binding['roles']) == 2
         time.sleep(20)  # wait for binding creation
-        
+
         # test list rolebinding
         list_binding_cmd = 'aks trustedaccess rolebinding list --cluster-name {name} -g {resource_group}'
         listed_bindings = self.cmd(list_binding_cmd).get_output_in_json()
         assert len(listed_bindings) == 1
-        
+
         # test get rolebinding
         get_binding_cmd = 'aks trustedaccess rolebinding show --cluster-name {name} -g {resource_group} -n {binding_name}'
         got_binding = self.cmd(get_binding_cmd).get_output_in_json()
@@ -6765,7 +6765,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(got_binding['roles']) == 2
         assert got_binding['sourceResourceId'] == vmss_id
         assert got_binding['type'] == 'Microsoft.ContainerService/managedClusters/trustedAccessRoleBindings'
-        
+
         # test update rolebinding
         update_binding_cmd = 'aks trustedaccess rolebinding update -g {resource_group} --cluster-name {name} -n {binding_name} \
             --roles Microsoft.Compute/virtualMachineScaleSets/test-node-reader'

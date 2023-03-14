@@ -536,7 +536,7 @@ def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, a
         raise error
 
 
-def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
+def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region, raw_parameters):
     from azure.cli.core.util import send_raw_request
     with urllib.request.urlopen("https://defaultrulessc.blob.core.windows.net/defaultrules/ManagedPrometheusDefaultRecordingRules.json") as url:
         default_rules_template = json.loads(url.read().decode())
@@ -564,29 +564,32 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
     )
     put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 1)
 
-    default_rule_group_name = "NodeRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
-    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-        cluster_subscription,
-        cluster_resource_group_name,
-        default_rule_group_name
-    )
-    url = "https://management.azure.com{0}?api-version={1}".format(
-        default_rule_group_id,
-        RULES_API
-    )
-    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 2)
+    enable_windows_recording_rules = raw_parameters.get("enable_windows_recording_rules")
 
-    default_rule_group_name = "NodeAndKubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
-    default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
-        cluster_subscription,
-        cluster_resource_group_name,
-        default_rule_group_name
-    )
-    url = "https://management.azure.com{0}?api-version={1}".format(
-        default_rule_group_id,
-        RULES_API
-    )
-    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 3)
+    if enable_windows_recording_rules is True:
+        default_rule_group_name = "NodeRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+        default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+            cluster_subscription,
+            cluster_resource_group_name,
+            default_rule_group_name
+        )
+        url = "https://management.azure.com{0}?api-version={1}".format(
+            default_rule_group_id,
+            RULES_API
+        )
+        put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 2)
+
+        default_rule_group_name = "NodeAndKubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+        default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+            cluster_subscription,
+            cluster_resource_group_name,
+            default_rule_group_name
+        )
+        url = "https://management.azure.com{0}?api-version={1}".format(
+            default_rule_group_id,
+            RULES_API
+        )
+        put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 3)
 
 
 def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
@@ -672,7 +675,7 @@ def link_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_reso
     # Link grafana
     link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id)
     # create recording rules and alerts
-    create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region)
+    create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region, raw_parameters)
 
 
 def unlink_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region):
