@@ -19,14 +19,14 @@ logger = get_logger(__name__)
 
 
 class ConnectionType(Enum):
-    CONNECTION_STRING = auto()
-    MANAGED_IDENTITY_USER_ASSIGNED = auto()
-    MANAGED_IDENTITY_SYSTEM_ASSIGNED = auto()
+    CONNECTION_STRING = "connection string"
+    MANAGED_IDENTITY_USER_ASSIGNED = "user assigned identity"
+    MANAGED_IDENTITY_SYSTEM_ASSIGNED = "system assigned identity"
 
 
 class Sku(Enum):
-    FREE = auto()
-    STANDARD = auto()
+    FREE = "Free"
+    STANDARD = "Standard"
 
 
 class AbstractDbHandler:
@@ -61,10 +61,17 @@ class AbstractDbHandler:
         return parse_resource_id(resource_id)
 
     @classmethod
+    def _get_supported_connection_types(cls, sku: 'Sku'):
+        connection_types = [ConnectionType.CONNECTION_STRING, ConnectionType.MANAGED_IDENTITY_SYSTEM_ASSIGNED,
+                            ConnectionType.MANAGED_IDENTITY_USER_ASSIGNED]
+        return [c.value for c in connection_types if cls._is_supported(sku, c)]
+
+    @classmethod
     def _validate(cls, sku: 'Sku', connection_type: 'ConnectionType', database_name, username, password):
         if not cls._is_supported(sku, connection_type):
-            raise ValidationError(f"Authentication type '{connection_type}' is not supported for "
-                                  f"sku '{sku}' and database type '{cls.DB_TYPE_NAME}'")
+            raise ValidationError(f"Authentication type '{connection_type.value}' is not supported for "
+                                  f"sku '{sku.value}' and database type '{cls.DB_TYPE_NAME}'. Please use one of the "
+                                  f"following connection types: {cls._get_supported_connection_types(sku)}")
 
         missing_username = not username and cls._requires_username(sku, connection_type)
         missing_password = not password and cls._requires_password(sku, connection_type)
