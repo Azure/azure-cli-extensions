@@ -5,7 +5,7 @@ Release History
 
 1.5.2
 ++++++
- * Downgrade Email service sdk version
+ * Email service sdk version set to 1.0.0b1 to satisfy the current contract
 
 
 1.5.1
