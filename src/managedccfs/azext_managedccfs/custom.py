@@ -1,5 +1,6 @@
-from .aaz.latest.confidentialledger.managedccfs._create import Create as _ManagedCCFCreate
 from azure.cli.core.azclierror import ArgumentUsageError
+from .aaz.latest.confidentialledger.managedccfs._create import Create as _ManagedCCFCreate
+
 
 class MemberIdentityCertificate(_ManagedCCFCreate):
     @classmethod
