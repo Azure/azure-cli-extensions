@@ -40,7 +40,7 @@ LOG_TYPE_SYSTEM = "system"
 
 ACR_TASK_TEMPLATE = """version: v1.1.0
 steps:
-  - cmd: mcr.microsoft.com/oryx/cli:20220811.1 oryx dockerfile --bind-port {{target_port}} --output ./Dockerfile .
+  - cmd: mcr.microsoft.com/oryx/cli:debian-buster-20230222.1 oryx dockerfile --bind-port {{target_port}} --output ./Dockerfile .
     timeout: 28800
   - build: -t $Registry/{{image_name}} -f Dockerfile .
     timeout: 28800
