@@ -905,7 +905,7 @@ helps['containerapp hostname add'] = """
     examples:
     - name: Add hostname without binding.
       text: |
-          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname --location MyLocation
+          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname
 """
 
 helps['containerapp hostname bind'] = """
