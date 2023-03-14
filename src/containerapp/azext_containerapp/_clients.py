@@ -88,9 +88,10 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         response_body = json.loads(r.text)
         if response_body["status"].lower() in ["failed", "canceled"]:
+            message = json.dumps(response_body["error"]) if "error" in response_body else "Operation failed or canceled"
             raise HttpResponseError(
                 response=r,
-                error=OperationFailed("Operation failed or canceled")
+                message=message
             )
         if response_body["status"].lower() in ["succeeded"]:
             break
