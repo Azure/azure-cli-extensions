@@ -34,7 +34,7 @@ class JarSource(BaseSource):
         return models.JarUploadedUserSourceInfo(
             relative_path=deployable_path,
             jvm_options=jvm_options,
-            runtime_version=runtime_version or 'Java_8',
+            runtime_version=runtime_version or 'Java_11',
             version=version
         )
 

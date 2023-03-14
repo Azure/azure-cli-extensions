@@ -52,6 +52,15 @@ def validate_config_file_path(path, action):
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# Helper function to test whether the path exists.
+# -----------------------------------------------------------------------------------------------------------------
+def test_path_exist(path):
+
+    if not os.path.exists(path):
+        raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to do console app setup (mkdir, download and extract)
 # -----------------------------------------------------------------------------------------------------------------
 def console_app_setup():
@@ -68,6 +77,27 @@ def console_app_setup():
     create_dir_path(baseFolder)
     # check and download console app
     check_and_download_console_app(exePath, baseFolder)
+
+    return defaultOutputFolder, exePath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# LoginMigration helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
+def loginMigration_console_app_setup():
+
+    validate_os_env()
+
+    defaultOutputFolder = get_loginMigration_default_output_folder()
+
+    # Assigning base folder path
+    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
+    exePath = os.path.join(baseFolder, "Logins.Console.csproj", "Logins.Console.exe")
+
+    # Creating base folder structure
+    create_dir_path(baseFolder)
+    # check and download console app
+    check_and_download_loginMigration_console_app(exePath, baseFolder)
 
     return defaultOutputFolder, exePath
 
@@ -90,6 +120,23 @@ def get_default_output_folder():
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# LoginMigration helper function to return the default output folder path depending on OS environment.
+# -----------------------------------------------------------------------------------------------------------------
+def get_loginMigration_default_output_folder():
+
+    osPlatform = platform.system()
+
+    if osPlatform.__contains__('Linux'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlLoginMigrations")
+    elif osPlatform.__contains__('Darwin'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlLoginMigrations")
+    else:
+        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlLoginMigrations")
+
+    return defaultOutputPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to check if console app exists, if not download it.
 # -----------------------------------------------------------------------------------------------------------------
 def check_and_download_console_app(exePath, baseFolder):
@@ -100,6 +147,23 @@ def check_and_download_console_app(exePath, baseFolder):
     if not testPath:
         zipSource = "https://sqlassess.blob.core.windows.net/app/SqlAssessment.zip"
         zipDestination = os.path.join(baseFolder, "SqlAssessment.zip")
+
+        urllib.request.urlretrieve(zipSource, filename=zipDestination)
+        with ZipFile(zipDestination, 'r') as zipFile:
+            zipFile.extractall(path=baseFolder)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# LoginMigration helper function to check if console app exists, if not download it.
+# -----------------------------------------------------------------------------------------------------------------
+def check_and_download_loginMigration_console_app(exePath, baseFolder):
+
+    testPath = os.path.exists(exePath)
+
+    # Downloading console app zip and extracting it
+    if not testPath:
+        zipSource = "https://sqlassess.blob.core.windows.net/app/LoginsMigration.zip"
+        zipDestination = os.path.join(baseFolder, "LoginsMigration.zip")
 
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
         with ZipFile(zipDestination, 'r') as zipFile:

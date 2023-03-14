@@ -16,53 +16,15 @@ import time
 import uuid
 import webbrowser
 
-from azure.cli.core.api import get_config_dir
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    InvalidArgumentValueError,
-)
-from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.util import (
-    in_cloud_console,
-    sdk_no_wait,
-    shell_safe_json_parse,
-)
-from azure.graphrbac.models import (
-    ApplicationCreateParameters,
-    KeyCredential,
-    PasswordCredential,
-    ServicePrincipalCreateParameters,
-)
-from azure.core.exceptions import (
-    ResourceNotFoundError,
-    HttpResponseError,
-)
-from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
-from knack.log import get_logger
-from knack.prompting import prompt_y_n
-from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
-from six.moves.urllib.error import URLError
-from six.moves.urllib.request import urlopen
-
-from azure.cli.command_modules.acs.addonconfiguration import (
-    ensure_container_insights_for_monitoring,
-    sanitize_loganalytics_ws_resource_id,
-    ensure_default_log_analytics_workspace_for_monitoring
-)
-
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
-    get_container_registry_client,
     get_auth_management_client,
+    get_container_registry_client,
     get_graph_rbac_management_client,
     get_msi_client,
     get_resource_by_name,
 )
-
 from azext_aks_preview._consts import (
     ADDONS,
     ADDONS_DESCRIPTIONS,
@@ -89,7 +51,11 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
 )
-from azext_aks_preview._helpers import print_or_merge_credentials, get_nodepool_snapshot_by_snapshot_id, get_cluster_snapshot_by_snapshot_id
+from azext_aks_preview._helpers import (
+    get_cluster_snapshot_by_snapshot_id,
+    get_nodepool_snapshot_by_snapshot_id,
+    print_or_merge_credentials,
+)
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
     _ensure_pod_identity_addon_is_enabled,
@@ -107,8 +73,9 @@ from azext_aks_preview.addonconfiguration import (
     add_ingress_appgw_addon_role_assignment,
     add_monitoring_role_assignment,
     add_virtual_node_role_assignment,
-    enable_addons
+    enable_addons,
 )
+from azext_aks_preview.aks_diagnostics import aks_kanalyze_cmd, aks_kollect_cmd
 from azext_aks_preview.aks_draft.commands import (
     aks_draft_cmd_create,
     aks_draft_cmd_generate_workflow,
@@ -119,10 +86,42 @@ from azext_aks_preview.aks_draft.commands import (
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from azext_aks_preview.aks_diagnostics import (
-    aks_kollect_cmd,
-    aks_kanalyze_cmd,
+from azure.cli.command_modules.acs._validators import (
+    extract_comma_separated_string,
 )
+from azure.cli.command_modules.acs.addonconfiguration import (
+    ensure_container_insights_for_monitoring,
+    ensure_default_log_analytics_workspace_for_monitoring,
+    sanitize_loganalytics_ws_resource_id,
+)
+from azure.cli.core.api import get_config_dir
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
+)
+from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import (
+    in_cloud_console,
+    sdk_no_wait,
+    shell_safe_json_parse,
+)
+from azure.core.exceptions import ResourceNotFoundError
+from azure.graphrbac.models import (
+    ApplicationCreateParameters,
+    KeyCredential,
+    PasswordCredential,
+    ServicePrincipalCreateParameters,
+)
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
+from knack.log import get_logger
+from knack.prompting import prompt_y_n
+from knack.util import CLIError
+from msrestazure.azure_exceptions import CloudError
+from six.moves.urllib.error import URLError
+from six.moves.urllib.request import urlopen
 
 logger = get_logger(__name__)
 
@@ -1317,31 +1316,37 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
+def aks_agentpool_upgrade(cmd,
                           client,
                           resource_group_name,
                           cluster_name,
                           nodepool_name,
                           kubernetes_version='',
-                          no_wait=False,
                           node_image_only=False,
                           max_surge=None,
+                          snapshot_id=None,
+                          no_wait=False,
                           aks_custom_headers=None,
-                          snapshot_id=None):
+                          yes=False):
     AgentPoolUpgradeSettings = cmd.get_models(
         "AgentPoolUpgradeSettings",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="agent_pools",
     )
-    CreationData = cmd.get_models(
-        "CreationData",
-        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="managed_clusters",
-    )
-
     if kubernetes_version != '' and node_image_only:
-        raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
-                       'If you only want to upgrade the node version please use the "--node-image-only" option only.')
+        raise MutuallyExclusiveArgumentError(
+            'Conflicting flags. Upgrading the Kubernetes version will also '
+            'upgrade node image version. If you only want to upgrade the '
+            'node version please use the "--node-image-only" option only.'
+        )
+
+    # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
+    if max_surge and node_image_only:
+        raise MutuallyExclusiveArgumentError(
+            'Conflicting flags. Unable to specify max-surge with node-image-only.'
+            'If you want to use max-surge with a node image upgrade, please first '
+            'update max-surge using "az aks nodepool update --max-surge".'
+        )
 
     if node_image_only:
         return _upgrade_single_nodepool_image_version(no_wait,
@@ -1350,6 +1355,13 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                                                       cluster_name,
                                                       nodepool_name,
                                                       snapshot_id)
+
+    # load model CreationData, for nodepool snapshot
+    CreationData = cmd.get_models(
+        "CreationData",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
 
     creationData = None
     if snapshot_id:
@@ -1362,6 +1374,16 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
         )
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    if kubernetes_version != '' or instance.orchestrator_version == kubernetes_version:
+        msg = "The new kubernetes version is the same as the current kubernetes version."
+        if instance.provisioning_state == "Succeeded":
+            msg = "The cluster is already on version {} and is not in a failed state. No operations will occur when upgrading to the same version if the cluster is not in a failed state.".format(instance.orchestrator_version)
+        elif instance.provisioning_state == "Failed":
+            msg = "Cluster currently in failed state. Proceeding with upgrade to existing version {} to attempt resolution of failed cluster state.".format(instance.orchestrator_version)
+        if not yes and not prompt_y_n(msg):
+            return None
+
     instance.orchestrator_version = kubernetes_version
     instance.creation_data = creationData
 
@@ -1371,9 +1393,24 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
     if max_surge:
         instance.upgrade_settings.max_surge = max_surge
 
-    headers = get_aks_custom_headers(aks_custom_headers)
+    # custom headers
+    aks_custom_headers = extract_comma_separated_string(
+        aks_custom_headers,
+        enable_strip=True,
+        extract_kv=True,
+        default_value={},
+        allow_appending_values_to_same_key=True,
+    )
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance,
+        headers=aks_custom_headers,
+    )
 
 
 def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument

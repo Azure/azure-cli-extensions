@@ -17,12 +17,9 @@ def _validate_ip_address_format(namespace):
         input_value = namespace.target_ip_address
         if ' ' in input_value:
             raise InvalidArgumentValueError("Spaces not allowed: '{}' ".format(input_value))
-        input_ips = input_value.split(',')
-        if len(input_ips) > 8:
-            raise InvalidArgumentValueError('Maximum 8 IP addresses are allowed per rule.')
-        validated_ips = ''
-        for ip in input_ips:
-            # Use ipaddress library to validate ip network format
-            ip_obj = ipaddress.ip_network(ip)
-            validated_ips += str(ip_obj) + ','
-        namespace.target_ip_address = validated_ips[:-1]
+        try:
+            ipaddress.ip_address(input_value)
+        except ValueError as e:
+            raise InvalidArgumentValueError("""IP address provided is invalid.
+            Please verify if there are any spaces or other invalid characters.""") from e
+        namespace.target_ip_address = input_value
