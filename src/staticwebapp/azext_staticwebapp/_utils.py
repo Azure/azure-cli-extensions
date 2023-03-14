@@ -69,11 +69,11 @@ class AbstractDbHandler:
         missing_username = not username and cls._requires_username(sku, connection_type)
         missing_password = not password and cls._requires_password(sku, connection_type)
         if missing_password and missing_username:
-            raise RequiredArgumentMissingError("Missing database username and password")
+            raise RequiredArgumentMissingError("Please provide the missing database username and password")
         if missing_password:
-            raise RequiredArgumentMissingError("Missing database password")
+            raise RequiredArgumentMissingError("Please provide the missing database password")
         if missing_username:
-            raise RequiredArgumentMissingError("Missing database username")
+            raise RequiredArgumentMissingError("Please provide the missing database username")
 
         unnecessary_username = username and not cls._requires_username(sku, connection_type)
         unnecessary_password = password and not cls._requires_password(sku, connection_type)
