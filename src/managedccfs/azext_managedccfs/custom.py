@@ -61,7 +61,7 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         from azure.cli.core.aaz import has_value
         args = self.ctx.args
 
-        if args.node_count < 3 or args.node_count > 9 or (args.node_count % 2 == 0):
+        if args.node_count < 3 or args.node_count > 9 or (args.node_count.to_serialized_data() % 2 == 0):
             raise ArgumentUsageError("Node consensus requires odd number of nodes. Select a number between 3 and 9.")
 
         def members_transform(_, item):
