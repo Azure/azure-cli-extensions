@@ -99,7 +99,8 @@ def _create_folder(grafana_url, file_path, http_headers):
     folder = json.loads(data)
     result = send_grafana_post(f'{grafana_url}/api/folders', json.dumps(folder), http_headers)
     # 412 means the folder has existed
-    logger.warning("Create folder \"%s\". %s", folder.get('title', ''), "SUCCESS" if result[0] in [200, 412] else "FAILURE")
+    logger.warning("Create folder \"%s\". %s", folder.get('title', ''),
+                   "SUCCESS" if result[0] in [200, 412] else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 

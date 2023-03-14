@@ -78,6 +78,8 @@ class AmgScenarioTest(ScenarioTest):
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             self.cmd('grafana create -g {rg} -n {name} -l {location}')
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
             self.cmd('grafana update -g {rg} -n {name} --api-key Enabled')
             self.cmd('grafana api-key list -g {rg} -n {name}', checks=[
                 self.check('length([])', 0)
@@ -107,6 +109,8 @@ class AmgScenarioTest(ScenarioTest):
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             self.cmd('grafana create -g {rg} -n {name} -l {location}')
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
             self.cmd('grafana update -g {rg} -n {name} --service-account Enabled')
             self.cmd('grafana service-account list -g {rg} -n {name}', checks=[
                 self.check('length([])', 0)
@@ -151,6 +155,8 @@ class AmgScenarioTest(ScenarioTest):
                 self.check('tags.foo', 'doo'),
                 self.check('name', '{name}')
             ])
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
 
             self.cmd('grafana list -g {rg}')
             count = len(self.cmd('grafana list').get_output_in_json())
@@ -294,9 +300,9 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamg',
+            'name': 'clitestbackup',
             'location': 'westcentralus',
-            'name2': 'clitestamg2'
+            'name2': 'clitestbackup2'
         })
 
         owner = self._get_signed_in_user()

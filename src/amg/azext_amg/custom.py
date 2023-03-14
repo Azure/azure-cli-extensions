@@ -112,7 +112,8 @@ def _get_login_account_principal_id(cli_ctx):
 def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definition_id, scope):
     import time
     from azure.core.exceptions import ResourceExistsError
-    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
+    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                                 api_version="2020-04-01-preview").role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
@@ -127,10 +128,13 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
             assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                       parameters=parameters)
             break
-        except ResourceExistsError:
+        except ResourceExistsError:  # Exception from Track-2 SDK
             logger.info('Role assignment already exists')
             break
         except CloudError as ex:
+            if 'role assignment already exists' in ex.message:  # Exception from Track-1 SDK
+                logger.info('Role assignment already exists')
+                break
             if retry_time < retry_times and ' does not exist in the directory ' in (ex.message or "").lower():
                 time.sleep(5)
                 logger.warning('Retrying role assignment creation: %s/%s', retry_time + 1,
@@ -140,9 +144,10 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
 
 
 def _delete_role_assignment(cli_ctx, principal_id):
-    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
+    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                                 api_version="2020-04-01-preview").role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list_for_subscription(filter=f))
+    assignments = list(assignments_client.list(filter=f))
     for a in assignments or []:
         assignments_client.delete_by_id(a.id)
 
