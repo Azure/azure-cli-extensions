@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.5.2
+++++++
+ * Downgrade Email service sdk version
+
+
 1.5.1
 ++++++
  * Add AzureCli to the user-agent header for Rooms and Email service clients
