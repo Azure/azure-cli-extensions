@@ -564,7 +564,7 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
     )
     put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 1)
 
-    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+    default_rule_group_name = "NodeRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
         cluster_resource_group_name,
@@ -576,7 +576,7 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
     )
     put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 2)
 
-    default_rule_group_name = "KubernetesRecordingRulesRuleGroup-Win-1-{0}".format(cluster_name)
+    default_rule_group_name = "NodeAndKubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
         cluster_resource_group_name,
