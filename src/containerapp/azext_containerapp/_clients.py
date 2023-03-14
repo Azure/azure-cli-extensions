@@ -8,6 +8,7 @@ import json
 import time
 import sys
 
+from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
@@ -74,7 +75,6 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
 
 def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statements
     from azure.core.exceptions import HttpResponseError
-    from azure.core.polling.base_polling import OperationFailed
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
     animation = PollingAnimation()
@@ -173,7 +173,11 @@ class ContainerAppClient():
             return r.json()
         elif r.status_code == 202:
             operation_url = r.headers[HEADER_LOCATION]
-            return poll_results(cmd, operation_url)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a container app")
+            else:
+                return response
 
         return r.json()
 
@@ -520,7 +524,11 @@ class ManagedEnvironmentClient():
             return r.json()
         elif r.status_code == 201:
             operation_url = r.headers[HEADER_LOCATION]
-            return poll_results(cmd, operation_url)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a managed environment")
+            else:
+                return response
 
         return r.json()
 
