@@ -14,79 +14,88 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 
-
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-ACL_STAGING_SUBSCRIPTION = "027da7f8-2fc6-46d4-9be9-560706b60fec"
-MEMBER0_TAG_GROUP = "contoso"
-MEMBER0_TAG_IDENTIFIER = "member0"
-MEMBER1_TAG_GROUP = "fabrikam"
-MEMBER1_TAG_IDENTIFIER = "member1"
-TAG_KEY = "dept"
-TAG_VALUE = "finance"
-LOCATION = "southcentralus"
-
 # Test class for Scenario
 class ManagedCCFsScenarioTest(ScenarioTest):
-
     def __init__(self, *args, **kwargs):
         super(ManagedCCFsScenarioTest, self).__init__(*args, **kwargs)
 
     # Create an instance with custom JS app
-    @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus')
-    def test_managedccfs_create_js_customimage(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='synth_azcli_', location='eastus')
+    def test_managedccfs_create_custom_3nodes(self, resource_group):
+        location = "southcentralus"
+        subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
+        tags = "dept=finance"
+        member0_tag_group = "contoso"
+        member0_tag_identifier = "member0"
+        member0_cert = os.path.join(os.path.abspath(os.path.join(os.path.abspath(__file__), '..')), "member0_cert.pem")
+
         self.kwargs.update({
-            'name': 'synth-azcli-customimage',
-            'location': '{LOCATION}',
-            'subscription': '{ACL_STAGING_SUBSCRIPTION}'
+            "name": self.create_random_name("synth-azcli-", 30),
+            "location": location,
+            "subscription": subscription,
+            "tags": tags,
+            "member0_tag_group": member0_tag_group,
+            "member0_tag_identifier": member0_tag_identifier,
+            "member0_cert": member0_cert,
+            "rg": resource_group
         })
 
-        self.cmd('confidentialledger managedccfs create --name {name} '
-                '--location "{location}" '
-                '--members [{certificate:' + os.path.join("{TEST_DIR}", 'member0_cert.pem') + ',identifier:"{MEMBER0_TAG_IDENTIFIER}",group:"{MEMBER0_TAG_GROUP}"}] '
-                '--tags {TAG_KEY}="{TAG_VALUE}" '
-                '--subscription {subscription}'
-                '--resource-group {rg}')
-        
-        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
+        self.cmd("confidentialledger managedccfs create -n {name} -l {location} -g {rg} --tags {tags} --members \"[{{certificate:'{member0_cert}',identifier:{member0_tag_identifier},group:{member0_tag_group}}}]\" ")
+               
+        azcli_instance = self.cmd('confidentialledger managedccfs show -g {rg} -n {name}').get_output_in_json()
         self.assertIsNone(azcli_instance)
         self.assertEqual(azcli_instance['properties']['appName'], "{name}")
         self.assertEqual(azcli_instance['location'], "{location}")
-        self.assertEqual(azcli_instance['tags']['{TAG_KEY}'], "{TAG_VALUE}")
+        self.assertEqual(azcli_instance['tags'], "{tags}")
         self.assertEqual(azcli_instance['properties']['deploymentType']['languageRuntime'], "JS")
         self.assertEqual(azcli_instance['properties']['deploymentType']['appSourceUri'], "customImage")
+        self.assertEqual(azcli_instance['properties']['nodeCount'], 3)
         members = self.assertEqual(azcli_instance['properties']['memberIdentityCertificates'])
         self.assertIsNotNone(members)
         self.assertEqual(len(members), 1)
         for member in members:
-            self.assertEqual(member['tags']['identifier'],'{MEMBER0_TAG_IDENTIFIER}')
-            self.assertEqual(member['tags']['group'],'{MEMBER0_TAG_GROUP}')
+            self.assertEqual(member['tags']['identifier'],'{member0_tag_identifier}')
+            self.assertEqual(member['tags']['group'],'{member0_tag_group}')
 
         # list will be enabled when the CP is fixed
-        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 1))
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 1))
 
-        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --force --yes')
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --force --yes')
 
         # list will be enabled when the CP bug is fixed
-        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 0))
 
     # Create an instance with the sample JS app
     # and multiple members
     @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus')
-    def test_managedccfs_create_js_sampleimage(self, resource_group):
+    def test_managedccfs_create_sample_3nodes(self, resource_group):
+        location = "southcentralus"
+        subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
+        tags = "dept=finance"
+        member0_tag_group = "contoso"
+        member0_tag_identifier = "member0"
+        member0_cert = os.path.join(os.path.abspath(os.path.join(os.path.abspath(__file__), '..')), "member0_cert.pem")
+
+        member1_tag_group = "fabrikam"
+        member1_tag_identifier = "member1"
+        member1_cert = os.path.join(os.path.abspath(os.path.join(os.path.abspath(__file__), '..')), "member1_cert.pem")
+
         self.kwargs.update({
-            'name': 'synth-azcli-sampleimage',
-            'location': '{LOCATION}',
-            'subscription': '{ACL_STAGING_SUBSCRIPTION}'
+           "name": self.create_random_name("synth-azcli-", 33),
+            "location": location,
+            "subscription": subscription,
+            "tags": tags,
+            "member0_tag_group": member0_tag_group,
+            "member0_tag_identifier": member0_tag_identifier,
+            "member0_cert": member0_cert,
+            "member1_tag_group": member1_tag_group,
+            "member1_tag_identifier": member1_tag_identifier,
+            "member1_cert": member1_cert
         })
 
-        self.cmd('confidentialledger managedccfs create --name {name} '
-                '--location "{location}" '
-                '--members [{certificate:' + os.path.join("{TEST_DIR}", 'member0_cert.pem') + ',identifier:"{MEMBER0_TAG_IDENTIFIER}",group:"{MEMBER0_TAG_GROUP}"}, '
-                '{certificate:' + os.path.join("{TEST_DIR}", 'member1_cert.pem') + ',identifier:"{MEMBER1_TAG_IDENTIFIER}",group:"{MEMBER1_TAG_GROUP}"}] '
-                '--tags {TAG_KEY}="{TAG_VALUE}" '
-                '--app-type sample '
-                '--subscription {subscription} '
-                '--resource-group {rg}')
+        response = self.cmd("confidentialledger managedccfs create --name {name} --subscription {subscription} -g {rg} --location {location} "
+                "--members \"[{{certificate:'{member0_cert}',identifier:{member0_tag_identifier},group:{member0_tag_group}}},{{certificate:'{member1_cert}',identifier:{member1_tag_identifier},group:{member1_tag_group}}}]\" "
+                "--tags {tags} --app-type sample")
         
         azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
         self.assertIsNone(azcli_instance)
@@ -95,6 +104,7 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         self.assertEqual(azcli_instance['tags']['{TAG_KEY}'], "{TAG_VALUE}")
         self.assertEqual(azcli_instance['properties']['deploymentType']['languageRuntime'], "JS")
         self.assertEqual(azcli_instance['properties']['deploymentType']['appSourceUri'], "sample")
+        self.assertEqual(azcli_instance['properties']['nodeCount'], 3)
         members = self.assertEqual(azcli_instance['properties']['memberIdentityCertificates'])
         self.assertIsNotNone(members)
         self.assertEqual(len(members), 2)
@@ -108,4 +118,44 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --force --yes')
 
         # list will be enabled when the CP is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
+
+    # Create an instance with custom JS app
+    @ResourceGroupPreparer(name_prefix='azcli-test-rg', location='eastus')
+    def test_managedccfs_create_custom_5nodes(self, resource_group):
+        self.kwargs.update({
+            'name': 'synth-azcli-custom_5nodes',
+            'location': '{LOCATION}',
+            'subscription': '{ACL_STAGING_SUBSCRIPTION}'
+        })
+
+        self.cmd('confidentialledger managedccfs create --name {name} '
+                '--location "{location}" '
+                '--members [{certificate:' + os.path.join("{TEST_DIR}", 'member0_cert.pem') + ',identifier:"{MEMBER0_TAG_IDENTIFIER}",group:"{MEMBER0_TAG_GROUP}"}] '
+                '--tags {TAG_KEY}="{TAG_VALUE}" '
+                '--node-count 5 '
+                '--subscription {subscription}'
+                '--resource-group {rg}')
+        
+        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
+        self.assertIsNone(azcli_instance)
+        self.assertEqual(azcli_instance['properties']['appName'], "{name}")
+        self.assertEqual(azcli_instance['location'], "{location}")
+        self.assertEqual(azcli_instance['tags']['{TAG_KEY}'], "{TAG_VALUE}")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['languageRuntime'], "JS")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['appSourceUri'], "customImage")
+        self.assertEqual(azcli_instance['properties']['nodeCount'], 5)
+        members = self.assertEqual(azcli_instance['properties']['memberIdentityCertificates'])
+        self.assertIsNotNone(members)
+        self.assertEqual(len(members), 1)
+        for member in members:
+            self.assertEqual(member['tags']['identifier'],'{MEMBER0_TAG_IDENTIFIER}')
+            self.assertEqual(member['tags']['group'],'{MEMBER0_TAG_GROUP}')
+
+        # list will be enabled when the CP is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 1))
+
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --force --yes')
+
+        # list will be enabled when the CP bug is fixed
         # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
