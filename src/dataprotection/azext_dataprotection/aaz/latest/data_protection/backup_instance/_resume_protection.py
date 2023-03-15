@@ -44,7 +44,7 @@ class ResumeProtection(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.backup_instance_name = AAZStrArg(
-            options=["--backup-instance-name"],
+            options=["-n", "--name", "--backup-instance-name"],
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",

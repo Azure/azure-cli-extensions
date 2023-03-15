@@ -59,30 +59,19 @@ class AdhocBackup(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "BackupRuleOptions"
 
         _args_schema = cls._args_schema
-        _args_schema.backup_rule_options = AAZObjectArg(
-            options=["--backup-rule-options"],
-            arg_group="Parameters",
-            help="Name for the Rule of the Policy which needs to be applied for this backup",
+        _args_schema.rule_name = AAZStrArg(
+            options=["--rule-name"],
+            arg_group="BackupRuleOptions",
+            help="Specify backup policy rule name.",
             required=True,
         )
-
-        backup_rule_options = cls._args_schema.backup_rule_options
-        backup_rule_options.rule_name = AAZStrArg(
-            options=["rule-name"],
-            required=True,
-        )
-        backup_rule_options.trigger_option = AAZObjectArg(
-            options=["trigger-option"],
-            help="Adhoc backup trigger option",
-            required=True,
-        )
-
-        trigger_option = cls._args_schema.backup_rule_options.trigger_option
-        trigger_option.retention_tag_override = AAZStrArg(
-            options=["retention-tag-override"],
+        _args_schema.retention_tag_override = AAZStrArg(
+            options=["--retention-tag-override"],
+            arg_group="BackupRuleOptions",
+            help="Specify retention override tag.",
         )
         return cls._args_schema
 
@@ -196,12 +185,12 @@ class AdhocBackup(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("backupRuleOptions", AAZObjectType, ".backup_rule_options", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("backupRuleOptions", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             backup_rule_options = _builder.get(".backupRuleOptions")
             if backup_rule_options is not None:
                 backup_rule_options.set_prop("ruleName", AAZStrType, ".rule_name", typ_kwargs={"flags": {"required": True}})
-                backup_rule_options.set_prop("triggerOption", AAZObjectType, ".trigger_option", typ_kwargs={"flags": {"required": True}})
+                backup_rule_options.set_prop("triggerOption", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             trigger_option = _builder.get(".backupRuleOptions.triggerOption")
             if trigger_option is not None:

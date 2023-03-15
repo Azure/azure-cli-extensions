@@ -43,9 +43,21 @@ from azext_dataprotection.manual.enums import (
 
 
 def load_arguments(self, _):
+    with self.argument_context('data-protection backup-instance create') as c:
+        c.argument('resource_group_name', type=resource_group_name_type)
+        c.argument('vault_name', type=str)
+        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
+                   'json-string/@json-file.')
+
     with self.argument_context('dataprotection backup-instance create') as c:
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
+
+    with self.argument_context('data-protection backup-instance validate-for-backup') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
+                   'json-string/@json-file.')
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
