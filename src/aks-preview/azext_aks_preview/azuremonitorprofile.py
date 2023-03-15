@@ -518,6 +518,7 @@ def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, a
             "scopes": [
                 azure_monitor_workspace_resource_id
             ],
+            "enabled": True,
             "clusterName": cluster_name,
             "interval": "PT1M",
             "rules": default_rules_template["resources"][i]["properties"]["rules"]
