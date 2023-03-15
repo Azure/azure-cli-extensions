@@ -15,11 +15,11 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_role_definition_body,
     validate_mongo_role_definition_id,
     validate_mongo_user_definition_body,
-    validate_mongo_user_definition_id,
-    validate_table_list,
-    validate_node_list,
-    validate_datacenter_list,
-    validate_blacklisted_list)
+    validate_mongo_user_definition_id)
+    # validate_table_list,
+    # validate_node_list,
+    # validate_datacenter_list,
+    # validate_blacklisted_list)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -178,14 +178,14 @@ def load_arguments(self, _):
         c.argument('keyspace', options_list=['--keyspace', '-k'], help="The name of the table keyspace.", required=True)
         c.argument('owner', options_list=['--owner', '-w'], help="Owner name for the run. This could be any string identifying the owner.", required=True)
         c.argument('cause', options_list=['--cause', '-a'], help="Identifies the process, or cause the repair was started.", required=True)
-        c.argument('tables', options_list=['--tables', '-t'], validator=validate_table_list, help="The name of the targeted tables (column families) as comma separated list. If no tables given, then the whole keyspace is targeted.", required=False)
+        c.argument('tables', options_list=['--tables', '-t'], help="The name of the targeted tables (column families) as comma separated list. If no tables given, then the whole keyspace is targeted.", required=False)
         c.argument('segment_count', options_list=['--segment-count', '-s'], help="Defines the amount of segments per node to create for the repair run.", required=False)
         c.argument('repair_parallelism', options_list=['--repair-parallelism', '-p'], help="Defines the used repair parallelism for repair run. Valid values are SEQUENTIAL, PARALLEL or DATACENTER_AWARE.", required=False)
         c.argument('intensity', options_list=['--intensity', '-i'], help="Defines the repair intensity for repair run.", required=False)
         c.argument('incremental_repair', options_list=['--incremental-repair', '-e'], arg_type=get_three_state_flag(), help="Defines if incremental repair should be done. [true/false]. True when this flag is passed. False otherwise.", required=False)
-        c.argument('nodes', options_list=['--nodes', '-n'], validator=validate_node_list, help="A specific comma separated list of nodes IP address whose tokens should be repaired.", required=False)
-        c.argument('data_centers', options_list=['--data-center', '-d'], validator=validate_datacenter_list, help="A specific comma separated list of datacenters to repair.", required=False)
-        c.argument('black_listed_tables', options_list=['--black-listed-tables', '-b'], validator=validate_blacklisted_list, help="The name of the tables that should not be repaired. Cannot be used in conjunction with the tables parameter.", required=False)
+        c.argument('nodes', options_list=['--nodes', '-n'], help="A specific comma separated list of nodes IP address whose tokens should be repaired.", required=False)
+        c.argument('data_centers', options_list=['--data-center', '-d'], help="A specific comma separated list of datacenters to repair.", required=False)
+        c.argument('black_listed_tables', options_list=['--black-listed-tables', '-b'], help="The name of the tables that should not be repaired. Cannot be used in conjunction with the tables parameter.", required=False)
         c.argument('repair_thread_count', options_list=['--repair-thread-count', '-u'], help="Thread Count to be used for the parallel repair. Since Cassandra 2.2, repairs can be performed with up to 4 threads in order to parallelize the work on different token ranges.", required=False)
         c.argument('repair_not_start', options_list=['--repair-not-start'], arg_type=get_three_state_flag(), help="When this flag is passed, the repair is not started by default. When not passed, the created repair is also started.", required=False)
 

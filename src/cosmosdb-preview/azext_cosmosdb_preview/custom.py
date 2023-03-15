@@ -399,19 +399,34 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
                                                 repair_not_start):
 
     logger.debug (f"before api call. {black_listed_tables}")
+    tableList = None
+    if (tables is not None):
+        tableList = tables.split(',')
     
+    nodeList = None
+    if (nodes is not None):
+        nodeList = nodes.split(',')
+
+    dcList = None
+    if (data_centers is not None):
+        dcList = data_centers.split(',')
+
+    bList = None
+    if (black_listed_tables is not None):
+        bList = black_listed_tables.split(',')
+
     repair_properties = CassandraClusterRepairPublicProperties(
         keyspace=keyspace,
         owner=owner,
         cause=cause,
-        tables=tables,
+        tables=tableList,
         segment_count=segment_count,
         repair_parallelism=repair_parallelism,
         intensity=intensity,
         incremental_repair=incremental_repair,
-        nodes=nodes,
-        data_centers=data_centers,
-        black_listed_tables=black_listed_tables,
+        nodes=nodeList,
+        data_centers=dcList,
+        black_listed_tables=bList,
         repair_thread_count=repair_thread_count,
         auto_start= not repair_not_start
     )

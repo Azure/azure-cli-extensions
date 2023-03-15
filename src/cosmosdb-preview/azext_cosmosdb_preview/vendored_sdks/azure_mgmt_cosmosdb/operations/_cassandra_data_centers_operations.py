@@ -358,8 +358,9 @@ class CassandraDataCentersOperations:
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -422,8 +423,9 @@ class CassandraDataCentersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -475,8 +477,9 @@ class CassandraDataCentersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -612,8 +615,9 @@ class CassandraDataCentersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -736,8 +740,8 @@ class CassandraDataCentersOperations:
         :type cluster_name: str
         :param data_center_name: Data center name in a managed Cassandra cluster. Required.
         :type data_center_name: str
-        :param body: Parameters specifying the managed Cassandra data center. Is either a model type or
-         a IO type. Required.
+        :param body: Parameters specifying the managed Cassandra data center. Is either a
+         DataCenterResource type or a IO type. Required.
         :type body: ~azure.mgmt.cosmosdb.models.DataCenterResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -855,8 +859,9 @@ class CassandraDataCentersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -977,7 +982,7 @@ class CassandraDataCentersOperations:
         :param data_center_name: Data center name in a managed Cassandra cluster. Required.
         :type data_center_name: str
         :param body: Parameters to provide for specifying the managed Cassandra data center. Is either
-         a model type or a IO type. Required.
+         a DataCenterResource type or a IO type. Required.
         :type body: ~azure.mgmt.cosmosdb.models.DataCenterResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.

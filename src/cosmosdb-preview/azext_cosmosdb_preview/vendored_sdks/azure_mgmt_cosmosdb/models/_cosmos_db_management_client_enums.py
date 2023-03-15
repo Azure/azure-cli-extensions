@@ -36,6 +36,7 @@ class AuthenticationMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     NONE = "None"
     CASSANDRA = "Cassandra"
+    LDAP = "Ldap"
 
 
 class BackupPolicyMigrationStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -72,6 +73,13 @@ class CassandraRepairRunStateEnum(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     PAUSED = "PAUSED"
     ABORTED = "ABORTED"
     DELETED = "DELETED"
+
+
+class ClusterType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the cluster. If set to Production, some operations might not be permitted on cluster."""
+
+    PRODUCTION = "Production"
+    NON_PRODUCTION = "NonProduction"
 
 
 class CompositePathSortOrder(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -140,7 +148,6 @@ class DataTransferComponent(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """DataTransferComponent."""
 
     COSMOS_DB_CASSANDRA = "CosmosDBCassandra"
-    COSMOS_DB_MONGO = "CosmosDBMongo"
     COSMOS_DB_SQL = "CosmosDBSql"
     AZURE_BLOB_STORAGE = "AzureBlobStorage"
 
@@ -215,6 +222,16 @@ class ManagedCassandraResourceIdentityType(str, Enum, metaclass=CaseInsensitiveE
 
     SYSTEM_ASSIGNED = "SystemAssigned"
     NONE = "None"
+
+
+class MinimalTlsVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and
+    Mongo API's, which only work with Tls 1.2.
+    """
+
+    TLS = "Tls"
+    TLS11 = "Tls11"
+    TLS12 = "Tls12"
 
 
 class MongoRoleDefinitionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

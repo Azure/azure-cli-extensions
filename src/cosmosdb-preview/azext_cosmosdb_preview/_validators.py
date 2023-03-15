@@ -247,30 +247,30 @@ def validate_mongo_user_definition_id(ns):
         ns.mongo_user_definition_id = _parse_resource_path(ns.mongo_user_definition_id, False, "mongodbUserDefinitions")
 
 
-def validate_table_list(ns):
-    """ Extract comma separated string to a list """
-    if ns.tables is not None:
-        ns.table = ns.table.split(',')
+# def validate_table_list(ns):
+#     """ Extract comma separated string to a list """
+#     if ns.tables is not None:
+#         ns.table = ns.table.split(',')
 
 
-def validate_node_list(ns):
-    """ Extract comma separated string to a list """
-    if ns.nodes is not None:
-        ns.nodes = ns.nodes.split(',')
+# def validate_node_list(ns):
+#     """ Extract comma separated string to a list """
+#     if ns.nodes is not None:
+#         ns.nodes = ns.nodes.split(',')
 
 
-def validate_datacenter_list(ns):
-    """ Extract comma separated string to a list """
-    if ns.data_centers is not None:
-        ns.data_centers = ns.data_centers.split(',')
+# def validate_datacenter_list(ns):
+#     """ Extract comma separated string to a list """
+#     if ns.data_centers is not None:
+#         ns.data_centers = ns.data_centers.split(',')
 
 
-def validate_blacklisted_list(ns):
-    """ Extract comma separated string to a list """
-    print ("after validate")
-    print (ns.black_listed_tables)
-    if ns.black_listed_tables is not None:
-        ns.black_listed_tables = ns.black_listed_tables.split(',')
-        print ("after validate")
-        print (ns.black_listed_tables)
+# def validate_blacklisted_list(ns):
+#     """ Extract comma separated string to a list """
+#     print ("after validate")
+#     print (ns.black_listed_tables)
+#     if ns.black_listed_tables is not None:
+#         ns.black_listed_tables = ns.black_listed_tables.split(',')
+#         print ("after validate")
+#         print (ns.black_listed_tables)
 

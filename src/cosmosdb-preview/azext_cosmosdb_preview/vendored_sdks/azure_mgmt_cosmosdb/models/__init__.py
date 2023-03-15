@@ -11,6 +11,7 @@ from ._models_py3 import ARMResourceProperties
 from ._models_py3 import AccountKeyMetadata
 from ._models_py3 import AnalyticalStorageConfiguration
 from ._models_py3 import ApiProperties
+from ._models_py3 import AuthenticationMethodLdapProperties
 from ._models_py3 import AutoUpgradePolicyResource
 from ._models_py3 import AutoscaleSettings
 from ._models_py3 import AutoscaleSettingsResource
@@ -18,6 +19,9 @@ from ._models_py3 import AzureBlobDataTransferDataSourceSink
 from ._models_py3 import BackupInformation
 from ._models_py3 import BackupPolicy
 from ._models_py3 import BackupPolicyMigrationState
+from ._models_py3 import BackupResource
+from ._models_py3 import BackupResourceProperties
+from ._models_py3 import BackupSchedule
 from ._models_py3 import Capability
 from ._models_py3 import Capacity
 from ._models_py3 import CassandraClusterDataCenterNodeItem
@@ -26,6 +30,7 @@ from ._models_py3 import CassandraClusterPublicStatusDataCentersItem
 from ._models_py3 import CassandraClusterRepairListFilter
 from ._models_py3 import CassandraClusterRepairPublicProperties
 from ._models_py3 import CassandraClusterRepairPublicResource
+from ._models_py3 import CassandraError
 from ._models_py3 import CassandraKeyspaceCreateUpdateParameters
 from ._models_py3 import CassandraKeyspaceGetPropertiesOptions
 from ._models_py3 import CassandraKeyspaceGetPropertiesResource
@@ -82,7 +87,6 @@ from ._models_py3 import ContinuousModeBackupPolicy
 from ._models_py3 import ContinuousModeProperties
 from ._models_py3 import CorsPolicy
 from ._models_py3 import CosmosCassandraDataTransferDataSourceSink
-from ._models_py3 import CosmosMongoDataTransferDataSourceSink
 from ._models_py3 import CosmosSqlDataTransferDataSourceSink
 from ._models_py3 import CreateJobRequest
 from ._models_py3 import CreateUpdateOptions
@@ -139,6 +143,7 @@ from ._models_py3 import Indexes
 from ._models_py3 import IndexingPolicy
 from ._models_py3 import IpAddressOrRange
 from ._models_py3 import KeyWrapMetadata
+from ._models_py3 import ListBackups
 from ._models_py3 import ListClusters
 from ._models_py3 import ListDataCenters
 from ._models_py3 import Location
@@ -328,6 +333,7 @@ from ._cosmos_db_management_client_enums import BackupPolicyMigrationStatus
 from ._cosmos_db_management_client_enums import BackupPolicyType
 from ._cosmos_db_management_client_enums import BackupStorageRedundancy
 from ._cosmos_db_management_client_enums import CassandraRepairRunStateEnum
+from ._cosmos_db_management_client_enums import ClusterType
 from ._cosmos_db_management_client_enums import CompositePathSortOrder
 from ._cosmos_db_management_client_enums import ConflictResolutionMode
 from ._cosmos_db_management_client_enums import ConnectionState
@@ -345,6 +351,7 @@ from ._cosmos_db_management_client_enums import IndexingMode
 from ._cosmos_db_management_client_enums import KeyKind
 from ._cosmos_db_management_client_enums import ManagedCassandraProvisioningState
 from ._cosmos_db_management_client_enums import ManagedCassandraResourceIdentityType
+from ._cosmos_db_management_client_enums import MinimalTlsVersion
 from ._cosmos_db_management_client_enums import MongoRoleDefinitionType
 from ._cosmos_db_management_client_enums import NetworkAclBypass
 from ._cosmos_db_management_client_enums import NodeState
@@ -376,6 +383,7 @@ __all__ = [
     "AccountKeyMetadata",
     "AnalyticalStorageConfiguration",
     "ApiProperties",
+    "AuthenticationMethodLdapProperties",
     "AutoUpgradePolicyResource",
     "AutoscaleSettings",
     "AutoscaleSettingsResource",
@@ -383,6 +391,9 @@ __all__ = [
     "BackupInformation",
     "BackupPolicy",
     "BackupPolicyMigrationState",
+    "BackupResource",
+    "BackupResourceProperties",
+    "BackupSchedule",
     "Capability",
     "Capacity",
     "CassandraClusterDataCenterNodeItem",
@@ -391,6 +402,7 @@ __all__ = [
     "CassandraClusterRepairListFilter",
     "CassandraClusterRepairPublicProperties",
     "CassandraClusterRepairPublicResource",
+    "CassandraError",
     "CassandraKeyspaceCreateUpdateParameters",
     "CassandraKeyspaceGetPropertiesOptions",
     "CassandraKeyspaceGetPropertiesResource",
@@ -447,7 +459,6 @@ __all__ = [
     "ContinuousModeProperties",
     "CorsPolicy",
     "CosmosCassandraDataTransferDataSourceSink",
-    "CosmosMongoDataTransferDataSourceSink",
     "CosmosSqlDataTransferDataSourceSink",
     "CreateJobRequest",
     "CreateUpdateOptions",
@@ -504,6 +515,7 @@ __all__ = [
     "IndexingPolicy",
     "IpAddressOrRange",
     "KeyWrapMetadata",
+    "ListBackups",
     "ListClusters",
     "ListDataCenters",
     "Location",
@@ -692,6 +704,7 @@ __all__ = [
     "BackupPolicyType",
     "BackupStorageRedundancy",
     "CassandraRepairRunStateEnum",
+    "ClusterType",
     "CompositePathSortOrder",
     "ConflictResolutionMode",
     "ConnectionState",
@@ -709,6 +722,7 @@ __all__ = [
     "KeyKind",
     "ManagedCassandraProvisioningState",
     "ManagedCassandraResourceIdentityType",
+    "MinimalTlsVersion",
     "MongoRoleDefinitionType",
     "NetworkAclBypass",
     "NodeState",
