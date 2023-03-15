@@ -240,11 +240,18 @@ def load_arguments(self, _):
 
     # Managed Cassandra Backup Schedule
     for scope in [
-        'managed-cassandra backup schedule create',
+        'managed-cassandra backup schedule create']:
+        with self.argument_context(scope) as c:
+            c.argument('cron_expression', options_list=['--cron-expression', '-e'], help="Cron Expression", required=True)
+            c.argument('retention_in_hours', options_list=['--retention-in-hours', '-r'], help="Retention in hours", required=True)
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
         'managed-cassandra backup schedule update']:
         with self.argument_context(scope) as c:
             c.argument('cron_expression', options_list=['--cron-expression', '-e'], help="Cron Expression", required=False)
             c.argument('retention_in_hours', options_list=['--retention-in-hours', '-r'], help="Retention in hours", required=False)
+
 
     # Services
     with self.argument_context('cosmosdb service') as c:

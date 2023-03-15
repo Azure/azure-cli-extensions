@@ -397,7 +397,9 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
                                                 black_listed_tables,
                                                 repair_thread_count,
                                                 repair_not_start):
-       
+
+    logger.debug (f"before api call. {black_listed_tables}")
+    
     repair_properties = CassandraClusterRepairPublicProperties(
         keyspace=keyspace,
         owner=owner,
@@ -410,7 +412,8 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
         nodes=nodes,
         data_centers=data_centers,
         black_listed_tables=black_listed_tables,
-        repair_thread_count=repair_thread_count
+        repair_thread_count=repair_thread_count,
+        auto_start= not repair_not_start
     )
 
     repair_resource = CassandraClusterRepairPublicResource(
@@ -508,7 +511,7 @@ def cli_cosmosdb_managed_cassandra_backup_create(client,
                                                  cron_expression,
                                                  retention_in_hours):
     
-    if (retention_in_hours < 0):
+    if (int(retention_in_hours) < 0):
         raise InvalidArgumentValueError('--retention-in-hours must be greater than 0.')
 
     backup_schedule = BackupSchedule(
@@ -519,13 +522,16 @@ def cli_cosmosdb_managed_cassandra_backup_create(client,
 
     cluster_resource = client.get(resource_group_name, cluster_name)
     backup_schedules_list = cluster_resource.properties.backup_schedules
-    backup_schedules_list.add(backup_schedule)
+    backup_schedules_list.append(backup_schedule)
 
     cluster_properties = ClusterResourceProperties(
+        delegated_management_subnet_id=cluster_resource.properties.delegated_management_subnet_id,
         backup_schedules=backup_schedules_list
     )
 
     cluster_resource_create_update_parameters = ClusterResource(
+        location=cluster_resource.location,
+        tags=cluster_resource.tags,
         properties=cluster_properties)
 
     return client.begin_create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
