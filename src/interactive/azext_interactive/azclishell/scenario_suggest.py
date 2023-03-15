@@ -45,25 +45,26 @@ class ScenarioAutoSuggest(AutoSuggest):
         # remove the 'az ' part of command
         command_text = command_text.split('az ')[-1]
         cur_param = ''
-        cur_param_list = None
+        special_global_param_list = None
         for part in command_text.split():
             if part.startswith('-'):
                 # if the parameter is a special global parameter, use the parameter itself as the key
                 if part in self.special_global_param_map.keys():
-                    # because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
-                    cur_param_list = self.special_global_param_map[part]
-                    for param in cur_param_list:
+                    # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
+                    special_global_param_list = self.special_global_param_map[part]
+                    for param in special_global_param_list:
                         self.customized_param_value_map[param] = ''
                     cur_param = ''
                 else:
                     cur_param = self.param_value_map[part]
                     self.customized_param_value_map[cur_param] = ''
-                    cur_param_list = None
+                    special_global_param_list = None
             elif cur_param:
                 self.customized_param_value_map[cur_param] += ' ' + part
                 self.customized_param_value_map[cur_param] = self.customized_param_value_map[cur_param].strip()
-            elif cur_param_list:
-                for param in cur_param_list:
+            # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
+            elif special_global_param_list:
+                for param in special_global_param_list:
                     self.customized_param_value_map[param] += ' ' + part
                     self.customized_param_value_map[param] = self.customized_param_value_map[param].strip()
 
@@ -122,12 +123,13 @@ class ScenarioAutoSuggest(AutoSuggest):
                     suggests = []
                     for param in unused_param:
                         if param in self.special_global_param_map.keys():
-                            raw_value = param
+                            # sample_value is the sample values in scenarios, such as <RESOURCEGROUPNAME>
+                            sample_value = param
                         else:
-                            raw_value = self.param_value_map[param]
-                        if raw_value:
-                            if raw_value in self.customized_param_value_map.keys():
-                                value = self.customized_param_value_map[raw_value]
+                            sample_value = self.param_value_map[param]
+                        if sample_value:
+                            if sample_value in self.customized_param_value_map.keys():
+                                value = self.customized_param_value_map[sample_value]
                             else:
                                 value = ''
                             suggests.append({'param': param, 'value': value})

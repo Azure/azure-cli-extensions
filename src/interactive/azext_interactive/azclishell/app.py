@@ -842,7 +842,7 @@ class AzInteractiveShell(object):
         progress_bar.begin()
 
         # still loading commands, show the time of loading
-        while self.command_table_thread.is_alive() and ((not time_loading_too_long) or continue_loading == True or already_prompted == False):
+        while self.command_table_thread.is_alive():
             time_spent_on_loading = time.time() - self.command_table_thread.start_time
             progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Already spent {} seconds on loading.".format(round(time_spent_on_loading, 1)))
             progress_bar.update_progress()
@@ -856,6 +856,9 @@ class AzInteractiveShell(object):
                             (Style.PRIMARY, "If you choose n, it will start the shell immediately, but it may cause unknown errors due to incomplete module loading.\n")]
                 continue_loading = get_yes_or_no_option(step_msg)
                 already_prompted = True
+                # if the customer chooses not to continue loading, break the loading loop
+                if time_loading_too_long and continue_loading == False:
+                    break
         progress_bar.stop()
 
         # init customized processing bar
@@ -880,11 +883,12 @@ class AzInteractiveShell(object):
                     self.set_prompt()
                     continue
                 cmd = text
-                # TODO: add paraser to maintain customized value for certain parameters
                 outside = False
 
             except AttributeError:
                 # when the user pressed Control D
+                # IDEA: Create learning mode, automatically create temp-resource-group when initialized and put all resources in this temp-resource-group automatically;
+                # IDEA: Automatically delete the whole temp-resource-group when the user logs out or when no operation is invoked for one hour.
                 # TODO: prompt a notice to ask if the user wants to delete all the resources created
                 break
             except (KeyboardInterrupt, ValueError):
