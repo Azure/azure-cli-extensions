@@ -1,5 +1,10 @@
 Release History
 ===============
+1.7.2
+---
+* Support `--no-wait` in `az spring dev-tool`.
+* [BREAKING CHANGE] Add delete confirmation in `az spring dev-tool` and `az spring application-live-view`.
+
 1.7.1
 ---
 * Remove dependency to NETWORK SDK
