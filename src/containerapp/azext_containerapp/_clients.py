@@ -8,7 +8,6 @@ import json
 import time
 import sys
 
-from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
@@ -172,6 +171,7 @@ class ContainerAppClient():
         if no_wait:
             return r.json()
         elif r.status_code == 202:
+            from azure.cli.core.azclierror import ResourceNotFoundError
             operation_url = r.headers[HEADER_LOCATION]
             response = poll_results(cmd, operation_url)
             if response is None:
@@ -523,6 +523,7 @@ class ManagedEnvironmentClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
+            from azure.cli.core.azclierror import ResourceNotFoundError
             operation_url = r.headers[HEADER_LOCATION]
             response = poll_results(cmd, operation_url)
             if response is None:
