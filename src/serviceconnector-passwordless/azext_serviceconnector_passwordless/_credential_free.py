@@ -34,6 +34,7 @@ logger = get_logger(__name__)
 
 AUTHTYPES = {
     AUTH_TYPE.SystemIdentity: 'systemAssignedIdentity',
+    AUTH_TYPE.UserIdentity: 'userAssignedIdentity',
     AUTH_TYPE.UserAccount: 'userAccount'
 }
 IP_ADDRESS_CHECKER = 'https://api.ipify.org'
@@ -47,7 +48,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
 
     def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name):
         # return if connection is not for db mi
-        if auth_info['auth_type'] not in {AUTHTYPES[AUTH_TYPE.SystemIdentity], AUTHTYPES[AUTH_TYPE.UserAccount]}:
+        if auth_info['auth_type'] not in {AUTHTYPES[AUTH_TYPE.SystemIdentity], AUTHTYPES[AUTH_TYPE.UserIdentity], AUTHTYPES[AUTH_TYPE.UserAccount]}:
             return None
 
         source_type = get_source_resource_name(cmd)
@@ -56,7 +57,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
         if source_handler is None:
             return None
         target_handler = getTargetHandler(
-            cmd, target_id, target_type, auth_info['auth_type'], client_type, connection_name, skip_prompt=yes)
+            cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt=yes)
         if target_handler is None:
             return None
 
@@ -66,23 +67,35 @@ def get_enable_mi_for_db_linker_func(yes=False):
 
         if user_object_id is None:
             raise Exception(
-                "No object id for user {}".format(target_handler.login_username))
+                "No object id for current user {}".format(target_handler.login_username))
 
         target_handler.user_object_id = user_object_id
         if source_type != RESOURCE.Local:
-            # enable source mi
-            source_object_id = source_handler.get_identity_pid()
-            target_handler.identity_object_id = source_object_id
-            try:
-                identity_info = run_cli_cmd(
-                    'az ad sp show --id {}'.format(source_object_id), 15, 10)
-                target_handler.identity_client_id = identity_info.get('appId')
-                target_handler.identity_name = identity_info.get('displayName')
-            except CLIInternalError as e:
-                if 'AADSTS530003' in e.error_msg:
-                    logger.warning(
-                        'Please ask your IT department for help to join this device to Azure Active Directory.')
-                raise e
+            source_object_id = None
+            if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+                # enable source mi
+                source_object_id = source_handler.get_identity_pid()
+                target_handler.identity_object_id = source_object_id
+                try:
+                    identity_info = run_cli_cmd(
+                        'az ad sp show --id {}'.format(source_object_id), 15, 10)
+                    target_handler.identity_client_id = identity_info.get('appId')
+                    target_handler.identity_name = identity_info.get('displayName')
+                except CLIInternalError as e:
+                    if 'AADSTS530003' in e.error_msg:
+                        logger.warning(
+                            'Please ask your IT department for help to join this device to Azure Active Directory.')
+                    raise e
+            elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+                source_client_id = auth_info.get('client_id')
+                umi_info = run_cli_cmd(f'az identity list --query "[?clientId==\'{source_client_id}\']"')
+                if umi_info is None or len(umi_info) == 0:
+                    raise Exception(
+                        "No identity found for client id {}".format(source_client_id))
+                source_object_id = umi_info[0].get('principalId')
+                target_handler.identity_object_id = source_object_id
+                target_handler.identity_client_id = source_client_id
+                target_handler.identity_name = umi_info[0].get('name')
 
         # enable target aad authentication and set login user as db aad admin
         target_handler.enable_target_aad_auth()
@@ -97,21 +110,22 @@ def get_enable_mi_for_db_linker_func(yes=False):
 
 
 # pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
-def getTargetHandler(cmd, target_id, target_type, auth_type, client_type, connection_name, skip_prompt):
+def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt):
     if target_type in {RESOURCE.Sql}:
-        return SqlHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+        return SqlHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
     if target_type in {RESOURCE.Postgres}:
-        return PostgresSingleHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+        return PostgresSingleHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
     if target_type in {RESOURCE.PostgresFlexible}:
-        return PostgresFlexHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+        return PostgresFlexHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
     if target_type in {RESOURCE.MysqlFlexible}:
-        return MysqlFlexibleHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+        return MysqlFlexibleHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
     return None
 
 
 class TargetHandler:
     cmd = None
     auth_type = ""
+    auth_info = None
 
     tenant_id = ""
     subscription = ""
@@ -133,7 +147,7 @@ class TargetHandler:
 
     skip_prompt = False
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         self.cmd = cmd
         self.target_id = target_id
         self.target_type = target_type
@@ -142,7 +156,8 @@ class TargetHandler:
         target_segments = parse_resource_id(target_id)
         self.subscription = target_segments.get('subscription')
         self.resource_group = target_segments.get('resource_group')
-        self.auth_type = auth_type
+        self.auth_type = auth_info['auth_type']
+        self.auth_info = auth_info
         self.login_username = run_cli_cmd(
             'az account show').get("user").get("name")
         self.login_usertype = run_cli_cmd(
@@ -178,6 +193,13 @@ class TargetHandler:
                 'auth_type': self.auth_type,
                 'username': self.aad_username,
             }
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+            return {
+                'auth_type': self.auth_type,
+                'username': self.aad_username,
+                'client_id': self.identity_client_id,
+                'subscription_id': self.auth_info['subscription_id'],
+            }
         return None
 
 
@@ -186,8 +208,8 @@ class MysqlFlexibleHandler(TargetHandler):
     server = ""
     dbname = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
-        super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
+        super().__init__(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
         self.endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
@@ -341,9 +363,10 @@ class SqlHandler(TargetHandler):
 
     server = ""
     dbname = ""
+    ip = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
-        super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
+        super().__init__(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
         self.endpoint = cmd.cli_ctx.cloud.suffixes.sql_server_hostname
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
@@ -471,6 +494,8 @@ class SqlHandler(TargetHandler):
     def get_create_query(self):
         if self.auth_type == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
             self.aad_username = self.identity_name
+        if self.auth_type == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+            self.aad_username = self.identity_name
         if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
             self.aad_username = self.login_username
         role_q = "CREATE USER \"{}\" FROM EXTERNAL PROVIDER;".format(
@@ -488,8 +513,8 @@ class PostgresFlexHandler(TargetHandler):
     dbname = ""
     ip = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
-        super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
+    def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
+        super().__init__(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
         self.endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
         target_segments = parse_resource_id(target_id)
         self.db_server = target_segments.get('name')
