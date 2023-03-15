@@ -397,7 +397,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         )
 
         tar_location = ""
-        layer_cache = {}
         if isinstance(tar_mapping, str):
             tar_location = tar_mapping
         proxy = self._get_rootfs_proxy()
@@ -475,13 +474,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 if isinstance(tar_mapping, dict):
                     tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
                 # populate layer info
-                if layer_cache.get(image_name):
-                    image.set_layers(layer_cache.get(image_name))
-                else:
-                    image.set_layers(proxy.get_policy_image_layers(
-                        image.base, image.tag, tar_location=tar_location if tar else ""
-                    ))
-                    layer_cache[image_name] = image.get_layers()
+                image.set_layers(proxy.get_policy_image_layers(
+                    image.base, image.tag, tar_location=tar_location if tar else ""
+                ))
+
                 progress.update()
             progress.close()
             self.close()
