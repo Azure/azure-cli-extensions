@@ -265,16 +265,10 @@ def get_portal_uri(cli_ctx):
 
 def get_proxy_api_endpoint(cli_ctx, spring_resource):
     """Get the endpoint of the proxy api."""
-    if spring_resource.properties.fqdn:
-        return spring_resource.properties.fqdn
+    if not spring_resource.properties.fqdn:
+        raise ValidationError('The property of the service "fqdn" is empty.')
 
-    service_id = spring_resource.properties.service_id
-    service_id = service_id.replace('-', '')
-    cloud_name = cli_ctx.cloud.name
-    if cloud_name == 'AzureCloud':
-        return f'{service_id}.svc.azuremicroservices.io'
-    else:
-        raise ValidationError('Unsupported Azure cloud: ' + cloud_name)
+    return spring_resource.properties.fqdn
 
 
 def get_spring_sku(client, resource_group, name):
