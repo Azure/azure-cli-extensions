@@ -1,5 +1,9 @@
 Release History
 ===============
+1.1.5
+-----
+* Fix issue of getting vm network interface `publicIPAddress` ref 
+
 1.1.4
 -----
 * Remove dependency to NETWORK SDK
