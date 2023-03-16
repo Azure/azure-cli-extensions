@@ -77,6 +77,9 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
     from azure.core.exceptions import HttpResponseError
     from ._utils import safe_get
 
+    if not request_url:
+        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_AZURE_ASYNC_OPERATION}'")
+
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
     animation = PollingAnimation()
@@ -107,6 +110,9 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
 
 
 def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-statements
+    if not request_url:
+        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_LOCATION}'")
+
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
     animation = PollingAnimation()
@@ -145,8 +151,6 @@ class ContainerAppClient():
             return r.json()
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
-            if not operation_url:
-                raise AzureResponseError(f"Http response headers lack of necessary property: '{HEADER_AZURE_ASYNC_OPERATION}'")
             poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
             request_url = url_fmt.format(
@@ -180,8 +184,6 @@ class ContainerAppClient():
             return r.json()
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            if not operation_url:
-                raise AzureResponseError(f"Http response headers lack of necessary property: '{HEADER_LOCATION}'")
             response = poll_results(cmd, operation_url)
             if response is None:
                 raise ResourceNotFoundError("Could not find a container app")
@@ -210,8 +212,6 @@ class ContainerAppClient():
         elif r.status_code in [200, 201, 202, 204]:
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
-                if not operation_url:
-                    raise AzureResponseError(f"Http response headers lack of necessary property: '{HEADER_LOCATION}'")
                 poll_results(cmd, operation_url)
                 logger.warning('Containerapp successfully deleted')
 
@@ -504,8 +504,6 @@ class ManagedEnvironmentClient():
             return r.json()
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
-            if operation_url is None:
-                raise AzureResponseError(f"Http response headers lack of necessary property: '{HEADER_AZURE_ASYNC_OPERATION}'")
             poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
             request_url = url_fmt.format(
@@ -537,8 +535,6 @@ class ManagedEnvironmentClient():
             return r.json()
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_LOCATION)
-            if not operation_url:
-                raise AzureResponseError(f"Http response headers lack of necessary property: '{HEADER_LOCATION}'")
             response = poll_results(cmd, operation_url)
             if response is None:
                 raise ResourceNotFoundError("Could not find a managed environment")
@@ -567,8 +563,6 @@ class ManagedEnvironmentClient():
         elif r.status_code in [200, 201, 202, 204]:
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
-                if not operation_url:
-                    raise AzureResponseError(f"Http response headers lack of necessary property: '{HEADER_LOCATION}'")
                 poll_results(cmd, operation_url)
                 logger.warning('Containerapp environment successfully deleted')
         return
