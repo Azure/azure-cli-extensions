@@ -395,8 +395,7 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
                                                 nodes,
                                                 data_centers,
                                                 black_listed_tables,
-                                                repair_thread_count,
-                                                repair_not_start):
+                                                repair_thread_count):
 
     logger.debug (f"before api call. {black_listed_tables}")
     tableList = None
@@ -426,9 +425,8 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
         incremental_repair=incremental_repair,
         nodes=nodeList,
         data_centers=dcList,
-        black_listed_tables=bList,
-        repair_thread_count=repair_thread_count,
-        auto_start= not repair_not_start
+        blacklisted_tables=bList,
+        repair_thread_count=repair_thread_count
     )
 
     repair_resource = CassandraClusterRepairPublicResource(

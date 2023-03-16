@@ -31,6 +31,7 @@ from .operations import (
     GraphResourcesOperations,
     GremlinResourcesOperations,
     LocationsOperations,
+    MongoClustersOperations,
     MongoDBResourcesOperations,
     NotebookWorkspacesOperations,
     Operations,
@@ -120,6 +121,8 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
      azure.mgmt.cosmosdb.aio.operations.CassandraDataCentersOperations
     :ivar cassandra_repair: CassandraRepairOperations operations
     :vartype cassandra_repair: azure.mgmt.cosmosdb.aio.operations.CassandraRepairOperations
+    :ivar mongo_clusters: MongoClustersOperations operations
+    :vartype mongo_clusters: azure.mgmt.cosmosdb.aio.operations.MongoClustersOperations
     :ivar notebook_workspaces: NotebookWorkspacesOperations operations
     :vartype notebook_workspaces: azure.mgmt.cosmosdb.aio.operations.NotebookWorkspacesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
@@ -171,7 +174,7 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2022-11-15-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2023-03-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -250,6 +253,7 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
         self.cassandra_repair = CassandraRepairOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
+        self.mongo_clusters = MongoClustersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.notebook_workspaces = NotebookWorkspacesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )

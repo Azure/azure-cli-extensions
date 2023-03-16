@@ -187,7 +187,6 @@ def load_arguments(self, _):
         c.argument('data_centers', options_list=['--data-center', '-d'], help="A specific comma separated list of datacenters to repair.", required=False)
         c.argument('black_listed_tables', options_list=['--black-listed-tables', '-b'], help="The name of the tables that should not be repaired. Cannot be used in conjunction with the tables parameter.", required=False)
         c.argument('repair_thread_count', options_list=['--repair-thread-count', '-u'], help="Thread Count to be used for the parallel repair. Since Cassandra 2.2, repairs can be performed with up to 4 threads in order to parallelize the work on different token ranges.", required=False)
-        c.argument('repair_not_start', options_list=['--repair-not-start'], arg_type=get_three_state_flag(), help="When this flag is passed, the repair is not started by default. When not passed, the created repair is also started.", required=False)
 
     # Managed Cassandra Repair
     for scope in [
