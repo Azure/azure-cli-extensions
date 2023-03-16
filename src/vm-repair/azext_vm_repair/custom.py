@@ -580,7 +580,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_name = subnet_id_tokens[-3]
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
-        orig_ip_address = ip_config_object['privateIpAddress']
+        orig_ip_address = ip_config_object['privateIPAddress']
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
 
