@@ -17,7 +17,6 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help='')
         c.argument('location', arg_type=get_enum_type(Supported_Locations))
         c.argument('mode', options_list=['--mode'], help='')
-        c.argument('kubeconfig_path', options_list=['--kubeconfig-path'], help='If set, the kubeconfig of the provisioned microk8s cluster will be saved to this path instead of the default path')
         c.argument('https_proxy', options_list=['--proxy-https'], arg_group='Proxy', help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], arg_group='Proxy', help='Http proxy URL to be used.')
         c.argument('no_proxy', options_list=['--proxy-skip-range'], arg_group='Proxy', help='List of URLs/CIDRs for which proxy should not to be used.')

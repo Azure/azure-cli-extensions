@@ -43,7 +43,7 @@ def validate_hybrid_appliance(resource_group_name, name):
         logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
-    endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
+    endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
 
     for endpoint in endpoints:
         try:
@@ -54,10 +54,19 @@ def validate_hybrid_appliance(resource_group_name, name):
     
     try:
         cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
-        process = subprocess.Popen(cmd_show_arc)
+        process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if process.wait() == 0:
             print("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
             all_validations_passed = False
+        stdout = process.stdout.read().decode()
+        stderr = process.stderr.read().decode()
+        if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
+            all_validations_passed = False
+            print("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
+        if "AuthorizationFailed" in stdout or "AuthorizationFailed" in stderr:
+            all_validations_passed = False
+            print("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
+
     except Exception as e:
         print(type(e))
         print(str(e))
@@ -68,11 +77,9 @@ def validate_hybrid_appliance(resource_group_name, name):
     else:
         print("All pre-requisite validations have passed successfully")
 
-def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, kubeconfig_path=None):
+def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None):
     kubectl_client_location = utils.install_kubectl_client()
     latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
-    if kubeconfig_path:
-        os.environ["KUBECONFIG_PATH"] = kubeconfig_path
     os.environ["MICROK8S_VERSION"] = "{}.{}".format(latestMajorVersion, latestMinorVersion)
     os.environ["KUBECTL_CLIENT_LOCATION"] = "{}".format(kubectl_client_location)
 
@@ -103,8 +110,6 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         cmd_onboard_arc.extend(["--proxy-skip-range", no_proxy])
     if proxy_cert:
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
-    if kubeconfig_path is not None:
-        cmd_onboard_arc.extend(['--kube-config', kubeconfig_path])
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
