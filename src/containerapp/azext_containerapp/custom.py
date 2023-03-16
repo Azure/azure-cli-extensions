@@ -2737,7 +2737,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
 
-def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None, location=None):
+def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
     if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
         raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
     cert_name = certificate_name
@@ -2745,7 +2745,7 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
         cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
         if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
             cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location)
+    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method)
     try:
         r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
         return r
