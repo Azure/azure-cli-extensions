@@ -13,8 +13,6 @@ from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 
-from ._utils import safe_get
-
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2022-11-01-preview"
@@ -77,6 +75,8 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
 
 def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statements
     from azure.core.exceptions import HttpResponseError
+    from ._utils import safe_get
+
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
     animation = PollingAnimation()
