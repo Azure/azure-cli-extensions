@@ -146,6 +146,13 @@ class DatabricksClientScenarioTest(ScenarioTest):
                          self.check('publicNetworkAccess', 'Enabled'),
                          self.check('requiredNsgRules', 'AllRules')])
 
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--sku standard ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'standard')])
+
         self.cmd('az databricks workspace delete '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
