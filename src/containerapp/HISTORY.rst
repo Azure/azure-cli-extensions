@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* Fix polling logic for long running operations.
+
 0.3.24
 ++++++
 * Decouple with the `network` module.
