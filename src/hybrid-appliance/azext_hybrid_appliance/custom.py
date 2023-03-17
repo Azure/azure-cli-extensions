@@ -172,10 +172,11 @@ def upgrade_hybrid_appliance(resource_group_name, name):
 def delete_hybrid_appliance(resource_group_name, name):
     try:
         output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
-        if "not running" in output.decode:
-            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
     except:
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+
+    if "not running" in output.decode():
+            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
 
     try:
         azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
