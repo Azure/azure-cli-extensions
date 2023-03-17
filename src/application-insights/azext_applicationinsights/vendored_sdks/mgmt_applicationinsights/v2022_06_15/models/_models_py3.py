@@ -9,14 +9,15 @@
 
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
-from ... import _serialization
+# from ... import _serialization
+import msrest.serialization
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from .. import models as _models
 
 
-class HeaderField(_serialization.Model):
+class HeaderField(msrest.serialization.Model):
     """A header to add to the WebTest.
 
     :ivar header_field_name: The name of the header.
@@ -44,7 +45,7 @@ class HeaderField(_serialization.Model):
         self.header_field_value = header_field_value
 
 
-class TagsResource(_serialization.Model):
+class TagsResource(msrest.serialization.Model):
     """A container holding only the Tags for a resource, allowing the user to update the tags on a
     WebTest instance.
 
@@ -65,7 +66,7 @@ class TagsResource(_serialization.Model):
         self.tags = tags
 
 
-class WebtestsResource(_serialization.Model):
+class WebtestsResource(msrest.serialization.Model):
     """An azure resource object.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -281,7 +282,7 @@ class WebTest(WebtestsResource):  # pylint: disable=too-many-instance-attributes
         self.validation_rules = validation_rules
 
 
-class WebTestGeolocation(_serialization.Model):
+class WebTestGeolocation(msrest.serialization.Model):
     """Geo-physical location to run a WebTest from. You must specify one or more locations for the
     test to run from.
 
@@ -302,7 +303,7 @@ class WebTestGeolocation(_serialization.Model):
         self.location = location
 
 
-class WebTestListResult(_serialization.Model):
+class WebTestListResult(msrest.serialization.Model):
     """A list of 0 or more Application Insights WebTest definitions.
 
     All required parameters must be populated in order to send to Azure.
@@ -336,7 +337,7 @@ class WebTestListResult(_serialization.Model):
         self.next_link = next_link
 
 
-class WebTestPropertiesConfiguration(_serialization.Model):
+class WebTestPropertiesConfiguration(msrest.serialization.Model):
     """An XML configuration specification for a WebTest.
 
     :ivar web_test: The XML specification of a WebTest to run against an application.
@@ -356,7 +357,7 @@ class WebTestPropertiesConfiguration(_serialization.Model):
         self.web_test = web_test
 
 
-class WebTestPropertiesRequest(_serialization.Model):
+class WebTestPropertiesRequest(msrest.serialization.Model):
     """The collection of request properties.
 
     :ivar request_url: Url location to test.
@@ -416,7 +417,7 @@ class WebTestPropertiesRequest(_serialization.Model):
         self.follow_redirects = follow_redirects
 
 
-class WebTestPropertiesValidationRules(_serialization.Model):
+class WebTestPropertiesValidationRules(msrest.serialization.Model):
     """The collection of validation rule properties.
 
     :ivar content_validation: The collection of content validation properties.
@@ -475,7 +476,7 @@ class WebTestPropertiesValidationRules(_serialization.Model):
         self.ignore_http_status_code = ignore_http_status_code
 
 
-class WebTestPropertiesValidationRulesContentValidation(_serialization.Model):
+class WebTestPropertiesValidationRulesContentValidation(msrest.serialization.Model):
     """The collection of content validation properties.
 
     :ivar content_match: Content to look for in the return of the WebTest.  Must not be null or
