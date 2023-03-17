@@ -1,3 +1,5 @@
+set -e
+
 # Setting up microk8s cluster
 echo "MicroK8s version is $MICROK8S_VERSION"
 if [ -z $MICROK8S_VERSION ]; then
