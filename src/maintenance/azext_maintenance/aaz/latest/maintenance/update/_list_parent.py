@@ -24,7 +24,6 @@ class ListParent(AAZCommand):
     _aaz_info = {
         "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/{}/{}/{}/providers/microsoft.maintenance/updates", "2023-04-01"],
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/{}/{}/{}/{}/{}/providers/microsoft.maintenance/updates", "2023-04-01"],
         ]
     }
@@ -55,14 +54,14 @@ class ListParent(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You                                                                        can configure the default                                                                        group using `az configure                                                                        --defaults group=<name>`.",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
             help="Resource identifier",
             required=True,
-            id_part="name",
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^.+$",
             ),
@@ -70,6 +69,7 @@ class ListParent(AAZCommand):
         _args_schema.resource_parent_name = AAZStrArg(
             options=["--resource-parent-name"],
             help="Resource parent identifier",
+            required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^.+$",
@@ -78,6 +78,7 @@ class ListParent(AAZCommand):
         _args_schema.resource_parent_type = AAZStrArg(
             options=["--resource-parent-type"],
             help="Resource parent type",
+            required=True,
             id_part="type",
             fmt=AAZStrArgFormat(
                 pattern="^.+$",
@@ -87,7 +88,7 @@ class ListParent(AAZCommand):
             options=["--resource-type"],
             help="Resource type",
             required=True,
-            id_part="type",
+            id_part="child_type_1",
             fmt=AAZStrArgFormat(
                 pattern="^.+$",
             ),
@@ -96,12 +97,7 @@ class ListParent(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.provider_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.resource_name) and has_value(self.ctx.args.resource_parent_name) and has_value(self.ctx.args.resource_parent_type) and has_value(self.ctx.args.resource_type) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.args.provider_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.resource_name) and has_value(self.ctx.args.resource_type) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_parent_name) is not True and has_value(self.ctx.args.resource_parent_type) is not True
-        if condition_0:
-            self.UpdatesListParent(ctx=self.ctx)()
-        if condition_1:
-            self.UpdatesList(ctx=self.ctx)()
+        self.UpdatesListParent(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -163,125 +159,6 @@ class ListParent(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "resourceParentType", self.ctx.args.resource_parent_type,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceType", self.ctx.args.resource_type,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2023-04-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.impact_duration_in_sec = AAZIntType(
-                serialized_name="impactDurationInSec",
-            )
-            _element.impact_type = AAZStrType(
-                serialized_name="impactType",
-            )
-            _element.maintenance_scope = AAZStrType(
-                serialized_name="maintenanceScope",
-            )
-            _element.not_before = AAZStrType(
-                serialized_name="notBefore",
-            )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.status = AAZStrType()
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-
-            return cls._schema_on_200
-
-    class UpdatesList(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/{providerName}/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/updates",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "providerName", self.ctx.args.provider_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
