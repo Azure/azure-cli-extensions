@@ -24,6 +24,12 @@ from .example_steps import step_configuration_list
 from .example_steps import step_configuration_update
 from .example_steps import step_assignment_create
 from .example_steps import step_assignment_create_or_update_parent
+from .example_steps import step_configuration_create_subscription
+from .example_steps import step_configuration_create_resource_group
+from .example_steps import step_assignment_show_resource_group
+from .example_steps import step_assignment_show_subscription
+from .example_steps import step_assignment_update_resource_group
+from .example_steps import step_assignment_update_subscription
 from .example_steps import step_assignment_show
 from .example_steps import step_assignment_show_parent
 from .example_steps import step_assignment_list
@@ -90,6 +96,12 @@ def call_scenario(test):
     step_assignment_list_parent(test, checks=[])
     step_assignment_delete(test, checks=[])
     step_assignment_delete_parent(test, checks=[])
+    step_configuration_create_subscription(test, checks=[])
+    step_configuration_create_resource_group(test, checks=[])
+    step_assignment_show_resource_group(test, checks=[])
+    step_assignment_show_subscription(test, checks=[])
+    step_assignment_update_resource_group(test, checks=[])
+    step_assignment_update_subscription(test, checks=[])
     step_configuration_delete(test, checks=[])
     step_public_configuration_show(test, checks=[])
     step_public_configuration_list(test, checks=[])
