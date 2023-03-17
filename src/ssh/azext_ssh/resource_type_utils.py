@@ -35,9 +35,15 @@ def _list_types_of_resources_with_provided_name(cmd, op_info):
             break
         except HttpResponseError as e:
             if e.reason == "Forbidden":
-                raise azclierror.ForbiddenError(f"The client does not have authorization to read resources over the scope /subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{op_info.resource_group_name}", consts.RECOMMENDATION_FORBIDDEN)
-            else:
-                raise
+                raise azclierror.ForbiddenError("The client does not have authorization to read resources over " +
+                                                f"the scope \'/subscriptions/{get_subscription_id(cmd.cli_ctx)}/" +
+                                                f"resourceGroups/{op_info.resource_group_name}\'",
+                                                consts.RECOMMENDATION_FORBIDDEN)
+            if e.error.code == "ResourceGroupNotFound":
+                raise azclierror.ResourceNotFoundError(f"Resource Group \'{op_info.resource_group_name}\' " +
+                                                       "could not be found.",
+                                                       consts.RECOMMENDATION_RESOURCE_NOT_FOUND)
+            raise
 
     return resource_types_present
 
