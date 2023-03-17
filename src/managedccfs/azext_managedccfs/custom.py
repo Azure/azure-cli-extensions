@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for
+# license information.
+#
+# --------------------------------------------------------------------------
+
 from azure.cli.core.azclierror import ArgumentUsageError
 from .aaz.latest.confidentialledger.managedccfs._create import Create as _ManagedCCFCreate
 

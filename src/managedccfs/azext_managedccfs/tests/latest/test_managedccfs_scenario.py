@@ -23,7 +23,6 @@ class ManagedCCFsScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_custom_3nodes(self, resource_group):
         location = "southcentralus"
-        subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
         tag_key = "dept"
         tag_value = "finance"
         tags = f"{tag_key}={tag_value}"
@@ -35,7 +34,6 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         self.kwargs.update({
             "name": name,
             "location": location,
-            "subscription": subscription,
             "tags": tags,
             "member0_tag_group": member0_tag_group,
             "member0_tag_identifier": member0_tag_identifier,
@@ -77,7 +75,6 @@ class ManagedCCFsScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_sample_3nodes(self, resource_group):
         location = "southcentralus"
-        subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
         tag_key = "dept"
         tag_value = "finance"
         tags = f"{tag_key}={tag_value}"
@@ -94,7 +91,6 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         self.kwargs.update({
            "name": name,
             "location": location,
-            "subscription": subscription,
             "tags": tags,
             "member0_tag_group": member0_tag_group,
             "member0_tag_identifier": member0_tag_identifier,
@@ -104,11 +100,11 @@ class ManagedCCFsScenarioTest(ScenarioTest):
             "member1_cert": member1_cert
         })
 
-        response = self.cmd("confidentialledger managedccfs create --name {name} --subscription {subscription} -g {rg} --location {location} "
+        response = self.cmd("confidentialledger managedccfs create --name {name} -g {rg} --location {location} "
                 "--members \"[{{certificate:'{member0_cert}',identifier:{member0_tag_identifier},group:{member0_tag_group}}},{{certificate:'{member1_cert}',identifier:{member1_tag_identifier},group:{member1_tag_group}}}]\" "
                 "--tags {tags} --app-type sample")
         
-        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
+        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name}').get_output_in_json()
         self.assertIsNotNone(azcli_instance)
         self.assertEqual(azcli_instance['properties']['appName'], name)
         self.assertEqual(azcli_instance['location'], location)
@@ -127,18 +123,17 @@ class ManagedCCFsScenarioTest(ScenarioTest):
             self.assertIn(member['tags']['group'],[member0_tag_group, member1_tag_group])
 
         # list will be enabled when the CP bug is fixed
-        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 1))
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 1))
 
-        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --yes')
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --yes')
 
         # list will be enabled when the CP is fixed
-        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 0))
 
     # Create an instance with custom JS app and 5 nodes
     @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_custom_5nodes(self, resource_group):
         location = "southcentralus"
-        subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
         tag_key = "dept"
         tag_value = "finance"
         tags = f"{tag_key}={tag_value}"
@@ -151,7 +146,6 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         self.kwargs.update({
             "name": name,
             "location": location,
-            "subscription": subscription,
             "tags": tags,
             "member0_tag_group": member0_tag_group,
             "member0_tag_identifier": member0_tag_identifier,
@@ -162,7 +156,7 @@ class ManagedCCFsScenarioTest(ScenarioTest):
 
         self.cmd("confidentialledger managedccfs create -n {name} -l {location} -g {rg} --tags {tags} --node-count {node_count} --members \"[{{certificate:'{member0_cert}',identifier:{member0_tag_identifier},group:{member0_tag_group}}}]\" ")
         
-        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name} --subscription {subscription}').get_output_in_json()
+        azcli_instance = self.cmd('confidentialledger managedccfs show --resource-group {rg} --name {name}').get_output_in_json()
         self.assertIsNotNone(azcli_instance)
         self.assertEqual(azcli_instance['properties']['appName'], name)
         self.assertEqual(azcli_instance['location'], location)
@@ -180,18 +174,17 @@ class ManagedCCFsScenarioTest(ScenarioTest):
             self.assertEqual(member['tags']['group'], member0_tag_group)
 
         # list will be enabled when the CP is fixed
-        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 1))
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 1))
 
-        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --subscription {subscription} --yes')
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --yes')
 
         # list will be enabled when the CP bug is fixed
-        # self.cmd('confidentialledger managedccfs list --resource-group {rg} --subscription {subscription}', checks=self.check('length(@)', 0))
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 0))
 
     # Create an instance with custom JS app, 3 nodes and no member group information
     @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
     def test_managedccfs_create_custom_3nodes_nogroup(self, resource_group):
         location = "southcentralus"
-        subscription = "027da7f8-2fc6-46d4-9be9-560706b60fec"
         tag_key = "dept"
         tag_value = "finance"
         tags = f"{tag_key}={tag_value}"
@@ -202,7 +195,6 @@ class ManagedCCFsScenarioTest(ScenarioTest):
         self.kwargs.update({
             "name": name,
             "location": location,
-            "subscription": subscription,
             "tags": tags,
             "member0_tag_identifier": member0_tag_identifier,
             "member0_cert": member0_cert,
