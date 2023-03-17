@@ -13,7 +13,7 @@ from azure.core.rest import HttpRequest, HttpResponse
 from azure.mgmt.core import ARMPipelineClient
 
 from . import models as _models
-from .._serialization import Deserializer, Serializer
+from msrest import Deserializer, Serializer
 from ._configuration import ApplicationInsightsManagementClientConfiguration
 from .operations import WebTestsOperations
 
