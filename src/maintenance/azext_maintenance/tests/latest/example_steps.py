@@ -184,6 +184,24 @@ def step_assignment_create_or_update_parent(test, checks=None):
              '--resource-type "virtualMachines"',
              checks=checks)
 
+# EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateSubscription
+@try_manual
+def step_configuration_create_subscription(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment create-resource-group'
+             '--name "{myConfigurationAssignment}" ',
+             checks=checks)
+
+# EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateResourceGroup
+@try_manual
+def step_configuration_create_resource_group(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment create-resource-group'
+             '--name "{myConfigurationAssignment}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_Get
 @try_manual
@@ -214,6 +232,64 @@ def step_assignment_show_parent(test, checks=None):
              '--resource-type "virtualMachines"',
              checks=checks)
 
+# EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowResourceGroup
+@try_manual
+def step_assignment_show_resource_group(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment show-resource-group'
+             '--resource-group "{rg}" '
+             '--name "{myConfigurationAssignment}" ',
+             checks=checks)
+
+# EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowSubscription
+@try_manual
+def step_assignment_show_subscription(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment show-subscription'
+             '--name "{myConfigurationAssignment}" ',
+             checks=checks)
+
+
+# EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowResourceGroup
+@try_manual
+def step_assignment_update_resource_group(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment update-resource-group'
+             '--resource-group "{rg}" '
+             '--name "{myConfigurationAssignment}" ',
+             checks=checks)
+
+# EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowSubscription
+@try_manual
+def step_assignment_update_subscription(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment update-subscription'
+             '--name "{myConfigurationAssignment}" ',
+             checks=checks)
+
+
+# EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteResourceGroup
+@try_manual
+def step_configuration_delete_resource_group(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment delete-resource-group'
+             '--name "{myConfigurationAssignment}" '
+             '--resource-group "{rg}" ',
+             checks=checks)
+
+# EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteSubscription
+@try_manual
+def step_configuration_delete_subscription(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment delete-subscription'
+             '--name "{myConfigurationAssignment}" ',
+             checks=checks)
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_List
 @try_manual
