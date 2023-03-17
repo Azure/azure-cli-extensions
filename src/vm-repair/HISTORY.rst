@@ -3,7 +3,7 @@ Release History
 ===============
 0.5.1
 ++++++
-Updated exsiting privateIpAddress field to privateIPAddress.
+Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocationMethod to privateIPAllocationMethod.
 
 0.5.0
 ++++++
