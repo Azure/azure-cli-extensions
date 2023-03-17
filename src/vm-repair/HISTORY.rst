@@ -1,6 +1,9 @@
 
 Release History
 ===============
+0.5.1
+++++++
+Updated exsiting privateIpAddress field to privateIPAddress.
 
 0.5.0
 ++++++
