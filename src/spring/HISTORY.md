@@ -1,5 +1,9 @@
 Release History
 ===============
+1.7.3
+---
+* Fix `subscription_id` AAZSimpleValue type error
+
 1.7.2
 ---
 * Support `--no-wait` in `az spring dev-tool`.
