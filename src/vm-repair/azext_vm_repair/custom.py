@@ -582,7 +582,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIPAddress']
         # Dynamic | Static
-        orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
+        orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
         # Get aviailable ip address within subnet
         get_available_ip_command = 'az network vnet subnet list-available-ips -g {g} --vnet-name {vnet} --name {subnet} --query [0] -o tsv' \
