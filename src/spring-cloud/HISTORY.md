@@ -1,5 +1,9 @@
 Release History
 ===============
+3.1.8
+---
+* Fix `subscription_id` AAZSimpleValue type error
+
 3.1.7
 ---
 * Remove dependency to NETWORK SDK
