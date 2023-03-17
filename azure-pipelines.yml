@@ -60,26 +60,11 @@ jobs:
     displayName: 'Use Python 3.10'
     inputs:
       versionSpec: 3.10
+  - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
+      #!/usr/bin/env bash
       set -ev
-
-      # prepare and activate virtualenv
-      python -m venv env/
-
-      chmod +x ./env/bin/activate
       source ./env/bin/activate
-
-      # clone azure-cli
-      git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-      python -m pip install -U pip
-      pip install -q azdev
-
-      azdev setup -c ../azure-cli -r ./
-
-      azdev --version
-      az --version
-
       azdev verify license
 
 - job: StaticAnalysis
@@ -130,9 +115,15 @@ jobs:
       displayName: 'Use Python $(python.version)'
       inputs:
         versionSpec: '$(python.version)'
+    - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
-    - bash: ./scripts/ci/test_source.sh
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        az --version
+        python scripts/ci/test_source.py -v
       displayName: 'Run integration test and build test'
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
@@ -148,24 +139,11 @@ jobs:
       displayName: 'Use Python 3.10'
       inputs:
         versionSpec: 3.10
+    - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
+        #!/usr/bin/env bash
         set -ev
-
-        # prepare and activate virtualenv
-        pip install virtualenv
-        python -m virtualenv venv/
-        source ./venv/bin/activate
-
-        # clone azure-cli
-        git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-        python -m pip install -U pip
-        pip install azdev
-
-        azdev --version
-
-        azdev setup -c ../azure-cli -r ./
-
+        source ./env/bin/activate
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 

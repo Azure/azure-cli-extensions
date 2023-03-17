@@ -2,6 +2,14 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* Fix polling logic for long running operations.
+
+0.3.24
+++++++
+* Decouple with the `network` module.
+
 0.3.23
 ++++++
 * BREAKING CHANGE: 'az containerapp env certificate list' returns [] if certificate not found, instead of raising an error.

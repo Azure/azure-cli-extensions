@@ -1,0 +1,761 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.Web/staticSites/cli_test000002''
+        under resource group ''cli_test000001'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '226'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Mar 2023 20:52:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"location": "centralus", "sku": {"name": "Free", "tier": "Free"}, "properties":
+      {"buildProperties": {"appLocation": "/"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '123'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"Central
+        US","properties":{"defaultHostname":"blue-pebble-01433e310.2.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":"20.98.190.171","privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-dm1.infrastructure.2.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[],"trafficSplitting":null},"sku":{"name":"Free","tier":"Free"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:52:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"Central
+        US","properties":{"defaultHostname":"blue-pebble-01433e310.2.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":"20.98.190.171","privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-dm1.infrastructure.2.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[],"trafficSplitting":null},"sku":{"name":"Free","tier":"Free"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:52:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001","name":"cli_test000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-14T20:52:55Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 Mar 2023 20:53:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "kind": "GlobalDocumentDB", "properties": {"locations":
+      [{"locationName": "westus", "failoverPriority": 0, "isZoneRedundant": false}],
+      "databaseAccountOfferType": "Standard", "apiProperties": {}, "createMode": "Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '244'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003?api-version=2022-11-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003","name":"cli-test000003","location":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-03-14T20:53:06.5766135Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"e8ba36ef-b56b-4455-bc88-2490a142b386","databaseAccountOfferType":"Standard","defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"minimalTlsVersion":"Tls","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-test000003-westus","locationName":"West
+        US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-test000003-westus","locationName":"West
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Invalid"}},"networkAclBypassResourceIds":[],"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-03-14T20:53:06.5766135Z"},"secondaryMasterKey":{"generationTime":"2023-03-14T20:53:06.5766135Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-03-14T20:53:06.5766135Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-03-14T20:53:06.5766135Z"}}},"identity":{"type":"None"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b601553f-ad39-48dd-9399-5aecc55d1c2c?api-version=2022-11-15
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2242'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:53:08 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003/operationResults/b601553f-ad39-48dd-9399-5aecc55d1c2c?api-version=2022-11-15
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b601553f-ad39-48dd-9399-5aecc55d1c2c?api-version=2022-11-15
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:53:38 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b601553f-ad39-48dd-9399-5aecc55d1c2c?api-version=2022-11-15
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:54:08 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b601553f-ad39-48dd-9399-5aecc55d1c2c?api-version=2022-11-15
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:54:39 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b601553f-ad39-48dd-9399-5aecc55d1c2c?api-version=2022-11-15
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:09 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003?api-version=2022-11-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003","name":"cli-test000003","location":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-03-14T20:54:30.6226076Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-test000003.documents.azure.com:443/","sqlEndpoint":"https://cli-test000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"e8ba36ef-b56b-4455-bc88-2490a142b386","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"minimalTlsVersion":"Tls","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-test000003-westus","locationName":"West
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"},"secondaryMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"}}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2621'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:09 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003?api-version=2022-11-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003","name":"cli-test000003","location":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-03-14T20:54:30.6226076Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-test000003.documents.azure.com:443/","sqlEndpoint":"https://cli-test000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"e8ba36ef-b56b-4455-bc88-2490a142b386","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"minimalTlsVersion":"Tls","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-test000003-westus","locationName":"West
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"},"secondaryMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-03-14T20:54:30.6226076Z"}}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2621'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:09 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp dbconnection create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -d
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"Central
+        US","properties":{"defaultHostname":"blue-pebble-01433e310.2.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":"20.98.190.171","privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-dm1.infrastructure.2.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[],"trafficSplitting":null},"sku":{"name":"Free","tier":"Free"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp dbconnection create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -d
+      User-Agent:
+      - python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003?api-version=2021-10-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003","name":"cli-test000003","location":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-03-14T20:54:30.6226076Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli-test000003.documents.azure.com:443/","sqlEndpoint":"https://cli-test000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"e8ba36ef-b56b-4455-bc88-2490a142b386","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli-test000003-westus","locationName":"West
+        US","documentEndpoint":"https://cli-test000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli-test000003-westus","locationName":"West
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2253'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:11 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp dbconnection create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -d
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003/listConnectionStrings?api-version=2022-11-15
+  response:
+    body:
+      string: '{"connectionStrings":[{"connectionString":"AccountEndpoint=https://cli-test000003.documents.azure.com:443/;AccountKey=7JUJNUxVDVyjFq0FLOhDQWUWGo63iQcXOMTleLFDimQz8oYJEbkfitAnUnBVw8MPrnZmnzWM7JqLACDbbsgG7w==;","description":"Primary
+        SQL Connection String"},{"connectionString":"AccountEndpoint=https://cli-test000003.documents.azure.com:443/;AccountKey=VJqaCpEg8UhK48ePvH19500zFyLfkQOrkTIkg1GACxsePhjTroM6a4VTMg5u6Nm2t1fDBZUr3ysjACDbU7Jmlw==;","description":"Secondary
+        SQL Connection String"},{"connectionString":"AccountEndpoint=https://cli-test000003.documents.azure.com:443/;AccountKey=hhTjcquKnMiyirxNovLzcD01eVZq6EsuLANtzqRdjGgaV0PkP3R5SJAJ4GCoU4XqE4y9Yug3Q4rsACDbREmiEA==;","description":"Primary
+        Read-Only SQL Connection String"},{"connectionString":"AccountEndpoint=https://cli-test000003.documents.azure.com:443/;AccountKey=crePmwq6xUqVAv0viCDXhqeua18JbY63FCtOxM04VnSOHuSyNoYIPQZk3lA5To0Bl3gr5rRZ0U0dACDbBbuScA==;","description":"Secondary
+        Read-Only SQL Connection String"}]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '983'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:11 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003",
+      "connectionIdentity": null, "region": "West US", "connectionString": "AccountEndpoint=https://cli-test000003.documents.azure.com:443/;AccountKey=7JUJNUxVDVyjFq0FLOhDQWUWGo63iQcXOMTleLFDimQz8oYJEbkfitAnUnBVw8MPrnZmnzWM7JqLACDbbsgG7w==;"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - staticwebapp dbconnection create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '415'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -d
+      User-Agent:
+      - python/3.8.13 (macOS-12.6.3-x86_64-i386-64bit) AZURECLI/2.46.0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticsites/cli_test000002/databaseConnections/default?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002/databaseConnections/default","name":"default","type":"Microsoft.Web/staticSites/databaseConnections","location":"Central
+        US","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DocumentDB/databaseAccounts/cli-test000003","region":"West
+        US"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '459'
+      content-type:
+      - application/json
+      date:
+      - Tue, 14 Mar 2023 20:55:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

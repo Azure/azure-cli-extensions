@@ -907,6 +907,9 @@ helps['aks update'] = """
         - name: --grafana-resource-id
           type: string
           short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --enable-windows-recording-rules
+          type: bool
+          short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile

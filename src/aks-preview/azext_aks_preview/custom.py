@@ -845,6 +845,7 @@ def aks_update(
     ksm_metric_labels_allow_list=None,
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
+    enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     enable_vpa=False,
     disable_vpa=False,
