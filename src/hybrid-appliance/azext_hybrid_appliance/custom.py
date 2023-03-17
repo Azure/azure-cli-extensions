@@ -170,6 +170,25 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
 def delete_hybrid_appliance(resource_group_name, name):
+    try:
+        output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
+        if "not running" in output.decode:
+            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+    except:
+        raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+
+    try:
+        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
+    except Exception as e:
+        raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
+    
+    azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
+    try:
+        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
+    except KeyError:
+        raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
+
     cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y']
     delete_result = get_default_cli().invoke(cmd_delete_arc)
     if delete_result != 0:
