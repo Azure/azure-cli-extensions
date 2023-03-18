@@ -241,21 +241,31 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
 
 
 def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, accepted_recommend=None):
-    feedback_data = {"data_prefix": " ", "option_idx": " ", "trigger_commands": " ", "processed_exception": " ",
-                     "recommendations_source_list": " ", "recommendations_type_list": " ",
-                     "accepted_recommend_source": " ", "accepted_recommend_type": " ", "accepted_recommend": " ",
-                     "accepted_recommend_all_arguments": " ", "is_personalized": " "}
+    # initialize feedback data
+    feedback_data = {}
+    feedback_data["data_prefix"] = None
+    feedback_data["option_idx"] = None
+    feedback_data["trigger_commands"] = None
+    feedback_data["processed_exception"] = None
+    feedback_data["all_recommendations"] = None
+    feedback_data["recommendations_source_list"] = None
+    feedback_data["recommendations_type_list"] = None
+    feedback_data["accepted_recommend_source"] = None
+    feedback_data["accepted_recommend_type"] = None
+    feedback_data["accepted_recommend"] = None
+    feedback_data["is_personalized"] = None
 
-    feedback_data['data_prefix'] = '1'
+    # data_prefix is the perfix of the feedback data, 1 means the feedback data is from CLI
+    feedback_data['data_prefix'] = 1
     # option_idx is the index of the recommended command that user chooses.
     # 'a' means commands while 'b' means scenarios, such as 'a1'
     feedback_data['option_idx'] = str(option_idx)
 
     # trigger_commands is the commands that trigger the recommendation, can be multiple, max is 2 commands
     if len(latest_commands) > 1:
-        trigger_commands = ",".join(latest_commands[-2:])
+        trigger_commands = list(latest_commands[-2:])
     else:
-        trigger_commands = latest_commands[-1]
+        trigger_commands = list(latest_commands[-1])
     feedback_data["trigger_commands"] = trigger_commands
 
     # get exception while command failed, succeeded commands return ' '
@@ -265,36 +275,45 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
     # get all recommend sources and types
     has_personalized_rec = False
     if recommends:
+        recommends_list = []
         source_list = set()
         recommend_type_list = set()
         for item in recommends:
+            try:
+                recommends_list.append({"command": str(item['command'])})
+            except KeyError:
+                recommends_list.append({"scenario": str(item['scenario'])})
             source_list.add(str(item['source']))
             recommend_type_list.add(str(item['type']))
             if 'is_personalized' in item:
                 has_personalized_rec = True
-        feedback_data["recommendations_source_list"] = ' '.join(sorted(source_list))
-        feedback_data["recommendations_type_list"] = ' '.join(sorted(recommend_type_list))
+        feedback_data["recommendations_source_list"] = sorted(source_list)
+        feedback_data["recommendations_type_list"] = sorted(recommend_type_list)
+        feedback_data["all_recommendations"] = recommends_list
 
     if accepted_recommend:
-        feedback_data["accepted_recommend_source"] = str(accepted_recommend['source'])
-        feedback_data["accepted_recommend_type"] = str(accepted_recommend['type'])
+        feedback_data["accepted_recommend_source"] = accepted_recommend['source']
+        feedback_data["accepted_recommend_type"] = accepted_recommend['type']
         if accepted_recommend['type'] == RecommendType.Scenario:
             feedback_data['accepted_recommend'] = accepted_recommend['scenario']
         else:
             feedback_data['accepted_recommend'] = accepted_recommend['command']
-            if "arguments" in accepted_recommend and accepted_recommend["arguments"]:
-                feedback_data['accepted_recommend_all_arguments'] =' '.join(accepted_recommend["arguments"])
 
         if not has_personalized_rec:
-            feedback_data["is_personalized"] = ' '
+            feedback_data["is_personalized"] = None
         elif 'is_personalized' in accepted_recommend:
-            feedback_data["is_personalized"] = '1'
+            feedback_data["is_personalized"] = 1
         else:
-            feedback_data["is_personalized"] = '0'
+            feedback_data["is_personalized"] = 0
+
+    # replace null to None:
+    for key, value in feedback_data.items():
+        if value is None:
+            feedback_data[key] = "None"
 
     telemetry.start(mode='interactive')
     telemetry.set_command_details('next')
-    telemetry.set_feedback("#".join(feedback_data.values()))
+    telemetry.set_recommendation_properties(api_version="2.0", recommendation_properties=feedback_data)
     telemetry.flush()
 
 
