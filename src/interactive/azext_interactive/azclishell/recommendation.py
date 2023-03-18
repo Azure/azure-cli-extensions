@@ -70,7 +70,7 @@ class Recommender:
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
             processed_exception = self.cur_thread.processed_exception
             if not recommendations or not command:
-                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None)
+                send_feedback(-1, trigger_commands, processed_exception, recommendations, rec=None)
                 return
             # reformat the user input
             # e.g. `az webapp   create -h` => `webapp create -h`
@@ -82,7 +82,7 @@ class Recommender:
                 if formatted_command.startswith(rec['command']):
                     send_feedback(f'a{idx+1}', trigger_commands, processed_exception, recommendations, rec)
                     return
-            send_feedback(0, trigger_commands, processed_exception, recommendations, accepted_recommend=None)
+            send_feedback(0, trigger_commands, processed_exception, recommendations, rec=None)
 
     def feedback_scenario(self, scenario_idx, scenario=None):
         """Send user's command choice in recommendations to telemetry.
@@ -95,9 +95,9 @@ class Recommender:
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
             processed_exception = self.cur_thread.processed_exception
             if not recommendations or not scenario:
-                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None)
+                send_feedback(-1, trigger_commands, processed_exception, recommendations, rec=None)
             else:
-                send_feedback(f'b{scenario_idx+1}', trigger_commands, processed_exception, recommendations, accepted_recommend=scenario)
+                send_feedback(f'b{scenario_idx+1}', trigger_commands, processed_exception, recommendations, rec=scenario)
 
     def update_executing(self, cmd, feedback=True):
         """Update executing command info, and prefetch the recommendation result as if the execution is successful
@@ -240,61 +240,56 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
     return recommends
 
 
-def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, accepted_recommend=None):
-    feedback_data = {"data_prefix": " ", "option_idx": " ", "trigger_commands": " ", "processed_exception": " ",
-                     "recommendations_source_list": " ", "recommendations_type_list": " ",
-                     "accepted_recommend_source": " ", "accepted_recommend_type": " ", "accepted_recommend": " ",
-                     "accepted_recommend_all_arguments": " ", "is_personalized": " "}
+def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, rec=None):
+    feedback_data = ['1', str(option_idx)]
 
-    feedback_data['data_prefix'] = '1'
-    # option_idx is the index of the recommended command that user chooses.
-    # 'a' means commands while 'b' means scenarios, such as 'a1'
-    feedback_data['option_idx'] = str(option_idx)
-
-    # trigger_commands is the commands that trigger the recommendation, can be multiple, max is 2 commands
+    trigger_commands = latest_commands[-1]
     if len(latest_commands) > 1:
-        trigger_commands = ",".join(latest_commands[-2:])
-    else:
-        trigger_commands = latest_commands[-1]
-    feedback_data["trigger_commands"] = trigger_commands
-
-    # get exception while command failed, succeeded commands return ' '
+        trigger_commands = latest_commands[-2] + "," + trigger_commands
+    feedback_data.append(trigger_commands)
     if processed_exception and processed_exception != '':
-        feedback_data["processed_exception"] = processed_exception
+        feedback_data.append(processed_exception)
+    else:
+        feedback_data.append(' ')
 
-    # get all recommend sources and types
     has_personalized_rec = False
     if recommends:
         source_list = set()
-        recommend_type_list = set()
+        rec_type_list = set()
         for item in recommends:
             source_list.add(str(item['source']))
-            recommend_type_list.add(str(item['type']))
+            rec_type_list.add(str(item['type']))
             if 'is_personalized' in item:
                 has_personalized_rec = True
-        feedback_data["recommendations_source_list"] = ' '.join(sorted(source_list))
-        feedback_data["recommendations_type_list"] = ' '.join(sorted(recommend_type_list))
+        feedback_data.append(' '.join(source_list))
+        feedback_data.append(' '.join(rec_type_list))
+    else:
+        feedback_data.extend([' ', ' '])
 
-    if accepted_recommend:
-        feedback_data["accepted_recommend_source"] = str(accepted_recommend['source'])
-        feedback_data["accepted_recommend_type"] = str(accepted_recommend['type'])
-        if accepted_recommend['type'] == RecommendType.Scenario:
-            feedback_data['accepted_recommend'] = accepted_recommend['scenario']
+    if rec:
+        feedback_data.append(str(rec['source']))
+        feedback_data.append(str(rec['type']))
+        if rec['type'] == RecommendType.Scenario:
+            feedback_data.extend([rec['scenario'], ' '])
         else:
-            feedback_data['accepted_recommend'] = accepted_recommend['command']
-            if "arguments" in accepted_recommend and accepted_recommend["arguments"]:
-                feedback_data['accepted_recommend_all_arguments'] =' '.join(accepted_recommend["arguments"])
+            feedback_data.append(rec['command'])
+            if "arguments" in rec and rec["arguments"]:
+                feedback_data.append(' '.join(rec["arguments"]))
+            else:
+                feedback_data.append(' ')
 
         if not has_personalized_rec:
-            feedback_data["is_personalized"] = ' '
-        elif 'is_personalized' in accepted_recommend:
-            feedback_data["is_personalized"] = '1'
+            feedback_data.extend([' '])
+        elif 'is_personalized' in rec:
+            feedback_data.extend(['1'])
         else:
-            feedback_data["is_personalized"] = '0'
+            feedback_data.extend(['0'])
+    else:
+        feedback_data.extend([' ', ' ', ' ', ' ', ' '])
 
     telemetry.start(mode='interactive')
     telemetry.set_command_details('next')
-    telemetry.set_feedback("#".join(feedback_data.values()))
+    telemetry.set_feedback("#".join(feedback_data))
     telemetry.flush()
 
 
