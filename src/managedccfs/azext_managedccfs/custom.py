@@ -56,9 +56,18 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.app_type = AAZStrArg(
             options=['--app-type'],
-            help="The type of the JS application. Set it to 'sample' to deploy the sample JS application.",
+            help="Set it to 'sample' to deploy the sample JS application.",
             required=False,
             default="customImage",
+        )
+
+        # Deployment type properties.
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.language_runtime = AAZStrArg(
+            options=['--language-runtime'],
+            help="The application language.",
+            required=False,
+            default="JS",
         )
 
         args_schema.deployment_type._registered = False
@@ -93,4 +102,4 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         )
 
         args.deployment_type.app_source_uri = args.app_type
-        args.deployment_type.language_runtime = "JS"
+        args.deployment_type.language_runtime = "JS" if not has_value(args.language_runtime) else args.language_runtime

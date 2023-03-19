@@ -26,12 +26,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002?api-version=2023-01-26-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","name":"synth-azcli-000002","type":"microsoft.confidentialledger/managedccfs","location":"southcentralus","tags":{"dept":"finance"},"systemData":{"createdBy":"settiy@microsoft.com","createdByType":"User","createdAt":"2023-03-17T14:59:27.5963161Z","lastModifiedBy":"settiy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-17T14:59:27.5963161Z"},"properties":{"appName":"synth-azcli-000002","deploymentType":{"languageRuntime":"JS","appSourceUri":"customImage"},"memberIdentityCertificates":[{"certificate":"-----BEGIN
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","name":"synth-azcli-000002","type":"microsoft.confidentialledger/managedccfs","location":"southcentralus","tags":{"dept":"finance"},"systemData":{"createdBy":"settiy@microsoft.com","createdByType":"User","createdAt":"2023-03-19T02:41:25.7177613Z","lastModifiedBy":"settiy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-19T02:41:25.7177613Z"},"properties":{"appName":"synth-azcli-000002","deploymentType":{"languageRuntime":"JS","appSourceUri":"customImage"},"memberIdentityCertificates":[{"certificate":"-----BEGIN
         CERTIFICATE-----\nMIIBvjCCAUSgAwIBAgIUA0YHcPpUCtd3e8wyK9wyAUBUisAwCgYIKoZIzj0EAwMw\nFjEUMBIGA1UEAwwLZGVtb19tZW1iZXIwHhcNMjIwOTI3MTcyNjA1WhcNMjMwOTI3\nMTcyNjA1WjAWMRQwEgYDVQQDDAtkZW1vX21lbWJlcjB2MBAGByqGSM49AgEGBSuB\nBAAiA2IABGoueoYmaNnye59aXQeEo64fXsk+8UyGRUGRyIkNXYcC29JiuPj/1qrK\nK+20YpqI/ythDMhbxwFDHRlThw/7w33dj/hU5MeENeLRZ7Egku3GOtLD1SuHgNp4\n5iLoX8Vrk6NTMFEwHQYDVR0OBBYEFFVucmWHQlh5hu5eUEbmd9qcNeciMB8GA1Ud\nIwQYMBaAFFVucmWHQlh5hu5eUEbmd9qcNeciMA8GA1UdEwEB/wQFMAMBAf8wCgYI\nKoZIzj0EAwMDaAAwZQIxANHQLNvFQtgw0frnSaF88+TV+LXrVC6+q8LeeOfG8GUg\nr1VWKuUgtuMI0rLQ1sA5fQIwTRKWw5uf+xujwmP7iTOpoKsgwQCkVVTtPrm4XaWL\nVMUN0Yet/xU4G0d71ZtULNWo\n-----END
         CERTIFICATE-----","tags":{"identifier":"member0","group":"contoso"}}],"nodeCount":3,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -39,9 +39,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 14:59:31 GMT
+      - Sun, 19 Mar 2023 02:41:27 GMT
       etag:
-      - '"7d0181ef-0000-0700-0000-641480530000"'
+      - '"4202a3eb-0000-0700-0000-641676560000"'
       expires:
       - '-1'
       pragma:
@@ -53,11 +53,11 @@ interactions:
       x-ms-async-operation-timeout:
       - PT10M
       x-ms-image-digest:
-      - sha256:673a824e42a2ed2c2f470ddc89f98c602f69345dbb00209fd0d4a2c42c5f8c2f
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
       x-ms-image-tag:
-      - 1.0.02258.70-cb6140776d6078c35f4ce8842babe58266b1edba
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
       x-ms-machinename:
-      - controlplane-7cfc4dc966-rssp8
+      - controlplane-66f8f54-2ffkw
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -81,10 +81,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Accepted","startTime":"2023-03-17T14:59:30.7607701Z"}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Accepted","startTime":"2023-03-19T02:41:26.6236395Z"}'
     headers:
       cache-control:
       - no-cache
@@ -93,9 +93,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:00:01 GMT
+      - Sun, 19 Mar 2023 02:41:57 GMT
       etag:
-      - '"72011827-0000-0700-0000-641480520000"'
+      - '"c701a395-0000-0700-0000-641676560000"'
       expires:
       - '-1'
       pragma:
@@ -127,10 +127,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Accepted","startTime":"2023-03-17T14:59:30.7607701Z"}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Accepted","startTime":"2023-03-19T02:41:26.6236395Z"}'
     headers:
       cache-control:
       - no-cache
@@ -139,9 +139,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:00:31 GMT
+      - Sun, 19 Mar 2023 02:42:26 GMT
       etag:
-      - '"72011827-0000-0700-0000-641480520000"'
+      - '"c701a395-0000-0700-0000-641676560000"'
       expires:
       - '-1'
       pragma:
@@ -173,10 +173,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"f687d5b2-f8bc-48a1-96d9-de5b0a6a8c69*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Succeeded","startTime":"2023-03-17T14:59:30.7607701Z","endTime":"2023-03-17T15:00:49.0082309Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"a2a87194-7b46-416f-b0b6-3fee70bc12e1*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Succeeded","startTime":"2023-03-19T02:41:26.6236395Z","endTime":"2023-03-19T02:42:44.0687335Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -185,9 +185,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:01:01 GMT
+      - Sun, 19 Mar 2023 02:42:56 GMT
       etag:
-      - '"72018b3c-0000-0700-0000-641480a10000"'
+      - '"c70195a0-0000-0700-0000-641676a40000"'
       expires:
       - '-1'
       pragma:
@@ -233,9 +233,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:01:01 GMT
+      - Sun, 19 Mar 2023 02:42:57 GMT
       etag:
-      - '"7e01e417-0000-0700-0000-641480a10000"'
+      - '"43028107-0000-0700-0000-641676a40000"'
       expires:
       - '-1'
       pragma:
@@ -249,11 +249,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-image-digest:
-      - sha256:673a824e42a2ed2c2f470ddc89f98c602f69345dbb00209fd0d4a2c42c5f8c2f
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
       x-ms-image-tag:
-      - 1.0.02258.70-cb6140776d6078c35f4ce8842babe58266b1edba
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
       x-ms-machinename:
-      - controlplane-7cfc4dc966-xx9f5
+      - controlplane-66f8f54-2ffkw
       x-ms-providerhub-traffic:
       - 'True'
     status:
@@ -289,9 +289,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:01:03 GMT
+      - Sun, 19 Mar 2023 02:42:57 GMT
       etag:
-      - '"7e01e417-0000-0700-0000-641480a10000"'
+      - '"43028107-0000-0700-0000-641676a40000"'
       expires:
       - '-1'
       pragma:
@@ -305,11 +305,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-image-digest:
-      - sha256:673a824e42a2ed2c2f470ddc89f98c602f69345dbb00209fd0d4a2c42c5f8c2f
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
       x-ms-image-tag:
-      - 1.0.02258.70-cb6140776d6078c35f4ce8842babe58266b1edba
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
       x-ms-machinename:
-      - controlplane-7cfc4dc966-l2w4p
+      - controlplane-66f8f54-2ffkw
       x-ms-providerhub-traffic:
       - 'True'
     status:
@@ -339,7 +339,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -347,13 +347,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:01:04 GMT
+      - Sun, 19 Mar 2023 02:42:59 GMT
       etag:
-      - '"7e01c81d-0000-0700-0000-641480b00000"'
+      - '"4302f30a-0000-0700-0000-641676b30000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -363,11 +363,11 @@ interactions:
       x-ms-async-operation-timeout:
       - PT5M
       x-ms-image-digest:
-      - sha256:673a824e42a2ed2c2f470ddc89f98c602f69345dbb00209fd0d4a2c42c5f8c2f
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
       x-ms-image-tag:
-      - 1.0.02258.70-cb6140776d6078c35f4ce8842babe58266b1edba
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
       x-ms-machinename:
-      - controlplane-7cfc4dc966-xx9f5
+      - controlplane-66f8f54-2ffkw
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
@@ -391,10 +391,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-17T15:01:04.5244712Z"}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-19T02:42:59.7693161Z"}'
     headers:
       cache-control:
       - no-cache
@@ -403,9 +403,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:01:34 GMT
+      - Sun, 19 Mar 2023 02:43:30 GMT
       etag:
-      - '"72019340-0000-0700-0000-641480b00000"'
+      - '"c701dca2-0000-0700-0000-641676b30000"'
       expires:
       - '-1'
       pragma:
@@ -433,10 +433,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-17T15:01:04.5244712Z"}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-19T02:42:59.7693161Z"}'
     headers:
       cache-control:
       - no-cache
@@ -445,9 +445,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:02:04 GMT
+      - Sun, 19 Mar 2023 02:43:59 GMT
       etag:
-      - '"72019340-0000-0700-0000-641480b00000"'
+      - '"c701dca2-0000-0700-0000-641676b30000"'
       expires:
       - '-1'
       pragma:
@@ -475,10 +475,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-17T15:01:04.5244712Z"}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-19T02:42:59.7693161Z"}'
     headers:
       cache-control:
       - no-cache
@@ -487,9 +487,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:02:34 GMT
+      - Sun, 19 Mar 2023 02:44:30 GMT
       etag:
-      - '"72019340-0000-0700-0000-641480b00000"'
+      - '"c701dca2-0000-0700-0000-641676b30000"'
       expires:
       - '-1'
       pragma:
@@ -517,10 +517,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286?api-version=2020-12-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F?api-version=2020-12-01-preview
   response:
     body:
-      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","name":"b7508380-8cf9-4b05-ac39-d46c8f8e1538*46DB8A151B98503FF4ED407AD6DBDB68CA5645B6015DC1E46AD0745DFE9BA286","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Succeeded","startTime":"2023-03-17T15:01:04.5244712Z","endTime":"2023-03-17T15:02:40.7796936Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","name":"40d7bbed-1159-4289-a0d6-9e7f6f2e3cb8*CDF01A63BD5E68774621EE4F1D503D2717CFED30D0D3F1694BA9A90E110B9B1F","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Succeeded","startTime":"2023-03-19T02:42:59.7693161Z","endTime":"2023-03-19T02:44:34.5554573Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -529,9 +529,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Mar 2023 15:03:04 GMT
+      - Sun, 19 Mar 2023 02:44:59 GMT
       etag:
-      - '"72012059-0000-0700-0000-641481100000"'
+      - '"c7011cb0-0000-0700-0000-641677120000"'
       expires:
       - '-1'
       pragma:
