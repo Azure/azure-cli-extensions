@@ -43,13 +43,12 @@ def validate_hybrid_appliance(resource_group_name, name):
         logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
-    endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Apt_Pull_Public_Endpoint, consts.Snap_Pull_Public_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
+    endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
 
     for endpoint in endpoints:
         try:
-            response = requests.head(endpoint, timeout=5)
-            response.raise_for_status()
-        except (requests.exceptions.RequestException):
+            subprocess.check_output(['curl', '-L', '-o', '/dev/null', '-s', '-w', '"%{http_code}\n"', endpoint, '--max-time', '10'])
+        except requests.exceptions.RequestException:
             all_validations_passed = False
             logger.warning("The endpoint {} is not reachable from your machine".format(endpoint))
     
@@ -58,10 +57,19 @@ def validate_hybrid_appliance(resource_group_name, name):
     
     try:
         cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
-        process = subprocess.Popen(cmd_show_arc)
+        process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if process.wait() == 0:
             print("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
             all_validations_passed = False
+        stdout = process.stdout.read().decode()
+        stderr = process.stderr.read().decode()
+        if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
+            all_validations_passed = False
+            print("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
+        if "AuthorizationFailed" in stdout or "AuthorizationFailed" in stderr:
+            all_validations_passed = False
+            print("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
+
     except Exception as e:
         print(type(e))
         print(str(e))
@@ -70,11 +78,11 @@ def validate_hybrid_appliance(resource_group_name, name):
         telemetry.set_exception(exception="")
         raise ValidationError("One or more pre-requisite validations have failed. Please resolve them and try again")
     else:
-        logger.info("All pre-requisite validations have passed successfully")
+        print("All pre-requisite validations have passed successfully")
 
 def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None):
     kubectl_client_location = utils.install_kubectl_client()
-    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microsk8_version()
+    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
     os.environ["MICROK8S_VERSION"] = "{}.{}".format(latestMajorVersion, latestMinorVersion)
     os.environ["KUBECTL_CLIENT_LOCATION"] = "{}".format(kubectl_client_location)
 
@@ -106,44 +114,43 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
-        error_code = onboarding_result.error.code
-        error_message = onboarding_result.error.message
-        raise CLIInternalError("Onboarding the k8s cluster to Arc failed with error: {}".format(error_code, error_message))
+        raise CLIInternalError("Onboarding the k8s cluster to Arc failed")
     else:
-        logger.info("The k8s cluster has been onboarded to Arc successfully")
+        print("The k8s cluster has been onboarded to Arc successfully")
 
 def upgrade_hybrid_appliance(resource_group_name, name):
     try:
-        azure_clusterconfig_cm = subprocess.check_output(['kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
+        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
     except Exception as e:
         if utils.check_microk8s():
             print("The required configmap was not found on the kubernetes cluster.") # Is there anything else which can be done in this case?
         else:
-            print("The kubernetes cluster is not running as expected.")
+            print("The kubernetes cluster is not running as expected or is not reachable.")
 
         print("Please delete the appliance and create it again.")
         return
     
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
-    if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
-        print("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
-        return # How to return non 0 error code?
+    try:
+        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
+    except KeyError:
+        raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
 
     kubernetesVersionResponseString = subprocess.check_output(['microk8s', 'kubectl', 'version', '-o', 'json']).decode()
     kubernetesVersionResponse = json.loads(kubernetesVersionResponseString)
     currentMajorVersion = kubernetesVersionResponse["serverVersion"]["major"]
     currentMinorVersion =  kubernetesVersionResponse["serverVersion"]["minor"].strip('+') # For some versions, for example, 1.23, minor version is represented as 23+ 
     
-    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microsk8_version()
+    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
 
     if currentMajorVersion == latestMajorVersion and currentMinorVersion == latestMinorVersion:
-        print("Already at latest version")
+        print("The kubernetes cluster is already at the latest available version.")
     else:
         if currentMinorVersion > latestMinorVersion:
              # This should never happen unless someone manually runs "snap refresh" against the cluster instead of using our cli command.
              # Microk8s recommends never to downgrade a cluster, as this behaviour is not tested or supported 
-            print("The current version of the kubernetes cluster is greater than the latest supported version. Please delete the appliance and create it again")
-            return # Non zero return code?
+            raise ValidationError("The current version of the kubernetes cluster is greater than the latest supported version. Please delete the appliance and create it again.")
         
         # This logic works as long as new versions are only minor version bumps
         # TODO: Figure out what to do in case major version is bumped (very unlikely)
@@ -152,13 +159,47 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             process = subprocess.Popen(['snap', 'refresh', 'microk8s', '--channel={}.{}'.format(currentMajorVersion, currentMinorVersion)])
             _, stderr = process.communicate()
             if process.returncode != 0:
-                print("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
+                raise CLIInternalError("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
             try:
                 subprocess.check_call(['microk8s', 'start'])
-            except Exception as e:
-                print("Failed to start microk8s cluster with exception {}".format(str(e)))
+            except subprocess.CalledProcessError as e:
+                raise CLIInternalError("Failed to start microk8s cluster with exception {}".format(str(e)))
 
             if not utils.check_microk8s():
-                print("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
-                return # Non zero return code?
+                raise CLIInternalError("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
+
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
+
+def delete_hybrid_appliance(resource_group_name, name):
+    try:
+        output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
+    except:
+        raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+
+    if "not running" in output.decode():
+            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+
+    try:
+        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
+    except Exception as e:
+        raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
+    
+    azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
+    try:
+        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
+    except KeyError:
+        raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
+
+    cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y']
+    delete_result = get_default_cli().invoke(cmd_delete_arc)
+    if delete_result != 0:
+        raise CLIInternalError("Failed to delete the connected cluster")
+
+    process = subprocess.Popen(['snap', 'remove', 'microk8s'])
+    process.wait()
+    if process.returncode != 0:
+        logger.error("Failed to remove microk8s cluster")
+        process = subprocess.Popen(['microk8s', 'inspect'])
+        if process.returncode == 0:
+            logger.warning("Please share the logs generated at the above path, under /var/snap/microk8s/current")

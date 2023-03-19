@@ -16,7 +16,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.1.2-dev'
+VERSION = '0.1.3-dev'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -52,5 +52,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_hybrid_appliance': ['azext_metadata.json', 'microk8sbootstrap.sh', 'check_microk8s.sh']}
+    package_data={'azext_hybrid_appliance': ['azext_metadata.json', 'microk8sbootstrap.sh']}
 )

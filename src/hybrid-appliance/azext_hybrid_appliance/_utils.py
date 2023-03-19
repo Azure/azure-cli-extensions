@@ -42,7 +42,7 @@ def install_kubectl_client():
         telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
-def get_latest_tested_microsk8_version():
+def get_latest_tested_microk8s_version():
     response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
     return json.loads(response.content.decode())["latestTested"].split('.')
 
