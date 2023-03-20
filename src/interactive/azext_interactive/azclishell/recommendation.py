@@ -86,7 +86,7 @@ class Recommender:
                 if formatted_command.startswith(recommendation['command']):
                     send_feedback(f'a{idx + 1}', trigger_commands, processed_exception, recommendations, recommendation, api_version=api_version)
                     return
-            send_feedback(0, trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version=api_version)
+            send_feedback("0", trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version=api_version)
 
     def feedback_scenario(self, scenario_idx, scenario=None):
         """Send user's command choice in recommendations to telemetry.
