@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingE
                                        ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
-from azure.cli.command_modules.network._client_factory import network_client_factory
+from .aaz.latest.network.vnet import Show as VNetShow
 from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -60,9 +60,11 @@ def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
 
 def get_vnet_location(cmd, subnet_resource_id):
     parsed_rid = parse_resource_id(subnet_resource_id)
-    vnet_client = network_client_factory(cmd.cli_ctx)
-    location = vnet_client.virtual_networks.get(resource_group_name=parsed_rid.get("resource_group"),
-                                                virtual_network_name=parsed_rid.get("name")).location
+    vnet = VNetShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": parsed_rid.get("resource_group"),
+        "name": parsed_rid.get("name")
+    })
+    location = vnet['location']
     return _normalize_location(cmd, location)
 
 

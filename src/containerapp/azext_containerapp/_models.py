@@ -22,7 +22,6 @@ ManagedEnvironment = {
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
         "customDomainConfiguration": None  # CustomDomainConfiguration
     }

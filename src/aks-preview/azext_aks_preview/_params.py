@@ -160,13 +160,8 @@ node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SP
 node_eviction_policies = [CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
 node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
-node_os_skus = [
-    CONST_OS_SKU_UBUNTU,
-    CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
-    CONST_OS_SKU_WINDOWS2019,
-    CONST_OS_SKU_WINDOWS2022,
-]
+node_os_skus_create = [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER]
+node_os_skus = node_os_skus_create + [CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
 gpu_instance_profiles = [
@@ -340,7 +335,7 @@ def load_arguments(self, _):
         c.argument('nodepool_name', default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
-        c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
+        c.argument('os_sku', arg_type=get_enum_type(node_os_skus_create))
         c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
@@ -507,6 +502,7 @@ def load_arguments(self, _):
         c.argument('ksm_metric_labels_allow_list', validator=validate_ksm_labels, is_preview=True)
         c.argument('ksm_metric_annotations_allow_list', validator=validate_ksm_annotations, is_preview=True)
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid, is_preview=True)
+        c.argument('enable_windows_recording_rules', action='store_true', is_preview=True)
         c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
@@ -830,7 +826,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks trustedaccess rolebinding create') as c:
         c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
-        c.argument('source_resource_id', options_list=['--source-resource-id', '-s'], help='The source resource id of the binding')
+        c.argument('source_resource_id', options_list=['--source-resource-id', '-r', c.deprecate(target='-s', redirect='--source-resource-id', hide=True)], help='The source resource id of the binding')
 
     with self.argument_context('aks trustedaccess rolebinding update') as c:
         c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
