@@ -123,9 +123,9 @@ class ScenarioAutoSuggest(AutoSuggest):
                     suggests = []
                     for param in unused_param:
                         if param in self.special_global_param_map.keys():
-                            # sample_value is the sample values in scenarios, such as <RESOURCEGROUPNAME>
                             sample_value = param
                         else:
+                            # sample_value is the sample values in scenarios, such as <RESOURCEGROUPNAME>
                             sample_value = self.param_value_map[param]
                         if sample_value:
                             if sample_value in self.customized_param_value_map.keys():
