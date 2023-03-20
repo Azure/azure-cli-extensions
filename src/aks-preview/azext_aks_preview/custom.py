@@ -729,9 +729,11 @@ def aks_create(
     except Exception as ex:
         logger.debug("failed to get cluster, error: %s", ex)
     if existing_mc:
-        raise ClientRequestError(f"The cluster '{name}' under resource group '{resource_group_name}' already exists. "
-                                    "Please use command 'az aks update' to update the existing cluster, "
-                                    "or select a different cluster name to create a new cluster.")
+        raise ClientRequestError(
+            f"The cluster '{name}' under resource group '{resource_group_name}' already exists. "
+            "Please use command 'az aks update' to update the existing cluster, "
+            "or select a different cluster name to create a new cluster."
+        )
 
     # decorator pattern
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
