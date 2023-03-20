@@ -251,18 +251,10 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
 def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, accepted_recommend=None,
                   api_version=None):
     # initialize feedback data
-    feedback_data = {}
-    feedback_data["request_type"] = None
-    feedback_data["option"] = None
-    feedback_data["trigger_commands"] = None
-    feedback_data["error_info"] = None
-    feedback_data["recommendations_list"] = None
-    feedback_data["recommendations_source_list"] = None
-    feedback_data["recommendations_type_list"] = None
-    feedback_data["accepted_recommend_source"] = None
-    feedback_data["accepted_recommend_type"] = None
-    feedback_data["accepted_recommend"] = None
-    feedback_data["is_personalized"] = None
+    feedback_data = {"request_type": None, "option": None, "trigger_commands": None, "error_info": None,
+                     "recommendations_list": None, "recommendations_source_list": None,
+                     "recommendations_type_list": None, "accepted_recommend_source": None,
+                     "accepted_recommend_type": None, "accepted_recommend": None, "is_personalized": None}
 
     # request_type is the type of recommendation mode, 1 means recommend all tyes of recommendations of command, scenario and solution
     feedback_data['request_type'] = 1
