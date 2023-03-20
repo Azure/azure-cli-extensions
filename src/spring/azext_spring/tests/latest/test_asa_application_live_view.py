@@ -155,7 +155,7 @@ class LiveViewTest(ScenarioTest):
             self.check('properties.features.applicationLiveView.state', 'Enabled')
         ])
 
-        self.cmd('spring application-live-view delete -g {rg} -s {serviceName}')
+        self.cmd('spring application-live-view delete -g {rg} -s {serviceName} -y')
 
         self.cmd('spring dev-tool show -g {rg} -s {serviceName}', checks=[
             self.check('properties.features.applicationLiveView.state', 'Disabled')

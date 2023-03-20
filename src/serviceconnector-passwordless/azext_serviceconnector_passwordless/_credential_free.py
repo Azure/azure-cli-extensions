@@ -6,6 +6,7 @@
 import struct
 import sys
 from knack.log import get_logger
+from knack.prompting import prompt_y_n, NoTTYException
 from msrestazure.tools import parse_resource_id
 from azure.cli.core.azclierror import (
     AzureConnectionError,
@@ -35,70 +36,76 @@ AUTHTYPES = {
     AUTH_TYPE.SystemIdentity: 'systemAssignedIdentity',
     AUTH_TYPE.UserAccount: 'userAccount'
 }
+IP_ADDRESS_CHECKER = 'https://api.ipify.org'
+OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
 
 
 # pylint: disable=line-too-long, consider-using-f-string
 # For db(mysqlFlex/psql/psqlFlex/sql) linker with auth type=systemAssignedIdentity, enable AAD auth and create db user on data plane
 # For other linker, ignore the steps
-def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name):
-    # return if connection is not for db mi
-    if auth_info['auth_type'] not in {AUTHTYPES[AUTH_TYPE.SystemIdentity], AUTHTYPES[AUTH_TYPE.UserAccount]}:
-        return None
+def get_enable_mi_for_db_linker_func(yes=False):
 
-    source_type = get_source_resource_name(cmd)
-    target_type = get_target_resource_name(cmd)
-    source_handler = getSourceHandler(source_id, source_type)
-    if source_handler is None:
-        return None
-    target_handler = getTargetHandler(
-        cmd, target_id, target_type, auth_info['auth_type'], client_type, connection_name)
-    if target_handler is None:
-        return None
+    def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name):
+        # return if connection is not for db mi
+        if auth_info['auth_type'] not in {AUTHTYPES[AUTH_TYPE.SystemIdentity], AUTHTYPES[AUTH_TYPE.UserAccount]}:
+            return None
 
-    user_object_id = auth_info.get('principal_id')
-    if user_object_id is None:
-        user_object_id = get_object_id_of_current_user()
+        source_type = get_source_resource_name(cmd)
+        target_type = get_target_resource_name(cmd)
+        source_handler = getSourceHandler(source_id, source_type)
+        if source_handler is None:
+            return None
+        target_handler = getTargetHandler(
+            cmd, target_id, target_type, auth_info['auth_type'], client_type, connection_name, skip_prompt=yes)
+        if target_handler is None:
+            return None
 
-    if user_object_id is None:
-        raise Exception(
-            "No object id for user {}".format(target_handler.login_username))
+        user_object_id = auth_info.get('principal_id')
+        if user_object_id is None:
+            user_object_id = get_object_id_of_current_user()
 
-    target_handler.user_object_id = user_object_id
-    if source_type != RESOURCE.Local:
-        # enable source mi
-        source_object_id = source_handler.get_identity_pid()
-        target_handler.identity_object_id = source_object_id
-        try:
-            identity_info = run_cli_cmd(
-                'az ad sp show --id {}'.format(source_object_id), 15, 10)
-            target_handler.identity_client_id = identity_info.get('appId')
-            target_handler.identity_name = identity_info.get('displayName')
-        except CLIInternalError as e:
-            if 'AADSTS530003' in e.error_msg:
-                logger.warning(
-                    'Please ask your IT department for help to join this device to Azure Active Directory.')
-            raise e
+        if user_object_id is None:
+            raise Exception(
+                "No object id for user {}".format(target_handler.login_username))
 
-    # enable target aad authentication and set login user as db aad admin
-    target_handler.enable_target_aad_auth()
-    target_handler.set_user_admin(
-        user_object_id, mysql_identity_id=auth_info.get('mysql-identity-id'))
+        target_handler.user_object_id = user_object_id
+        if source_type != RESOURCE.Local:
+            # enable source mi
+            source_object_id = source_handler.get_identity_pid()
+            target_handler.identity_object_id = source_object_id
+            try:
+                identity_info = run_cli_cmd(
+                    'az ad sp show --id {}'.format(source_object_id), 15, 10)
+                target_handler.identity_client_id = identity_info.get('appId')
+                target_handler.identity_name = identity_info.get('displayName')
+            except CLIInternalError as e:
+                if 'AADSTS530003' in e.error_msg:
+                    logger.warning(
+                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                raise e
 
-    # create an aad user in db
-    target_handler.create_aad_user()
-    return target_handler.get_auth_config(user_object_id)
+        # enable target aad authentication and set login user as db aad admin
+        target_handler.enable_target_aad_auth()
+        target_handler.set_user_admin(
+            user_object_id, mysql_identity_id=auth_info.get('mysql-identity-id'))
+
+        # create an aad user in db
+        target_handler.create_aad_user()
+        return target_handler.get_auth_config(user_object_id)
+
+    return enable_mi_for_db_linker
 
 
 # pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
-def getTargetHandler(cmd, target_id, target_type, auth_type, client_type, connection_name):
+def getTargetHandler(cmd, target_id, target_type, auth_type, client_type, connection_name, skip_prompt):
     if target_type in {RESOURCE.Sql}:
-        return SqlHandler(cmd, target_id, target_type, auth_type, connection_name)
+        return SqlHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
     if target_type in {RESOURCE.Postgres}:
-        return PostgresSingleHandler(cmd, target_id, target_type, auth_type, connection_name)
+        return PostgresSingleHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
     if target_type in {RESOURCE.PostgresFlexible}:
-        return PostgresFlexHandler(cmd, target_id, target_type, auth_type, connection_name)
+        return PostgresFlexHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
     if target_type in {RESOURCE.MysqlFlexible}:
-        return MysqlFlexibleHandler(cmd, target_id, target_type, auth_type, connection_name)
+        return MysqlFlexibleHandler(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
     return None
 
 
@@ -122,7 +129,11 @@ class TargetHandler:
     identity_client_id = ""
     identity_object_id = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name):
+    connection_name = ""
+
+    skip_prompt = False
+
+    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
         self.cmd = cmd
         self.target_id = target_id
         self.target_type = target_type
@@ -136,10 +147,12 @@ class TargetHandler:
             'az account show').get("user").get("name")
         self.login_usertype = run_cli_cmd(
             'az account show').get("user").get("type")
-        if(self.login_usertype not in ['servicePrincipal', 'user']):
+        if (self.login_usertype not in ['servicePrincipal', 'user']):
             raise CLIInternalError(
                 f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
         self.aad_username = "aad_" + connection_name
+        self.connection_name = connection_name
+        self.skip_prompt = skip_prompt
 
     def enable_target_aad_auth(self):
         return
@@ -147,7 +160,7 @@ class TargetHandler:
     def set_user_admin(self, user_object_id, **kwargs):
         return
 
-    def set_target_firewall(self, add_new_rule, ip_name):
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         return
 
     def create_aad_user(self):
@@ -173,8 +186,8 @@ class MysqlFlexibleHandler(TargetHandler):
     server = ""
     dbname = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name):
-        super().__init__(cmd, target_id, target_type, auth_type, connection_name)
+    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
+        super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
         self.endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
@@ -207,42 +220,62 @@ class MysqlFlexibleHandler(TargetHandler):
     def create_aad_user(self):
         query_list = self.get_create_query()
         connection_kwargs = self.get_connection_string()
-        ip_name = None
+        ip_name = generate_random_string(prefix='svc_').lower()
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_mysql(connection_kwargs, query_list)
-        except AzureConnectionError:
-            # allow public access
-            ip_name = generate_random_string(prefix='svc_').lower()
-            self.set_target_firewall(True, ip_name)
+        except AzureConnectionError as e:
+            logger.warning(e)
+            # allow local access
+            from requests import get
+            ip_address = get(IP_ADDRESS_CHECKER).text
+            self.set_target_firewall(True, ip_name, ip_address, ip_address)
             # create again
-            self.create_aad_user_in_mysql(connection_kwargs, query_list)
-
-        # remove firewall rule
-        if ip_name is not None:
             try:
+                self.create_aad_user_in_mysql(connection_kwargs, query_list)
+            except AzureConnectionError as e:
+                logger.warning(e)
+                try:
+                    if not self.skip_prompt:
+                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
+                            raise AzureConnectionError(
+                                "Please confirm local environment can connect to database and try again.") from e
+                except NoTTYException as e:
+                    raise CLIInternalError(
+                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                # allow public access
+                self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
+                # create again
+                self.create_aad_user_in_mysql(connection_kwargs, query_list)
+            finally:
                 self.set_target_firewall(False, ip_name)
-            # pylint: disable=bare-except
-            except:
-                pass
-                # logger.warning('Please manually delete firewall rule %s to avoid security issue', ipname)
 
-    def set_target_firewall(self, add_new_rule, ip_name):
-        if add_new_rule:
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
             target = run_cli_cmd(
                 'az mysql flexible-server show --ids {}'.format(self.target_id))
-            # logger.warning("Update database server firewall rule to connect...")
             if target.get('network').get('publicNetworkAccess') == "Disabled":
-                return
+                raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az mysql flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
-                '--subscription {3} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255'.format(
-                    self.resource_group, self.server, ip_name, self.subscription)
+                '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
+                    self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
             )
-        # logger.warning("Remove database server firewall rules to recover...")
-        # run_cli_cmd('az mysql server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ipname))
-        # if deny_public_access:
-        #     run_cli_cmd('az mysql server update --public Disabled --ids {}'.format(target_id))
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az mysql flexible-server firewall-rule delete --resource-group {0} --name {1} --rule-name {2} '
+                    '--subscription {3} --yes'.format(
+                        self.resource_group, self.server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def create_aad_user_in_mysql(self, connection_kwargs, query_list):
         if not is_packaged_installed('pymysql'):
@@ -258,6 +291,7 @@ class MysqlFlexibleHandler(TargetHandler):
         connection_kwargs['client_flag'] = CLIENT.MULTI_STATEMENTS
         try:
             connection = pymysql.connect(**connection_kwargs)
+            logger.warning("Adding new AAD user %s to database...", self.aad_username)
             cursor = connection.cursor()
             for q in query_list:
                 if q:
@@ -308,8 +342,8 @@ class SqlHandler(TargetHandler):
     server = ""
     dbname = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name):
-        super().__init__(cmd, target_id, target_type, auth_type, connection_name)
+    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
+        super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
         self.endpoint = cmd.cli_ctx.cloud.suffixes.sql_server_hostname
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
@@ -330,40 +364,61 @@ class SqlHandler(TargetHandler):
 
         query_list = self.get_create_query()
         connection_args = self.get_connection_string()
-        ip_name = None
+        ip_name = generate_random_string(prefix='svc_').lower()
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
-        except AzureConnectionError:
-            # allow public access
-            ip_name = generate_random_string(prefix='svc_').lower()
-            self.set_target_firewall(True, ip_name)
-            # create again
-            self.create_aad_user_in_sql(connection_args, query_list)
-
-        # remove firewall rule
-        if ip_name is not None:
+        except AzureConnectionError as e:
+            logger.warning(e)
+            # allow local access
+            from requests import get
+            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
+            self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
+                # create again
+                self.create_aad_user_in_sql(connection_args, query_list)
+            except AzureConnectionError as e:
+                logger.warning(e)
+                try:
+                    if not self.skip_prompt:
+                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
+                            raise AzureConnectionError(
+                                "Please confirm local environment can connect to database and try again.") from e
+                except NoTTYException as e:
+                    raise CLIInternalError(
+                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
+                # create again
+                self.create_aad_user_in_sql(connection_args, query_list)
+            finally:
                 self.set_target_firewall(False, ip_name)
-            # pylint: disable=bare-except
-            except:
-                pass
-                # logger.warning('Please manually delete firewall rule %s to avoid security issue', ipname)
 
-    def set_target_firewall(self, add_new_rule, ip_name):
-        if add_new_rule:
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
             target = run_cli_cmd(
                 'az sql server show --ids {}'.format(self.target_id))
             # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
-                run_cli_cmd(
-                    'az sql server update -e true --ids {}'.format(self.target_id))
+                raise AzureConnectionError("The target resource doesn't allow public access. Please enable it manually and try again.")
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az sql server firewall-rule create -g {0} -s {1} -n {2} '
-                '--subscription {3} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255'.format(
-                    self.resource_group, self.server, ip_name, self.subscription)
+                '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
+                    self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
             )
-            # return False
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az sql server firewall-rule delete -g {0} -s {1} -n {2} --subscription {3}'.format(
+                        self.resource_group, self.server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def create_aad_user_in_sql(self, connection_args, query_list):
 
@@ -384,6 +439,7 @@ class SqlHandler(TargetHandler):
         try:
             with pyodbc.connect(connection_args.get("connection_string").format(driver=drivers[0]), attrs_before=connection_args.get("attrs_before")) as conn:
                 with conn.cursor() as cursor:
+                    logger.warning("Adding new AAD user %s to database...", self.aad_username)
                     for execution_query in query_list:
                         try:
                             logger.debug(execution_query)
@@ -392,6 +448,11 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
+            import re
+            search_ip = re.search(
+                "Client with IP address '(.*?)' is not allowed to access the server", str(e))
+            if search_ip is not None:
+                self.ip = search_ip.group(1)
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
     def get_connection_string(self):
@@ -404,6 +465,7 @@ class SqlHandler(TargetHandler):
         SQL_COPT_SS_ACCESS_TOKEN = 1256
         conn_string = 'DRIVER={{{driver}}};server=' + \
             self.server + self.endpoint + ';database=' + self.dbname + ';'
+        logger.debug(conn_string)
         return {'connection_string': conn_string, 'attrs_before': {SQL_COPT_SS_ACCESS_TOKEN: token_struct}}
 
     def get_create_query(self):
@@ -426,8 +488,8 @@ class PostgresFlexHandler(TargetHandler):
     dbname = ""
     ip = ""
 
-    def __init__(self, cmd, target_id, target_type, auth_type, connection_name):
-        super().__init__(cmd, target_id, target_type, auth_type, connection_name)
+    def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
+        super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
         self.endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
         target_segments = parse_resource_id(target_id)
         self.db_server = target_segments.get('name')
@@ -452,44 +514,62 @@ class PostgresFlexHandler(TargetHandler):
     def create_aad_user(self):
         query_list = self.get_create_query()
         connection_string = self.get_connection_string()
-        ip_name = None
+        ip_name = generate_random_string(prefix='svc_').lower()
+
         try:
             logger.warning("Connecting to database...")
             self.create_aad_user_in_pg(connection_string, query_list)
-        except AzureConnectionError:
-            # allow public access
-            ip_name = generate_random_string(prefix='svc_').lower()
-            self.set_target_firewall(True, ip_name)
-            # create again
-            self.create_aad_user_in_pg(connection_string, query_list)
-
-        # remove firewall rule
-        if ip_name is not None:
+        except AzureConnectionError as e:
+            logger.warning(e)
+            # allow local access
+            from requests import get
+            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
+            self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
+                # create again
+                self.create_aad_user_in_pg(connection_string, query_list)
+            except AzureConnectionError as e:
+                logger.warning(e)
+                try:
+                    if not self.skip_prompt:
+                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
+                            raise AzureConnectionError(
+                                "Please confirm local environment can connect to database and try again.") from e
+                except NoTTYException as e:
+                    raise CLIInternalError(
+                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                self.set_target_firewall(True, ip_name, '0.0.0.0', '255.255.255.255')
+                # create again
+                self.create_aad_user_in_pg(connection_string, query_list)
+            finally:
                 self.set_target_firewall(False, ip_name)
-            # pylint: disable=bare-except
-            except:
-                pass
-                # logger.warning('Please manually delete firewall rule %s to avoid security issue', ipname)
 
-    def set_target_firewall(self, add_new_rule, ip_name):
-        if add_new_rule:
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
+        if is_add:
             target = run_cli_cmd(
                 'az postgres flexible-server show --ids {}'.format(self.target_id))
-            # logger.warning("Update database server firewall rule to connect...")
             if target.get('network').get('publicNetworkAccess') == "Disabled":
-                return
-            start_ip = self.ip or '0.0.0.0'
-            end_ip = self.ip or '255.255.255.255'
+                raise AzureConnectionError("The target resource doesn't allow public access. Connection can't be created.")
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az postgres flexible-server firewall-rule create --resource-group {0} --name {1} --rule-name {2} '
                 '--subscription {3} --start-ip-address {4} --end-ip-address {5}'.format(
                     self.resource_group, self.db_server, ip_name, self.subscription, start_ip, end_ip)
             )
-        # logger.warning("Remove database server firewall rules to recover...")
-        # run_cli_cmd('az postgres server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ipname))
-        # if deny_public_access:
-        #     run_cli_cmd('az postgres server update --public Disabled --ids {}'.format(target_id))
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd(
+                    'az postgres flexible-server firewall-rule delete --resource-group {0} --name {1} --rule-name {2} '
+                    '--subscription {3} --yes'.format(
+                        self.resource_group, self.db_server, ip_name, self.subscription)
+                )
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def create_aad_user_in_pg(self, conn_string, query_list):
         if not is_packaged_installed('psycopg2'):
@@ -580,30 +660,33 @@ class PostgresSingleHandler(PostgresFlexHandler):
             run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
                         ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
 
-    def set_target_firewall(self, add_new_rule, ip_name):
+    def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         sub = self.subscription
         rg = self.resource_group
         server = self.db_server
         target_id = self.target_id
-        if add_new_rule:
+        if is_add:
             target = run_cli_cmd(
                 'az postgres server show --ids {}'.format(target_id))
-            # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
-                run_cli_cmd(
-                    'az postgres server update --public Enabled --ids {}'.format(target_id))
-            start_ip = self.ip or '0.0.0.0'
-            end_ip = self.ip or '255.255.255.255'
+                raise AzureConnectionError(
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
+            logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
+                           ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
+                               AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
                 'az postgres server firewall-rule create -g {0} -s {1} -n {2} --subscription {3}'
                 ' --start-ip-address {4} --end-ip-address {5}'.format(
                     rg, server, ip_name, sub, start_ip, end_ip)
             )
-            # return target.get('publicNetworkAccess') == "Disabled"
-        # logger.warning("Remove database server firewall rules to recover...")
-        # run_cli_cmd('az postgres server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ipname))
-        # if deny_public_access:
-        #     run_cli_cmd('az postgres server update --public Disabled --ids {}'.format(target_id))
+        else:
+            if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                return
+            logger.warning("Remove database server firewall rule %s to recover...", ip_name)
+            try:
+                run_cli_cmd('az postgres server firewall-rule delete -g {0} -s {1} -n {2} -y'.format(rg, server, ip_name))
+            except CLIInternalError as e:
+                logger.warning("Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
     def get_connection_string(self):
         password = run_cli_cmd(
