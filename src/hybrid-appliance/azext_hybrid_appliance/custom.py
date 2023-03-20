@@ -52,6 +52,9 @@ def validate_hybrid_appliance(resource_group_name, name):
             all_validations_passed = False
             logger.warning("The endpoint {} is not reachable from your machine".format(endpoint))
     
+    # Install specific version of connectedk8s
+    get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
+    
     try:
         cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
         process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -96,8 +99,6 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     if not utils.check_microk8s():
         raise CLIInternalError("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
 
-    # Install specific version of connectedk8s
-    get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
     # Onboard the cluster to arc
     cmd_onboard_arc= ['connectedk8s', 'connect', '-n', name, '-g', resource_group_name, '--kube-config', kubeconfig_path]
 
