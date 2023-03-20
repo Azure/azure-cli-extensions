@@ -932,7 +932,7 @@ class ContainerappScaleTests(ScenarioTest):
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         # test managedEnvironmentId
-        compose_text = f"""
+        containerapp_yaml_text = f"""
         location: westeurope
         type: Microsoft.App/containerApps
         tags:
@@ -967,10 +967,10 @@ class ContainerappScaleTests(ScenarioTest):
               minReplicas: 1
               maxReplicas: 3
         """
-        compose_file_name = "containerapp.yml"
+        containerapp_file_name = "containerapp.yml"
 
-        write_test_file(compose_file_name, compose_text)
-        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {compose_file_name}')
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -983,8 +983,7 @@ class ContainerappScaleTests(ScenarioTest):
         ])
 
         # test environmentId
-        app2 = self.create_random_name(prefix='yaml', length=24)
-        compose_text = f"""
+        containerapp_yaml_text = f"""
                 location: westeurope
                 type: Microsoft.App/containerApps
                 tags:
@@ -1019,11 +1018,11 @@ class ContainerappScaleTests(ScenarioTest):
                       minReplicas: 1
                       maxReplicas: 3
                 """
-        write_test_file(compose_file_name, compose_text)
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
 
-        self.cmd(f'containerapp create -n {app2} -g {resource_group} --environment {env} --yaml {compose_file_name}')
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
 
-        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
