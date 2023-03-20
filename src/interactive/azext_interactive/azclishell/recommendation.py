@@ -252,11 +252,11 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
                   api_version=None):
     # initialize feedback data
     feedback_data = {}
-    feedback_data["data_prefix"] = None
-    feedback_data["option_idx"] = None
+    feedback_data["request_type"] = None
+    feedback_data["option"] = None
     feedback_data["trigger_commands"] = None
-    feedback_data["processed_exception"] = None
-    feedback_data["all_recommendations"] = None
+    feedback_data["error_info"] = None
+    feedback_data["recommendations_list"] = None
     feedback_data["recommendations_source_list"] = None
     feedback_data["recommendations_type_list"] = None
     feedback_data["accepted_recommend_source"] = None
@@ -264,11 +264,11 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
     feedback_data["accepted_recommend"] = None
     feedback_data["is_personalized"] = None
 
-    # data_prefix is the perfix of the feedback data, 1 means the feedback data is from CLI
-    feedback_data['data_prefix'] = 1
-    # option_idx is the index of the recommended command that user chooses.
+    # request_type is the type of recommendation mode, 1 means recommend all tyes of recommendations of command, scenario and solution
+    feedback_data['request_type'] = 1
+    # option is the index of the recommended command that user chooses.
     # 'a' means commands while 'b' means scenarios, such as 'a1'
-    feedback_data['option_idx'] = str(option_idx)
+    feedback_data['option'] = str(option_idx)
 
     # trigger_commands is the commands that trigger the recommendation, can be multiple, max is 2 commands
     if len(latest_commands) > 1:
@@ -279,7 +279,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
 
     # get exception while command failed, succeeded commands return ' '
     if processed_exception and processed_exception != '':
-        feedback_data["processed_exception"] = processed_exception
+        feedback_data["error_info"] = processed_exception
 
     # get all recommend sources and types
     has_personalized_rec = False
@@ -298,7 +298,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
                 has_personalized_rec = True
         feedback_data["recommendations_source_list"] = sorted(source_list)
         feedback_data["recommendations_type_list"] = sorted(recommend_type_list)
-        feedback_data["all_recommendations"] = recommends_list
+        feedback_data["recommendations_list"] = recommends_list
 
     if accepted_recommend:
         feedback_data["accepted_recommend_source"] = accepted_recommend['source']
