@@ -84,21 +84,19 @@ class Update(AAZCommand):
         _args_schema.node_count = AAZIntArg(
             options=["--node-count"],
             arg_group="Properties",
-            help={"short-summary": "Number of CCF nodes in the instance.", "long-summary": "If the argument is omitted, a default value of 3 is used. The maximum supported size is 9 nodes."},
+            help="Node consensus requires odd number of nodes. Select a number between 3 and 9.",
             is_preview=True,
-            default=3,
         )
 
         deployment_type = cls._args_schema.deployment_type
         deployment_type.app_source_uri = AAZStrArg(
             options=["app-source-uri"],
-            help={"short-summary": "Supply 'sample' to deploy the sample JS application.", "long-summary": "Determines the type of the JS application to deploy."},
-            default="customImage",
+            help={"short-summary": "Set it to 'customImage' to deploy a custom JS application or 'sample' to deploy the sample JS application.", "long-summary": "Determines the type of the JS application to deploy."},
+            is_preview=True,
         )
         deployment_type.language_runtime = AAZStrArg(
             options=["language-runtime"],
             help="The language runtime value is 'JS'",
-            default="JS",
             enum={"CPP": "CPP", "JS": "JS"},
         )
 

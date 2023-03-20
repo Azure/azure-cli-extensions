@@ -50,6 +50,7 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
             required=False,
         )
 
+        # pylint: disable=protected-access
         args_schema.member_identity_certificates._registered = False
 
         # Deployment type properties.
@@ -70,6 +71,7 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
             default="JS",
         )
 
+        # pylint: disable=protected-access
         args_schema.deployment_type._registered = False
         return args_schema
 
