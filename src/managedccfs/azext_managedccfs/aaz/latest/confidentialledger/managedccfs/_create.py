@@ -92,10 +92,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Instance specific data.",
         )
-        _args_schema.member_identity_certificates = AAZListArg(
-            options=["--member-identity-certificates"],
+        _args_schema.member_certificates = AAZListArg(
+            options=["--member-certificates"],
             arg_group="Properties",
             help="A collection of member identity certificates.",
+            is_preview=True,
         )
         _args_schema.node_count = AAZIntArg(
             options=["--node-count"],
@@ -118,10 +119,10 @@ class Create(AAZCommand):
             enum={"CPP": "CPP", "JS": "JS"},
         )
 
-        member_identity_certificates = cls._args_schema.member_identity_certificates
-        member_identity_certificates.Element = AAZObjectArg()
+        member_certificates = cls._args_schema.member_certificates
+        member_certificates.Element = AAZObjectArg()
 
-        _element = cls._args_schema.member_identity_certificates.Element
+        _element = cls._args_schema.member_certificates.Element
         _element.certificate = AAZStrArg(
             options=["certificate"],
             help="Member Identity Certificate",
@@ -135,7 +136,7 @@ class Create(AAZCommand):
             help="Tags for Managed CCF Certificates",
         )
 
-        tags = cls._args_schema.member_identity_certificates.Element.tags
+        tags = cls._args_schema.member_certificates.Element.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
 
@@ -245,7 +246,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("deploymentType", AAZObjectType, ".deployment_type")
-                properties.set_prop("memberIdentityCertificates", AAZListType, ".member_identity_certificates")
+                properties.set_prop("memberIdentityCertificates", AAZListType, ".member_certificates")
                 properties.set_prop("nodeCount", AAZIntType, ".node_count")
 
             deployment_type = _builder.get(".properties.deploymentType")

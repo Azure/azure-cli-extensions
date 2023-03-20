@@ -51,7 +51,7 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
         )
 
         # pylint: disable=protected-access
-        args_schema.member_identity_certificates._registered = False
+        args_schema.member_certificates._registered = False
 
         # Deployment type properties.
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -97,8 +97,8 @@ class MemberIdentityCertificate(_ManagedCCFCreate):
             member_cert['tags'] = tags
             return member_cert
 
-        args.member_identity_certificates = assign_aaz_list_arg(
-            args.member_identity_certificates,
+        args.member_certificates = assign_aaz_list_arg(
+            args.member_certificates,
             args.members,
             element_transformer=members_transform
         )
