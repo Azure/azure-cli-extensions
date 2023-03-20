@@ -49,9 +49,9 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
     else:
         exts = list(restore_functions.keys())
 
-    # for remap data sources, no need to restore, but mapping is needed to transform dashboards
+    # to re-map data sources, create a mapping from source to destination to transform dashboards
     if destination_datasources:
-        if "datasource" in exts:
+        if "datasource" in exts:  # first let us skip datasource restoration 
             exts.pop(exts.index("datasource"))
         datasource_backups = glob(f'{tmpdir}/**/*.datasource', recursive=True)
         if not datasource_backups:

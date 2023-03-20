@@ -258,9 +258,9 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data_sources=None,
-                    resource_group_name=None, api_key_or_token=None):
+                    resource_group_name=None):
     _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
-    creds = _get_data_plane_creds(cmd, api_key_or_token=api_key_or_token, subscription=None)
+    creds = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
     headers = {
         "content-type": "application/json",
         "authorization": "Bearer " + creds[1]
