@@ -119,7 +119,9 @@ ScaleRule = {
 
 Secret = {
     "name": None,
-    "value": None
+    "value": None,
+    "keyVaultUrl": None,
+    "identity": None
 }
 
 Scale = {
