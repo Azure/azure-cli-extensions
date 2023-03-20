@@ -4,6 +4,7 @@
   - [Repository](#repository)
   - [Prerequisites](#prerequisites)
   - [Installation Instructions (End User)](#installation-instructions-end-user)
+  - [Current Limitations](#current-limitations)
   - [Trademarks](#trademarks)
 
 ## Repository
@@ -47,6 +48,13 @@
    ```bash
    az extension add -n confcom
    ```
+
+## Current Limitations
+
+The `confcom` extension does not currently support:
+
+- [ARM Template functions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions) other than `variables` and `parameters`.
+- Variables and Parameters with non-primitive data types e.g. objects and arrays
 
 ## Trademarks
 
