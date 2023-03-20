@@ -611,6 +611,7 @@ def update_containerapp_logic(cmd,
                               from_revision=None,
                               ingress=None,
                               target_port=None,
+                              workload_profile_name=None,
                               registry_server=None,
                               registry_user=None,
                               registry_pass=None):
@@ -670,6 +671,9 @@ def update_containerapp_logic(cmd,
     if revision_suffix is not None:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
         new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix
+
+    if workload_profile_name:
+        new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
 
     # Containers
     if update_map["container"]:
@@ -928,6 +932,7 @@ def update_containerapp(cmd,
                         startup_command=None,
                         args=None,
                         tags=None,
+                        workload_profile_name=None,
                         no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -954,6 +959,7 @@ def update_containerapp(cmd,
                                      startup_command=startup_command,
                                      args=args,
                                      tags=tags,
+                                     workload_profile_name=workload_profile_name,
                                      no_wait=no_wait)
 
 
@@ -1135,7 +1141,6 @@ def update_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                tags=None,
-                               #plan=None,
                                workload_profile_type=None,
                                workload_profile_name=None,
                                min_nodes=None,
@@ -1184,7 +1189,8 @@ def update_managed_environment(cmd,
         if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]: #and not (plan and plan.lower() == "premium"):
             raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
-        workload_profile_type = workload_profile_type.upper()
+        if workload_profile_type:
+            workload_profile_type = workload_profile_type.upper()
         workload_profiles = r["properties"]["workloadProfiles"]
         profile = [p for p in workload_profiles if p["name"].lower() == workload_profile_name.lower()]
         update = False  # flag for updating an existing profile
@@ -1194,9 +1200,12 @@ def update_managed_environment(cmd,
         else:
             profile = {"name": workload_profile_name}
 
-        profile["workloadProfileType"] = workload_profile_type
-        profile["maximumCount"] = max_nodes
-        profile["minimumCount"] = min_nodes
+        if workload_profile_type:
+            profile["workloadProfileType"] = workload_profile_type
+        if max_nodes:
+            profile["maximumCount"] = max_nodes
+        if min_nodes:
+            profile["minimumCount"] = min_nodes
 
         if not update:
             workload_profiles.append(profile)
@@ -1639,6 +1648,7 @@ def copy_revision(cmd,
                   startup_command=None,
                   args=None,
                   tags=None,
+                  workload_profile_name=None,
                   no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -1672,6 +1682,7 @@ def copy_revision(cmd,
                                      args=args,
                                      tags=tags,
                                      no_wait=no_wait,
+                                     workload_profile_name=workload_profile_name,
                                      from_revision=from_revision)
 
 
@@ -2716,6 +2727,7 @@ def containerapp_up(cmd,
                     branch=None,
                     browse=False,
                     context_path=None,
+                    workload_profile_name=None,
                     service_principal_client_id=None,
                     service_principal_client_secret=None,
                     service_principal_tenant_id=None):
@@ -2754,7 +2766,7 @@ def containerapp_up(cmd,
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
-    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, ingress)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
     _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
 
@@ -2787,7 +2799,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, registry_pass):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -2795,8 +2807,8 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         pass
 
     if containerapp_def:
-        return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, container_name=name)
-    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+        return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
+    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name)
 
 
 def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None, location=None):
@@ -4079,7 +4091,7 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_n
     return profile[0]
 
 
-def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type, min_nodes, max_nodes):
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
     return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile_name):

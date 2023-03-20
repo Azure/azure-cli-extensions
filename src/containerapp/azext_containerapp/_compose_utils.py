@@ -68,6 +68,7 @@ def build_containerapp_from_compose_service(cmd,
                        registry_user,
                        registry_pass,
                        env_vars,
+                       workload_profile_name,
                        ingress)
 
     if not registry_server:

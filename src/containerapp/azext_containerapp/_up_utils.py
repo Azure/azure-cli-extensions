@@ -279,6 +279,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         registry_user=None,
         registry_pass=None,
         env_vars=None,
+        workload_profile_name=None,
         ingress=None,
     ):
 
@@ -291,6 +292,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.registry_pass = registry_pass
         self.env_vars = env_vars
         self.ingress = ingress
+        self.workload_profile_name = workload_profile_name
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -320,6 +322,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             registry_pass=None if no_registry else self.registry_pass,
             registry_user=None if no_registry else self.registry_user,
             env_vars=self.env_vars,
+            workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
         )
 
