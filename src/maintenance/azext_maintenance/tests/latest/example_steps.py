@@ -10,10 +10,11 @@
 
 
 from .. import try_manual
-
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 # EXAMPLE: /ApplyUpdates/put/ApplyUpdates_CreateOrUpdate
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_applyupdate_create(test, checks=None):
     if checks is None:
         checks = []
@@ -27,6 +28,7 @@ def step_applyupdate_create(test, checks=None):
 
 # EXAMPLE: /ApplyUpdates/put/ApplyUpdates_CreateOrUpdateParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_applyupdate_create_or_update_parent(test, checks=None):
     if checks is None:
         checks = []
@@ -42,6 +44,7 @@ def step_applyupdate_create_or_update_parent(test, checks=None):
 
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_Get
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_applyupdate_show(test, checks=None):
     if checks is None:
         checks = []
@@ -56,6 +59,7 @@ def step_applyupdate_show(test, checks=None):
 
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_GetParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_applyupdate_show_parent(test, checks=None):
     if checks is None:
         checks = []
@@ -72,6 +76,7 @@ def step_applyupdate_show_parent(test, checks=None):
 
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_List
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_applyupdate_list(test, checks=None):
     if checks is None:
         checks = []
@@ -81,6 +86,7 @@ def step_applyupdate_list(test, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/put/MaintenanceConfigurations_CreateOrUpdateForResource
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_create(test, checks=None):
     if checks is None:
         checks = []
@@ -101,6 +107,7 @@ def step_configuration_create(test, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_show(test, checks=None):
     if checks is None:
         checks = []
@@ -112,18 +119,21 @@ def step_configuration_show(test, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource_GuestOSPatchLinux
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_show2(test, checks=None):
     return step_configuration_show(test, checks)
 
 
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource_GuestOSPatchWindows
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_show3(test, checks=None):
     return step_configuration_show(test, checks)
 
 
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_List
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_list(test, checks=None):
     if checks is None:
         checks = []
@@ -133,6 +143,7 @@ def step_configuration_list(test, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/patch/MaintenanceConfigurations_UpdateForResource
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_update(test, checks=None):
     if checks is None:
         checks = []
@@ -153,6 +164,7 @@ def step_configuration_update(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateOrUpdate
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_create(test, checks=None):
     if checks is None:
         checks = []
@@ -169,6 +181,7 @@ def step_assignment_create(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateOrUpdateParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_create_or_update_parent(test, checks=None):
     if checks is None:
         checks = []
@@ -186,6 +199,7 @@ def step_assignment_create_or_update_parent(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateSubscription
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_create_subscription(test, checks=None):
     if checks is None:
         checks = []
@@ -195,6 +209,7 @@ def step_configuration_create_subscription(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateResourceGroup
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_create_resource_group(test, checks=None):
     if checks is None:
         checks = []
@@ -205,6 +220,7 @@ def step_configuration_create_resource_group(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_Get
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_show(test, checks=None):
     if checks is None:
         checks = []
@@ -219,6 +235,7 @@ def step_assignment_show(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_GetParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_show_parent(test, checks=None):
     if checks is None:
         checks = []
@@ -234,6 +251,7 @@ def step_assignment_show_parent(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowResourceGroup
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_show_resource_group(test, checks=None):
     if checks is None:
         checks = []
@@ -244,6 +262,7 @@ def step_assignment_show_resource_group(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowSubscription
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_show_subscription(test, checks=None):
     if checks is None:
         checks = []
@@ -254,6 +273,7 @@ def step_assignment_show_subscription(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowResourceGroup
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_update_resource_group(test, checks=None):
     if checks is None:
         checks = []
@@ -264,6 +284,7 @@ def step_assignment_update_resource_group(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ShowSubscription
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_update_subscription(test, checks=None):
     if checks is None:
         checks = []
@@ -274,6 +295,7 @@ def step_assignment_update_subscription(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteResourceGroup
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_delete_resource_group(test, checks=None):
     if checks is None:
         checks = []
@@ -284,6 +306,7 @@ def step_configuration_delete_resource_group(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteSubscription
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_delete_subscription(test, checks=None):
     if checks is None:
         checks = []
@@ -293,6 +316,7 @@ def step_configuration_delete_subscription(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_List
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_list(test, checks=None):
     if checks is None:
         checks = []
@@ -306,6 +330,7 @@ def step_assignment_list(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ListParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_list_parent(test, checks=None):
     if checks is None:
         checks = []
@@ -321,6 +346,7 @@ def step_assignment_list_parent(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_Delete
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_delete(test, checks=None):
     if checks is None:
         checks = []
@@ -335,6 +361,7 @@ def step_assignment_delete(test, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_assignment_delete_parent(test, checks=None):
     if checks is None:
         checks = []
@@ -351,6 +378,7 @@ def step_assignment_delete_parent(test, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/delete/MaintenanceConfigurations_DeleteForResource
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_configuration_delete(test, checks=None):
     if checks is None:
         checks = []
@@ -362,6 +390,7 @@ def step_configuration_delete(test, checks=None):
 
 # EXAMPLE: /PublicMaintenanceConfigurations/get/PublicMaintenanceConfigurations_GetForResource
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_public_configuration_show(test, checks=None):
     if checks is None:
         checks = []
@@ -372,6 +401,7 @@ def step_public_configuration_show(test, checks=None):
 
 # EXAMPLE: /PublicMaintenanceConfigurations/get/PublicMaintenanceConfigurations_List
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_public_configuration_list(test, checks=None):
     if checks is None:
         checks = []
@@ -381,6 +411,7 @@ def step_public_configuration_list(test, checks=None):
 
 # EXAMPLE: /Updates/get/Updates_List
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_update_list(test, checks=None):
     if checks is None:
         checks = []
@@ -394,6 +425,7 @@ def step_update_list(test, checks=None):
 
 # EXAMPLE: /Updates/get/Updates_ListParent
 @try_manual
+@AllowLargeResponse(size_kb=10240)
 def step_update_list_parent(test, checks=None):
     if checks is None:
         checks = []
