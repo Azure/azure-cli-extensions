@@ -81,7 +81,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
+            options=["--identities", "--user-assigned-identities"],
             arg_group="Identity",
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
