@@ -74,7 +74,7 @@ class Recommender:
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
             processed_exception = self.cur_thread.processed_exception
             if not recommendations or not command:
-                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version = self.cur_thread.api_version)
+                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version = api_version)
                 return
             # reformat the user input
             # e.g. `az webapp   create -h` => `webapp create -h`
