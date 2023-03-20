@@ -292,6 +292,7 @@ def wait_till_end(cmd, *pollers):
     while any(x and not x.done() for x in pollers):
         progress_bar.add(message='Running')
         sleep(5)
+    progress_bar.end()
 
 
 def handle_asc_exception(ex):

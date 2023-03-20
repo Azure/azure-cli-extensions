@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders", "2022-11-01"],
         ]
     }
 
@@ -37,11 +37,11 @@ class List(AAZCommand):
         self.ReservationOrderList(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -80,7 +80,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -136,7 +136,7 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _build_schema_system_data_read(_element.system_data)
+            _ListHelper._build_schema_system_data_read(_element.system_data)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -157,6 +157,9 @@ class List(AAZCommand):
             properties.expiry_date = AAZStrType(
                 serialized_name="expiryDate",
             )
+            properties.expiry_date_time = AAZStrType(
+                serialized_name="expiryDateTime",
+            )
             properties.original_quantity = AAZIntType(
                 serialized_name="originalQuantity",
             )
@@ -170,6 +173,9 @@ class List(AAZCommand):
                 serialized_name="requestDateTime",
             )
             properties.reservations = AAZListType()
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
+            )
             properties.term = AAZStrType()
 
             plan_information = cls._schema_on_200.value.Element.properties.plan_information
@@ -179,7 +185,7 @@ class List(AAZCommand):
             plan_information.pricing_currency_total = AAZObjectType(
                 serialized_name="pricingCurrencyTotal",
             )
-            _build_schema_price_read(plan_information.pricing_currency_total)
+            _ListHelper._build_schema_price_read(plan_information.pricing_currency_total)
             plan_information.start_date = AAZStrType(
                 serialized_name="startDate",
             )
@@ -195,21 +201,21 @@ class List(AAZCommand):
             _element.billing_currency_total = AAZObjectType(
                 serialized_name="billingCurrencyTotal",
             )
-            _build_schema_price_read(_element.billing_currency_total)
+            _ListHelper._build_schema_price_read(_element.billing_currency_total)
             _element.due_date = AAZStrType(
                 serialized_name="dueDate",
             )
             _element.extended_status_info = AAZObjectType(
                 serialized_name="extendedStatusInfo",
             )
-            _build_schema_extended_status_info_read(_element.extended_status_info)
+            _ListHelper._build_schema_extended_status_info_read(_element.extended_status_info)
             _element.payment_date = AAZStrType(
                 serialized_name="paymentDate",
             )
             _element.pricing_currency_total = AAZObjectType(
                 serialized_name="pricingCurrencyTotal",
             )
-            _build_schema_price_read(_element.pricing_currency_total)
+            _ListHelper._build_schema_price_read(_element.pricing_currency_total)
             _element.status = AAZStrType()
 
             reservations = cls._schema_on_200.value.Element.properties.reservations
@@ -227,12 +233,12 @@ class List(AAZCommand):
             )
             _element.properties = AAZObjectType()
             _element.sku = AAZObjectType()
-            _build_schema_sku_name_read(_element.sku)
+            _ListHelper._build_schema_sku_name_read(_element.sku)
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _build_schema_system_data_read(_element.system_data)
+            _ListHelper._build_schema_system_data_read(_element.system_data)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -241,13 +247,14 @@ class List(AAZCommand):
             properties.applied_scope_properties = AAZObjectType(
                 serialized_name="appliedScopeProperties",
             )
+            _ListHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _build_schema_applied_scopes_read(properties.applied_scopes)
+            _ListHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.archived = AAZBoolType()
             properties.benefit_start_time = AAZStrType(
                 serialized_name="benefitStartTime",
@@ -272,10 +279,13 @@ class List(AAZCommand):
             properties.expiry_date = AAZStrType(
                 serialized_name="expiryDate",
             )
+            properties.expiry_date_time = AAZStrType(
+                serialized_name="expiryDateTime",
+            )
             properties.extended_status_info = AAZObjectType(
                 serialized_name="extendedStatusInfo",
             )
-            _build_schema_extended_status_info_read(properties.extended_status_info)
+            _ListHelper._build_schema_extended_status_info_read(properties.extended_status_info)
             properties.instance_flexibility = AAZStrType(
                 serialized_name="instanceFlexibility",
             )
@@ -296,6 +306,9 @@ class List(AAZCommand):
             properties.purchase_date = AAZStrType(
                 serialized_name="purchaseDate",
             )
+            properties.purchase_date_time = AAZStrType(
+                serialized_name="purchaseDateTime",
+            )
             properties.quantity = AAZIntType()
             properties.renew = AAZBoolType()
             properties.renew_destination = AAZStrType(
@@ -309,6 +322,9 @@ class List(AAZCommand):
             )
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
+            )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
             )
             properties.sku_description = AAZStrType(
                 serialized_name="skuDescription",
@@ -330,17 +346,6 @@ class List(AAZCommand):
             )
             properties.utilization = AAZObjectType(
                 flags={"read_only": True},
-            )
-
-            applied_scope_properties = cls._schema_on_200.value.Element.properties.reservations.Element.properties.applied_scope_properties
-            applied_scope_properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            applied_scope_properties.management_group_id = AAZStrType(
-                serialized_name="managementGroupId",
-            )
-            applied_scope_properties.tenant_id = AAZStrType(
-                serialized_name="tenantId",
             )
 
             merge_properties = cls._schema_on_200.value.Element.properties.reservations.Element.properties.merge_properties
@@ -383,16 +388,20 @@ class List(AAZCommand):
                 flags={"client_flatten": True},
             )
             purchase_properties.sku = AAZObjectType()
-            _build_schema_sku_name_read(purchase_properties.sku)
+            _ListHelper._build_schema_sku_name_read(purchase_properties.sku)
 
             properties = cls._schema_on_200.value.Element.properties.reservations.Element.properties.renew_properties.purchase_properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _ListHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _build_schema_applied_scopes_read(properties.applied_scopes)
+            _ListHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.billing_plan = AAZStrType(
                 serialized_name="billingPlan",
             )
@@ -409,6 +418,9 @@ class List(AAZCommand):
             )
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
+            )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
             )
             properties.term = AAZStrType()
 
@@ -437,17 +449,13 @@ class List(AAZCommand):
             )
 
             utilization = cls._schema_on_200.value.Element.properties.reservations.Element.properties.utilization
-            utilization.aggregates = AAZListType(
-                flags={"read_only": True},
-            )
+            utilization.aggregates = AAZListType()
             utilization.trend = AAZStrType(
                 flags={"read_only": True},
             )
 
             aggregates = cls._schema_on_200.value.Element.properties.reservations.Element.properties.utilization.aggregates
-            aggregates.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            aggregates.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.reservations.Element.properties.utilization.aggregates.Element
             _element.grain = AAZFloatType(
@@ -468,134 +476,159 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_applied_scopes_read = None
+class _ListHelper:
+    """Helper class for List"""
 
+    _schema_applied_scope_properties_read = None
 
-def _build_schema_applied_scopes_read(_schema):
-    global _schema_applied_scopes_read
-    if _schema_applied_scopes_read is not None:
-        _schema.Element = _schema_applied_scopes_read.Element
-        return
+    @classmethod
+    def _build_schema_applied_scope_properties_read(cls, _schema):
+        if cls._schema_applied_scope_properties_read is not None:
+            _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+            _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+            _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+            _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+            _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+            return
 
-    _schema_applied_scopes_read = AAZListType()
+        cls._schema_applied_scope_properties_read = _schema_applied_scope_properties_read = AAZObjectType()
 
-    applied_scopes_read = _schema_applied_scopes_read
-    applied_scopes_read.Element = AAZStrType()
+        applied_scope_properties_read = _schema_applied_scope_properties_read
+        applied_scope_properties_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        applied_scope_properties_read.management_group_id = AAZStrType(
+            serialized_name="managementGroupId",
+        )
+        applied_scope_properties_read.resource_group_id = AAZStrType(
+            serialized_name="resourceGroupId",
+        )
+        applied_scope_properties_read.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
+        applied_scope_properties_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    _schema.Element = _schema_applied_scopes_read.Element
+        _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+        _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+        _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+        _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+        _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
 
+    _schema_applied_scopes_read = None
 
-_schema_extended_status_info_read = None
+    @classmethod
+    def _build_schema_applied_scopes_read(cls, _schema):
+        if cls._schema_applied_scopes_read is not None:
+            _schema.Element = cls._schema_applied_scopes_read.Element
+            return
 
+        cls._schema_applied_scopes_read = _schema_applied_scopes_read = AAZListType()
 
-def _build_schema_extended_status_info_read(_schema):
-    global _schema_extended_status_info_read
-    if _schema_extended_status_info_read is not None:
-        _schema.message = _schema_extended_status_info_read.message
-        _schema.status_code = _schema_extended_status_info_read.status_code
-        return
+        applied_scopes_read = _schema_applied_scopes_read
+        applied_scopes_read.Element = AAZStrType()
 
-    _schema_extended_status_info_read = AAZObjectType()
+        _schema.Element = cls._schema_applied_scopes_read.Element
 
-    extended_status_info_read = _schema_extended_status_info_read
-    extended_status_info_read.message = AAZStrType()
-    extended_status_info_read.status_code = AAZStrType(
-        serialized_name="statusCode",
-    )
+    _schema_extended_status_info_read = None
 
-    _schema.message = _schema_extended_status_info_read.message
-    _schema.status_code = _schema_extended_status_info_read.status_code
+    @classmethod
+    def _build_schema_extended_status_info_read(cls, _schema):
+        if cls._schema_extended_status_info_read is not None:
+            _schema.message = cls._schema_extended_status_info_read.message
+            _schema.status_code = cls._schema_extended_status_info_read.status_code
+            return
 
+        cls._schema_extended_status_info_read = _schema_extended_status_info_read = AAZObjectType()
 
-_schema_price_read = None
+        extended_status_info_read = _schema_extended_status_info_read
+        extended_status_info_read.message = AAZStrType()
+        extended_status_info_read.status_code = AAZStrType(
+            serialized_name="statusCode",
+        )
 
+        _schema.message = cls._schema_extended_status_info_read.message
+        _schema.status_code = cls._schema_extended_status_info_read.status_code
 
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
+    _schema_price_read = None
 
-    _schema_price_read = AAZObjectType()
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
 
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
 
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
 
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
 
-_schema_sku_name_read = None
+    _schema_sku_name_read = None
 
+    @classmethod
+    def _build_schema_sku_name_read(cls, _schema):
+        if cls._schema_sku_name_read is not None:
+            _schema.name = cls._schema_sku_name_read.name
+            return
 
-def _build_schema_sku_name_read(_schema):
-    global _schema_sku_name_read
-    if _schema_sku_name_read is not None:
-        _schema.name = _schema_sku_name_read.name
-        return
+        cls._schema_sku_name_read = _schema_sku_name_read = AAZObjectType()
 
-    _schema_sku_name_read = AAZObjectType()
+        sku_name_read = _schema_sku_name_read
+        sku_name_read.name = AAZStrType()
 
-    sku_name_read = _schema_sku_name_read
-    sku_name_read.name = AAZStrType()
+        _schema.name = cls._schema_sku_name_read.name
 
-    _schema.name = _schema_sku_name_read.name
+    _schema_system_data_read = None
 
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
 
-_schema_system_data_read = None
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-def _build_schema_system_data_read(_schema):
-    global _schema_system_data_read
-    if _schema_system_data_read is not None:
-        _schema.created_at = _schema_system_data_read.created_at
-        _schema.created_by = _schema_system_data_read.created_by
-        _schema.created_by_type = _schema_system_data_read.created_by_type
-        _schema.last_modified_at = _schema_system_data_read.last_modified_at
-        _schema.last_modified_by = _schema_system_data_read.last_modified_by
-        _schema.last_modified_by_type = _schema_system_data_read.last_modified_by_type
-        return
-
-    _schema_system_data_read = AAZObjectType(
-        flags={"read_only": True}
-    )
-
-    system_data_read = _schema_system_data_read
-    system_data_read.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data_read.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data_read.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data_read.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data_read.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data_read.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
-
-    _schema.created_at = _schema_system_data_read.created_at
-    _schema.created_by = _schema_system_data_read.created_by
-    _schema.created_by_type = _schema_system_data_read.created_by_type
-    _schema.last_modified_at = _schema_system_data_read.last_modified_at
-    _schema.last_modified_by = _schema_system_data_read.last_modified_by
-    _schema.last_modified_by_type = _schema_system_data_read.last_modified_by_type
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["List"]

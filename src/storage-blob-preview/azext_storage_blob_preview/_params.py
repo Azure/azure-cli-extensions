@@ -9,8 +9,9 @@ from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_th
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
                           validate_blob_type, validate_included_datasets_v2, get_datetime_type,
-                          add_download_progress_callback, add_upload_progress_callback,
-                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
+                          add_download_progress_callback, add_progress_callback,
+                          validate_storage_data_plane_list, as_user_validator,
+                          blob_tier_validator, validate_blob_name_for_upload)
 
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
@@ -94,7 +95,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         help='The tier value to set the blob to. For page blob, the tier correlates to the size of the blob '
              'and number of allowed IOPS. Possible values are P10, P15, P20, P30, P4, P40, P50, P6, P60, P70, P80 '
              'and this is only applicable to page blobs on premium storage accounts; For block blob, possible '
-             'values are Archive, Cool and Hot. This is only applicable to block blobs on standard storage accounts.'
+             'values are Archive, Cold, Cool and Hot. This is only applicable to block blobs on standard '
+             'storage accounts.'
     )
 
     rehydrate_priority_type = CLIArgumentType(
@@ -146,7 +148,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('blob_name', blob_name_type, options_list=('--destination-blob', '-b'),
                    help='Name of the destination blob. If the exists, it will be overwritten.')
 
-    with self.argument_context('storage blob copy start') as c:
+    with self.argument_context('storage blob copy start', resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
         from ._validators import validate_source_url
 
         c.register_blob_arguments()
@@ -161,22 +163,26 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_unmodified_since', options_list=['--destination-if-unmodified-since'])
         c.argument('if_tags_match_condition', options_list=['--destination-tags-condition'])
 
+        c.ignore('blob_url')
         c.argument('blob_name', options_list=['--destination-blob', '-b'], required=True,
-                   help='Name of the destination blob. If the exists, it will be overwritten.')
+                   help='Name of the destination blob. If it exists, it will be overwritten.')
         c.argument('container_name', options_list=['--destination-container', '-c'], required=True,
                    help='The container name.')
         c.extra('destination_lease', options_list='--destination-lease-id',
                 help='The lease ID specified for this header must match the lease ID of the estination blob. '
-                'If the request does not include the lease ID or it is not valid, the operation fails with status '
-                'code 412 (Precondition Failed).')
+                     'If the request does not include the lease ID or it is not valid, the operation fails with status '
+                     'code 412 (Precondition Failed).')
         c.extra('source_lease', options_list='--source-lease-id', arg_group='Copy Source',
                 help='Specify this to perform the Copy Blob operation only if the lease ID given matches the '
-                'active lease ID of the source blob.')
+                     'active lease ID of the source blob.')
         c.extra('rehydrate_priority', rehydrate_priority_type)
         c.extra('requires_sync', arg_type=get_three_state_flag(),
                 help='Enforce that the service will not return a response until the copy is complete.')
         c.extra('tier', tier_type)
         c.extra('tags', tags_type)
+        c.extra('destination_blob_type', arg_type=get_enum_type(['Detect', 'BlockBlob', 'PageBlob', 'AppendBlob']),
+                help='Defines the type of blob at the destination. '
+                     'Value of "Detect" determines the type based on source blob type.')
 
     with self.argument_context('storage blob copy start-batch', arg_group='Copy Source') as c:
         from ._validators import get_source_file_or_blob_service_client
@@ -420,18 +426,21 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_precondition_options()
         c.register_content_settings_argument(t_blob_content_settings, update=False, arg_group="Content Control")
 
+        c.extra('blob_name', validator=validate_blob_name_for_upload)
+
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
                    help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
         c.argument('data', help='The blob data to upload.', required=False, is_preview=True, min_api='2019-02-02')
         c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
-                   'supplied for optimal performance. Cooperate with --data.', is_preview=True, min_api='2019-02-02')
+                                            'supplied for optimal performance. Cooperate with --data.', is_preview=True,
+                   min_api='2019-02-02')
         c.argument('overwrite', arg_type=get_three_state_flag(), arg_group="Additional Flags", is_preview=True,
                    help='Whether the blob to be uploaded should overwrite the current data. If True, blob upload '
-                   'operation will  overwrite the existing data. If set to False, the operation will fail with '
-                   'ResourceExistsError. The exception to the above is with Append blob types: if set to False and the '
-                   'data already exists, an error will not be raised and the data will be appended to the existing '
-                   'blob. If set overwrite=True, then the existing append blob will be deleted, and a new one created. '
-                   'Defaults to False.')
+                        'operation will overwrite the existing data. If set to False, the operation will fail with '
+                        'ResourceExistsError. The exception to the above is with Append blob types: if set to False and the '
+                        'data already exists, an error will not be raised and the data will be appended to the existing '
+                        'blob. If set overwrite=True, then the existing append blob will be deleted, and a new one created. '
+                        'Defaults to False.')
         c.argument('max_connections', type=int, arg_group="Additional Flags",
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
         c.extra('maxsize_condition', type=int, arg_group="Content Control",
@@ -439,7 +448,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('blob_type', options_list=('--type', '-t'), validator=validate_blob_type,
                    arg_type=get_enum_type(get_blob_types()), arg_group="Additional Flags")
         c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group="Content Control")
-        c.extra('no_progress', progress_type, validator=add_upload_progress_callback, arg_group="Additional Flags")
+        c.extra('no_progress', progress_type, validator=add_progress_callback, arg_group="Additional Flags")
         c.extra('tier', tier_type, validator=blob_tier_validator, arg_group="Additional Flags")
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.',
@@ -448,6 +457,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tags', arg_type=tags_type, arg_group="Additional Flags")
         c.argument('metadata', arg_group="Additional Flags")
         c.argument('timeout', arg_group="Additional Flags")
+        c.extra('connection_timeout', options_list=('--socket-timeout'), type=int,
+                help='The socket timeout(secs), used by the service to regulate data flow.')
 
     with self.argument_context('storage blob upload-batch') as c:
         from .sdkutil import get_blob_types
