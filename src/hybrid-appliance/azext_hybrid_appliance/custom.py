@@ -25,21 +25,21 @@ def validate_hybrid_appliance(resource_group_name, name):
     # Check if the operating system is Linux
     if not psutil.LINUX:
         all_validations_passed = False
-        telemetry.set_exception(exception="User's machine is not linux machine", fault_type="", summary="")
+        telemetry.set_exception(exception="User's machine is not linux machine", fault_type=consts.Non_Linux_Machine, summary="User's machine is not linux machine")
         logger.warning("This program can only run on a Linux machine")
 
     # Check if the disk space is at least 20GB
     disk_usage = psutil.disk_usage('/')
     if disk_usage.total < consts.Disk_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min 20GB disk space requirement", fault_type="", summary="")
+        telemetry.set_exception(exception="Machine doesn't meet min {} disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
         logger.warning("This program requires at least {} of disk space".format(consts.Disk_Threshold))
 
     # Check if the memory is at least 4GB
     memory = psutil.virtual_memory()
     if memory.total < consts.Memory_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min 4GB memory requirement", fault_type="", summary="")
+        telemetry.set_exception(exception="Machine doesn't meet min {} memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
         logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
@@ -75,7 +75,7 @@ def validate_hybrid_appliance(resource_group_name, name):
         print(str(e))
     
     if all_validations_passed is False:
-        telemetry.set_exception(exception="")
+        telemetry.set_exception(exception="One or more pre-requisite validations failed", fault_type=consts.Validations_Failed, summary="Pre-requisite validations failed")
         raise ValidationError("One or more pre-requisite validations have failed. Please resolve them and try again")
     else:
         print("All pre-requisite validations have passed successfully")
@@ -94,9 +94,11 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
 
     process = subprocess.Popen(cmd)
     if process.wait() != 0:
+        telemetry.set_exception(exception="Microk8s cluster setup failed", fault_type=consts.MicroK8s_Setup_Failed, summary="Microk8s cluster provisioning failed")
         raise CLIInternalError("Failed to setup microk8s cluster")
     
     if not utils.check_microk8s():
+        telemetry.set_exception(exception="Microk8s cluster is not running", fault_type=consts.MicroK8s_Cluster_Not_Running, summary="Microk8s cluster is not running after the set up")
         raise CLIInternalError("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
 
     # Onboard the cluster to arc
@@ -120,6 +122,7 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
+        telemetry.set_exception(exception="Arc onboarding of the k8s cluster failed", fault_type=consts.Arc_Onboarding_Failed, summary="Arc onboarding of the k8s cluster failed")
         raise CLIInternalError("Onboarding the k8s cluster to Arc failed")
     else:
         print("The k8s cluster has been onboarded to Arc successfully")
@@ -129,19 +132,22 @@ def upgrade_hybrid_appliance(resource_group_name, name):
         azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
     except Exception as e:
         if utils.check_microk8s():
-            print("The required configmap was not found on the kubernetes cluster.") # Is there anything else which can be done in this case?
+            # Is there anything else which can be done in this case?
+            telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_not_Found, summary="Configmap 'azure-clusterconfig' not found on the k8s cluster")
+            raise ValidationError("The required configmap 'azure-clusterconfig' was not found on the kubernetes cluster. Exception:" + str(e), "Please delete the appliance and create it again.")
         else:
-            print("The kubernetes cluster is not running as expected or is not reachable.")
-
-        print("Please delete the appliance and create it again.")
-        return
+            telemetry.set_exception(exception=e, fault_type=consts.K8s_Cluster_Unreacheable_Or_Not_Running, summary="The k8s cluster is not running as expected or is not reachable")
+            raise ValidationError("The kubernetes cluster is not running as expected or is not reachable. Exception:" + str(e), "Please delete the appliance and create it again.")
+            
     
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     try:
         if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
-            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
+            telemetry.set_exception()
+            raise ValidationError("The parameters passed do not correspond to this appliance", "Please check the resource group name and appliance name.")
     except KeyError:
-        raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
+        telemetry.set_exception()
+        raise CLIInternalError("The required entries were not found in the config map.",  "Please delete the appliance and recreate it.")
 
     kubernetesVersionResponseString = subprocess.check_output(['microk8s', 'kubectl', 'version', '-o', 'json']).decode()
     kubernetesVersionResponse = json.loads(kubernetesVersionResponseString)
@@ -156,7 +162,8 @@ def upgrade_hybrid_appliance(resource_group_name, name):
         if currentMinorVersion > latestMinorVersion:
              # This should never happen unless someone manually runs "snap refresh" against the cluster instead of using our cli command.
              # Microk8s recommends never to downgrade a cluster, as this behaviour is not tested or supported 
-            raise ValidationError("The current version of the kubernetes cluster is greater than the latest supported version. Please delete the appliance and create it again.")
+            telemetry.set_exception
+            raise ValidationError("The current version of the kubernetes cluster is greater than the latest supported version.",  "Please delete the appliance and create it again.")
         
         # This logic works as long as new versions are only minor version bumps
         # TODO: Figure out what to do in case major version is bumped (very unlikely)
@@ -165,13 +172,16 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             process = subprocess.Popen(['snap', 'refresh', 'microk8s', '--channel={}.{}'.format(currentMajorVersion, currentMinorVersion)])
             _, stderr = process.communicate()
             if process.returncode != 0:
+                telemetry.set_exception()
                 raise CLIInternalError("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
             try:
                 subprocess.check_call(['microk8s', 'start'])
             except subprocess.CalledProcessError as e:
+                telemetry.set_exception()
                 raise CLIInternalError("Failed to start microk8s cluster with exception {}".format(str(e)))
 
             if not utils.check_microk8s():
+                telemetry.set_exception()
                 raise CLIInternalError("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
 
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
@@ -182,21 +192,26 @@ def delete_hybrid_appliance(resource_group_name, name):
     try:
         output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
     except:
+        telemetry.set_exception()
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
 
     if "not running" in output.decode():
+            telemetry.set_exception()
             raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
 
     try:
         azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
     except Exception as e:
+        telemetry.set_exception()
         raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
     
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     try:
         if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+            telemetry.set_exception()
             raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
     except KeyError:
+        telemetry.set_exception()
         raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
 
     cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
