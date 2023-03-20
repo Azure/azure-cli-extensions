@@ -5,10 +5,7 @@ if [ -z $MICROK8S_VERSION ]; then
   exit 1
 fi
 
-if [ -z $KUBECONFIG_PATH ]; then
-  KUBECONFIG_PATH="$HOME/.kube/config"
-fi
-
+mkdir -p ~/.azure/hybrid_appliance
 sudo snap install microk8s --channel=$MICROK8S_VERSION --classic
 sudo microk8s start
 sudo microk8s config > $KUBECONFIG_PATH

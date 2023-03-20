@@ -54,3 +54,29 @@ def check_microk8s():
         subprocess.check_call(['microk8s', 'inspect'])
         return False
     return True
+
+def get_api_server_address() -> str:
+    kubeconfig_path = get_kubeconfig_path()
+    config = yaml.safe_load(open(kubeconfig_path))
+    return config["clusters"][0]["cluster"]["server"]
+
+def get_services_cidr():
+    try:
+        services = subprocess.check_output(['microk8s', 'kubectl', 'get', 'svc', '-A', '-o', 'json']).decode()
+    except:
+        raise CLIInternalError("Failed to connect to kubernetes cluster to get services")
+
+    services = json.loads(services)
+    # return services
+    try:
+        service_IP = services["items"][0]["spec"]["clusterIP"]
+    except KeyError:
+        raise CLIInternalError("The required entries are not present in the service")
+    
+    service_IP_fragments = service_IP.split('.')
+    return "{}.{}.0.0/16".format(service_IP_fragments[0], service_IP_fragments[1])
+
+def get_kubeconfig_path():
+    home_dir = os.path.expanduser('~')
+    kubeconfig_path = os.path.join(home_dir, '.azure', 'hybrid_appliance', 'config')
+    return kubeconfig_path

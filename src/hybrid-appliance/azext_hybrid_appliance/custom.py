@@ -78,10 +78,12 @@ def validate_hybrid_appliance(resource_group_name, name):
         print("All pre-requisite validations have passed successfully")
 
 def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None):
+    kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
     latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
     os.environ["MICROK8S_VERSION"] = "{}.{}".format(latestMajorVersion, latestMinorVersion)
     os.environ["KUBECTL_CLIENT_LOCATION"] = "{}".format(kubectl_client_location)
+    os.environ["KUBECONFIG_PATH"]=kubeconfig_path
 
     current_path = os.path.abspath(os.path.dirname(__file__))
     script_file_path = os.path.join(current_path, "microk8sbootstrap.sh")
@@ -89,17 +91,27 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
 
     process = subprocess.Popen(cmd)
     if process.wait() != 0:
-        print("Failed to setup microk8s cluster")
-        return
+        raise CLIInternalError("Failed to setup microk8s cluster")
     
     if not utils.check_microk8s():
-        print("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
-        return
+        raise CLIInternalError("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
 
     # Install specific version of connectedk8s
     get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
     # Onboard the cluster to arc
-    cmd_onboard_arc= ['connectedk8s', 'connect', '-n', name, '-g', resource_group_name]
+    cmd_onboard_arc= ['connectedk8s', 'connect', '-n', name, '-g', resource_group_name, '--kube-config', kubeconfig_path]
+
+    # The NO_PROXY env variable needs the api server address, which is not available with the user before the cluster is provisioned.
+    # To get around that, we get the server address and services cidr and append the no_proxy variable with those values.
+    if http_proxy or https_proxy or no_proxy:
+        api_server_address = utils.get_api_server_address()
+        api_server_address = api_server_address.strip('https://')
+        service_cidr = utils.get_services_cidr()
+        if no_proxy is None:
+            no_proxy = "{},{},{}".format(api_server_address, service_cidr, "kubernetes.default.svc")
+        else:
+            no_proxy = "{},{},{},{}".format(api_server_address, service_cidr, "kubernetes.default.svc", no_proxy)
+        os.environ["NO_PROXY"] = no_proxy
     if location:
         cmd_onboard_arc.extend(["--location", location])
     if http_proxy:
@@ -170,12 +182,14 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
 def delete_hybrid_appliance(resource_group_name, name):
+    kubeconfig_path = utils.get_kubeconfig_path()
     try:
         output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
-        if "not running" in output.decode:
-            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
     except:
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+
+    if "not running" in output.decode():
+            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
 
     try:
         azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
@@ -189,7 +203,7 @@ def delete_hybrid_appliance(resource_group_name, name):
     except KeyError:
         raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
 
-    cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y']
+    cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
     delete_result = get_default_cli().invoke(cmd_delete_arc)
     if delete_result != 0:
         raise CLIInternalError("Failed to delete the connected cluster")
