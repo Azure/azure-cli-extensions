@@ -22,9 +22,9 @@ def cf_endpoint(cli_ctx, *_):
 
 
 def cf_connectedmachine_cl(cli_ctx, *_):
-    from azext_ssh.vendored_sdks.connectedmachine import ConnectedMachine
+    from azext_ssh.vendored_sdks.hybridcompute import HybridComputeManagementClient
     return get_mgmt_service_client(cli_ctx,
-                                   ConnectedMachine)
+                                   HybridComputeManagementClient)
 
 
 def cf_machine(cli_ctx, *_):

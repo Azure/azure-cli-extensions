@@ -6,5 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._connected_machine import ConnectedMachine
-__all__ = ['ConnectedMachine']
+VERSION = "8.0.0"
