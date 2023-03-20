@@ -21,7 +21,7 @@ class CustomDomainTests(ScenarioTest):
             'cert': 'test-cert',
             'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
             'KeyVaultCertName': 'cli-unittest',
-            'domain': 'cli.asc-test.net',
+            'domain': 'clitest.asc-test.net',
             'app': 'test-custom-domain',
             'serviceName': 'cli-unittest',
             'rg': 'cli'
