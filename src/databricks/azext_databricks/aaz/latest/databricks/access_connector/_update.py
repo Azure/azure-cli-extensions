@@ -19,6 +19,9 @@ class Update(AAZCommand):
 
     :example: Update a databricks accessConnector
         az databricks access-connector update --resource-group MyResourceGroup --name MyAccessConnector --location westus --identity-type SystemAssigned
+
+    :example: Update a databricks accessConnector with identities
+        az databricks access-connector update --resource-group MyResourceGroup --name MyAccessConnector --identity-type UserAssigned --user-assigned-identities {"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}":{}}
     """
 
     _aaz_info = {

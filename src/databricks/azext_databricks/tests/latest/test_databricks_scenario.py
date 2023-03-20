@@ -224,6 +224,30 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {access_connector_name} ',
                  checks=[])
 
+        self.cmd('az databricks access-connector create '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--location westus '
+                 '--identity-type None ',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'None')])
+
+        self.cmd('az databricks access-connector update '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--identity-type {type} '
+                 '--user-assigned-identities {{{identity_id}:{{}}}}',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'UserAssigned'),
+                         self.check('type(identity.userAssignedIdentities)', 'object')])
+
+        self.cmd('az databricks access-connector delete '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} ',
+                 checks=[])
+
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_v2', location="eastus2euap")
     def test_databricks_v2(self, resource_group):
