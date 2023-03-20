@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.9.1
++++++
+* Upgrade API version from 2022-04-01-preview to 2022-10-01-preview and 2023-02-01
+* az databricks workspace update: add --sku to change the sku tier name
+
 0.9.0
 +++++
 * Upgrade API version from 2021-04-01-preview to 2022-04-01-preview
