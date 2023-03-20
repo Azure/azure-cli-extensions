@@ -17,8 +17,8 @@ class ScenarioAutoSuggest(AutoSuggest):
         # param_value_map is the dictionary that has `key` with command params and `value` with <sample_value>
         self.param_value_map = {}
         # when user input a value of a parameter,value will be stored in this map. Will be suggested in the scenario
-        # customized_sample_value_map is the dictionary that has `key` with <sample_value> of scenario commands and `value` with the value that customer has entered
-        self.customized_sample_value_map = {}
+        # customized_cached_param_map is the dictionary that has `key` with <sample_value> of scenario commands or some `special global params` and `value` with the value that customer has entered
+        self.customized_cached_param_map = {}
         # Define some special global parameters which matches the param instead of sample value.
         # Tend to improve the suggestion rate when scenario is not strictly stylized
         self.special_global_param_map = {'-g': ['-g', '--resource-group'],
@@ -44,8 +44,8 @@ class ScenarioAutoSuggest(AutoSuggest):
                 self.param_value_map[cur_param] += ' ' + part
                 self.param_value_map[cur_param] = self.param_value_map[cur_param].strip()
 
-    # customized_sample_value_map is the dictionary that has `key` with <sample_value> of scenario commands and `value` with the value that customer has entered
-    def update_customized_sample_value_map(self, command_text: str):
+
+        def update_customized_cached_param_map(self, command_text: str):
         """Update the value of a parameter in the customized parameter value map"""
         # remove the 'az ' part of command
         command_text = command_text.split('az ')[-1]
@@ -58,20 +58,20 @@ class ScenarioAutoSuggest(AutoSuggest):
                     # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
                     special_global_param_list = self.special_global_param_map[part]
                     for param in special_global_param_list:
-                        self.customized_sample_value_map[param] = ''
+                        self.customized_cached_param_map[param] = ''
                     cur_param = ''
                 else:
                     cur_param = self.param_value_map[part]
-                    self.customized_sample_value_map[cur_param] = ''
+                    self.customized_cached_param_map[cur_param] = ''
                     special_global_param_list = None
             elif cur_param:
-                self.customized_sample_value_map[cur_param] += ' ' + part
-                self.customized_sample_value_map[cur_param] = self.customized_sample_value_map[cur_param].strip()
+                self.customized_cached_param_map[cur_param] += ' ' + part
+                self.customized_cached_param_map[cur_param] = self.customized_cached_param_map[cur_param].strip()
             # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
             elif special_global_param_list:
                 for param in special_global_param_list:
-                    self.customized_sample_value_map[param] += ' ' + part
-                    self.customized_sample_value_map[param] = self.customized_sample_value_map[param].strip()
+                    self.customized_cached_param_map[param] += ' ' + part
+                    self.customized_cached_param_map[param] = self.customized_cached_param_map[param].strip()
 
     def get_suggestion(self, cli, buffer, document, value_storage_cache={}, auto_complete_values=False):
         user_input = document.text.rsplit('\n', 1)[-1]
@@ -126,13 +126,13 @@ class ScenarioAutoSuggest(AutoSuggest):
                     suggests = []
                     for param in unused_param:
                         if param in self.special_global_param_map.keys():
-                            sample_value = param
+                            cached_param = param
                         else:
-                            # sample_value is the sample values in scenarios, such as <RESOURCEGROUPNAME>
-                            sample_value = self.param_value_map[param]
-                        if sample_value:
-                            if sample_value in self.customized_sample_value_map.keys():
-                                value = self.customized_sample_value_map[sample_value]
+                            # cached_param is either the sample values in scenarios, such as <RESOURCEGROUPNAME> or some special global params, such as '--location'
+                            cached_param = self.param_value_map[param]
+                        if cached_param:
+                            if cached_param in self.customized_cached_param_map.keys():
+                                value = self.customized_cached_param_map[cached_param]
                             else:
                                 value = ''
                             suggests.append({'param': param, 'value': value})
