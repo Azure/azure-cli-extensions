@@ -993,7 +993,7 @@ class ContainerApp(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        "environment_id": {"key": "properties.environmentId", "type": "str"},
+        'environment_id': {'key': 'properties.environmentId', 'type': 'str'},
         'latest_revision_name': {'key': 'properties.latestRevisionName', 'type': 'str'},
         'latest_revision_fqdn': {'key': 'properties.latestRevisionFqdn', 'type': 'str'},
         'custom_domain_verification_id': {'key': 'properties.customDomainVerificationId', 'type': 'str'},
