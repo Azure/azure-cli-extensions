@@ -121,7 +121,7 @@ def load_arguments(self, _):
                    help='Ingress read timeout value in seconds. Default 300, Minimum is 1, maximum is 1800.',
                    validator=validate_ingress_timeout)
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    validator=validate_build_pool_size,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_application_configuration_service',
@@ -196,7 +196,7 @@ def load_arguments(self, _):
                                               redirect='az spring app-insights update --disable',
                                               hide=True))
         c.argument('build_pool_size',
-                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
@@ -232,6 +232,10 @@ def load_arguments(self, _):
             c.argument('termination_grace_period_seconds', type=str, is_preview=True,
                        options_list=['--termination-grace-period-seconds', '--grace-period'],
                        help='Optional duration in seconds the app instance needs to terminate gracefully', arg_group='App Customization')
+
+    for scope in ['spring app deploy', 'spring app deployment create']:
+        with self.argument_context(scope) as c:
+            c.argument('disable_app_log', help='Do not print application logs when deploy application')
 
     with self.argument_context('spring app create') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -399,7 +403,7 @@ def load_arguments(self, _):
                        validator=validate_ingress_session_max_age)
             c.argument('backend_protocol',
                        arg_type=get_enum_type(BackendProtocol),
-                       help='Ingress backend protocol of app.')
+                       help='Ingress backend protocol of app. Default means HTTP/HTTPS/WebSocket.')
             c.argument('client_auth_certs',
                        validator=validate_ingress_client_auth_certificates,
                        help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")

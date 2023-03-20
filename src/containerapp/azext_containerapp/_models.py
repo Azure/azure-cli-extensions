@@ -22,7 +22,6 @@ ManagedEnvironment = {
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
         "customDomainConfiguration": None  # CustomDomainConfiguration
     }
@@ -278,4 +277,12 @@ AzureFileProperties = {
     "accountKey": None,
     "accessMode": None,
     "shareName": None
+}
+
+ManagedCertificateEnvelop = {
+    "location": None,  # str
+    "properties": {
+        "subjectName": None,  # str
+        "validationMethod": None  # str
+    }
 }

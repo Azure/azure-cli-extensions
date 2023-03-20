@@ -115,7 +115,7 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
     for provider in providers_in_region:
         for sku in provider.properties.skus:
             if sku.auto_add:
-                # Don't duplicate a provider/sku if it was also specified in the command's -r parameter
+                # Don't duplicate a provider if it was also specified in the command's -r parameter
                 provider_already_added = False
                 for already_selected_provider in providers_selected:
                     if already_selected_provider['provider_id'] == provider.id:
@@ -136,16 +136,8 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
                         already_accepted_terms = True
                     providers_selected.append(provider_selected)
 
-    # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
-    if providers_selected == []:
-        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
-                                           "Supply the missing -r parameter. For example:\n"
-                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
-                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
-                                           "\taz quantum offerings list -l MyLocation -o table")
 
-
-def _add_quantum_providers(cmd, workspace, providers, auto_accept):
+def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
@@ -160,7 +152,17 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept):
             if (offer is None or publisher is None):
                 raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
             providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
-    _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
+    if not skip_autoadd:
+        _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
+
+    # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
+    if providers_selected == []:
+        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs (plans) is required.",
+                                           "Supply the missing -r parameter. For example:\n"
+                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
+                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
+                                           "\taz quantum offerings list -l MyLocation -o table")
+
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
@@ -208,7 +210,8 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
 
 
-def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
+def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -226,7 +229,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
-        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -239,7 +242,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
         template = json.load(template_file_fd)
 
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
     validated_providers = []
     for provider in quantum_workspace.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})

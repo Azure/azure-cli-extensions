@@ -263,7 +263,7 @@ def default_deployment_create_options():
     return {
         'cpu': '1',
         'memory': '1Gi',
-        'runtime_version': 'Java_8',
+        'runtime_version': 'Java_11',
         'instance_count': 1,
         'env': {},
         'sku': None,

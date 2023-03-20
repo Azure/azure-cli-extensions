@@ -81,7 +81,9 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     if sku and sku.lower() == 'azfw_hub' and allow_active_ftp:
         raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
     # validate basic sku firewall
-    if tier and tier.lower() == 'basic' and not all([management_conf_name, management_public_ip]):
+    if tier and tier.lower() == 'basic' \
+            and sku and sku.lower() == 'azfw_vnet' \
+            and not all([management_conf_name, management_public_ip]):
         err_msg = "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."
         raise ValidationError(err_msg)
 
@@ -165,7 +167,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         )
         _upsert(firewall, 'ip_configurations', config, 'name', warn=False)
 
-    if tier and tier.lower() == 'basic':
+    if tier and tier.lower() == 'basic' and sku and sku.lower() == 'azfw_vnet':
         management_subnet_id = resource_id(
             subscription=get_subscription_id(cmd.cli_ctx),
             resource_group=resource_group_name,

@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingE
                                        ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
-from azure.cli.command_modules.network._client_factory import network_client_factory
+from .aaz.latest.network.vnet import Show as VNetShow
 from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -29,8 +29,8 @@ from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
-                         LOGS_STRING)
-from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
+                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
 
 logger = get_logger(__name__)
 
@@ -60,9 +60,11 @@ def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
 
 def get_vnet_location(cmd, subnet_resource_id):
     parsed_rid = parse_resource_id(subnet_resource_id)
-    vnet_client = network_client_factory(cmd.cli_ctx)
-    location = vnet_client.virtual_networks.get(resource_group_name=parsed_rid.get("resource_group"),
-                                                virtual_network_name=parsed_rid.get("name")).location
+    vnet = VNetShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": parsed_rid.get("resource_group"),
+        "name": parsed_rid.get("name")
+    })
+    location = vnet['location']
     return _normalize_location(cmd, location)
 
 
@@ -1097,6 +1099,15 @@ def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
     return cert_name.lower()
 
 
+def generate_randomized_managed_cert_name(hostname, env_name):
+    from random import randint
+    cert_name = "mc-{}-{}-{:04}".format(env_name[:14], hostname[:16].lower(), randint(0, 9999))
+    for c in cert_name:
+        if not (c.isalnum() or c == '-'):
+            cert_name = cert_name.replace(c, '-')
+    return cert_name.lower()
+
+
 def _set_webapp_up_default_args(cmd, resource_group_name, location, name, registry_server):
     from azure.cli.core.util import ConfiguredDefaultSetter
     with ConfiguredDefaultSetter(cmd.cli_ctx.config, True):
@@ -1367,6 +1378,29 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     return r
 
 
+def prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location=None):
+    certificate_envelop = ManagedCertificateEnvelopModel
+    certificate_envelop["location"] = location
+    certificate_envelop["properties"]["subjectName"] = hostname
+    certificate_envelop["properties"]["validationMethod"] = validation_method
+    if not location:
+        try:
+            managed_env = ManagedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate_envelop["location"] = managed_env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+    return certificate_envelop
+
+
+def check_managed_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    try:
+        certs = ManagedEnvironmentClient.list_managed_certificates(cmd, resource_group_name, name)
+        r = any(cert["name"] == cert_name and cert["properties"]["provisioningState"] in [PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS] for cert in certs)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return not r
+
+
 def validate_hostname(cmd, resource_group_name, name, hostname):
     passed = False
     message = None
@@ -1577,3 +1611,15 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
         logger.warning("Azure Monitor diagnastic settings created successfully.")
     except Exception as ex:
         handle_raw_exception(ex)
+
+
+def certificate_location_matches(certificate_object, location=None):
+    return certificate_object["location"] == location or not location
+
+
+def certificate_thumbprint_matches(certificate_object, thumbprint=None):
+    return certificate_object["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+
+def certificate_matches(certificate_object, location=None, thumbprint=None):
+    return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)

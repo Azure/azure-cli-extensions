@@ -22,9 +22,9 @@ class Unarchive(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations/{}/unarchive", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations/{}/unarchive", "2022-11-01"],
         ]
     }
 
@@ -61,11 +61,11 @@ class Unarchive(AAZCommand):
         self.ReservationUnarchive(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -113,7 +113,7 @@ class Unarchive(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -121,6 +121,10 @@ class Unarchive(AAZCommand):
 
         def on_200(self, session):
             pass
+
+
+class _UnarchiveHelper:
+    """Helper class for Unarchive"""
 
 
 __all__ = ["Unarchive"]
