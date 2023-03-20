@@ -202,7 +202,7 @@ def delete_hybrid_appliance(resource_group_name, name):
     cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
     delete_result = get_default_cli().invoke(cmd_delete_arc)
     if delete_result != 0:
-        logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted ")
+        logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
 
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
