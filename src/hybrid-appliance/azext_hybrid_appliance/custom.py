@@ -105,13 +105,7 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     # The NO_PROXY env variable needs the api server address, which is not available with the user before the cluster is provisioned.
     # To get around that, we get the server address and services cidr and append the no_proxy variable with those values.
     if http_proxy or https_proxy or no_proxy:
-        api_server_address = utils.get_api_server_address()
-        api_server_address = api_server_address.strip('https://')
-        service_cidr = utils.get_services_cidr()
-        if no_proxy is None:
-            no_proxy = "{},{},{}".format(api_server_address, service_cidr, "kubernetes.default.svc")
-        else:
-            no_proxy = "{},{},{},{}".format(api_server_address, service_cidr, "kubernetes.default.svc", no_proxy)
+        no_proxy = utils.get_proxy_parameters(no_proxy)
         os.environ["NO_PROXY"] = no_proxy
     if location:
         cmd_onboard_arc.extend(["--location", location])
@@ -183,6 +177,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
 def delete_hybrid_appliance(resource_group_name, name):
+    utils.set_no_proxy_from_helm_values()
     kubeconfig_path = utils.get_kubeconfig_path()
     try:
         output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
@@ -207,12 +202,12 @@ def delete_hybrid_appliance(resource_group_name, name):
     cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
     delete_result = get_default_cli().invoke(cmd_delete_arc)
     if delete_result != 0:
-        raise CLIInternalError("Failed to delete the connected cluster")
+        logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted ")
 
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
     if process.returncode != 0:
         logger.error("Failed to remove microk8s cluster")
-        process = subprocess.Popen(['microk8s', 'inspect'])
-        if process.returncode == 0:
+        return_code = subprocess.Popen(['microk8s', 'inspect']).wait()
+        if return_code == 0:
             logger.warning("Please share the logs generated at the above path, under /var/snap/microk8s/current")

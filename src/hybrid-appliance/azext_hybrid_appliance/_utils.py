@@ -80,3 +80,28 @@ def get_kubeconfig_path():
     home_dir = os.path.expanduser('~')
     kubeconfig_path = os.path.join(home_dir, '.azure', 'hybrid_appliance', 'config')
     return kubeconfig_path
+
+def get_proxy_parameters(no_proxy):
+    api_server_address = get_api_server_address()
+    api_server_address = api_server_address.strip('https://')
+    service_cidr = get_services_cidr()
+    if no_proxy is None:
+        no_proxy = "{},{},{}".format(api_server_address, service_cidr, "kubernetes.default.svc")
+    else:
+        no_proxy = "{},{},{},{}".format(api_server_address, service_cidr, "kubernetes.default.svc", no_proxy)
+    return no_proxy
+
+def set_no_proxy_from_helm_values():
+    try:
+        helmValuesYaml = subprocess.check_output(['microk8s', 'helm', 'get', 'values', 'azure-arc', '-n', 'azure-arc-release'])
+    except:
+        print("Failed to get helm values for the azure-arc release.")
+        return
+    
+    helmValues = yaml.safe_load(helmValuesYaml)
+    try:
+        os.environ["NO_PROXY"] = helmValues["global"]["noProxy"]
+    except KeyError:
+        pass # The cluster is not behind proxy.
+    except:
+        print("Failed to check if cluster is behind proxy.")
