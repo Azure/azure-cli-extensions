@@ -191,17 +191,16 @@ def cli_cosmosdb_mongocluster_create(client,
 def cli_cosmosdb_mongocluster_update(client,
                                     resource_group_name,
                                     cluster_name,
-                                    administrator_login,
-                                    administrator_login_password,
+                                    administrator_login=None,
+                                    administrator_login_password=None,
                                     tags=None,
                                     create_mode=CreateMode.DEFAULT.value,
                                     server_version="5.0",
                                     shard_node_sku=None,
-                                    shard_enable_ha=None,
+                                    shard_node_ha=None,
                                     shard_node_disk_size_gb=None, 
                                     shard_node_name=None,
-                                    shard_kind=NodeKind.SHARD.value,
-                                    shard_node_count=1):
+                                    shard_kind=NodeKind.SHARD.value):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
 
@@ -214,9 +213,6 @@ def cli_cosmosdb_mongocluster_update(client,
     if administrator_login is not None and administrator_login_password is None:
           raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
   
-    if administrator_login_password is None:
-        administrator_login_password = mongo_cluster_resource.administrator_login_password
-
     if administrator_login_password is None:
         administrator_login_password = mongo_cluster_resource.administrator_login_password
 
@@ -235,36 +231,33 @@ def cli_cosmosdb_mongocluster_update(client,
         shard_node_sku= mongo_cluster_resource.node_group_specs[0].sku
     if shard_node_disk_size_gb is None:
         shard_node_disk_size_gb= mongo_cluster_resource.node_group_specs[0].disk_size_gb
-    if shard_enable_ha is None:
-        shard_enable_ha= mongo_cluster_resource.node_group_specs[0].enable_ha
+    if shard_node_ha is None:
+        shard_node_ha= mongo_cluster_resource.node_group_specs[0].enable_ha
     if shard_node_name is None:
-        shard_node_name= mongo_cluster_resource.node_group_specs[0].name
+        shard_node_name= mongo_cluster_resource.node_group_specs[0].additional_properties["name"]
     if shard_kind is None:
         shard_kind= mongo_cluster_resource.node_group_specs[0].kind
-    if shard_node_count is None:
-        shard_node_count= mongo_cluster_resource.node_group_specs[0].node_count
-
+   
     node_group_spec = NodeGroupSpec(
         sku= shard_node_sku,
         disk_size_gb= shard_node_disk_size_gb,
-        enable_ha=shard_enable_ha,
+        enable_ha=shard_node_ha,
         name= shard_node_name,
         kind=shard_kind,
-        node_count= shard_node_count
+        node_count=None,
     )
     
-    node_group_specs = list(node_group_spec)
+    node_group_specs = [node_group_spec]
     mongodb_cluster = MongoCluster(
         location=location,
         tags=tags,
         create_mode=create_mode,
-        restore_parameters= mongocluster_restore_parameters,
         administrator_login=administrator_login,
         administrator_login_password=administrator_login_password,
         server_version=server_version,
         node_group_specs=node_group_specs)
 
-    return client.begin_create_or_update(resource_group_name, mongocluster_name, mongodb_cluster)
+    return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
     
 def cli_cosmosdb_mongocluster_list(client,
                                    resource_group_name=None):

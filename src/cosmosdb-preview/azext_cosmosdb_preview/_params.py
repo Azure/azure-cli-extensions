@@ -180,9 +180,8 @@ def load_arguments(self, _):
         c.argument('administrator_login_password', options_list=['--administrator-login-password'], help="The intial adminstrator password to be configured when a cluster is created")
         c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster")
         c.argument('shard_node_sku', options_list=['--shard-node-sku'], help="The node sky for mongo cluster.", arg_group='Shard')
-        c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", required=True, arg_group='Shard')
-        c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb'], help="The node disk size for mongo cluster.", required=True, arg_group='Shard')
-        c.argument('shard_node_count', options_list=['--shard-node-count'], help="The node count for mongo cluster.", required=True, arg_group='Shard')
+        c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", arg_group='Shard')
+        c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb'], help="The node disk size for mongo cluster.", arg_group='Shard')
     
     with self.argument_context('cosmosdb mongocluster list') as c:
         c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.')
