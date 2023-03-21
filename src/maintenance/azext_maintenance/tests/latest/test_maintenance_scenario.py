@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .example_steps import step_applyupdate_create
