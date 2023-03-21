@@ -1073,7 +1073,7 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
 def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
 
     # This function is used to store the output that is obtained throughout the Diagnoser process
- 
+
     global diagnoser_output
     try:
         # If storage space is available then only we store the output
