@@ -223,9 +223,9 @@ class AutomationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'vm_id': vm_id,
             'sub': sub,
-            'start_time': '2023-03-01 18:00:00',
-            'expiry_time': '2023-03-08 18:00:00',
-            'next_run': '2023-03-04 18:00:00',
+            'start_time': '2023-03-22 18:00:00',
+            'expiry_time': '2023-03-29 18:00:00',
+            'next_run': '2023-03-25 18:00:00',
         })
         self.cmd('automation account create -n {account_name} -g {rg} --location "West US 2"')
         self.cmd('automation software-update-configuration create -n {conf_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --operating-system windows --excluded-kb-numbers 16800 16800 --included-kb-numbers 15000 15000 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines {vm_id} --time-zone UTC+08:00 --start-time {start_time} --expiry-time {expiry_time} --next-run {expiry_time} --non-azure-computer-names nonvm1 nonvm2 --reboot-setting IfRequired --azure-queries-scope {sub} --azure-queries-location eastus westus --azure-queries-tags tag1 tag2', checks=[
@@ -233,7 +233,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.frequency', 'Hour'),
             self.check('scheduleInfo.interval', '1'),
-            self.check('scheduleInfo.startTime', '2023-03-01T10:00:00+08:00'),
+            self.check('scheduleInfo.startTime', '2023-03-22T10:00:00+08:00'),
             self.check('scheduleInfo.timeZone', 'UTC+08:00'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.isEnabled', True),
@@ -268,7 +268,7 @@ class AutomationScenarioTest(ScenarioTest):
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.frequency', 'Hour'),
             self.check('scheduleInfo.interval', '1'),
-            self.check('scheduleInfo.startTime', '2023-03-01T10:00:00+08:00'),
+            self.check('scheduleInfo.startTime', '2023-03-22T10:00:00+08:00'),
             self.check('scheduleInfo.timeZone', 'UTC+08:00'),
             self.check('scheduleInfo.description', 'test'),
             self.check('scheduleInfo.isEnabled', True),
