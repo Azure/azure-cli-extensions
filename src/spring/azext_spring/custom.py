@@ -272,6 +272,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
             custom_persistent_disk_properties=custom_persistent_disk_properties))
 
     app.properties.custom_persistent_disks = custom_persistent_disks
+    app.properties.secrets = None
     logger.warning("[1/1] updating app '{}'".format(name))
 
     poller = client.apps.begin_update(
@@ -575,6 +576,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
                                                  load_trust_store=load_trust_store))
 
     app_resource.properties.loaded_certificates = loaded_certificates
+    app_resource.properties.secrets = None
     logger.warning("[1/1] updating app '{}'".format(name))
 
     poller = client.apps.begin_update(
