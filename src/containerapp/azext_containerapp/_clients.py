@@ -174,11 +174,7 @@ class ContainerAppClient():
                 resource_group_name,
                 name,
                 api_version)
-<<<<<<< HEAD
-            return poll(cmd, request_url, ["inprogress"])
-=======
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
->>>>>>> origin2/main
 
         return r.json()
 
@@ -202,23 +198,12 @@ class ContainerAppClient():
         if no_wait:
             return r.json()
         elif r.status_code == 202:
-<<<<<<< HEAD
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-            return poll(cmd, request_url, ["inprogress"])
-=======
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
                 raise ResourceNotFoundError("Could not find a container app")
             else:
                 return response
->>>>>>> origin2/main
 
         return r.json()
 
@@ -241,16 +226,8 @@ class ContainerAppClient():
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             if r.status_code == 202:
-<<<<<<< HEAD
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    poll(cmd, request_url, ["cancelled"])
-                except ResourceNotFoundError:
-                    pass
-=======
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
->>>>>>> origin2/main
                 logger.warning('Containerapp successfully deleted')
 
     @classmethod
@@ -570,18 +547,6 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
         if no_wait:
-<<<<<<< HEAD
-            return  # API doesn't return JSON (it returns no content)
-        elif r.status_code in [200, 201, 202, 204]:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-            return poll(cmd, request_url, ["waiting"])
-=======
             return r.json()
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_LOCATION)
@@ -590,7 +555,6 @@ class ManagedEnvironmentClient():
                 raise ResourceNotFoundError("Could not find a managed environment")
             else:
                 return response
->>>>>>> origin2/main
 
         return
 
@@ -613,16 +577,8 @@ class ManagedEnvironmentClient():
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             if r.status_code == 202:
-<<<<<<< HEAD
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    poll(cmd, request_url, ["scheduledfordelete"])
-                except ResourceNotFoundError:
-                    pass
-=======
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
->>>>>>> origin2/main
                 logger.warning('Containerapp environment successfully deleted')
         return
 
