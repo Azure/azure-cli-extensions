@@ -858,7 +858,7 @@ class AzInteractiveShell(object):
                 continue_loading = get_yes_or_no_option(step_msg)
                 already_prompted = True
                 # if the customer chooses not to continue loading, break the loading loop
-                if time_loading_too_long and continue_loading == False:
+                if continue_loading == False:
                     break
         progress_bar.stop()
 
