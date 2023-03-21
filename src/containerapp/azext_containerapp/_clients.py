@@ -88,7 +88,7 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
     while r.status_code in [200] and start < end:
-        time.sleep(POLLING_SECONDS)
+        time.sleep(_extract_delay(r))
         animation.tick()
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         response_body = json.loads(r.text)
@@ -132,8 +132,6 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
 
 
 def _extract_delay(response):
-    if response is None:
-        return POLLING_SECONDS
     try:
         retry_after = response.headers.get("retry-after")
         if retry_after:
