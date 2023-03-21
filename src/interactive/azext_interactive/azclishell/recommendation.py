@@ -243,8 +243,8 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
     if 'data' in response.json():
         recommends = response.json()['data']
 
-    if 'dynamic_api_version' in response.json():
-        api_version = response.json()['dynamic_api_version']
+    if 'api_version' in response.json():
+        api_version = response.json()['api_version']
     return recommends, api_version
 
 
