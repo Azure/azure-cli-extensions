@@ -19,7 +19,6 @@ ManagedEnvironment = {
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        #"internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
         "workloadProfiles": None
@@ -189,7 +188,7 @@ ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # Configuration
         "template": None  # Template
     },

@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 import stat
 import requests
 import os
-# TODO: do we need this?
+
 try:
     from azure_bdist_wheel import cmdclass
 except ImportError:
@@ -21,7 +21,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "0.2.10"
+VERSION = "0.2.13"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -58,9 +58,6 @@ if not os.path.exists(bin_path):
     r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.6/dmverity-vhd")
     with open(bin_path, "wb") as f:
         f.write(r.content)
-    # add executable permissions for the current user
-    st = os.stat(bin_path)
-    os.chmod(bin_path, st.st_mode | stat.S_IEXEC)
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()
@@ -77,8 +74,7 @@ setup(
     long_description=README + "\n\n" + HISTORY,
     license="MIT",
     classifiers=CLASSIFIERS,
-    # TODO: should we be using the find_packages functionality or not? Most of the extensions do
-    packages=["azext_confcom"],
+    packages=find_packages(),
     install_requires=DEPENDENCIES,
     package_data={
         "azext_confcom": [

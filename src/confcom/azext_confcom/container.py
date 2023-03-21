@@ -7,7 +7,7 @@ import copy
 import json
 import os
 from typing import Any, List, Dict
-from azext_confcom.template_util import case_insensitive_dict_get
+from azext_confcom.template_util import case_insensitive_dict_get, replace_params_and_vars
 from azext_confcom import config
 from azext_confcom.errors import eprint
 
@@ -308,7 +308,7 @@ class ContainerImage:
         allow_elevated: bool,
         id_val: str,
         extraEnvironmentRules: Dict,
-        allowStdioAccess: bool = False,
+        allowStdioAccess: bool = True,
         execProcesses: List = None,
         signals: List = None,
     ) -> None:
@@ -367,6 +367,27 @@ class ContainerImage:
 
     def set_extra_environment_rules(self, rules: Dict) -> None:
         self._extraEnvironmentRules = rules
+
+    def parse_all_parameters_and_variables(self, params, vars_dict) -> None:
+        field_names = [
+            "containerImage",
+            "_environmentRules",
+            "_command",
+            "_workingDir",
+            "_mounts",
+            "_identifier",
+            "_exec_processes",
+            "_extraEnvironmentRules",
+        ]
+        for field_name in field_names:
+            attribute = getattr(self, field_name)
+            out = replace_params_and_vars(params, vars_dict, attribute)
+            setattr(self, field_name, out)
+        # set these at the end since they're derived from containerImage, which could have been altered
+        if ":" in self.containerImage:
+            self.base, self.tag = self.containerImage.split(":", 1)
+        else:
+            self.base, self.tag = self.containerImage, "latest"
 
     def _get_environment_rules(self) -> List[Dict[str, Any]]:
         out_rules = copy.deepcopy(self._environmentRules)
@@ -469,7 +490,7 @@ class UserContainerImage(ContainerImage):
     def __init__(
         self,
         containerImage: str,
-        environmentRules: Dict,
+        environmentRules: List[Dict],
         command: List[str],
         mounts: List[Dict],
         workingDir: str,

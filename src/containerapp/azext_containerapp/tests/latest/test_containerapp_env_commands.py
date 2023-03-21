@@ -195,8 +195,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_certificate_e2e(self, resource_group):
-        location = 'northcentralusstage'
-        self.cmd('configure --defaults location=northcentralusstage'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)

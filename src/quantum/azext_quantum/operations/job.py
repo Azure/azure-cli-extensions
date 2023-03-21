@@ -269,7 +269,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
         #   -  Include it as 'entryPoint':'MyEntryPoint' in a JSON --job-params string or file
         #   -  Include it in an "items" list in a JSON --job-params string or file
         found_entry_point_in_items = False
-        if "items" in job_params:
+        if job_params is not None and "items" in job_params:
             items_list = job_params["items"]
             if isinstance(items_list, type([])):    # "list" has been redefined as a function name
                 for item in items_list:
