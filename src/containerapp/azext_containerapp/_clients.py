@@ -88,7 +88,7 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
     while r.status_code in [200] and start < end:
-        time.sleep(POLLING_SECONDS)
+        time.sleep(_extract_delay(r))
         animation.tick()
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         response_body = json.loads(r.text)
@@ -121,7 +121,7 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
     while r.status_code in [202] and start < end:
-        time.sleep(POLLING_SECONDS)
+        time.sleep(_extract_delay(r))
         animation.tick()
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         start = time.time()
@@ -129,6 +129,21 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
     animation.flush()
     if r.text:
         return json.loads(r.text)
+
+
+def _extract_delay(response):
+    try:
+        retry_after = response.headers.get("retry-after")
+        if retry_after:
+            return int(retry_after)
+        for ms_header in ["retry-after-ms", "x-ms-retry-after-ms"]:
+            retry_after = response.headers.get(ms_header)
+            if retry_after:
+                parsed_retry_after = int(retry_after)
+                return parsed_retry_after / 1000.0
+    except ValueError:
+        pass
+    return POLLING_SECONDS
 
 
 class ContainerAppClient():
