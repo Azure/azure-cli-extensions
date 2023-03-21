@@ -29,6 +29,7 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                  parameter_name='spring',
                  dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME',
                  resource_group_parameter_name='resource_group',
+                 location='uksouth',
                  random_name_length=15, key='asa', additional_params=None):
         if ' ' in name_prefix:
             raise CliTestError('Error: Space character in Spring name prefix \'%s\'' % name_prefix)
@@ -37,6 +38,7 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.parameter_name = parameter_name
         self.key = key
         self.additional_params = additional_params
+        self.location = location
         self.resource_group_parameter_name = resource_group_parameter_name
 
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
@@ -46,7 +48,7 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             self.test_class_instance.kwargs[self.key] = self.dev_setting_name
             return {self.parameter_name: self.dev_setting_name}
         group = self._get_resource_group(**kwargs)
-        template = 'az spring create -n {} -g {} {}'.format(name, group, self.additional_params)
+        template = 'az spring create -n {} -g {} -l {} {}'.format(name, group, self.location, self.additional_params)
         self.live_only_execute(self.cli_ctx, template)
 
         self.test_class_instance.kwargs[self.key] = name

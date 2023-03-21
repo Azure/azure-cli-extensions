@@ -101,17 +101,17 @@ class ByosTest(ScenarioTest):
         self.cmd('spring storage remove --name {storage} -g {resource_group} -s {serviceName}')
         self.cmd('spring storage show --name {storage} -g {resource_group} -s {serviceName}', expect_failure=True)
 
+
 class StartStopAscTest(ScenarioTest):
 
-    def test_stop_and_start_service(self):
+    @ResourceGroupPreparer()
+    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_START_STOP', additional_params='--disable-app-insights')
+    def test_stop_and_start_service(self, resource_group, spring):
         self.kwargs.update({
-            'serviceName': 'cli-unittest-start-stop',
-            'resource_group': 'cli-group',
-            'location': 'eastus2euap'
+            'serviceName': spring,
+            'resource_group': resource_group,
         })
 
-        self.cmd('group create -n {resource_group} -l {location}')
-        self.cmd('spring create -n {serviceName} -g {resource_group} -l {location}')
         self.cmd('spring stop -n {serviceName} -g {resource_group}')
         self.cmd('spring show --name {serviceName} -g {resource_group}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
@@ -124,7 +124,6 @@ class StartStopAscTest(ScenarioTest):
             self.check('properties.powerState', 'Running')
         ])
 
-        self.cmd('spring delete -n {serviceName} -g {resource_group} --no-wait')
 
 class SslTests(ScenarioTest):
 

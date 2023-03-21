@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from .custom_preparers import SpringPreparer
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -12,14 +13,15 @@ Since the scenarios covered here depend on a Azure Spring service instance creat
 It cannot support live run. So mark it as record_only. 
 '''
 
-@record_only()
 class ApiPredefinedAcceleratorTest(ScenarioTest):
 
-    def test_predefined_accelerator(self):
+    @ResourceGroupPreparer()
+    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_TANZU_ENABLED', additional_params='--sku Enterprise --disable-app-insights --enable-application-accelerator')
+    def test_predefined_accelerator(self, resource_group, spring):
         
         self.kwargs.update({
-            'serviceName': 'acc-test',
-            'rg': 'acc',
+            'serviceName': spring,
+            'rg': resource_group,
             'name': 'asa-java-rest-service'
         })
 
