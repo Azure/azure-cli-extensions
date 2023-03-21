@@ -831,9 +831,6 @@ class AzInteractiveShell(object):
         print_styled_text([(Style.ACTION, "Loading command table... Expected time around 1 minute.")])
         progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Loading command table")
         # initialize some variables
-        # whether the customer chooses to continue loading
-        continue_loading = False
-        time_spent_on_loading = 0
         # whether the customer has been prompted to choose continue loading
         # unable to use continue_loading to check this because the customer may choose to continue loading
         already_prompted = False
