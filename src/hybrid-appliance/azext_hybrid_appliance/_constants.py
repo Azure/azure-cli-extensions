@@ -18,3 +18,10 @@ Disk_Threshold = 20
 Supported_Locations = "southeastasia"
 # Fault types
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
+Non_Linux_Machine = "User's machine is not a Linux machine"
+DiskSpace_Validation_Failed = "DiskSpace threshold not met"
+Memory_Validation_Failed = "Memory threshold not met"
+Validations_Failed = "Pre-requisite validations failed"
+MicroK8s_Setup_Failed = "MicroK8s cluster setup failed"
+MicroK8s_Cluster_Not_Running = "MicroK8s cluster not running"
+Arc_Onboarding_Failed = "Arc onboarding of k8s cluster failed"
