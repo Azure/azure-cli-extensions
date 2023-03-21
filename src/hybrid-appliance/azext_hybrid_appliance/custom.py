@@ -80,7 +80,7 @@ def validate_hybrid_appliance(resource_group_name, name):
     else:
         print("All pre-requisite validations have passed successfully")
 
-def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None):
+def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None):
     kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
     latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
@@ -117,6 +117,8 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         cmd_onboard_arc.extend(["--proxy-skip-range", no_proxy])
     if proxy_cert:
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
+    if tags:
+        cmd_onboard_arc.extend(["--tags", tags])
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
@@ -177,6 +179,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
 def delete_hybrid_appliance(resource_group_name, name):
+    delete_cc = True
     utils.set_no_proxy_from_helm_values()
     kubeconfig_path = utils.get_kubeconfig_path()
     try:
@@ -190,19 +193,24 @@ def delete_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
     except Exception as e:
-        raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
+        logger.error("Unable to find the required config map on the kubernetes cluster. The kubernetes cluster will be deleted.")
+        delete_cc = False
     
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     try:
         if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
             raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
     except KeyError:
-        raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
+        logger.error("The required entries were not found in the config map. The kubernetes cluster will be deleted")
+        delete_cc = False
 
-    cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
-    delete_result = get_default_cli().invoke(cmd_delete_arc)
-    if delete_result != 0:
-        logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
+    if delete_cc:
+        cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
+        delete_result = get_default_cli().invoke(cmd_delete_arc)
+        if delete_result != 0:
+            logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
+    else:
+        logger.warning("The connected cluster resource will not be deleted. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
 
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
