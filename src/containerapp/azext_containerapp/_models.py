@@ -190,7 +190,7 @@ ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # Configuration
         "template": None  # Template
     },
