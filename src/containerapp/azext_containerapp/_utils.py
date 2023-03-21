@@ -1433,7 +1433,7 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
             _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
             if _normalize_location(cmd, app["location"]) != _normalize_location(cmd, location):
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
-        if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
+        if environment and (_get_name(environment) != _get_name(app["properties"]["environmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
         custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
     except CLIError as e:
@@ -1591,7 +1591,7 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
             logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
         return
     if not storage_account:
-        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
         return
 
     from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings

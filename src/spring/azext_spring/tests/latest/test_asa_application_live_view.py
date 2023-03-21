@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
-from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from .custom_preparers import SpringPreparer
 from ...vendored_sdks.appplatform.v2022_11_01_preview import models
 from ...application_live_view import (create, delete)
 try:
@@ -133,13 +134,14 @@ class ApplicationLiveView(unittest.TestCase):
         self.assertEqual(models.DevToolPortalFeatureState.DISABLED,
                          self.dev_tool_portal.properties.features.application_live_view.state)
 
-@record_only()
 class LiveViewTest(ScenarioTest):
 
-    def test_live_view(self):
+    @ResourceGroupPreparer()
+    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_ENTERPRISE', additional_params='--sku Enterprise --disable-app-insights')
+    def test_live_view(self, resource_group, spring):
         self.kwargs.update({
-            'serviceName': 'test-cli',
-            'rg': 'test-cli'
+            'serviceName': spring,
+            'rg': resource_group
         })
 
         self.cmd('spring dev-tool create -g {rg} -s {serviceName} --assign-endpoint', checks=[
