@@ -837,8 +837,6 @@ class AzInteractiveShell(object):
         # whether the customer has been prompted to choose continue loading
         # unable to use continue_loading to check this because the customer may choose to continue loading
         already_prompted = False
-        # whether the loading time is too long(>150s)
-        time_loading_too_long = False
         progress_bar.begin()
 
         # still loading commands, show the time of loading
