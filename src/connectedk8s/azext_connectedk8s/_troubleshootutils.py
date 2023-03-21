@@ -889,11 +889,11 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = response_kubectl_get_events.communicate()[0].strip()
+            events_json = output_kubectl_get_events.decode()
             # Path to add the azure-arc secrets
             event_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
 
-            with open(event_logs_path, 'wb') as event_log:
+            with open(event_logs_path, 'w+') as event_log:
                     event_log.write(events_json)
 
             return storage_space_available
@@ -993,11 +993,11 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = response_kubectl_get_events.communicate()[0].strip()
+            events_json = output_kubectl_get_events.decode()
             # Path to add the metadata CR details
             event_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
 
-            with open(event_logs_path, 'wb') as event_log:
+            with open(event_logs_path, 'w+') as event_log:
                     event_log.write(events_json)
 
             return storage_space_available
@@ -1041,11 +1041,11 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = response_kubectl_get_events.communicate()[0].strip()
+            events_json = output_kubectl_get_events.decode()
             # Path to add the kube-aad-proxy CR details
             event_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
 
-            with open(event_logs_path, 'wb') as event_log:
+            with open(event_logs_path, 'w+') as event_log:
                     event_log.write(events_json)
 
             return storage_space_available
@@ -1068,3 +1068,48 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
             diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
+
+
+def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
+
+    # This function is used to store the output that is obtained throughout the Diagnoser process
+ 
+    global diagnoser_output
+    try:
+        # If storage space is available then only we store the output
+        if storage_space_available:
+            # Path to store the diagnoser results
+            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
+            # If any results are obtained during the process than we will add it to the text file.
+            if len(diagnoser_output) > 0:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    for output in diagnoser_output:
+                        cli_output_writer.write(output + "\n")
+                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
+                    if flag == 0:
+                        cli_output_writer.write("Process terminated externally.\n")
+
+            # If no issues was found during the whole troubleshoot execution
+            elif flag:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
+            # If process was terminated by user
+            else:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("Process terminated externally.\n")
+
+        return consts.Diagnostic_Check_Passed
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
+
+    return consts.Diagnostic_Check_Failed

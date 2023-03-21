@@ -181,7 +181,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
         # Performing cluster-diagnostic-checks
         diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
-        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+        precheckutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         if storage_space_available is False:
             logger.warning("There is no storage space available on your device and hence not saving cluster diagnostic check logs on your device")
@@ -194,7 +194,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
@@ -2308,7 +2308,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             logger.warning("All the pods in the cluster are not in the running state. The current state of the cluster is : " + cluster_connectivity_status)
 
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2329,7 +2329,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
