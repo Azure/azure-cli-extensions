@@ -140,6 +140,7 @@ def app_identity_force_set(cmd,
 
     # All read-only attributes will be droped by SDK automatically.
     exist_app.identity = target_identity
+    exist_app.properties.secrets = None
 
     poller = client.apps.begin_create_or_update(resource_group, service, name, exist_app)
     wait_till_end(cmd, poller)
