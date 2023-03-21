@@ -14,8 +14,8 @@ class ScenarioAutoSuggest(AutoSuggest):
     def __init__(self):
         self.cur_sample = ''
         self.cur_command = ''
-        # param_value_map is the dictionary that has `key` with command params and `value` with <sample_value>
-        self.param_value_map = {}
+        # param_sample_value_map is the dictionary that has `key` with command params and `value` with <sample_value>
+        self.param_sample_value_map = {}
         # when user input a value of a parameter,value will be stored in this map. Will be suggested in the scenario
         # customized_cached_param_map is the dictionary that has `key` with <sample_value> of scenario commands or some `special global params` and `value` with the value that customer has entered
         self.customized_cached_param_map = {}
@@ -26,30 +26,30 @@ class ScenarioAutoSuggest(AutoSuggest):
                                          '-s': ['-s', '--subscription'], '--subscription': ['-s', '--subscription'],
                                          '-l': ['-l', '--location'], '--location': ['-l', '--location']}
 
-    # TODO: consider deprecate the update function
+
     def update(self, sample: str):
         """Change command sample that would be suggested to the user"""
         # The sample should not start with 'az '
         self.cur_sample = sample.split('az ')[-1]
         # Find parameters used in sample and its value
-        self.param_value_map = {}
+        self.param_sample_value_map = {}
         # Find the command part of sample
         self.cur_command = self.cur_sample.split('-')[0].strip()
         cur_param = ''
         for part in self.cur_sample.split():
             if part.startswith('-'):
                 cur_param = part
-                self.param_value_map[cur_param] = ''
+                self.param_sample_value_map[cur_param] = ''
             elif cur_param:
-                self.param_value_map[cur_param] += ' ' + part
-                self.param_value_map[cur_param] = self.param_value_map[cur_param].strip()
+                self.param_sample_value_map[cur_param] += ' ' + part
+                self.param_sample_value_map[cur_param] = self.param_sample_value_map[cur_param].strip()
 
 
-        def update_customized_cached_param_map(self, command_text: str):
+    def update_customized_cached_param_map(self, command_text: str):
         """Update the value of a parameter in the customized parameter value map"""
         # remove the 'az ' part of command
         command_text = command_text.split('az ')[-1]
-        cur_param = ''
+        param_sample_value_map = ''
         special_global_param_list = None
         for part in command_text.split():
             if part.startswith('-'):
@@ -59,14 +59,14 @@ class ScenarioAutoSuggest(AutoSuggest):
                     special_global_param_list = self.special_global_param_map[part]
                     for param in special_global_param_list:
                         self.customized_cached_param_map[param] = ''
-                    cur_param = ''
+                    param_sample_value_map = ''
                 else:
-                    cur_param = self.param_value_map[part]
-                    self.customized_cached_param_map[cur_param] = ''
+                    param_sample_value_map = self.param_sample_value_map[part]
+                    self.customized_cached_param_map[param_sample_value_map] = ''
                     special_global_param_list = None
-            elif cur_param:
-                self.customized_cached_param_map[cur_param] += ' ' + part
-                self.customized_cached_param_map[cur_param] = self.customized_cached_param_map[cur_param].strip()
+            elif param_sample_value_map:
+                self.customized_cached_param_map[param_sample_value_map] += ' ' + part
+                self.customized_cached_param_map[param_sample_value_map] = self.customized_cached_param_map[param_sample_value_map].strip()
             # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
             elif special_global_param_list:
                 for param in special_global_param_list:
@@ -83,7 +83,7 @@ class ScenarioAutoSuggest(AutoSuggest):
             # rsplit(' ', 1) will split the string from right to left with max split 1
             unfinished = user_input.rsplit(' ', 1)[-1]
             # list of unused parameters in current sample
-            unused_param = list(self.param_value_map.keys())
+            unused_param = list(self.param_sample_value_map.keys())
             completed_parts = user_input[-len(unfinished):].strip().split()
             # last completed part of user's input
             last_part = completed_parts[-1]
@@ -110,16 +110,16 @@ class ScenarioAutoSuggest(AutoSuggest):
                 for param in unused_param:
                     if param.startswith(unfinished):
                         suggest.append(param[len(unfinished):])
-                        if self.param_value_map[param]:
-                            suggest.append(self.param_value_map[param])
+                        if self.param_sample_value_map[param]:
+                            suggest.append(self.param_sample_value_map[param])
                         unused_param.remove(param)
                         break
                 if suggest:
                     # If we suggest the inputting param successfully, suggest the rest parameters
                     for param in unused_param:
                         suggest.append(param)
-                        if self.param_value_map[param]:
-                            suggest.append(self.param_value_map[param])
+                        if self.param_sample_value_map[param]:
+                            suggest.append(self.param_sample_value_map[param])
                     return Suggestion(' '.join(suggest))
             elif unfinished == '':
                 if not last_part.startswith('-'):
@@ -129,7 +129,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                             cached_param = param
                         else:
                             # cached_param is either the sample values in scenarios, such as <RESOURCEGROUPNAME> or some special global params, such as '--location'
-                            cached_param = self.param_value_map[param]
+                            cached_param = self.param_sample_value_map[param]
                         if cached_param:
                             if cached_param in self.customized_cached_param_map.keys():
                                 value = self.customized_cached_param_map[cached_param]
