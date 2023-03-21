@@ -923,7 +923,7 @@ class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format("westeurope"))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='yaml', length=24)
@@ -933,7 +933,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test managedEnvironmentId
         containerapp_yaml_text = f"""
-        location: westeurope
+        location: {TEST_LOCATION}
         type: Microsoft.App/containerApps
         tags:
             tagname: value
@@ -984,7 +984,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test environmentId
         containerapp_yaml_text = f"""
-                location: westeurope
+                location: {TEST_LOCATION}
                 type: Microsoft.App/containerApps
                 tags:
                     tagname: value
