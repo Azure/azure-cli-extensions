@@ -6,6 +6,7 @@
 import os
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
+from .custom_preparers import SpringPreparer
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -68,7 +69,8 @@ class ByosTest(ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_persistent_storage(self, resource_group, storage_account):
+    @SpringPreparer(additional_params='--disable-app-insights')
+    def test_persistent_storage(self, resource_group, storage_account, spring):
         template = 'storage account keys list -n {} -g {} --query "[0].value" -otsv'
         accountkey = self.cmd(template.format(storage_account, resource_group)).output
 
@@ -76,14 +78,12 @@ class ByosTest(ScenarioTest):
             'storageType': 'StorageAccount',
             'storage': 'test-storage-name',
             'app': 'test-app',
-            'serviceName': 'cli-unittest',
+            'serviceName': spring,
             'location': 'centralus',
             'accountKey': accountkey,
             'resource_group': resource_group,
             'storage_account': storage_account,
         })
-
-        self.cmd('spring create -n {serviceName} -g {resource_group} -l {location}')
 
         self.cmd('spring storage add --name {storage} --storage-type {storageType} --account-name {storage_account} --account-key {accountKey} -g {resource_group} -s {serviceName}', checks=[
             self.check('name', '{storage}'),
@@ -100,8 +100,6 @@ class ByosTest(ScenarioTest):
 
         self.cmd('spring storage remove --name {storage} -g {resource_group} -s {serviceName}')
         self.cmd('spring storage show --name {storage} -g {resource_group} -s {serviceName}', expect_failure=True)
-
-        self.cmd('spring delete -n {serviceName} -g {rg}')
 
 class StartStopAscTest(ScenarioTest):
 
