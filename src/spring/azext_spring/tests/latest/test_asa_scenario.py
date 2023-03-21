@@ -190,17 +190,15 @@ class SslTests(ScenarioTest):
 
 class CustomImageTest(ScenarioTest):
 
-    def test_app_deploy_container(self):
+    @ResourceGroupPreparer()
+    @SpringPreparer(additional_params='--disable-app-insights')
+    def test_app_deploy_container(self, resource_group, spring):
         self.kwargs.update({
             'app': 'test-container',
-            'serviceName': 'cli-unittest',
+            'serviceName': spring,
             'containerImage': 'springio/gs-spring-boot-docker',
-            'resourceGroup': 'cli',
-            'location': 'centralindia'
+            'resourceGroup': resource_group,
         })
-
-        self.cmd('group create -n {resourceGroup} -l {location}')
-        self.cmd('spring create -n {serviceName} -g {resourceGroup}')
 
         self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
