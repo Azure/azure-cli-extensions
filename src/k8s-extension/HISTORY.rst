@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Fix sslSecret parameter in update operation
+
 1.4.0
 ++++++++++++++++++
 * microsoft.dapr: Update version comparison logic to use semver based comparison
