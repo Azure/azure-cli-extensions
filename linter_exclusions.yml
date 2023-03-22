@@ -322,6 +322,9 @@ codespace plan create:
     default_sku_name:
       rule_exclusions:
       - option_length_too_long
+confidentialledger managedccfs update:
+  rule_exclusions:
+  - missing_command_test_coverage
 containerapp env create:
   parameters:
     infrastructure_subnet_resource_id:

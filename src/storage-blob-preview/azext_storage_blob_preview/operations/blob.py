@@ -477,9 +477,13 @@ def copy_blob(cmd, client, source_url, metadata=None, **kwargs):
     if blob_type is not None and blob_type != 'Detect':
         blob_service_client = src_client._get_container_client()._get_blob_service_client()
         if blob_service_client.credential is not None:
+            as_user = True
+            if hasattr(blob_service_client.credential, 'account_key'):
+                as_user = False
+            expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
             source_url = generate_sas_blob_uri(cmd, blob_service_client, full_uri=True, blob_url=source_url,
-                                               blob_name=None, container_name=None,
-                                               expiry=datetime.utcnow() + timedelta(hours=1), permission='r')
+                                               blob_name=None, container_name=None, as_user=as_user,
+                                               expiry=expiry, permission='r')
 
         params = {"source_if_modified_since": kwargs.get("source_if_modified_since"),
                   "source_if_unmodified_since": kwargs.get("source_if_unmodified_since"),
@@ -509,12 +513,10 @@ def copy_blob(cmd, client, source_url, metadata=None, **kwargs):
                                                source_offset=0, **params)
             return transform_response_with_bytearray(res)
     if kwargs.get('tier') is not None:
-        src_properties = src_client.get_blob_properties()
-        BlobType = cmd.get_models('_models#BlobType', resource_type=CUSTOM_DATA_STORAGE_BLOB)
         tier = kwargs.pop('tier')
-        if src_properties.blob_type == BlobType.BlockBlob:
+        try:
             kwargs["standard_blob_tier"] = getattr(StandardBlobTier, tier)
-        elif src_properties.blob_type == BlobType.PageBlob:
+        except AttributeError:
             PremiumPageBlobTier = cmd.get_models('_models#PremiumPageBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
             kwargs["premium_page_blob_tier"] = getattr(PremiumPageBlobTier, tier)
     return client.start_copy_from_url(source_url=source_url, metadata=metadata, incremental_copy=False, **kwargs)

@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.2
+++++++
+* Update dependency psycopg2 to psycopg2-binary.
+
 0.2.1
 ++++++
 * Use the client ip in SQL connection output to update firewall rule.
