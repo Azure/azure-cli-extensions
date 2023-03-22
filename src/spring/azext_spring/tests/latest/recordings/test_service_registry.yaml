@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"08b7340d552d4f1caff6f328754d8bee","networkProfile":{"outboundIPs":{"publicIPs":["20.241.208.147","20.241.209.0"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T08:27:36.5209559Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T08:27:36.5209559Z"}}'
@@ -65,7 +65,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[{"name":"eureka-tx-enterprise-default-46b1d-0","status":"Running"},{"name":"eureka-tx-enterprise-default-46b1d-1","status":"Running"}]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T09:01:20.5105937Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T09:01:20.5105937Z"}}'
@@ -113,7 +113,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"08b7340d552d4f1caff6f328754d8bee","networkProfile":{"outboundIPs":{"publicIPs":["20.241.208.147","20.241.209.0"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T08:27:36.5209559Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T08:27:36.5209559Z"}}'
@@ -163,7 +163,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T03:52:15.6583077Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T04:20:44.8337983Z"}}'
@@ -221,13 +221,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},"public":false,"provisioningState":"Updating","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T03:52:15.6583077Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:37:51.991956Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -239,7 +239,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/50981bee-10df-4cdd-9de2-c99c0cf5bbd9/Spring/app1?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/50981bee-10df-4cdd-9de2-c99c0cf5bbd9/Spring/app1?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -271,7 +271,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9","name":"50981bee-10df-4cdd-9de2-c99c0cf5bbd9","status":"Running","startTime":"2023-01-10T05:37:52.7539902Z"}'
@@ -319,7 +319,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9","name":"50981bee-10df-4cdd-9de2-c99c0cf5bbd9","status":"Running","startTime":"2023-01-10T05:37:52.7539902Z"}'
@@ -367,7 +367,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/50981bee-10df-4cdd-9de2-c99c0cf5bbd9","name":"50981bee-10df-4cdd-9de2-c99c0cf5bbd9","status":"Succeeded","startTime":"2023-01-10T05:37:52.7539902Z","endTime":"2023-01-10T05:38:05.5140645Z"}'
@@ -415,7 +415,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T03:52:15.6583077Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:37:51.991956Z"}}'
@@ -465,7 +465,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"08b7340d552d4f1caff6f328754d8bee","networkProfile":{"outboundIPs":{"publicIPs":["20.241.208.147","20.241.209.0"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T08:27:36.5209559Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T08:27:36.5209559Z"}}'
@@ -515,7 +515,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T03:52:15.6583077Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:37:51.991956Z"}}'
@@ -573,13 +573,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T03:52:15.6583077Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:38:20.8719841Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -591,7 +591,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f/Spring/app1?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f/Spring/app1?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -623,7 +623,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f","name":"884b5b68-0bfd-4782-bd07-4a2c8e3dc43f","status":"Running","startTime":"2023-01-10T05:38:21.8809288Z"}'
@@ -671,7 +671,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f","name":"884b5b68-0bfd-4782-bd07-4a2c8e3dc43f","status":"Running","startTime":"2023-01-10T05:38:21.8809288Z"}'
@@ -719,7 +719,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/884b5b68-0bfd-4782-bd07-4a2c8e3dc43f","name":"884b5b68-0bfd-4782-bd07-4a2c8e3dc43f","status":"Succeeded","startTime":"2023-01-10T05:38:21.8809288Z","endTime":"2023-01-10T05:38:34.6812483Z"}'
@@ -767,7 +767,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T03:52:15.6583077Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:38:20.8719841Z"}}'
@@ -817,7 +817,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"08b7340d552d4f1caff6f328754d8bee","networkProfile":{"outboundIPs":{"publicIPs":["20.241.208.147","20.241.209.0"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T08:27:36.5209559Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T08:27:36.5209559Z"}}'
@@ -869,13 +869,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2023-01-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -885,7 +885,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb/Spring/tx-enterprise?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb/Spring/tx-enterprise?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -917,7 +917,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb","name":"1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb","status":"Running","startTime":"2023-01-10T05:38:49.9161621Z"}'
@@ -965,7 +965,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb","name":"1fe4b257-3a16-4a4f-a8a4-18c81b9e5edb","status":"Succeeded","startTime":"2023-01-10T05:38:49.9161621Z","endTime":"2023-01-10T05:38:56.2976122Z"}'
@@ -1013,7 +1013,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"08b7340d552d4f1caff6f328754d8bee","networkProfile":{"outboundIPs":{"publicIPs":["20.241.208.147","20.241.209.0"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T08:27:36.5209559Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T08:27:36.5209559Z"}}'
@@ -1065,13 +1065,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Creating","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T05:39:04.4127152Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:39:04.4127152Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1083,7 +1083,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/cd707688-c1ea-4d0f-ae09-77d00e55da36/Spring/tx-enterprise?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/cd707688-c1ea-4d0f-ae09-77d00e55da36/Spring/tx-enterprise?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1115,7 +1115,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1163,7 +1163,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1211,7 +1211,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1259,7 +1259,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1307,7 +1307,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1355,7 +1355,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1403,7 +1403,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1451,7 +1451,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1499,7 +1499,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Running","startTime":"2023-01-10T05:39:06.3640756Z"}'
@@ -1547,7 +1547,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/tx-enterprise/operationId/cd707688-c1ea-4d0f-ae09-77d00e55da36","name":"cd707688-c1ea-4d0f-ae09-77d00e55da36","status":"Succeeded","startTime":"2023-01-10T05:39:06.3640756Z","endTime":"2023-01-10T05:40:32.6446777Z"}'
@@ -1595,7 +1595,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[{"name":"eureka-tx-enterprise-default-46b1d-0","status":"Running"},{"name":"eureka-tx-enterprise-default-46b1d-1","status":"Running"}]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-10T05:39:04.4127152Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-10T05:39:04.4127152Z"}}'

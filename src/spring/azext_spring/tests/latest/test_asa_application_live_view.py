@@ -6,7 +6,7 @@ import json
 import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from .custom_preparers import SpringPreparer
-from ...vendored_sdks.appplatform.v2022_11_01_preview import models
+from ...vendored_sdks.appplatform.v2023_01_01_preview import models
 from ...application_live_view import (create, delete)
 try:
     import unittest.mock as mock
