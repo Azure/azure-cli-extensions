@@ -73,12 +73,12 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
             raise e
 
 
-def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statements
+def poll_status(cmd, request_url, necessary_header=HEADER_AZURE_ASYNC_OPERATION):  # pylint: disable=inconsistent-return-statements
     from azure.core.exceptions import HttpResponseError
     from ._utils import safe_get
 
     if not request_url:
-        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_AZURE_ASYNC_OPERATION}'")
+        raise AzureResponseError(f"Http response lack of necessary header: '{necessary_header}'")
 
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
@@ -520,13 +520,6 @@ class ManagedEnvironmentClient():
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
@@ -548,13 +541,10 @@ class ManagedEnvironmentClient():
 
         if no_wait:
             return r.json()
-        elif r.status_code == 201:
+        elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            response = poll_results(cmd, operation_url)
-            if response is None:
-                raise ResourceNotFoundError("Could not find a managed environment")
-            else:
-                return response
+            poll_status(cmd, operation_url, HEADER_LOCATION)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 

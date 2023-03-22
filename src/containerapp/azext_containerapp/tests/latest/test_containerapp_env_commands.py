@@ -411,6 +411,8 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+            JMESPathCheck('properties.appLogsConfiguration.destination', 'log-analytics'),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
 
 

@@ -1143,9 +1143,9 @@ def update_managed_environment(cmd,
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
 
     # Custom domains
-    safe_set(env_def, "properties", "customDomainConfiguration", value={})
-    cert_def = env_def["properties"]["customDomainConfiguration"]
     if hostname:
+        safe_set(env_def, "properties", "customDomainConfiguration", value={})
+        cert_def = env_def["properties"]["customDomainConfiguration"]
         blob, _ = load_cert_file(certificate_file, certificate_password)
         safe_set(cert_def, "dnsSuffix", value=hostname)
         safe_set(cert_def, "certificatePassword", value=certificate_password)
@@ -1153,7 +1153,7 @@ def update_managed_environment(cmd,
 
     # no PATCH api support atm, put works fine even with partial json
     try:
-        r = ManagedEnvironmentClient.create(
+        r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
 
     except Exception as e:
