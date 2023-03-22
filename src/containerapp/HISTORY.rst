@@ -4,6 +4,7 @@ Release History
 ===============
 Upcoming
 +++++++
+* 'az containerapp env update': fix update environment bug.
 * Fix polling logic for long running operations.
 
 0.3.24
