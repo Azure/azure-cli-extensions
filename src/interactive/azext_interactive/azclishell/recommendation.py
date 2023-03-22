@@ -245,6 +245,8 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
 
     if 'api_version' in response.json():
         api_version = response.json()['api_version']
+    else:
+        api_version = None
     return recommends, api_version
 
 
