@@ -5,6 +5,12 @@ Release History
 Upcoming
 +++++++
 * Fix polling logic for long running operations.
+* 'az containerapp env create': add support for workload profiles
+* 'az containerapp env update': add support for workload profiles
+* 'az containerapp create': add support for workload profiles
+* 'az containerapp update': add support for workload profiles
+* Add 'az containerapp env workload-profile' commands
+* Upgrade api-version from 2022-10-01 to 2022-11-01-preview
 
 0.3.24
 ++++++

@@ -392,7 +392,7 @@ def create_containerapp(cmd,
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
-    if not workload_profile_name and managed_env_info["workloadProfiles"]:
+    if not workload_profile_name and "workloadProfiles" in managed_env_info:
         workload_profile_name = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
 
     external_ingress = None
