@@ -152,6 +152,45 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
+def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
+    try:
+        job_name = "cluster-diagnostic-checks-job"
+        all_pods = corev1_api_instance.list_namespaced_pod('azure-arc-release')
+        # Traversing through all agents
+        for each_pod in all_pods.items:
+            # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
+            pod_name = each_pod.metadata.name
+            if(pod_name.startswith(job_name)):
+                describe_job_pod = [kubectl_client_location, "describe", "pod", pod_name, "-n", "azure-arc-release"]
+                if kube_config:
+                    describe_job_pod.extend(["--kubeconfig", kube_config])
+                if kube_context:
+                    describe_job_pod.extend(["--context", kube_context])
+                response_describe_job_pod = Popen(describe_job_pod, stdout=PIPE, stderr=PIPE)
+                _, error_describe_job_pod = response_describe_job_pod.communicate()
+                if(response_describe_job_pod.returncode == 0):
+                    pod_description = response_describe_job_pod.communicate()[0].strip()
+                    if storage_space_available:
+                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description")
+                        with open(dns_check_path, 'wb') as f:
+                            f.write(pod_description)
+                else:
+                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description in the local machine', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while saving the cluster diagnostic checks pod description in the local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description in the local machine")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while saving the cluster diagnostic checks pod description in the local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Error occured while saving the cluster diagnostic checks pod description in the local machine")
+
+
 def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
 
     try:

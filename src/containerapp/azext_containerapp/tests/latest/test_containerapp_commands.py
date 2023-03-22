@@ -11,6 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
 
+from azext_containerapp.tests.latest.common import write_test_file
 from .common import TEST_LOCATION
 from .utils import create_containerapp_env
 
@@ -658,7 +659,7 @@ class ContainerappEnvStorageTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_ZRS --enable-large-file-share'.format(resource_group, storage_name))
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
@@ -917,4 +918,116 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
 
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_create_with_yaml(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='yaml', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        # test managedEnvironmentId
+        containerapp_yaml_text = f"""
+        location: {TEST_LOCATION}
+        type: Microsoft.App/containerApps
+        tags:
+            tagname: value
+        properties:
+          managedEnvironmentId: {containerapp_env["id"]}
+          configuration:
+            activeRevisionsMode: Multiple
+            ingress:
+              external: true
+              allowInsecure: false
+              targetPort: 80
+              traffic:
+                - latestRevision: true
+                  weight: 100
+              transport: Auto
+          template:
+            revisionSuffix: myrevision
+            containers:
+              - image: nginx
+                name: nginx
+                env:
+                  - name: HTTP_PORT
+                    value: 80
+                command:
+                  - npm
+                  - start
+                resources:
+                  cpu: 0.5
+                  memory: 1Gi
+            scale:
+              minReplicas: 1
+              maxReplicas: 3
+        """
+        containerapp_file_name = "containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+        ])
+
+        # test environmentId
+        containerapp_yaml_text = f"""
+                location: {TEST_LOCATION}
+                type: Microsoft.App/containerApps
+                tags:
+                    tagname: value
+                properties:
+                  environmentId: {containerapp_env["id"]}
+                  configuration:
+                    activeRevisionsMode: Multiple
+                    ingress:
+                      external: true
+                      allowInsecure: false
+                      targetPort: 80
+                      traffic:
+                        - latestRevision: true
+                          weight: 100
+                      transport: Auto
+                  template:
+                    revisionSuffix: myrevision
+                    containers:
+                      - image: nginx
+                        name: nginx
+                        env:
+                          - name: HTTP_PORT
+                            value: 80
+                        command:
+                          - npm
+                          - start
+                        resources:
+                          cpu: 0.5
+                          memory: 1Gi
+                    scale:
+                      minReplicas: 1
+                      maxReplicas: 3
+                """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3)
         ])

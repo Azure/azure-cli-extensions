@@ -33,6 +33,16 @@ helps['grafana show'] = """
     short-summary: Show details of a Azure Managed Grafana instance.
 """
 
+helps['grafana backup'] = """
+    type: command
+    short-summary: Backup an Azure Managed Grafana instance's content to an achive.
+"""
+
+helps['grafana restore'] = """
+    type: command
+    short-summary: Restore an Azure Managed Grafana instance from an achive.
+"""
+
 helps['grafana update'] = """
     type: command
     short-summary: Update a Azure Managed Grafana instance.
@@ -217,6 +227,18 @@ helps['grafana dashboard delete'] = """
         - name: Delete a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
            az grafana dashboard delete -g MyResourceGroup -n MyGrafana --dashboard VdrOA7jGz
+"""
+
+helps['grafana dashboard sync'] = """
+    type: command
+    short-summary: Sync Azure Managed Grafana dashboards from one instance to another instance. Note, dashboards with "provisioned" state will be skipped due to being read-only
+    examples:
+        - name: Sync only dashboardss under a few folders
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --folders-to-include "Azure Monitor Container Insights" "Azure Monitor"
+        - name: Preview the sync
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --dry-run
 """
 
 helps['grafana folder'] = """

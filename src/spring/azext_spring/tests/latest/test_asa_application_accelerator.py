@@ -4,8 +4,9 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
-from azure.cli.testsdk import (ScenarioTest, record_only)
-from ...vendored_sdks.appplatform.v2022_11_01_preview import models
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from .custom_preparers import SpringPreparer
+from ...vendored_sdks.appplatform.v2023_01_01_preview import models
 from ...application_accelerator import (application_accelerator_create as create, 
                                         application_accelerator_delete as delete)
 try:
@@ -132,14 +133,15 @@ Since the scenarios covered here depend on a Azure Spring service instance creat
 It cannot support live run. So mark it as record_only. 
 '''
 
-@record_only()
 class ApiApplicationAcceleratorTest(ScenarioTest):
 
-    def test_application_accelerator(self):
+    @ResourceGroupPreparer()
+    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_ENTERPRISE', additional_params='--sku Enterprise --disable-app-insights')
+    def test_application_accelerator(self, resource_group, spring):
         
         self.kwargs.update({
-            'serviceName': 'acc-test',
-            'rg': 'acc'
+            'serviceName': spring,
+            'rg': resource_group
         })
 
         self.cmd('spring dev-tool create -g {rg} -s {serviceName} --assign-endpoint', checks=[

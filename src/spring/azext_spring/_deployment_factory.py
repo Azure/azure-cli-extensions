@@ -6,8 +6,9 @@
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import get_file_json
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 from ._deployment_source_factory import source_selector
+from .custom import format_scale
 
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
@@ -42,7 +43,8 @@ class DefaultDeployment:
             termination_grace_period_seconds=self._get_termination_grace_period_seconds(**kwargs),
             startup_probe=self._format_startup_probe(**kwargs),
             liveness_probe=self._format_liveness_probe(**kwargs),
-            readiness_probe=self._format_readiness_probe(**kwargs)
+            readiness_probe=self._format_readiness_probe(**kwargs),
+            scale=format_scale(**kwargs),
         )
 
     def _get_termination_grace_period_seconds(self, termination_grace_period_seconds=None, **_):
@@ -263,7 +265,7 @@ def default_deployment_create_options():
     return {
         'cpu': '1',
         'memory': '1Gi',
-        'runtime_version': 'Java_8',
+        'runtime_version': 'Java_11',
         'instance_count': 1,
         'env': {},
         'sku': None,

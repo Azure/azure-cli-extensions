@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingE
                                        ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
-from azure.cli.command_modules.network._client_factory import network_client_factory
+from .aaz.latest.network.vnet import Show as VNetShow
 from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -60,9 +60,11 @@ def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
 
 def get_vnet_location(cmd, subnet_resource_id):
     parsed_rid = parse_resource_id(subnet_resource_id)
-    vnet_client = network_client_factory(cmd.cli_ctx)
-    location = vnet_client.virtual_networks.get(resource_group_name=parsed_rid.get("resource_group"),
-                                                virtual_network_name=parsed_rid.get("name")).location
+    vnet = VNetShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": parsed_rid.get("resource_group"),
+        "name": parsed_rid.get("name")
+    })
+    location = vnet['location']
     return _normalize_location(cmd, location)
 
 
@@ -1431,7 +1433,7 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
             _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
             if _normalize_location(cmd, app["location"]) != _normalize_location(cmd, location):
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
-        if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
+        if environment and (_get_name(environment) != _get_name(app["properties"]["environmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
         custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
     except CLIError as e:
@@ -1589,7 +1591,7 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
             logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
         return
     if not storage_account:
-        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
         return
 
     from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings

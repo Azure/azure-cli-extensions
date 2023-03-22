@@ -14,7 +14,7 @@ Describe 'Azure OpenServiceMesh Testing' {
     # Should Not BeNullOrEmpty checks if the command returns JSON output
 
     It 'Creates the extension and checks that it onboards correctly' {
-        az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --release-train $releaseTrain --version $extensionVersion --no-wait
+        az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --release-train $releaseTrain --version $extensionVersion --auto-upgrade false --no-wait
         $? | Should -BeTrue        
 
         $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName

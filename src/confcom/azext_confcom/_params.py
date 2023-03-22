@@ -65,6 +65,12 @@ def load_arguments(self, _):
             help="Debug mode will enable processes in a container group that are helpful for debugging",
         )
         c.argument(
+            "approve_wildcards",
+            options_list=("--approve-wildcards", "-y"),
+            required=False,
+            help="Approving wildcards by default will get rid of the prompts during the wildcard environment variable use case and auto-approve the use of wildcards",
+        )
+        c.argument(
             "disable_stdio",
             options_list=("--disable-stdio",),
             required=False,
