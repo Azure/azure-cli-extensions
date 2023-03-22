@@ -120,7 +120,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                     return Suggestion(' '.join(suggest))
             elif unfinished == '':
                 if not last_part.startswith('-'):
-                    suggests = []
+                    suggests = {}
                     for param in unused_param:
                         if param in self.special_global_param_map.keys():
                             # sample_value is the sample values in scenarios, such as <RESOURCEGROUPNAME>
@@ -132,10 +132,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                                 value = self.customized_param_value_map[sample_value]
                             else:
                                 value = ''
-                            suggests.append({'param': param, 'value': value})
-                    if suggests:
-                        # suggest one parameter at a time
-                        return Suggestion(' '.join([suggests[0]['param'], suggests[0]['value']]))
+                            return Suggestion(' '.join([suggests['param'], suggests['value']]))
 
         # If the user hasn't finished the command part, suggest the whole sample
         elif self.cur_command.startswith(user_input):

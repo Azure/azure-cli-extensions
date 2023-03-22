@@ -250,7 +250,9 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
 
 def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, accepted_recommend=None,
                   api_version=None):
+
     # initialize feedback data
+    # If you want to add a new property to the feedback, please initialize it here in advance and place it with ’None‘ to prevent parameter loss due to parsing errors.
     feedback_data = {"request_type": None, "option": None, "trigger_commands": None, "error_info": None,
                      "recommendations_list": None, "recommendations_source_list": None,
                      "recommendations_type_list": None, "accepted_recommend_source": None,
