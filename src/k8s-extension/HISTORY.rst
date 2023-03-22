@@ -6,10 +6,7 @@ Release History
 1.4.0
 ++++++++++++++++++
 * microsoft.dapr: Update version comparison logic to use semver based comparison
-<<<<<<< HEAD
-=======
 * microsoft.azuremonitor.containers: Make ContainerInsights DataCollectionRuleName consistent with portal and other onboarding clients
->>>>>>> dc9973937b87b7b658506b0a8a28e773e39834c4
 
 1.3.9
 ++++++++++++++++++
