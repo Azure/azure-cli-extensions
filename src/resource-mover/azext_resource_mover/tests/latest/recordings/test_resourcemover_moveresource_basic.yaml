@@ -18,23 +18,23 @@ interactions:
       ParameterSetName:
       - --location --source-region --target-region --name --resource-group --identity
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91","name":"clitest-movecollection-91","type":"Microsoft.Migrate/moveCollections","etag":"\"1900781f-0000-0200-0000-61d7e3cd0000\"","location":"eastus2","properties":{"sourceRegion":"eastus","targetRegion":"westus","provisioningState":"Succeeded","errors":null},"identity":{"principalId":"e354ec23-3780-48d8-82e0-5f13a063634a","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-01-07T06:55:05.8573775Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T06:55:05.8573775Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91","name":"clitest-movecollection-91","type":"Microsoft.Migrate/moveCollections","etag":"\"4600a866-0000-0200-0000-641a6f620000\"","location":"eastus2","properties":{"sourceRegion":"eastus","targetRegion":"westus","provisioningState":"Succeeded","errors":null},"identity":{"principalId":"26b5d6fc-479e-4925-8705-4f2e681f65a1","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-03-22T03:00:47.6154493Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-22T03:00:47.6154493Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '821'
+      - '825'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:10 GMT
+      - Wed, 22 Mar 2023 03:00:51 GMT
       etag:
-      - '"1900781f-0000-0200-0000-61d7e3cd0000"'
+      - '"4600a866-0000-0200-0000-641a6f620000"'
       expires:
       - '-1'
       pragma:
@@ -44,7 +44,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -66,7 +66,7 @@ interactions:
       ParameterSetName:
       - -n -l
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg?api-version=2021-04-01
   response:
@@ -80,23 +80,27 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:13 GMT
+      - Wed, 22 Mar 2023 03:00:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
-    body: '{"location": "eastus", "tags": {}, "properties": {"addressSpace": {"addressPrefixes":
-      ["10.0.0.0/16"]}, "dhcpOptions": {}}}'
+    body: '{"location": "eastus", "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "enableDdosProtection": false, "enableVmProtection": false}}'
     headers:
       Accept:
       - application/json
@@ -107,39 +111,38 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '123'
+      - '152'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --location
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-in-source-region\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region\",\r\n
-        \ \"etag\": \"W/\\\"c221af39-19f1-4e36-9d11-809d70cccb4b\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"ef9da52b-0348-4ff5-ac27-6f37bdeab9b7\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"ae553d64-43a9-4062-bafa-581772e53f4c\",\r\n    \"addressSpace\":
-        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
-        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
-        \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
-        false\r\n  }\r\n}"
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"8f8922d4-704f-49af-b9e1-b40f5ef726b2\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
+        \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false\r\n
+        \ }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/c1d1ce0a-5776-4186-82e6-76e1bd5ae498?api-version=2021-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9d3c28b1-3126-4f90-9ecd-36c5ff1e9d17?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
-      - '720'
+      - '652'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:20 GMT
+      - Wed, 22 Mar 2023 03:01:00 GMT
       expires:
       - '-1'
       pragma:
@@ -149,15 +152,19 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7e4a57be-6da2-437b-a1b6-7fff9f42c153
+      - 4261a803-acfc-46d3-96b5-f57c5f4a4547
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -172,9 +179,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/c1d1ce0a-5776-4186-82e6-76e1bd5ae498?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/9d3c28b1-3126-4f90-9ecd-36c5ff1e9d17?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -186,7 +193,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:24 GMT
+      - Wed, 22 Mar 2023 03:01:29 GMT
       expires:
       - '-1'
       pragma:
@@ -203,7 +210,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1a494227-f7a6-4fe6-a537-9144f1b97161
+      - 24953936-abb5-481a-9c78-c8093c2314ad
     status:
       code: 200
       message: OK
@@ -221,31 +228,30 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-in-source-region\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region\",\r\n
-        \ \"etag\": \"W/\\\"526d6a7f-acf5-4023-a59d-d92c092f15e0\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"ef9da52b-0348-4ff5-ac27-6f37bdeab9b7\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"ae553d64-43a9-4062-bafa-581772e53f4c\",\r\n    \"addressSpace\":
-        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
-        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
-        \   \"subnets\": [],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
-        false\r\n  }\r\n}"
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"8f8922d4-704f-49af-b9e1-b40f5ef726b2\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
+        \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '721'
+      - '652'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:24 GMT
+      - Wed, 22 Mar 2023 03:01:30 GMT
       etag:
-      - W/"526d6a7f-acf5-4023-a59d-d92c092f15e0"
+      - W/"ef9da52b-0348-4ff5-ac27-6f37bdeab9b7"
       expires:
       - '-1'
       pragma:
@@ -262,16 +268,16 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8127fd15-0198-4ff3-aa7b-d14975dca395
+      - 705f4f73-340c-4cb9-bf41-ff72fb6edb0e
     status:
       code: 200
       message: OK
 - request:
-    body: '{"objectIds": ["e354ec23-3780-48d8-82e0-5f13a063634a"], "includeDirectoryObjectReferences":
-      true}'
+    body: '{"ids": ["26b5d6fc-479e-4925-8705-4f2e681f65a1"], "types": ["user", "group",
+      "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -279,56 +285,44 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '97'
+      - '132'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --assignee-object-id --role --scope
       User-Agent:
-      - python/3.8.10 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.31.0
-      accept-language:
-      - en-US
+      - python/3.8.1 (Windows-10-10.0.22000-SP0) AZURECLI/2.46.0
     method: POST
-    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+    uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"e354ec23-3780-48d8-82e0-5f13a063634a","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91"],"appDisplayName":null,"appId":"3f5e04b7-d9eb-4378-a244-b978acc50e30","applicationTemplateId":null,"appOwnerTenantId":null,"appRoleAssignmentRequired":false,"appRoles":[],"displayName":"clitest-movecollection-91","errorUrl":null,"homepage":null,"informationalUrls":null,"keyCredentials":[{"customKeyIdentifier":"38DC7E77AC0F5A58AD07016CBA8D571392DB38C4","endDate":"2022-04-07T06:50:00Z","keyId":"b8d31e35-ef3a-4b74-8940-c55cbc1d9cfd","startDate":"2022-01-07T06:50:00Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":null,"replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["3f5e04b7-d9eb-4378-a244-b978acc50e30","https://identity.azure.net/FalUyXObJzI0xT4gutG4VsfITMKgfD9icJLv1Qs7va8="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"26b5d6fc-479e-4925-8705-4f2e681f65a1","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91"],"appDisplayName":null,"appDescription":null,"appId":"b6bfa0f4-b9f2-44d8-8bd0-7904e8312dcf","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-03-22T03:00:48Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-movecollection-91","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["b6bfa0f4-b9f2-44d8-8bd0-7904e8312dcf","https://identity.azure.net/GuYdInvt8yXdkIUxgbmeVrOfjtqPGHOwseN1cba1+Ss="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"27AE8B01A8E30AAF8982AB8D3F8E572240D53ACD","displayName":"CN=b6bfa0f4-b9f2-44d8-8bd0-7904e8312dcf,
+        DC=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","endDateTime":"2023-06-20T02:55:00Z","key":null,"keyId":"10b4eeee-6a6d-46cd-83d9-ab6349d68f22","startDateTime":"2023-03-22T02:55:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
-      access-control-allow-origin:
-      - '*'
       cache-control:
       - no-cache
       content-length:
-      - '1616'
+      - '1811'
       content-type:
-      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
-      dataserviceversion:
-      - 3.0;
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:27 GMT
-      duration:
-      - '10691978'
-      expires:
-      - '-1'
-      ocp-aad-diagnostics-server-name:
-      - dTDh/UEYJTWb18twViKbs0/+lBkSlETyiOrvt8IiDBQ=
-      ocp-aad-session-key:
-      - gZ-AUUKvzhuoW1C4ZHPCNUfvfgzKAnK69gMwVMMeRwMzG0Cgk_36XVgdugFFV5Ny7DHBL9NNIpnJcQfYTJ4mxccuIPBOlR0vRLQuGFTB6yyo_JenG9pQwbGGlQycalhJ.JkoyMfmWt3p0WYyLmqk1BU_yjGf7FE2CwZH47qFOv5U
-      pragma:
-      - no-cache
+      - Wed, 22 Mar 2023 03:01:34 GMT
+      location:
+      - https://graph.microsoft.com
+      odata-version:
+      - '4.0'
       request-id:
-      - 06355796-2584-4ff7-9e83-92d14b07c790
+      - 5961645d-ac1f-4c8f-bd6d-24c62e4cadac
       strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
-      x-ms-dirapi-data-contract-version:
-      - '1.6'
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00000BCE"}}'
       x-ms-resource-unit:
       - '3'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -346,12 +340,9 @@ interactions:
       ParameterSetName:
       - --assignee-object-id --role --scope
       User-Agent:
-      - python/3.8.10 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.31.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Contributor%27&api-version=2018-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Contributor%27&api-version=2022-04-01
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"Contributor","type":"BuiltInRole","description":"Grants
@@ -365,7 +356,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:28 GMT
+      - Wed, 22 Mar 2023 03:01:34 GMT
       expires:
       - '-1'
       pragma:
@@ -385,7 +376,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
-      "principalId": "e354ec23-3780-48d8-82e0-5f13a063634a", "principalType": "ServicePrincipal"}}'
+      "principalId": "26b5d6fc-479e-4925-8705-4f2e681f65a1", "principalType": "ServicePrincipal"}}'
     headers:
       Accept:
       - application/json
@@ -398,21 +389,18 @@ interactions:
       Content-Length:
       - '270'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       Cookie:
       - x-ms-gateway-slice=Production
       ParameterSetName:
       - --assignee-object-id --role --scope
       User-Agent:
-      - python/3.8.10 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.31.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/00000000-0000-0000-0000-000000000000
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"e354ec23-3780-48d8-82e0-5f13a063634a","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2022-01-07T06:55:28.7059013Z","updatedOn":"2022-01-07T06:55:29.9872698Z","createdBy":null,"updatedBy":"f44cc02c-cec4-4b32-860a-50bdf6ab7362","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/e8be1033-7dec-4380-95b5-a92568a65fda","type":"Microsoft.Authorization/roleAssignments","name":"e8be1033-7dec-4380-95b5-a92568a65fda"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"26b5d6fc-479e-4925-8705-4f2e681f65a1","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2023-03-22T03:01:35.1483003Z","updatedOn":"2023-03-22T03:01:35.8323042Z","createdBy":null,"updatedBy":"674368bb-7eaa-4100-aef7-138f65f50648","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/186ad2fc-51be-4d6c-991a-6ae28833aa47","type":"Microsoft.Authorization/roleAssignments","name":"186ad2fc-51be-4d6c-991a-6ae28833aa47"}'
     headers:
       cache-control:
       - no-cache
@@ -421,13 +409,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:31 GMT
+      - Wed, 22 Mar 2023 03:01:41 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      set-cookie:
-      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
@@ -438,11 +424,11 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: '{"objectIds": ["e354ec23-3780-48d8-82e0-5f13a063634a"], "includeDirectoryObjectReferences":
-      true}'
+    body: '{"ids": ["26b5d6fc-479e-4925-8705-4f2e681f65a1"], "types": ["user", "group",
+      "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -450,56 +436,44 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '97'
+      - '132'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --assignee-object-id --role --scope
       User-Agent:
-      - python/3.8.10 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.31.0
-      accept-language:
-      - en-US
+      - python/3.8.1 (Windows-10-10.0.22000-SP0) AZURECLI/2.46.0
     method: POST
-    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+    uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"e354ec23-3780-48d8-82e0-5f13a063634a","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91"],"appDisplayName":null,"appId":"3f5e04b7-d9eb-4378-a244-b978acc50e30","applicationTemplateId":null,"appOwnerTenantId":null,"appRoleAssignmentRequired":false,"appRoles":[],"displayName":"clitest-movecollection-91","errorUrl":null,"homepage":null,"informationalUrls":null,"keyCredentials":[{"customKeyIdentifier":"38DC7E77AC0F5A58AD07016CBA8D571392DB38C4","endDate":"2022-04-07T06:50:00Z","keyId":"b8d31e35-ef3a-4b74-8940-c55cbc1d9cfd","startDate":"2022-01-07T06:50:00Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":null,"replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["3f5e04b7-d9eb-4378-a244-b978acc50e30","https://identity.azure.net/FalUyXObJzI0xT4gutG4VsfITMKgfD9icJLv1Qs7va8="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"26b5d6fc-479e-4925-8705-4f2e681f65a1","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91"],"appDisplayName":null,"appDescription":null,"appId":"b6bfa0f4-b9f2-44d8-8bd0-7904e8312dcf","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-03-22T03:00:48Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-movecollection-91","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["b6bfa0f4-b9f2-44d8-8bd0-7904e8312dcf","https://identity.azure.net/GuYdInvt8yXdkIUxgbmeVrOfjtqPGHOwseN1cba1+Ss="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"27AE8B01A8E30AAF8982AB8D3F8E572240D53ACD","displayName":"CN=b6bfa0f4-b9f2-44d8-8bd0-7904e8312dcf,
+        DC=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","endDateTime":"2023-06-20T02:55:00Z","key":null,"keyId":"10b4eeee-6a6d-46cd-83d9-ab6349d68f22","startDateTime":"2023-03-22T02:55:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
-      access-control-allow-origin:
-      - '*'
       cache-control:
       - no-cache
       content-length:
-      - '1616'
+      - '1811'
       content-type:
-      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
-      dataserviceversion:
-      - 3.0;
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:33 GMT
-      duration:
-      - '2073594'
-      expires:
-      - '-1'
-      ocp-aad-diagnostics-server-name:
-      - yr3noBVwwhfJyUxboptvYuRML/st1jb2Zzg0w8WKcb0=
-      ocp-aad-session-key:
-      - OQYhOfzJpiBhJekUk-QT2lOoAGaImuRNCR40I0n7ShA8CH0y4Ma6tq4DANplRuCkKL7M7elhiCh46bkL8ZRn2VcKlJGJHDfv1jVdblYDk2Wt1hCQR-1eFFxafT7mLlbx.rxzn5ORsDR9LpRInXiAXWDo6wSKEHFaRaVQ_TantDv4
-      pragma:
-      - no-cache
+      - Wed, 22 Mar 2023 03:01:41 GMT
+      location:
+      - https://graph.microsoft.com
+      odata-version:
+      - '4.0'
       request-id:
-      - ef4b646e-a8ed-46c0-acca-808fc5cf569e
+      - e90c40d3-9b9e-454a-a007-770957e1c93f
       strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-aspnet-version:
-      - 4.0.30319
-      x-ms-dirapi-data-contract-version:
-      - '1.6'
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00003400"}}'
       x-ms-resource-unit:
       - '3'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -517,12 +491,9 @@ interactions:
       ParameterSetName:
       - --assignee-object-id --role --scope
       User-Agent:
-      - python/3.8.10 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.31.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27User%20Access%20Administrator%27&api-version=2018-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27User%20Access%20Administrator%27&api-version=2022-04-01
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"User Access Administrator","type":"BuiltInRole","description":"Lets
@@ -535,7 +506,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:33 GMT
+      - Wed, 22 Mar 2023 03:01:41 GMT
       expires:
       - '-1'
       pragma:
@@ -555,7 +526,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
-      "principalId": "e354ec23-3780-48d8-82e0-5f13a063634a", "principalType": "ServicePrincipal"}}'
+      "principalId": "26b5d6fc-479e-4925-8705-4f2e681f65a1", "principalType": "ServicePrincipal"}}'
     headers:
       Accept:
       - application/json
@@ -568,21 +539,18 @@ interactions:
       Content-Length:
       - '270'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       Cookie:
       - x-ms-gateway-slice=Production
       ParameterSetName:
       - --assignee-object-id --role --scope
       User-Agent:
-      - python/3.8.10 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.31.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/00000000-0000-0000-0000-000000000000
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9","principalId":"e354ec23-3780-48d8-82e0-5f13a063634a","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2022-01-07T06:55:33.7578106Z","updatedOn":"2022-01-07T06:55:35.0547012Z","createdBy":null,"updatedBy":"f44cc02c-cec4-4b32-860a-50bdf6ab7362","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/6939da6a-d4a5-4bbe-a57e-f2f031b3d909","type":"Microsoft.Authorization/roleAssignments","name":"6939da6a-d4a5-4bbe-a57e-f2f031b3d909"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9","principalId":"26b5d6fc-479e-4925-8705-4f2e681f65a1","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2023-03-22T03:01:43.1086307Z","updatedOn":"2023-03-22T03:01:44.4456401Z","createdBy":null,"updatedBy":"674368bb-7eaa-4100-aef7-138f65f50648","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/5d714d3d-9f40-4ca5-80b0-e396a0174d5e","type":"Microsoft.Authorization/roleAssignments","name":"5d714d3d-9f40-4ca5-80b0-e396a0174d5e"}'
     headers:
       cache-control:
       - no-cache
@@ -591,19 +559,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:37 GMT
+      - Wed, 22 Mar 2023 03:01:48 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      set-cookie:
-      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -627,7 +593,7 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name --name --source-id --resource-settings
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource?api-version=2021-08-01
   response:
@@ -635,7 +601,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/be17b4e0-83e6-4ae9-a55c-dfcc600e9bec?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/23752cd6-f6f6-4554-9fa6-540f47ab71bb?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -643,7 +609,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:38 GMT
+      - Wed, 22 Mar 2023 03:01:50 GMT
       expires:
       - '-1'
       pragma:
@@ -671,22 +637,22 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name --name --source-id --resource-settings
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/be17b4e0-83e6-4ae9-a55c-dfcc600e9bec?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/23752cd6-f6f6-4554-9fa6-540f47ab71bb?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/be17b4e0-83e6-4ae9-a55c-dfcc600e9bec","name":"be17b4e0-83e6-4ae9-a55c-dfcc600e9bec","status":"Succeeded","startTime":"1/7/2022
-        6:55:39 AM","endTime":"1/7/2022 6:55:43 AM","error":null,"properties":{}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/23752cd6-f6f6-4554-9fa6-540f47ab71bb","name":"23752cd6-f6f6-4554-9fa6-540f47ab71bb","status":"Succeeded","startTime":"3/22/2023
+        3:01:50 AM","endTime":"3/22/2023 3:01:54 AM","error":null,"properties":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '395'
+      - '397'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:54 GMT
+      - Wed, 22 Mar 2023 03:02:05 GMT
       expires:
       - '-1'
       pragma:
@@ -716,7 +682,7 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name --name --source-id --resource-settings
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource?api-version=2021-08-01
   response:
@@ -724,16 +690,16 @@ interactions:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"tags":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":{"properties":{"code":"DependencyComputationPending","message":"The
         dependency computation is not completed for resource - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region''.\n    Possible
         Causes: Dependency computation is pending for resource.\n    Recommended Action:
-        Validate dependencies to compute the dependencies.\n    ","details":[]}}},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"tags":{},"targetResourceName":"vnet-in-source-region"}},"systemdata":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-01-07T06:55:38.4403499Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T06:55:38.4403499Z"}}'
+        Validate dependencies to compute the dependencies.\n    ","details":[]}}},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"tags":null,"targetResourceName":"vnet-in-source-region"}},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-03-22T03:01:49.3533141Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-22T03:01:49.3533141Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1805'
+      - '1811'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:54 GMT
+      - Wed, 22 Mar 2023 03:02:06 GMT
       expires:
       - '-1'
       pragma:
@@ -763,7 +729,7 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources?api-version=2021-08-01
   response:
@@ -771,16 +737,16 @@ interactions:
       string: '{"value":[{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"tags":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":{"properties":{"code":"DependencyComputationPending","message":"The
         dependency computation is not completed for resource - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region''.\n    Possible
         Causes: Dependency computation is pending for resource.\n    Recommended Action:
-        Validate dependencies to compute the dependencies.\n    ","details":[]}}},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"tags":{},"targetResourceName":"vnet-in-source-region"}},"systemdata":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-01-07T06:55:38.4403499Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T06:55:38.4403499Z"}}],"nextLink":null,"totalCount":1,"summaryCollection":null}'
+        Validate dependencies to compute the dependencies.\n    ","details":[]}}},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"tags":null,"targetResourceName":"vnet-in-source-region"}},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-03-22T03:01:49.3533141Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-22T03:01:49.3533141Z"}}],"nextLink":null,"totalCount":1,"summaryCollection":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1873'
+      - '1879'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:57 GMT
+      - Wed, 22 Mar 2023 03:02:08 GMT
       expires:
       - '-1'
       pragma:
@@ -810,7 +776,7 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name --name
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource?api-version=2021-08-01
   response:
@@ -818,16 +784,16 @@ interactions:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"tags":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":{"properties":{"code":"DependencyComputationPending","message":"The
         dependency computation is not completed for resource - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region''.\n    Possible
         Causes: Dependency computation is pending for resource.\n    Recommended Action:
-        Validate dependencies to compute the dependencies.\n    ","details":[]}}},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"tags":{},"targetResourceName":"vnet-in-source-region"}},"systemdata":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-01-07T06:55:38.4403499Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T06:55:38.4403499Z"}}'
+        Validate dependencies to compute the dependencies.\n    ","details":[]}}},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"tags":null,"targetResourceName":"vnet-in-source-region"}},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-03-22T03:01:49.3533141Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-22T03:01:49.3533141Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1805'
+      - '1811'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:58 GMT
+      - Wed, 22 Mar 2023 03:02:10 GMT
       expires:
       - '-1'
       pragma:
@@ -859,7 +825,7 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name --name --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/moveResources/vnet-as-move-resource?api-version=2021-08-01
   response:
@@ -867,7 +833,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/a0c43b69-e270-48cd-8b10-5d5eb5304b6c?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/17c901b0-f2b2-4564-b1d2-c5eb1577f564?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -875,7 +841,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:55:59 GMT
+      - Wed, 22 Mar 2023 03:02:13 GMT
       expires:
       - '-1'
       pragma:
@@ -903,22 +869,22 @@ interactions:
       ParameterSetName:
       - --resource-group --move-collection-name --name --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/a0c43b69-e270-48cd-8b10-5d5eb5304b6c?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/17c901b0-f2b2-4564-b1d2-c5eb1577f564?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/a0c43b69-e270-48cd-8b10-5d5eb5304b6c","name":"a0c43b69-e270-48cd-8b10-5d5eb5304b6c","status":"Succeeded","startTime":"1/7/2022
-        6:55:59 AM","endTime":"1/7/2022 6:56:01 AM","error":null,"properties":{}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91/operations/17c901b0-f2b2-4564-b1d2-c5eb1577f564","name":"17c901b0-f2b2-4564-b1d2-c5eb1577f564","status":"Succeeded","startTime":"3/22/2023
+        3:02:12 AM","endTime":"3/22/2023 3:02:14 AM","error":null,"properties":{}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '395'
+      - '397'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:56:15 GMT
+      - Wed, 22 Mar 2023 03:02:27 GMT
       expires:
       - '-1'
       pragma:
@@ -950,7 +916,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_000001/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-91?api-version=2021-08-01
   response:
@@ -958,17 +924,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/2bb23b80-8aa6-4441-acb1-90b75beb4d17?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/9cb8570a-3823-4a0f-a62b-073159d24fba?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Fri, 07 Jan 2022 06:56:17 GMT
+      - Wed, 22 Mar 2023 03:02:29 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/2bb23b80-8aa6-4441-acb1-90b75beb4d17?api-version=2021-08-01&operationResultResponseType=Location
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/9cb8570a-3823-4a0f-a62b-073159d24fba?api-version=2021-08-01&operationResultResponseType=Location
       pragma:
       - no-cache
       strict-transport-security:
@@ -976,7 +942,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -994,12 +960,12 @@ interactions:
       ParameterSetName:
       - --name --resource-group --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-resourcemover/1.0.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/2bb23b80-8aa6-4441-acb1-90b75beb4d17?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/9cb8570a-3823-4a0f-a62b-073159d24fba?api-version=2021-08-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/2bb23b80-8aa6-4441-acb1-90b75beb4d17","name":"2bb23b80-8aa6-4441-acb1-90b75beb4d17","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/9cb8570a-3823-4a0f-a62b-073159d24fba","name":"9cb8570a-3823-4a0f-a62b-073159d24fba","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1008,7 +974,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:56:48 GMT
+      - Wed, 22 Mar 2023 03:03:00 GMT
       expires:
       - '-1'
       pragma:
@@ -1028,7 +994,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1040,9 +1006,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region?api-version=2022-01-01
   response:
     body:
       string: ''
@@ -1050,17 +1016,17 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/88934f18-5add-4235-b503-c33721c26fb8?api-version=2021-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/87d51615-8b1b-4ebb-984a-718f673c44da?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Fri, 07 Jan 2022 06:56:50 GMT
+      - Wed, 22 Mar 2023 03:03:03 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/88934f18-5add-4235-b503-c33721c26fb8?api-version=2021-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/87d51615-8b1b-4ebb-984a-718f673c44da?api-version=2022-01-01
       pragma:
       - no-cache
       server:
@@ -1071,9 +1037,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 79325b7b-e617-45e4-a59e-7388e8da7749
+      - c138a389-1d11-4374-b2c5-f6a3bc6221a2
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -1091,9 +1057,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/88934f18-5add-4235-b503-c33721c26fb8?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/87d51615-8b1b-4ebb-984a-718f673c44da?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1105,7 +1071,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Jan 2022 06:57:01 GMT
+      - Wed, 22 Mar 2023 03:03:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1122,10 +1088,59 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f446ac0f-be9d-41e8-bab7-532816022668
+      - c70c87f4-b312-4a0c-8736-746cbbe1e19d
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/87d51615-8b1b-4ebb-984a-718f673c44da?api-version=2022-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/87d51615-8b1b-4ebb-984a-718f673c44da?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 03:03:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/87d51615-8b1b-4ebb-984a-718f673c44da?api-version=2022-01-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - c138a389-1d11-4374-b2c5-f6a3bc6221a2
+    status:
+      code: 204
+      message: No Content
 - request:
     body: null
     headers:
@@ -1142,7 +1157,7 @@ interactions:
       ParameterSetName:
       - -n --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg?api-version=2021-04-01
   response:
@@ -1154,7 +1169,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 07 Jan 2022 06:57:05 GMT
+      - Wed, 22 Mar 2023 03:03:22 GMT
       expires:
       - '-1'
       location:
@@ -1184,7 +1199,7 @@ interactions:
       ParameterSetName:
       - -n --yes
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
   response:
@@ -1196,7 +1211,167 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 07 Jan 2022 06:57:20 GMT
+      - Wed, 22 Mar 2023 03:03:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 22 Mar 2023 03:03:53 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 22 Mar 2023 03:04:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 22 Mar 2023 03:04:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUkVTT1VSQ0VNT1ZFUjo1RlNPVVJDRTo1RlJHLUVBU1RVUyIsImpvYkxvY2F0aW9uIjoiZWFzdHVzIn0?api-version=2021-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 22 Mar 2023 03:04:39 GMT
       expires:
       - '-1'
       pragma:

@@ -81,7 +81,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
     def test_resourcemover_movecollection_e2e(self):
 
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-29',
+            'collection_name': 'clitest-movecollection-30',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
