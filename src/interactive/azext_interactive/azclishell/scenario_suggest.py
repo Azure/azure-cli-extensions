@@ -49,7 +49,7 @@ class ScenarioAutoSuggest(AutoSuggest):
         """Update the value of a parameter in the customized parameter value map"""
         # remove the 'az ' part of command
         command_text = command_text.split('az ')[-1]
-        param_sample_value_map = ''
+        cached_sample_value = ''
         special_global_param_list = None
         for part in command_text.split():
             if part.startswith('-'):
@@ -59,14 +59,14 @@ class ScenarioAutoSuggest(AutoSuggest):
                     special_global_param_list = self.special_global_param_map[part]
                     for param in special_global_param_list:
                         self.customized_cached_param_map[param] = ''
-                    param_sample_value_map = ''
+                    cached_sample_value = ''
                 else:
-                    param_sample_value_map = self.param_sample_value_map[part]
-                    self.customized_cached_param_map[param_sample_value_map] = ''
+                    cached_sample_value = self.param_sample_value_map[part]
+                    self.customized_cached_param_map[cached_sample_value] = ''
                     special_global_param_list = None
-            elif param_sample_value_map:
-                self.customized_cached_param_map[param_sample_value_map] += ' ' + part
-                self.customized_cached_param_map[param_sample_value_map] = self.customized_cached_param_map[param_sample_value_map].strip()
+            elif cached_sample_value:
+                self.customized_cached_param_map[cached_sample_value] += ' ' + part
+                self.customized_cached_param_map[cached_sample_value] = self.customized_cached_param_map[cached_sample_value].strip()
             # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
             elif special_global_param_list:
                 for param in special_global_param_list:
