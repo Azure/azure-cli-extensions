@@ -87,13 +87,17 @@ def process_loaded_yaml(yaml_containerapp):
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn",
+    nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
                          "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if tmp:
             yaml_containerapp['properties'][nested_property] = tmp
             del yaml_containerapp[nested_property]
+
+    if "managedEnvironmentId" in yaml_containerapp['properties']:
+        yaml_containerapp['properties']["environmentId"] = yaml_containerapp['properties']['managedEnvironmentId']
+        del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
 
@@ -257,10 +261,10 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     _remove_readonly_attributes(containerapp_def)
 
     # Validate managed environment
-    if not containerapp_def["properties"].get('managedEnvironmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    if not containerapp_def["properties"].get('environmentId'):
+        raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
-    env_id = containerapp_def["properties"]['managedEnvironmentId']
+    env_id = containerapp_def["properties"]['environmentId']
     env_name = None
     env_rg = None
     env_info = None
@@ -270,7 +274,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         env_name = parsed_managed_env['name']
         env_rg = parsed_managed_env['resource_group']
     else:
-        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+        raise ValidationError('Invalid environmentId specified. Environment not found')
 
     try:
         env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
@@ -529,7 +533,7 @@ def create_containerapp(cmd,
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
     containerapp_def["identity"] = identity_def
-    containerapp_def["properties"]["managedEnvironmentId"] = managed_env
+    containerapp_def["properties"]["environmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
@@ -974,9 +978,9 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
             env_name = parse_resource_id(managed_env)["name"].lower()
             if "resource_group" in parse_resource_id(managed_env):
                 ManagedEnvironmentClient.show(cmd, parse_resource_id(managed_env)["resource_group"], parse_resource_id(managed_env)["name"])
-                containerapps = [c for c in containerapps if c["properties"]["managedEnvironmentId"].lower() == managed_env.lower()]
+                containerapps = [c for c in containerapps if c["properties"]["environmentId"].lower() == managed_env.lower()]
             else:
-                containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["managedEnvironmentId"])["name"].lower() == env_name]
+                containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env_name]
 
         return containerapps
     except CLIError as e:
@@ -2737,7 +2741,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
 
-def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None, location=None):
+def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
     if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
         raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
     cert_name = certificate_name
@@ -2745,7 +2749,7 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
         cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
         if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
             cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location)
+    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method)
     try:
         r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
         return r

@@ -18,6 +18,26 @@ from azext_confcom import os_util
 from azext_confcom import config
 
 
+# TODO: these can be optimized to not have so many groups in the single match
+# make this global so it can be used in multiple functions
+PARAMETER_AND_VARIABLE_REGEX = r"\[(?:parameters|variables)\(\s*'([^\.\/]+?)'\s*\)\]"
+WHOLE_PARAMETER_AND_VARIABLE = r"(\s*\[\s*(parameters|variables))(\(\s*'([^\.\/]+?)'\s*\)\])"
+
+
+class DockerClient:
+    def __init__(self) -> None:
+        self._client = None
+
+    def get_client(self) -> docker.DockerClient:
+        if not self._client:
+            self._client = docker.from_env()
+        return self._client
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        if self._client:
+            self._client.close()
+
+
 def case_insensitive_dict_get(dictionary, search_key) -> Any:
     if not isinstance(dictionary, dict):
         return None
@@ -32,57 +52,76 @@ def case_insensitive_dict_get(dictionary, search_key) -> Any:
     return None
 
 
-def get_image_info(progress, message_queue, client, tar_mapping, image):
+def image_has_hash(image: str) -> bool:
+    return "@sha256:" in image
+
+
+def get_image_info(progress, message_queue, tar_mapping, image):
     image_info = None
     raw_image = None
+    tar = False
+    if not image.base:
+        eprint("Image name cannot be empty")
     image_name = f"{image.base}:{image.tag}"
-    if len(image.tag.split(":")) > 1:
-        eprint(
-            f"The image name: {image.tag} cannot have the digest present to use a tarball as the image source"
-        )
+
     # only try to grab the info locally if that's absolutely what
     # we want to do
     if tar_mapping:
+        if image_has_hash(image_name):
+            progress.close()
+            eprint(
+                f"The image name: {image_name} cannot have the digest present to use a tarball as the image source"
+            )
         tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
-        with tarfile.open(tar_location) as tar:
-            # get all the info out of the tarfile
-            image_info = os_util.map_image_from_tar(
-                image_name, tar, tar_location
-            )
-        message_queue.append("read from local tar file")
-    else:
-        # see if we have the image locally so we can have a
-        # 'clean-room'
-        if not image_info:
-            try:
-                raw_image = client.images.get(image_name)
-                image_info = raw_image.attrs.get("Config")
-                message_queue.append(
-                    f"Using local version of {image_name}. It may differ from the remote image"
+        # if we have a tar location, we can try to get the image info
+        if tar_location:
+            with tarfile.open(tar_location) as tar:
+                # get all the info out of the tarfile
+                image_info = os_util.map_image_from_tar(
+                    image_name, tar, tar_location
                 )
-            except docker.errors.ImageNotFound:
-                message_queue.append(
-                    f"{image_name} is not found locally. Attempting to pull from remote..."
-                )
+                if image_info is not None:
+                    tar = True
+                    message_queue.append(f"{image_name} read from local tar file")
 
-        if not image_info:
-            try:
-                # pull image to local daemon (if not in local
-                # daemon)
-                if not raw_image:
-                    raw_image = client.images.pull(image.base, image.tag)
-                    image_info = raw_image.attrs.get("Config")
-            except (docker.errors.ImageNotFound, docker.errors.NotFound):
-                progress.close()
-                eprint(
-                    f"{image_name} is not found remotely. "
-                    + "Please check to make sure the image and repository exist"
-                )
-        # warn if the image is the "latest"
-        if image.tag == "latest":
+    # see if we have the image locally so we can have a
+    # 'clean-room'
+    if not image_info:
+        try:
+            client = DockerClient().get_client()
+            raw_image = client.images.get(image_name)
+            image_info = raw_image.attrs.get("Config")
             message_queue.append(
-                'Using image tag "latest" is not recommended'
+                f"Using local version of {image_name}. It may differ from the remote image"
             )
+        except docker.errors.ImageNotFound:
+            message_queue.append(
+                f"{image_name} is not found locally. Attempting to pull from remote..."
+            )
+        except docker.errors.DockerException:
+            progress.close()
+            eprint(
+                f"{image_name} is not found in tar file and Docker is not running."
+            )
+
+    if not image_info:
+        try:
+            # pull image to local daemon (if not in local
+            # daemon)
+            if not raw_image:
+                raw_image = client.images.pull(image_name)
+                image_info = raw_image.attrs.get("Config")
+        except (docker.errors.ImageNotFound, docker.errors.NotFound):
+            progress.close()
+            eprint(
+                f"{image_name} is not found remotely. "
+                + "Please check to make sure the image and repository exist"
+            )
+    # warn if the image is the "latest"
+    if image.tag == "latest":
+        message_queue.append(
+            'Using image tag "latest" is not recommended'
+        )
 
     progress.update()
 
@@ -105,7 +144,7 @@ def get_image_info(progress, message_queue, client, tar_mapping, image):
             + f"Only {config.ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE} is supported by Confidential ACI"
         )
 
-    return image_info
+    return image_info, tar
 
 
 def get_tar_location_from_mapping(tar_mapping: Any, image_name: str) -> str:
@@ -122,15 +161,15 @@ def get_tar_location_from_mapping(tar_mapping: Any, image_name: str) -> str:
         )
     else:
         tar_location = tar_mapping
-    # this needs to exist to continue
-    if not tar_location:
-        eprint(
-            f"The image {image_name} is not present in the tarball mapping file"
-        )
+    # for mixed mode, the image doesn't have to be in the tarfile
+    # so this can return None
     return tar_location
 
 
-def process_env_vars_from_template(image_properties: dict) -> List[Dict[str, str]]:
+def process_env_vars_from_template(params: dict,
+                                   vars_dict: dict,
+                                   image_properties: dict,
+                                   approve_wildcards: bool) -> List[Dict[str, str]]:
     env_vars = []
     # add in the env vars from the template
     template_env_vars = case_insensitive_dict_get(
@@ -138,21 +177,38 @@ def process_env_vars_from_template(image_properties: dict) -> List[Dict[str, str
     )
 
     if template_env_vars:
-        env_vars = [
-            {
-                config.ACI_FIELD_CONTAINERS_ENVS_NAME: case_insensitive_dict_get(
-                    x, "name"
-                ),
-                config.ACI_FIELD_CONTAINERS_ENVS_VALUE: case_insensitive_dict_get(
-                    x, "value"
-                ) or
-                case_insensitive_dict_get(
-                    x, "secureValue"
-                ),
-                config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
-            }
-            for x in template_env_vars
-        ]
+        for env_var in template_env_vars:
+            name = case_insensitive_dict_get(env_var, "name")
+            value = case_insensitive_dict_get(env_var, "value") or case_insensitive_dict_get(env_var, "secureValue")
+
+            if not name:
+                eprint(
+                    f"Environment variable with value: {value} is missing a name"
+                )
+
+            if value is not None:
+                param_check = find_value_in_params_and_vars(
+                    params, vars_dict, value, ignore_undefined_parameters=True)
+                param_name = re.findall(PARAMETER_AND_VARIABLE_REGEX, value)
+
+                if param_name and param_check == value:
+                    response = approve_wildcards or input(
+                        f'Create a wildcard policy for the environment variable {name} (y/n): ')
+                    if approve_wildcards or response.lower() == 'y':
+                        env_vars.append({
+                            config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                            config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                        })
+                else:
+                    env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                    })
+            else:
+                eprint(f'Environment variable {name} does not have a value. Please check the template file.')
+
     return env_vars
 
 
@@ -329,14 +385,35 @@ def change_key_names(dictionary) -> Dict:
     return dictionary
 
 
-def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str) -> str:
+def replace_params_and_vars(params: dict, vars_dict: dict, attribute):
+    out = None
+    if isinstance(attribute, (int, float, bool)):
+        out = attribute
+    elif isinstance(attribute, str):
+        out = find_value_in_params_and_vars(params, vars_dict, attribute)
+        param_name = re.finditer(WHOLE_PARAMETER_AND_VARIABLE, attribute)
+
+        # there should only be one match
+        full_param_name = next(param_name, None)
+        if full_param_name:
+            full_param_name = full_param_name.group(0)
+            out = attribute.replace(full_param_name, find_value_in_params_and_vars(params, vars_dict, attribute))
+    elif isinstance(attribute, list):
+        out = []
+        for item in attribute:
+            out.append(replace_params_and_vars(params, vars_dict, item))
+    elif isinstance(attribute, dict):
+        out = {}
+        for key, value in attribute.items():
+            out[key] = replace_params_and_vars(params, vars_dict, value)
+    return out
+
+
+def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str, ignore_undefined_parameters=False) -> str:
     """Utility function: either returns the input search value,
     or replaces it with the defined value in either params or vars of the ARM template"""
     # this pattern might need to be updated for more naming options in the future
-    # pattern = "(parameters|variables)\('([\w\-\_0-9]+)'\)"
-    pattern = r"(?:parameters|variables)\(\s*'([^\.\/]+?)'\s*\)"
-    param_name = re.findall(pattern, search)
-
+    param_name = re.findall(PARAMETER_AND_VARIABLE_REGEX, search)
     if not param_name:
         return search
 
@@ -345,33 +422,33 @@ def find_value_in_params_and_vars(params: dict, vars_dict: dict, search: str) ->
 
     # figure out if we need to search in variables or parameters
 
-    match = ""
+    match = None
     if config.ACI_FIELD_TEMPLATE_PARAMETERS in search:
 
         param_value = case_insensitive_dict_get(params, param_name)
 
-        if not param_value:
+        if param_value is None:
             eprint(
-                f"""Field ["{param_name}"] not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
+                f"""Field "{param_name}" not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
                  or ["{config.ACI_FIELD_TEMPLATE_VARIABLES}"]"""
             )
         # fallback to default value
         match = case_insensitive_dict_get(
             param_value, "value"
-        ) or case_insensitive_dict_get(param_value, "defaultValue")
+        ) if "value" in param_value else case_insensitive_dict_get(param_value, "defaultValue")
     else:
         match = case_insensitive_dict_get(vars_dict, param_name)
 
-    if not match:
+    if match is None and not ignore_undefined_parameters:
         eprint(
-            f"""Field ["{param_name}"] not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
+            f"""Field "{param_name}"'s value not found in ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"]
              or ["{config.ACI_FIELD_TEMPLATE_VARIABLES}"]"""
         )
 
-    return match
+    return match if match is not None else search
 
 
-def parse_template(params: dict, vars_dict: dict, template) -> Any:
+def parse_template(params: dict, vars_dict: dict, template, ignore_undefined_parameters=False) -> Any:
     """Utility function: replace all instances of variable and parameter references in an ARM template
     current limitations:
         - object values for parameters and variables
@@ -382,12 +459,17 @@ def parse_template(params: dict, vars_dict: dict, template) -> Any:
     if isinstance(template, dict):
         for key, value in template.items():
             if isinstance(value, str):
-                template[key] = find_value_in_params_and_vars(params, vars_dict, value)
+                # we want to ignore undefined parameters for only env var values, not names
+                template[key] = find_value_in_params_and_vars(params, vars_dict, value,
+                                                              ignore_undefined_parameters=ignore_undefined_parameters
+                                                              and key.lower() in ("value", "securevalue"))
             elif isinstance(value, dict):
                 parse_template(params, vars_dict, value)
             elif isinstance(value, list):
                 for i, _ in enumerate(value):
-                    template[key][i] = parse_template(params, vars_dict, value[i])
+                    template[key][i] = parse_template(params, vars_dict, value[i],
+                                                      ignore_undefined_parameters=key
+                                                      == config.ACI_FIELD_CONTAINERS_ENVS)
     return template
 
 
@@ -678,7 +760,7 @@ def get_container_group_name(
         eprint(
             f'Field ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"] is empty or cannot be found in Parameter file'
         )
-
+    # TODO: replace this with doing param replacement as-needed
     arm_json = parse_template(all_params, all_vars, arm_json)
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(arm_json, config.ACI_FIELD_RESOURCES)

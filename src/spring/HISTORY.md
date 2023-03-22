@@ -1,5 +1,32 @@
 Release History
 ===============
+1.8.0
+---
+* Add Azure Spring Apps StandardGen2 tier.
+
+1.7.3
+---
+* Fix `subscription_id` AAZSimpleValue type error
+
+1.7.2
+---
+* Support `--no-wait` in `az spring dev-tool`.
+* [BREAKING CHANGE] Add delete confirmation in `az spring dev-tool` and `az spring application-live-view`.
+
+1.7.1
+---
+* Remove dependency to NETWORK SDK
+
+1.7.0
+---
+* Print application logs when create/update deployment
+* Bypass jar check for enterprise tier
+* Add java runtime check for jar file
+
+1.6.8
+---
+* Add detail description to Default for argument `--backend-protocol`.
+
 1.6.7
 ---
 * Change all Azure Spring Apps API version to 2022-11-01-preview.

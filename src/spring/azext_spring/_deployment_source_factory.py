@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 from azure.cli.core.azclierror import ArgumentUsageError
 from ._utils import convert_argument_to_parameter_list
 
@@ -34,7 +34,7 @@ class JarSource(BaseSource):
         return models.JarUploadedUserSourceInfo(
             relative_path=deployable_path,
             jvm_options=jvm_options,
-            runtime_version=runtime_version or 'Java_8',
+            runtime_version=runtime_version or 'Java_11',
             version=version
         )
 

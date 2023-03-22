@@ -8,19 +8,21 @@ import json
 import time
 import sys
 
+from azure.cli.core.azclierror import AzureResponseError, ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-06-01-preview"
-CURRENT_API_VERSION = PREVIEW_API_VERSION
-MANAGED_CERTS_API_VERSION = '2022-11-01-preview'
+PREVIEW_API_VERSION = "2022-11-01-preview"
+CURRENT_API_VERSION = "2022-10-01"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
 POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between requests
+HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
+HEADER_LOCATION = "location"
 
 
 class PollingAnimation():
@@ -71,6 +73,79 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
             raise e
 
 
+def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statements
+    from azure.core.exceptions import HttpResponseError
+    from ._utils import safe_get
+
+    if not request_url:
+        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_AZURE_ASYNC_OPERATION}'")
+
+    start = time.time()
+    end = time.time() + POLLING_TIMEOUT
+    animation = PollingAnimation()
+
+    animation.tick()
+    r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+    while r.status_code in [200] and start < end:
+        time.sleep(_extract_delay(r))
+        animation.tick()
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        response_body = json.loads(r.text)
+        status = safe_get(response_body, "status")
+        if not status:
+            raise AzureResponseError("Http response body lack of necessary property: status")
+        if response_body["status"].lower() in ["failed", "canceled"]:
+            message = json.dumps(response_body["error"]) if "error" in response_body else "Operation failed or canceled"
+            raise HttpResponseError(
+                response=r,
+                message=message
+            )
+        if response_body["status"].lower() in ["succeeded"]:
+            break
+        start = time.time()
+
+    animation.flush()
+    return
+
+
+def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-statements
+    if not request_url:
+        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_LOCATION}'")
+
+    start = time.time()
+    end = time.time() + POLLING_TIMEOUT
+    animation = PollingAnimation()
+
+    animation.tick()
+    r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+    while r.status_code in [202] and start < end:
+        time.sleep(_extract_delay(r))
+        animation.tick()
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        start = time.time()
+
+    animation.flush()
+    if r.text:
+        return json.loads(r.text)
+
+
+def _extract_delay(response):
+    try:
+        retry_after = response.headers.get("retry-after")
+        if retry_after:
+            return int(retry_after)
+        for ms_header in ["retry-after-ms", "x-ms-retry-after-ms"]:
+            retry_after = response.headers.get(ms_header)
+            if retry_after:
+                parsed_retry_after = int(retry_after)
+                return parsed_retry_after / 1000.0
+    except ValueError:
+        pass
+    return POLLING_SECONDS
+
+
 class ContainerAppClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
@@ -90,6 +165,8 @@ class ContainerAppClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
             request_url = url_fmt.format(
                 management_hostname.strip('/'),
@@ -97,7 +174,7 @@ class ContainerAppClient():
                 resource_group_name,
                 name,
                 api_version)
-            return poll(cmd, request_url, "inprogress")
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 
@@ -121,14 +198,12 @@ class ContainerAppClient():
         if no_wait:
             return r.json()
         elif r.status_code == 202:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-            return poll(cmd, request_url, "inprogress")
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a container app")
+            else:
+                return response
 
         return r.json()
 
@@ -150,20 +225,9 @@ class ContainerAppClient():
         if no_wait:
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-
             if r.status_code == 202:
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    poll(cmd, request_url, "cancelled")
-                except ResourceNotFoundError:
-                    pass
+                operation_url = r.headers.get(HEADER_LOCATION)
+                poll_results(cmd, operation_url)
                 logger.warning('Containerapp successfully deleted')
 
     @classmethod
@@ -454,6 +518,8 @@ class ManagedEnvironmentClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
             request_url = url_fmt.format(
                 management_hostname.strip('/'),
@@ -461,7 +527,7 @@ class ManagedEnvironmentClient():
                 resource_group_name,
                 name,
                 api_version)
-            return poll(cmd, request_url, "inprogress")
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 
@@ -483,14 +549,12 @@ class ManagedEnvironmentClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-            return poll(cmd, request_url, "waiting")
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a managed environment")
+            else:
+                return response
 
         return r.json()
 
@@ -512,20 +576,9 @@ class ManagedEnvironmentClient():
         if no_wait:
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-
             if r.status_code == 202:
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    poll(cmd, request_url, "scheduledfordelete")
-                except ResourceNotFoundError:
-                    pass
+                operation_url = r.headers.get(HEADER_LOCATION)
+                poll_results(cmd, operation_url)
                 logger.warning('Containerapp environment successfully deleted')
         return
 
@@ -623,7 +676,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def show_managed_certificate(cls, cmd, resource_group_name, name, certificate_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
         request_url = url_fmt.format(
@@ -664,7 +717,7 @@ class ManagedEnvironmentClient():
         certs_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates?api-version={}"
         request_url = url_fmt.format(
@@ -701,7 +754,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def create_or_update_managed_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate_envelop, no_wait=False, is_TXT=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
         request_url = url_fmt.format(
@@ -762,7 +815,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def delete_managed_certificate(cls, cmd, resource_group_name, name, certificate_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = MANAGED_CERTS_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/managedCertificates/{}?api-version={}"
         request_url = url_fmt.format(

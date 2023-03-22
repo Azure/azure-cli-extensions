@@ -192,7 +192,7 @@ helps['aks create'] = """
                 confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
                 open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
                 gitops                          - enable GitOps (PREVIEW).
-                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
                 web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
@@ -907,6 +907,9 @@ helps['aks update'] = """
         - name: --grafana-resource-id
           type: string
           short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --enable-windows-recording-rules
+          type: bool
+          short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile
@@ -1729,7 +1732,7 @@ long-summary: |-
         ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
-        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
         web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addon -a
@@ -1871,7 +1874,7 @@ long-summary: |-
         ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
-        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
         web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
 parameters:
   - name: --addons -a
@@ -2174,13 +2177,13 @@ helps['aks trustedaccess rolebinding create'] = """
         - name: --roles
           type: string
           short-summary: Specify the space-separated roles.
-        - name: --source-resource-id -s
+        - name: --source-resource-id -r
           type: string
           short-summary: Specify the source resource id of the binding.
 
     examples:
         - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName --source-resource-id /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
 """
 
 helps['aks trustedaccess rolebinding update'] = """

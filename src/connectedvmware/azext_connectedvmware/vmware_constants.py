@@ -12,6 +12,7 @@ HOST_RESOURCE_TYPE = "hosts"
 VMTEMPLATE_RESOURCE_TYPE = "virtualmachineTemplates"
 VIRTUALNETWORK_RESOURCE_TYPE = "virtualNetworks"
 VIRTUALMACHINE_RESOURCE_TYPE = "virtualMachines"
+MACHINE_RESOURCE_TYPE = "extensions"
 
 EXTENDED_LOCATION_NAMESPACE = "Microsoft.ExtendedLocation"
 CUSTOM_LOCATION_RESOURCE_TYPE = "CustomLocations"

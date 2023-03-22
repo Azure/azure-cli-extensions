@@ -11,7 +11,7 @@ from msrestazure.tools import resource_id
 from .application_live_view import create as application_live_view_create
 from .dev_tool_portal import create_or_update as dev_tool_portal_create
 
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 
 GATEWAY_RESOURCE_TYPE = "gateways"
 DEFAULT_NAME = "default"

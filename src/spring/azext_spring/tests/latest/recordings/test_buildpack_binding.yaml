@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -67,7 +67,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"KPack buildpacksBinding does
@@ -119,13 +119,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Creating","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -137,7 +137,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/a0d1278d-55bc-47d2-9ace-7142e6bf8d78/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/a0d1278d-55bc-47d2-9ace-7142e6bf8d78/Spring/test-buildpack-binding?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -171,7 +171,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a0d1278d-55bc-47d2-9ace-7142e6bf8d78","name":"a0d1278d-55bc-47d2-9ace-7142e6bf8d78","status":"Succeeded","startTime":"2022-01-07T11:54:50.4769869Z","endTime":"2022-01-07T11:54:57.4899293Z"}'
@@ -221,7 +221,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
@@ -271,7 +271,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -323,7 +323,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
@@ -373,7 +373,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
@@ -423,7 +423,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -475,7 +475,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:54:46.3402505Z"}}'
@@ -530,13 +530,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Updating","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b"},"secrets":{"c":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:55:36.0622673Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -548,7 +548,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/a6bdf74b-39a8-425e-9cdc-11c4ba49143b/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/a6bdf74b-39a8-425e-9cdc-11c4ba49143b/Spring/test-buildpack-binding?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -582,7 +582,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/a6bdf74b-39a8-425e-9cdc-11c4ba49143b","name":"a6bdf74b-39a8-425e-9cdc-11c4ba49143b","status":"Succeeded","startTime":"2022-01-07T11:55:40.4735174Z","endTime":"2022-01-07T11:55:50.4056357Z"}'
@@ -632,7 +632,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b"},"secrets":{"c":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:55:36.0622673Z"}}'
@@ -682,7 +682,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -734,7 +734,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b"},"secrets":{"c":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name","name":"test-binding-name","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:54:46.3402505Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:55:36.0622673Z"}}'
@@ -786,13 +786,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name?api-version=2023-01-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -802,7 +802,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/8cc21ac2-d90c-4a5c-a985-18bfe7faccba/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/8cc21ac2-d90c-4a5c-a985-18bfe7faccba/Spring/test-buildpack-binding?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -836,7 +836,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/8cc21ac2-d90c-4a5c-a985-18bfe7faccba","name":"8cc21ac2-d90c-4a5c-a985-18bfe7faccba","status":"Succeeded","startTime":"2022-01-07T11:56:23.4616931Z","endTime":"2022-01-07T11:56:30.3724245Z"}'
@@ -886,7 +886,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -938,7 +938,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2023-01-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"KPack buildpacksBinding does
@@ -990,13 +990,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Creating","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0","name":"test-binding-name-0","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:56:58.77283Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:56:58.77283Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1008,7 +1008,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf/Spring/test-buildpack-binding?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1042,7 +1042,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf","name":"af0e6ea7-6203-49b0-a78e-7ba9e78ccdbf","status":"Succeeded","startTime":"2022-01-07T11:57:01.45146Z","endTime":"2022-01-07T11:57:09.5464218Z"}'
@@ -1092,7 +1092,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0","name":"test-binding-name-0","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:56:58.77283Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:56:58.77283Z"}}'
@@ -1142,7 +1142,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -1194,7 +1194,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"KPack buildpacksBinding does
@@ -1246,13 +1246,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Creating","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1","name":"test-binding-name-1","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:57:39.2402412Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:57:39.2402412Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546?api-version=2023-01-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1264,7 +1264,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/72f81f61-7e9d-446e-aef4-79a5f07d6546/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationResults/72f81f61-7e9d-446e-aef4-79a5f07d6546/Spring/test-buildpack-binding?api-version=2023-01-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1298,7 +1298,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546?api-version=2023-01-01-preview
   response:
     body:
       string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/test-buildpack-binding/operationId/72f81f61-7e9d-446e-aef4-79a5f07d6546","name":"72f81f61-7e9d-446e-aef4-79a5f07d6546","status":"Succeeded","startTime":"2022-01-07T11:57:43.2250279Z","endTime":"2022-01-07T11:57:50.9028007Z"}'
@@ -1348,7 +1348,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1","name":"test-binding-name-1","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:57:39.2402412Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:57:39.2402412Z"}}'
@@ -1398,7 +1398,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding?api-version=2023-01-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"ed7caa979562408889414f01aa59e5de","networkProfile":{"outboundIPs":{"publicIPs":["20.120.66.58","20.120.66.69"]}},"powerState":"Running","fqdn":"test-buildpack-binding.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding","name":"test-buildpack-binding","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:10:06.9913584Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:10:06.9913584Z"}}'
@@ -1450,7 +1450,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.9 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings?api-version=2022-11-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings?api-version=2023-01-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"provisioningState":"Succeeded","bindingType":"ApplicationInsights","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-0","name":"test-binding-name-0","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:56:58.77283Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:56:58.77283Z"}},{"properties":{"provisioningState":"Succeeded","bindingType":"NewRelic","launchProperties":{"properties":{"a":"b","b":"c"},"secrets":{"x":"*","y":"*"}}},"type":"Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/enterprise-test/providers/Microsoft.AppPlatform/Spring/test-buildpack-binding/buildServices/default/builders/default/buildpackBindings/test-binding-name-1","name":"test-binding-name-1","systemData":{"createdBy":"panli@microsoft.com","createdByType":"User","createdAt":"2022-01-07T11:57:39.2402412Z","lastModifiedBy":"panli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-07T11:57:39.2402412Z"}}]}'

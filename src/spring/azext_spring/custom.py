@@ -19,12 +19,12 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri, get_spring_sku)
+from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2022_11_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_01_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
@@ -240,11 +240,18 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   storage_name,
                                   persistent_storage_type,
-                                  share_name,
                                   mount_path,
+                                  share_name=None,
                                   mount_options=None,
                                   read_only=None):
-    storage_resource = client.storages.get(resource_group, service, storage_name)
+    resource = client.services.get(resource_group, service)
+    storage_id = None
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        storage_id = storage_name
+    else:
+        storage_resource = client.storages.get(resource_group, service, storage_name)
+        storage_id = storage_resource.id
+
     app = client.apps.get(resource_group, service, name)
 
     custom_persistent_disks = []
@@ -261,10 +268,11 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
 
     custom_persistent_disks.append(
         models.CustomPersistentDiskResource(
-            storage_id=storage_resource.id,
+            storage_id=storage_id,
             custom_persistent_disk_properties=custom_persistent_disk_properties))
 
     app.properties.custom_persistent_disks = custom_persistent_disks
+    app.properties.secrets = None
     logger.warning("[1/1] updating app '{}'".format(name))
 
     poller = client.apps.begin_update(
@@ -364,6 +372,14 @@ def app_scale(cmd, client, resource_group, service, name,
               cpu=None,
               memory=None,
               instance_count=None,
+              # StandardGen2
+              min_replicas=None,
+              max_replicas=None,
+              scale_rule_name=None,
+              scale_rule_type=None,
+              scale_rule_http_concurrency=None,
+              scale_rule_metadata=None,
+              scale_rule_auth=None,
               no_wait=False):
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
@@ -372,14 +388,82 @@ def app_scale(cmd, client, resource_group, service, name,
     _validate_instance_count(resource.sku.tier, instance_count)
 
     resource_requests = models.ResourceRequests(cpu=cpu, memory=memory)
-
-    deployment_settings = models.DeploymentSettings(resource_requests=resource_requests)
+    scale_def = format_scale(min_replicas, max_replicas, scale_rule_name, scale_rule_type, scale_rule_http_concurrency,
+                             scale_rule_metadata, scale_rule_auth)
+    deployment_settings = models.DeploymentSettings(resource_requests=resource_requests, scale=scale_def)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
     return sdk_no_wait(no_wait, client.deployments.begin_update,
                        resource_group, service, name, deployment.name, deployment_resource)
+
+
+def format_scale(min_replicas=None, max_replicas=None, scale_rule_name=None, scale_rule_type=None,
+                 scale_rule_http_concurrency=None, scale_rule_metadata=None, scale_rule_auth=None, **_):
+    scale_def = None
+    if min_replicas is None and max_replicas is None and scale_rule_name is None:
+        return scale_def
+    scale_def = models.Scale(min_replicas=min_replicas, max_replicas=max_replicas)
+    if scale_rule_name:
+        scale_rule_def = None
+        if not scale_rule_type:
+            scale_rule_type = "http"
+        scale_rule_type = scale_rule_type.lower()
+        curr_metadata = {}
+        if scale_rule_http_concurrency:
+            if scale_rule_type in ('http', 'tcp'):
+                curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
+        metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+        auth_def = parse_auth_flags(scale_rule_auth)
+
+        if scale_rule_type == "http":
+            http_scale_rule = models.HttpScaleRule(metadata=metadata_def, auth=auth_def)
+            scale_rule_def = models.ScaleRule(name=scale_rule_name, http=http_scale_rule)
+        else:
+            custom_scale_rule = models.CustomScaleRule(type=scale_rule_type, metadata=metadata_def, auth=auth_def)
+            scale_rule_def = models.ScaleRule(name=scale_rule_name, custom=custom_scale_rule)
+        scale_def.rules = [scale_rule_def]
+    return scale_def
+
+
+def parse_metadata_flags(metadata_list, metadata_def):
+    if not metadata_list:
+        return metadata_def
+    for pair in metadata_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise InvalidArgumentValueError("Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
+        if key_val[0] in metadata_def:
+            raise InvalidArgumentValueError("Duplicate metadata \"{metadata}\" found, metadata keys must be unique.".format(
+                metadata=key_val[0]))
+        metadata_def[key_val[0]] = key_val[1]
+
+    return metadata_def
+
+
+def parse_auth_flags(auth_list):
+    auth_def = []
+    auth_pairs = {}
+    if not auth_list:
+        return auth_def
+    for pair in auth_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise InvalidArgumentValueError(
+                "Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
+        if key_val[0] in auth_pairs:
+            raise InvalidArgumentValueError(
+                "Duplicate trigger parameter \"{param}\" found, trigger paramaters must be unique.".format(
+                    param=key_val[0]))
+        auth_pairs[key_val[0]] = key_val[1]
+
+    for key, value in auth_pairs.items():
+        auth_def.append(
+            models.ScaleRuleAuth(trigger_parameter=key, secret_ref=value)
+        )
+
+    return auth_def
 
 
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
@@ -390,6 +474,13 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
+    app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
+                          format_json, get_app_log=_get_app_log)
+
+
+def app_tail_log_internal(cmd, client, resource_group, service, name,
+                          deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048,
+                          format_json=None, timeout=None, get_app_log=None):
     if not instance:
         if not deployment.properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -403,26 +494,46 @@ def app_tail_log(cmd, client, resource_group, service, name,
             return None
         instance = instances[0].name
 
-    log_stream = LogStream(client, resource_group, service)
-    if not log_stream:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
-
-    streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
-        log_stream.base_url, name, instance)
-    params = {}
-    params["tailLines"] = lines
-    params["limitBytes"] = limit
-    if since:
-        params["sinceSeconds"] = since
-    if follow:
-        params["follow"] = True
+    resource = client.services.get(resource_group, service)
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        profile = Profile(cli_ctx=cmd.cli_ctx)
+        creds, _, tenant = profile.get_raw_token()
+        token = creds[1]
+        subscriptionId = get_subscription_id(cmd.cli_ctx)
+        hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
+        streaming_url = "https://{}/proxy/logstream/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/apps/{}/deployments/{}/instances/{}".format(
+            hostname, subscriptionId, resource_group, service, name, deployment.name, instance)
+        params = {}
+        params["tailLines"] = lines
+        params["tenantId"] = tenant
+        if follow:
+            params["follow"] = True
+        format_json = None
+        auth = BearerAuth(token)
+    else:
+        log_stream = LogStream(client, resource_group, service)
+        if not log_stream:
+            raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
+        streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
+            log_stream.base_url, name, instance)
+        params = {}
+        params["tailLines"] = lines
+        params["limitBytes"] = limit
+        if since:
+            params["sinceSeconds"] = since
+        if follow:
+            params["follow"] = True
+        auth = HTTPBasicAuth("primary", log_stream.primary_key)
 
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
-    t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
+    t = Thread(target=get_app_log, args=(
+        streaming_url, auth, format_json, exceptions))
     t.daemon = True
     t.start()
+
+    if timeout:
+        t.join(timeout=timeout)
 
     while t.is_alive():
         sleep(5)  # so that ctrl+c can stop the command
@@ -465,6 +576,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
                                                  load_trust_store=load_trust_store))
 
     app_resource.properties.loaded_certificates = loaded_certificates
+    app_resource.properties.secrets = None
     logger.warning("[1/1] updating app '{}'".format(name))
 
     poller = client.apps.begin_update(
@@ -970,7 +1082,7 @@ def _get_redis_primary_key(cli_ctx, resource_id):
 
 
 # pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, user_name, password, format_json, exceptions):
+def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=False):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
 
     def build_log_shortener(length):
@@ -1039,14 +1151,14 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         return format_line
 
-    def iter_lines(response, limit=2 ** 20):
+    def iter_lines(response, limit=2 ** 20, chunk_size=None):
         '''
         Returns a line iterator from the response content. If no line ending was found and the buffered content size is
         larger than the limit, the buffer will be yielded directly.
         '''
         buffer = []
         total = 0
-        for content in response.iter_content(chunk_size=None):
+        for content in response.iter_content(chunk_size=chunk_size):
             if not content:
                 if len(buffer) > 0:
                     yield b''.join(buffer)
@@ -1072,7 +1184,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                     buffer.clear()
                     total = 0
 
-    with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
+    with requests.get(url, stream=True, auth=auth) as response:
         try:
             if response.status_code != 200:
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
@@ -1081,12 +1193,14 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
             formatter = build_formatter()
 
-            for line in iter_lines(response):
+            for line in iter_lines(response, chunk_size=chunk_size):
                 decoded = (line.decode(encoding='utf-8', errors='replace')
                            .encode(std_encoding, errors='replace')
                            .decode(std_encoding, errors='replace'))
-                print(formatter(decoded), end='')
-
+                if stderr:
+                    print(formatter(decoded), end='', file=sys.stderr)
+                else:
+                    print(formatter(decoded), end='')
         except CLIError as e:
             exceptions.append(e)
 
@@ -1245,14 +1359,19 @@ def domain_bind(cmd, client, resource_group, service, app,
                 certificate=None,
                 enable_ingress_to_app_tls=None):
     properties = models.CustomDomainProperties()
-    if certificate is not None:
-        certificate_response = client.certificates.get(resource_group, service, certificate)
-        properties = models.CustomDomainProperties(
-            thumbprint=certificate_response.properties.thumbprint,
-            cert_name=certificate
-        )
-    if enable_ingress_to_app_tls is not None:
-        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
+
+    resource = client.services.get(resource_group, service)
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        properties = models.CustomDomainProperties(cert_name=certificate)
+    else:
+        if certificate is not None:
+            certificate_response = client.certificates.get(resource_group, service, certificate)
+            properties = models.CustomDomainProperties(
+                thumbprint=certificate_response.properties.thumbprint,
+                cert_name=certificate
+            )
+        if enable_ingress_to_app_tls is not None:
+            _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
 
     custom_domain_resource = models.CustomDomainResource(properties=properties)
     return client.custom_domains.begin_create_or_update(resource_group, service, app,
@@ -1462,11 +1581,10 @@ def app_connect(cmd, client, resource_group, service, name,
                 deployment=None, instance=None, shell_cmd='/bin/sh'):
 
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    creds, _, _ = profile.get_raw_token()
+    creds, _, tenant = profile.get_raw_token()
     token = creds[1]
 
     resource = client.services.get(resource_group, service)
-    hostname = resource.properties.fqdn
     if not instance:
         if not deployment.properties.instances:
             raise ResourceNotFoundError("No instances found for deployment '{0}' in app '{1}'".format(
@@ -1480,9 +1598,17 @@ def app_connect(cmd, client, resource_group, service, name,
             return None
         instance = instances[0].name
 
-    connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(
-        hostname, name, deployment.name, instance, shell_cmd)
-    logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+    if resource.sku.tier.upper() == 'STANDARDGEN2':
+        subscriptionId = get_subscription_id(cmd.cli_ctx)
+        hostname = get_proxy_api_endpoint(cmd.cli_ctx, resource)
+        connect_url = "wss://{}/proxy/appconnect/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/apps/{}/deployments/{}/instances/{}?tenantId={}&command={}".format(
+            hostname, subscriptionId, resource_group, resource.name, name, deployment.name, instance, tenant, shell_cmd)
+        logger.warning("Connecting to %s...", connect_url)
+    else:
+        hostname = resource.properties.fqdn
+        connect_url = "wss://{0}/api/appconnect/apps/{1}/deployments/{2}/instances/{3}/connect?command={4}".format(hostname, name, deployment.name, instance, shell_cmd)
+        logger.warning("Connecting to the app instance Microsoft.AppPlatform/Spring/%s/apps/%s/deployments/%s/instances/%s..." % (service, name, deployment.name, instance))
+
     conn = WebSocketConnection(connect_url, token)
 
     reader = Thread(target=recv_remote, args=(conn,))

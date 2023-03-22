@@ -7,7 +7,7 @@
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
-from .custom import app_get
+from .custom import app_get, _get_app_log
 from ._utils import (get_spring_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
@@ -16,13 +16,14 @@ from ._deployment_factory import (deployment_selector,
 from ._app_factory import app_selector
 from ._deployment_deployable_factory import deployable_selector
 from ._app_validator import _get_active_deployment
-
+from .custom import app_tail_log_internal
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 
 # pylint: disable=line-too-long
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
+
 
 #  App's command usually operates an Spring/Apps and the active Spring/Apps/Deployments under the app.
 # The general idea of these command is putting all input command in parameter dict and let the Resource factory to construct the payload.
@@ -67,7 +68,16 @@ def app_create(cmd, client, resource_group, service, name,
                session_affinity=None,
                session_max_age=None,
                backend_protocol=None,
-               client_auth_certs=None):
+               client_auth_certs=None,
+               # StandardGen2
+               min_replicas=None,
+               max_replicas=None,
+               scale_rule_name=None,
+               scale_rule_type=None,
+               scale_rule_http_concurrency=None,
+               scale_rule_metadata=None,
+               scale_rule_auth=None,
+               secrets=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -77,6 +87,17 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning(LOG_RUNNING_PROMPT)
     _ensure_app_not_exist(client, resource_group, service, name)
     sku = get_spring_sku(client, resource_group, service)
+
+    if sku.tier.upper() == 'STANDARDGEN2':
+        if cpu is None and memory is None:
+            cpu = '500m'
+            memory = '1Gi'
+    else:
+        if cpu is None:
+            cpu = 1
+        if memory is None:
+            memory = '1Gi'
+
     basic_kwargs = {
         'cmd': cmd,
         'client': client,
@@ -101,7 +122,8 @@ def app_create(cmd, client, resource_group, service, name,
         'session_affinity': session_affinity,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
-        'client_auth_certs': client_auth_certs
+        'client_auth_certs': client_auth_certs,
+        'secrets': secrets
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -119,6 +141,14 @@ def app_create(cmd, client, resource_group, service, name,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
         'termination_grace_period_seconds': termination_grace_period_seconds,
+        # StandardGen2
+        'min_replicas': min_replicas,
+        'max_replicas': max_replicas,
+        'scale_rule_name': scale_rule_name,
+        'scale_rule_type': scale_rule_type,
+        'scale_rule_http_concurrency': scale_rule_http_concurrency,
+        'scale_rule_metadata': scale_rule_metadata,
+        'scale_rule_auth': scale_rule_auth,
     }
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
@@ -192,6 +222,7 @@ def app_update(cmd, client, resource_group, service, name,
                readiness_probe_config=None,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
+               secrets=None,
                # general
                no_wait=False):
     '''app_update
@@ -242,6 +273,7 @@ def app_update(cmd, client, resource_group, service, name,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
+        'secrets': secrets,
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
@@ -306,6 +338,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                readiness_probe_config=None,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
+               disable_app_log=False,
                # general
                no_wait=False):
     '''app_deploy
@@ -376,9 +409,54 @@ def app_deploy(cmd, client, resource_group, service, name,
                    'while to complete)'.format(kwargs['total_steps'],
                                                kwargs['total_steps'],
                                                name))
-    return sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
-                       resource_group, service, name, deployment.name,
-                       deployment_resource)
+    poller = sdk_no_wait(no_wait, deployment_factory.get_deploy_method(**kwargs),
+                         resource_group, service, name, deployment.name,
+                         deployment_resource)
+    if not disable_app_log:
+        _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
+    if "succeeded" != poller.status().lower():
+        return poller
+    return client.deployments.get(resource_group, service, name, deployment.name)
+
+
+def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
+    if no_wait:
+        return
+    deployment_error = None
+    try:
+        poller.result()
+    except Exception as err:
+        deployment_error = err
+    try:
+        deployment_resource = client.deployments.get(resource_group, service, app_name, deployment_name)
+        instances = deployment_resource.properties.instances
+        start_time = instances[0].start_time
+        instance_name = instances[0].name
+
+        # print the newly created instance log
+        for temp_instance in instances:
+            if temp_instance.start_time > start_time:
+                start_time = temp_instance.start_time
+                instance_name = temp_instance.name
+
+        logger.warning('Application logs:')
+        # For failed deployment we need to print logs as much as possible, we use follow=true to print enough logs
+        # for troubleshooting. We add a timeout to force stop logs then the cli can be exited.
+        app_tail_log_internal(cmd, client, resource_group, service, app_name, deployment_resource, instance_name,
+                              follow=False if deployment_error is None else True, lines=500, limit=1024 * 1024,
+                              since=300, timeout=10, get_app_log=_get_app_log_deploy_phase)
+    except Exception:
+        # ignore
+        return
+    if deployment_error:
+        raise deployment_error
+
+
+def _get_app_log_deploy_phase(url, auth, format_json, exceptions):
+    try:
+        _get_app_log(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+    except Exception:
+        pass
 
 
 def deployment_create(cmd, client, resource_group, service, app, name,
@@ -415,6 +493,15 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       readiness_probe_config=None,
                       startup_probe_config=None,
                       termination_grace_period_seconds=None,
+                      disable_app_log=False,
+                      # StandardGen2
+                      min_replicas=None,
+                      max_replicas=None,
+                      scale_rule_name=None,
+                      scale_rule_type=None,
+                      scale_rule_http_concurrency=None,
+                      scale_rule_metadata=None,
+                      scale_rule_auth=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -464,6 +551,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
         'termination_grace_period_seconds': termination_grace_period_seconds,
+        # StandardGen2
+        'min_replicas': min_replicas,
+        'max_replicas': max_replicas,
+        'scale_rule_name': scale_rule_name,
+        'scale_rule_type': scale_rule_type,
+        'scale_rule_http_concurrency': scale_rule_http_concurrency,
+        'scale_rule_metadata': scale_rule_metadata,
+        'scale_rule_auth': scale_rule_auth,
         'no_wait': no_wait
     }
 
@@ -479,9 +574,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                    'while to complete)'.format(kwargs['total_steps'],
                                                kwargs['total_steps'],
                                                app))
-    return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
-                       resource_group, service, app, name,
-                       deployment_resource)
+    poller = sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
+                         resource_group, service, app, name,
+                         deployment_resource)
+    if not disable_app_log:
+        _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
+    if "succeeded" != poller.status().lower():
+        return poller
+    return client.deployments.get(resource_group, service, app, name)
 
 
 def _ensure_app_not_exist(client, resource_group, service, name):
@@ -507,5 +607,11 @@ def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_g
             options.update(deployment_source_options_from_resource(active_deployment))
     if not options.get('sku', None):
         options['sku'] = get_spring_sku(client, resource_group, service)
+
+    # For StandardGen2, if skip the deployment settings clone and don't input any value for CPU and memory, will use default value
+    if options['sku'].tier.upper() == 'STANDARDGEN2' and skip_clone_settings and kwargs['cpu'] is None and kwargs['memory'] is None:
+        options['cpu'] = '500m'
+        options['memory'] = '1Gi'
+
     options.update({k: v for k, v in kwargs.items() if v})
     return options

@@ -56,6 +56,8 @@ def load_arguments(self, _):
     job_input_format_type = CLIArgumentType(help='The format of the file to submit. Omit this parameter on Q# jobs.')
     job_output_format_type = CLIArgumentType(help='The expected job output format. Ignored on Q# jobs.')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR. Ignored on Q# jobs.')
+    item_type = CLIArgumentType(help='The item index in a batching job.')
+    skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -64,6 +66,7 @@ def load_arguments(self, _):
         c.argument('skip_role_assignment', skip_role_assignment_type)
         c.argument('provider_sku_list', provider_sku_list_type)
         c.argument('auto_accept', auto_accept_type)
+        c.argument('skip_autoadd', skip_autoadd_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -83,6 +86,7 @@ def load_arguments(self, _):
         c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
         c.argument('max_poll_wait_secs', max_poll_wait_secs_type)
+        c.argument('item', item_type)
 
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)

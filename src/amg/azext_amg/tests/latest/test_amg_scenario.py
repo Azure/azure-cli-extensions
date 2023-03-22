@@ -4,7 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import tempfile
+import time
 import unittest
+
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk .scenario_tests import AllowLargeResponse
@@ -75,6 +78,8 @@ class AmgScenarioTest(ScenarioTest):
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             self.cmd('grafana create -g {rg} -n {name} -l {location}')
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
             self.cmd('grafana update -g {rg} -n {name} --api-key Enabled')
             self.cmd('grafana api-key list -g {rg} -n {name}', checks=[
                 self.check('length([])', 0)
@@ -104,6 +109,8 @@ class AmgScenarioTest(ScenarioTest):
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             self.cmd('grafana create -g {rg} -n {name} -l {location}')
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
             self.cmd('grafana update -g {rg} -n {name} --service-account Enabled')
             self.cmd('grafana service-account list -g {rg} -n {name}', checks=[
                 self.check('length([])', 0)
@@ -135,7 +142,7 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamg',
+            'name': 'clitestamge2e',
             'location': 'westeurope'
         })
 
@@ -148,6 +155,8 @@ class AmgScenarioTest(ScenarioTest):
                 self.check('tags.foo', 'doo'),
                 self.check('name', '{name}')
             ])
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
 
             self.cmd('grafana list -g {rg}')
             count = len(self.cmd('grafana list').get_output_in_json())
@@ -283,6 +292,89 @@ class AmgScenarioTest(ScenarioTest):
             self.cmd('grafana delete -g {rg} -n {name} --yes')
             final_count = len(self.cmd('grafana list').get_output_in_json())
             self.assertTrue(final_count, count - 1)
+
+
+    @AllowLargeResponse(size_kb=3072)
+    @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
+    def test_amg_backup_restore(self, resource_group):
+
+        # Test Instance
+        self.kwargs.update({
+            'name': 'clitestbackup',
+            'location': 'westcentralus',
+            'name2': 'clitestbackup2'
+        })
+
+        owner = self._get_signed_in_user()
+        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+
+            amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
+            amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
+            # Ensure RBAC changes are propagated
+            time.sleep(120)
+
+            # set up folder
+            self.kwargs.update({
+                'folderTitle': 'Test Folder',
+                'id': amg1['id'],
+                'id2': amg2['id']
+           })
+            self.cmd('grafana folder create -g {rg} -n {name} --title "{folderTitle}"')
+            
+            # set up data source
+            self.kwargs.update({
+                'dataSourceDefinition': test_data_source,
+                'dataSourceName': test_data_source["name"]
+            })
+            self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"')        
+        
+            # create dashboard
+            dashboard_title = test_dashboard["dashboard"]["title"]
+            slug = dashboard_title.lower().replace(' ', '-')
+
+            self.kwargs.update({
+                'dashboardDefinition': test_dashboard,
+                'dashboardTitle': dashboard_title,
+                'dashboardSlug': slug,
+            })
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
+
+            self.kwargs.update({
+                'dashboardUid': response_create["uid"],
+            })
+
+            with tempfile.TemporaryDirectory() as temp_dir:
+                self.kwargs.update({
+                    'tempDir': temp_dir
+                })
+                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" --components datasources dashboards folders')
+
+                filenames = next(os.walk(temp_dir), (None, None, []))[2]
+                self.assertTrue(len(filenames) == 1)
+                self.assertTrue(filenames[0].endswith('.tar.gz'))
+
+                self.kwargs.update({
+                    'archiveFile': os.path.join(temp_dir, filenames[0])
+                })
+
+                self.cmd('grafana folder delete -g {rg} -n {name} --folder "{folderTitle}"')
+                self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"') 
+
+                self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
+
+            self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
+            self.cmd('grafana folder show -g {rg} -n {name} --folder "{folderTitle}"')
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
+
+            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}"')
+            self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
 
     def _get_signed_in_user(self):

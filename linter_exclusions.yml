@@ -174,6 +174,9 @@ aks update:
     ksm_metric_labels_allow_list:
       rule_exclusions:
       - option_length_too_long
+    enable_windows_recording_rules:
+      rule_exclusions:
+      - option_length_too_long
     custom_ca_trust_certificates:
       rule_exclusions:
         - option_length_too_long
@@ -319,6 +322,9 @@ codespace plan create:
     default_sku_name:
       rule_exclusions:
       - option_length_too_long
+confidentialledger managedccfs update:
+  rule_exclusions:
+  - missing_command_test_coverage
 containerapp env create:
   parameters:
     infrastructure_subnet_resource_id:
@@ -623,6 +629,11 @@ desktopvirtualization workspace update:
     application_group_references:
       rule_exclusions:
       - option_length_too_long
+devcenter dev environment update:
+  parameters:
+    dev_center:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 devops project list:
   parameters:
     get_default_team_image_url:
@@ -1245,6 +1256,14 @@ iot hub module-twin update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub state migrate:
+  parameters:
+    orig_resource_group_name:
+      rule exclusions:
+      - parameter_should_not_end_in_resource_group
+    resource_group_name:
+      rule exclusions:
+      - parameter_should_not_end_in_resource_group
 iot edge deployment update:
   parameters:
     auth_type_dataplane:

@@ -267,7 +267,7 @@ def load_command_table(self, _):
                               table_transformer=transform_dev_tool_portal_output)
         g.custom_command('create', 'create', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
         g.custom_command('update', 'update', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
-        g.custom_command('delete', 'delete')
+        g.custom_command('delete', 'delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring application-live-view', is_preview=True,
                             custom_command_type=application_live_view_cmd_group,
@@ -275,7 +275,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show',
                               table_transformer=transform_live_view_output)
         g.custom_command('create', 'create', table_transformer=transform_live_view_output, supports_no_wait=True)
-        g.custom_command('delete', 'delete', supports_no_wait=True)
+        g.custom_command('delete', 'delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,
