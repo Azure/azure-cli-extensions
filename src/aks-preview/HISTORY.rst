@@ -12,8 +12,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.133
-+++++++
 * Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
 * Vendor new SDK and bump API version to 2023-02-02-preview.
 
