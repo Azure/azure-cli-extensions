@@ -1142,6 +1142,10 @@ def update_managed_environment(cmd,
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
 
+    # When using Azure Monitor Log Destination, Log Analytics can only be configured under Resource Diagnotic settings
+    if logs_destination == "azure-monitor":
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
+
     # Custom domains
     if hostname:
         safe_set(env_def, "properties", "customDomainConfiguration", value={})
@@ -1151,7 +1155,6 @@ def update_managed_environment(cmd,
         safe_set(cert_def, "certificatePassword", value=certificate_password)
         safe_set(cert_def, "certificateValue", value=blob)
 
-    # no PATCH api support atm, put works fine even with partial json
     try:
         r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
