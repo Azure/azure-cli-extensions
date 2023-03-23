@@ -73,12 +73,12 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
             raise e
 
 
-def poll_status(cmd, request_url, necessary_header=HEADER_AZURE_ASYNC_OPERATION):  # pylint: disable=inconsistent-return-statements
+def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statements
     from azure.core.exceptions import HttpResponseError
     from ._utils import safe_get
 
     if not request_url:
-        raise AzureResponseError(f"Http response lack of necessary header: '{necessary_header}'")
+        raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_AZURE_ASYNC_OPERATION}'")
 
     start = time.time()
     end = time.time() + POLLING_TIMEOUT
@@ -543,8 +543,15 @@ class ManagedEnvironmentClient():
             return r.json()
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            poll_status(cmd, operation_url, HEADER_LOCATION)
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            if "managedEnvironmentOperationStatuses" in operation_url:
+                poll_status(cmd, operation_url)
+                r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            else:
+                response = poll_results(cmd, operation_url)
+                if response is None:
+                    raise ResourceNotFoundError("Could not find a container app")
+                else:
+                    return response
 
         return r.json()
 
