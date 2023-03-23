@@ -146,8 +146,9 @@ class CustomizedAcceleratorsOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -218,8 +219,9 @@ class CustomizedAcceleratorsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -290,8 +292,9 @@ class CustomizedAcceleratorsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -426,7 +429,7 @@ class CustomizedAcceleratorsOperations:
         :param customized_accelerator_name: The name of the customized accelerator. Required.
         :type customized_accelerator_name: str
         :param customized_accelerator_resource: The customized accelerator for the create or update
-         operation. Is either a model type or a IO type. Required.
+         operation. Is either a CustomizedAcceleratorResource type or a IO type. Required.
         :type customized_accelerator_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.CustomizedAcceleratorResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -536,8 +539,9 @@ class CustomizedAcceleratorsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -724,8 +728,8 @@ class CustomizedAcceleratorsOperations:
         :type application_accelerator_name: str
         :param customized_accelerator_name: The name of the customized accelerator. Required.
         :type customized_accelerator_name: str
-        :param properties: Customized accelerator properties to be validated. Is either a model type or
-         a IO type. Required.
+        :param properties: Customized accelerator properties to be validated. Is either a
+         CustomizedAcceleratorProperties type or a IO type. Required.
         :type properties:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.CustomizedAcceleratorProperties or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -779,8 +783,9 @@ class CustomizedAcceleratorsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response

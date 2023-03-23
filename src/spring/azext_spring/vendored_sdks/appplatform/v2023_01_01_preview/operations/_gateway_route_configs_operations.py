@@ -269,8 +269,9 @@ class GatewayRouteConfigsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -341,8 +342,9 @@ class GatewayRouteConfigsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -480,7 +482,7 @@ class GatewayRouteConfigsOperations:
         :param route_config_name: The name of the Spring Cloud Gateway route config. Required.
         :type route_config_name: str
         :param gateway_route_config_resource: The Spring Cloud Gateway route config for the create or
-         update operation. Is either a model type or a IO type. Required.
+         update operation. Is either a GatewayRouteConfigResource type or a IO type. Required.
         :type gateway_route_config_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.GatewayRouteConfigResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -585,8 +587,9 @@ class GatewayRouteConfigsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -756,8 +759,9 @@ class GatewayRouteConfigsOperations:
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 

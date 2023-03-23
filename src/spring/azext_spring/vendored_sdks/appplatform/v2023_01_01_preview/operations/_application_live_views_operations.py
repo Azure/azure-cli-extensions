@@ -275,8 +275,9 @@ class ApplicationLiveViewsOperations:
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -339,8 +340,9 @@ class ApplicationLiveViewsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -409,8 +411,9 @@ class ApplicationLiveViewsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -533,8 +536,8 @@ class ApplicationLiveViewsOperations:
         :type service_name: str
         :param application_live_view_name: The name of Application Live View. Required.
         :type application_live_view_name: str
-        :param application_live_view_resource: Parameters for the update operation. Is either a model
-         type or a IO type. Required.
+        :param application_live_view_resource: Parameters for the update operation. Is either a
+         ApplicationLiveViewResource type or a IO type. Required.
         :type application_live_view_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.ApplicationLiveViewResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -637,8 +640,9 @@ class ApplicationLiveViewsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response

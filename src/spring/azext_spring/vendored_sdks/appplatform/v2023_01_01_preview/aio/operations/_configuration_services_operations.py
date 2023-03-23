@@ -113,8 +113,9 @@ class ConfigurationServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -183,8 +184,9 @@ class ConfigurationServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -310,8 +312,8 @@ class ConfigurationServicesOperations:
         :type service_name: str
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
-        :param configuration_service_resource: Parameters for the update operation. Is either a model
-         type or a IO type. Required.
+        :param configuration_service_resource: Parameters for the update operation. Is either a
+         ConfigurationServiceResource type or a IO type. Required.
         :type configuration_service_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.ConfigurationServiceResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -414,8 +416,9 @@ class ConfigurationServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -579,8 +582,9 @@ class ConfigurationServicesOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -645,8 +649,9 @@ class ConfigurationServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -768,8 +773,8 @@ class ConfigurationServicesOperations:
         :type service_name: str
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
-        :param settings: Application Configuration Service settings to be validated. Is either a model
-         type or a IO type. Required.
+        :param settings: Application Configuration Service settings to be validated. Is either a
+         ConfigurationServiceSettings type or a IO type. Required.
         :type settings: ~azure.mgmt.appplatform.v2023_01_01_preview.models.ConfigurationServiceSettings
          or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
