@@ -143,8 +143,9 @@ class BuildpackBindingOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -219,8 +220,9 @@ class BuildpackBindingOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -293,8 +295,9 @@ class BuildpackBindingOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -438,7 +441,7 @@ class BuildpackBindingOperations:
         :param buildpack_binding_name: The name of the Buildpack Binding Name. Required.
         :type buildpack_binding_name: str
         :param buildpack_binding: The target buildpack binding for the create or update operation. Is
-         either a model type or a IO type. Required.
+         either a BuildpackBindingResource type or a IO type. Required.
         :type buildpack_binding:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.BuildpackBindingResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -551,8 +554,9 @@ class BuildpackBindingOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -734,8 +738,9 @@ class BuildpackBindingOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 

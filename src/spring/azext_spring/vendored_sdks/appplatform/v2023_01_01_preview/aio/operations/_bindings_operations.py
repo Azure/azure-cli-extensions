@@ -116,8 +116,9 @@ class BindingsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -188,8 +189,9 @@ class BindingsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -323,8 +325,8 @@ class BindingsOperations:
         :type app_name: str
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
-        :param binding_resource: Parameters for the create or update operation. Is either a model type
-         or a IO type. Required.
+        :param binding_resource: Parameters for the create or update operation. Is either a
+         BindingResource type or a IO type. Required.
         :type binding_resource: ~azure.mgmt.appplatform.v2023_01_01_preview.models.BindingResource or
          IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -429,8 +431,9 @@ class BindingsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -571,8 +574,9 @@ class BindingsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -703,8 +707,8 @@ class BindingsOperations:
         :type app_name: str
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
-        :param binding_resource: Parameters for the update operation. Is either a model type or a IO
-         type. Required.
+        :param binding_resource: Parameters for the update operation. Is either a BindingResource type
+         or a IO type. Required.
         :type binding_resource: ~azure.mgmt.appplatform.v2023_01_01_preview.models.BindingResource or
          IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -855,8 +859,9 @@ class BindingsOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 

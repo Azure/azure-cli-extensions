@@ -241,8 +241,9 @@ class ConfigServersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -309,8 +310,9 @@ class ConfigServersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -424,8 +426,8 @@ class ConfigServersOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :param config_server_resource: Parameters for the update operation. Is either a model type or a
-         IO type. Required.
+        :param config_server_resource: Parameters for the update operation. Is either a
+         ConfigServerResource type or a IO type. Required.
         :type config_server_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.ConfigServerResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -542,8 +544,9 @@ class ConfigServersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -657,8 +660,8 @@ class ConfigServersOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :param config_server_resource: Parameters for the update operation. Is either a model type or a
-         IO type. Required.
+        :param config_server_resource: Parameters for the update operation. Is either a
+         ConfigServerResource type or a IO type. Required.
         :type config_server_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.ConfigServerResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -775,8 +778,9 @@ class ConfigServersOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -890,8 +894,8 @@ class ConfigServersOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :param config_server_settings: Config server settings to be validated. Is either a model type
-         or a IO type. Required.
+        :param config_server_settings: Config server settings to be validated. Is either a
+         ConfigServerSettings type or a IO type. Required.
         :type config_server_settings:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.ConfigServerSettings or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
