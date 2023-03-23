@@ -1135,10 +1135,9 @@ def update_managed_environment(cmd,
         logs_destination = None if logs_destination == "none" else logs_destination
         safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
-    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
-        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
-
-    if logs_customer_id and logs_key:
+    if logs_destination == "log-analytics":
+        if not logs_customer_id or not logs_key:
+            raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
 
@@ -1148,6 +1147,8 @@ def update_managed_environment(cmd,
 
     # Custom domains
     if hostname:
+        if not certificate_file or not certificate_password:
+            raise ValidationError("Must provide certificate_file and certificate_password if updating the DNS suffix for the environment's custom domain.")
         safe_set(env_def, "properties", "customDomainConfiguration", value={})
         cert_def = env_def["properties"]["customDomainConfiguration"]
         blob, _ = load_cert_file(certificate_file, certificate_password)
