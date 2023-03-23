@@ -927,6 +927,10 @@ class ContainerappScaleTests(ScenarioTest):
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='yaml', length=24)
+        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
+
+        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name))
+        user_identity_id = user_identity['id']
 
         create_containerapp_env(self, env, resource_group)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
@@ -966,6 +970,10 @@ class ContainerappScaleTests(ScenarioTest):
             scale:
               minReplicas: 1
               maxReplicas: 3
+        identity:
+          type: UserAssigned
+          userAssignedIdentities:
+            {user_identity_id}: {{}}
         """
         containerapp_file_name = "containerapp.yml"
 
