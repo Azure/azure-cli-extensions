@@ -46,12 +46,15 @@ def validate_hybrid_appliance(resource_group_name, name):
     endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
 
     for endpoint in endpoints:
+        endpoints_reachability_check = True
         try:
             subprocess.check_output(['curl', '-L', '-o', '/dev/null', '-s', '-w', '"%{http_code}\n"', endpoint, '--max-time', '10'])
         except requests.exceptions.RequestException:
             all_validations_passed = False
+            endpoints_reachability_check = False
             logger.warning("The endpoint {} is not reachable from your machine".format(endpoint))
-    
+    if endpoints_reachability_check is False:
+        telemetry.set_exception(exception="Pre-requisite endpoints reachability validation failed", fault_type=consts.Endpoints_Reachability_Validation_Failed, summary="Pre-requisite endpoints reachability validation failed")
     # Install specific version of connectedk8s
     get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
     
@@ -59,20 +62,21 @@ def validate_hybrid_appliance(resource_group_name, name):
         cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
         process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if process.wait() == 0:
-            print("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
+            telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
+            logger.warning("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
             all_validations_passed = False
         stdout = process.stdout.read().decode()
         stderr = process.stderr.read().decode()
         if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
             all_validations_passed = False
-            print("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
+            logger.warning("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
         if "AuthorizationFailed" in stdout or "AuthorizationFailed" in stderr:
             all_validations_passed = False
-            print("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
+            logger.warning("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
 
     except Exception as e:
-        print(type(e))
-        print(str(e))
+        telemetry.set_exception(exception=e, fault_type=consts.CC_Resource_Get_Failed, summary="Failed to verify if CC resource already exists")
+        logger.warning("An exception has occurred while trying verify if appliance resource already exists with the same name. Exception:" + str(e))
     
     if all_validations_passed is False:
         telemetry.set_exception(exception="One or more pre-requisite validations failed", fault_type=consts.Validations_Failed, summary="Pre-requisite validations failed")
@@ -145,10 +149,11 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     try:
         if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
-            telemetry.set_exception()
+            telemetry.set_exception(exception='The provided name and rg correspond to different appliance', fault_type=consts.Upgrade_RG_Cluster_Name_Conflict,
+                                    summary='The provided name and resource group name do not correspond to the current appliance')
             raise ValidationError("The parameters passed do not correspond to this appliance", "Please check the resource group name and appliance name.")
     except KeyError:
-        telemetry.set_exception()
+        telemetry.set_exception(exception="Name and RG entries not found in configmap", fault_type=consts.Entries_Not_Found_In_ConfigMap, summary="Name and RG entries not found in configmap")
         raise CLIInternalError("The required entries were not found in the config map.",  "Please delete the appliance and recreate it.")
 
     kubernetesVersionResponseString = subprocess.check_output(['microk8s', 'kubectl', 'version', '-o', 'json']).decode()
@@ -164,7 +169,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
         if currentMinorVersion > latestMinorVersion:
              # This should never happen unless someone manually runs "snap refresh" against the cluster instead of using our cli command.
              # Microk8s recommends never to downgrade a cluster, as this behaviour is not tested or supported 
-            telemetry.set_exception
+            telemetry.set_exception(exception="K8s version greater than latest supported", fault_type=consts.Unsupported_K8s_Version, summary="K8s version greater than latest supported")
             raise ValidationError("The current version of the kubernetes cluster is greater than the latest supported version.",  "Please delete the appliance and create it again.")
         
         # This logic works as long as new versions are only minor version bumps
@@ -174,16 +179,16 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             process = subprocess.Popen(['snap', 'refresh', 'microk8s', '--channel={}.{}'.format(currentMajorVersion, currentMinorVersion)])
             _, stderr = process.communicate()
             if process.returncode != 0:
-                telemetry.set_exception()
+                telemetry.set_exception(exception="Failed to upgrade microk8s cluster: {}".format(stderr.decode()), fault_type=consts.MicroK8s_Upgrade_Failed, summary="Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
                 raise CLIInternalError("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
             try:
                 subprocess.check_call(['microk8s', 'start'])
             except subprocess.CalledProcessError as e:
-                telemetry.set_exception()
+                telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Start_Microk8s, summary="Failed to start microk8s cluster with exception {}".format(str(e)))
                 raise CLIInternalError("Failed to start microk8s cluster with exception {}".format(str(e)))
 
             if not utils.check_microk8s():
-                telemetry.set_exception()
+                telemetry.set_exception(exception="Microk8s not healthy after upgrade from {} to {}".format(currentMajorVersion, currentMinorVersion), fault_type=consts.MicroK8s_Unhealthy_Post_Upgrade, summary="MicroK8s cluster is unhealthy post upgradefrom {} to {}".format(currentMajorVersion, currentMinorVersion))
                 raise CLIInternalError("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
 
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
