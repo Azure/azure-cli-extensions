@@ -150,7 +150,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
-    is_arm64_cluster = check_arm64_node(node_api_response)
 
     required_node_exists = check_linux_node(node_api_response)
     # Pre onboarding checks
