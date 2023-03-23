@@ -341,6 +341,7 @@ class SqlHandler(TargetHandler):
 
     server = ""
     dbname = ""
+    ip = ""
 
     def __init__(self, cmd, target_id, target_type, auth_type, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type, auth_type, connection_name, skip_prompt)
@@ -369,9 +370,9 @@ class SqlHandler(TargetHandler):
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
-            logger.warning(e)
             if not self.ip:
                 raise e
+            logger.warning(e)
             # allow local access
             ip_address = self.ip
             self.set_target_firewall(True, ip_name, ip_address, ip_address)
