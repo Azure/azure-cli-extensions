@@ -993,7 +993,7 @@ class ContainerApp(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'managed_environment_id': {'key': 'properties.managedEnvironmentId', 'type': 'str'},
+        'environment_id': {'key': 'properties.environmentId', 'type': 'str'},
         'latest_revision_name': {'key': 'properties.latestRevisionName', 'type': 'str'},
         'latest_revision_fqdn': {'key': 'properties.latestRevisionFqdn', 'type': 'str'},
         'custom_domain_verification_id': {'key': 'properties.customDomainVerificationId', 'type': 'str'},
@@ -1006,7 +1006,7 @@ class ContainerApp(TrackedResource):
         super(ContainerApp, self).__init__(**kwargs)
         self.identity = kwargs.get('identity', None)
         self.provisioning_state = None
-        self.managed_environment_id = kwargs.get('managed_environment_id', None)
+        self.environment_id = kwargs.get('environment_id', None)
         self.latest_revision_name = None
         self.latest_revision_fqdn = None
         self.custom_domain_verification_id = None

@@ -71,7 +71,16 @@ def app_create(cmd, client, resource_group, service, name,
                session_affinity=None,
                session_max_age=None,
                backend_protocol=None,
-               client_auth_certs=None):
+               client_auth_certs=None,
+               # StandardGen2
+               min_replicas=None,
+               max_replicas=None,
+               scale_rule_name=None,
+               scale_rule_type=None,
+               scale_rule_http_concurrency=None,
+               scale_rule_metadata=None,
+               scale_rule_auth=None,
+               secrets=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -81,6 +90,17 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning(LOG_RUNNING_PROMPT)
     _ensure_app_not_exist(client, resource_group, service, name)
     sku = get_spring_sku(client, resource_group, service)
+
+    if sku.tier.upper() == 'STANDARDGEN2':
+        if cpu is None and memory is None:
+            cpu = '500m'
+            memory = '1Gi'
+    else:
+        if cpu is None:
+            cpu = 1
+        if memory is None:
+            memory = '1Gi'
+
     basic_kwargs = {
         'cmd': cmd,
         'client': client,
@@ -105,7 +125,8 @@ def app_create(cmd, client, resource_group, service, name,
         'session_affinity': session_affinity,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
-        'client_auth_certs': client_auth_certs
+        'client_auth_certs': client_auth_certs,
+        'secrets': secrets
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -123,6 +144,14 @@ def app_create(cmd, client, resource_group, service, name,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
         'termination_grace_period_seconds': termination_grace_period_seconds,
+        # StandardGen2
+        'min_replicas': min_replicas,
+        'max_replicas': max_replicas,
+        'scale_rule_name': scale_rule_name,
+        'scale_rule_type': scale_rule_type,
+        'scale_rule_http_concurrency': scale_rule_http_concurrency,
+        'scale_rule_metadata': scale_rule_metadata,
+        'scale_rule_auth': scale_rule_auth,
     }
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
@@ -196,6 +225,7 @@ def app_update(cmd, client, resource_group, service, name,
                readiness_probe_config=None,
                startup_probe_config=None,
                termination_grace_period_seconds=None,
+               secrets=None,
                # general
                no_wait=False):
     '''app_update
@@ -246,6 +276,7 @@ def app_update(cmd, client, resource_group, service, name,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
+        'secrets': secrets,
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
@@ -486,9 +517,9 @@ def _get_deployment_ignore_exception(client, resource_group, service, app_name, 
         pass
 
 
-def _get_app_log_deploy_phase(url, user_name, password, format_json, exceptions):
+def _get_app_log_deploy_phase(url, auth, format_json, exceptions):
     try:
-        _get_app_log(url, user_name, password, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+        _get_app_log(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
     except Exception:
         pass
 
@@ -528,6 +559,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       startup_probe_config=None,
                       termination_grace_period_seconds=None,
                       disable_app_log=False,
+                      # StandardGen2
+                      min_replicas=None,
+                      max_replicas=None,
+                      scale_rule_name=None,
+                      scale_rule_type=None,
+                      scale_rule_http_concurrency=None,
+                      scale_rule_metadata=None,
+                      scale_rule_auth=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -577,6 +616,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'readiness_probe_config_file_path': readiness_probe_config,
         'startup_probe_config_file_path': startup_probe_config,
         'termination_grace_period_seconds': termination_grace_period_seconds,
+        # StandardGen2
+        'min_replicas': min_replicas,
+        'max_replicas': max_replicas,
+        'scale_rule_name': scale_rule_name,
+        'scale_rule_type': scale_rule_type,
+        'scale_rule_http_concurrency': scale_rule_http_concurrency,
+        'scale_rule_metadata': scale_rule_metadata,
+        'scale_rule_auth': scale_rule_auth,
         'no_wait': no_wait
     }
 
@@ -625,5 +672,11 @@ def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_g
             options.update(deployment_source_options_from_resource(active_deployment))
     if not options.get('sku', None):
         options['sku'] = get_spring_sku(client, resource_group, service)
+
+    # For StandardGen2, if skip the deployment settings clone and don't input any value for CPU and memory, will use default value
+    if options['sku'].tier.upper() == 'STANDARDGEN2' and skip_clone_settings and kwargs['cpu'] is None and kwargs['memory'] is None:
+        options['cpu'] = '500m'
+        options['memory'] = '1Gi'
+
     options.update({k: v for k, v in kwargs.items() if v})
     return options
