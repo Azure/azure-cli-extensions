@@ -929,7 +929,7 @@ class ContainerappScaleTests(ScenarioTest):
         app = self.create_random_name(prefix='yaml', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
 
-        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name))
+        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = user_identity['id']
 
         create_containerapp_env(self, env, resource_group)
