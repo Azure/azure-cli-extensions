@@ -549,7 +549,7 @@ class ManagedEnvironmentClient():
             else:
                 response = poll_results(cmd, operation_url)
                 if response is None:
-                    raise ResourceNotFoundError("Could not find a container app")
+                    raise ResourceNotFoundError("Could not find a managed environment")
                 else:
                     return response
 
