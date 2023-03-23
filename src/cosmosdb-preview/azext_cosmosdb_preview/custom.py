@@ -970,7 +970,8 @@ def cli_cosmosdb_restore(cmd,
                          default_identity=None,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
-                         tables_to_restore=None):
+                         tables_to_restore=None,
+                         source_backup_location=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
