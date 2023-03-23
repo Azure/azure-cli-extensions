@@ -200,7 +200,10 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
         '--maintenance-window-time-zone "Pacific Standard Time" '
         '--resource-group  {rg} '
         '--resource-name clitestmrpconfinguestadvanced1 '
-        '--extension-properties InGuestPatchMode=User '
+        '--extension-properties "InGuestPatchMode=User" '
+        '--install-patches-linux-parameters package-name-masks-to-exclude="ppt" package-name-masks-to-include="apt" classifications-to-include="Other" '
+        '--install-patches-windows-parameters kb-numbers-to-exclude="KB123456" kb-numbers-to-include="KB123456" classifications-to-include="FeaturePack" '
+        '--reboot-setting "IfRequired" '
         , checks=[])
 
 def cleanup(test):
