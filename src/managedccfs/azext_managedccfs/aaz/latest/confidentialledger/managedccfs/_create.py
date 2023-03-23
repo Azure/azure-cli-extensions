@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create an instance of the Azure Managed CCF service.
 
     :example: Deploy an Azure Managed CCF instance with 3 CCF nodes and the sample JS application.
-        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0",group:"group1"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1",group:"group2"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --app-type sample
+        az confidentialledger managedccfs create --members "[{certificate:'c:/certs/member0_cert.pem',identifier:'member0',group:'group1'},{certificate:'c:/certs/member1_cert.pem',identifier:'member1',group:'group2'}]" --name mymccfinstance --resource-group mccfRG --app-type sample
 
     :example: Deploy an Azure Managed CCF instance with 3 CCF nodes and a custom JS application.
-        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus
+        az confidentialledger managedccfs create --members "[{certificate:'c:/certs/member0_cert.pem',identifier:'member0'},{certificate:'c:/certs/member1_cert.pem',identifier:'member1'}]" --name mymccfinstance --resource-group mccfRG
 
     :example: Deploy an Azure Managed CCF instance with 5 CCF nodes and a custom JS application
-        az confidentialledger managedccfs create --members [{certificate:'c:\certs\member0_cert.pem',identifier:"member0",group:"mygroup1"},{certificate:'c:\certs\member1_cert.pem',identifier:"member1"}] --name mymccfinstance --resource-group mccfRG --location southcentralus --node-count 5
+        az confidentialledger managedccfs create --members "[{certificate:'c:/certs/member0_cert.pem',identifier:'member0',group:'mygroup1'},{certificate:'c:/certs/member1_cert.pem',identifier:'member1'}]" --name mymccfinstance --resource-group mccfRG --node-count 5
     """
 
     _aaz_info = {
@@ -69,8 +69,10 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ManagedCCF",
-            help="The geo-location of the instance. The only region that is supported is southcentralus.",
+            help="The geo-location of the instance. Southcentralus is the only supported region.",
             required=True,
+            is_preview=True,
+            default="southcentralus",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -101,7 +103,7 @@ class Create(AAZCommand):
         _args_schema.node_count = AAZIntArg(
             options=["--node-count"],
             arg_group="Properties",
-            help={"short-summary": "Number of CCF nodes in the instance.", "long-summary": "If the argument is omitted, a default value of 3 is used. The maximum supported size is 9 nodes."},
+            help="Node consensus requires odd number of nodes. Select a number between 3 and 9.",
             is_preview=True,
             default=3,
         )

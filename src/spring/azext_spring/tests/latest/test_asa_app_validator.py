@@ -71,7 +71,7 @@ class TestCpuAndMemoryValidator(unittest.TestCase):
         ns = Namespace(cpu='invalid')
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_cpu(ns)
-        self.assertEqual('CPU quantity should be millis (500m) or integer (1, 2, ...)', str(context.exception))
+        self.assertEqual('CPU quantity should be millis (250m, 500m, 750m, 1250m) or integer (1, 2, ...)', str(context.exception))
 
 
 class TestDeployPath(unittest.TestCase):
