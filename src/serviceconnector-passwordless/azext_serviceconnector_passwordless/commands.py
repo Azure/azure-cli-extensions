@@ -20,6 +20,7 @@ from ._client_factory import (
     cf_connector
 )
 
+
 def load_command_table(self, _):
     connection_type = CliCommandType(
         operations_tmpl='azure.mgmt.servicelinker.operations._linker_operations#LinkerOperations.{}',
