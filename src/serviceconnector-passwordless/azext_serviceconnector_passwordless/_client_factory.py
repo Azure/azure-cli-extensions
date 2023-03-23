@@ -20,5 +20,3 @@ def cf_linker(cli_ctx, *_):
 
 def cf_connector(cli_ctx, *_):
     return cf_connection_cl(cli_ctx).connector
-
-

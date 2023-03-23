@@ -15,6 +15,7 @@ from knack.util import CLIError
 logger = get_logger(__name__)
 
 
+# pylint: disable=raise-missing-from, consider-using-f-string
 def _is_vendored_sdk_path(path_comps):
     return len(path_comps) >= 5 and path_comps[4] == 'vendored_sdks'
 
