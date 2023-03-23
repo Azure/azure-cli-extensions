@@ -172,7 +172,7 @@ def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_
                         with open(dns_check_path, 'w+') as f:
                             f.write(pod_description)
                 else:
-                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description in the local machine', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
+                    telemetry.set_exception(exception=error_describe_job_pod.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
