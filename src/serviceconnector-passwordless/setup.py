@@ -13,9 +13,9 @@ try:
 except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
-from .azext_serviceconnector_passwordless.config import NAME, VERSION
+from .azext_serviceconnector_passwordless import config
 
-
+VERSION = config.VERSION
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
@@ -45,7 +45,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name=NAME,
+    name=config.NAME,
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Serviceconnector-passwordless Extension',
     # TODO: Update author and email, if applicable
