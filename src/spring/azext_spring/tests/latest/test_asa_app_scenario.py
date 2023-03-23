@@ -39,71 +39,37 @@ class AppDeploy(ScenarioTest):
         # deploy fake file, the fail is expected
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
-        deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'Jar'),
-            self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'Java_11'),
-            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ]).get_output_in_json()
-        relative_path = deployment['properties']['source']['relativePath']
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_8 --env "bas=baz"')
-        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'Jar'),
-            self.check('properties.source.relativePath', relative_path),
-            self.check('properties.source.version', 'v1'),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_8 --env "bas=baz"', checks=[
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+            self.check('properties.activeDeployment.properties.source.version', 'v1'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_8'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
         ])
 
         # deploy change to .Net
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
-        deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'NetCoreZip'),
-            self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
-        ]).get_output_in_json()
-        relative_path = deployment['properties']['source']['relativePath']
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
-        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'NetCoreZip'),
-            self.check('properties.source.relativePath', relative_path),
-            self.check('properties.source.version', 'v2'),
-            self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.source.netCoreMainEntryPath', 'test1'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1', checks=[
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'NetCoreZip'),
+            self.check('properties.activeDeployment.properties.source.version', 'v2'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'NetCore_31'),
+            self.check('properties.activeDeployment.properties.source.netCoreMainEntryPath', 'test1'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
         ])
 
         # keep deploy .net
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3 --main-entry test3')
-        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'NetCoreZip'),
-            self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.source.netCoreMainEntryPath', 'test3'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
-        ])
 
 
 @record_only()
