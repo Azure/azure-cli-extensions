@@ -47,6 +47,8 @@ from knack.prompting import prompt_y_n
 from azext_aks_preview._consts import (
     CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
@@ -1897,6 +1899,96 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return ssh_key_value
 
+    def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of uptime_sla.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        uptime_sla = self.raw_param.get("uptime_sla")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.sku and
+                self.mc.sku.tier is not None
+            ):
+                uptime_sla = self.mc.sku.tier == "Paid"
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if uptime_sla and self._get_no_uptime_sla(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
+                )
+
+            if uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
+                )
+
+        return uptime_sla
+
+    def _get_no_uptime_sla(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of no_uptime_sla.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        no_uptime_sla = self.raw_param.get("no_uptime_sla")
+        # We do not support this option in create mode, therefore we do not read the value from `mc`.
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if no_uptime_sla and self._get_uptime_sla(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
+                )
+
+            if no_uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
+                )
+
+        return no_uptime_sla
+
+    def get_tier(self) -> str:
+        """Obtain the value of tier.
+
+        Note: Could be removed after updating the dependency on core cli to 2.47.0.
+
+        :return: str
+        """
+        tier = self.raw_param.get("tier")
+        if not tier:
+            return ""
+
+        tierStr = tier.lower()
+        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_FREE and self._get_uptime_sla(enable_validation=False):
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
+            )
+
+        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD and self._get_no_uptime_sla(enable_validation=False):
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
+            )
+
+        return tierStr
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2259,6 +2351,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.auto_upgrade_profile is None:
                 mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
+    def set_up_sku(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up sku (uptime sla) for the ManagedCluster object.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Basic",
+                tier="Paid"
+            )
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -2837,6 +2946,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.auto_upgrade_profile is None:
                 mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
+    def update_sku(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update sku (uptime sla) for the ManagedCluster object.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Basic",
+                tier="Paid"
+            )
+
+        if self.context.get_no_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Basic",
+                tier="Free"
+            )
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
