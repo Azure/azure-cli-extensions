@@ -63,6 +63,13 @@ class BackupStorageRedundancy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ZONE = "Zone"
 
 
+class CheckNameAvailabilityReason(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The reason why the given name is not available."""
+
+    INVALID = "Invalid"
+    ALREADY_EXISTS = "AlreadyExists"
+
+
 class CompositePathSortOrder(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Sort order for composite paths."""
 
@@ -217,17 +224,6 @@ class MinimalTlsVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     TLS12 = "Tls12"
 
 
-class MongoClusterProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The provisioning state of the resource."""
-
-    SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
-    CANCELED = "Canceled"
-    PROVISIONING = "Provisioning"
-    UPDATING = "Updating"
-    DROPPING = "Dropping"
-
-
 class MongoClusterStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The status of the resource at the time the operation was called."""
 
@@ -247,30 +243,11 @@ class MongoRoleDefinitionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CUSTOM_ROLE = "CustomRole"
 
 
-class NameAvailabilityReason(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Reason the resource name is not available."""
-
-    INVALID = "Invalid"
-    ALREADY_EXISTS = "AlreadyExists"
-
-
 class NetworkAclBypass(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Indicates what services are allowed to bypass firewall checks."""
 
     NONE = "None"
     AZURE_SERVICES = "AzureServices"
-
-
-class NodeHaState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """A high-availability state of a node that is enabled with HA feature."""
-
-    NOT_ENABLED = "NotEnabled"
-    CREATING_STANDBY = "CreatingStandby"
-    REPLICATING_DATA = "ReplicatingData"
-    FAILING_OVER = "FailingOver"
-    HEALTHY = "Healthy"
-    REMOVING_STANDBY = "RemovingStandby"
-    NOT_SYNC = "NotSync"
 
 
 class NodeKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -331,6 +308,17 @@ class PrimaryAggregationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     MINIMUM = "Minimum"
     MAXIMUM = "Maximum"
     LAST = "Last"
+
+
+class ProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The provisioning state of the resource."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    IN_PROGRESS = "InProgress"
+    UPDATING = "Updating"
+    DROPPING = "Dropping"
 
 
 class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):

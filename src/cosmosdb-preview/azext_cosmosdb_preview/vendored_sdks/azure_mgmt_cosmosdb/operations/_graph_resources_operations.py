@@ -159,7 +159,7 @@ def build_create_update_graph_request(
     return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_delete_graph_request(
+def build_delete_graph_resource_request(
     resource_group_name: str, account_name: str, graph_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -286,8 +286,9 @@ class GraphResourcesOperations:
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -351,8 +352,9 @@ class GraphResourcesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -421,8 +423,9 @@ class GraphResourcesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -603,9 +606,7 @@ class GraphResourcesOperations:
             return deserialized
 
         if polling is True:
-            polling_method: PollingMethod = cast(
-                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
-            )
+            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -623,7 +624,7 @@ class GraphResourcesOperations:
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/graphs/{graphName}"
     }
 
-    def _delete_graph_initial(  # pylint: disable=inconsistent-return-statements
+    def _delete_graph_resource_initial(  # pylint: disable=inconsistent-return-statements
         self, resource_group_name: str, account_name: str, graph_name: str, **kwargs: Any
     ) -> None:
         error_map = {
@@ -642,21 +643,22 @@ class GraphResourcesOperations:
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
-        request = build_delete_graph_request(
+        request = build_delete_graph_resource_request(
             resource_group_name=resource_group_name,
             account_name=account_name,
             graph_name=graph_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self._delete_graph_initial.metadata["url"],
+            template_url=self._delete_graph_resource_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -675,12 +677,12 @@ class GraphResourcesOperations:
         if cls:
             return cls(pipeline_response, None, response_headers)
 
-    _delete_graph_initial.metadata = {
+    _delete_graph_resource_initial.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/graphs/{graphName}"
     }
 
     @distributed_trace
-    def begin_delete_graph(
+    def begin_delete_graph_resource(
         self, resource_group_name: str, account_name: str, graph_name: str, **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes an existing Azure Cosmos DB Graph Resource.
@@ -715,7 +717,7 @@ class GraphResourcesOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = self._delete_graph_initial(  # type: ignore
+            raw_result = self._delete_graph_resource_initial(  # type: ignore
                 resource_group_name=resource_group_name,
                 account_name=account_name,
                 graph_name=graph_name,
@@ -732,9 +734,7 @@ class GraphResourcesOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: PollingMethod = cast(
-                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
+            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -748,6 +748,6 @@ class GraphResourcesOperations:
             )
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_delete_graph.metadata = {
+    begin_delete_graph_resource.metadata = {
         "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/graphs/{graphName}"
     }
