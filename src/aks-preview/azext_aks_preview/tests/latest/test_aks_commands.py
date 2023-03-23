@@ -6844,8 +6844,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('sku.name', 'Base')
-            self.check('sku.tier', 'Standard')
+            self.check('sku.name', 'Base'),
+            self.check('sku.tier', 'Standard'),
         ])
         # delete
         self.cmd(
