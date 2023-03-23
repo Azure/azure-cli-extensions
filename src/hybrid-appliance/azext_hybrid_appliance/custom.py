@@ -111,7 +111,7 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     # The NO_PROXY env variable needs the api server address, which is not available with the user before the cluster is provisioned.
     # To get around that, we get the server address and services cidr and append the no_proxy variable with those values.
     if http_proxy or https_proxy or no_proxy:
-        no_proxy = utils.get_proxy_parameters(no_proxy)
+        no_proxy = utils.get_no_proxy_parameters(no_proxy)
         os.environ["NO_PROXY"] = no_proxy
     if location:
         cmd_onboard_arc.extend(["--location", location])
@@ -124,7 +124,11 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     if proxy_cert:
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
     if tags:
-        cmd_onboard_arc.extend(["--tags", tags])
+        cmd_onboard_arc.extend(["--tags"])
+        for tag in tags:
+            cmd_onboard_arc.extend(["{}={}".format(tag, tags[tag])])
+
+    print(cmd_onboard_arc)
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:

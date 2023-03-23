@@ -81,7 +81,7 @@ def get_kubeconfig_path():
     kubeconfig_path = os.path.join(home_dir, '.azure', 'hybrid_appliance', 'config')
     return kubeconfig_path
 
-def get_proxy_parameters(no_proxy):
+def get_no_proxy_parameters(no_proxy):
     api_server_address = get_api_server_address()
     api_server_address = api_server_address.strip('https://')
     service_cidr = get_services_cidr()
