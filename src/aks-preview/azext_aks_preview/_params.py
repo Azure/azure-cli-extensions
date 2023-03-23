@@ -43,6 +43,8 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_NONE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
+    CONST_NETWORK_DATAPLANE_AZURE,
+    CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
@@ -182,6 +184,7 @@ load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STA
 sku_tiers = [CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
+network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
@@ -283,6 +286,7 @@ def load_arguments(self, _):
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
         c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
+        c.argument('network_dataplane', arg_type=get_enum_type(network_dataplanes))
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
@@ -401,7 +405,7 @@ def load_arguments(self, _):
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
-        c.argument('enable_cilium_dataplane', action='store_true', is_preview=True)
+        c.argument('enable_cilium_dataplane', action='store_true', is_preview=True, deprecate_info=c.deprecate(target='--enable-cilium-dataplane', redirect='--network-dataplane', hide=True))
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
         # nodepool
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)

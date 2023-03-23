@@ -596,6 +596,7 @@ def aks_create(
     network_plugin=None,
     network_plugin_mode=None,
     network_policy=None,
+    network_dataplane=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
