@@ -228,3 +228,51 @@ class ManagedCCFsScenarioTest(ScenarioTest):
 
         # list will be enabled when the CP bug is fixed
         # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 0))
+
+    # Create an instance with custom JS app, 3 nodes and default location
+    @ResourceGroupPreparer(name_prefix='synth_azcli_rg_', location='eastus', random_name_length=30)
+    def test_managedccfs_create_custom_3nodes_defaultlocation(self, resource_group):
+        location = "southcentralus"
+        tag_key = "dept"
+        tag_value = "finance"
+        tags = f"{tag_key}={tag_value}"
+        member0_tag_identifier = "member0"
+        member0_cert = os.path.join(os.path.abspath(os.path.join(os.path.abspath(__file__), '..')), "member0_cert.pem")
+        name = self.create_random_name("synth-azcli-", 30)
+
+        self.kwargs.update({
+            "name": name,
+            "location": location,
+            "tags": tags,
+            "member0_tag_identifier": member0_tag_identifier,
+            "member0_cert": member0_cert,
+            "rg": resource_group
+        })
+
+        self.cmd("confidentialledger managedccfs create -n {name} -g {rg} --tags {tags} --members \"[{{certificate:'{member0_cert}',identifier:{member0_tag_identifier}}}]\" ")
+               
+        azcli_instance = self.cmd('confidentialledger managedccfs show -g {rg} -n {name}').get_output_in_json()
+
+        self.assertIsNotNone(azcli_instance)
+        self.assertEqual(azcli_instance['properties']['appName'], name)
+        self.assertEqual(azcli_instance['location'], location)
+        self.assertEqual(azcli_instance['tags'][tag_key], tag_value)
+        self.assertEqual(azcli_instance['properties']['appUri'], f"https://{name}.confidential-ledger.azure.com")
+        self.assertEqual(azcli_instance['properties']['identityServiceUri'], f"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/{name}")
+        self.assertEqual(azcli_instance['properties']['deploymentType']['languageRuntime'], 'JS')
+        self.assertEqual(azcli_instance['properties']['deploymentType']['appSourceUri'], 'customImage')
+        self.assertEqual(azcli_instance['properties']['nodeCount'], 3)
+
+        members = azcli_instance['properties']['memberIdentityCertificates']
+        self.assertIsNotNone(members)
+        self.assertEqual(len(members), 1)
+        for member in members:
+            self.assertEqual(member['tags']['identifier'],member0_tag_identifier)
+
+        # list will be enabled when the CP is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 1))
+
+        self.cmd('confidentialledger managedccfs delete --resource-group {rg} --name {name} --yes')
+
+        # list will be enabled when the CP bug is fixed
+        # self.cmd('confidentialledger managedccfs list --resource-group {rg}', checks=self.check('length(@)', 0))
