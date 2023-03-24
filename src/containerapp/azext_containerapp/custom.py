@@ -1155,14 +1155,14 @@ def update_managed_environment(cmd,
 
     # Custom domains
     if hostname:
-        if not certificate_file:
-            raise ValidationError("Must provide certificate-file if updating the DNS suffix for the environment's custom domain.")
         safe_set(env_def, "properties", "customDomainConfiguration", value={})
         cert_def = env_def["properties"]["customDomainConfiguration"]
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        if certificate_file:
+            blob, _ = load_cert_file(certificate_file, certificate_password)
+            safe_set(cert_def, "certificateValue", value=blob)
         safe_set(cert_def, "dnsSuffix", value=hostname)
         safe_set(cert_def, "certificatePassword", value=certificate_password)
-        safe_set(cert_def, "certificateValue", value=blob)
+
 
     try:
         r = ManagedEnvironmentClient.update(
