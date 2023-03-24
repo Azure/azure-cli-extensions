@@ -1164,7 +1164,6 @@ def update_managed_environment(cmd,
         if certificate_password:
             safe_set(cert_def, "certificatePassword", value=certificate_password)
 
-
     try:
         r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
