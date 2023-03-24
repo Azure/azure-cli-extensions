@@ -1130,13 +1130,18 @@ def update_managed_environment(cmd,
         if logs_destination != "log-analytics" or not logs_customer_id or not logs_key:
             raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
 
-    if hostname or certificate_file:
-        if not hostname or not certificate_file:
-            raise ValidationError("Must provide dns-suffix and certificate-file if updating the DNS suffix for the environment's custom domain.")
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
         handle_raw_exception(e)
+
+    if safe_get(r, "properties", "customDomainConfiguration", "dnsSuffix"):
+        if not certificate_file:
+            raise ValidationError("Must provide certificate-file if updating the DNS suffix for the environment's custom domain.")
+    else:
+        if hostname or certificate_file:
+            if not hostname or not certificate_file:
+                raise ValidationError("Must provide dns-suffix and certificate-file if updating the DNS suffix for the environment's custom domain.")
 
     # General setup
     env_def = {}
