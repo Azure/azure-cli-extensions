@@ -1128,9 +1128,9 @@ def update_managed_environment(cmd,
                                no_wait=False):
     if logs_destination == "log-analytics" or logs_customer_id or logs_key:
         if logs_destination != "log-analytics":
-            raise ValidationError("When configuring Log Analytics workspace, logs-destination should be \"log-analytics\"")
+            raise ValidationError("When configuring Log Analytics workspace, --logs-destination should be \"log-analytics\"")
         if not logs_customer_id or not logs_key:
-            raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
+            raise ValidationError("Must provide --logs-workspace-id and --logs-workspace-key if updating logs destination to type 'log-analytics'.")
 
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
