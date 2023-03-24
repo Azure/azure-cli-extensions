@@ -1161,7 +1161,8 @@ def update_managed_environment(cmd,
             blob, _ = load_cert_file(certificate_file, certificate_password)
             safe_set(cert_def, "certificateValue", value=blob)
         safe_set(cert_def, "dnsSuffix", value=hostname)
-        safe_set(cert_def, "certificatePassword", value=certificate_password)
+        if certificate_password:
+            safe_set(cert_def, "certificatePassword", value=certificate_password)
 
 
     try:
