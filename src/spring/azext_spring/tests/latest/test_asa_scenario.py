@@ -5,8 +5,8 @@
 
 import os
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
-from .custom_preparers import SpringPreparer
+from azure.cli.testsdk import (ScenarioTest, StorageAccountPreparer, record_only)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -67,7 +67,7 @@ class CustomDomainTests(ScenarioTest):
 
 class ByosTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
+    @SpringResourceGroupPreparer()
     @StorageAccountPreparer()
     @SpringPreparer(additional_params='--disable-app-insights')
     def test_persistent_storage(self, resource_group, storage_account, spring):
@@ -104,7 +104,7 @@ class ByosTest(ScenarioTest):
 
 class StartStopAscTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
+    @SpringResourceGroupPreparer()
     @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_START_STOP', additional_params='--disable-app-insights')
     def test_stop_and_start_service(self, resource_group, spring):
         self.kwargs.update({
@@ -190,7 +190,7 @@ class SslTests(ScenarioTest):
 
 class CustomImageTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
+    @SpringResourceGroupPreparer()
     @SpringPreparer(additional_params='--disable-app-insights')
     def test_app_deploy_container(self, resource_group, spring):
         self.kwargs.update({

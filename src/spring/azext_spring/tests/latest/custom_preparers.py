@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import re
 from datetime import datetime
 from azure.cli.testsdk.preparers import (
     NoTrafficRecordingPreparer,
@@ -18,6 +19,27 @@ from azure.cli.testsdk.exceptions import (
 from azure.cli.testsdk.reverse_dependency import (
     get_dummy_cli,
 )
+from .custom_recording_processor import RegexSingleValueReplacer
+
+
+class SpringSingleValueReplacer(RegexSingleValueReplacer):
+    def __init__(self, dev_setting_name, moniker):
+        super(SpringSingleValueReplacer, self).__init__(re.compile(f'(?<![a-zA-Z0-9-]){dev_setting_name}(?![a-zA-Z0-9-])', re.IGNORECASE),
+                                                        anchor=dev_setting_name, moniker=moniker)
+
+
+class SpringResourceGroupPreparer(ResourceGroupPreparer):
+    def __init__(self, location='uksouth', **kwargs):
+        super(SpringResourceGroupPreparer, self).__init__(location=location, **kwargs)
+    
+    def create_resource(self, name, **kwargs):
+        response = super().create_resource(name, **kwargs)
+        is_live = self.live_test or self.test_class_instance.in_recording
+        if self.dev_setting_name and is_live:
+            self.test_class_instance.recording_processors.append(SpringSingleValueReplacer(self.dev_setting_name, self.moniker))
+            return response
+        self.test_class_instance.kwargs[self.key] = name
+        return {self.parameter_name: name, self.parameter_name_for_location: self.location}
 
 
 class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
@@ -44,13 +66,14 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
     def create_resource(self, name, **kwargs):
-        if self.dev_setting_name:
+        is_live = self.live_test or self.test_class_instance.in_recording
+        if self.dev_setting_name and is_live:
             self.test_class_instance.kwargs[self.key] = self.dev_setting_name
+            self.test_class_instance.recording_processors.append(SpringSingleValueReplacer(self.dev_setting_name, self.moniker))
             return {self.parameter_name: self.dev_setting_name}
         group = self._get_resource_group(**kwargs)
         template = 'az spring create -n {} -g {} -l {} {}'.format(name, group, self.location, self.additional_params)
         self.live_only_execute(self.cli_ctx, template)
-
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
 
@@ -66,4 +89,4 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         except KeyError:
             template = 'To create a Spring a resource group is required. Please add ' \
                        'decorator @{} in front of this Spring preparer.'
-            raise CliTestError(template.format(ResourceGroupPreparer.__name__))
+            raise CliTestError(template.format(SpringResourceGroupPreparer.__name__))

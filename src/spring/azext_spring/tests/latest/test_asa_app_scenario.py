@@ -8,6 +8,8 @@ import tempfile
 
 from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, record_only)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
+from .custom_recording_processor import (TestEndpointReplacer)
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -16,13 +18,21 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 @record_only()
 class AppDeploy(ScenarioTest):
-    def test_deploy_app(self):
+    def __init__(self, method_name):
+        super(AppDeploy, self).__init__(
+            method_name,
+            recording_processors=[TestEndpointReplacer()]
+        )
+
+    @SpringResourceGroupPreparer()
+    @SpringPreparer(additional_params='--disable-app-insights')
+    def test_deploy_app(self, resource_group, spring):
         py_path = os.path.abspath(os.path.dirname(__file__))
         file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
         self.kwargs.update({
             'app': 'deploy',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli',
+            'serviceName': spring,
+            'rg': resource_group,
             'file': file_path
         })
 

@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from .custom_preparers import SpringPreparer
+from azure.cli.testsdk import (ScenarioTest)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
 from ...vendored_sdks.appplatform.v2022_11_01_preview import models
 from ...application_accelerator import (application_accelerator_create as create, 
                                         application_accelerator_delete as delete)
@@ -135,7 +135,7 @@ It cannot support live run. So mark it as record_only.
 
 class ApiApplicationAcceleratorTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
+    @SpringResourceGroupPreparer()
     @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_ENTERPRISE', additional_params='--sku Enterprise --disable-app-insights')
     def test_application_accelerator(self, resource_group, spring):
         
