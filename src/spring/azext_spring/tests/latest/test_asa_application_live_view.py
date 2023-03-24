@@ -6,6 +6,7 @@ import json
 import unittest
 from azure.cli.testsdk import (ScenarioTest)
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 from ...vendored_sdks.appplatform.v2023_01_01_preview import models
 from ...application_live_view import (create, delete)
 try:
@@ -136,8 +137,8 @@ class ApplicationLiveView(unittest.TestCase):
 
 class LiveViewTest(ScenarioTest):
 
-    @SpringResourceGroupPreparer()
-    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_ENTERPRISE', additional_params='--sku Enterprise --disable-app-insights')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'])
     def test_live_view(self, resource_group, spring):
         self.kwargs.update({
             'serviceName': spring,

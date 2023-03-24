@@ -7,6 +7,7 @@ import os
 
 from azure.cli.testsdk import (ScenarioTest, StorageAccountPreparer, record_only)
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -67,9 +68,9 @@ class CustomDomainTests(ScenarioTest):
 
 class ByosTest(ScenarioTest):
 
-    @SpringResourceGroupPreparer()
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @StorageAccountPreparer()
-    @SpringPreparer(additional_params='--disable-app-insights')
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     def test_persistent_storage(self, resource_group, storage_account, spring):
         template = 'storage account keys list -n {} -g {} --query "[0].value" -otsv'
         accountkey = self.cmd(template.format(storage_account, resource_group)).output
@@ -104,8 +105,8 @@ class ByosTest(ScenarioTest):
 
 class StartStopAscTest(ScenarioTest):
 
-    @SpringResourceGroupPreparer()
-    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_START_STOP', additional_params='--disable-app-insights')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD_START_STOP['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD_START_STOP['spring'])
     def test_stop_and_start_service(self, resource_group, spring):
         self.kwargs.update({
             'serviceName': spring,
@@ -190,8 +191,8 @@ class SslTests(ScenarioTest):
 
 class CustomImageTest(ScenarioTest):
 
-    @SpringResourceGroupPreparer()
-    @SpringPreparer(additional_params='--disable-app-insights')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     def test_app_deploy_container(self, resource_group, spring):
         self.kwargs.update({
             'app': 'test-container',

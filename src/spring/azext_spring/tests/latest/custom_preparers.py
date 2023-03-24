@@ -90,3 +90,31 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             template = 'To create a Spring a resource group is required. Please add ' \
                        'decorator @{} in front of this Spring preparer.'
             raise CliTestError(template.format(SpringResourceGroupPreparer.__name__))
+
+
+class SpringAppNamePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+    """
+    Prepare a Spring instance before testing and distroy it when finishing.
+    It runs `az spring create -n {} -g {} {addtional_params}` to create the instance
+    """
+    def __init__(self, name_prefix='clitest',
+                 parameter_name='app',
+                 dev_setting_name='AZURE_CLI_TEST_DEV_APP_NAME',
+                 random_name_length=15, key='spring_app'):
+        if ' ' in name_prefix:
+            raise CliTestError('Error: Space character in Spring App name prefix \'%s\'' % name_prefix)
+        super(SpringAppNamePreparer, self).__init__(name_prefix, random_name_length)
+        self.cli_ctx = get_dummy_cli()
+        self.parameter_name = parameter_name
+        self.key = key
+
+        self.dev_setting_name = os.environ.get(dev_setting_name, None)
+
+    def create_resource(self, name, **kwargs):
+        is_live = self.live_test or self.test_class_instance.in_recording
+        if self.dev_setting_name and is_live:
+            self.test_class_instance.kwargs[self.key] = self.dev_setting_name
+            self.test_class_instance.recording_processors.append(SpringSingleValueReplacer(self.dev_setting_name, self.moniker))
+            return {self.parameter_name: self.dev_setting_name}
+        self.test_class_instance.kwargs[self.key] = name
+        return {self.parameter_name: name}

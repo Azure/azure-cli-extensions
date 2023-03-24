@@ -5,6 +5,7 @@
 
 from azure.cli.testsdk import (ScenarioTest)
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -15,8 +16,8 @@ It cannot support live run. So mark it as record_only.
 
 class ApidAcceleratorTest(ScenarioTest):
 
-    @SpringResourceGroupPreparer()
-    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_TANZU_ENABLED', additional_params='--sku Enterprise --disable-app-insights --enable-application-accelerator')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     def test_predefined_accelerator(self, resource_group, spring):
         
         self.kwargs.update({
@@ -50,8 +51,8 @@ class ApidAcceleratorTest(ScenarioTest):
             self.check('properties.state', "Enabled")
         ])
 
-    @SpringResourceGroupPreparer()
-    @SpringPreparer(dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME_TANZU_ENABLED', additional_params='--sku Enterprise --disable-app-insights --enable-application-accelerator')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     def test_customized_accelerator(self, resource_group, spring):
         
         self.kwargs.update({

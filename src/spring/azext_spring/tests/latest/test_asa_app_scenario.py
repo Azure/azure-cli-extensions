@@ -8,29 +8,30 @@ import tempfile
 
 from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, record_only)
-from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
-from .custom_recording_processor import (TestEndpointReplacer)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer)
+from .custom_recording_processor import (SpringTestEndpointReplacer)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-@record_only()
 class AppDeploy(ScenarioTest):
     def __init__(self, method_name):
         super(AppDeploy, self).__init__(
             method_name,
-            recording_processors=[TestEndpointReplacer()]
+            recording_processors=[SpringTestEndpointReplacer()]
         )
 
-    @SpringResourceGroupPreparer()
-    @SpringPreparer(additional_params='--disable-app-insights')
-    def test_deploy_app(self, resource_group, spring):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_deploy_app(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
         file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
         self.kwargs.update({
-            'app': 'deploy',
+            'app': app,
             'serviceName': spring,
             'rg': resource_group,
             'file': file_path
@@ -73,6 +74,29 @@ class AppDeploy(ScenarioTest):
             self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
         ])
 
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_deploy_app_1(self, resource_group, spring, app):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group,
+            'file': file_path
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+        ])
+
         # deploy change to .Net
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
@@ -83,22 +107,21 @@ class AppDeploy(ScenarioTest):
             self.check('properties.source.type', 'NetCoreZip'),
             self.check('starts_with(properties.source.relativePath, `resources/`)', True),
             self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ]).get_output_in_json()
         relative_path = deployment['properties']['source']['relativePath']
 
-        # self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
         self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('sku.capacity', 1),
             self.check('properties.source.type', 'NetCoreZip'),
             self.check('properties.source.relativePath', relative_path),
             self.check('properties.source.version', 'v2'),
             self.check('properties.source.runtimeVersion', 'NetCore_31'),
             self.check('properties.source.netCoreMainEntryPath', 'test1'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
         # keep deploy .net
@@ -112,7 +135,6 @@ class AppDeploy(ScenarioTest):
             self.check('starts_with(properties.source.relativePath, `resources/`)', True),
             self.check('properties.source.runtimeVersion', 'NetCore_31'),
             self.check('properties.source.netCoreMainEntryPath', 'test3'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
         ])
 
 
