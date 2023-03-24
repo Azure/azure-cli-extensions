@@ -150,6 +150,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance, None)
+    is_arm64_cluster = check_arm64_node(node_api_response)
 
     required_node_exists = check_linux_node(node_api_response)
     # Pre onboarding checks
@@ -302,11 +303,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          "is already onboarded to the resource group" +
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
-            # Cleanup agents and continue with put by using force delete
-            is_force_delete = True
-            suppress_delete_prompts = True
-            is_no_wait = False
-            delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, is_no_wait, is_force_delete, suppress_delete_prompts)
+            # Cleanup agents and continue with put
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
+
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,

@@ -955,7 +955,7 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
                     del helmvalues_json['systemDefaultValues']['guard']['clientSecret']
             except Exception as e:
                 pass
-            
+
             helmvalues_json = yaml.dump(helmvalues_json)
             # Path to add the helm values of azure-arc release
             helmvalues_logs_path = os.path.join(filepath_with_timestamp, "helm_values_azure_arc.txt")
