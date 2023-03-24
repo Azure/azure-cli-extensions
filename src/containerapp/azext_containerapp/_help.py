@@ -654,6 +654,16 @@ helps['containerapp ingress disable'] = """
           az containerapp ingress disable -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress update'] = """
+    type: command
+    short-summary: Update ingress for a container app.
+    examples:
+    - name: Update ingress for a container app.
+      text: |
+          az containerapp ingress update -n MyContainerapp -g MyResourceGroup \\
+              --target-port 8080
+"""
+
 helps['containerapp ingress traffic'] = """
     type: group
     short-summary: Commands to manage traffic-splitting.
