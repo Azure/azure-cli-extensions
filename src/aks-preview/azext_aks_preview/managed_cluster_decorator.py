@@ -1986,7 +1986,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
 
         if self.context.get_enable_cilium_dataplane():
-            network_profile.ebpf_dataplane = CONST_EBPF_DATAPLANE_CILIUM
+            network_profile.network_dataplane = CONST_EBPF_DATAPLANE_CILIUM
 
         return mc
 
