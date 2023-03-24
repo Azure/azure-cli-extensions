@@ -2307,7 +2307,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         cluster_connectivity_status = connected_cluster.connectivity_status
 
         if cluster_connectivity_status != "Connected":
-            logger.warning("All the pods in the cluster are not in the running state. The current state of the cluster is : " + cluster_connectivity_status)
+            logger.warning("Cluster connectivity status is not connected. The current state of the cluster is : " + cluster_connectivity_status)
 
         # Adding cli output to the logs
         diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)

@@ -939,12 +939,23 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
             # Converting output obtained in json format
             helmvalues_json = output_kubectl_get_helmvalues.decode("ascii")
             helmvalues_json = json.loads(helmvalues_json)
+
+            # removing onboarding private key
             try:
                 if(helmvalues_json['global']['onboardingPrivateKey']):
                     del helmvalues_json['global']['onboardingPrivateKey']
             except Exception as e:
                 pass
 
+            # removing azure-rbac client id and client secret, if present
+            try:
+                if(helmvalues_json['systemDefaultValues']['guard']['clientId']):
+                    del helmvalues_json['systemDefaultValues']['guard']['clientId']
+                if(helmvalues_json['systemDefaultValues']['guard']['clientSecret']):
+                    del helmvalues_json['systemDefaultValues']['guard']['clientSecret']
+            except Exception as e:
+                pass
+            
             helmvalues_json = yaml.dump(helmvalues_json)
             # Path to add the helm values of azure-arc release
             helmvalues_logs_path = os.path.join(filepath_with_timestamp, "helm_values_azure_arc.txt")

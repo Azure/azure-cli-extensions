@@ -9,7 +9,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: secret-reader
-  namespace: azure-arc-release
+  namespace: default
 rules:
 - apiGroups:
   - ''
@@ -23,7 +23,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: read-secrets-rolebindings
-  namespace: azure-arc-release
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -49,7 +49,7 @@ spec:
     spec:
       containers:
       - args:
-        - azure-arc-release
+        - default
         command:
         - /bin/bash
         - /diagnoser_job_script.sh

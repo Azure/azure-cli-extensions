@@ -7,6 +7,7 @@ Release History
 
 * Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secret list
 * Removing circular imports of 1. custom from precheckutils and 2.(precheckutils and troubleshootutils) from utils
+* Added force delete in the connect command to clean up the helm release in case the connected cluster ARM resource doesnt exist
 
 1.3.14
 ++++++
