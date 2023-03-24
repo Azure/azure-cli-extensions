@@ -1903,6 +1903,9 @@ def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, 
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
+    if containerapp_def["properties"]["configuration"]["ingress"] is None:
+        raise ValidationError("The containerapp '{}' does not have ingress enabled. Try running `az containerapp ingress -h` for more info.".format(name))
+
     external_ingress = None
     if type is not None:
         if type.lower() == "internal":
