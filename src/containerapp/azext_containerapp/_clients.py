@@ -543,8 +543,15 @@ class ManagedEnvironmentClient():
             return r.json()
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            poll_results(cmd, operation_url)
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            if "managedEnvironmentOperationStatuses" in operation_url:
+                poll_status(cmd, operation_url)
+                r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            else:
+                response = poll_results(cmd, operation_url)
+                if response is None:
+                    raise ResourceNotFoundError("Could not find a managed environment")
+                else:
+                    return response
 
         return r.json()
 

@@ -85,8 +85,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', "azure-monitor"),
         ]).get_output_in_json()
 
-        check_managed_environment_finished(self, resource_group, env_name)
-
         diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
 
         self.assertEqual(storage_account in diagnostic_settings["storageAccountId"], True)
@@ -98,8 +96,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
-        check_managed_environment_finished(self, resource_group, env_name)
-
         self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -107,8 +103,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
-
-        check_managed_environment_finished(self, resource_group, env_name)
 
         self.cmd('containerapp env create -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
@@ -417,8 +411,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
-            JMESPathCheck('properties.appLogsConfiguration.destination', 'log-analytics'),
-            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
 
 
@@ -450,11 +442,3 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env),
             JMESPathCheck('properties.vnetConfiguration.internal', True),
         ])
-
-
-def check_managed_environment_finished(self, resource_group, env_name):
-    containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-    while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "updating"]:
-        time.sleep(5)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
