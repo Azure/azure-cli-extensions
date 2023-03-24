@@ -6,7 +6,7 @@ import json
 import unittest
 from azure.cli.testsdk import (ScenarioTest)
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
-from ...vendored_sdks.appplatform.v2022_11_01_preview import models
+from ...vendored_sdks.appplatform.v2023_01_01_preview import models
 from ...application_accelerator import (application_accelerator_create as create, 
                                         application_accelerator_delete as delete)
 try:

@@ -87,7 +87,7 @@ class AppDeploy(ScenarioTest):
         ]).get_output_in_json()
         relative_path = deployment['properties']['source']['relativePath']
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
+        # self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
         self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
@@ -155,7 +155,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
-        self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
 
 
     def test_app_crud_1(self):

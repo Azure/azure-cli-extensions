@@ -5,7 +5,7 @@
 
 from ._clierror import ConflictRequestError
 from ._utils import wait_till_end
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 from azure.cli.core.azclierror import (AzureInternalError, CLIInternalError)
 from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError
@@ -140,6 +140,7 @@ def app_identity_force_set(cmd,
 
     # All read-only attributes will be droped by SDK automatically.
     exist_app.identity = target_identity
+    exist_app.properties.secrets = None
 
     poller = client.apps.begin_create_or_update(resource_group, service, name, exist_app)
     wait_till_end(cmd, poller)

@@ -1,5 +1,9 @@
 Release History
 ===============
+1.8.0
+---
+* Add Azure Spring Apps StandardGen2 tier.
+
 1.7.3
 ---
 * Fix `subscription_id` AAZSimpleValue type error

@@ -1831,7 +1831,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
                      self.check_pattern('latestNodeImageVersion',
-                                        'AKSUbuntu-1804gen2containerd-202([0-9]).(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01])'),
+                                        'AKSUbuntu-1804gen2containerd-202([0-9])(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01]).(\d)'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -4099,7 +4099,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.podCidr', '10.244.0.0/16'),
             self.check('networkProfile.networkPluginMode', 'overlay'),
-            self.check('networkProfile.ebpfDataplane', 'cilium'),
+            self.check('networkProfile.networkDataplane', 'cilium'),
         ])
 
         # delete

@@ -4,6 +4,7 @@ Release History
 ===============
 Upcoming
 +++++++
+* Fix YAML create with user-assigned identity
 * Fix polling logic for long running operations.
 
 0.3.24

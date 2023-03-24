@@ -349,8 +349,9 @@ interactions:
 - request:
     body: '{"properties": {"source": {"type": "Jar", "relativePath": "<default>",
       "runtimeVersion": "Java_11"}, "deploymentSettings": {"resourceRequests": {"cpu":
-      "2", "memory": "1Gi"}, "environmentVariables": {"foo": "bar"}}, "active": true},
-      "sku": {"name": "S0", "tier": "Standard", "capacity": 1}}'
+      "2", "memory": "1Gi"}, "environmentVariables": {"foo": "bar"}, "scale": {"minReplicas":
+      1, "maxReplicas": 10}}, "active": true}, "sku": {"name": "S0", "tier": "Standard",
+      "capacity": 1}}'
     headers:
       Accept:
       - application/json
@@ -361,7 +362,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '290'
+      - '338'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -2884,8 +2885,6 @@ interactions:
       - spring app deploy
       Connection:
       - keep-alive
-      Content-Length:
-      - '0'
       ParameterSetName:
       - -n -g -s --artifact-path --version
       User-Agent:
@@ -2918,8 +2917,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
       x-rp-server-mvid:
       - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
@@ -2929,11 +2928,17 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - spring app deploy
       Connection:
       - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -s --artifact-path --version
       User-Agent:
       - python-requests/2.25.1
     method: GET
@@ -2950,16 +2955,26 @@ interactions:
 
         '
     headers:
-      connection:
-      - keep-alive
+      cache-control:
+      - no-cache
+      content-length:
+      - '472'
       content-type:
-      - text/plain
+      - application/json; charset=utf-8
       date:
       - Thu, 23 Mar 2023 08:55:04 GMT
       strict-transport-security:
-      - max-age=15724800; includeSubDomains
+      - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-rp-server-mvid:
+      - e9e97746-2ce9-40c9-b4b8-d25f29e14f66
     status:
       code: 200
       message: OK
@@ -3835,7 +3850,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '471'
+      - '469'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -4342,7 +4357,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -4382,6 +4397,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
       x-rp-server-mvid:
       - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
@@ -4637,7 +4654,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11998'
       x-rp-server-mvid:
       - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
@@ -5185,7 +5202,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11998'
+      - '11999'
       x-rp-server-mvid:
       - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
@@ -5829,7 +5846,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -5869,6 +5886,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
       x-rp-server-mvid:
       - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
