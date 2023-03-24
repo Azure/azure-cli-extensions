@@ -5,7 +5,7 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_01_01_preview import models
 from azure.cli.core.util import get_file_json
 
 
@@ -23,6 +23,7 @@ class DefaultApp:
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
+        kwargs['secrets'] = self._load_secrets_config(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
@@ -88,7 +89,7 @@ class DefaultApp:
                                                                 load_trust_store=item['loadTrustStore']))
         return loaded_certificates
 
-    def _load_custom_persistent_disks(self, client, resource_group, service, persistent_storage=None, **_):
+    def _load_custom_persistent_disks(self, client, resource_group, service, sku, persistent_storage=None, **_):
         if not persistent_storage:
             return
         data = get_file_json(persistent_storage, throw_on_empty=False)
@@ -101,21 +102,27 @@ class DefaultApp:
         for item in data['customPersistentDisks']:
             invalidProperties = not item.get('storageName') or \
                 not item.get('customPersistentDiskProperties').get('type') or \
-                not item.get('customPersistentDiskProperties').get('shareName') or \
                 not item.get('customPersistentDiskProperties').get('mountPath')
             if invalidProperties:
-                raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
-            storage_resource = client.storages.get(resource_group, service, item['storageName'])
+                raise InvalidArgumentValueError("StorageName, Type, MountPath mast be provided in the json file")
+
+            storage_id = None
+            if sku.tier.upper() == 'STANDARDGEN2':
+                storage_id = item['storageName']
+            else:
+                storage_resource = client.storages.get(resource_group, service, item['storageName'])
+                storage_id = storage_resource.id
+
             custom_persistent_disk_properties = models.AzureFileVolume(
                 type=item['customPersistentDiskProperties']['type'],
-                share_name=item['customPersistentDiskProperties']['shareName'],
+                share_name=item['customPersistentDiskProperties']['shareName'] if 'shareName' in item['customPersistentDiskProperties'] else None,
                 mount_path=item['customPersistentDiskProperties']['mountPath'],
                 mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
                 read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
 
             custom_persistent_disks.append(
                 models.CustomPersistentDiskResource(
-                    storage_id=storage_resource.id,
+                    storage_id=storage_id,
                     custom_persistent_disk_properties=custom_persistent_disk_properties))
         return custom_persistent_disks
 
@@ -143,6 +150,29 @@ class DefaultApp:
             )
         else:
             return None
+
+    def _load_secrets_config(self, secrets=None, **_):
+        if secrets is None:
+            return None
+
+        secret_pairs = {}
+
+        for pair in secrets:
+            key_val = pair.split('=', 1)
+            if len(key_val) != 2:
+                raise InvalidArgumentValueError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
+            if key_val[0] in secret_pairs:
+                raise InvalidArgumentValueError(
+                    "Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+            secret_pairs[key_val[0]] = key_val[1]
+
+        secret_var_def = []
+        for key, value in secret_pairs.items():
+            secret_var_def.append(
+                models.Secret(name=key, value=value)
+            )
+
+        return secret_var_def
 
 
 class BasicTierApp(DefaultApp):
