@@ -1890,6 +1890,7 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
     except Exception as e:
         handle_raw_exception(e)
 
+
 def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, transport=None, exposed_port=None, allow_insecure=False, disable_warnings=False, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -1901,7 +1902,7 @@ def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, 
 
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
-    
+
     external_ingress = None
     if type is not None:
         if type.lower() == "internal":
@@ -1915,10 +1916,14 @@ def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, 
     containerapp_patch_def['properties']['configuration']['ingress'] = {}
 
     ingress_def = {}
-    if external_ingress is not None: ingress_def["external"] = external_ingress
-    if target_port is not None: ingress_def["targetPort"] = target_port
-    if transport is not None: ingress_def["transport"] = transport
-    if allow_insecure is not None: ingress_def["allowInsecure"] = allow_insecure
+    if external_ingress is not None:
+        ingress_def["external"] = external_ingress
+    if target_port is not None:
+        ingress_def["targetPort"] = target_port
+    if transport is not None:
+        ingress_def["transport"] = transport
+    if allow_insecure is not None:
+        ingress_def["allowInsecure"] = allow_insecure
 
     if "transport" in ingress_def and ingress_def["transport"] == "tcp":
         if exposed_port is not None:
