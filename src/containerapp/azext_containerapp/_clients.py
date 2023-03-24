@@ -546,12 +546,14 @@ class ManagedEnvironmentClient():
             if "managedEnvironmentOperationStatuses" in operation_url:
                 poll_status(cmd, operation_url)
                 r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-            else:
+            elif "managedEnvironmentOperationResults" in operation_url:
                 response = poll_results(cmd, operation_url)
                 if response is None:
                     raise ResourceNotFoundError("Could not find a managed environment")
                 else:
                     return response
+            else:
+                raise AzureResponseError(f"Invalid operation URL: '{operation_url}'")
 
         return r.json()
 

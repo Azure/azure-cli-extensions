@@ -1126,6 +1126,13 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                no_wait=False):
+    if logs_destination == "log-analytics" or logs_customer_id or logs_key:
+        if logs_destination != "log-analytics" or not logs_customer_id or not logs_key:
+            raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
+    if hostname or certificate_file:
+        if not hostname or not certificate_file:
+            raise ValidationError("Must provide dns-suffix and certificate-file if updating the DNS suffix for the environment's custom domain.")
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
@@ -1142,19 +1149,13 @@ def update_managed_environment(cmd,
         safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
     if logs_destination == "log-analytics":
-        if not logs_customer_id or not logs_key:
-            raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
-
-    # When using Azure Monitor Log Destination, Log Analytics can only be configured under Resource Diagnotic settings
-    if logs_destination == "azure-monitor":
+    else:
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
     if hostname:
-        if not certificate_file:
-            raise ValidationError("Must provide certificate_file if updating the DNS suffix for the environment's custom domain.")
         safe_set(env_def, "properties", "customDomainConfiguration", value={})
         cert_def = env_def["properties"]["customDomainConfiguration"]
         blob, _ = load_cert_file(certificate_file, certificate_password)
