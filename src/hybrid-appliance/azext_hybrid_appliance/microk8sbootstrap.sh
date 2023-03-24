@@ -1,5 +1,4 @@
 # Setting up microk8s cluster
-echo "MicroK8s version is $MICROK8S_VERSION"
 if [ -z $MICROK8S_VERSION ]; then
   echo "Microk8s version not set"
   exit 1
