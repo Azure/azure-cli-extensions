@@ -880,21 +880,21 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
             if kube_context:
                 command.extend(["--context", kube_context])
             # Using Popen to execute the command and fetching the output
-            response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
-            output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
-            if response_kubectl_get_events.returncode != 0:
-                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Kubectl_Get_Secrets_Failed_Fault_Type, summary='Error while doing kubectl get secrets')
-                logger.warning("Error while doing kubectl get secrets for azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
-                diagnoser_output.append("Error while doing kubectl get secrets in azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
+            response_kubectl_get_secrets = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_secrets, error_kubectl_get_secrets = response_kubectl_get_secrets.communicate()
+            if response_kubectl_get_secrets.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_secrets.decode("ascii"), fault_type=consts.Kubectl_Get_Secrets_Failed_Fault_Type, summary='Error while doing kubectl get secrets')
+                logger.warning("Error while doing kubectl get secrets for azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_secrets.decode("ascii"))
+                diagnoser_output.append("Error while doing kubectl get secrets in azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_secrets.decode("ascii"))
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = output_kubectl_get_events.decode()
+            secrets_json = output_kubectl_get_secrets.decode()
             # Path to add the azure-arc secrets
-            event_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
+            secrets_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
 
-            with open(event_logs_path, 'w+') as event_log:
-                    event_log.write(events_json)
+            with open(secrets_logs_path, 'w+') as secrets_log:
+                    secrets_log.write(secrets_json)
 
             return storage_space_available
 
@@ -905,14 +905,14 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
             telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Kubectl_Get_Secrets_Failed_Fault_Type_Exception, summary="Exception occured while storing azure arc secrets")
+            logger.warning("An exception has occured while storing list of secrets in azure arc namespace in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Get_Secrets_Fault_Type, summary="Exception occured while storing azure arc secrets")
             diagnoser_output.append("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-            logger.warning("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Kubectl_Get_Secrets_Failed_Fault_Type_Exception, summary="Exception occured while storing azure arc secrets")
+            logger.warning("An exception has occured while storing list of secrets in azure arc namespace in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Get_Secrets_Fault_Type, summary="Exception occured while storing azure arc secrets")
             diagnoser_output.append("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
@@ -928,29 +928,29 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
             if kube_context:
                 command.extend(["--kube-context", kube_context])
             # Using Popen to execute the command and fetching the output
-            response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
-            output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
-            if response_kubectl_get_events.returncode != 0:
-                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Helm_Values_Save_Failed_Error, summary='Error while doing helm get values for azure-arc release')
-                logger.warning("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
-                diagnoser_output.append("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
+            response_kubectl_get_helmvalues = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_helmvalues, error_kubectl_get_helmvalues = response_kubectl_get_helmvalues.communicate()
+            if response_kubectl_get_helmvalues.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_helmvalues.decode("ascii"), fault_type=consts.Helm_Values_Save_Failed_Fault_Type, summary='Error while doing helm get values for azure-arc release')
+                logger.warning("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_helmvalues.decode("ascii"))
+                diagnoser_output.append("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_helmvalues.decode("ascii"))
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = output_kubectl_get_events.decode("ascii")
-            events_json = json.loads(events_json)
+            helmvalues_json = output_kubectl_get_helmvalues.decode("ascii")
+            helmvalues_json = json.loads(helmvalues_json)
             try:
-                if(events_json['global']['onboardingPrivateKey']):
-                    del events_json['global']['onboardingPrivateKey']
+                if(helmvalues_json['global']['onboardingPrivateKey']):
+                    del helmvalues_json['global']['onboardingPrivateKey']
             except Exception as e:
                 pass
 
-            events_json = yaml.dump(events_json)
+            helmvalues_json = yaml.dump(helmvalues_json)
             # Path to add the helm values of azure-arc release
-            event_logs_path = os.path.join(filepath_with_timestamp, "helm_values_azure_arc.txt")
+            helmvalues_logs_path = os.path.join(filepath_with_timestamp, "helm_values_azure_arc.txt")
 
-            with open(event_logs_path, 'w') as event_log:
-                event_log.write(events_json)
+            with open(helmvalues_logs_path, 'w') as helmvalues_log:
+                helmvalues_log.write(helmvalues_json)
 
             return storage_space_available
 
@@ -962,13 +962,13 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Save_Failed_Exception, summary="Exception occured while storing helm values of azure-arc release")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Helm_Values_Save_Failed_Fault_Type, summary="Exception occured while storing helm values of azure-arc release")
             diagnoser_output.append("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
             logger.warning("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Save_Failed_Exception, summary="Exception occured while storing helm values of azure-arc release")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Helm_Values_Save_Failed_Fault_Type, summary="Exception occured while storing helm values of azure-arc release")
             diagnoser_output.append("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
@@ -984,21 +984,21 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
             if kube_context:
                 command.extend(["--context", kube_context])
             # Using Popen to execute the command and fetching the output
-            response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
-            output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
-            if response_kubectl_get_events.returncode != 0:
-                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.Metadata_CR_Save_Failed_Error, summary='Error occured while fetching metadata CR details')
-                logger.warning("Error while doing kubectl describe for clustermetadata CR. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
-                diagnoser_output.append("Error occured while fetching metadata CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
+            response_kubectl_get_metadata_cr = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_metadata_cr, error_kubectl_get_metadata_cr = response_kubectl_get_metadata_cr.communicate()
+            if response_kubectl_get_metadata_cr.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_metadata_cr.decode("ascii"), fault_type=consts.Metadata_CR_Save_Failed_Fault_Type, summary='Error occured while fetching metadata CR details')
+                logger.warning("Error while doing kubectl describe for clustermetadata CR. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_metadata_cr.decode("ascii"))
+                diagnoser_output.append("Error occured while fetching metadata CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_metadata_cr.decode("ascii"))
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = output_kubectl_get_events.decode()
+            metadata_cr_json = output_kubectl_get_metadata_cr.decode()
             # Path to add the metadata CR details
-            event_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
+            metadata_cr_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
 
-            with open(event_logs_path, 'w+') as event_log:
-                    event_log.write(events_json)
+            with open(metadata_cr_logs_path, 'w+') as metadata_cr_log:
+                    metadata_cr_log.write(metadata_cr_json)
 
             return storage_space_available
 
@@ -1010,13 +1010,13 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Save_Failed_Exception, summary="Error occured while storing metadata CR details")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Metadata_CR_Save_Failed_Fault_Type, summary="Error occured while storing metadata CR details")
             diagnoser_output.append("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
             logger.warning("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Helm_Values_Save_Failed_Exception, summary="Error occured while storing metadata CR details")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Metadata_CR_Save_Failed_Fault_Type, summary="Error occured while storing metadata CR details")
             diagnoser_output.append("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
@@ -1032,21 +1032,21 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
             if kube_context:
                 command.extend(["--context", kube_context])
             # Using Popen to execute the command and fetching the output
-            response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
-            output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
-            if response_kubectl_get_events.returncode != 0:
-                telemetry.set_exception(exception=error_kubectl_get_events.decode("ascii"), fault_type=consts.KAP_CR_Save_Failed_Error, summary='Error occured while fetching KAP CR details')
-                logger.warning("Error while doing kubectl describe for kube-aad-proxy CR. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_events.decode("ascii"))
-                diagnoser_output.append("Error occured while fetching kube-aad-proxy CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_events.decode("ascii"))
+            response_kubectl_get_kap_cr = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_kap_cr, error_kubectl_get_kap_cr = response_kubectl_get_kap_cr.communicate()
+            if response_kubectl_get_kap_cr.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_kap_cr.decode("ascii"), fault_type=consts.KAP_CR_Save_Failed_Fault_Type, summary='Error occured while fetching KAP CR details')
+                logger.warning("Error while doing kubectl describe for kube-aad-proxy CR. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_kap_cr.decode("ascii"))
+                diagnoser_output.append("Error occured while fetching kube-aad-proxy CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_kap_cr.decode("ascii"))
                 return storage_space_available
 
             # Converting output obtained in json format
-            events_json = output_kubectl_get_events.decode()
+            kap_cr_json = output_kubectl_get_kap_cr.decode()
             # Path to add the kube-aad-proxy CR details
-            event_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
+            kap_cr_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
 
-            with open(event_logs_path, 'w+') as event_log:
-                    event_log.write(events_json)
+            with open(kap_cr_logs_path, 'w+') as kap_cr_log:
+                    kap_cr_log.write(kap_cr_json)
 
             return storage_space_available
 
@@ -1058,13 +1058,13 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
             logger.warning("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.KAP_CR_Save_Failed_Exception, summary="Exception occured while storing kube-aad-proxy CR details")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type, summary="Exception occured while storing kube-aad-proxy CR details")
             diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     # To handle any exception that may occur during the execution
     except Exception as e:
             logger.warning("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.KAP_CR_Save_Failed_Exception, summary="Exception occured while storing kube-aad-proxy CR details")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type, summary="Exception occured while storing kube-aad-proxy CR details")
             diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
