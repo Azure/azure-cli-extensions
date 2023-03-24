@@ -971,7 +971,8 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None,
-                         source_backup_location=None):
+                         source_backup_location=None,
+                         enable_public_network=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1071,7 +1072,8 @@ def cli_cosmosdb_restore(cmd,
                                     databases_to_restore=databases_to_restore,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
-                                    arm_location=target_restorable_account.location)
+                                    arm_location=target_restorable_account.location,
+                                    enable_public_network=enable_public_network)
 
 
 # pylint: disable=too-many-statements
