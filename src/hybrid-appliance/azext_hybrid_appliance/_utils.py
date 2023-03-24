@@ -8,7 +8,8 @@ from knack.log import get_logger
 from azure.cli.core import get_default_cli
 from azure.cli.core import telemetry
 from azext_hybrid_appliance import _constants as consts
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import CLIInternalError, ValidationError
+from kubernetes.client.rest import ApiException
 logger = get_logger(__name__)
 
 def install_kubectl_client():
@@ -50,6 +51,7 @@ def check_microk8s():
     statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml']).decode()
     status = yaml.safe_load(statusYaml)
     if not status["microk8s"]["running"]:
+        print(status)
         print("Microk8s is not running")
         subprocess.check_call(['microk8s', 'inspect'])
         return False
@@ -105,3 +107,25 @@ def set_no_proxy_from_helm_values():
         pass # The cluster is not behind proxy.
     except:
         print("Failed to check if cluster is behind proxy.")
+
+def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
+                                 message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
+                                 message_for_not_found='The requested kubernetes resource was not found.', raise_error=True):
+    telemetry.set_user_fault()
+    if isinstance(ex, ApiException):
+        status_code = ex.status
+        if status_code == 403:
+            logger.warning(message_for_unauthorized_request)
+        elif status_code == 404:
+            logger.warning(message_for_not_found)
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
+        if raise_error:
+            telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
+    else:
+        if raise_error:
+            telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+            raise ValidationError(error_message + "\nError: " + str(ex))
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))

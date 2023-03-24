@@ -5,6 +5,7 @@
 
 import json
 import os
+import time
 import psutil
 import requests
 import subprocess
@@ -15,6 +16,7 @@ from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azext_hybrid_appliance import _constants as consts
 from azext_hybrid_appliance import _utils as utils
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
+from kubernetes import client as kube_client, config
 logger = get_logger(__name__)
 
 
@@ -128,8 +130,6 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         for tag in tags:
             cmd_onboard_arc.extend(["{}={}".format(tag, tags[tag])])
 
-    print(cmd_onboard_arc)
-
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
         telemetry.set_exception(exception="Arc onboarding of the k8s cluster failed", fault_type=consts.Arc_Onboarding_Failed, summary="Arc onboarding of the k8s cluster failed")
@@ -138,27 +138,21 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         print("The k8s cluster has been onboarded to Arc successfully")
 
 def upgrade_hybrid_appliance(resource_group_name, name):
+    config.load_kube_config(utils.get_kubeconfig_path())
+    api_instance = kube_client.CoreV1Api()
     try:
-        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
+        azure_clusterconfig_cm = api_instance.read_namespaced_config_map("azure-clusterconfig", "azure-arc")
     except Exception as e:
-        if utils.check_microk8s():
-            # Is there anything else which can be done in this case?
-            telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_not_Found, summary="Configmap 'azure-clusterconfig' not found on the k8s cluster")
-            raise ValidationError("The required configmap 'azure-clusterconfig' was not found on the kubernetes cluster. Exception:" + str(e), "Please delete the appliance and create it again.")
-        else:
-            telemetry.set_exception(exception=e, fault_type=consts.K8s_Cluster_Unreacheable_Or_Not_Running, summary="The k8s cluster is not running as expected or is not reachable")
-            raise ValidationError("The kubernetes cluster is not running as expected or is not reachable. Exception:" + str(e), "Please delete the appliance and create it again.")
+        utils.kubernetes_exception_handler(e, fault_type=consts.Read_ConfigMap_Fault_Type, summary="Unable to read ConfigMap")
             
-    
-    azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     try:
-        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+        if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
             telemetry.set_exception(exception='The provided name and rg correspond to different appliance', fault_type=consts.Upgrade_RG_Cluster_Name_Conflict,
                                     summary='The provided name and resource group name do not correspond to the current appliance')
             raise ValidationError("The parameters passed do not correspond to this appliance", "Please check the resource group name and appliance name.")
     except KeyError:
         telemetry.set_exception(exception="Name and RG entries not found in configmap", fault_type=consts.Entries_Not_Found_In_ConfigMap, summary="Name and RG entries not found in configmap")
-        raise CLIInternalError("The required entries were not found in the config map.",  "Please delete the appliance and recreate it.")
+        raise ValidationError("The required entries were not found in the config map.",  "Please delete the appliance and recreate it.")
 
     kubernetesVersionResponseString = subprocess.check_output(['microk8s', 'kubectl', 'version', '-o', 'json']).decode()
     kubernetesVersionResponse = json.loads(kubernetesVersionResponseString)
@@ -178,13 +172,18 @@ def upgrade_hybrid_appliance(resource_group_name, name):
         
         # This logic works as long as new versions are only minor version bumps
         # TODO: Figure out what to do in case major version is bumped (very unlikely)
-        while currentMinorVersion != latestMinorVersion:
+        while int(currentMinorVersion) != int(latestMinorVersion):
             currentMinorVersion = int(currentMinorVersion) + 1
             process = subprocess.Popen(['snap', 'refresh', 'microk8s', '--channel={}.{}'.format(currentMajorVersion, currentMinorVersion)])
             _, stderr = process.communicate()
             if process.returncode != 0:
-                telemetry.set_exception(exception="Failed to upgrade microk8s cluster: {}".format(stderr.decode()), fault_type=consts.MicroK8s_Upgrade_Failed, summary="Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
-                raise CLIInternalError("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
+                error_message = ""
+                if stderr is not None:
+                    error_message = ": {}".format(stderr.decode())
+                telemetry.set_exception(exception="Failed to upgrade microk8s cluster{}".format(error_message), fault_type=consts.MicroK8s_Upgrade_Failed, summary="Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
+                raise CLIInternalError("Failed to upgrade microk8s cluster{}}".format(error_message))
+            
+            time.sleep(60) # Sleep to give time for the cluster to get ready
             try:
                 subprocess.check_call(['microk8s', 'start'])
             except subprocess.CalledProcessError as e:
@@ -210,20 +209,19 @@ def delete_hybrid_appliance(resource_group_name, name):
     if "not running" in output.decode():
             telemetry.set_exception()
             raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
-
+    config.load_kube_config(utils.get_kubeconfig_path())
+    api_instance = kube_client.CoreV1Api()
     try:
-        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
+        azure_clusterconfig_cm = api_instance.read_namespaced_config_map("azure-clusterconfig", "azure-arc")
     except Exception as e:
-        logger.error("Unable to find the required config map on the kubernetes cluster. The kubernetes cluster will be deleted.")
         delete_cc = False
-    
-    azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
+        utils.kubernetes_exception_handler(e, fault_type=consts.Read_ConfigMap_Fault_Type, summary="Unable to read ConfigMap", raise_error=False)
     try:
-        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+        if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
             telemetry.set_exception()
             raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
     except KeyError:
-        logger.error("The required entries were not found in the config map. The kubernetes cluster will be deleted")
+        logger.error("The required entries were not found in the config map")
         delete_cc = False
 
     if delete_cc:

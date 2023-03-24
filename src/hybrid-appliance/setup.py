@@ -38,6 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 DEPENDENCIES = [
+    'kubernetes==24.2.0'
 ]
 
 setup(
