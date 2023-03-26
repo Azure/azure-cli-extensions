@@ -181,7 +181,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
         # Performing cluster-diagnostic-checks
         diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
-        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+        precheckutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         if storage_space_available is False:
             logger.warning("There is no storage space available on your device and hence not saving cluster diagnostic check logs on your device")
@@ -194,7 +194,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
@@ -312,6 +312,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         else:
             # Cleanup agents and continue with put
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
+
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -2354,8 +2355,26 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Performing diagnoser container check
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
+        # saving secrets in azure-arc namespace
+        storage_space_available = troubleshootutils.get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving helm values of azure-arc release
+        storage_space_available = troubleshootutils.get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving metadata CR sanpshot
+        storage_space_available = troubleshootutils.get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving kube-aad-proxy CR snapshot
+        storage_space_available = troubleshootutils.get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # checking cluster connectivity status
+        cluster_connectivity_status = connected_cluster.connectivity_status
+
+        if cluster_connectivity_status != "Connected":
+            logger.warning("Cluster connectivity status is not connected. The current state of the cluster is : " + cluster_connectivity_status)
+
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2376,7 +2395,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
