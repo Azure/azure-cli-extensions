@@ -195,9 +195,9 @@ class CustomImageTest(ScenarioTest):
     def test_app_deploy_container(self, resource_group, spring):
         self.kwargs.update({
             'app': 'test-container',
-            'serviceName': spring,
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
             'containerImage': 'springio/gs-spring-boot-docker',
-            'resourceGroup': resource_group,
         })
 
         self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
