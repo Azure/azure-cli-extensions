@@ -520,13 +520,6 @@ class ManagedEnvironmentClient():
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
@@ -548,13 +541,19 @@ class ManagedEnvironmentClient():
 
         if no_wait:
             return r.json()
-        elif r.status_code == 201:
+        elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            response = poll_results(cmd, operation_url)
-            if response is None:
-                raise ResourceNotFoundError("Could not find a managed environment")
+            if "managedEnvironmentOperationStatuses" in operation_url:
+                poll_status(cmd, operation_url)
+                r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            elif "managedEnvironmentOperationResults" in operation_url:
+                response = poll_results(cmd, operation_url)
+                if response is None:
+                    raise ResourceNotFoundError("Could not find a managed environment")
+                else:
+                    return response
             else:
-                return response
+                raise AzureResponseError(f"Invalid operation URL: '{operation_url}'")
 
         return r.json()
 

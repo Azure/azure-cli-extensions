@@ -1126,6 +1126,12 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                no_wait=False):
+    if logs_destination == "log-analytics" or logs_customer_id or logs_key:
+        if logs_destination != "log-analytics":
+            raise ValidationError("When configuring Log Analytics workspace, --logs-destination should be \"log-analytics\"")
+        if not logs_customer_id or not logs_key:
+            raise ValidationError("Must provide --logs-workspace-id and --logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
@@ -1141,25 +1147,25 @@ def update_managed_environment(cmd,
         logs_destination = None if logs_destination == "none" else logs_destination
         safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
-    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
-        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
-
-    if logs_customer_id and logs_key:
+    if logs_destination == "log-analytics":
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+    else:
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
-    safe_set(env_def, "properties", "customDomainConfiguration", value={})
-    cert_def = env_def["properties"]["customDomainConfiguration"]
     if hostname:
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        safe_set(env_def, "properties", "customDomainConfiguration", value={})
+        cert_def = env_def["properties"]["customDomainConfiguration"]
+        if certificate_file:
+            blob, _ = load_cert_file(certificate_file, certificate_password)
+            safe_set(cert_def, "certificateValue", value=blob)
         safe_set(cert_def, "dnsSuffix", value=hostname)
-        safe_set(cert_def, "certificatePassword", value=certificate_password)
-        safe_set(cert_def, "certificateValue", value=blob)
+        if certificate_password:
+            safe_set(cert_def, "certificatePassword", value=certificate_password)
 
-    # no PATCH api support atm, put works fine even with partial json
     try:
-        r = ManagedEnvironmentClient.create(
+        r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
 
     except Exception as e:
