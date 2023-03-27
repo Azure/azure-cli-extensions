@@ -413,6 +413,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {}'.format(resource_group, env_name, hostname_2))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_2),
+        ])
+
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
