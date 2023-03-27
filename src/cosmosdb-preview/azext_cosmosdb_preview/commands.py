@@ -237,7 +237,7 @@ def load_command_table(self, _):
     cosmosdb_mongocluster_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations.#MongoClustersOperations.{}',
         client_factory=cf_mongo_cluster_job)
-    
+
     # Mongo Cluster create operations
     with self.command_group('cosmosdb mongocluster', cosmosdb_mongocluster_sdk, client_factory=cf_mongo_cluster_job, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_mongocluster_create', is_preview=True)
