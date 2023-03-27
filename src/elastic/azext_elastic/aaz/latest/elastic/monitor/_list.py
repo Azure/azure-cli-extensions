@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/monitors", "2022-07-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/monitors", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors", "2023-02-01-preview"],
         ]
     }
 
@@ -111,7 +111,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-02-01-preview",
                     required=True,
                 ),
             }
@@ -153,6 +153,10 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
+                flags={"read_only": True},
+            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -325,7 +329,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-02-01-preview",
                     required=True,
                 ),
             }
@@ -367,6 +371,10 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
+                flags={"read_only": True},
+            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )

@@ -19,9 +19,9 @@ class CreateAndAssociatePlFilter(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createandassociateplfilter", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/createandassociateplfilter", "2023-02-01-preview"],
         ]
     }
 
@@ -88,18 +88,18 @@ class CreateAndAssociatePlFilter(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -151,13 +151,13 @@ class CreateAndAssociatePlFilter(AAZCommand):
                     "privateEndpointName", self.ctx.args.private_endpoint_name,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-02-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_201(self, session):
+        def on_200(self, session):
             pass
 
 

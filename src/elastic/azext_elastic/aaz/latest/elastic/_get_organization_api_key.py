@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic monitor list-upgradable-version",
+    "elastic get-organization-api-key",
 )
-class ListUpgradableVersion(AAZCommand):
-    """List upgradable version
+class GetOrganizationApiKey(AAZCommand):
+    """Fetch User API Key from internal database
     """
 
     _aaz_info = {
         "version": "2023-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listupgradableversions", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/getorganizationapikey", "2023-02-01-preview"],
         ]
     }
 
@@ -41,20 +41,23 @@ class ListUpgradableVersion(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
-            help="Monitor resource name",
-            required=True,
-            id_part="name",
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.email_id = AAZStrArg(
+            options=["--email-id"],
+            arg_group="Body",
+            help="The User email Id",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.UpgradableVersionsDetails(ctx=self.ctx)()
+        self.OrganizationsGetApiKey(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +72,7 @@ class ListUpgradableVersion(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class UpgradableVersionsDetails(AAZHttpOperation):
+    class OrganizationsGetApiKey(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +86,7 @@ class ListUpgradableVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Elastic/monitors/{monitorName}/listUpgradableVersions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Elastic/getOrganizationApiKey",
                 **self.url_parameters
             )
 
@@ -98,10 +101,6 @@ class ListUpgradableVersion(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -127,10 +126,24 @@ class ListUpgradableVersion(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("emailId", AAZStrType, ".email_id")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -150,21 +163,15 @@ class ListUpgradableVersion(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.current_version = AAZStrType(
-                serialized_name="currentVersion",
+            _schema_on_200.api_key = AAZStrType(
+                serialized_name="apiKey",
             )
-            _schema_on_200.upgradable_versions = AAZListType(
-                serialized_name="upgradableVersions",
-            )
-
-            upgradable_versions = cls._schema_on_200.upgradable_versions
-            upgradable_versions.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListUpgradableVersionHelper:
-    """Helper class for ListUpgradableVersion"""
+class _GetOrganizationApiKeyHelper:
+    """Helper class for GetOrganizationApiKey"""
 
 
-__all__ = ["ListUpgradableVersion"]
+__all__ = ["GetOrganizationApiKey"]

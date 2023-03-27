@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2023-02-01-preview"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Create(AAZCommand):
             options=["company-name"],
             help="Company name of the user",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=64,
             ),
         )
         user_info.email_address = AAZStrArg(
@@ -153,14 +153,14 @@ class Create(AAZCommand):
             options=["business"],
             help="Business of the company",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=64,
             ),
         )
         company_info.country = AAZStrArg(
             options=["country"],
             help="Country of the company location.",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=64,
             ),
         )
         company_info.domain = AAZStrArg(
@@ -181,7 +181,7 @@ class Create(AAZCommand):
             options=["state"],
             help="State of the company location.",
             fmt=AAZStrArgFormat(
-                max_length=50,
+                max_length=64,
             ),
         )
         return cls._args_schema
@@ -267,7 +267,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-02-01-preview",
                     required=True,
                 ),
             }
@@ -352,6 +352,10 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
+                flags={"read_only": True},
+            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )

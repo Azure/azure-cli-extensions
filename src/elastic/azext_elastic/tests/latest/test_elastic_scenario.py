@@ -17,8 +17,25 @@ class ElasticScenario(ScenarioTest):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
         })
-        self.cmd('elastic monitor create -n {mobile_network} -g {rg} --identifier {{mcc:001,mnc:01}}', checks=[
-            self.check('publicLandMobileNetworkIdentifier.mcc', '001'),
-            self.check('publicLandMobileNetworkIdentifier.mnc', '01')
+        self.cmd('elastic monitor create -n {mobile_network} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:alice@microsoft.com}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('properties.sku.name', 'ess-monthly-consumption_Monthly'),
+            self.check('properties.elasticCloudUser.emailAddress', 'alice@microsoft.com'),
         ])
-        
+        self.cmd('elastic monitor update -n {mobile_network} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
+            self.check('tags.tag', 'test'),
+            self.check('tags.tag2', 'test2')
+        ])
+        self.cmd('elastic monitor list -g {rg}', checks=[
+            self.check('[0].publicLandMobileNetworkIdentifier.mcc', '001'),
+            self.check('[0].publicLandMobileNetworkIdentifier.mnc', '01'),
+            self.check('[0].tags.tag', 'test'),
+            self.check('[0].tags.tag2', 'test2')
+        ])
+        self.cmd('elastic monitor show -n {mobile_network} -g {rg}', checks=[
+            self.check('publicLandMobileNetworkIdentifier.mcc', '001'),
+            self.check('publicLandMobileNetworkIdentifier.mnc', '01'),
+            self.check('tags.tag', 'test'),
+            self.check('tags.tag2', 'test2')
+        ])
+        self.cmd('elastic monitor delete -n {mobile_network} -g {rg} -y')

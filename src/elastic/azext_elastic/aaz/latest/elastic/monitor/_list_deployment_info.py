@@ -19,9 +19,9 @@ class ListDeploymentInfo(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01-preview",
+        "version": "2023-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listdeploymentinfo", "2022-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listdeploymentinfo", "2023-02-01-preview"],
         ]
     }
 
@@ -117,7 +117,7 @@ class ListDeploymentInfo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01-preview",
+                    "api-version", "2023-02-01-preview",
                     required=True,
                 ),
             }
@@ -150,9 +150,16 @@ class ListDeploymentInfo(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.deployment_url = AAZStrType(
+                serialized_name="deploymentUrl",
+                flags={"read_only": True},
+            )
             _schema_on_200.disk_capacity = AAZStrType(
                 serialized_name="diskCapacity",
                 flags={"read_only": True},
+            )
+            _schema_on_200.marketplace_saas_info = AAZObjectType(
+                serialized_name="marketplaceSaasInfo",
             )
             _schema_on_200.memory_capacity = AAZStrType(
                 serialized_name="memoryCapacity",
@@ -162,6 +169,20 @@ class ListDeploymentInfo(AAZCommand):
             _schema_on_200.version = AAZStrType(
                 flags={"read_only": True},
             )
+
+            marketplace_saas_info = cls._schema_on_200.marketplace_saas_info
+            marketplace_saas_info.marketplace_name = AAZStrType(
+                serialized_name="marketplaceName",
+            )
+            marketplace_saas_info.marketplace_resource_id = AAZStrType(
+                serialized_name="marketplaceResourceId",
+            )
+            marketplace_saas_info.marketplace_subscription = AAZObjectType(
+                serialized_name="marketplaceSubscription",
+            )
+
+            marketplace_subscription = cls._schema_on_200.marketplace_saas_info.marketplace_subscription
+            marketplace_subscription.id = AAZStrType()
 
             return cls._schema_on_200
 
