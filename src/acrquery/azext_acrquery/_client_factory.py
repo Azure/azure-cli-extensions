@@ -1,4 +1,4 @@
-VERSION_2021_08_01_PREVIEW = "2021-08-01-preview"
+VERSION_2021_08_01_PREVIEW = "2023-08-01-preview"
 from azure.cli.core.profiles import ResourceType
 
 def cf_metadata(cli_ctx, *_):

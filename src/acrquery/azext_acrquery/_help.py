@@ -14,15 +14,16 @@ helps['acr query'] = """
 
 helps['acr query'] = """
     type: command
-    short-summary: KQL querying against an ACR.
+    short-summary: Query for artifacts in ACR using the Kusto Query Language.
+    long-summary: 
     examples:
         - name: Query for all digests signed by $Signature in the registry
           text: az acr query -n MyRegistry -q "Manifests | where annotations['org.cncf.notary.signature.subject'] == $Signature | project createdAt, digest, subject, repository"
 
-        - name: Query for all digests signed by $Signature in the repository $RepostioryName
-          text: az acr query -n MyRegistry --repository $RepostioryName -q "Manifests | where annotations['org.cncf.notary.signature.subject'] == $Signature | project createdAt, digest, subject"
+        - name: Query for all digests signed by $Signature in the repository $RepositoryName
+          text: az acr query -n MyRegistry --repository $RepositoryName -q "Manifests | where annotations['org.cncf.notary.signature.subject'] == $Signature | project createdAt, digest, subject"
 
-        - name: Query for all digests in a registry using pagination
+        - name: Query for the digests in a registry using a skip token (for results with pagination)
           text: az acr query -n MyRegistry -q "Manifests | project digest | order by digest asc" --skip-token eyAibm8iOiAibHVjayIsICJidXQiOiAibmljZSIsICJ0cnkiOiAiISIgfQ==
 """
 
