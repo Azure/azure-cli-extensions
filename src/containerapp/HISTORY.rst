@@ -4,6 +4,7 @@ Release History
 ===============
 Upcoming
 +++++++
+* 'az containerapp create/update': --yaml support models for api-version 2022-03-01
 * 'az containerapp env update': Fix bugs in update environment.
 * Fix YAML create with user-assigned identity
 * Fix polling logic for long running operations.
