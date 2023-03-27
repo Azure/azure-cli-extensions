@@ -926,10 +926,19 @@ class ContainerappScaleTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
-        app = self.create_random_name(prefix='yaml', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        self.cmd(f"network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} --internal-only -s {sub_id}')
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        app = self.create_random_name(prefix='yaml', length=24)
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
@@ -947,12 +956,13 @@ class ContainerappScaleTests(ScenarioTest):
             activeRevisionsMode: Multiple
             ingress:
               external: true
+              exposedPort: 3000
               allowInsecure: false
               targetPort: 80
               traffic:
                 - latestRevision: true
                   weight: 100
-              transport: Auto
+              transport: Tcp
           template:
             revisionSuffix: myrevision
             containers:
@@ -983,6 +993,7 @@ class ContainerappScaleTests(ScenarioTest):
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.exposedPort", 3000),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
@@ -1002,12 +1013,13 @@ class ContainerappScaleTests(ScenarioTest):
                     activeRevisionsMode: Multiple
                     ingress:
                       external: true
+                      exposedPort: 9551
                       allowInsecure: false
                       targetPort: 80
                       traffic:
                         - latestRevision: true
                           weight: 100
-                      transport: Auto
+                      transport: Tcp
                   template:
                     revisionSuffix: myrevision
                     containers:
@@ -1033,6 +1045,7 @@ class ContainerappScaleTests(ScenarioTest):
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.exposedPort", 9551),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),

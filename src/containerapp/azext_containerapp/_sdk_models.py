@@ -864,6 +864,7 @@ class Configuration(Model):
         'ingress': {'key': 'ingress', 'type': 'Ingress'},
         'dapr': {'key': 'dapr', 'type': 'Dapr'},
         'registries': {'key': 'registries', 'type': '[RegistryCredentials]'},
+        'max_inactive_revisions': {'key': 'maxInactiveRevisions', 'type': 'int'},
     }
 
     def __init__(self, **kwargs):
@@ -1515,6 +1516,10 @@ class Dapr(Model):
         'app_id': {'key': 'appId', 'type': 'str'},
         'app_protocol': {'key': 'appProtocol', 'type': 'str'},
         'app_port': {'key': 'appPort', 'type': 'int'},
+        'http_read_buffer_size': {'key': 'httpReadBufferSize', 'type': 'int'},
+        'http_max_request_size': {'key': 'httpMaxRequestSize', 'type': 'int'},
+        'log_level': {'key': 'logLevel', 'type': 'str'},
+        'enable_api_logging': {'key': 'enableApiLogging', 'type': 'bool'},
     }
 
     def __init__(self, **kwargs):
@@ -2096,11 +2101,14 @@ class Ingress(Model):
         'fqdn': {'key': 'fqdn', 'type': 'str'},
         'external': {'key': 'external', 'type': 'bool'},
         'target_port': {'key': 'targetPort', 'type': 'int'},
+        'exposed_port': {'key': 'exposedPort', 'type': 'int'},
         'transport': {'key': 'transport', 'type': 'str'},
         'traffic': {'key': 'traffic', 'type': '[TrafficWeight]'},
         'custom_domains': {'key': 'customDomains', 'type': '[CustomDomain]'},
         'allow_insecure': {'key': 'allowInsecure', 'type': 'bool'},
-        'ipSecurityRestrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
+        'ip_security_restrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
+        'client_certificate_mode': {'key': 'clientCertificateMode', 'type': 'str'},
+        'cors_policy': {'key': 'corsPolicy', 'type': 'CorsPolicy'},
     }
 
     def __init__(self, **kwargs):
@@ -2697,6 +2705,7 @@ class RegistryCredentials(Model):
         'server': {'key': 'server', 'type': 'str'},
         'username': {'key': 'username', 'type': 'str'},
         'password_secret_ref': {'key': 'passwordSecretRef', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
