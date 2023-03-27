@@ -140,7 +140,7 @@ def cli_cosmosdb_mongocluster_create(client,
                                     restore_point_in_time_utc=None,
                                     restore_source_resource_id=None,
                                     server_version="5.0",
-                                    shard_node_sku=None,
+                                    shard_node_tier=None,
                                     shard_node_disk_size_gb=None, 
                                     shard_node_ha=None,
                                     shard_node_name=None,
@@ -167,7 +167,7 @@ def cli_cosmosdb_mongocluster_create(client,
     )
 
     node_group_spec = NodeGroupSpec(
-        sku= shard_node_sku,
+        sku= shard_node_tier,
         disk_size_gb= shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
         name= shard_node_name,
@@ -196,7 +196,7 @@ def cli_cosmosdb_mongocluster_update(client,
                                     tags=None,
                                     create_mode=CreateMode.DEFAULT.value,
                                     server_version="5.0",
-                                    shard_node_sku=None,
+                                    shard_node_tier=None,
                                     shard_node_ha=None,
                                     shard_node_disk_size_gb=None, 
                                     shard_node_name=None,
@@ -227,8 +227,8 @@ def cli_cosmosdb_mongocluster_update(client,
         create_mode= mongo_cluster_resource.create_mode
     
     # Shard info update.
-    if shard_node_sku is None:
-        shard_node_sku= mongo_cluster_resource.node_group_specs[0].sku
+    if shard_node_tier is None:
+        shard_node_tier= mongo_cluster_resource.node_group_specs[0].sku
     if shard_node_disk_size_gb is None:
         shard_node_disk_size_gb= mongo_cluster_resource.node_group_specs[0].disk_size_gb
     if shard_node_ha is None:
@@ -239,7 +239,7 @@ def cli_cosmosdb_mongocluster_update(client,
         shard_kind= mongo_cluster_resource.node_group_specs[0].kind
    
     node_group_spec = NodeGroupSpec(
-        sku= shard_node_sku,
+        sku= shard_node_tier,
         disk_size_gb= shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
         name= shard_node_name,

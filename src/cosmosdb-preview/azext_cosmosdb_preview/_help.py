@@ -81,7 +81,7 @@ examples:
         --administrator-login MyAdminUser \\
         --administrator-login-password MyAdminPassword \\
         --server-version 5.0 \\
-        --shard-node-sku "M30" \\
+        --shard-node-tier "M30" \\
         --shard-node-ha true \\
         --shard-node-disk-size-gb 128 \\
         --shard-node-count 2
@@ -94,7 +94,7 @@ examples:
         --administrator-login MyAdminUser \\
         --administrator-login-password MyAdminPassword \\
         --server-version 5.0 \\
-        --shard-node-sku "M30" \\
+        --shard-node-tier "M30" \\
         --shard-node-ha true \\
         --shard-node-disk-size-gb 128 \\
         --shard-node-count 2
@@ -115,7 +115,7 @@ examples:
         --administrator-login MyAdminUser \\
         --administrator-login-password MyAdminPassword \\
         --server-version 5.0 \\
-        --shard-node-sku "M30" \\
+        --shard-node-tier "M30" \\
         --shard-node-ha true \\
         --shard-node-disk-size-gb 128 \\
         --shard-node-count 2

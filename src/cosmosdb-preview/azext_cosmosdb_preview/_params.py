@@ -165,7 +165,7 @@ def load_arguments(self, _):
         c.argument('administrator_login', options_list=['--administrator-login'], help="The initial administrator user to be configured when a cluster is created", required=True)
         c.argument('administrator_login_password', options_list=['--administrator-login-password'], help="The initial administrator password to be configured when a cluster is created", required=True)
         c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster", required=True)
-        c.argument('shard_node_sku', options_list=['--shard-node-sku'], help="The node sky for mongo cluster.", required=True, arg_group='Shard')
+        c.argument('shard_node_tier', options_list=['--shard-node-tier'], help="The node tier for mongo cluster.", required=True, arg_group='Shard')
         c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", required=True, arg_group='Shard')
         c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb'], help="The node disk size for mongo cluster.", required=True, arg_group='Shard')
         c.argument('shard_node_count', options_list=['--shard-node-count'], help="The node count for mongo cluster.", required=True, arg_group='Shard')
@@ -179,7 +179,7 @@ def load_arguments(self, _):
         c.argument('administrator_login', options_list=['--administrator-login'], help="The initial administrator user to be configured when a cluster is created")
         c.argument('administrator_login_password', options_list=['--administrator-login-password'], help="The initial administrator password to be configured when a cluster is created")
         c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster")
-        c.argument('shard_node_sku', options_list=['--shard-node-sku'], help="The node sky for mongo cluster.", arg_group='Shard')
+        c.argument('shard_node_tier', options_list=['--shard-node-tier'], help="The node tier for mongo cluster.", arg_group='Shard')
         c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", arg_group='Shard')
         c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb'], help="The node disk size for mongo cluster.", arg_group='Shard')
     
