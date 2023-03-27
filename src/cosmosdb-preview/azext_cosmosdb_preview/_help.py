@@ -7,10 +7,9 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
-helps['cosmosdb mongocluster'] = """
+helps['cosmosdb mongocluster firewall rule'] = """
 type: group
-short-summary: CosmosDB for MongoDB cluster.
+short-summary: CosmosDB for MongoDB cluster firewall rule.
 """
 
 helps['cosmosdb mongocluster firewall rule create'] = """
@@ -47,7 +46,7 @@ short-summary: Lists firewall rule on a mongo cluster.
 examples:
   - name: Lists a Mongo Cluster firewall rule in a resource group.
     text: |
-      az cosmosdb mongocluster list --cluster-name MyCluster  --resource-group MyResourceGroup
+      az cosmosdb mongocluster list --cluster-name MyCluster --resource-group MyResourceGroup
 """
 
 helps['cosmosdb mongocluster firewall rule show'] = """
@@ -63,9 +62,14 @@ helps['cosmosdb mongocluster firewall rule delete'] = """
 type: command
 short-summary: Delete a Mongo Cluster firewall rule.
 examples:
-  - name: Delete a Mongo Cluster firewall rule. If the firewall rule doesnot exist a NotFound response is returned.
+  - name: Delete a Mongo Cluster firewall rule. If the firewall rule does not exist a NotFound response is returned.
     text: |
       az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup --rule-name MyRuleName
+"""
+
+helps['cosmosdb mongocluster'] = """
+type: group
+short-summary: CosmosDB for MongoDB cluster.
 """
 
 helps['cosmosdb mongocluster create'] = """
@@ -137,7 +141,7 @@ helps['cosmosdb mongocluster show'] = """
 type: command
 short-summary: Get a Mongo Cluster Resource.
 examples:
-  - name: Gets a Mongo Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster doesnot exist a NotFound response is returned.
+  - name: Gets a Mongo Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster does not exist a NotFound response is returned.
     text: |
       az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup
 """
