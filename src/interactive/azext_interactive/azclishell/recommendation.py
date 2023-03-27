@@ -317,7 +317,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
 
     telemetry.start(mode='interactive')
     telemetry.set_command_details('next')
-    telemetry.set_recommendation_properties(api_version=api_version, recommendation_properties=feedback_data)
+    telemetry.set_cli_recommendation_feedback(api_version=api_version, recommendation_properties=feedback_data)
     telemetry.flush()
 
 
