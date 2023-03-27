@@ -301,7 +301,10 @@ helps['aks create'] = """
           long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
         - name: --uptime-sla
           type: bool
-          short-summary: Enable a paid managed cluster service with a financially backed SLA.
+          short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
+        - name: --tier
+          type: string
+          short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -641,10 +644,13 @@ helps['aks update'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
         - name: --uptime-sla
           type: bool
-          short-summary: Enable a paid managed cluster service with a financially backed SLA.
+          short-summary: Enable a standard managed cluster service with a financially backed SLA. --uptime-sla is deprecated. Please use '--tier standard' instead.
         - name: --no-uptime-sla
           type: bool
-          short-summary: Change a paid managed cluster to a free one.
+          short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
+        - name: --tier
+          type: string
+          short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' changes a standard managed cluster to a free one.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -907,6 +913,9 @@ helps['aks update'] = """
         - name: --grafana-resource-id
           type: string
           short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --enable-windows-recording-rules
+          type: bool
+          short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile
@@ -2174,13 +2183,13 @@ helps['aks trustedaccess rolebinding create'] = """
         - name: --roles
           type: string
           short-summary: Specify the space-separated roles.
-        - name: --source-resource-id -s
+        - name: --source-resource-id -r
           type: string
           short-summary: Specify the source resource id of the binding.
 
     examples:
         - name: Create a new trusted access role binding
-          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName -s /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
+          text: az aks trustedaccess rolebinding create -g myResourceGroup --cluster-name myCluster -n bindingName --source-resource-id /subscriptions/0000/resourceGroups/myResourceGroup/providers/Microsoft.Demo/samples --roles Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer
 """
 
 helps['aks trustedaccess rolebinding update'] = """
