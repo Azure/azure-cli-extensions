@@ -104,3 +104,41 @@ Only clears the appended suggestion when you restart the interactive shell
 ```
 
 The color option will be saved.
+
+## Cli Recommendation(Preview)
+2023.04.04
+####  **[Breaking Change]** Integrate the cli recommendation to make the completion ability more intelligent and provide the scenario completion.
+
+How to enable or disable the cli recommendation
+```bash
+$ az config set interactive.enable_recommender=True //Default, try the new recommendation feature
+$ az config set interactive.enable_recommender=False // Disable the recommendation feature
+```
+
+#### **[Add]** Add loading bar when initializing the az interactive
+We added the loading bar to show the progress of the initialization. Initializing `az interactive` will take about 1min, with a default timeout of 150 seconds.
+
+If the initialization is not finished within 150 seconds, the loading bar can be stopped and the initialization will continue in the background.
+
+However, incomplete loading and initialization may result in some command parameters not being updated, some commands not being executed, etc. This can cause unknown errors, which will return to normal after loading is complete.
+
+#### **[Optimize]** Optimize the telemetry feedback to adapt to new recommendation function
+In order to collect data and facilitate the optimization and tuning of the cli recommendation model, we have optimized the telemetry feedback function.
+
+We have added `cli_recommendation_feedback` to the `properties` of telemetry feedback. For details, please refer to [cli-recommendation](https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/feedback_design.md).
+
+
+#### **[Add]** Added memory and completion mechanism for param value in scenarios
+
+The completion mechanism for param value in scenarios is added to improve the completion ability of param value in scenarios.
+
+In multiple commands of the same scenario, once the user enters a param value, we store the value entered by the user based on the scenario sample value and some special global params, and automatically recommend the completion of these param values in subsequent commands.
+
+#### **[Add]** Recommending scenarios based on keywords and natural language
+We have added the ability to recommend scenarios based on keywords and natural language. When the user enters a command, we will recommend the scenarios that are most likely to be used based on the keywords and natural language descriptions of the functions the user wants to implement.
+
+```bash
+$ az interactive // initialize the az interactive
+$ # app service database // Search for scenario by starting with # and entering keywords
+$ ::1 // Enter a space to get the recommended scenario based on keywords and select the desired scenario
+```
