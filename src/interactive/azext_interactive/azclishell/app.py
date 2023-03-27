@@ -631,7 +631,7 @@ class AzInteractiveShell(object):
             if len(results) == 0:
                 print(print_styled_text([(Style.WARNING, 'No search results.')]))
                 # -1 means no result, since the idx+1 in feedback function, so passed -2
-                self.recommender.feedback_search(self, -2, keywords)
+                self.recommender.feedback_search(-2, keywords)
             else:
                 show_search_item(results)
 
@@ -640,7 +640,7 @@ class AzInteractiveShell(object):
                 option = select_option(option_msg, min_option=0, max_option=len(results), default_option=-1)
                 if option == 0:
                     # -1 means no selection, since the idx+1 in feedback function, so passed -2
-                    self.recommender.feedback_search(self, -2, keywords)
+                    self.recommender.feedback_search(-2, keywords)
                 elif option > 0:
                     scenario = results[option - 1]
                     self.recommender.feedback_search(option - 1, keywords, scenario=scenario)
