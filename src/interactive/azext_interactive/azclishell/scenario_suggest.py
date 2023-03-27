@@ -123,7 +123,6 @@ class ScenarioAutoSuggest(AutoSuggest):
                     return Suggestion(' '.join(suggest))
             elif unfinished == '':
                 if not last_part.startswith('-'):
-                    suggests = []
                     for param in unused_param:
                         if param in self.special_global_param_map.keys():
                             cached_param = param
@@ -135,10 +134,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                                 value = self.customized_cached_param_map[cached_param]
                             else:
                                 value = ''
-                            suggests.append({'param': param, 'value': value})
-                    if suggests:
-                        # suggest one parameter at a time
-                        return Suggestion(' '.join([suggests[0]['param'], suggests[0]['value']]))
+                            return Suggestion(' '.join([param, value]))
 
         # If the user hasn't finished the command part, suggest the whole sample
         elif self.cur_command.startswith(user_input):
