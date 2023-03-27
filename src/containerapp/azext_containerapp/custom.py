@@ -88,6 +88,12 @@ def process_loaded_yaml(yaml_containerapp):
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
+    if yaml_containerapp.get('identity') and yaml_containerapp['identity'].get('userAssignedIdentities'):
+        for identity in yaml_containerapp['identity']['userAssignedIdentities']:
+            # properties (principalId and clientId) are readonly and create (PUT) will throw error if they are provided
+            # Update (PATCH) ignores them so it's okay to remove them as well
+            yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
+
     nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
                          "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
     for nested_property in nested_properties:
@@ -293,12 +299,12 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if r["properties"] and r["properties"]["provisioningState"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
 
-        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+        if r["properties"] and r["properties"]["configuration"] and r["properties"]["configuration"]["ingress"] and r["properties"]["configuration"]["ingress"]["fqdn"]:
             logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
             logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
@@ -1150,6 +1156,12 @@ def update_managed_environment(cmd,
                                min_nodes=None,
                                max_nodes=None,
                                no_wait=False):
+    if logs_destination == "log-analytics" or logs_customer_id or logs_key:
+        if logs_destination != "log-analytics":
+            raise ValidationError("When configuring Log Analytics workspace, --logs-destination should be \"log-analytics\"")
+        if not logs_customer_id or not logs_key:
+            raise ValidationError("Must provide --logs-workspace-id and --logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
@@ -1168,21 +1180,22 @@ def update_managed_environment(cmd,
         logs_destination = None if logs_destination == "none" else logs_destination
         safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
-    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
-        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
-
-    if logs_customer_id and logs_key:
+    if logs_destination == "log-analytics":
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+    else:
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
-    safe_set(env_def, "properties", "customDomainConfiguration", value={})
-    cert_def = env_def["properties"]["customDomainConfiguration"]
     if hostname:
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        safe_set(env_def, "properties", "customDomainConfiguration", value={})
+        cert_def = env_def["properties"]["customDomainConfiguration"]
+        if certificate_file:
+            blob, _ = load_cert_file(certificate_file, certificate_password)
+            safe_set(cert_def, "certificateValue", value=blob)
         safe_set(cert_def, "dnsSuffix", value=hostname)
-        safe_set(cert_def, "certificatePassword", value=certificate_password)
-        safe_set(cert_def, "certificateValue", value=blob)
+        if certificate_password:
+            safe_set(cert_def, "certificatePassword", value=certificate_password)
 
     # if plan and plan.lower() == "premium":
     #     safe_set(env_def, "sku", "name", value="Premium")
