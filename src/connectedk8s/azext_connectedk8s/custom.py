@@ -68,7 +68,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
+                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None, enable_oidc_issuer=False):
     logger.warning("This operation might take a while...\n")
 
     # changing cli config to push telemetry in 1 hr interval
@@ -381,7 +381,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout, container_log_path)
+                               custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout, container_log_path, enable_oidc_issuer)
 
     return put_cc_response
 
@@ -949,7 +949,8 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None,
-                             distribution=None, distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
+                             distribution=None, distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None,
+                             enable_oidc_issuer=False):
 
     # Prompt for confirmation for few parameters
     if azure_hybrid_benefit == "True":
@@ -1101,6 +1102,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         cmd_helm_upgrade.extend(["--set", "global.isCustomCert={}".format(True)])
     if container_log_path is not None:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
+    if enable_oidc_issuer:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
