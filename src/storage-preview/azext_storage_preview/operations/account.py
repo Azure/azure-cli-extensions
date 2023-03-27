@@ -19,6 +19,7 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
                            tags=None, custom_domain=None, encryption_services=None, encryption_key_source=None,
                            encryption_key_name=None, encryption_key_vault=None, encryption_key_version=None,
                            access_tier=None, https_only=None, enable_sftp=None, enable_local_user=None,
+                           enable_files_aadkerb=None,
                            enable_files_aadds=None, bypass=None, default_action=None, assign_identity=False,
                            enable_large_file_share=None, enable_files_adds=None, domain_name=None,
                            net_bios_domain_name=None, forest_name=None, domain_guid=None, domain_sid=None,
@@ -94,6 +95,20 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
     if enable_files_aadds is not None:
         params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
             directory_service_options='AADDS' if enable_files_aadds else 'None')
+    if enable_files_aadkerb is not None:
+        if enable_files_aadkerb:
+            active_directory_properties = None
+            if domain_name or domain_guid:
+                ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
+                active_directory_properties = ActiveDirectoryProperties(domain_name=domain_name,
+                                                                        domain_guid=domain_guid)
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='AADKERB',
+                active_directory_properties=active_directory_properties)
+        else:
+            params.azure_files_identity_based_authentication = AzureFilesIdentityBasedAuthentication(
+                directory_service_options='None')
+
     if enable_files_adds is not None:
         ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
         if enable_files_adds:  # enable AD
