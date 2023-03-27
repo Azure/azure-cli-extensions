@@ -61,7 +61,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana restore") as c:
         c.argument("archive_file", options_list=["-a", "--archive-file"], help="archive to restore Grafana artifacts from")
-        c.argument("remap_data_sources", arg_type=get_three_state_flag(),
+        c.argument("remap_data_sources", options_list=["-r", "--remap-data-sources"], arg_type=get_three_state_flag(),
                    help="during restoration, update dashboards to reference data sources defined at the destination workspace through name matching")
 
     with self.argument_context("grafana dashboard") as c:

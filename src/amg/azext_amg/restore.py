@@ -25,8 +25,6 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     except IOError as e:
         raise ArgumentUsageError(f"failed to open {archive_file} as a tar file") from e
 
-    # Shell game magic warning: restore_function keys require the 's'
-    # to be removed in order to match file extension names...
     restore_functions = collections.OrderedDict()
     restore_functions['folder'] = _create_folder
     restore_functions['dashboard'] = _create_dashboard
