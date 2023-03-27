@@ -13,6 +13,7 @@ from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
 from azure.cli.core.style import print_styled_text, Style
 from prompt_toolkit.history import FileHistory
+from .scenario_search import SearchThread
 
 
 class RecommendType(int, Enum):
@@ -20,7 +21,7 @@ class RecommendType(int, Enum):
     Solution = 2
     Command = 3
     Scenario = 4
-
+    Search = 5
 
 class RecommendThread(threading.Thread):
     """ Worker Thread to fetch recommendation online based on user's context """
@@ -57,7 +58,8 @@ class Recommender:
         self.default_recommendations = {
             'help': 'Get help message of Azure CLI',
             'init': 'Set Azure CLI global configurations interactively',
-            'next': 'Recommend the possible next set of commands to take'
+            'next': 'Recommend the possible next set of commands to take',
+            'scenario guide <keywords>': 'Search for a scenario using keywords',
         }
         self.executing_command = None
 
@@ -100,10 +102,27 @@ class Recommender:
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
             processed_exception = self.cur_thread.processed_exception
             if not recommendations or not scenario:
-                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version=api_version)
+                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None,
+                              api_version=api_version)
             else:
                 send_feedback(f'b{scenario_idx + 1}', trigger_commands, processed_exception, recommendations,
                               accepted_recommend=scenario, api_version=api_version)
+
+    def feedback_search(self, search_idx, keywords, scenario=None):
+        """Send user's command choice in scenario search to telemetry.
+
+        :param search_idx: idx of the scenario in scenario recommendations list
+        :param scenario: selected scenario item
+        :param not_accepted: whether the user choose to not accept the scenario
+        :param keywords: search keywords
+        """
+        if self.cur_thread and not self.cur_thread.is_alive():
+            recommendations = self.cur_thread.result
+            api_version = self.cur_thread.api_version
+            search_keywords = keywords.split(' ')
+            processed_exception = self.cur_thread.processed_exception
+            send_feedback(f'c{search_idx + 1}', search_keywords, processed_exception, recommendations,
+                          accepted_recommend=scenario, api_version=api_version, request_type=5)
 
     def update_executing(self, cmd, feedback=True):
         """Update executing command info, and prefetch the recommendation result as if the execution is successful
@@ -250,7 +269,7 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
 
 
 def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, accepted_recommend=None,
-                  api_version=None):
+                  api_version=None, request_type=1):
 
     # initialize feedback data
     # If you want to add a new property to the feedback, please initialize it here in advance and place it with 'None' to prevent parameter loss due to parsing errors.
@@ -260,17 +279,21 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
                      "accepted_recommend_type": None, "accepted_recommend": None, "is_personalized": None}
 
     # request_type is the type of recommendation mode, 1 means recommend all tyes of recommendations of command, scenario and solution
-    feedback_data['request_type'] = 1
+    feedback_data['request_type'] = request_type
     # option is the index of the recommended command that user chooses.
     # 'a' means commands while 'b' means scenarios, such as 'a1'
     feedback_data['option'] = str(option_idx)
 
-    # trigger_commands is the commands that trigger the recommendation, can be multiple, max is 2 commands
-    if len(latest_commands) > 1:
-        trigger_commands = list(latest_commands[-2:])
+    if request_type == RecommendType.Search:
+        # trigger_commands is the keywords that used to search for scenarios
+        trigger_commands = latest_commands
     else:
-        trigger_commands = list(latest_commands[-1])
-    feedback_data["trigger_commands"] = trigger_commands
+        # trigger_commands is the commands that trigger the recommendation, can be multiple, max is 2 commands
+        if len(latest_commands) > 1:
+            trigger_commands = list(latest_commands[-2:])
+        else:
+            trigger_commands = list(latest_commands[-1])
+        feedback_data["trigger_commands"] = trigger_commands
 
     # get exception while command failed, succeeded commands return ' '
     if processed_exception and processed_exception != '':
@@ -298,7 +321,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
     if accepted_recommend:
         feedback_data["accepted_recommend_source"] = accepted_recommend['source']
         feedback_data["accepted_recommend_type"] = accepted_recommend['type']
-        if accepted_recommend['type'] == RecommendType.Scenario:
+        if accepted_recommend['type'] == RecommendType.Scenario or RecommendType.Search:
             feedback_data['accepted_recommend'] = accepted_recommend['scenario']
         else:
             feedback_data['accepted_recommend'] = accepted_recommend['command']

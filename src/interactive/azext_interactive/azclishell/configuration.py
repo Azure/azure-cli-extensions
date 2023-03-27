@@ -12,23 +12,26 @@ from azure.cli.core._help import PRIVACY_STATEMENT
 
 from prompt_toolkit import prompt  # pylint: disable=import-error
 
-
 SELECT_SYMBOL = {
     'outside': '#',
     'query': '??',
     'example': '::',
     'exit_code': '$',
     'scope': '%%',
-    'unscope': '..'
+    'unscope': '..',
+    # Where users enter keywords and requirement descriptions to search for commands and scenarios
+    'search': '/'
 }
 
 GESTURE_INFO = {
-    SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
     # pylint: disable=line-too-long
-    "[cmd] + [param] +" + "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Inject jmespath query from previous command",
+    SELECT_SYMBOL['search'] + ' [keyword]': "search for commands and scenarios",
+    SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
+    SELECT_SYMBOL['example'] + " [num]": "complete a recommended scenario step by step",
+    "[cmd] + [param] +" + "\"" + SELECT_SYMBOL[
+        'query'] + "[query]" + "\"": "Inject jmespath query from previous command",
     "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Jmespath query of the previous command",
     "[cmd] " + SELECT_SYMBOL['example'] + " [num]": "do a step by step tutorial of example",
-    SELECT_SYMBOL['example'] + " [num]": "complete a recommended scenario step by step",
     SELECT_SYMBOL['exit_code']: "get the exit code of the previous command",
     SELECT_SYMBOL['scope'] + '[cmd]': "set a scope, and scopes can be chained with spaces",
     SELECT_SYMBOL['scope'] + ' ' + SELECT_SYMBOL['unscope']: "go back a scope",
@@ -42,8 +45,8 @@ def help_text(values):
     """ reformats the help text """
     result = ""
     for key in values:
-        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) +\
-                        ': ' + values[key] + '\n'
+        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) + \
+                  ': ' + values[key] + '\n'
     return result
 
 
@@ -57,6 +60,7 @@ class Configuration(object):
                       'y': True, 'Y': True, 'n': False, 'N': False}
 
     """ Configuration information """
+
     def __init__(self, cli_config, style=None):
         self.config = configparser.ConfigParser({
             'firsttime': 'yes',

@@ -12,8 +12,10 @@ import os
 import re
 import subprocess
 import sys
-from threading import Thread
+import time
 
+
+from threading import Thread
 from six.moves import configparser
 from knack.log import get_logger
 from knack.util import CLIError
@@ -51,8 +53,8 @@ from . import telemetry
 from .recommendation import Recommender, _show_details_for_e2e_scenario, gen_command_in_scenario
 from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
-from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option
-import time
+from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option, select_option
+from .scenario_search import SearchThread, show_search_item
 
 
 
@@ -585,7 +587,7 @@ class AzInteractiveShell(object):
                     continue
                 cmd = document.text
                 # Update customized parameter value map
-                auto_suggest.update_customized_param_value_map(cmd)
+                auto_suggest.update_customized_cached_param_map(cmd)
                 self.history.append(cmd)
                 # Prefetch the next recommendation using current executing command
                 self.recommender.update_executing(cmd, feedback=False)
@@ -605,7 +607,45 @@ class AzInteractiveShell(object):
         example_cli.exit()
         del example_cli
 
-    # pylint: disable=too-many-statements
+    def handle_search(self, text):
+        """ parses for the scenario search """
+        keywords = text.partition(SELECT_SYMBOL['search'])[2].strip()
+        prompt_timeout_limit = 10
+        start_time = time.time()
+        self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
+                                                   self.recommender.recommendation_path,
+                                                   self.recommender.executing_command,
+                                                   self.recommender.on_prepared_callback)
+        self.recommender.cur_thread.start()
+        # Wait for the search thread to finish
+        while self.recommender.cur_thread.is_alive():
+            time.sleep(0.1)
+            time_spent_on_loading = time.time() - start_time
+            if time_spent_on_loading > prompt_timeout_limit:
+                print_styled_text([(Style.WARNING, 'Timeout to get search results.')])
+                break
+            if self.recommender.cur_thread.result:
+                break
+        if self.recommender.cur_thread.result:
+            results = self.recommender.cur_thread.result
+            if len(results) == 0:
+                print(print_styled_text([(Style.WARNING, 'No search results.')]))
+                # -1 means no result, since the idx+1 in feedback function, so passed -2
+                self.recommender.feedback_search(self, -2, keywords)
+            else:
+                show_search_item(results)
+
+                option_msg = [(Style.ACTION, " ? "), (Style.PRIMARY, "Please select your option "),
+                              (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
+                option = select_option(option_msg, min_option=0, max_option=len(results), default_option=-1)
+                if option == 0:
+                    # -1 means no selection, since the idx+1 in feedback function, so passed -2
+                    self.recommender.feedback_search(self, -2, keywords)
+                elif option > 0:
+                    scenario = results[option - 1]
+                    self.recommender.feedback_search(option - 1, keywords, scenario=scenario)
+                    self.scenario_repl(scenario)
+
     def _special_cases(self, cmd, outside):
         break_flag = False
         continue_flag = False
@@ -651,8 +691,12 @@ class AzInteractiveShell(object):
         elif cmd.startswith(SELECT_SYMBOL['example']):
             self.handle_scenario(cmd)
             continue_flag = True
+        elif cmd.startswith(SELECT_SYMBOL['search']):
+            self.handle_search(cmd)
+            continue_flag = True
         elif SELECT_SYMBOL['example'] in cmd:
             cmd, continue_flag = self.handle_example(cmd, continue_flag)
+            telemetry.track_ran_tutorial()
             telemetry.track_ran_tutorial()
         elif SELECT_SYMBOL['scope'] == cmd_stripped[0:2]:
             continue_flag, cmd = self.handle_scoping_input(continue_flag, cmd, cmd_stripped)
