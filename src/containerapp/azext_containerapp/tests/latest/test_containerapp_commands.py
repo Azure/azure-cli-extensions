@@ -926,6 +926,127 @@ class ContainerappScaleTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='yaml', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
+        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = user_identity['id']
+
+        # test managedEnvironmentId
+        containerapp_yaml_text = f"""
+            location: {TEST_LOCATION}
+            type: Microsoft.App/containerApps
+            tags:
+                tagname: value
+            properties:
+              managedEnvironmentId: {containerapp_env["id"]}
+              configuration:
+                activeRevisionsMode: Multiple
+                ingress:
+                  external: true
+                  allowInsecure: false
+                  targetPort: 80
+                  traffic:
+                    - latestRevision: true
+                      weight: 100
+                  transport: Auto
+              template:
+                revisionSuffix: myrevision
+                containers:
+                  - image: nginx
+                    name: nginx
+                    env:
+                      - name: HTTP_PORT
+                        value: 80
+                    command:
+                      - npm
+                      - start
+                    resources:
+                      cpu: 0.5
+                      memory: 1Gi
+                scale:
+                  minReplicas: 1
+                  maxReplicas: 3
+            identity:
+              type: UserAssigned
+              userAssignedIdentities:
+                {user_identity_id}: {{}}
+            """
+        containerapp_file_name = "containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+        ])
+
+        # test environmentId
+        containerapp_yaml_text = f"""
+                    location: {TEST_LOCATION}
+                    type: Microsoft.App/containerApps
+                    tags:
+                        tagname: value
+                    properties:
+                      environmentId: {containerapp_env["id"]}
+                      configuration:
+                        activeRevisionsMode: Multiple
+                        ingress:
+                          external: true
+                          allowInsecure: false
+                          targetPort: 80
+                          traffic:
+                            - latestRevision: true
+                              weight: 100
+                          transport: Auto
+                      template:
+                        revisionSuffix: myrevision
+                        containers:
+                          - image: nginx
+                            name: nginx
+                            env:
+                              - name: HTTP_PORT
+                                value: 80
+                            command:
+                              - npm
+                              - start
+                            resources:
+                              cpu: 0.5
+                              memory: 1Gi
+                        scale:
+                          minReplicas: 1
+                          maxReplicas: 3
+                    """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
+    def test_containerapp_create_with_vnet__yaml(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
 
         self.cmd(f"network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
