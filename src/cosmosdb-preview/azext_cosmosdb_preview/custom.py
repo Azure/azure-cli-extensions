@@ -143,24 +143,17 @@ def cli_cosmosdb_mongocluster_create(client,
                                     shard_node_tier=None,
                                     shard_node_disk_size_gb=None, 
                                     shard_node_ha=None,
-                                    shard_node_name=None,
                                     shard_kind=NodeKind.SHARD.value,
                                     shard_node_count=1):
 
     '''Creates an Azure Cosmos DB Mongo Cluster '''
     
-    if administrator_login is None:
-        raise InvalidArgumentValueError('Initial Mongo Cluster Admin user is required.')
+    if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
+        raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
 
-    if administrator_login_password is None :
-        raise InvalidArgumentValueError('Initial Mongo Cluster Admin Password is required.')
-
-    if restore_point_in_time_utc is not None and restore_source_resource_id is None:
+    if ((restore_point_in_time_utc is not None and restore_source_resource_id is None) or(restore_point_in_time_utc is None and restore_source_resource_id is not None)):
         raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
 
-    if restore_point_in_time_utc is None and restore_source_resource_id is not None:
-        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
-    
     mongocluster_restore_parameters = MongoClusterRestoreParameters(
         point_in_time_utc=restore_point_in_time_utc,
         source_resource_id=restore_source_resource_id,
@@ -170,7 +163,6 @@ def cli_cosmosdb_mongocluster_create(client,
         sku= shard_node_tier,
         disk_size_gb= shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
-        name= shard_node_name,
         kind=shard_kind,
         node_count= shard_node_count
     )
@@ -199,7 +191,6 @@ def cli_cosmosdb_mongocluster_update(client,
                                     shard_node_tier=None,
                                     shard_node_ha=None,
                                     shard_node_disk_size_gb=None, 
-                                    shard_node_name=None,
                                     shard_kind=NodeKind.SHARD.value):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
@@ -207,11 +198,9 @@ def cli_cosmosdb_mongocluster_update(client,
     mongo_cluster_resource = client.get(resource_group_name, cluster_name)
 
     # user name and password should be updated together
-    if administrator_login is None and administrator_login_password is not None:
-          raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
-    
-    if administrator_login is not None and administrator_login_password is None:
-          raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
+       
+    if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
+        raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
   
     if administrator_login_password is None:
         administrator_login_password = mongo_cluster_resource.administrator_login_password
@@ -224,25 +213,22 @@ def cli_cosmosdb_mongocluster_update(client,
     if tags is None:
         tags = mongo_cluster_resource.tags
     if create_mode is None:
-        create_mode= mongo_cluster_resource.create_mode
+        create_mode = mongo_cluster_resource.create_mode
     
     # Shard info update.
     if shard_node_tier is None:
-        shard_node_tier= mongo_cluster_resource.node_group_specs[0].sku
+        shard_node_tier = mongo_cluster_resource.node_group_specs[0].sku
     if shard_node_disk_size_gb is None:
-        shard_node_disk_size_gb= mongo_cluster_resource.node_group_specs[0].disk_size_gb
+        shard_node_disk_size_gb = mongo_cluster_resource.node_group_specs[0].disk_size_gb
     if shard_node_ha is None:
-        shard_node_ha= mongo_cluster_resource.node_group_specs[0].enable_ha
-    if shard_node_name is None:
-        shard_node_name= mongo_cluster_resource.node_group_specs[0].additional_properties["name"]
+        shard_node_ha = mongo_cluster_resource.node_group_specs[0].enable_ha
     if shard_kind is None:
-        shard_kind= mongo_cluster_resource.node_group_specs[0].kind
+        shard_kind = mongo_cluster_resource.node_group_specs[0].kind
    
     node_group_spec = NodeGroupSpec(
-        sku= shard_node_tier,
-        disk_size_gb= shard_node_disk_size_gb,
+        sku=shard_node_tier,
+        disk_size_gb=shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
-        name= shard_node_name,
         kind=shard_kind,
         node_count=None,
     )
