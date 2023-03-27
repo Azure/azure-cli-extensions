@@ -1043,7 +1043,7 @@ class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
-    def test_containerapp_create_with_vnet__yaml(self, resource_group):
+    def test_containerapp_create_with_vnet_yaml(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
