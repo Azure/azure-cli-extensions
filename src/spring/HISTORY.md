@@ -1,5 +1,18 @@
 Release History
 ===============
+1.9.0
+---
+* Add new command -- `az spring build-service build create`.
+* Add new command -- `az spring build-service build update`.
+* Add new command -- `az spring build-service build show`.
+* Add new command -- `az spring build-service build list`.
+* Add new command -- `az spring build-service build delete`.
+* Add new command -- `az spring build-service build result show`.
+* Add new command -- `az spring build-service build result list`.
+* Add new command -- `az spring container-registry update`.
+* Add new command -- `az spring container-registry show`.
+* Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
+
 1.8.0
 ---
 * Add Azure Spring Apps StandardGen2 tier.
