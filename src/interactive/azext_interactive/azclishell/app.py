@@ -845,7 +845,7 @@ class AzInteractiveShell(object):
             # setup how long to wait before prompting the customer to continue loading
             # whether the loading time is too long(>150s)
             prompt_timeout_limit = 150
-            if time_loading_too_long > prompt_timeout_limit and already_prompted == False:
+            if time_spent_on_loading > prompt_timeout_limit and already_prompted == False:
                 print_styled_text([(Style.WARNING, '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
                 step_msg = [(Style.PRIMARY, "Do you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
                             (Style.PRIMARY, "If you choose n, it will start the shell immediately, but it may cause unknown errors due to incomplete module loading.\n")]
