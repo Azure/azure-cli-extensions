@@ -1103,7 +1103,10 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     if container_log_path is not None:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
     if enable_oidc_issuer:
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
+        if not auto_upgrade:
+            logger.warning("Please upgrade to latest agent version to enable this oidc issuer feature")
+        else:
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
