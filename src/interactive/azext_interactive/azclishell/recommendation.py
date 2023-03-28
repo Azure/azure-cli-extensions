@@ -343,7 +343,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
         telemetry.set_command_details('search')
     else:
         telemetry.set_command_details('next')
-    telemetry.set_cli_recommendation(api_version=api_version, cli_recommendation_feedback=feedback_data)
+    telemetry.set_cli_recommendation(api_version=api_version, feedback=feedback_data)
     telemetry.flush()
 
 
