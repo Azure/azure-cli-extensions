@@ -293,7 +293,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
             trigger_commands = list(latest_commands[-2:])
         else:
             trigger_commands = list(latest_commands[-1])
-        feedback_data["trigger_commands"] = trigger_commands
+    feedback_data["trigger_commands"] = trigger_commands
 
     # get exception while command failed, succeeded commands return ' '
     if processed_exception and processed_exception != '':
@@ -321,7 +321,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
     if accepted_recommend:
         feedback_data["accepted_recommend_source"] = accepted_recommend['source']
         feedback_data["accepted_recommend_type"] = accepted_recommend['type']
-        if accepted_recommend['type'] == RecommendType.Scenario or RecommendType.Search:
+        if accepted_recommend['type'] == RecommendType.Scenario or accepted_recommend['type'] == RecommendType.Search:
             feedback_data['accepted_recommend'] = accepted_recommend['scenario']
         else:
             feedback_data['accepted_recommend'] = accepted_recommend['command']
@@ -339,8 +339,11 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
             feedback_data[key] = "None"
 
     telemetry.start(mode='interactive')
-    telemetry.set_command_details('next')
-    telemetry.set_cli_recommendation_feedback(api_version=api_version, recommendation_properties=feedback_data)
+    if request_type == RecommendType.Search:
+        telemetry.set_command_details('search')
+    else:
+        telemetry.set_command_details('next')
+    telemetry.set_cli_recommendation_feedback(api_version=api_version, cli_recommendation_feedback=feedback_data)
     telemetry.flush()
 
 
