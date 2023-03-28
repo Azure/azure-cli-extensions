@@ -2516,6 +2516,7 @@ def aks_mesh_enable_ingress_gateway(
         client,
         resource_group_name,
         name,
+        enable_azure_service_mesh=True,
         enable_ingress_gateway=True,
         ingress_gateway_type=ingress_gateway_type)
 

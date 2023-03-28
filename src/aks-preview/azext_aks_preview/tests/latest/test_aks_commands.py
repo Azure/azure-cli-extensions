@@ -6821,6 +6821,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_azure_service_mesh(self, resource_group, resource_group_location):
+        """ This test case exercises enabling and disabling service mesh profile.
+
+        It creates a cluster without azure service mesh profile.  Then enable it by
+        running `aks mesh enable` followed by disabling by running `aks mesh disable`.
+        """
+
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -6832,13 +6838,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
-        # create: enable-azure-service-mesh
+        # create cluster without --enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --output=json ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview '
+                     '--ssh-key-value={ssh_key_value} --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('serviceMeshProfile.mode', 'Disabled'),
         ])
 
         # enable azure service mesh again
@@ -6862,6 +6866,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_azure_service_mesh_with_ingress_gateway(self, resource_group, resource_group_location):
+        """ This test case exercises enabling and disabling an ingress gateway.
+
+        It creates a cluster with azure service mesh profile. After that, we enable an ingress
+        gateway, then disable it.
+        """
+
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -6873,10 +6883,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
-        # create: enable-azure-service-mesh
+        # create cluster with --enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --output=json ' \
-                     '--enable-azure-service-mesh'
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--enable-azure-service-mesh --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('serviceMeshProfile.mode', 'Istio'),
@@ -6887,8 +6897,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--ingress-gateway-type Internal'
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
-            self.check('serviceMeshProfile.istio.components.ingress_gateways[0].mode', 'Internal'),
-            self.check('serviceMeshProfile.istio.components.ingress_gateways[0].enabled', True)
+            self.check('serviceMeshProfile.istio.components.ingressGateways[0].mode', 'Internal'),
+            self.check('serviceMeshProfile.istio.components.ingressGateways[0].enabled', True)
         ])
 
         # disable ingress gateway
@@ -6896,8 +6906,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--ingress-gateway-type Internal --yes'
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
-            self.check('serviceMeshProfile.istio.components.ingress_gateways[0].mode', 'Internal'),
-            self.check('serviceMeshProfile.istio.components.ingress_gateways[0].enabled', False)
+            self.check('serviceMeshProfile.istio.components.ingressGateways[0].mode', 'Internal'),
+            self.check('serviceMeshProfile.istio.components.ingressGateways[0].enabled', None)
         ])
 
         # delete the cluster

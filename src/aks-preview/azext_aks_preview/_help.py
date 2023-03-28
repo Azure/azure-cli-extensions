@@ -2407,6 +2407,12 @@ helps['aks draft update'] = """
         text: az aks draft update --host=some_host --certificate=some_certificate --destination=/projects/some_project
 """
 
+helps['aks mesh'] = """
+    type: group
+    short-summary: Commands to manage Azure Service Mesh.
+    long-summary: A group of commands to manage Azure Service Mesh in given cluster.
+"""
+
 helps['aks mesh enable'] = """
     type: command
     short-summary: Enable Azure Service Mesh.
@@ -2430,7 +2436,7 @@ helps['aks mesh enable-ingress-gateway'] = """
         long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address; "Internal" which is backed by a load balancer with an internal IP address.
     examples:
       - name: Enable an internal ingress gateway.
-        text: az aks mesh enable-ingress --ingress-gateway-type Internal
+        text: az aks mesh enable-ingress-gateway --ingress-gateway-type Internal
 """
 
 helps['aks mesh disable-ingress-gateway'] = """
@@ -2444,5 +2450,5 @@ helps['aks mesh disable-ingress-gateway'] = """
         long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address, "Internal" which is backed by a load balancer with an internal IP address.
     examples:
       - name: Disable an internal ingress gateway.
-        text: az aks mesh disable-ingress --ingress-gateway-type Internal
+        text: az aks mesh disable-ingress-gateway --ingress-gateway-type Internal
 """
