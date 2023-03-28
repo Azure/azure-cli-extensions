@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
 * Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
 * Vendor new SDK and bump API version to 2023-02-02-preview.
 
