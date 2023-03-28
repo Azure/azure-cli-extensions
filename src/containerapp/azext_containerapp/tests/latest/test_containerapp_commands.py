@@ -1065,7 +1065,7 @@ class ContainerappScaleTests(ScenarioTest):
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = user_identity['id']
 
-        # test managedEnvironmentId
+        # test create containerapp transport: Tcp, with exposedPort
         containerapp_yaml_text = f"""
         location: {TEST_LOCATION}
         type: Microsoft.App/containerApps
@@ -1122,7 +1122,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.maxReplicas", 3)
         ])
 
-        # test environmentId
+        # test update containerapp transport: Tcp, with exposedPort
         containerapp_yaml_text = f"""
                 location: {TEST_LOCATION}
                 type: Microsoft.App/containerApps
@@ -1167,6 +1167,71 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
             JMESPathCheck("properties.configuration.ingress.exposedPort", 9551),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+        ])
+
+        # test create containerapp transport: http, with CORS policy
+        containerapp_yaml_text = f"""
+                        location: {TEST_LOCATION}
+                        type: Microsoft.App/containerApps
+                        tags:
+                            tagname: value
+                        properties:
+                          environmentId: {containerapp_env["id"]}
+                          configuration:
+                            activeRevisionsMode: Multiple
+                            ingress:
+                              external: true
+                              allowInsecure: false
+                              clientCertificateMode: Require
+                              corsPolicy:
+                                allowedOrigins: [a, b]
+                                allowedMethods: [c, d]
+                                allowedHeaders: [e, f]
+                                exposeHeaders: [g, h]
+                                maxAge: 7200
+                                allowCredentials: true
+                              targetPort: 80
+                              traffic:
+                                - latestRevision: true
+                                  weight: 100
+                              transport: http
+                          template:
+                            revisionSuffix: myrevision
+                            containers:
+                              - image: nginx
+                                name: nginx
+                                env:
+                                  - name: HTTP_PORT
+                                    value: 80
+                                command:
+                                  - npm
+                                  - start
+                                resources:
+                                  cpu: 0.5
+                                  memory: 1Gi
+                            scale:
+                              minReplicas: 1
+                              maxReplicas: 3
+                        """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        app2 = self.create_random_name(prefix='yaml', length=24)
+        self.cmd(f'containerapp create -n {app2} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.clientCertificateMode", "Require"),
+            JMESPathCheck("properties.configuration.ingress.corsPolicy.allowCredentials", True),
+            JMESPathCheck("properties.configuration.ingress.corsPolicy.maxAge", 7200),
+            JMESPathCheck("properties.configuration.ingress.corsPolicy.allowedHeaders[0]", "e"),
+            JMESPathCheck("properties.configuration.ingress.corsPolicy.allowedMethods[0]", "c"),
+            JMESPathCheck("properties.configuration.ingress.corsPolicy.allowedOrigins[0]", "a"),
+            JMESPathCheck("properties.configuration.ingress.corsPolicy.exposeHeaders[0]", "g"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
