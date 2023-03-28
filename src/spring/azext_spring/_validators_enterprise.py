@@ -114,14 +114,14 @@ def validate_build_pool_size(namespace):
 
 def validate_build_service(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
-        if (namespace.container_registry_server or namespace.container_registry_username or namespace.container_registry_password is not None) \
-                and ((namespace.container_registry_server is None) or (namespace.container_registry_username is None) or (namespace.container_registry_password is None)):
+        if (namespace.cr_server or namespace.cr_username or namespace.cr_password is not None) \
+                and ((namespace.cr_server is None) or (namespace.cr_username is None) or (namespace.cr_password is None)):
             raise InvalidArgumentValueError(
-                "The'--container-registry-server', '--container-registry-username' and '--container-registry-password' should be specified together.")
-        if (namespace.container_registry_server or namespace.container_registry_username or namespace.container_registry_password is not None) \
+                "The'--cr-server', '--cr-username' and '--cr-password' should be specified together.")
+        if (namespace.cr_server or namespace.cr_username or namespace.cr_password is not None) \
                 and namespace.disable_build_service:
             raise InvalidArgumentValueError(
-                "Conflict detected: '--container-registry-server', '--container-registry-username' and '--container-registry-password' "
+                "Conflict detected: '--cr-server', '--cr-username' and '--cr-password' "
                 "can not be set with '--disable-build-service'.")
         if namespace.disable_build_service:
             namespace.disable_app_insights = True
@@ -130,7 +130,7 @@ def validate_build_service(namespace):
                     "Conflict detected: '--app-insights' or '--app-insights-key' "
                     "can not be set with '--disable_build_service'.")
     else:
-        if namespace.disable_build_service or namespace.container_registry_server or namespace.container_registry_username or namespace.container_registry_password is not None:
+        if namespace.disable_build_service or namespace.cr_server or namespace.cr_username or namespace.cr_password is not None:
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
 
 

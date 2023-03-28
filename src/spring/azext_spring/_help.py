@@ -726,6 +726,11 @@ helps['spring build-service builder delete'] = """
           text: az spring build-service builder delete --name my-builder --service clitest --resource-group cli
 """
 
+helps['spring build-service build'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Build Resource
+"""
+
 helps['spring build-service build create'] = """
     type: command
     short-summary: Create a build.
@@ -766,6 +771,11 @@ helps['spring build-service build delete'] = """
           text: az spring build-service build delete --name my-build --service clitest --resource-group cli
 """
 
+helps['spring build-service build result'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to view Build Result Resource
+"""
+
 helps['spring build-service build result show'] = """
     type: command
     short-summary: Show a build result.
@@ -780,6 +790,11 @@ helps['spring build-service build result list'] = """
     examples:
         - name: List build results by the build name.
           text: az spring build-service build result list --build-name my-build --service clitest --resource-group cli
+"""
+
+helps['spring container-registry'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Container Registry Resource
 """
 
 helps['spring container-registry update'] = """

@@ -406,7 +406,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'build_show')
         g.custom_show_command('list', 'build_list', table_transformer=transform_build_output)
         g.custom_command('delete', 'build_delete', supports_no_wait=True, confirmation=True)
- 
+
     with self.command_group('spring build-service build result',
                             custom_command_type=build_service_cmd_group,
                             validator=validate_central_build_instance,

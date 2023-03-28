@@ -32,21 +32,21 @@ def _update_default_build_agent_pool(cmd, client, resource_group, name, build_po
 
 
 def create_build_service(cmd, client, resource_group, service, disable_build_service=False,
-                         container_registry_server=None, container_registry_username=None, container_registry_password=None):
+                         cr_server=None, cr_username=None, cr_password=None):
     if not disable_build_service:
-        if container_registry_server is not None:
+        if cr_server is not None:
             container_registry_properties = models.ContainerRegistryProperties(
                 credentials=models.ContainerRegistryBasicCredentials(
                     type=DEFAULT_CONTAINER_REGISTRY_TYPE,
-                    server=container_registry_server,
-                    username=container_registry_username,
-                    password=container_registry_password))
+                    server=cr_server,
+                    username=cr_username,
+                    password=cr_password))
             container_registry_resource = models.ContainerRegistryResource(
                 properties=container_registry_properties)
             poller = client.container_registries.begin_create_or_update(
                 resource_group, service, DEFAULT_CONTAINER_REGISTRY_NAME, container_registry_resource)
             LongRunningOperation(cmd.cli_ctx)(poller)
-            
+
             build_service_properties = models.BuildServiceProperties(
                 container_registry=DEFAULT_CONTAINER_REGISTRY_NAME)
             build_service_resource = models.BuildService(
@@ -86,7 +86,7 @@ def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
 
 def update_container_registry(cmd, client, resource_group, service, name=None, server=None, username=None, password=None):
     container_registry_properties = models.ContainerRegistryProperties(
-        credentials = models.ContainerRegistryBasicCredentials(
+        credentials=models.ContainerRegistryBasicCredentials(
             server=server,
             username=username,
             password=password))
