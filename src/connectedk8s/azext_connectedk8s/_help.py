@@ -45,8 +45,8 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-proxy
     - name: Disable auto-upgrade of agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false
-    - name: Onboard a connected kubernetes cluster with oidc issuer creation for workload identity enabled.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-oidc-issuer
+    - name: Update a connected kubernetes cluster with oidc issuer creation for workload identity enabled.
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-oidc-issuer
 """
 
 helps['connectedk8s upgrade'] = """
