@@ -5,10 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azure.cli.command_modules.serviceconnector._client_factory import (
-    cf_linker,
-    cf_connector
-)
+
 from azure.cli.command_modules.serviceconnector._resource_config import (
     SOURCE_RESOURCES,
 )
@@ -18,6 +15,10 @@ from azure.cli.command_modules.serviceconnector._transformers import (
 from azure.cli.command_modules.serviceconnector._utils import should_load_source
 
 from ._resource_config import passwordless_target_resources
+from ._client_factory import (
+    cf_linker,
+    cf_connector
+)
 
 
 def load_command_table(self, _):

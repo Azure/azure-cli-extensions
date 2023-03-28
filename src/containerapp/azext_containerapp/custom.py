@@ -1126,6 +1126,12 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                no_wait=False):
+    if logs_destination == "log-analytics" or logs_customer_id or logs_key:
+        if logs_destination != "log-analytics":
+            raise ValidationError("When configuring Log Analytics workspace, --logs-destination should be \"log-analytics\"")
+        if not logs_customer_id or not logs_key:
+            raise ValidationError("Must provide --logs-workspace-id and --logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
@@ -1141,25 +1147,25 @@ def update_managed_environment(cmd,
         logs_destination = None if logs_destination == "none" else logs_destination
         safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
-    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
-        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
-
-    if logs_customer_id and logs_key:
+    if logs_destination == "log-analytics":
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+    else:
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
-    safe_set(env_def, "properties", "customDomainConfiguration", value={})
-    cert_def = env_def["properties"]["customDomainConfiguration"]
     if hostname:
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        safe_set(env_def, "properties", "customDomainConfiguration", value={})
+        cert_def = env_def["properties"]["customDomainConfiguration"]
+        if certificate_file:
+            blob, _ = load_cert_file(certificate_file, certificate_password)
+            safe_set(cert_def, "certificateValue", value=blob)
         safe_set(cert_def, "dnsSuffix", value=hostname)
-        safe_set(cert_def, "certificatePassword", value=certificate_password)
-        safe_set(cert_def, "certificateValue", value=blob)
+        if certificate_password:
+            safe_set(cert_def, "certificatePassword", value=certificate_password)
 
-    # no PATCH api support atm, put works fine even with partial json
     try:
-        r = ManagedEnvironmentClient.create(
+        r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
 
     except Exception as e:
@@ -1887,6 +1893,60 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         logger.warning("Ingress has been disabled successfully.")
         return
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, transport=None, exposed_port=None, allow_insecure=False, disable_warnings=False, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    if containerapp_def["properties"]["configuration"]["ingress"] is None:
+        raise ValidationError("The containerapp '{}' does not have ingress enabled. Try running `az containerapp ingress -h` for more info.".format(name))
+
+    external_ingress = None
+    if type is not None:
+        if type.lower() == "internal":
+            external_ingress = False
+        elif type.lower() == "external":
+            external_ingress = True
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    ingress_def = {}
+    if external_ingress is not None:
+        ingress_def["external"] = external_ingress
+    if target_port is not None:
+        ingress_def["targetPort"] = target_port
+    if transport is not None:
+        ingress_def["transport"] = transport
+    if allow_insecure is not None:
+        ingress_def["allowInsecure"] = allow_insecure
+
+    if "transport" in ingress_def and ingress_def["transport"] == "tcp":
+        if exposed_port is not None:
+            ingress_def["exposedPort"] = exposed_port
+    else:
+        ingress_def["exposedPort"] = None
+
+    containerapp_patch_def["properties"]["configuration"]["ingress"] = ingress_def
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        not disable_warnings and logger.warning("\nIngress Updated. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        return r["properties"]["configuration"]["ingress"]
     except Exception as e:
         handle_raw_exception(e)
 
