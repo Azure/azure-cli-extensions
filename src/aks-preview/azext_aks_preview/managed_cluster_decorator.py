@@ -2526,8 +2526,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         raise RequiredArgumentMissingError(error_msg)
 
-    def update_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update outbound type of network profile for the ManagedCluster object.
+    def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update network plugin settings of network profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
@@ -3043,7 +3043,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # update linux profile
         mc = self.update_linux_profile(mc)
         # update network profile
-        mc = self.update_network_profile(mc)
+        mc = self.update_network_plugin_settings(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
         # update kube proxy config
