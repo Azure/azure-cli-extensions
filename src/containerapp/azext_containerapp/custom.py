@@ -1150,7 +1150,7 @@ def update_managed_environment(cmd,
     if logs_destination == "log-analytics":
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
-    else:
+    elif logs_destination:
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
@@ -1893,6 +1893,60 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         logger.warning("Ingress has been disabled successfully.")
         return
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, transport=None, exposed_port=None, allow_insecure=False, disable_warnings=False, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    if containerapp_def["properties"]["configuration"]["ingress"] is None:
+        raise ValidationError("The containerapp '{}' does not have ingress enabled. Try running `az containerapp ingress -h` for more info.".format(name))
+
+    external_ingress = None
+    if type is not None:
+        if type.lower() == "internal":
+            external_ingress = False
+        elif type.lower() == "external":
+            external_ingress = True
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    ingress_def = {}
+    if external_ingress is not None:
+        ingress_def["external"] = external_ingress
+    if target_port is not None:
+        ingress_def["targetPort"] = target_port
+    if transport is not None:
+        ingress_def["transport"] = transport
+    if allow_insecure is not None:
+        ingress_def["allowInsecure"] = allow_insecure
+
+    if "transport" in ingress_def and ingress_def["transport"] == "tcp":
+        if exposed_port is not None:
+            ingress_def["exposedPort"] = exposed_port
+    else:
+        ingress_def["exposedPort"] = None
+
+    containerapp_patch_def["properties"]["configuration"]["ingress"] = ingress_def
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        not disable_warnings and logger.warning("\nIngress Updated. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        return r["properties"]["configuration"]["ingress"]
     except Exception as e:
         handle_raw_exception(e)
 
