@@ -2125,7 +2125,7 @@ class Ingress(Model):
         self.transport = kwargs.get('transport', None)
         self.traffic = kwargs.get('traffic', None)
         self.custom_domains = kwargs.get('custom_domains', None)
-        self.allow_insecure = kwargs.get('allow_insecure', False)
+        self.allow_insecure = kwargs.get('allow_insecure', None)
         self.ipSecurityRestrictions = kwargs.get('ip_security_restrictions', None)
         self.clientCertificateMode = kwargs.get('client_certificate_mode', None)
         self.corsPolicy = kwargs.get('cors_policy', None)

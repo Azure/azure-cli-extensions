@@ -953,6 +953,10 @@ class ContainerappScaleTests(ScenarioTest):
                     - latestRevision: true
                       weight: 100
                   transport: Auto
+                  ipSecurityRestrictions:
+                    - name: name
+                      ipAddressRange: "1.1.1.1/10"
+                      action: "Allow"
               template:
                 revisionSuffix: myrevision
                 containers:
@@ -983,6 +987,9 @@ class ContainerappScaleTests(ScenarioTest):
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
@@ -1033,6 +1040,9 @@ class ContainerappScaleTests(ScenarioTest):
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
@@ -1196,6 +1206,10 @@ class ContainerappScaleTests(ScenarioTest):
                                 maxAge: 7200
                                 allowCredentials: true
                               targetPort: 80
+                              ipSecurityRestrictions:
+                                - name: name
+                                  ipAddressRange: "1.1.1.1/10"
+                                  action: "Allow"
                               traffic:
                                 - latestRevision: true
                                   weight: 100
@@ -1232,6 +1246,9 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.corsPolicy.allowedMethods[0]", "c"),
             JMESPathCheck("properties.configuration.ingress.corsPolicy.allowedOrigins[0]", "a"),
             JMESPathCheck("properties.configuration.ingress.corsPolicy.exposeHeaders[0]", "g"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
