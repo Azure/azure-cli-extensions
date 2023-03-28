@@ -629,7 +629,8 @@ class AzInteractiveShell(object):
         if self.recommender.cur_thread.result:
             results = self.recommender.cur_thread.result
             if len(results) == 0:
-                print(print_styled_text([(Style.WARNING, 'No search results.')]))
+                print_styled_text([(Style.WARNING, 'No search results.')])
+                print()
                 # -1 means no result, since the idx+1 in feedback function, so passed -2
                 self.recommender.feedback_search(-2, keywords)
             else:

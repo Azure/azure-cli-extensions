@@ -84,7 +84,7 @@ class ScenarioAutoSuggest(AutoSuggest):
             unfinished = user_input.rsplit(' ', 1)[-1]
             # list of unused parameters in current sample
             unused_param = list(self.param_sample_value_map.keys())
-            completed_parts = user_input[-len(unfinished):].strip().split()
+            completed_parts = user_input.rsplit(' ', 1)[0].strip().split()
             # last completed part of user's input
             last_part = completed_parts[-1]
 
@@ -105,22 +105,11 @@ class ScenarioAutoSuggest(AutoSuggest):
 
             # If user is inputting a parameter, suggest the parameter and the rest part
             if unfinished.startswith('-'):
-                suggest = []
                 # Find the parameter user is inputting and suggest the unfinished part
                 for param in unused_param:
                     if param.startswith(unfinished):
-                        suggest.append(param[len(unfinished):])
-                        if self.param_sample_value_map[param]:
-                            suggest.append(self.param_sample_value_map[param])
                         unused_param.remove(param)
-                        break
-                if suggest:
-                    # If we suggest the inputting param successfully, suggest the rest parameters
-                    for param in unused_param:
-                        suggest.append(param)
-                        if self.param_sample_value_map[param]:
-                            suggest.append(self.param_sample_value_map[param])
-                    return Suggestion(' '.join(suggest))
+                        return Suggestion(param[len(unfinished):])
             elif unfinished == '':
                 if not last_part.startswith('-'):
                     for param in unused_param:
@@ -136,6 +125,6 @@ class ScenarioAutoSuggest(AutoSuggest):
                                 value = ''
                             return Suggestion(' '.join([param, value]))
 
-        # If the user hasn't finished the command part, suggest the whole sample
+        # If the user hasn't finished the command part, suggest the whole command
         elif self.cur_command.startswith(user_input):
             return Suggestion(self.cur_sample[len(user_input):])
