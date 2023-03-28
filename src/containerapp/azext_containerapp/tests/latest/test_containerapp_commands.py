@@ -781,7 +781,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
 
-        create_containerapp_env(self, env, resource_group, "westeurope")
+        create_containerapp_env(self, env, resource_group)
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 
@@ -931,6 +931,10 @@ class ContainerappScaleTests(ScenarioTest):
         create_containerapp_env(self, env, resource_group)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
+        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
+        user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = user_identity['id']
+
         # test managedEnvironmentId
         containerapp_yaml_text = f"""
         location: {TEST_LOCATION}
@@ -966,6 +970,10 @@ class ContainerappScaleTests(ScenarioTest):
             scale:
               minReplicas: 1
               maxReplicas: 3
+        identity:
+          type: UserAssigned
+          userAssignedIdentities:
+            {user_identity_id}: {{}}
         """
         containerapp_file_name = "containerapp.yml"
 
