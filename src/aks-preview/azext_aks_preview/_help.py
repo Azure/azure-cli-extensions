@@ -2436,7 +2436,7 @@ helps['aks mesh enable-ingress-gateway'] = """
         long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address; "Internal" which is backed by a load balancer with an internal IP address.
     examples:
       - name: Enable an internal ingress gateway.
-        text: az aks mesh enable-ingress-gateway --ingress-gateway-type Internal
+        text: az aks mesh enable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
 helps['aks mesh disable-ingress-gateway'] = """
@@ -2450,5 +2450,5 @@ helps['aks mesh disable-ingress-gateway'] = """
         long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address, "Internal" which is backed by a load balancer with an internal IP address.
     examples:
       - name: Disable an internal ingress gateway.
-        text: az aks mesh disable-ingress-gateway --ingress-gateway-type Internal
+        text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
