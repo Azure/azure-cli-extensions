@@ -131,3 +131,11 @@ helps['connectedk8s troubleshoot'] = """
   - name: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
     text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName
 """
+
+helps['connectedk8s show-issuer-url'] = """
+    type: command
+    short-summary: Show the issuer url for the cluster provided.
+    examples:
+    - name: Show the details for a connected kubernetes cluster
+      text: az connectedk8s show-issuer-url -g resourceGroupName -n connectedClusterName
+"""
