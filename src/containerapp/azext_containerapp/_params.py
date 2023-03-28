@@ -257,7 +257,7 @@ def load_arguments(self, _):
         c.argument('target_label', options_list=['--target'], help='Target label to be swapped to.')
 
     with self.argument_context('containerapp ingress') as c:
-        c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
+        c.argument('allow_insecure', arg_type=get_three_state_flag(), help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")

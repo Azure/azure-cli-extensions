@@ -13,6 +13,7 @@ Upcoming
 * 'az containerapp update': add support for workload profiles
 * Add 'az containerapp env workload-profile' commands
 * Upgrade api-version from 2022-10-01 to 2022-11-01-preview
+* Add `az containerapp ingress update` Command to Update Container App Ingress
 
 0.3.24
 ++++++
@@ -80,21 +81,11 @@ Upcoming
 * `az containerapp up/github-action add`: Retrieve workflow file name from github actions API
 * 'az containerapp create/update': validate revision suffixes
 
-0.3.12
-++++++
-* Add 'az containerapp env update' to update managed environment properties
-* Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
-* Add tcp support for ingress transport and scale rules
-
 0.3.11
 ++++++
 * Add keda scale rule parameters to 'az containerapp create', 'az containerapp update' and 'az containerapp revision copy'
 * Add new dapr params to 'az containerapp dapr enable' and 'az containerapp create'
 * 'az containerapp up': autogenerate a docker container with --source when no dockerfile present
-
-0.3.11
-++++++
-
 
 0.3.10
 ++++++

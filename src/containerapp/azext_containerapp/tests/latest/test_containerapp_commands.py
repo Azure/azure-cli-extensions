@@ -183,10 +183,12 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('transport', "Http2"),
         ])
 
+        self.cmd('containerapp ingress update -g {} -n {} --type external --allow-insecure=False'.format(resource_group, ca_name, env_name))
+
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
-            JMESPathCheck('external', False),
+            JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 81),
-            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('allowInsecure', False),
             JMESPathCheck('transport', "Http2"),
         ])
 

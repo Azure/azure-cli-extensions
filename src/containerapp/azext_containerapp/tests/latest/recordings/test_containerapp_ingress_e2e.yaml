@@ -101,10 +101,6 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -975,10 +971,8 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -1406,15 +1400,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp env show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1424,9 +1418,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -1439,18 +1430,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1462,11 +1447,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp env show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1510,15 +1495,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1528,9 +1513,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -1543,18 +1525,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1566,11 +1542,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1614,15 +1590,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1632,9 +1608,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -1647,34 +1620,41 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"location": "eastus", "identity": {"type": "None", "userAssignedIdentities":
+      null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
+      "configuration": {"secrets": null, "activeRevisionsMode": "single", "ingress":
+      {"fqdn": null, "external": true, "targetPort": 80, "transport": "auto", "exposedPort":
+      null, "traffic": null, "customDomains": null, "ipSecurityRestrictions": null},
+      "dapr": null, "registries": null}, "template": {"revisionSuffix": null, "containers":
+      [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest", "name":
+      "containerapp000003", "command": null, "args": null, "env": null, "resources":
+      null, "volumeMounts": null}], "initContainers": null, "scale": null, "volumes":
+      null}}, "tags": null}'
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
+      Content-Length:
+      - '864'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1687,6 +1667,8 @@ interactions:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
         2023-02-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/1d9fafb5-f83e-4eb3-a6b0-40f16e0a76a9?api-version=2022-10-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
@@ -1703,17 +1685,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '699'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -1722,11 +1704,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1774,11 +1756,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1826,11 +1808,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1859,10 +1841,8 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -1878,11 +1858,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1930,11 +1910,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -1982,11 +1962,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2034,11 +2014,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2086,11 +2066,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2138,11 +2118,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2190,11 +2170,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --environment --ingress --target-port
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2238,15 +2218,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2256,9 +2236,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -2271,18 +2248,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -2294,11 +2265,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2342,15 +2313,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2360,9 +2331,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -2375,18 +2343,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -2398,11 +2360,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2450,11 +2412,13 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
+      Content-Length:
+      - '0'
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2489,24 +2453,47 @@ interactions:
       - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/containerapp000003",
+      "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
+      "East US", "systemData": {"createdBy": "prvalav@microsoft.com", "createdByType":
+      "User", "createdAt": "2023-03-24T21:37:35.3226001", "lastModifiedBy": "prvalav@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2023-03-24T21:37:35.3226001"},
+      "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
+      "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
+      "workloadProfileType": null, "outboundIpAddresses": ["20.121.85.239"], "latestRevisionName":
+      "containerapp000003--vm672yx", "latestReadyRevisionName": "containerapp000003--vm672yx",
+      "latestRevisionFqdn": "containerapp000003--vm672yx.victoriousflower-c5068f24.eastus.azurecontainerapps.io",
+      "customDomainVerificationId": "A189264E60034F7C3E609ED4E5CC493CEEA6833044629E67A8D1AC75146808B3",
+      "configuration": {"secrets": [], "activeRevisionsMode": "Single", "ingress":
+      null, "registries": null, "dapr": null, "maxInactiveRevisions": null}, "template":
+      {"revisionSuffix": "", "containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi", "ephemeralStorage":
+      "2Gi"}}], "initContainers": null, "scale": {"minReplicas": null, "maxReplicas":
+      10, "rules": null}, "volumes": null}, "eventStreamEndpoint": "https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/containerapp000003/eventstream"},
+      "identity": {"type": "None"}}'
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
+      Content-Length:
+      - '1978'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2519,6 +2506,8 @@ interactions:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
         2023-02-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/d28be853-85fc-4fd8-bd71-9eb870be5c0f?api-version=2022-10-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
@@ -2535,17 +2524,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '699'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -2554,11 +2543,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2606,11 +2595,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2658,11 +2647,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2710,11 +2699,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2762,11 +2751,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2795,10 +2784,8 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -2814,11 +2801,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2866,11 +2853,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2918,11 +2905,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -2970,11 +2957,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress disable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3018,15 +3005,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3036,9 +3023,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -3051,18 +3035,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -3074,11 +3052,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3122,15 +3100,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3140,9 +3118,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -3155,18 +3130,12 @@ interactions:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -3178,11 +3147,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3230,11 +3199,13 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
+      Content-Length:
+      - '0'
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3263,30 +3234,52 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/containerapp000003",
+      "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
+      "East US", "systemData": {"createdBy": "prvalav@microsoft.com", "createdByType":
+      "User", "createdAt": "2023-03-24T21:37:35.3226001", "lastModifiedBy": "prvalav@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2023-03-24T21:38:00.3008777"},
+      "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
+      "environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
+      "workloadProfileType": null, "outboundIpAddresses": ["20.121.85.239"], "latestRevisionName":
+      "containerapp000003--vm672yx", "latestReadyRevisionName": "containerapp000003--vm672yx",
+      "latestRevisionFqdn": "", "customDomainVerificationId": "A189264E60034F7C3E609ED4E5CC493CEEA6833044629E67A8D1AC75146808B3",
+      "configuration": {"secrets": [], "activeRevisionsMode": "Single", "ingress":
+      {"fqdn": null, "external": false, "targetPort": 81, "transport": "http2", "exposedPort":
+      null, "traffic": null, "customDomains": null, "ipSecurityRestrictions": null,
+      "allowInsecure": true}, "registries": null, "dapr": null, "maxInactiveRevisions":
+      null}, "template": {"revisionSuffix": "", "containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi", "ephemeralStorage":
+      "2Gi"}}], "initContainers": null, "scale": {"minReplicas": null, "maxReplicas":
+      10, "rules": null}, "volumes": null}, "eventStreamEndpoint": "https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/containerapp000003/eventstream"},
+      "identity": {"type": "None"}}'
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
+      Content-Length:
+      - '2081'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3299,6 +3292,8 @@ interactions:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
         2023-02-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/9dcc28ea-6524-4df3-8563-a4e53af98712?api-version=2022-10-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
@@ -3315,17 +3310,17 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '699'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -3334,11 +3329,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3386,11 +3381,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3438,11 +3433,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3490,11 +3485,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3542,11 +3537,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress enable
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n --type --target-port --allow-insecure --transport
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3590,15 +3585,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp env create
+      - containerapp ingress show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --logs-workspace-id --logs-workspace-key
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -3608,9 +3603,6 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/34968fbb-2871-4860-b0d2-0e6e4ce2b444","name":"34968fbb-2871-4860-b0d2-0e6e4ce2b444","status":"InProgress","startTime":"2023-03-27T23:35:23.6987649"}'
     headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
-        2023-02-01
       cache-control:
       - no-cache
       content-length:
@@ -17828,11 +17820,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress enable
+      - containerapp ingress show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --type --target-port --allow-insecure --transport
+      - -g -n
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -17862,10 +17854,8 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -18015,11 +18005,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress enable
+      - containerapp ingress update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --type --target-port --allow-insecure --transport
+      - -g -n --type --allow-insecure
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -18035,7 +18025,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '278'
+      - '2231'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -18060,18 +18050,23 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"properties": {"configuration": {"ingress": {"external": true, "allowInsecure":
+      false, "exposedPort": null}}}}'
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress enable
+      - containerapp ingress update
       Connection:
       - keep-alive
+      Content-Length:
+      - '111'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - -g -n --type --target-port --allow-insecure --transport
+      - -g -n --type --allow-insecure
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -18087,30 +18082,28 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '278'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
       - Mon, 27 Mar 2023 23:48:20 GMT
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/586dfe71-e342-4299-86b3-f05cd31a2a57?api-version=2022-10-01
       pragma:
       - no-cache
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '699'
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -18119,11 +18112,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress enable
+      - containerapp ingress update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --type --target-port --allow-insecure --transport
+      - -g -n --type --allow-insecure
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -18139,30 +18132,26 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '277'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
       - Mon, 27 Mar 2023 23:48:22 GMT
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/586dfe71-e342-4299-86b3-f05cd31a2a57?api-version=2022-10-01
       pragma:
       - no-cache
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
       - ASP.NET
     status:
-      code: 200
-      message: OK
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
@@ -18171,11 +18160,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress enable
+      - containerapp ingress update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --type --target-port --allow-insecure --transport
+      - -g -n --type --allow-insecure
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
@@ -18199,16 +18188,14 @@ interactions:
       - Mon, 27 Mar 2023 23:48:23 GMT
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/586dfe71-e342-4299-86b3-f05cd31a2a57?api-version=2022-10-01
       pragma:
       - no-cache
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -18348,11 +18335,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - containerapp ingress show
+      - containerapp ingress update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n
+      - -g -n --type --allow-insecure
       User-Agent:
       - python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
         AZURECLI/2.46.0
