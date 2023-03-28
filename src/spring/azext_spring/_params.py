@@ -19,7 +19,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_managed_environment)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
-                                     validate_build_update, validate_container_registry,
+                                     validate_build_update, validate_container_registry, validate_central_build_instance,
                                      validate_builder_update, validate_build_pool_size, validate_build_service,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count, validate_git_interval,
@@ -686,7 +686,7 @@ def load_arguments(self, _):
                    help="Disable Application Insights.")
 
     with self.argument_context('spring container-registry') as c:
-        c.argument('service', service_name_type, validator=only_support_enterprise)
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
 
     with self.argument_context('spring container-registry update') as c:
         c.argument('name', help="The container registry name.", validator=validate_container_registry)
@@ -698,23 +698,26 @@ def load_arguments(self, _):
         c.argument('name', help="The container registry name.")
 
     with self.argument_context('spring build-service build') as c:
-        c.argument('service', service_name_type, validator=only_support_enterprise)
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
 
     for scope in ['create', 'update']:
         with self.argument_context('spring build-service build {}'.format(scope)) as c:
-            c.argument('builder', help='The builder name used to build the executable.', default='default')
             c.argument('build_env', build_env_type)
-            c.argument('build_cpu', arg_type=build_cpu_type, default="1")
-            c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     with self.argument_context('spring build-service build create') as c:
         c.argument('name', help="The build name.", validator=validate_build_create)
+        c.argument('builder', help='The builder name used to build the executable.', default='default')
+        c.argument('build_cpu', arg_type=build_cpu_type, default="1")
+        c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
 
     with self.argument_context('spring build-service build update') as c:
         c.argument('name', help="The build name.", validator=validate_build_update)
+        c.argument('builder', help='The builder name used to build the executable.', validator=validate_build_update)
+        c.argument('build_cpu', arg_type=build_cpu_type, validator=validate_build_update)
+        c.argument('build_memory', arg_type=build_memory_type, validator=validate_build_update)
 
     with self.argument_context('spring build-service build delete') as c:
         c.argument('name', help="The build name.")
@@ -723,7 +726,7 @@ def load_arguments(self, _):
         c.argument('name', help="The build name.")
 
     with self.argument_context('spring build-service build result') as c:
-        c.argument('service', service_name_type, validator=only_support_enterprise)
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
         c.argument('build_name', help="The build name of the result.")
 
     with self.argument_context('spring build-service build result show') as c:

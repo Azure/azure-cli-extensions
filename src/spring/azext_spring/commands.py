@@ -392,14 +392,12 @@ def load_command_table(self, _):
 
     with self.command_group('spring container-registry',
                             custom_command_type=build_service_cmd_group,
-                            validator=validate_central_build_instance,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'update_container_registry', supports_no_wait=True)
         g.custom_show_command('show', 'container_registry_show')
 
     with self.command_group('spring build-service build',
                             custom_command_type=build_service_cmd_group,
-                            validator=validate_central_build_instance,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'create_or_update_build', supports_no_wait=True)
         g.custom_command('update', 'create_or_update_build', supports_no_wait=True)
@@ -409,7 +407,6 @@ def load_command_table(self, _):
 
     with self.command_group('spring build-service build result',
                             custom_command_type=build_service_cmd_group,
-                            validator=validate_central_build_instance,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'build_result_show')
         g.custom_show_command('list', 'build_result_list', table_transformer=transform_build_result_output)

@@ -135,7 +135,6 @@ def validate_build_service(namespace):
 
 
 def validate_build_create(cmd, namespace):
-    validate_central_build_instance(cmd, namespace)
     client = get_client(cmd)
     try:
         build = client.build_service.get_build(namespace.resource_group,
@@ -149,18 +148,26 @@ def validate_build_create(cmd, namespace):
 
 
 def validate_build_update(cmd, namespace):
-    validate_central_build_instance(cmd, namespace)
     client = get_client(cmd)
     try:
-        client.build_service.get_build(namespace.resource_group,
-                                       namespace.service,
-                                       DEFAULT_BUILD_SERVICE_NAME,
-                                       namespace.name)
+        build = client.build_service.get_build(namespace.resource_group,
+                                               namespace.service,
+                                               DEFAULT_BUILD_SERVICE_NAME,
+                                               namespace.name)
+        if namespace.builder is None:
+            namespace.builder=build.properties.builder.split("/")[-1]
+        if namespace.build_cpu is None:
+            namespace.build_cpu=build.properties.resource_requests.cpu
+        if namespace.build_memory is None:
+            namespace.build_memory=build.properties.resource_requests.memory
+        if namespace.build_env is None:
+            namespace.build_env=build.properties.env
     except ResourceNotFoundError:
         raise ClientRequestError('Build {} does not exist.'.format(namespace.name))
 
 
 def validate_central_build_instance(cmd, namespace):
+    only_support_enterprise(cmd, namespace)
     client = get_client(cmd)
     try:
         build_service = client.build_service.get_build_service(namespace.resource_group,
