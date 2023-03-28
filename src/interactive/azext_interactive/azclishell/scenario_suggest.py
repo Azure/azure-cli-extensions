@@ -73,7 +73,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                     self.customized_cached_param_map[param] += ' ' + part
                     self.customized_cached_param_map[param] = self.customized_cached_param_map[param].strip()
 
-    def get_suggestion(self, cli, buffer, document, value_storage_cache={}, auto_complete_values=False):
+    def get_suggestion(self, cli, buffer, document):
         user_input = document.text.rsplit('\n', 1)[-1]
         # format all the space in user's input to ' '
         user_input = re.sub(r'\s+', ' ', user_input)
@@ -111,7 +111,8 @@ class ScenarioAutoSuggest(AutoSuggest):
                         unused_param.remove(param)
                         return Suggestion(param[len(unfinished):])
             elif unfinished == '':
-                if not last_part.startswith('-'):
+                # if last part is a not a parameter or the last part is a bool parameter and the value is empty, suggest the first unused parameter
+                if (not last_part.startswith('-')) or self.param_sample_value_map[last_part] == '':
                     for param in unused_param:
                         if param in self.special_global_param_map.keys():
                             cached_param = param
@@ -124,6 +125,8 @@ class ScenarioAutoSuggest(AutoSuggest):
                             else:
                                 value = ''
                             return Suggestion(' '.join([param, value]))
+                        else:
+                            return Suggestion(param)
 
         # If the user hasn't finished the command part, suggest the whole command
         elif self.cur_command.startswith(user_input):
