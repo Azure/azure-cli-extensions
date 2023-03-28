@@ -6861,7 +6861,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_azure_service_mesh_with_ingress_gateway(self, resource_group, resource_group_location):
+    def test_aks_azure_service_mesh_with_ingress_gateway(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         # kwargs for string formatting
@@ -6876,7 +6876,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create: enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--ssh-key-value={ssh_key_value} --output=json ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
                      '--enable-azure-service-mesh'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),

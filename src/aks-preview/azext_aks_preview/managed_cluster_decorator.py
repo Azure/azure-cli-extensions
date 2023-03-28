@@ -1970,8 +1970,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # merge components
         from_components = self.models.IstioComponents() \
-            if from_profile.istio is None or \
-               from_profile.istio.components is None \
+            if from_profile.istio is None or from_profile.istio.components is None \
             else from_profile.istio.components
 
         if to_profile.istio is None:

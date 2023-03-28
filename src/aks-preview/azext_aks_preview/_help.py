@@ -518,6 +518,9 @@ helps['aks create'] = """
         - name: --node-public-ip-tags
           type: string
           short-summary: The ipTags of the node public IPs.
+        - name: --enable-asm --enable-azure-service-mesh
+          type: bool
+          short-summary: Enable Azure Service Mesh.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -583,6 +586,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
         - name: Create a kubernetes cluster with Custom CA Trust enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
+        - name: Create a kubernetes cluster with Azure Service Mesh enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -2414,30 +2419,30 @@ helps['aks mesh disable'] = """
     long-summary: This command disables Azure Service Mesh in given cluster.
 """
 
-helps['aks mesh enable-ingress'] = """
+helps['aks mesh enable-ingress-gateway'] = """
     type: command
     short-summary: Enable an Azure Service Mesh ingress gateway.
     long-summary: This command enables an Azure Service Mesh ingress gateway in given cluster.
     parameters:
-      - name: --ingress-type
+      - name: --ingress-gateway-type
         type: string
         short-summary: Specify the type of ingress gateway.
         long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address; "Internal" which is backed by a load balancer with an internal IP address.
     examples:
       - name: Enable an internal ingress gateway.
-        text: az aks mesh enable-ingress --ingress-type Internal
+        text: az aks mesh enable-ingress --ingress-gateway-type Internal
 """
 
-helps['aks mesh disable-ingress'] = """
+helps['aks mesh disable-ingress-gateway'] = """
     type: command
     short-summary: Disable an Azure Service Mesh ingress gateway.
     long-summary: This command disables an Azure Service Mesh ingress gateway in given cluster.
     parameters:
-      - name: --ingress-type
+      - name: --ingress-gateway-type
         type: string
         short-summary: Specify the type of ingress gateway.
         long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address, "Internal" which is backed by a load balancer with an internal IP address.
     examples:
       - name: Disable an internal ingress gateway.
-        text: az aks mesh disable-ingress --ingress-type Internal
+        text: az aks mesh disable-ingress --ingress-gateway-type Internal
 """
