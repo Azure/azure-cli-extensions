@@ -838,10 +838,11 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'db_name': db_name,
             'restored_acc': target_acc,
             'col': col,
-            'loc': 'eastus2'
+            'loc': 'eastus2',
+            'target_loc': target_loc
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=True --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
@@ -865,8 +866,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         time.sleep(240)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string,
-            'target_loc': target_loc
+            'rts': restore_ts_string
         })
 
         self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location {loc} --location {target_loc}')
