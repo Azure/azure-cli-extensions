@@ -1,6 +1,13 @@
 
 Release History
 ===============
+0.5.1
+++++++
+Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocationMethod to privateIPAllocationMethod.
+
+0.5.0
+++++++
+Support for hosting repair vm in existing resource group and fixing existing resource group logic 
 
 0.4.10
 ++++++

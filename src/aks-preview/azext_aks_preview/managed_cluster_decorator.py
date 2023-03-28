@@ -4,9 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from base64 import b64encode
 from types import SimpleNamespace
-from typing import Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
@@ -15,7 +14,6 @@ from azure.cli.command_modules.acs._consts import (
 from azure.cli.command_modules.acs._helpers import (
     check_is_msi_cluster,
     format_parameter_name_to_option_name,
-    safe_list_get,
     safe_lower,
 )
 from azure.cli.command_modules.acs._validators import (
@@ -47,22 +45,23 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from azext_aks_preview._consts import (
-    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
-    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_NETWORK_PLUGIN_AZURE,
+    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG,
-    CONST_PRIVATE_DNS_ZONE_NONE,
-    CONST_PRIVATE_DNS_ZONE_SYSTEM,
-    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
 )
 from azext_aks_preview._helpers import (
-    get_cluster_snapshot_by_snapshot_id,
     check_is_private_cluster,
     check_is_apiserver_vnet_integration_cluster,
+    get_cluster_snapshot_by_snapshot_id,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -254,6 +253,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
+        Note: Overwritten in aks-preview to support being updated.
+
         Note: All the external parameters involved in the validation are not verified in their own getters.
 
         When outbound_type is not assigned, dynamic completion will be triggerd. By default, the value is set to
@@ -322,7 +323,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                             "be pre-configured with a route table with egress rules"
                         )
 
-                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                if self.decorator_mode == DecoratorMode.CREATE and outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
                     if load_balancer_profile:
                         if (
                             load_balancer_profile.managed_outbound_i_ps or
@@ -405,12 +406,83 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
 
+    def _get_network_plugin(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of network_plugin.
+
+        Note: Overwritten in aks-preview to update the valiation.
+
+        Note: SDK provides default value "kubenet" for network_plugin.
+
+        This function supports the option of enable_validation. When enabled, in case network_plugin is assigned, if
+        pod_cidr is assigned, the value of network_plugin is "azure" and network_plugin_mode is not "overlay", an
+        InvalidArgumentValueError will be raised; otherwise, if any of pod_cidr, service_cidr, dns_service_ip,
+        docker_bridge_address or network_policy is assigned, a RequiredArgumentMissingError will be raised.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        network_plugin = self.raw_param.get("network_plugin")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.network_plugin is not None
+        ):
+            network_plugin = self.mc.network_profile.network_plugin
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            (
+                pod_cidr,
+                service_cidr,
+                dns_service_ip,
+                docker_bridge_address,
+                network_policy,
+            ) = self._get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(
+                enable_validation=False
+            )
+            if network_plugin:
+                if network_plugin == CONST_NETWORK_PLUGIN_AZURE and pod_cidr:
+                    if self.get_network_plugin_mode() != CONST_NETWORK_PLUGIN_MODE_OVERLAY:
+                        raise InvalidArgumentValueError(
+                            "Please specify network plugin mode `overlay` when using pod_cidr or "
+                            "use network plugin `kubenet`. For more information about Azure CNI "
+                            "Overlay please see https://aka.ms/aksoverlay"
+                        )
+            else:
+                if (
+                    pod_cidr or
+                    service_cidr or
+                    dns_service_ip or
+                    docker_bridge_address or
+                    network_policy
+                ):
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return network_plugin
+
     def get_network_plugin_mode(self) -> Union[str, None]:
-        """Get the value of network_plugin_mode
+        """Get the value of network_plugin_mode.
+
+        Note: Currently this parameter does not support being updated.
 
         :return: str or None
         """
-        return self.raw_param.get('network_plugin_mode')
+        # read the original value passed by the command
+        network_plugin_mode = self.raw_param.get("network_plugin_mode")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.network_plugin_mode is not None
+        ):
+            network_plugin_mode = self.mc.network_profile.network_plugin_mode
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return network_plugin_mode
 
     def get_enable_cilium_dataplane(self) -> bool:
         """Get the value of enable_cilium_dataplane
@@ -472,6 +544,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_backend_pool_type
 
+    def get_nrg_lockdown_restriction_level(self) -> Union[str, None]:
+        """Obtain the value of nrg_lockdown_restriction_level.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nrg_lockdown_restriction_level = self.raw_param.get("nrg_lockdown_restriction_level")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.node_resource_group_profile and
+                self.mc.node_resource_group_profile.restriction_level is not None
+            ):
+                nrg_lockdown_restriction_level = self.mc.node_resource_group_profile.restriction_level
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nrg_lockdown_restriction_level
+
     def get_kube_proxy_config(self) -> Union[Dict, ContainerServiceNetworkProfileKubeProxyConfig, None]:
         """Obtain the value of kube_proxy_config.
 
@@ -504,6 +596,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return kube_proxy_config
+
+    def get_node_os_upgrade_channel(self) -> Union[str, None]:
+        """Obtain the value of node_os_upgrade_channel.
+        :return: string or None
+        """
+        # read the original value passed by the command
+        node_os_upgrade_channel = self.raw_param.get("node_os_upgrade_channel")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.auto_upgrade_profile and
+                self.mc.auto_upgrade_profile.node_os_upgrade_channel is not None
+            ):
+                node_os_upgrade_channel = self.mc.auto_upgrade_profile.node_os_upgrade_channel
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return node_os_upgrade_channel
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -1787,6 +1899,96 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return ssh_key_value
 
+    def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of uptime_sla.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        uptime_sla = self.raw_param.get("uptime_sla")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.sku and
+                self.mc.sku.tier is not None
+            ):
+                uptime_sla = self.mc.sku.tier == "Standard"
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if uptime_sla and self._get_no_uptime_sla(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
+                )
+
+            if uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
+                )
+
+        return uptime_sla
+
+    def _get_no_uptime_sla(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of no_uptime_sla.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        no_uptime_sla = self.raw_param.get("no_uptime_sla")
+        # We do not support this option in create mode, therefore we do not read the value from `mc`.
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if no_uptime_sla and self._get_uptime_sla(enable_validation=False):
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
+                )
+
+            if no_uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+                raise MutuallyExclusiveArgumentError(
+                    'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
+                )
+
+        return no_uptime_sla
+
+    def get_tier(self) -> str:
+        """Obtain the value of tier.
+
+        Note: Could be removed after updating the dependency on core cli to 2.47.0.
+
+        :return: str
+        """
+        tier = self.raw_param.get("tier")
+        if not tier:
+            return ""
+
+        tierStr = tier.lower()
+        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_FREE and self._get_uptime_sla(enable_validation=False):
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
+            )
+
+        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD and self._get_no_uptime_sla(enable_validation=False):
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
+            )
+
+        return tierStr
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -1876,7 +2078,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
 
         if self.context.get_enable_cilium_dataplane():
-            network_profile.ebpf_dataplane = CONST_EBPF_DATAPLANE_CILIUM
+            network_profile.network_dataplane = CONST_EBPF_DATAPLANE_CILIUM
 
         return mc
 
@@ -2125,6 +2327,49 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
         return mc
 
+    def set_up_node_resource_group_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node resource group profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        node_resource_group_profile = None
+        nrg_lockdown_restriction_level = self.context.get_nrg_lockdown_restriction_level()
+        if nrg_lockdown_restriction_level:
+            node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile(restriction_level=nrg_lockdown_restriction_level)
+        mc.node_resource_group_profile = node_resource_group_profile
+        return mc
+
+    def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up auto upgrade profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_auto_upgrade_profile(mc)
+
+        node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
+        if node_os_upgrade_channel:
+            if mc.auto_upgrade_profile is None:
+                mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
+            mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
+    def set_up_sku(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up sku (uptime sla) for the ManagedCluster object.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Standard"
+            )
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2158,6 +2403,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_kube_proxy_config(mc)
         # set up custom ca trust certificates
         mc = self.set_up_custom_ca_trust_certificates(mc)
+        # set up node resource group profile
+        mc = self.set_up_node_resource_group_profile(mc)
+        # set up auto upgrade profile
+        mc = self.set_up_auto_upgrade_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2198,6 +2447,60 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         self.agentpool_context = self.agentpool_decorator.context
         self.context.attach_agentpool_context(self.agentpool_context)
+
+    def get_special_parameter_default_value_pairs_list(self) -> List[Tuple[Any, Any]]:
+        """Get a list of special parameter value and its corresponding default value pairs.
+        :return: list of tuples
+        """
+        return [
+            (self.context.get_cluster_autoscaler_profile(), None),
+            (self.context.get_api_server_authorized_ip_ranges(), None),
+            (self.context.get_nodepool_labels(), None),
+            (self.context.raw_param.get("enable_workload_identity"), None),
+        ]
+
+    def check_raw_parameters(self):
+        """Helper function to check whether any parameters are set.
+
+        Note: Overwritten in aks-preview to add special handling for extra default values.
+
+        If the values of all the parameters are the default values, the command execution will be terminated early and
+        raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
+        sent.
+
+        :return: None
+        """
+        # exclude some irrelevant or mandatory parameters
+        excluded_keys = ("cmd", "client", "resource_group_name", "name")
+        # check whether the remaining parameters are set
+        # the default "falsy" value will be considered as not set (e.g., None, "", [], {}, 0)
+        is_changed = any(v for k, v in self.context.raw_param.items() if k not in excluded_keys)
+
+        # special cases
+        # Some parameters support using "falsy" value to update/remove previously set values.
+        # In this case, we need to declare the expected value pair in `get_special_parameter_default_value_pairs_list`.`
+        is_different_from_special_default = False
+        for pair in self.get_special_parameter_default_value_pairs_list():
+            if pair[0] != pair[1]:
+                is_different_from_special_default = True
+                break
+
+        if is_changed or is_different_from_special_default:
+            return
+
+        reconcile_prompt = 'no argument specified to update would you like to reconcile to current settings?'
+        if prompt_y_n(reconcile_prompt, default="n"):
+            return
+
+        option_names = sorted([
+            '"{}"'.format(format_parameter_name_to_option_name(x))
+            for x in self.context.raw_param.keys()
+            if x not in excluded_keys
+        ])
+        error_msg = "Please specify one or more of {}.".format(
+            " or ".join(option_names)
+        )
+        raise RequiredArgumentMissingError(error_msg)
 
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
@@ -2599,13 +2902,72 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if ssh_key_value:
             if mc.linux_profile is None:
-                raise InvalidArgumentValueError("Updating the cluster with no ssh key set at creation is not supported")
-            mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
-                public_keys=[
-                    self.models.ContainerServiceSshPublicKey(
-                        key_data=ssh_key_value
+                mc.linux_profile = self.models.ContainerServiceLinuxProfile(
+                    admin_username="azureuser",
+                    ssh=self.models.ContainerServiceSshConfiguration(
+                        public_keys=[
+                            self.models.ContainerServiceSshPublicKey(
+                                key_data=ssh_key_value
+                            )
+                        ]
                     )
-                ]
+                )
+            else:
+                mc.linux_profile.ssh = self.models.ContainerServiceSshConfiguration(
+                    public_keys=[
+                        self.models.ContainerServiceSshPublicKey(
+                            key_data=ssh_key_value
+                        )
+                    ]
+                )
+        return mc
+
+    def update_node_resource_group_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update node resource group profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        nrg_lockdown_restriction_level = self.context.get_nrg_lockdown_restriction_level()
+        if nrg_lockdown_restriction_level is not None:
+            if mc.node_resource_group_profile is None:
+                mc.node_resource_group_profile = self.models.ManagedClusterNodeResourceGroupProfile()
+            mc.node_resource_group_profile.restriction_level = nrg_lockdown_restriction_level
+        return mc
+
+    def update_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update auto upgrade profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc = super().update_auto_upgrade_profile(mc)
+
+        node_os_upgrade_channel = self.context.get_node_os_upgrade_channel()
+        if node_os_upgrade_channel is not None:
+            if mc.auto_upgrade_profile is None:
+                mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
+            mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
+    def update_sku(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update sku (uptime sla) for the ManagedCluster object.
+
+        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
+        the dependency on core cli to 2.47.0.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Standard"
+            )
+
+        if self.context.get_no_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Free"
             )
         return mc
 
@@ -2646,5 +3008,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
+        # update node resource group profile
+        mc = self.update_node_resource_group_profile(mc)
+        # update auto upgrade profile
+        mc = self.update_auto_upgrade_profile(mc)
 
         return mc

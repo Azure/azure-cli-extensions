@@ -370,17 +370,20 @@ def _check_linux_hyperV_gen(source_vm):
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
-    hyperVGen = loads(_call_az_command(show_disk_command))
-    if hyperVGen != 'V2':
+    disk_hyperVGen = loads(_call_az_command(show_disk_command))
+
+    if disk_hyperVGen != 'V2':
         logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
-        hyperVGen = hyperVGen_list[0]
-        if hyperVGen != 'V2':
-            hyperVGen = 'V1'
+        vm_hyperVGen = hyperVGen_list[0]
+        if vm_hyperVGen != 'V2':
+            vm_hyperVGen = 'V1'
 
-    return hyperVGen
+        return vm_hyperVGen
+
+    return disk_hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):

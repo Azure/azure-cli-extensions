@@ -43,9 +43,9 @@ def build_list_runtime_versions_request(**kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop(
+    api_version: Literal["2022-11-01-preview"] = kwargs.pop(
         "api_version", _params.pop("api-version", "2022-11-01-preview")
-    )  # type: Literal["2022-11-01-preview"]
+    )
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -99,10 +99,10 @@ class RuntimeVersionsOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop(
+        api_version: Literal["2022-11-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", "2022-11-01-preview")
-        )  # type: Literal["2022-11-01-preview"]
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AvailableRuntimeVersions]
+        )
+        cls: ClsType[_models.AvailableRuntimeVersions] = kwargs.pop("cls", None)
 
         request = build_list_runtime_versions_request(
             api_version=api_version,
@@ -111,10 +111,11 @@ class RuntimeVersionsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
-            request, stream=False, **kwargs
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -130,4 +131,4 @@ class RuntimeVersionsOperations:
 
         return deserialized
 
-    list_runtime_versions.metadata = {"url": "/providers/Microsoft.AppPlatform/runtimeVersions"}  # type: ignore
+    list_runtime_versions.metadata = {"url": "/providers/Microsoft.AppPlatform/runtimeVersions"}

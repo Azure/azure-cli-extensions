@@ -22,7 +22,6 @@ ManagedEnvironment = {
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
         "customDomainConfiguration": None  # CustomDomainConfiguration
     }
@@ -152,7 +151,8 @@ Ingress = {
     "transport": None,  # 'auto', 'http', 'http2', 'tcp'
     "exposedPort": None,
     "traffic": None,  # TrafficWeight
-    "customDomains": None  # [CustomDomain]
+    "customDomains": None,  # [CustomDomain]
+    "ipSecurityRestrictions": None  # [IPSecurityRestrictions]
 }
 
 RegistryCredentials = {
@@ -164,6 +164,7 @@ RegistryCredentials = {
 Template = {
     "revisionSuffix": None,
     "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
     "scale": Scale,
     "volumes": None  # [Volume]
 }
@@ -189,7 +190,7 @@ ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # Configuration
         "template": None  # Template
     },
@@ -276,4 +277,12 @@ AzureFileProperties = {
     "accountKey": None,
     "accessMode": None,
     "shareName": None
+}
+
+ManagedCertificateEnvelop = {
+    "location": None,  # str
+    "properties": {
+        "subjectName": None,  # str
+        "validationMethod": None  # str
+    }
 }

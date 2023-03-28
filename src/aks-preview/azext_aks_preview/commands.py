@@ -22,6 +22,7 @@ from azext_aks_preview._format import (
     aks_agentpool_show_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
+    aks_list_table_format,
     aks_pod_identities_table_format,
     aks_pod_identity_exceptions_table_format,
     aks_show_nodepool_snapshot_table_format,
@@ -119,30 +120,27 @@ def load_command_table(self, _):
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters,
                             transform=transform_mc_objects_with_custom_cas) as g:
-        g.custom_command('kollect', 'aks_kollect')
-        g.custom_command('kanalyze', 'aks_kanalyze')
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
-        g.command('delete', 'begin_delete',
-                  supports_no_wait=True, confirmation=True)
-        g.custom_command('scale', 'aks_scale', supports_no_wait=True)
-        g.custom_command('disable-addons', 'aks_disable_addons',
-                         supports_no_wait=True)
-        g.custom_command('enable-addons', 'aks_enable_addons',
-                         supports_no_wait=True)
-        g.custom_command('get-credentials', 'aks_get_credentials')
-        g.custom_show_command('show', 'aks_show',
-                              table_transformer=aks_show_table_format)
+        g.command('get-upgrades', 'get_upgrade_profile', table_transformer=aks_upgrades_table_format)
         g.custom_command('upgrade', 'aks_upgrade', supports_no_wait=True)
-        g.command('get-upgrades', 'get_upgrade_profile',
-                  table_transformer=aks_upgrades_table_format)
+        g.custom_command('scale', 'aks_scale', supports_no_wait=True)
+        g.command('delete', 'begin_delete', supports_no_wait=True, confirmation=True)
+        g.custom_show_command('show', 'aks_show', table_transformer=aks_show_table_format)
+        g.custom_command('list', 'aks_list', table_transformer=aks_list_table_format)
+        g.custom_command('enable-addons', 'aks_enable_addons', supports_no_wait=True)
+        g.custom_command('disable-addons', 'aks_disable_addons', supports_no_wait=True)
+        g.custom_command('get-credentials', 'aks_get_credentials')
         g.custom_command('rotate-certs', 'aks_rotate_certs', supports_no_wait=True,
                          confirmation='Kubernetes will be unavailable during certificate rotation process.\n' +
                          'Are you sure you want to perform this operation?')
-        g.wait_command('wait')
         g.command('stop', 'begin_stop', supports_no_wait=True)
         g.command('start', 'begin_start', supports_no_wait=True)
+        g.wait_command('wait')
+        # aks-preview only
+        g.custom_command('kollect', 'aks_kollect')
+        g.custom_command('kanalyze', 'aks_kanalyze')
         g.custom_command('get-os-options', 'aks_get_os_options')
         g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
 

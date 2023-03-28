@@ -3,6 +3,27 @@
 Release History
 ===============
 
+1.5.2
+++++++
+ * Email service sdk version set to 1.0.0b1 to satisfy the current contract
+
+
+1.5.1
+++++++
+ * Add AzureCli to the user-agent header for Rooms and Email service clients
+ 
+
+1.5.0
+++++++
+ * Add communication email command group in preview mode
+
+
+1.4.1
+++++++
+ * Update version missed in previous release
+ * Remove redundant version definition in setup.py
+ 
+
 1.4.0
 ++++++
  * Add communication rooms command group in preview mode

@@ -5,11 +5,16 @@
 
 import time
 import uuid
+
+from azext_aks_preview._client_factory import (
+    get_auth_management_client,
+    get_graph_rbac_management_client,
+)
+from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from azure.graphrbac.models import GetObjectsParameters
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
-from azext_aks_preview._client_factory import get_auth_management_client, get_graph_rbac_management_client
 
 logger = get_logger(__name__)
 
@@ -127,12 +132,12 @@ def add_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_prin
             create_role_assignment(
                 cli_ctx, role, service_principal_msi_id, is_service_principal, scope=scope)
             break
-        except CloudError as ex:
-            if ex.message == 'The role assignment already exists.':
+        except (CloudError, HttpResponseError) as ex:
+            if isinstance(ex, ResourceExistsError) or "The role assignment already exists." in ex.message:
                 break
             logger.info(ex.message)
-        except:  # pylint: disable=bare-except
-            pass
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.error(str(ex))
         time.sleep(delay + delay * x)
     else:
         return False

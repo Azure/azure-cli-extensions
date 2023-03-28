@@ -1,5 +1,63 @@
 Release History
 ===============
+1.8.0
+---
+* Add Azure Spring Apps StandardGen2 tier.
+
+1.7.3
+---
+* Fix `subscription_id` AAZSimpleValue type error
+
+1.7.2
+---
+* Support `--no-wait` in `az spring dev-tool`.
+* [BREAKING CHANGE] Add delete confirmation in `az spring dev-tool` and `az spring application-live-view`.
+
+1.7.1
+---
+* Remove dependency to NETWORK SDK
+
+1.7.0
+---
+* Print application logs when create/update deployment
+* Bypass jar check for enterprise tier
+* Add java runtime check for jar file
+
+1.6.8
+---
+* Add detail description to Default for argument `--backend-protocol`.
+
+1.6.7
+---
+* Change all Azure Spring Apps API version to 2022-11-01-preview.
+
+1.6.6
+---
+* Modify help text of name in command `az spring create` and `az spring app create`
+
+1.6.5
+---
+* Add argument `--deployment-name` in command `az spring app create`.
+
+1.6.4
+---
+* Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
+* Add new commands `az spring service-registry create` and `az spring service-registry delete`.
+* Add new commands `az spring gateway create` and `az spring gateway delete`.
+* Add new commands `az spring api-portal create` and `az spring api-portal delete`.
+
+1.6.3
+---
+* Deprecate the subcommand 'spring app binding'.
+
+1.6.2
+---
+* Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
+
+1.6.1
+---
+* Add type check for argument `--artifact-path`.
+
 1.6.0
 ---
 * Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.

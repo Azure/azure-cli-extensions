@@ -45,6 +45,7 @@ CONST_DEFAULT_WINDOWS_NODE_VM_SIZE = "Standard_D2s_v3"
 # workload runtime
 CONST_WORKLOAD_RUNTIME_OCI_CONTAINER = "OCIContainer"
 CONST_WORKLOAD_RUNTIME_WASM_WASI = "WasmWasi"
+CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION = "KataMshvVmIsolation"
 
 # gpu instance
 CONST_GPU_INSTANCE_PROFILE_MIG1_G = "MIG1g"
@@ -57,6 +58,10 @@ CONST_GPU_INSTANCE_PROFILE_MIG7_G = "MIG7g"
 # load balancer sku
 CONST_LOAD_BALANCER_SKU_BASIC = "basic"
 CONST_LOAD_BALANCER_SKU_STANDARD = "standard"
+
+# ManagedClusterSKU Tier
+CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
+CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD = "standard"
 
 # outbound type
 CONST_OUTBOUND_TYPE_LOAD_BALANCER = "loadBalancer"
@@ -82,6 +87,16 @@ CONST_STABLE_UPGRADE_CHANNEL = "stable"
 CONST_PATCH_UPGRADE_CHANNEL = "patch"
 CONST_NODE_IMAGE_UPGRADE_CHANNEL = "node-image"
 CONST_NONE_UPGRADE_CHANNEL = "none"
+
+# consts for node os upgrade channel
+CONST_NODE_OS_CHANNEL_NODE_IMAGE = "NodeImage"
+CONST_NODE_OS_CHANNEL_NONE = "None"
+CONST_NODE_OS_CHANNEL_SECURITY_PATCH = "SecurityPatch"
+CONST_NODE_OS_CHANNEL_UNMANAGED = "Unmanaged"
+
+# consts for nrg-lockdown restriction level
+CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY = "ReadOnly"
+CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED = "Unrestricted"
 
 # network plugin
 CONST_NETWORK_PLUGIN_KUBENET = "kubenet"
@@ -169,7 +184,7 @@ ADDONS_DESCRIPTIONS = {
     CONST_INGRESS_APPGW_ADDON_NAME: '- enable Application Gateway Ingress Controller addon (PREVIEW).',
     CONST_CONFCOM_ADDON_NAME: '- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).',
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: '- enable Open Service Mesh addon (PREVIEW).',
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon (PREVIEW).',
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon.',
     CONST_GITOPS_ADDON_NAME: '- enable GitOps (PREVIEW).',
     CONST_WEB_APPLICATION_ROUTING_KEY_NAME: '- enable web application routing (PREVIEW).'
 }
@@ -213,3 +228,19 @@ CONST_CUSTOM_CA_TEST_CERT = '-----BEGIN CERTIFICATE-----\n' \
                             'tEYNEGZaRElFU79WcEF0cH+ZW0+jJ95xE3thZffRz6QI6yF63m8aC9l9bbdJS2zg\n' \
                             'Yv8W+lCZi//ODeOBUugr++z9uj+vGk47JDSpV0n4JOun3ALUDJ0gqmcS\n' \
                             '-----END CERTIFICATE-----'
+
+# consts for maintenance configuration schedule type
+CONST_DAILY_MAINTENANCE_SCHEDULE = "Daily"
+CONST_WEEKLY_MAINTENANCE_SCHEDULE = "Weekly"
+CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE = "AbsoluteMonthly"
+CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE = "RelativeMonthly"
+
+CONST_WEEKINDEX_FIRST = "First"
+CONST_WEEKINDEX_SECOND = "Second"
+CONST_WEEKINDEX_THIRD = "Third"
+CONST_WEEKINDEX_FOURTH = "Fourth"
+CONST_WEEKINDEX_LAST = "Last"
+
+CONST_DEFAULT_CONFIGURATION_NAME = "default"
+CONST_AUTOUPGRADE_CONFIGURATION_NAME = "aksManagedAutoUpgradeSchedule"
+CONST_NODEOSUPGRADE_CONFIGURATION_NAME = "aksManagedNodeOSUpgradeSchedule"

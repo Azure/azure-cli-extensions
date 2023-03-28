@@ -540,3 +540,21 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             ]
         )
         self.cmd("monitor app-insights web-test delete -n {name} -g {rg} --yes")
+
+        self.cmd(
+            "monitor app-insights web-test create -n {name} -l {loc} -g {rg} "
+            "--enabled true --frequency 900 --web-test-kind {kind} --locations Id={location_id1} --defined-web-test-name {name} "
+            "--http-verb {http_verb} --request-body {request_body} --request-url {request_url} --retry-enabled true --synthetic-monitor-id {name} --timeout 120 "
+            "--ssl-lifetime-check 100 --ssl-check true --headers key=x-ms-test value=123 --tags {tag}=Resource",
+            checks=[
+                self.check("webTestName", "{name}"),
+                self.check("type", "microsoft.insights/webtests")
+            ]
+        )
+        self.cmd(
+            "monitor app-insights web-test list -g {rg} --component-name {app_name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("@[0].webTestName", "{name}")
+            ]
+        )

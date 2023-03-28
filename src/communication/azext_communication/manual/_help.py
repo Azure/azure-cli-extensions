@@ -504,3 +504,31 @@ helps['communication rooms participant remove'] = """
         text: |-
                az communication rooms participant remove --room "12345678901234567" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
+
+helps['communication email'] = """
+    type: group
+    short-summary: Commands to send emails and get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email status'] = """
+    type: group
+    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email send'] = """
+    type: command
+    short-summary: "Send an email."
+    examples:
+      - name: Send an email from an existing domain
+        text: |-
+               az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
+"""
+
+helps['communication email status get'] = """
+    type: command
+    short-summary: "Get status of an email previously sent."
+    examples:
+      - name: Get status of an email
+        text: |-
+               az communication email status get --message-id "01234567-89ab-cdef-0123-012345678901"
+"""

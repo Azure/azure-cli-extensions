@@ -484,7 +484,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_3)
         ctx_3.attach_mc(mc_3)
         self.assertEqual(ctx_3.get_load_balancer_managed_outbound_ipv6_count(), 20)
-    
+
     def test_get_load_balancer_backend_pool_type(self):
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -562,6 +562,71 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_2.get_disable_pod_security_policy()
+
+    def test_get_network_plugin(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "network_plugin": None,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_network_plugin(), None)
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(network_plugin="test_network_plugin")
+        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile_1)
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_network_plugin(), "test_network_plugin")
+
+        # invalid parameter
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "pod_cidr": "test_pod_cidr",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on network_plugin not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_2.get_network_plugin()
+
+        # custom
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "pod_cidr": "test_pod_cidr",
+                    "network_plugin": "azure",
+                    "network_plugin_mode": "test_mode",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        # fail on network_plugin_mode not specified as overlay
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_network_plugin()
+
+        # custom
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "pod_cidr": "test_pod_cidr",
+                    "network_plugin": "azure",
+                    "network_plugin_mode": "overlay",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_network_plugin(), "azure")
 
     def test_mc_get_network_plugin_mode(self):
         # default
@@ -3205,12 +3270,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_network_profile(mc_1)
 
-        network_profile_1 = self.models.ContainerServiceNetworkProfile(
-            load_balancer_sku=CONST_LOAD_BALANCER_SKU_STANDARD,
-            ip_families=["IPv4", "IPv6"],
-            pod_cidrs=["10.246.0.0/16", "2001:abcd::/64"],
-            service_cidrs=["10.0.0.0/16", "2001:ffff::/108"],
-        )
+        network_profile_1 = self.models.ContainerServiceNetworkProfile()
+        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
+        for attr_name, attr_value in vars(network_profile_1).items():
+                if not attr_name.startswith("_") and attr_name not in ["additional_properties", "outbound_type"] and attr_value is not None:
+                    setattr(network_profile_1, attr_name, None)
+        network_profile_1.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+        network_profile_1.ip_families = ["IPv4", "IPv6"]
+        network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
+        network_profile_1.service_cidrs=["10.0.0.0/16", "2001:ffff::/108"]
+
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
                 count_ipv6=3,
@@ -3326,6 +3395,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_subnet_prefix": None,
                 "enable_msi_auth_for_monitoring": False,
                 "enable_syslog": False,
+                "data_collection_settings": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -3366,6 +3436,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_subnet_id": "test_appgw_subnet_id",
                 "appgw_watch_namespace": "test_appgw_watch_namespace",
                 "enable_syslog": False,
+                "data_collection_settings": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4044,14 +4115,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         # fail on no updated parameter provided
         with patch(
-            "azure.cli.command_modules.acs.managed_cluster_decorator.prompt_y_n",
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(RequiredArgumentMissingError):
             dec_1.check_raw_parameters()
 
         # unless user says they want to reconcile
         with patch(
-            "azure.cli.command_modules.acs.managed_cluster_decorator.prompt_y_n",
+            "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
             return_value=True,
         ):
             dec_1.check_raw_parameters()
@@ -4067,6 +4138,17 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         self.assertIsNone(dec_2.check_raw_parameters())
+
+        # custom value
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_workload_identity": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        self.assertIsNone(dec_3.check_raw_parameters())
 
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
@@ -4397,7 +4479,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # fail on incomplete mc object (no network profile)
         with self.assertRaises(UnknownError):
             dec_9.update_load_balancer_profile(mc_9)
-        
+
         # custom value
         dec_10 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -4497,7 +4579,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        
+
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -4914,7 +4996,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         self.assertEqual(dec_mc_0, ground_truth_mc_0)
-        
+
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -5454,7 +5536,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_node_restriction(mc_2)
 
-        ground_truth_mc_2 = self.models.ManagedCluster( 
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             security_profile=self.models.ManagedClusterSecurityProfile(
                 node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
@@ -5515,7 +5597,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_vpa(mc_2)
 
-        ground_truth_mc_2 = self.models.ManagedCluster( 
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             workload_auto_scaler_profile=self.models.ManagedClusterWorkloadAutoScalerProfile(
                 vertical_pod_autoscaler = self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
@@ -5575,9 +5657,45 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_1.context.attach_mc(mc_1)
-        # fail on cluster has no linux profile
-        with self.assertRaises(InvalidArgumentValueError):
-            dec_mc_1 = dec_1.update_linux_profile(mc_1)
+        dec_mc_1 = dec_1.update_linux_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username="azureuser",
+                ssh= self.models.ContainerServiceSshConfiguration(
+                    public_keys=[self.models.ContainerServiceSshPublicKey(key_data="test_key")]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"ssh_key_value": "new_key"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username="olduser",
+                ssh= self.models.ContainerServiceSshConfiguration(
+                    public_keys=[self.models.ContainerServiceSshPublicKey(key_data="old_key")]
+                )
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_linux_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            linux_profile=self.models.ContainerServiceLinuxProfile(
+                admin_username="olduser",
+                ssh= self.models.ContainerServiceSshConfiguration(
+                    public_keys=[self.models.ContainerServiceSshPublicKey(key_data="new_key")]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_update_mc_profile_preview(self):
         import inspect

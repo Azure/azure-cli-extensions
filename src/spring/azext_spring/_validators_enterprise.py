@@ -13,6 +13,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
+from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import ApmType
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -191,6 +192,9 @@ def validate_gateway_update(namespace):
     validate_cpu(namespace)
     validate_memory(namespace)
     validate_instance_count(namespace)
+    _validate_gateway_apm_types(namespace)
+    _validate_gateway_envs(namespace)
+    _validate_gateway_secrets(namespace)
 
 
 def validate_api_portal_update(namespace):
@@ -213,6 +217,32 @@ def _validate_sso(namespace):
         raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
     if namespace.scope is not None:
         namespace.scope = namespace.scope.split(",") if namespace.scope else []
+
+
+def _validate_gateway_apm_types(namespace):
+    if namespace.apm_types is None:
+        return
+    for type in namespace.apm_types:
+        if (type not in list(ApmType)):
+            raise InvalidArgumentValueError("Allowed APM types are: " + ', '.join(list(ApmType)))
+
+
+def _validate_gateway_envs(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def _validate_gateway_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
 
 
 def validate_routes(namespace):

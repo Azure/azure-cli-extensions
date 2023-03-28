@@ -12,6 +12,63 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
+* Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
+* Vendor new SDK and bump API version to 2023-02-02-preview.
+
+0.5.132
++++++++
+* Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.
+* Add parameter to enable windows recording rules `--enable-windows-recording-rules` for the Azure Monitor Metrics addon
+
+0.5.131
++++++++
+* Allow updating the ssh key value if cluster was created without ssh key
+
+0.5.130
++++++++
+* Enable outbound migration from/to udr
+* Update description after Azure Keyvault Secrets Provider addon is GA
+
+0.5.129
++++++++
+* Vendor new SDK and bump API version to 2023-01-02-preview.
+* Mark AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` deprecated
+
+0.5.128
++++++++
+* Fix option name `--duration` for command group `az aks maintenanceconfiguration`
+
+0.5.127
++++++++
+* Add `--node-os-upgrade-channel <node os upgrade channel>` option for specifying the manner in which the OS on your nodes is updated in `aks create` and `aks update`
+
+0.5.126
++++++++
+* Add `--nrg-lockdown-restriction-level <restriction level>` option for chosing the node resource group restriction level in `aks create` and `aks update`
+* Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
+
+0.5.125
++++++++
+* Update the minimum required cli core version to `2.44.0`.
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
+
+0.5.124
++++++++
+* Update command group `az aks maintenanceconfiguration` to support the creation of dedicated maintenance configurations:
+  * *aksManagedAutoUpgradeSchedule* for scheduled cluster auto-upgrade
+  * *aksManagedNodeOSUpgradeSchedule* for scheduled node os auto-upgrade
+
+0.5.123
++++++++
+* Add the KataMshvVmIsolation option to --workload-runtime.
+
+0.5.122
++++++++
+* Vendor new SDK and bump API version to 2022-11-02-preview.
+* Remove the error prompt about "no argument specified" when `--enable-workload-identity=False` is specified.
+
 0.5.121
 +++++++
 * Remove defender related code after GA, reuse the implementation in azure-cli/acs.

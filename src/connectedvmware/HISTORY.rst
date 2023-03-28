@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.1.12
+++++++
+* Fixed VM extension issue.
+
+0.1.11
+++++++
+Including pwinput in code to workaround the issue with azure cli version >= 2.42.0 in windows installed using MSI.
+Issue link: https://github.com/Azure/azure-cli/issues/24781
 
 0.1.10
 ++++++

@@ -3,6 +3,25 @@
 Release History
 ===============
 
+1.4.0
+++++++++++++++++++
+* microsoft.dapr: Update version comparison logic to use semver based comparison
+* microsoft.azuremonitor.containers: Make ContainerInsights DataCollectionRuleName consistent with portal and other onboarding clients
+
+1.3.9
+++++++++++++++++++
+* Deprecating  --config-settings alias for --configuration-settings
+* Deprecating  --configuration-protected-settings alias for --config-protected-settings
+* Deprecating  --configuration-settings-file alias for --config-settings-file
+* Deprecating  --configuration-protected-settings-file alias for --config-protected-file
+
+1.3.8
+++++++++++++++++++
+* Fixes to address the bug with msi auth mode for azuremonitor-containers extension version >= 3.0.0
+* microsoft.dapr: disable apply-CRDs hook if auto-upgrade is disabled
+* microsoft.azuremonitor.containers: ContainerInsights Extension add dataCollectionSettings to configuration settings
+* k8s-extension Adding GA api version 2022-11-01 exposing isSystemExtension and support
+
 1.3.7
 ++++++++++++++++++
 * microsoft.dapr: prompt user for existing dapr installation during extension create

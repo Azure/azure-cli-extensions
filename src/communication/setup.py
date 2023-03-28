@@ -10,7 +10,6 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.4.0'
 try:
     from azext_communication.version import VERSION
 except ImportError:
@@ -35,6 +34,7 @@ DEPENDENCIES = ['azure-core',
                 'azure-communication-sms',
                 'azure-communication-chat',
                 'azure-communication-rooms',
+                'azure-communication-email == 1.0.0b1',
                 ]
 
 try:
