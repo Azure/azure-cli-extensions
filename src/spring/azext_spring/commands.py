@@ -389,14 +389,14 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
         g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
-        
+
     with self.command_group('spring container-registry',
                             custom_command_type=build_service_cmd_group,
                             validator=validate_central_build_instance,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'update_container_registry', supports_no_wait=True)
         g.custom_show_command('show', 'container_registry_show')
-    
+
     with self.command_group('spring build-service build',
                             custom_command_type=build_service_cmd_group,
                             validator=validate_central_build_instance,
@@ -406,7 +406,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'build_show')
         g.custom_show_command('list', 'build_list', table_transformer=transform_build_output)
         g.custom_command('delete', 'build_delete', supports_no_wait=True, confirmation=True)
-        
+ 
     with self.command_group('spring build-service build result',
                             custom_command_type=build_service_cmd_group,
                             validator=validate_central_build_instance,

@@ -111,15 +111,15 @@ def validate_build_pool_size(namespace):
         if namespace.build_pool_size is not None:
             raise ClientRequestError("You can only specify --build-pool-size with enterprise tier.")
 
-  
+
 def validate_build_service(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
         if (namespace.container_registry_server or namespace.container_registry_username or namespace.container_registry_password is not None) \
-            and ((namespace.container_registry_server is None) or (namespace.container_registry_username is None) or (namespace.container_registry_password is None)):
+                and ((namespace.container_registry_server is None) or (namespace.container_registry_username is None) or (namespace.container_registry_password is None)):
             raise InvalidArgumentValueError(
-                "The'--container-registry-server', '--container-registry-username' and '--container-registry-password' should be specified together.")  
+                "The'--container-registry-server', '--container-registry-username' and '--container-registry-password' should be specified together.")
         if (namespace.container_registry_server or namespace.container_registry_username or namespace.container_registry_password is not None) \
-            and namespace.disable_build_service:
+                and namespace.disable_build_service:
             raise InvalidArgumentValueError(
                 "Conflict detected: '--container-registry-server', '--container-registry-username' and '--container-registry-password' "
                 "can not be set with '--disable-build-service'.")
@@ -127,13 +127,13 @@ def validate_build_service(namespace):
             namespace.disable_app_insights = True
             if namespace.app_insights or namespace.app_insights_key:
                 raise InvalidArgumentValueError(
-                "Conflict detected: '--app-insights' or '--app-insights-key' "
-                "can not be set with '--disable_build_service'.")
+                    "Conflict detected: '--app-insights' or '--app-insights-key' "
+                    "can not be set with '--disable_build_service'.")
     else:
         if namespace.disable_build_service or namespace.container_registry_server or namespace.container_registry_username or namespace.container_registry_password is not None:
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
 
-      
+
 def validate_build_create(cmd, namespace):
     validate_central_build_instance(cmd, namespace)
     client = get_client(cmd)
@@ -152,13 +152,13 @@ def validate_build_update(cmd, namespace):
     validate_central_build_instance(cmd, namespace)
     client = get_client(cmd)
     try:
-        build = client.build_service.get_build(namespace.resource_group,
-                                               namespace.service,
-                                               DEFAULT_BUILD_SERVICE_NAME,
-                                               namespace.name)
+        client.build_service.get_build(namespace.resource_group,
+                                       namespace.service,
+                                       DEFAULT_BUILD_SERVICE_NAME,
+                                       namespace.name)
     except ResourceNotFoundError:
         raise ClientRequestError('Build {} does not exist.'.format(namespace.name))
-    
+
 
 def validate_central_build_instance(cmd, namespace):
     client = get_client(cmd)
@@ -237,7 +237,7 @@ def validate_artifact_path(namespace):
             "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
             "https://aka.ms/ascdependencies for more details")
 
-   
+
 def validate_container_registry(cmd, namespace):
     if not namespace.name or not namespace.username or not namespace.password or not namespace.server:
         raise InvalidArgumentValueError('The --name, --server, --username and --password must be provided.')

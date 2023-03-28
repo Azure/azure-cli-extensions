@@ -36,7 +36,7 @@ def create_build_service(cmd, client, resource_group, service, disable_build_ser
     if not disable_build_service:
         if container_registry_server is not None:
             container_registry_properties = models.ContainerRegistryProperties(
-                credentials= models.ContainerRegistryBasicCredentials(
+                credentials=models.ContainerRegistryBasicCredentials(
                     type=DEFAULT_CONTAINER_REGISTRY_TYPE,
                     server=container_registry_server,
                     username=container_registry_username,
@@ -48,13 +48,13 @@ def create_build_service(cmd, client, resource_group, service, disable_build_ser
             LongRunningOperation(cmd.cli_ctx)(poller)
             
             build_service_properties = models.BuildServiceProperties(
-                container_registry = DEFAULT_CONTAINER_REGISTRY_NAME)
+                container_registry=DEFAULT_CONTAINER_REGISTRY_NAME)
             build_service_resource = models.BuildService(
                 properties=build_service_properties)
             return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
         else:
             build_service_properties = models.BuildServiceProperties(
-                container_registry = None)
+                container_registry=None)
             build_service_resource = models.BuildService(
                 properties=build_service_properties)
             return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
@@ -86,14 +86,14 @@ def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
 
 def update_container_registry(cmd, client, resource_group, service, name=None, server=None, username=None, password=None):
     container_registry_properties = models.ContainerRegistryProperties(
-        credentials= models.ContainerRegistryBasicCredentials(
+        credentials = models.ContainerRegistryBasicCredentials(
             server=server,
             username=username,
             password=password))
     container_registry_resource = models.ContainerRegistryResource(
-            properties=container_registry_properties)
+        properties=container_registry_properties)
     return client.container_registries.begin_create_or_update(
-            resource_group, service, name, container_registry_resource)
+        resource_group, service, name, container_registry_resource)
 
 
 def container_registry_show(cmd, client, resource_group, service, name=None):
@@ -102,7 +102,7 @@ def container_registry_show(cmd, client, resource_group, service, name=None):
 
 def create_or_update_build(cmd, client, resource_group, service, name=None, builder=None, build_env=None,
                            build_cpu=None, build_memory=None, source_path=None, artifact_path=None, disable_validation=None):
-    build_service=BuildService(cmd, client, resource_group, service)
+    build_service = BuildService(cmd, client, resource_group, service)
     kwargs = {
         'build_name': name,
         'build_cpu': build_cpu,

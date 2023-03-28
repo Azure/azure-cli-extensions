@@ -303,7 +303,7 @@ def transform_build_output(result):
 
     if not is_list:
         result = [result]
-    
+
     for item in result:
         item['Name'] = item['name']
         item['Provisioning State'] = item['properties']['provisioningState']
@@ -315,7 +315,7 @@ def transform_build_output(result):
 
 def transform_build_result_output(result):
     is_list = isinstance(result, list)
-    
+
     if not is_list:
         result = [result]
 

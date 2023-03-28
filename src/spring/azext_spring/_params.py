@@ -687,7 +687,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring container-registry') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
-        
+ 
     with self.argument_context('spring container-registry update') as c:
         c.argument('name', help="The container registry name.", validator=validate_container_registry)
         c.argument('server', help="The container registry sever.", validator=validate_container_registry)
@@ -696,7 +696,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring container-registry show') as c:
         c.argument('name', help="The container registry name.")
-    
+
     with self.argument_context('spring build-service build') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
@@ -707,9 +707,9 @@ def load_arguments(self, _):
             c.argument('build_cpu', arg_type=build_cpu_type, default="1")
             c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
-            c.argument('artifact_path',  help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
+            c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
-    
+
     with self.argument_context('spring build-service build create') as c:
         c.argument('name', help="The build name.", validator=validate_build_create)
 
@@ -718,17 +718,17 @@ def load_arguments(self, _):
 
     with self.argument_context('spring build-service build delete') as c:
         c.argument('name', help="The build name.")
-    
+
     with self.argument_context('spring build-service build show') as c:
         c.argument('name', help="The build name.")
-            
+     
     with self.argument_context('spring build-service build result') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
         c.argument('build_name', help="The build name of the result.")
-    
+
     with self.argument_context('spring build-service build result show') as c:
         c.argument('name', help="The build result name.")
-    
+
     with self.argument_context('spring build-service builder') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
