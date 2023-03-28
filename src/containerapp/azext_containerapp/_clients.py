@@ -890,7 +890,7 @@ class WorkloadProfileClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json().get("value")
-        
+
 class GitHubActionClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):

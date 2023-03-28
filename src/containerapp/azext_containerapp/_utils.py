@@ -1078,16 +1078,6 @@ def safe_set(model, *keys, value):
     penult[keys[-1]] = value
 
 
-def safe_set(model, *keys, value):
-    penult = {}
-    for k in keys:
-        if k not in model:
-            model[k] = {}
-        penult = model
-        model = model[k]
-    penult[keys[-1]] = value
-
-
 def is_platform_windows():
     return platform.system() == "Windows"
 
@@ -1574,10 +1564,9 @@ def list_environment_locations(cmd):
 
     return res_locations
 
-# normalizes workload profile name
+# normalizes workload profile type
 def get_workload_profile_type(cmd, name, location):
-    name = name
-    return name
+    return name.upper()
     #Uncomment when WorkloadProfileTypes available in all regions
     '''
     workload_profiles = WorkloadProfileClient.list_supported(cmd, location)
@@ -1591,13 +1580,6 @@ def get_workload_profile_type(cmd, name, location):
 
 def get_default_workload_profile(cmd, location):
     return "Consumption"
-    '''
-    workload_profiles = WorkloadProfileClient.list_supported(cmd, location)
-    default_profiles = [p for p in workload_profiles if p["properties"].get("default")]
-    if not default_profiles:
-        raise ValidationError(f"Workload Profiles not supported in region {location}")
-    return default_profiles[0]["name"]
-    '''
 
 
 def get_default_workload_profile_from_env(cmd, env_def, resource_group):
@@ -1619,14 +1601,12 @@ def get_default_workload_profiles(cmd, location):
     return profiles
 
 
-def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile, managed_env_info):
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
     from .custom import update_managed_environment
 
-    profiles = [p["workloadProfileType"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
-    #if workload_profile not in profiles:
-    #    logger.warning("Adding new workload profile to the environment")
-    #    update_managed_environment(cmd, env_name, env_rg, workload_name=workload_profile, min_nodes=DEFAULT_MIN_NODES, max_nodes=DEFAULT_MAX_NODES)
-
+    profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    if workload_profile_name not in profile_names:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. Run 'az containerapp env workload-profile list -n myEnv -g myResourceGroup' to see options.")
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
     updated = False

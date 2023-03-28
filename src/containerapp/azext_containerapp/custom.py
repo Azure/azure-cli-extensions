@@ -4092,7 +4092,6 @@ def list_workload_profiles(cmd, resource_group_name, env_name):
 
 
 def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_name):
-    env_location = show_managed_environment(cmd, env_name, resource_group_name)["location"]
     workload_profiles = WorkloadProfileClient.list(cmd, resource_group_name, env_name)
     profile = [p for p in workload_profiles if p["name"].lower() == workload_profile_name.lower()]
     if not profile:
