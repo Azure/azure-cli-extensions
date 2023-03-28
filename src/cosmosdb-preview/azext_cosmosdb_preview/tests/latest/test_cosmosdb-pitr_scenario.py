@@ -831,6 +831,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         source_acc = self.create_random_name(prefix='cli-continuous30-', length=25)
         target_acc = source_acc + "-restored"
+        target_loc = 'westus2'
 
         self.kwargs.update({
             'acc': source_acc,
@@ -865,7 +866,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
             'rts': restore_ts_string,
-            'target_loc': 'westus2'
+            'target_loc': target_loc
         })
 
         self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location {loc} --location {target_loc}')
@@ -875,3 +876,4 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
+        assert restored_account['restoreParameters']['location'] == target_loc
