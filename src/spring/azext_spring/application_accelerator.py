@@ -6,7 +6,7 @@
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
-from .vendored_sdks.appplatform.v2022_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
                               try_get as get_dev_tool_portal,
                               create_or_update as create_or_update_dev_tool_portal,
@@ -94,6 +94,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   git_branch=None,
                                   git_commit=None,
                                   git_tag=None,
+                                  ca_cert=None,
                                   username=None,
                                   password=None,
                                   private_key=None,
@@ -103,6 +104,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
     auth_setting = None
     if username and password:
         auth_setting = models.AcceleratorBasicAuthSetting(
+            ca_cert_resource_id=ca_cert,
             username=username,
             password=password
         )
@@ -114,6 +116,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         )
     else:
         auth_setting = models.AcceleratorPublicSetting(
+            ca_cert_resource_id=ca_cert
         )
     git_repository = models.AcceleratorGitRepository(
         auth_setting=auth_setting,
