@@ -4326,7 +4326,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update
-        update_cmd = 'aks update -g {resource_group} -n {name} --network-plugin-mode overlay --pod-cidr 100.64.0.0/10'
+        update_cmd = 'aks update -g {resource_group} -n {name} --network-plugin-mode overlay --pod-cidr 100.64.0.0/10 ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureOverlayPreview'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
