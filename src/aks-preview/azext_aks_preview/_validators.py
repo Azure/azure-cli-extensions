@@ -30,6 +30,8 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 
@@ -837,3 +839,19 @@ def validate_start_time(namespace):
     found = start_time_regex.findall(namespace.start_time)
     if not found:
         raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
+
+
+def validate_azure_service_mesh_ingress_gateway_type(ingress_gateway_type):
+    """Validate --ingress-gateway-type for aks mesh ingress gateway enable/disable commands"""
+    valid_types = [
+        CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+        CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+    ]
+
+    if ingress_gateway_type not in valid_types:
+        raise ValueError(
+            "Invalid ingress gateway type: {invalid_type}. Valid values: {valid_types}".format(
+                invalid_type=ingress_gateway_type,
+                valid_types=valid_types
+            )
+        )

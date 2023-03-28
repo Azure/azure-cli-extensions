@@ -45,6 +45,8 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from azext_aks_preview._consts import (
+    CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
     CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_NETWORK_PLUGIN_AZURE,
@@ -99,6 +101,7 @@ ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDe
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
+ServiceMeshProfile = TypeVar("ServiceMeshProfile")
 
 
 # pylint: disable=too-few-public-methods
@@ -1897,6 +1900,103 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return ssh_key_value
 
+    def get_azure_service_mesh_profile(self) -> ServiceMeshProfile:
+        """Obtain the value of service mesh profile from parameters.
+        For managed cluster update, this profile needs to be merged into the existing service mesh profile.
+
+        :return: ServieMeshProfile
+        """
+
+        # enable/disable check
+        enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+        disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+        if enable_asm and disable_asm:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh at the same time."
+            )
+
+        if not enable_asm and not disable_asm:
+            return None
+
+        if disable_asm:
+            return self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED)
+
+        profile = self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO)
+        profile.istio = self.models.IstioServiceMesh()
+
+        # ingress gateways
+        enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
+        disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
+
+        if enable_ingress_gateway and disable_ingress_gateway:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh ingress gateway at the same time."
+            )
+
+        if not enable_ingress_gateway and not disable_ingress_gateway:
+            return profile
+
+        ingress_gateway_type = self.raw_param.get("ingress_gateway_type")
+        profile.istio.components = self.models.IstioComponents(
+            ingress_gateways=[
+                self.models.IstioIngressGateway(
+                    mode=ingress_gateway_type,
+                    enabled=enable_ingress_gateway,
+                )
+            ]
+        )
+
+        return profile
+
+    def merge_azure_service_mesh_profile(self, from_profile, to_profile) -> ServiceMeshProfile:
+        """Merge components in an azure service mesh profile into another. This is needed because
+         azure service mesh profile update is always a full update.
+
+        :return: the merged profile
+        """
+
+        # null check
+        if from_profile is None:
+            return to_profile
+
+        if to_profile is None:
+            return from_profile
+
+        # merge mode
+        if from_profile.mode:
+            to_profile.mode = from_profile.mode
+
+        # merge components
+        from_components = self.models.IstioComponents() \
+            if from_profile.istio is None or \
+               from_profile.istio.components is None \
+            else from_profile.istio.components
+
+        if to_profile.istio is None:
+            to_profile.istio = self.models.IstioServiceMesh()
+
+        if to_profile.istio.components is None:
+            to_profile.istio.components = self.models.IstioComponents()
+
+        to_components = to_profile.istio.components
+
+        # merge ingress gateways
+        if from_components.ingress_gateways:
+            for from_gateway in from_components.ingress_gateways:
+                matched = False
+                if to_components.ingress_gateways is None:
+                    to_components.ingress_gateways = []
+                for to_gateway in to_components.ingress_gateways:
+                    if from_gateway.mode != to_gateway.mode:
+                        continue
+                    to_gateway.enabled = from_gateway.enabled
+                    matched = True
+                    break
+                if not matched:
+                    to_components.ingress_gateways.append(from_gateway)
+
+        return to_profile
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2261,6 +2361,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
+    def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up azure service mesh for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        profile = self.context.get_azure_service_mesh_profile()
+        if profile and profile.mode != CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+            mc.service_mesh_profile = profile
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2298,6 +2410,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
+        # set up azure service mesh profile
+        mc = self.set_up_azure_service_mesh_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2839,6 +2953,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
+    def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update azure service mesh profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        source_profile = self.context.get_azure_service_mesh_profile()
+        mc.service_mesh_profile = self.context.merge_azure_service_mesh_profile(
+            source_profile,
+            mc.service_mesh_profile,
+        )
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -2880,5 +3009,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
+        # update azure service mesh profile
+        mc = self.update_azure_service_mesh_profile(mc)
 
         return mc

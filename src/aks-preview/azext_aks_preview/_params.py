@@ -152,6 +152,7 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_start_date,
     validate_start_time,
+    validate_azure_service_mesh_ingress_gateway_type,
 )
 
 # candidates for enumeration
@@ -376,6 +377,7 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
+        c.argument('enable_azure_service_mesh', action='store_true', is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
@@ -830,6 +832,16 @@ def load_arguments(self, _):
 
     with self.argument_context('aks trustedaccess rolebinding update') as c:
         c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+
+    with self.argument_context('aks mesh enable-ingress-gateway') as c:
+        c.argument('ingress-gateway-type',
+                   validator=validate_azure_service_mesh_ingress_gateway_type,
+                   help='Ingress gateway type. One of ["External", "Internal"]')
+
+    with self.argument_context('aks mesh disable-ingress-gateway') as c:
+        c.argument('ingress-gateway-type',
+                   validator=validate_azure_service_mesh_ingress_gateway_type,
+                   help='Ingress gateway type. One of ["External", "Internal"]')
 
 
 def _get_default_install_location(exe_name):
