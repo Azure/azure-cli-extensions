@@ -1167,9 +1167,6 @@ def update_managed_environment(cmd,
     except CLIError as e:
         handle_raw_exception(e)
 
-    # if plan and r["sku"]["name"].lower() == "premium" and plan.lower() == "consumption":
-    #     raise InvalidArgumentValueError("Cannot downgrade a premium sku environment to consumption")
-
     # General setup
     env_def = {}
     safe_set(env_def, "location", value=r["location"])  # required for API
@@ -1197,13 +1194,8 @@ def update_managed_environment(cmd,
         if certificate_password:
             safe_set(cert_def, "certificatePassword", value=certificate_password)
 
-    # if plan and plan.lower() == "premium":
-    #     safe_set(env_def, "sku", "name", value="Premium")
-    #     safe_set(env_def, "properties", "workloadProfiles", value=get_default_workload_profiles(cmd, r["location"]))
-    #     safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
-
     if workload_profile_name:
-        if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]: #and not (plan and plan.lower() == "premium"):
+        if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
             raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
 
         if workload_profile_type:
