@@ -865,7 +865,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
             'rts': restore_ts_string,
-            'target_loc': 'eastus2'
+            'target_loc': 'westus2'
         })
 
         self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location {loc} --location {target_loc}')

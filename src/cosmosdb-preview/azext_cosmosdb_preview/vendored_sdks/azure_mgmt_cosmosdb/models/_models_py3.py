@@ -12516,6 +12516,8 @@ class RestoreParameters(RestoreParametersBase):
      list[~azure.mgmt.cosmosdb.models.GremlinDatabaseRestoreResource]
     :ivar tables_to_restore: List of specific tables available for restore.
     :vartype tables_to_restore: list[str]
+    :ivar source_backup_location: The source backup location for restore.
+    :vartype source_backup_location: str
     """
 
     _attribute_map = {
@@ -12528,6 +12530,7 @@ class RestoreParameters(RestoreParametersBase):
             "type": "[GremlinDatabaseRestoreResource]",
         },
         "tables_to_restore": {"key": "tablesToRestore", "type": "[str]"},
+        "source_backup_location": {"key": "sourceBackupLocation", "type": "str"},
     }
 
     def __init__(
@@ -12539,6 +12542,7 @@ class RestoreParameters(RestoreParametersBase):
         databases_to_restore: Optional[List["_models.DatabaseRestoreResource"]] = None,
         gremlin_databases_to_restore: Optional[List["_models.GremlinDatabaseRestoreResource"]] = None,
         tables_to_restore: Optional[List[str]] = None,
+        source_backup_location: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -12559,12 +12563,15 @@ class RestoreParameters(RestoreParametersBase):
          list[~azure.mgmt.cosmosdb.models.GremlinDatabaseRestoreResource]
         :keyword tables_to_restore: List of specific tables available for restore.
         :paramtype tables_to_restore: list[str]
+        :keyword source_backup_location: The source backup location for restore.
+        :paramtype source_backup_location: str
         """
         super().__init__(restore_source=restore_source, restore_timestamp_in_utc=restore_timestamp_in_utc, **kwargs)
         self.restore_mode = restore_mode
         self.databases_to_restore = databases_to_restore
         self.gremlin_databases_to_restore = gremlin_databases_to_restore
         self.tables_to_restore = tables_to_restore
+        self.source_backup_location = source_backup_location
 
 
 class RetrieveThroughputParameters(ARMResourceProperties):
