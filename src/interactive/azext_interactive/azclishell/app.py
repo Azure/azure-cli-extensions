@@ -610,6 +610,9 @@ class AzInteractiveShell(object):
     def handle_search(self, text):
         """ parses for the scenario search """
         keywords = text.partition(SELECT_SYMBOL['search'])[2].strip()
+        if not keywords:
+            print_styled_text([(Style.WARNING, 'Please input search keywords')])
+            return
         prompt_timeout_limit = 10
         start_time = time.time()
         self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
@@ -626,11 +629,10 @@ class AzInteractiveShell(object):
                 break
             if self.recommender.cur_thread.result:
                 break
-        if self.recommender.cur_thread.result:
+        if self.recommender.cur_thread.result is not None:
             results = self.recommender.cur_thread.result
             if len(results) == 0:
                 print_styled_text([(Style.WARNING, 'No search results.')])
-                print()
                 # -1 means no result, since the idx+1 in feedback function, so passed -2
                 self.recommender.feedback_search(-2, keywords)
             else:
