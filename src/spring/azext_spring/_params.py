@@ -834,6 +834,7 @@ def load_arguments(self, _):
                   'spring application-accelerator customized-accelerator show',
                   'spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator sync-cert',
                   'spring application-accelerator customized-accelerator delete']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name for customized accelerator.')

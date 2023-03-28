@@ -6,7 +6,7 @@
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2022_03_01_preview import models
 from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
                               try_get as get_dev_tool_portal,
                               create_or_update as create_or_update_dev_tool_portal,
@@ -80,6 +80,9 @@ def customized_accelerator_list(cmd, client, resource_group, service):
 def customized_accelerator_show(cmd, client, resource_group, service, name):
     return client.customized_accelerators.get(resource_group, service, DEFAULT_NAME, name)
 
+def customized_accelerator_sync_cert(cmd, client, resource_group, service, name, no_wait=False):
+    customized_accelerator_resource = client.customized_accelerators.get(resource_group, service, DEFAULT_NAME, name)
+    return sdk_no_wait(no_wait, client.customized_accelerators.begin_create_or_update, resource_group, service, DEFAULT_NAME, name, customized_accelerator_resource)
 
 def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   display_name,
