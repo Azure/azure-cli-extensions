@@ -1564,9 +1564,11 @@ def list_environment_locations(cmd):
 
     return res_locations
 
+
 # normalizes workload profile type
 def get_workload_profile_type(cmd, name, location):
     return name.upper()
+
 
 def get_default_workload_profile(cmd, location):
     return "Consumption"
@@ -1592,11 +1594,10 @@ def get_default_workload_profiles(cmd, location):
 
 
 def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
-    from .custom import update_managed_environment
-
     profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
     if workload_profile_name not in profile_names:
         raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. Run 'az containerapp env workload-profile list -n myEnv -g myResourceGroup' to see options.")
+
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
     updated = False

@@ -858,6 +858,7 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+
 class WorkloadProfileClient():
     @classmethod
     def list_supported(cls, cmd, location):
@@ -890,6 +891,7 @@ class WorkloadProfileClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json().get("value")
+
 
 class GitHubActionClient():
     @classmethod

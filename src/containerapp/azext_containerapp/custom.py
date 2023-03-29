@@ -70,8 +70,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
-                     check_managed_cert_name_availability, prepare_managed_certificate_envelop, get_workload_profile_type,
-                     get_default_workload_profile, get_default_workload_profile_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
+                     check_managed_cert_name_availability, prepare_managed_certificate_envelop,
+                     get_default_workload_profile_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1020,7 +1020,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
 def create_managed_environment(cmd,
                                name,
                                resource_group_name,
-                               logs_destination=None,
+                               logs_destination="log-analytics",
                                storage_account=None,
                                logs_customer_id=None,
                                logs_key=None,
@@ -1074,10 +1074,11 @@ def create_managed_environment(cmd,
 
     managed_env_def = ManagedEnvironmentModel
     managed_env_def["location"] = location
+    managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
 
-    if enableWorkloadProfiles == True:
+    if enableWorkloadProfiles is True:
         managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
 
     if hostname:
@@ -1215,9 +1216,6 @@ def update_managed_environment(cmd,
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
-        safe_set(env_def, "properties", "vnetConfiguration", value=r["properties"]["vnetConfiguration"])
-        if safe_get(r, "properties", "appLogsConfiguration"):
-            safe_set(env_def, "properties", "appLogsConfiguration", value=safe_get(r, "properties", "appLogsConfiguration"))
 
     try:
         r = ManagedEnvironmentClient.update(
@@ -4128,6 +4126,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         )
     return containerapps_from_compose
 
+
 def list_supported_workload_profiles(cmd, location):
     return WorkloadProfileClient.list_supported(cmd, location)
 
@@ -4146,6 +4145,7 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_n
 
 def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
     return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
 
 def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile_name):
     try:

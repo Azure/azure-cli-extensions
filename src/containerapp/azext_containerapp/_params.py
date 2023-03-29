@@ -176,7 +176,7 @@ def load_arguments(self, _):
         c.argument('workload_profile_type', help='The type of workload profile to add or update in this environment, --workload-profile-name required')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
         c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-name required')
-        c.argument('max_nodes',  help='The maximum nodes for this workload profile, --workload-profile-name required')
+        c.argument('max_nodes', help='The maximum nodes for this workload profile, --workload-profile-name required')
 
     with self.argument_context('containerapp env delete') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
@@ -320,7 +320,6 @@ def load_arguments(self, _):
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
-
 
     with self.argument_context('containerapp up', arg_group='Log Analytics (Environment)') as c:
         c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
