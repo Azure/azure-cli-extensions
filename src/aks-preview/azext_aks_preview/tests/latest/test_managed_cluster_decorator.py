@@ -4579,7 +4579,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_update_network_profile(self):
+    def test_update_network_plugin_settings(self):
         # default value in `aks_update`
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -4602,8 +4602,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         # fail on passing the wrong mc object
         with self.assertRaises(CLIInternalError):
-            dec_1.update_network_profile(None)
-        dec_mc_1 = dec_1.update_network_profile(mc_1)
+            dec_1.update_network_plugin_settings(None)
+        dec_mc_1 = dec_1.update_network_plugin_settings(mc_1)
 
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
@@ -4638,8 +4638,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         # fail on passing the wrong mc object
         with self.assertRaises(CLIInternalError):
-            dec_2.update_network_profile(None)
-        dec_mc_2 = dec_2.update_network_profile(mc_2)
+            dec_2.update_network_plugin_settings(None)
+        dec_mc_2 = dec_2.update_network_plugin_settings(mc_2)
 
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
