@@ -44,13 +44,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.generic_update_command('update', getter_name='get_properties', setter_name='update',
                                  custom_func_name='update_storage_account')
 
-    with self.command_group('storage account network-rule', storage_account_sdk,
-                            custom_command_type=storage_account_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
-        g.custom_command('add', 'add_network_rule')
-        g.custom_command('list', 'list_network_rules')
-        g.custom_command('remove', 'remove_network_rule')
-
     local_users_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
                         'LocalUsersOperations.{}',

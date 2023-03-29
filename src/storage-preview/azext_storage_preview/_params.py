@@ -373,6 +373,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('public_network_access', arg_type=get_enum_type(public_network_access_enum), min_api='2021-06-01',
                    help='Enable or disable public network access to the storage account. '
                         'Possible values include: `Enabled` or `Disabled`.')
+        c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
 
     for scope in ['storage account create', 'storage account update']:
         with self.argument_context(scope, arg_group='Customer managed key', min_api='2017-06-01',
@@ -410,20 +412,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
             c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
             c.argument('action', action_type)
-
-    for item in ['update', 'network-rule']:
-        with self.argument_context('storage account {}'.format(item)) as c:
-            c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
-            c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account network-rule') as c:
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('ip_address', help='IPv4 address or CIDR range.')
-        c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
-        c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
-        c.argument('action', help='The action of virtual network rule.')
-        c.argument('resource_id', help='The resource id to add in network rule.')
-        c.argument('tenant_id', help='The tenant id to add in network rule.')
 
     with self.argument_context('storage account local-user') as c:
         c.argument('account_name', acct_name_type, options_list='--account-name', id_part=None)
