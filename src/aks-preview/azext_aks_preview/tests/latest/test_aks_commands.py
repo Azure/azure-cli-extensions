@@ -6950,12 +6950,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_upgrade_settings(self, resource_group, resource_group_location):
+        """ This test case exercises enabling and disabling IgnoreKubernetesDeprecations override in cluster upgradeSettings.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'location': resource_group_location,
-            'ssh_key_value': self.generate_ssh_keys()
+            'ssh_key_value': self.generate_ssh_keys(),
         })
 
         # create
