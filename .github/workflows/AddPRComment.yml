@@ -18,10 +18,7 @@ jobs:
               echo "message=$(echo 'Thank you for your contribution! We will review the pull request and get back to you soon.')" >> $GITHUB_ENV
           fi
       - name: comment on the pull request
-        uses: hasura/comment-progress@v2.2.0
+        uses: mshick/add-pr-comment@v2
         with:
-          github-token: ${{ env.CLI_BOT3 }}
-          repository: 'Azure/azure-cli-extensions'
-          number: ${{ github.event.number }}
-          id: thank-you-comment
+          repo-token: ${{ env.CLI_BOT3 }}
           message: "${{ env.message }}"
