@@ -198,7 +198,6 @@ def upgrade_hybrid_appliance(resource_group_name, name):
 
 def delete_hybrid_appliance(resource_group_name, name):
     delete_cc = True
-    utils.set_no_proxy_from_helm_values()
     kubeconfig_path = utils.get_kubeconfig_path()
     try:
         output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
@@ -206,7 +205,7 @@ def delete_hybrid_appliance(resource_group_name, name):
         telemetry.set_exception()
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
 
-    if "not running" in output.decode():
+    if output is None or "not running" in output.decode():
             telemetry.set_exception()
             raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
     config.load_kube_config(utils.get_kubeconfig_path())
@@ -216,15 +215,18 @@ def delete_hybrid_appliance(resource_group_name, name):
     except Exception as e:
         delete_cc = False
         utils.kubernetes_exception_handler(e, fault_type=consts.Read_ConfigMap_Fault_Type, summary="Unable to read ConfigMap", raise_error=False)
-    try:
-        if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
-            telemetry.set_exception()
-            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
-    except KeyError:
-        logger.error("The required entries were not found in the config map")
-        delete_cc = False
 
     if delete_cc:
+        try:
+            if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
+                telemetry.set_exception()
+                raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
+        except KeyError:
+            logger.error("The required entries were not found in the config map")
+            delete_cc = False
+
+    if delete_cc:
+        utils.set_no_proxy_from_helm_values()
         cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
         delete_result = get_default_cli().invoke(cmd_delete_arc)
         if delete_result != 0:
@@ -239,3 +241,31 @@ def delete_hybrid_appliance(resource_group_name, name):
         return_code = subprocess.Popen(['microk8s', 'inspect']).wait()
         if return_code == 0:
             logger.warning("Please share the logs generated at the above path, under /var/snap/microk8s/current")
+
+def collect_logs(resource_group_name, name):
+    filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(consts.diagnostics_folder_name, name)
+
+    if not diagnostic_folder_status:
+        logger.error("Unable to create the folder to store diagnostics logs.")
+        return
+    
+    os.environ["TROUBLESHOOT_DIRECTORY"] = filepath_with_timestamp
+    os.environ["RESOURCE_GROUP"] = resource_group_name
+    os.environ["APPLIANCE_NAME"] = name
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    script_file_path = os.path.join(current_path, "microk8s_inspect.sh")
+    cmd = ["bash", script_file_path]
+    process = subprocess.Popen(cmd)
+    if process.wait() != 0:
+        telemetry.set_exception(exception="Failed to run microk8s inspect", fault_type=consts.Microk8s_Inspect_Failed, summary="Microk8s inspect failed")
+        raise CLIInternalError("Failed to run microk8s inspect")
+
+    script_file_path = os.path.join(current_path, "connectedk8s_troubleshoot.sh")
+    cmd = ["bash", script_file_path]
+    process = subprocess.Popen(cmd)
+    if process.wait() != 0:
+        telemetry.set_exception(exception="Failed to run connectedk8s troubleshoot", fault_type=consts.Connectedk8s_Troubleshoot_Failed, summary="Connectedk8s troubleshoot failed")
+        raise CLIInternalError("Failed to run connectedk8s troubleshoot")
+    
+    logger.warning("The logs have been stored at {}".format(filepath_with_timestamp))
+    

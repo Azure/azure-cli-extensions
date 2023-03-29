@@ -27,3 +27,7 @@ def load_arguments(self, _):
 
     with self.argument_context('hybrid-appliance delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='')
+    
+    with self.argument_context('hybrid-appliance troubleshoot') as c:
+        c.argument('name', options_list=['--name', '-n'], help='')
+    

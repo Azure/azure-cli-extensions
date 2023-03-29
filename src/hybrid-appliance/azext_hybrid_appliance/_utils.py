@@ -1,5 +1,7 @@
 import os
 import json
+import shutil
+import time
 import yaml
 import requests
 import subprocess
@@ -95,8 +97,10 @@ def get_no_proxy_parameters(no_proxy):
 
 def set_no_proxy_from_helm_values():
     try:
-        helmValuesYaml = subprocess.check_output(['microk8s', 'helm', 'get', 'values', 'azure-arc', '-n', 'azure-arc-release'])
+        helmValuesYaml = subprocess.check_output(['microk8s', 'helm', 'get', 'values', 'azure-arc', '-n', 'azure-arc-release'], stderr=subprocess.STDOUT)
     except:
+        if "release: not found" in helmValuesYaml:
+            return
         print("Failed to get helm values for the azure-arc release.")
         return
     
@@ -129,3 +133,52 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             raise ValidationError(error_message + "\nError: " + str(ex))
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
+
+def create_folder_diagnosticlogs(folder_name, appliance_name):
+    current_time = time.ctime(time.time())
+    time_stamp = ""
+    for elements in current_time:
+        if(elements == ' '):
+            time_stamp += '-'
+            continue
+        elif(elements == ':'):
+            time_stamp += '.'
+            continue
+        time_stamp += elements
+    time_stamp = appliance_name + '-' + time_stamp
+    try:
+        # Fetching path to user directory to create the arc diagnostic folder
+        home_dir = os.path.expanduser('~')
+        filepath = os.path.join(home_dir, '.azure', 'hybrid_appliance', folder_name)
+        # Creating Diagnostic folder and its subfolder with the given timestamp and cluster name to store all the logs
+        try:
+            os.mkdir(filepath)
+        except FileExistsError:
+            pass
+        filepath_with_timestamp = os.path.join(filepath, time_stamp)
+        try:
+            os.mkdir(filepath_with_timestamp)
+        except FileExistsError:
+            # Deleting the folder if present with the same timestamp to prevent overriding in the same folder and then creating it again
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=True)
+            os.mkdir(filepath_with_timestamp)
+            pass
+
+        return filepath_with_timestamp, True
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            return "", False
+        else:
+            logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
+            return "", False
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
+        return "", False
