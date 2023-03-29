@@ -686,7 +686,7 @@ def load_arguments(self, _):
                    help="Disable Application Insights.")
 
     with self.argument_context('spring container-registry') as c:
-        c.argument('service', service_name_type, validator=validate_central_build_instance)
+        c.argument('service', service_name_type, validator=only_support_enterprise)
 
     with self.argument_context('spring container-registry update') as c:
         c.argument('name', help="The container registry name.", validator=validate_container_registry)
