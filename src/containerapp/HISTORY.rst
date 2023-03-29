@@ -2,8 +2,8 @@
 
 Release History
 ===============
-Upcoming
-+++++++
+0.3.25
+++++++
 * 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
 * 'az containerapp env update': fix bugs in update environment.
 * Fix YAML create with user-assigned identity
