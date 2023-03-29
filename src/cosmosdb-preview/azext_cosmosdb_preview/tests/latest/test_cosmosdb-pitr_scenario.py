@@ -832,19 +832,22 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         source_acc = self.create_random_name(prefix='cli-continuous30-', length=25)
         target_acc = source_acc + "-restored"
         target_loc = 'westus2'
+        loc = 'eastus2'
 
         self.kwargs.update({
             'acc': source_acc,
             'db_name': db_name,
             'restored_acc': target_acc,
             'col': col,
-            'loc': 'eastus2',
+            'loc': loc,
             'target_loc': target_loc
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=True --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
+
+        assert restored_account['location'] == loc
 
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -876,4 +879,5 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
-        assert restored_account['restoreParameters']['location'] == target_loc
+        assert restored_account['location'] == target_loc
+        assert restored_account['locations'][0]['locationName'] == target_loc
