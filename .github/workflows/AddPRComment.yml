@@ -21,8 +21,10 @@ jobs:
       - name: comment on the pull request
         uses: hasura/comment-progress@v2.2.0
         with:
-          github-token: ${{ secrets.CLI_BOT }}
+          github-token: ${{ env.GITHUB_TOKEN }}
           repository: 'Azure/azure-cli-extensions'
           number: ${{ github.event.number }}
           id: thank-you-comment
           message: "${{ env.message }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.CLI_BOT }}
