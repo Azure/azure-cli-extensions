@@ -694,7 +694,7 @@ class AzInteractiveShell(object):
         elif cmd.startswith(SELECT_SYMBOL['example']):
             self.handle_scenario(cmd)
             continue_flag = True
-        elif cmd.startswith(SELECT_SYMBOL['search']):
+        elif cmd.strip().startswith(SELECT_SYMBOL['search']):
             self.handle_search(cmd)
             continue_flag = True
         elif SELECT_SYMBOL['example'] in cmd:

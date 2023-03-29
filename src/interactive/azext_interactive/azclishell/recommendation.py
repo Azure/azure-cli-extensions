@@ -59,7 +59,7 @@ class Recommender:
             'help': 'Get help message of Azure CLI',
             'init': 'Set Azure CLI global configurations interactively',
             'next': 'Recommend the possible next set of commands to take',
-            'scenario guide <keywords>': 'Search for a scenario using keywords',
+            'scenario guide': 'Search for a scenario using keywords',
         }
         self.executing_command = None
 
