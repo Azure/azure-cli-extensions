@@ -330,6 +330,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    is_preview=True, help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
+        c.argument('enable_files_aadkerb', aadkerb_type)
         c.argument('enable_large_file_share', arg_type=large_file_share_type)
         c.argument('domain_name', domain_name_type)
         c.argument('net_bios_domain_name', net_bios_domain_name_type)
